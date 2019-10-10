@@ -3,7 +3,7 @@
     <div class="data-value "><b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b></div>
   </div>
 
-    <?php if($element->comment): ?>
+    <?php if ($element->comment) : ?>
     <div class="element-fields flex-layout flex-top col-gap">
 
         <div class="cols-2 column">
@@ -18,13 +18,13 @@
     <?php endif; ?>
     <hr>
     <?php
-      if ($element->single_document) { ?>
+    if ($element->single_document) { ?>
         <div class="cols-12 column">
             <?php
             $this->renderPartial('view_' . $this->getTemplateForMimeType($element->single_document->mimetype), array('element' => $element, 'index' => 'single_document'));
             ?>
         </div>
-      <?php } ?>
+    <?php } ?>
 </div>
 
 <?php if (($element->right_document_id) || ($element->left_document_id)) { ?>
@@ -40,14 +40,14 @@
       <hr>
 
       <?php if ($element->right_document_id) {
-          ?>
+            ?>
         <div id="right-eye">
             <h2>Right eye</h2>
             <?php
             $this->renderPartial('view_' . $this->getTemplateForMimeType($element->right_document->mimetype), array('element' => $element, 'index' => 'right_document'));
             ?>
         </div>
-      <?php } ?>
+        <?php } ?>
       <hr>
       <?php if ($element->left_document_id) { ?>
         <div id="left-eye">
@@ -56,6 +56,6 @@
             $this->renderPartial('view_' . $this->getTemplateForMimeType($element->left_document->mimetype), array('element' => $element, 'index' => 'left_document'));
             ?>
         </div>
-      <?php } ?>
+        <?php } ?>
   </div>
 <?php } ?>

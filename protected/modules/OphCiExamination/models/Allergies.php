@@ -226,6 +226,6 @@ class Allergies extends \BaseEventTypeElement
 
     public function softDelete()
     {
-        $this->updateAll(array('deleted' => 1),'event_id = :event_id', array(':event_id' => $this->event_id));
+        $this->updateAll(array('deleted' => 1), 'event_id = :event_id', array(':event_id' => $this->event_id));
     }
 }

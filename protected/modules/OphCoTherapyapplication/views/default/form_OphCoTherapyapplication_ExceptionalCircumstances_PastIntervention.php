@@ -82,18 +82,18 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </a>
     </td>
   </tr>
-  <?php if ($pastintervention && $pastintervention->id) { ?>
+    <?php if ($pastintervention && $pastintervention->id) { ?>
     <input type="hidden"
            name="<?php echo $name_stub; ?>[<?php echo $key ?>][id]"
            value="<?php echo $pastintervention->id ?>"/>
-  <?php } ?>
+    <?php } ?>
 
-  <?php $d_name = $name_stub . "[$key][start_date]";
-  $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . '_' . $key . '_start_date'; ?>
+    <?php $d_name = $name_stub . "[$key][start_date]";
+    $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . '_' . $key . '_start_date'; ?>
   <tr>
     <td>
       <label for="<?php echo $d_id ?>">
-          <?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
       </label>
     </td>
     <td>
@@ -117,14 +117,14 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
     </td>
   </tr>
 
-  <?php
-  $d_name = $name_stub . "[$key][end_date]";
-  $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . '_' . $key . '_end_date';
-  ?>
+    <?php
+    $d_name = $name_stub . "[$key][end_date]";
+    $d_id = preg_replace('/\[/', '_', substr($name_stub, 0, -1)) . '_' . $key . '_end_date';
+    ?>
   <tr>
     <td>
       <label for="<?php echo $d_id; ?>">
-          <?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
       </label>
     </td>
     <td>
@@ -151,7 +151,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   <tr>
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_{$treatmentattribute}"); ?>">
-          <?php echo $pastintervention->getAttributeLabel($treatmentattribute); ?>:
+            <?php echo $pastintervention->getAttributeLabel($treatmentattribute); ?>:
       </label>
     </td>
     <td>
@@ -177,11 +177,11 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   </tr>
 
   <tr class=" <?php if (!$show_treatment_other) {
-      echo 'hidden ';
-  } ?>treatment-other">
+        echo 'hidden ';
+              } ?>treatment-other">
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_relevanttreatment_other"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('relevanttreatment_other'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('relevanttreatment_other'); ?>:
       </label>
     </td>
     <td>
@@ -195,20 +195,20 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   <tr>
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_start_va"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
       </label>
     </td>
     <td>
         <?=\CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
             array('empty' => 'Select', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
-        ?>
+            ?>
     </td>
   </tr>
 
   <tr>
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_end_va"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
       </label>
     </td>
     <td>
@@ -220,7 +220,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   <tr>
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_stopreason_id"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('stopreason_id') ?>:
+            <?php echo $pastintervention->getAttributeLabel('stopreason_id') ?>:
       </label>
     </td>
     <td>
@@ -245,11 +245,11 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   </tr>
 
   <tr class=" <?php if (!$show_stop_other) {
-      echo 'hidden ';
-  } ?>stop-reason-other">
+        echo 'hidden ';
+              } ?>stop-reason-other">
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_stopreason_other"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('stopreason_other'); ?>:
+            <?php echo $pastintervention->getAttributeLabel('stopreason_other'); ?>:
       </label>
     </td>
     <td>
@@ -261,7 +261,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
   <tr>
     <td>
       <label for="<?php echo str_replace(array('[', ']'), '_', $name_stub . "{$key}_comments"); ?>">
-          <?php echo $pastintervention->getAttributeLabel('comments') ?>
+            <?php echo $pastintervention->getAttributeLabel('comments') ?>
       </label>
     </td>
     <td>

@@ -9,7 +9,7 @@ class Genetics_AuthRules
     public function canViewStudy()
     {
         //everyone can view the list
-        if(!Yii::app()->request->getQuery('id')){
+        if (!Yii::app()->request->getQuery('id')) {
             return true;
         }
 

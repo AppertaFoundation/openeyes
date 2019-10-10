@@ -24,7 +24,7 @@
     </h3>
   </header>
   <div class="element-data full-width js-toggle-body">
-      <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+        <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
           'patient' => $this->patient,
           'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
       )); ?>

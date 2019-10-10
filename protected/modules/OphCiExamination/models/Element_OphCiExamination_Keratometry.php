@@ -142,15 +142,15 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
     public function kValueCompare($KValue, $params)
     {
-        if($this->hasLeft() AND $params['side'] == "Left"){
-            if($this->{$KValue} < $this->{$params['compare']}){
+        if ($this->hasLeft() AND $params['side'] == "Left") {
+            if ($this->{$KValue} < $this->{$params['compare']}) {
                 $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
                     . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
                     . $params['side'] . ')');
             }
         }
-        if($this->hasRight() AND $params['side'] == "Right"){
-            if($this->{$KValue} < $this->{$params['compare']}){
+        if ($this->hasRight() AND $params['side'] == "Right") {
+            if ($this->{$KValue} < $this->{$params['compare']}) {
                 $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
                     . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
                     . $params['side'] . ')');
@@ -232,7 +232,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                 }
             }
 
-        parent::afterValidate();
+            parent::afterValidate();
     }
 
     /**

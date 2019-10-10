@@ -29,9 +29,9 @@ class ProcedureController extends BaseController
     protected function beforeAction($action)
     {
         // Sample code to be used when RBAC is fully implemented.
-//		if (!Yii::app()->user->checkAccess('admin')) {
-//			throw new CHttpException(403, 'You are not authorised to perform this action.');
-//		}
+//      if (!Yii::app()->user->checkAccess('admin')) {
+//          throw new CHttpException(403, 'You are not authorised to perform this action.');
+//      }
 
         return parent::beforeAction($action);
     }
@@ -71,7 +71,7 @@ class ProcedureController extends BaseController
 
             $procedures = Procedure::model()->active()->findAll($criteria);
             $view = '_procedureOptions';
-            if(!empty($_POST['dialog'])) {
+            if (!empty($_POST['dialog'])) {
                 $view = '_procedureDialogOptions';
             }
                 $this->renderPartial($view, array('procedures' => $procedures), false, false);

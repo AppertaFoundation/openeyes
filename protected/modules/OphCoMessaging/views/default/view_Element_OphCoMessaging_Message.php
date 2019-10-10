@@ -70,12 +70,12 @@ if (!isset($comment)) {
                 </td>
                 <td>
                     <div><?php
-                        if ($element->urgent) { ?>
+                    if ($element->urgent) { ?>
                             <span class="highlighter">Yes</span>
-                        <?php } else {
-                            ?> <span>No</span>
-                        <?php }
-                        ?>
+                    <?php } else {
+                        ?> <span>No</span>
+                    <?php }
+                    ?>
                     </div>
                 </td>
             </tr>
@@ -111,12 +111,11 @@ if (!isset($comment)) {
                     <td>
                         <div class="data-value"><?php echo $comment->user->getFullnameAndTitle();?></div>
                     </td>
-                </tr>			</tbody>
+                </tr>           </tbody>
             </table>
         <?php } ?>
 
         <?php if ($this->canComment()) { ?>
-
             <?php
             $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 'id' => 'comment-form',

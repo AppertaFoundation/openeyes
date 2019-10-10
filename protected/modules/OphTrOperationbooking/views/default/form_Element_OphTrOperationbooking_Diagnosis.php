@@ -41,7 +41,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                 <div class="panel diagnosis hide" id="enteredDiagnosisText">
                     <?= isset($element->disorder) ? $element->disorder->term : 'Please use the + button to add a listing diagnosis'?>
                 </div>
-                <?php $form->hiddenInput($element , 'disorder_id');?>
+                <?php $form->hiddenInput($element, 'disorder_id');?>
             </td>
             <td>
         </tr>
@@ -52,14 +52,19 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
-    <?php $diagnoses = CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)); ?>
+    <?php $diagnoses = CommonOphthalmicDisorder::getList(
+        Firm::model()->findByPk($this->selectedFirmId),
+        false,
+        true,
+        $this->patient
+    ); ?>
     <script type="text/javascript">
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-operation-booking-diagnosis'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($id , $label) {
+                array_map(function ($id, $label) {
                     return ['label' => $label, 'id' => $id];
-                },array_keys($diagnoses), $diagnoses)
+                }, array_keys($diagnoses), $diagnoses)
             ) ?>)],
             onReturn: function (adderDialog, selectedItems) {
                 $('#enteredDiagnosisText').html(selectedItems[0].label);

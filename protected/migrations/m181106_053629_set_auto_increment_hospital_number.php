@@ -2,8 +2,8 @@
 
 class m181106_053629_set_auto_increment_hospital_number extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'display_order' => 0,
@@ -13,11 +13,11 @@ class m181106_053629_set_auto_increment_hospital_number extends CDbMigration
             'data' => serialize(array('on' => 'On', 'off' => 'Off')),
             'default_value' => 'off',
         ));
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->delete('setting_metadata', '`key` = \'set_auto_increment\'');
-	}
+    }
 
 }

@@ -466,8 +466,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
             $priority = min($pMapKeys);
         }
         if (!$this->_setHeaderFieldModel('X-Priority',
-            sprintf('%d (%s)', $priority, $priorityMap[$priority])))
-        {
+            sprintf('%d (%s)', $priority, $priorityMap[$priority]))) {
             $this->getHeaders()->addTextHeader('X-Priority',
                 sprintf('%d (%s)', $priority, $priorityMap[$priority]));
         }

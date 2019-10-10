@@ -7,10 +7,11 @@ echo '<?php'; ?>
 class <?php echo $this->className; ?>Parameter extends CaseSearchParameter implements <?php echo str_replace(',', 'Interface, ', $this->searchProviders) . 'Interface'; ?>
 
 {
-<?php if (!empty($this->attributeList)):
-  foreach (explode(',', $this->attributeList) as $attribute):?>
+<?php if (!empty($this->attributeList)) :
+    foreach (explode(',', $this->attributeList) as $attribute) :?>
     public $<?php echo $attribute; ?>;
-<?php endforeach; endif; ?>
+    <?php endforeach;
+endif; ?>
 
     /**
     * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -35,10 +36,11 @@ class <?php echo $this->className; ?>Parameter extends CaseSearchParameter imple
     public function attributeNames()
     {
         return array_merge(parent::attributeNames(), array(
-<?php if (!empty($this->attributeList)):
-foreach (explode(',', $this->attributeList) as $attribute):?>
+<?php if (!empty($this->attributeList)) :
+    foreach (explode(',', $this->attributeList) as $attribute) :?>
                 '<?php echo $attribute; ?>',
-<?php endforeach; endif; ?>
+    <?php endforeach;
+endif; ?>
             )
         );
     }
@@ -62,8 +64,8 @@ foreach (explode(',', $this->attributeList) as $attribute):?>
 
     }
 
-<?php foreach(explode(',', $this->searchProviders) as $searchProvider):?>
-<?php if ($searchProvider === 'DBProvider'):?>
+<?php foreach (explode(',', $this->searchProviders) as $searchProvider) :?>
+    <?php if ($searchProvider === 'DBProvider') :?>
     /**
     * Generate a SQL fragment representing the subquery of a FROM condition.
     * @param $searchProvider <?php echo $searchProvider; ?> The search provider. This is used to determine whether or not the search provider is using SQL syntax.
@@ -83,12 +85,13 @@ foreach (explode(',', $this->attributeList) as $attribute):?>
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-<?php if (!empty($this->attributeList)):
-foreach (explode(',', $this->attributeList) as $attribute):?>
+        <?php if (!empty($this->attributeList)) :
+            foreach (explode(',', $this->attributeList) as $attribute) :?>
             "<?php echo $this->alias ?>_<?php echo $attribute; ?>_$this->id" => $this-><?php echo $attribute; ?>,
-<?php endforeach; endif;?>
+            <?php endforeach;
+        endif;?>
         );
     }
-<?php endif;?>
+    <?php endif;?>
 <?php endforeach;?>
 }

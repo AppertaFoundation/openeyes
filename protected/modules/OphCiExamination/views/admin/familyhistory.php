@@ -19,7 +19,7 @@ $model = OEModule\OphCiExamination\models\FamilyHistory_Entry::model();
 
 <div class="cols-3">
     <div class="row divider">
-        <h2>Social History</h2>
+        <h2>Family History</h2>
     </div>
     <table class="standard">
         <tbody>

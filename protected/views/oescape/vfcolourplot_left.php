@@ -29,7 +29,6 @@
                     <circle id="vfcp_left_<?php echo $id ?>" cx="<?php echo $cx;?>" cy="<?php echo $cy;?>" 
                             r="29" fill="white" class="colourplot_left"/>
                     <?php
-
                 }
                 ++$id;
             }

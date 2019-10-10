@@ -57,18 +57,18 @@
         <?php } ?>
         <tr>
           <td>
-              <?=\CHtml::encode($element->getAttributeLabel('employment_status_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('employment_status_id')) ?>
           </td>
           <td>
-              <?php echo $element->employment_status ? $element->employment_status->name : 'None' ?>
+                <?php echo $element->employment_status ? $element->employment_status->name : 'None' ?>
           </td>
         </tr>
         <tr>
           <td>
-              <?=\CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?>
           </td>
           <td>
-              <?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None' ?>
+                <?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None' ?>
           </td>
         </tr>
         <?php
@@ -87,32 +87,32 @@
         <?php } ?>
         <tr>
           <td>
-              <?=\CHtml::encode($element->getAttributeLabel('contact_urgency_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('contact_urgency_id')) ?>
           </td>
           <td>
-              <?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None' ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-              <?=\CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?>
-          </td>
-          <td>
-              <?php
-              if ($element->preferred_language_text) {
-                  echo $element->preferred_language_text;
-              } else {
-                  echo $element->preferred_language ? $element->preferred_language->name : 'None';
-              }
-              ?>
+                <?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None' ?>
           </td>
         </tr>
         <tr>
           <td>
-              <?=\CHtml::encode($element->getAttributeLabel('social_service_comments')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?>
           </td>
           <td>
-              <?=\CHtml::encode($element->social_service_comments) ?>
+                <?php
+                if ($element->preferred_language_text) {
+                    echo $element->preferred_language_text;
+                } else {
+                    echo $element->preferred_language ? $element->preferred_language->name : 'None';
+                }
+                ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+                <?=\CHtml::encode($element->getAttributeLabel('social_service_comments')) ?>
+          </td>
+          <td>
+                <?=\CHtml::encode($element->social_service_comments) ?>
           </td>
         </tr>
         </tbody>

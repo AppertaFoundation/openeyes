@@ -197,43 +197,43 @@ class Zend_Gdata_YouTube_SubscriptionEntry extends Zend_Gdata_Entry
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('gd') . ':' . 'feedLink':
-            $feedLink = new Zend_Gdata_Extension_FeedLink();
-            $feedLink->transferFromDOM($child);
-            $this->_feedLink[] = $feedLink;
+            case $this->lookupNamespace('gd') . ':' . 'feedLink':
+                $feedLink = new Zend_Gdata_Extension_FeedLink();
+                $feedLink->transferFromDOM($child);
+                $this->_feedLink[] = $feedLink;
             break;
-        case $this->lookupNamespace('media') . ':' . 'thumbnail':
-            $mediaThumbnail = new Zend_Gdata_Media_Extension_MediaThumbnail();
-            $mediaThumbnail->transferFromDOM($child);
-            $this->_mediaThumbnail = $mediaThumbnail;
+            case $this->lookupNamespace('media') . ':' . 'thumbnail':
+                $mediaThumbnail = new Zend_Gdata_Media_Extension_MediaThumbnail();
+                $mediaThumbnail->transferFromDOM($child);
+                $this->_mediaThumbnail = $mediaThumbnail;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'countHint':
-            $countHint = new Zend_Gdata_YouTube_Extension_CountHint();
-            $countHint->transferFromDOM($child);
-            $this->_countHint = $countHint;
+            case $this->lookupNamespace('yt') . ':' . 'countHint':
+                $countHint = new Zend_Gdata_YouTube_Extension_CountHint();
+                $countHint->transferFromDOM($child);
+                $this->_countHint = $countHint;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'playlistTitle':
-            $playlistTitle = new Zend_Gdata_YouTube_Extension_PlaylistTitle();
-            $playlistTitle->transferFromDOM($child);
-            $this->_playlistTitle = $playlistTitle;
+            case $this->lookupNamespace('yt') . ':' . 'playlistTitle':
+                $playlistTitle = new Zend_Gdata_YouTube_Extension_PlaylistTitle();
+                $playlistTitle->transferFromDOM($child);
+                $this->_playlistTitle = $playlistTitle;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'playlistId':
-            $playlistId = new Zend_Gdata_YouTube_Extension_PlaylistId();
-            $playlistId->transferFromDOM($child);
-            $this->_playlistId = $playlistId;
+            case $this->lookupNamespace('yt') . ':' . 'playlistId':
+                $playlistId = new Zend_Gdata_YouTube_Extension_PlaylistId();
+                $playlistId->transferFromDOM($child);
+                $this->_playlistId = $playlistId;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'queryString':
-            $queryString = new Zend_Gdata_YouTube_Extension_QueryString();
-            $queryString->transferFromDOM($child);
-            $this->_queryString = $queryString;
+            case $this->lookupNamespace('yt') . ':' . 'queryString':
+                $queryString = new Zend_Gdata_YouTube_Extension_QueryString();
+                $queryString->transferFromDOM($child);
+                $this->_queryString = $queryString;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'username':
-            $username = new Zend_Gdata_YouTube_Extension_Username();
-            $username->transferFromDOM($child);
-            $this->_username = $username;
+            case $this->lookupNamespace('yt') . ':' . 'username':
+                $username = new Zend_Gdata_YouTube_Extension_Username();
+                $username->transferFromDOM($child);
+                $this->_username = $username;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

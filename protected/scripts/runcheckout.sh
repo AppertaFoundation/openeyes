@@ -30,7 +30,7 @@ nosummary=0
 # Set default branch from environment. Else, if in LIVE mode, fall back to master branch. otherwise fallback to develop branch
 defaultbranch=$OE_DEFAULT_BRANCH
 if [ -z $defaultbranch ]; then
-    [ "$OE_MODE" = "LIVE" ] && defaultbranch="master" || defaultbranch="develop"
+    [ "${OE_MODE^^}" = "LIVE" ] && defaultbranch="master" || defaultbranch="develop"
 fi
 branch=$defaultbranch
 sshuserstring="git"
@@ -40,6 +40,7 @@ sample=0
 sampleonly=0
 usessh=""
 changesshid=0
+cloneparams=""
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -131,6 +132,11 @@ do
             delete=(openeyes)
             modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
         ;;
+		--depth) cloneparams="$cloneparams --depth $2"
+		shift
+		;;
+		--single-branch) cloneparams="$cloneparams --single-branch"
+		;;
     	*)  if [ ! -z "$1" ]; then
     			if [ "$branch" == "$defaultbranch" ]; then
     				branch=$1
@@ -308,7 +314,7 @@ for module in ${modules[@]}; do
 
         printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
 
-        git -C $MODULEROOT clone ${basestring}/${module}.git $module
+        git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
 	fi
 
 	processgit=1

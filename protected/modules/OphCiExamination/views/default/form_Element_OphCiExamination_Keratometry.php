@@ -23,9 +23,9 @@
 <div class="element-fields flex-layout full-width">
   <div>
     <label><?php echo $element->getAttributeLabel('tomographer_id') ?>:</label>
-      <?php
-      $allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
-      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
+        <?php
+        $allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
+        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
           $element->tomographer_id,
           CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
   </div>
@@ -35,7 +35,7 @@
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -71,8 +71,8 @@
               <td>
                   <div class="flex-layout">
                   <?php
-                  $allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
-                  echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_front]',
+                    $allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
+                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_front]',
                       $element->{$eye_side . '_quality_front'},
                       CHtml::listData($allQualScore, 'id', 'name')); ?>
                   </div>
@@ -140,7 +140,7 @@
                       <td>
                           <div class="flex-layout">
                               <?php
-                              echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_back]',
+                                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_back]',
                                   $element->{$eye_side . '_quality_back'},
                                   CHtml::listData($allQualScore, 'id', 'name')); ?>
                           </div>
@@ -160,16 +160,16 @@
                             0 => 'No',
                             1 => 'Yes',
                         ),
-                        ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
+                         ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
+                         false,
+                         false,
+                         false,
+                         false,
+                         array(
                             'text-align' => $eye_side,
                             'nowrapper' => true,
                         ),
-                        array(
+                         array(
                             'label' => 4,
                             'field' => 8,
                         ));

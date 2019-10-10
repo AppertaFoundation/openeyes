@@ -43,8 +43,8 @@
     <tr>
       <th>List</th>
       <th>Patient</th>
-      <th><i class="oe-i arrow-down-bold small pad active"></i></th>
-      <th><i class="oe-i arrow-down-bold small pad active"></i></th>
+      <th></th>
+      <th></th>
       <th>Context</th>
       <th>Clinic Info</th>
       <th>Notes</th>
@@ -54,14 +54,14 @@
     </thead>
     <tbody id="ticket-list">
     <?php
-        foreach ($tickets as $i => $t) {
-            $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
-        }
-        if (!count($tickets)) {
-            echo "<tr><td colspan=8><div class='alert-box issue'>
+    foreach ($tickets as $i => $t) {
+        $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
+    }
+    if (!count($tickets)) {
+        echo "<tr><td colspan=8><div class='alert-box issue'>
                 No patients found.
             </div></td><td></td></tr>";
-        }
+    }
     ?>
     </tbody>
     <tfoot class="pagination-container">

@@ -24,9 +24,9 @@
 		<div class="column cols-2 end">
 			<?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
 		</div>
-    </div>
-    <div id="workflow-flash" class="alert-box info" style="display: none">Workflow saved</div>
-    <i class="spinner loader" style="display: none;"></i>
+  </div>
+  <div id="workflow-flash" class="alert-box info" style="display: none">Workflow saved</div>
+  <i class="spinner loader" style="display: none;"></i>
     <form id="admin_workflow_steps">
     <div class="data-group">
       <table class="standard"  id="et_sort" data-uri = "/OphCiExamination/admin/sortWorkflowElementSetItem">
@@ -51,7 +51,7 @@
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
           </tr>
-            <?php } ?>
+        <?php } ?>
         </tbody>
         <tfoot class="pagination-container">
         <tr>
@@ -75,7 +75,7 @@
         </tfoot>
       </table>
     </div>
-	</form>
+    </form>
 </div>
 
 <script type="text/javascript">

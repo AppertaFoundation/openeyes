@@ -18,15 +18,16 @@
  $logoHelper = new LogoHelper();
 
 ?>
-	<?php if (@$copy) {?>
-		<div class="watermark">
-			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
-		</div>
-	<?php }?>
+    <?php if (@$copy) {?>
+        <div class="break"></div>
+        <div class="watermark">
+            <img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
+        </div>
+    <?php }?>
     <header class="print-header">
-	<div class="logo">
-		<?= $logoHelper->render('//base/_logo', 50) ?>
-	</div>
+    <div class="logo">
+        <?= $logoHelper->render('//base/_logo', 50) ?>
+    </div>
     </header>
 <div class="flex-layout">
     <h1 class="print-title">
@@ -40,4 +41,4 @@
     </h1>
     <?php $this->renderPartial('_address', array('site' => $this->site)); ?>
 </div>
-	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>
+    <?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>

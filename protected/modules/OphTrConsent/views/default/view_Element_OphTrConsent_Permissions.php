@@ -15,10 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <div class="element-data full-width">
   <div class="data-value">
-      <?php echo $element->images ? $element->images->name : 'None'?>
+        <?php echo $element->images ? $element->images->name : 'None'?>
     <i class="oe-i info small pad js-has-tooltip"
        data-tooltip-content="<?=\CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
   </div>

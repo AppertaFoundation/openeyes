@@ -126,7 +126,7 @@ class ContactLocation extends BaseActiveRecordVersioned
 
     /**
      * gets a letter address for this contact location.
-     * 
+     *
      * @param unknown $params
      *
      * @return array() - address elements

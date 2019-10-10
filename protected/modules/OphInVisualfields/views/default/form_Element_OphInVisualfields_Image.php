@@ -22,10 +22,10 @@
          data-element-type-name="<?php echo $element->elementType->name ?>"
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
   <div class="element-fields element-eyes data-group">
-      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-          <?php $this->renderPartial("{$element->form_view}_side",
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
+            <?php $this->renderPartial("{$element->form_view}_side",
               array('form' => $form, 'element' => $element, 'side' => $eye_side)); ?>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
   </div>
 </section>
 
