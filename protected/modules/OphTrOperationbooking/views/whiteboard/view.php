@@ -15,6 +15,7 @@ switch ($data->complexity) {
         $complexity_colour = 'red';
         break;
 }
+
 $cataract_card_list = array(
     'Patient' => array(
         'data' => array(
@@ -27,6 +28,7 @@ $cataract_card_list = array(
         'data' => array(
             'content' => $data->eye->name,
             'extra_data' => $data->procedure,
+            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
         ),
         'colour' => $complexity_colour,
     ),
@@ -99,6 +101,7 @@ $other_card_list = array(
         'data' => array(
             'content' =>  $data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
             'extra_data' => $data->procedure,
+            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
         ),
         'colour' => $complexity_colour,
     ),
@@ -106,6 +109,7 @@ $other_card_list = array(
         'data' => $data->eye_id === Eye::BOTH ? array(
             'content' => 'Right',
             'extra_data' => $data->procedure,
+            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
         ) : null,
         'colour' => $complexity_colour,
     ),
@@ -183,17 +187,13 @@ $other_card_list = array(
             }
         }
         if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') {
-            $criteria = new CDbCriteria();
-            $criteria->with = 'event.episode.patient';
-            $criteria->params = array('event.episode.patient.id' => $data->event->episode->patient->id);
-            $criteria->order = 't.last_modified_date DESC';
-            $criteria->limit = 1;
-            $cataract_element = Element_OphTrOperationnote_Cataract::model()->find($criteria);
-
             $this->widget('ImageCard', array(
                 'title' => 'Axis',
                 'eye' => $data->eye,
-                'doodles' => array('AntSegSteepAxis', array('axis' => $data->axis, 'flatK' => $data->flat_k, 'steepK' => $data->steep_k)),
+                'doodles' => $data->steep_k ? array(
+                    'AntSegSteepAxis',
+                    array('axis' => $data->axis, 'flatK' => $data->flat_k, 'steepK' => $data->steep_k)
+                ) : null,
             ));
         } else {
             $this->widget('WBCard', array(

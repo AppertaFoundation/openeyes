@@ -76,6 +76,17 @@ class WBCardTest extends CDbTestCase
                 'type' => 'Empty',
                 'editable' => false,
             ),
+            'Deleted single data with extra data' => array(
+                'title' => 'Procedure',
+                'data' => array(
+                    'content' => 'Left',
+                    'extra_data' => 'Repositioning of Intraocular lens',
+                    'deleted' => true
+                ),
+                'colour' => 'null',
+                'type' => 'Single',
+                'editable' => false,
+            ),
         );
     }
 
