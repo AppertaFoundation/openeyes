@@ -22,8 +22,8 @@ class m170913_135250_confirm_v2_disorders extends CDbMigration
     }
 
     public function up()
-	{
-	    foreach ($this->disorders as $disorder_spec) {
+    {
+        foreach ($this->disorders as $disorder_spec) {
             if (!$this->getDbConnection()->createCommand()
                 ->select('count(*)')
                 ->from('disorder')
@@ -39,21 +39,21 @@ class m170913_135250_confirm_v2_disorders extends CDbMigration
                 ));
             }
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         print "no action taken for this downward migration.";
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

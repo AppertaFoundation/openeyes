@@ -70,14 +70,18 @@ $anaesthetic_type_list = $element->convertToList($element->anaesthetic_type);
 
     <h4 class="data-label"><?= \CHtml::encode($element->getAttributeLabel('anaesthetic_comment')) ?></h4>
     <div
-            class="data-value<?php if (!$element->anaesthetic_comment) { ?> none<?php } ?>"><?= \CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?>
+            class="data-value<?php if (!$element->anaesthetic_comment) {
+                ?> none<?php
+                             } ?>"><?= \CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?>
     </div>
 </div>
 </div>
 <?php if ($element->getSetting('fife')) { ?>
     <div class="cols-3 column">
         <h4 class="data-label"><?= \CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id')) ?></h4>
-        <div class="data-value<?php if (!$element->witness) { ?> none<?php } ?>">
+        <div class="data-value<?php if (!$element->witness) {
+            ?> none<?php
+                              } ?>">
             <?php echo $element->witness ? $element->witness->fullName : 'None' ?>
         </div>
     </div>

@@ -72,7 +72,7 @@
                         'class' => 'button large',
                         'data-uri' => '/OphCoTherapyapplication/admin/addEmailRecipient',
                         'id' => 'et_add']);
-                ?>
+?>
                 <?= CHtml::submitButton('Delete',
                     [
                         'class' => 'button large',
@@ -80,7 +80,7 @@
                         'data-object' => 'email_recipients',
                         'id' => "et_delete",
                     ]);
-                ?>
+?>
             </td>
         </tr>
         </tfoot>

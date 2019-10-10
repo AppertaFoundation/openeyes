@@ -16,32 +16,32 @@
  */
 if (!empty($macros)) {
     foreach ($macros as $i => $macro) {?>
-		<tr class="clickable" data-id="<?php echo $macro->id?>" data-uri="OphCoCorrespondence/admin/editMacro/<?php echo $macro->id?>">
-			<td><input type="checkbox" name="macros[]" value="<?php echo $macro->id?>" /></td>
+        <tr class="clickable" data-id="<?php echo $macro->id?>" data-uri="OphCoCorrespondence/admin/editMacro/<?php echo $macro->id?>">
+            <td><input type="checkbox" name="macros[]" value="<?php echo $macro->id?>" /></td>
             <td class="reorder">
                 <span>&uarr;&darr;</span>
                 <input type="hidden" name="LetterMacro[display_order][]" value="<?= $macro->id ?>">
             </td>
-			<td><?php echo $macro->id?></td>
-			<td>
-				<?php if ($macro->site) {
+            <td><?php echo $macro->id?></td>
+            <td>
+                <?php if ($macro->site) {
                     echo 'Site: '.$macro->site->name;
                 } elseif ($macro->subspecialty) {
                     echo 'Subspecialty: '.$macro->subspecialty->name;
                 } else {
                     echo Firm::contextLabel() . ': '.$macro->firm->getNameAndSubspecialty();
                 }?>
-			</td>
-			<td><?php echo $macro->name?></td>
-			<td><?php echo $macro->recipient ? $macro->recipient->name : '-'?></td>
-			<td><?php echo $macro->cc_patient ? 'Yes' : 'No'?></td>
-			<td><?php echo $macro->cc_doctor ? 'Yes' : 'No'?></td>
-			<td><?php echo $macro->cc_drss ? 'Yes' : 'No'?></td>
-			<td><?php echo $macro->cc_optometrist ? 'Yes' : 'No'?></td>
-			<td><?php echo $macro->use_nickname ? 'Yes' : 'No'?></td>
-			<td><?php echo $macro->episode_status ? $macro->episode_status->name : '-'?></td>
-		</tr>
-	<?php }
+            </td>
+            <td><?php echo $macro->name?></td>
+            <td><?php echo $macro->recipient ? $macro->recipient->name : '-'?></td>
+            <td><?php echo $macro->cc_patient ? 'Yes' : 'No'?></td>
+            <td><?php echo $macro->cc_doctor ? 'Yes' : 'No'?></td>
+            <td><?php echo $macro->cc_drss ? 'Yes' : 'No'?></td>
+            <td><?php echo $macro->cc_optometrist ? 'Yes' : 'No'?></td>
+            <td><?php echo $macro->use_nickname ? 'Yes' : 'No'?></td>
+            <td><?php echo $macro->episode_status ? $macro->episode_status->name : '-'?></td>
+        </tr>
+    <?php }
 } else {?>
-	<tr><td>No letter macros match your filters.</td></tr>
+    <tr><td>No letter macros match your filters.</td></tr>
 <?php }?>

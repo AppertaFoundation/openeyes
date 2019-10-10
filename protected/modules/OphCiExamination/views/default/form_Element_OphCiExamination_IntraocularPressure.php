@@ -22,7 +22,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
       <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
         <div class="active-form data-group flex-layout" style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
           <a class="remove-side">

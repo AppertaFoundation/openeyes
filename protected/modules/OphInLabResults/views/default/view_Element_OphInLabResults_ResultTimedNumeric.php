@@ -8,7 +8,24 @@
   </tr>
   <tr>
       <td><div class="data-label">Result:</div></td>
-      <td><div class="data-value"><?= CHtml::encode($element->result) ?></div></td>
+      <td><div class="data-value"><?= CHtml::encode($element->result) . " " .
+            ($element->resultType->show_units ? CHtml::encode($element->unit) : "") ?></div></td>
+      <td>
+          <span class="large-text highlighter orange js-lab-result-warning"
+                style="display:<?php
+                if (isset($element->result)&& $element->resultType->normal_min && $element->resultType->normal_min &&
+                 ($element->result > $element->resultType->normal_max || $element->result < $element->resultType->normal_min)) {
+                      echo "block";
+                } else {
+                    echo "none";
+                } ?>">
+            <?php if (isset($element->resultType) && $element->resultType->custom_warning_message) {
+                echo $element->resultType->custom_warning_message;
+            } else { ?>
+              The value is outside the normal range. Normal min: <?= $element->resultType->normal_min ?> Normal max: <?= $element->resultType->normal_max ?>
+            <?php } ?>
+          </span>
+      </td>
   </tr>
   <tr>
       <td><div class="data-label">Comment</div></td>

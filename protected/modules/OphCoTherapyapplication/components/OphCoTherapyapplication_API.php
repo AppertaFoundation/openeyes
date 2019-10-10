@@ -79,7 +79,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      */
     public function getLatestApplicationSide($patient, $use_context = false)
     {
-        if($el = $this->getLatestElement('Element_OphCoTherapyapplication_Therapydiagnosis', $patient, $use_context)){
+        if ($el = $this->getLatestElement('Element_OphCoTherapyapplication_Therapydiagnosis', $patient, $use_context)) {
             return $el->eye_id;
         }
     }
@@ -138,7 +138,7 @@ class OphCoTherapyapplication_API extends BaseAPI
             'Element_OphCoTherapyapplication_Therapydiagnosis',
             $patient,
             $use_context)
-        ){
+        ) {
             return $el->getDiagnosisStringForSide($side);
         }
     }
@@ -152,7 +152,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      */
     public function getLetterApplicationDiagnosisLeft($patient, $use_context = false)
     {
-        return $this->getLetterApplicationDiagnosisForSide($patient,'left', $use_context);
+        return $this->getLetterApplicationDiagnosisForSide($patient, 'left', $use_context);
     }
 
     /**
@@ -164,7 +164,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      */
     public function getLetterApplicationDiagnosisRight($patient, $use_context = false)
     {
-        return $this->getLetterApplicationDiagnosisForSide($patient,'right', $use_context);
+        return $this->getLetterApplicationDiagnosisForSide($patient, 'right', $use_context);
     }
 
     /**
@@ -206,7 +206,7 @@ class OphCoTherapyapplication_API extends BaseAPI
             'Element_OphCoTherapyapplication_PatientSuitability',
             $patient,
             $use_context)
-        ){
+        ) {
             if ($drug = $el->{$side.'_treatment'}) {
                 return $drug->name;
             }
@@ -222,7 +222,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      */
     public function getLetterApplicationTreatmentLeft($patient, $use_context = false)
     {
-        return $this->getLetterApplicationTreatmentForSide($patient,'left', $use_context);
+        return $this->getLetterApplicationTreatmentForSide($patient, 'left', $use_context);
     }
 
     /**
@@ -234,7 +234,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      */
     public function getLetterApplicationTreatmentRight($patient, $use_context = false)
     {
-        return $this->getLetterApplicationTreatmentForSide($patient,'right', $use_context);
+        return $this->getLetterApplicationTreatmentForSide($patient, 'right', $use_context);
     }
 
     /**

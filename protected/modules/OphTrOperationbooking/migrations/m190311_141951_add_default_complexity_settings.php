@@ -2,8 +2,8 @@
 
 class m190311_141951_add_default_complexity_settings extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'field_type_id' => 4,
@@ -21,11 +21,11 @@ class m190311_141951_add_default_complexity_settings extends CDbMigration
             'name' => 'Decrease estimated Op Booking time for complex cases (int %)',
             'default_value' => '10'
         ));
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->delete('setting_metadata', '`key` = "op_booking_high_complexity_add"');
         $this->delete('setting_metadata', '`key` = "op_booking_high_complexity_add"');
-	}
+    }
 }

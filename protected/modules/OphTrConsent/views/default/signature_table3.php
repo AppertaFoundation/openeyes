@@ -15,9 +15,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <?php if (@$vi) {?>
-	<table>
+    <table>
         <colgroup>
             <col class="cols-half" span="2">
         </colgroup>
@@ -29,12 +29,12 @@
                 <div class="dotted-write"></div>
             </td>
         </tr>
-		<tr>
-			<td colspan="2">Name: <?php echo $name?></td>
-		</tr>
-	</table>
+        <tr>
+            <td colspan="2">Name: <?php echo $name?></td>
+        </tr>
+    </table>
 <?php } else {?>
-	<table>
+    <table>
         <tr>
             <td>Signed:
                 <div class="dotted-write"></div>
@@ -43,8 +43,8 @@
                 <div class="dotted-write"></div>
             </td>
         </tr>
-		<tr>
-			<td colspan="2">Name: <?php echo $name?></td>
-		</tr>
-	</table>
+        <tr>
+            <td colspan="2">Name: <?php echo $name?></td>
+        </tr>
+    </table>
 <?php }?>

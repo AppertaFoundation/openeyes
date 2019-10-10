@@ -52,26 +52,26 @@ abstract class EpisodeSummaryWidget extends CWidget
 
         $marking_list = array();
         $subspecialty = Subspecialty::model()->findByAttributes(array('name'=>'Glaucoma'));
-        if ($subspecialty){
+        if ($subspecialty) {
             foreach (Procedure::model()->getListBySubspecialty($subspecialty->id, false) as $proc_id => $name) {
                 $marking_list[] = $name;
             }
         }
         $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->patient);
+        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte, $this->patient);
         $eye_side_list = [Eye::LEFT =>['left'], Eye::RIGHT=>['right'], Eye::BOTH=>['left', 'right']];
 
         foreach ($events as $event) {
             if (($proc_list = $event->getElementByClass('Element_OphTrOperationnote_ProcedureList'))) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
                 $eye_side = $eye_side_list[$proc_list->eye->id];
-                foreach ($eye_side as $side){
-                    foreach ($proc_list->procedures as $proc){
-                        if (in_array($proc->term, $marking_list)){
-                            if (array_key_exists($proc->term, $special_procedure_list)){
+                foreach ($eye_side as $side) {
+                    foreach ($proc_list->procedures as $proc) {
+                        if (in_array($proc->term, $marking_list)) {
+                            if (array_key_exists($proc->term, $special_procedure_list)) {
                                 $proc->short_format = $special_procedure_list[$proc->term];
                             }
-                            if (empty($opnote_marking[$side])||!array_key_exists($proc->short_format, $opnote_marking[$side])){
+                            if (empty($opnote_marking[$side])||!array_key_exists($proc->short_format, $opnote_marking[$side])) {
                                 $opnote_marking[$side][$proc->short_format] = array();
                             }
                             $opnote_marking[$side][$proc->short_format][]=$timestamp;
@@ -89,19 +89,19 @@ abstract class EpisodeSummaryWidget extends CWidget
         $laser_marking = array('right'=>array(), 'left'=>array());
 
         $event_laser = EventType::model()->find('class_name=?', array('OphTrLaser'));
-        $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->patient);
+        $events = Event::model()->getEventsOfTypeForPatient($event_laser, $this->patient);
 
         foreach ($events as $event) {
             $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
-            if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ){
+            if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ) {
                 foreach ($proc_list->left_procedures as $left_procedure) {
-                    if (empty($laser_marking['left'])||!array_key_exists($left_procedure->short_format, $laser_marking['left'])){
+                    if (empty($laser_marking['left'])||!array_key_exists($left_procedure->short_format, $laser_marking['left'])) {
                         $laser_marking['left'][$left_procedure->short_format] = array();
                     }
                     $laser_marking['left'][$left_procedure->short_format][] = $timestamp;
                 }
                 foreach ($proc_list->right_procedures as $right_procedure) {
-                    if (empty($laser_marking['right'])||!array_key_exists($right_procedure->short_format, $laser_marking['right'])){
+                    if (empty($laser_marking['right'])||!array_key_exists($right_procedure->short_format, $laser_marking['right'])) {
                         $laser_marking['right'][$right_procedure->short_format] = array();
                     }
                     $laser_marking['right'][$right_procedure->short_format][] = $timestamp;

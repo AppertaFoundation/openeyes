@@ -67,15 +67,12 @@ class ReportController extends BaseReportController
                     throw new CException("Unknown firm $firm_id");
                 }
 
-                if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
-
+                if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
                     //if the user has no Report role than he/she must be a consultant
-                    if($firm->consultant_id !== Yii::app()->user->id){
+                    if ($firm->consultant_id !== Yii::app()->user->id) {
                         throw new CException("Not authorised: Only for consultant");
                     }
                 }
-
-
             }
             if (@$_GET['date_from'] && date('Y-m-d', strtotime($_GET['date_from']))) {
                 $date_from = date('Y-m-d', strtotime($_GET['date_from']));
@@ -93,7 +90,6 @@ class ReportController extends BaseReportController
 
             $get = array('report-name' => 'Therapy applications') + $_GET;
             Audit::add('Reports', 'download', "<pre>" . print_r($get, true) . "</pre>" );
-
         } else {
             $subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
 
@@ -355,18 +351,16 @@ class ReportController extends BaseReportController
         if (Yii::app()->getRequest()->getQuery('report') === 'generate') {
             $pendingApplications = new PendingApplications();
 
-            try{
+            try {
                 $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients']);
                 $get['success'] = ($sent ? 'Email sent to addresses defined in config "applications_alert_recipients"' : 'Email sending failed.');
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 \Yii::app()->user->setFlash('error.error', "Failed to send report email.");
                 \OELog::log($e->getMessage());
                 $get['error'] = $e->getMessage();
-
             } finally {
                 Audit::add('Reports', 'send', "<pre>" . print_r($get, true) . "</pre>" );
             }
-
         } else {
             Audit::add('Reports', 'view', "<pre>" . print_r($get, true) . "</pre>" );
         }

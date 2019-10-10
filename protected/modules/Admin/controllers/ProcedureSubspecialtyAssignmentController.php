@@ -15,102 +15,102 @@
 
 class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 {
-  public $group = 'Procedure Management';
+    public $group = 'Procedure Management';
 
-  public function actionEdit()
-  {
-    $procedures = Procedure::model()->findAll(['order' => 'term']);
-    $procedure_options = array_map(function ($procedure) {
-        return $procedure->getAttributes(["id", "term"]);
-      },
-      $procedures);
-    $this->jsVars['procedure_options'] = $procedure_options;
+    public function actionEdit()
+    {
+        $procedures = Procedure::model()->findAll(['order' => 'term']);
+        $procedure_options = array_map(function ($procedure) {
+            return $procedure->getAttributes(["id", "term"]);
+        },
+        $procedures);
+        $this->jsVars['procedure_options'] = $procedure_options;
 
-    $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id', null);
+        $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id', null);
 
-    if (Yii::app()->request->isPostRequest) {
-      $transaction = Yii::app()->db->beginTransaction();
-      try {
-        $display_orders = Yii::app()->request->getParam('display_order', []);
-        $assignments = Yii::app()->request->getParam('ProcedureSubspecialtyAssignment', []);
+        if (Yii::app()->request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                $display_orders = Yii::app()->request->getParam('display_order', []);
+                $assignments = Yii::app()->request->getParam('ProcedureSubspecialtyAssignment', []);
 
-        $ids = [];
-        foreach ($assignments as $key => $assignment) {
-          $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
-          if (!$procedureSubspecialtyAssignment) {
-            $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment;
-            $procedureSubspecialtyAssignment['id'] = null;
-          }
+                $ids = [];
+                foreach ($assignments as $key => $assignment) {
+                    $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
+                    if (!$procedureSubspecialtyAssignment) {
+                        $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment;
+                        $procedureSubspecialtyAssignment['id'] = null;
+                    }
 
-          $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
-          $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
-          $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+                    $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
+                    $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
+                    $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
 
-          if (!$procedureSubspecialtyAssignment->save()) {
-            $errors[] = $procedureSubspecialtyAssignment->getErrors();
-          }
+                    if (!$procedureSubspecialtyAssignment->save()) {
+                        $errors[] = $procedureSubspecialtyAssignment->getErrors();
+                    }
 
-          $ids[] = $procedureSubspecialtyAssignment->id;
+                    $ids[] = $procedureSubspecialtyAssignment->id;
+                }
+
+                //Delete items
+                $criteria = new CDbCriteria();
+
+                if ($ids) {
+                    $criteria->addNotInCondition('id', $ids);
+                }
+
+                $criteria->compare('subspecialty_id', $subspecialty_id);
+                $to_delete = ProcedureSubspecialtyAssignment::model()->findAll($criteria);
+
+                foreach ($to_delete as $item) {
+                    if (!$item->delete()) {
+                        $errorMessage = "Model ProcedureSubspecialtyAssignment could not be deleted";
+                        $errors[] = ['id' => [$errorMessage]];
+                        \OELog::log($errorMessage . " (ID = $item->id )");
+                    } else {
+                        Audit::add('admin', 'delete', $item->primaryKey, null, [
+                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                        'model' => ProcedureSubspecialtyAssignment::getShortModelName(),
+                        ]);
+                    }
+                }
+            } catch (Exception $e) {
+                $errorMessage = $e->getMessage();
+                \OELog::log($errorMessage);
+                $errors[] = ['id' => [$errorMessage]];
+            }
+
+            if (empty($errors)) {
+                $transaction->commit();
+                Yii::app()->user->setFlash('success', 'List updated.');
+            } else {
+                $transaction->rollback();
+                foreach ($errors as $error) {
+                    foreach ($error as $attribute => $error_array) {
+                        $display_errors = '<strong>'.$procedureSubspecialtyAssignment->getAttributeLabel($attribute) .
+                          ':</strong> ' . implode(', ', $error_array);
+                        Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                    }
+                }
+            }
+            $this->redirect(Yii::app()->request->url);
         }
 
-        //Delete items
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
+
         $criteria = new CDbCriteria();
-
-        if ($ids) {
-          $criteria->addNotInCondition('id', $ids);
-        }
-
+        $criteria->order = 'display_order';
         $criteria->compare('subspecialty_id', $subspecialty_id);
-        $to_delete = ProcedureSubspecialtyAssignment::model()->findAll($criteria);
-
-        foreach ($to_delete as $item) {
-          if (!$item->delete()) {
-            $errorMessage = "Model ProcedureSubspecialtyAssignment could not be deleted";
-            $errors[] = ['id' => [$errorMessage]];
-            \OELog::log($errorMessage . " (ID = $item->id )");
-          } else {
-            Audit::add('admin', 'delete', $item->primaryKey, null, [
-              'module' => (is_object($this->module)) ? $this->module->id : 'core',
-              'model' => ProcedureSubspecialtyAssignment::getShortModelName(),
-            ]);
-          }
-        }
-      } catch (Exception $e) {
-        $errorMessage = $e->getMessage();
-        \OELog::log($errorMessage);
-        $errors[] = ['id' => [$errorMessage]];
-      }
-
-      if (empty($errors)) {
-        $transaction->commit();
-        Yii::app()->user->setFlash('success', 'List updated.');
-      } else {
-        $transaction->rollback();
-        foreach ($errors as $error) {
-          foreach($error as $attribute => $error_array){
-            $display_errors = '<strong>'.$procedureSubspecialtyAssignment->getAttributeLabel($attribute) .
-              ':</strong> ' . implode(', ', $error_array);
-            Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
-          }
-        }
-      }
-      $this->redirect(Yii::app()->request->url);
-    }
-
-    $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
-    Yii::app()->getClientScript()->registerScriptFile($generic_admin);
-
-    $criteria = new CDbCriteria();
-    $criteria->order = 'display_order';
-    $criteria->compare('subspecialty_id', $subspecialty_id);
-    $this->render('/edit_ProcedureSubspecialtyAssignment', [
-      'dataProvider' => new CActiveDataProvider('ProcedureSubspecialtyAssignment', [
+        $this->render('/edit_ProcedureSubspecialtyAssignment', [
+        'dataProvider' => new CActiveDataProvider('ProcedureSubspecialtyAssignment', [
         'criteria' => $criteria,
         'pagination' => false,
-      ]),
-      'subspecialty_id' => $subspecialty_id,
-      'subspecialities' => Subspecialty::model()->findAll(),
-      'procedure_list' => $procedures,
-    ]);
-  }
+        ]),
+        'subspecialty_id' => $subspecialty_id,
+        'subspecialities' => Subspecialty::model()->findAll(),
+        'procedure_list' => $procedures,
+        ]);
+    }
 }

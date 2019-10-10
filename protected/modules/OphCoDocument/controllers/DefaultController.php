@@ -58,9 +58,12 @@ class DefaultController extends BaseEventTypeController
      * @return int|string
      */
     public function return_bytes($val) {
-        $val = (int)trim($val);
         $last = strtolower($val[strlen($val)-1]);
-        switch($last) {
+        $val = (int)trim($val);
+        switch ($last) {
+            case '':
+                $val *= (1024 * 1024); //1048576
+                break;
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824
                 break;
@@ -116,34 +119,34 @@ class DefaultController extends BaseEventTypeController
         $message = NULL;
 
         switch ($files['Document']['error'][$index]) {
-			case UPLOAD_ERR_OK:
-			break;
-			case UPLOAD_ERR_NO_FILE:
-				$message = 'No file was uploaded!';
+            case UPLOAD_ERR_OK:
+            break;
+            case UPLOAD_ERR_NO_FILE:
+                $message = 'No file was uploaded!';
                 return $message;
-			break;
-			case UPLOAD_ERR_INI_SIZE:
+            break;
+            case UPLOAD_ERR_INI_SIZE:
                 $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $this->getMaxDocumentSize() ." MB ";
                 return $message;
             break;
-			case UPLOAD_ERR_FORM_SIZE:
-				$message = 'The document\'s size is too large!';
+            case UPLOAD_ERR_FORM_SIZE:
+                $message = 'The document\'s size is too large!';
                 return $message;
-			break;
-			default:
-				$message = 'Unknow error! Please try again!';
+            break;
+            default:
+                $message = 'Unknow error! Please try again!';
                 return $message;
-		}
+        }
 
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
 
         $file_mime = strtolower($finfo->file($files['Document']['tmp_name'][$index]));
         $extension = pathinfo($files['Document']['name'][$index], PATHINFO_EXTENSION);
 
-		if (false === array_search($file_mime, $this->allowed_file_types, true)) {
+        if (false === array_search($file_mime, $this->allowed_file_types, true)) {
             $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $this->getAllowedFileTypes()) ) . '.';
             $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$extension</i>, which is mime type: <i>$file_mime</i>";
-		}
+        }
 
         return $message;
     }
@@ -155,14 +158,19 @@ class DefaultController extends BaseEventTypeController
      */
     private function uploadFile($tmp_name, $original_name)
     {
+        $image_size = getimagesize($tmp_name);
+        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+        if ($mime && $mime == 'image/jpeg') {
+            $tmp_name = Element_OphCoDocument_Document::model()->rotate($tmp_name);
+        }
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
 
-        if($p_file->save()) {
+        if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        }else{
+        } else {
             unlink($tmp_name);
             return false;
         }
@@ -186,13 +194,12 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFileUpload()
     {
-        foreach($_FILES as $file)
-        {
+        foreach ($_FILES as $file) {
             $return_data = array();
             foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $file_key) {
-                if(isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0){
+                if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
-                    if( $handler == NULL) {
+                    if ( $handler == NULL) {
                         $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
@@ -202,7 +209,6 @@ class DefaultController extends BaseEventTypeController
                         );
                     }
                 }
-
             }
 
             echo json_encode($return_data);
@@ -230,7 +236,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function generateFileField($element, $index)
     {
-        if($element->{$index."_id"} > 0){
+        if ($element->{$index."_id"} > 0) {
             $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index));
         }
     }
@@ -244,11 +250,11 @@ class DefaultController extends BaseEventTypeController
         $this->initWithEventId($id);
 
         $imgdir = $this->event->getImageDirectory();
-        if(!file_exists($imgdir)) {
+        if (!file_exists($imgdir)) {
             mkdir($imgdir, 0775, true);
         }
 
-        if($this->eventContainsImagesOnly()) {
+        if ($this->eventContainsImagesOnly()) {
             return parent::actionSavePDFprint($id);
         }
 
@@ -263,14 +269,13 @@ class DefaultController extends BaseEventTypeController
                 'file_id'   => $pf->id,
             );
 
-            if( !isset( $_GET['ajax'])){
+            if ( !isset( $_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
 
                 return $result;
             }
-
         } else {
             $result = array(
                 'success'   => 0,
@@ -305,16 +310,13 @@ class DefaultController extends BaseEventTypeController
 
         foreach ($this->event->getElements() as $element) {
             foreach (array("single_document", "left_document", "right_document") as $property) {
-                if(isset($element->$property)) {
-
+                if (isset($element->$property)) {
                     $mimetype = $element->$property->mimetype;
-                    if(strpos($mimetype, "image/") === 0) {
+                    if (strpos($mimetype, "image/") === 0) {
                         $document_types[]='image';
-                    }
-                    elseif($mimetype = 'application/pdf') {
+                    } elseif ($mimetype = 'application/pdf') {
                         $document_types[]='pdf';
-                    }
-                    else {
+                    } else {
                         $document_types[]='other';
                     }
                 }
@@ -332,13 +334,13 @@ class DefaultController extends BaseEventTypeController
     {
         $this->initWithEventId($id);
 
-        if(in_array('other', $this->getDocumentTypes())) {
+        if (in_array('other', $this->getDocumentTypes())) {
             // Other documents cannot be printed
             throw new Exception("Only images or PDF documents can be printed");
         }
 
         // Image(s) only
-        if($this->eventContainsImagesOnly()) {
+        if ($this->eventContainsImagesOnly()) {
             return parent::actionPDFPrint($id);
         }
 
@@ -348,36 +350,34 @@ class DefaultController extends BaseEventTypeController
             foreach ($this->event->getElements() as $element) {
                 foreach (array("single_document", "left_document", "right_document") as $property) {
                     if (isset($element->$property)) {
-                        if(strpos($element->$property->mimetype, "image/") === 0) {
+                        if (strpos($element->$property->mimetype, "image/") === 0) {
                             $auto_print = Yii::app()->request->getParam('auto_print', true);
                             $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-                            $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
+                            $pdf_route = $this->setPDFprintData( $id, $inject_autoprint_js );
 
                             $pdf = $this->event->getPDF($pdf_route);
                             $this->addPDFToOutput($pdf);
-                        }
-                        else {
+                        } else {
                             $this->addPDFToOutput($element->$property->getPath());
                         }
                     }
                 }
             }
 
-            if($inject_autoprint_js) {
+            if ($inject_autoprint_js) {
                 $script = 'print(true);';
                 $this->pdf_output->IncludeJS($script);
-
             }
 
             $imgdir = $this->event->imageDirectory;
             $pdf_path = $imgdir.'/event_print.pdf';
-            if(!file_exists($imgdir)) {
+            if (!file_exists($imgdir)) {
                 mkdir($imgdir, 0775, true);
             }
-            $this->pdf_output->Output("F",   $pdf_path);
+            $this->pdf_output->Output("F", $pdf_path);
 
-            if($return_pdf_path) {
+            if ($return_pdf_path) {
                 return $pdf_path;
             }
 
@@ -397,7 +397,7 @@ class DefaultController extends BaseEventTypeController
 
     private function addPDFToOutput($pdf_path)
     {
-        if((float)$this->getPDFVersion($pdf_path) > 1.4) {
+        if ((float)$this->getPDFVersion($pdf_path) > 1.4) {
             $pdf_path = $this->convertPDF($pdf_path);
         }
 
@@ -443,6 +443,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+
         try {
             $this->initActionView();
             $this->removeEventImages();
@@ -528,6 +529,20 @@ class DefaultController extends BaseEventTypeController
         } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
+    {
+        foreach (['single_document', 'left_document', 'right_document'] as $document) {
+            $document_id = $document.'_id';
+            $rotate = $document.'_rotate';
+            $protected = ProtectedFile::model()->findByPk($element->{$document_id});
+            $rotate_value = \Yii::app()->request->getParam($rotate);
+            if ($protected && !is_null($rotate_value)) {
+                $protected->rotate = $rotate_value;
+                $protected->save();
+            }
         }
     }
 }

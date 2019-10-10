@@ -51,7 +51,7 @@ function yesOrNo($item)
   </tbody>
 </table>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :
         ?>
       <div class="js-element-eye cols-6 <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)) { ?>
@@ -97,8 +97,9 @@ function yesOrNo($item)
               </tr>
               </tbody>
             </table>
-          <?php } else { ?> Not recorded
-          <?php } ?>
+            <?php } else {
+                ?> Not recorded
+            <?php } ?>
       </div>
     <?php endforeach; ?>
 </div>

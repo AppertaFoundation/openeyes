@@ -19,7 +19,7 @@
 
 <div class="eyedraw flex-layout flex-top">
   <div class="eyedraw-canvas">
-      <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
           'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
           'side' => ($side == 'right') ? 'R' : 'L',
           'mode' => 'view',
@@ -32,15 +32,15 @@
   <div class="eyedraw-data stack">
     <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
-      <?php if ($element->{$side . '_description'}): ?>
+        <?php if ($element->{$side . '_description'}) : ?>
         <div class="data-label"><?= $element->getAttributeLabel($side . '_description') ?>:</div>
         <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_description'}) ?></div>
-      <?php endif; ?>
+        <?php endif; ?>
 
-      <?php if ($element->{$side . '_vitreous'}): ?>
+        <?php if ($element->{$side . '_vitreous'}) : ?>
         <div class="data-label"><?= $element->getAttributeLabel('vitreous') ?>:</div>
         <div class="data-value"><?= implode('<br />', $element->{$side . '_vitreous'}) ?></div>
-      <?php endif; ?>
+        <?php endif; ?>
 
   </div>
 </div>

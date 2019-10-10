@@ -131,12 +131,12 @@ class FamilyHistory_Entry extends \BaseEventTypeElement
     public function beforeSave()
     {
         $relative = FamilyHistoryRelative::model()->findByPk($this->relative_id);
-        if($relative && !$relative->is_other){
+        if ($relative && !$relative->is_other) {
             $this->other_relative = null;
         }
 
         $condition = FamilyHistoryCondition::model()->findByPk($this->condition_id);
-        if($condition && !$condition->is_other){
+        if ($condition && !$condition->is_other) {
             $this->other_condition = null;
         }
 

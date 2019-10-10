@@ -16,7 +16,7 @@
             <th class="created"><?php echo $data_provider->getSort()->link('last_modified_date', 'Merged', array('class' => 'sort-link')); ?></th>
             <?php endif; ?> 
         </tr>
-        <?php if ($data_provider->itemCount): ?>
+        <?php if ($data_provider->itemCount) : ?>
         <tr class="table-filter">
             <td> <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
                     alt="loading..." style="display: none;"/></td>
@@ -25,7 +25,9 @@
             <td class="filter-col"><input id="primary_hos_num_filter" name="PatientMergeRequestFilter[primary_hos_num_filter]" type="text" value="<?php echo isset($filters['primary_hos_num_filter']) ? $filters['primary_hos_num_filter'] : '';?>"></td>
             <td></td>
             <td></td>
-            <?php if ($filters['show_merged']) :?><td></td><?php endif; ?>
+            <?php if ($filters['show_merged']) :
+                ?><td></td><?php
+            endif; ?>
         </tr>
         <?php endif; ?>
     </thead>
@@ -43,21 +45,20 @@
     </tfoot>
     <tbody>
         
-        <?php if ($data_provider->itemCount): ?>
-            <?php foreach ($data_provider->getData() as $i => $request): ?>
-
-                <?php if ($request->status == PatientMergeRequest::STATUS_NOT_PROCESSED): ?>
+        <?php if ($data_provider->itemCount) : ?>
+            <?php foreach ($data_provider->getData() as $i => $request) : ?>
+                <?php if ($request->status == PatientMergeRequest::STATUS_NOT_PROCESSED) : ?>
                     <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/'.$request->id?>">
-                <?php else: ?>
+                <?php else : ?>
                     <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
                 <?php endif; ?>
                     <td class="checkbox">
                         <input type="checkbox" name="patient_merge_request_ids[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '' : 'disabled'?>>
                     </td>
                     <td class="secondary">
-                        <?php if($request->secondary_hos_num):?>
+                        <?php if ($request->secondary_hos_num) :?>
                             <?php echo $request->secondary_hos_num;?>
-                        <?php else: ?>
+                        <?php else : ?>
                             <?php
                                 $patient = Patient::model()->findByPk($request->secondary_id);
                                 echo $patient->fullName;
@@ -66,9 +67,9 @@
                     </td>
                     <td class="into">INTO</td>
                     <td class="primary">
-                        <?php if($request->primary_hos_num):?>
+                        <?php if ($request->primary_hos_num) :?>
                             <?php echo $request->primary_hos_num;?>
-                        <?php else: ?>
+                        <?php else : ?>
                             <?php
                             $patient = Patient::model()->findByPk($request->primary_id);
                             echo $patient->fullName;
@@ -86,7 +87,7 @@
                     
                 </tr>
             <?php endforeach;?>
-        <?php else: ?>
+        <?php else : ?>
                 <tr><td colspan="6" >No results found.</td></tr>
         <?php endif; ?>
         

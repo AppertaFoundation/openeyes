@@ -12,12 +12,14 @@
     <ul class="reports-nav collapse-group-content">
         <?php foreach (
             array( 'Diagnoses' => '/report/diagnoses',) as $title => $uri) {?>
-          <li <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {?> class="selected"<?php }?>>
+          <li <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {
+                ?> class="selected"<?php
+              }?>>
               <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {?>
-                  <?=\CHtml::link($title, array($uri), array('class' => 'selected'))?>
-              <?php } else {?>
-                  <?=\CHtml::link($title, array($uri))?>
-              <?php }?>
+                    <?=\CHtml::link($title, array($uri), array('class' => 'selected'))?>
+                <?php } else {?>
+                    <?=\CHtml::link($title, array($uri))?>
+                <?php }?>
           </li>
         <?php }?>
     </ul>
@@ -32,12 +34,14 @@
             <?php foreach ($items as $item => $uri) {
                 $e = explode('/', $uri);
                 $action = array_pop($e)?>
-              <li<?php if (Yii::app()->getController()->action->id == $action) {?> class="selected"<?php }?>>
+              <li<?php if (Yii::app()->getController()->action->id == $action) {
+                    ?> class="selected"<?php
+                 }?>>
                   <?php if (Yii::app()->getController()->action->id == $action) {?>
-                      <?=\CHtml::link($item, array($uri), array('class' => 'selected'))?>
-                  <?php } else {?>
-                      <?=\CHtml::link($item, array($uri))?>
-                  <?php }?>
+                        <?=\CHtml::link($item, array($uri), array('class' => 'selected'))?>
+                    <?php } else {?>
+                        <?=\CHtml::link($item, array($uri))?>
+                    <?php }?>
               </li>
             <?php }?>
         </ul>

@@ -24,8 +24,8 @@
   <section class="element-fields full-width">
     <div class="eyedraw flex-layout flex-top flex-left">
       <div class="eyedraw-canvas">
-          <?php
-          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'side' => $element->eye->getShortName(),
               'mode' => 'view',
               'width' => $this->action->id === 'view' ? 200 : 120,
@@ -33,8 +33,8 @@
               'model' => $element,
               'attribute' => 'eyedraw',
               'idSuffix' => 'Vitrectomy',
-          ));
-          ?>
+            ));
+            ?>
       </div>
 
       <div class="eyedraw-data">
@@ -46,28 +46,28 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?= CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
+                    <?= CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?= $element->gauge->value ?>
+                    <?= $element->gauge->value ?>
               </div>
             </td>
           </tr>
           <tr>
             <td>
               <div class="data-label">
-                  <?= CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
+                    <?= CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
               </div>
             </td>
             <td>
               <div class="data-value">
-                  <?= $element->pvd_induced ? 'Yes' : 'No'; ?>
+                    <?= $element->pvd_induced ? 'Yes' : 'No'; ?>
               </div>
             </td>
           </tr>
-          <?php if (strlen($element->comments) > 0) { ?>
+            <?php if (strlen($element->comments) > 0) { ?>
             <tr>
               <td>
                 <div class="data-label">
@@ -80,7 +80,7 @@
                 </div>
               </td>
             </tr>
-          <?php } ?>
+            <?php } ?>
           </tbody>
         </table>
       </div>

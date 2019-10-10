@@ -342,8 +342,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */
-    protected
-    function getMessageElement()
+    protected function getMessageElement()
     {
         if (!$this->message_el) {
             $this->message_el = $this->event->getElementByClass('\OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message');

@@ -48,7 +48,7 @@ $el_model_name = CHtml::modelName($element);
         </label>
       </td>
       <td>
-          <?=$form->dropDownlist(
+            <?=$form->dropDownlist(
               $element,
               $eye . '_no_treatment_reason_id',
               CHtml::listData($no_treatment_reasons, 'id', 'name'),
@@ -67,7 +67,7 @@ $el_model_name = CHtml::modelName($element);
         </label>
       </td>
       <td>
-          <?php echo $form->textArea($element, $eye . '_no_treatment_reason_other', array('nowrapper' => true)) ?>
+            <?php echo $form->textArea($element, $eye . '_no_treatment_reason_other', array('nowrapper' => true)) ?>
       </td>
     </tr>
     <tr></tr>
@@ -131,7 +131,7 @@ $el_model_name = CHtml::modelName($element);
                     'field' => 12
                 ),
             ))
-            ?>
+?>
 
         </div>
       </td>
@@ -141,7 +141,7 @@ $el_model_name = CHtml::modelName($element);
         style="<?= empty($questions)?"display:none;":''?>"
     >
       <td>
-          <?php $this->renderPartial(
+            <?php $this->renderPartial(
               $element->form_view . '_questions',
               array(
                   'side' => $eye,
@@ -153,7 +153,7 @@ $el_model_name = CHtml::modelName($element);
           )?>
       </td><td></td>
     </tr>
-    <?php if ($treatments = $element->getInjectionTreatments($eye)):?>
+    <?php if ($treatments = $element->getInjectionTreatments($eye)) :?>
       <tr>
         <td>
             <?= $form->dropDownList(
@@ -209,7 +209,9 @@ $el_model_name = CHtml::modelName($element);
   <div class="flex-layout flex-right comment-group">
       <span class="js-comment-container cols-full flex-layout"
             id="<?= CHtml::modelName($element) . '_' . $eye ?>_comment_container"
-            style="<?php if (!$element->{$eye . '_comments'}): ?>display: none;<?php endif; ?>"
+            style="<?php if (!$element->{$eye . '_comments'}) :
+                ?>display: none;<?php
+                   endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $eye ?>_comment_button">
             <?php echo $form->textArea(
                 $element, $eye . '_comments',
@@ -226,7 +228,9 @@ $el_model_name = CHtml::modelName($element);
         id="<?= CHtml::modelName($element) . '_' . $eye ?>_comment_button"
         type="button"
         class="button js-add-comments"
-        style="<?php if ($element->{$eye . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
+        style="<?php if ($element->{$eye . '_comments'}) :
+            ?>visibility: hidden;<?php
+               endif; ?>"
         data-comment-container="#<?= CHtml::modelName($element) . '_' . $eye ?>_comment_container">
       <i class="oe-i comments small-icon"></i>
     </button>

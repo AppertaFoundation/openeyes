@@ -14,7 +14,7 @@
         <ul class="navigation search">
             <?php foreach ($pages as $title => $uri) {
                 $class = '';
-                if(Yii::app()->getController()->action->id ==  $uri){
+                if (Yii::app()->getController()->action->id ==  $uri) {
                     $class = 'selected';
                 }?>
                 <li class="<?=$class?>">

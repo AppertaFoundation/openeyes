@@ -97,8 +97,8 @@
                               <span class="name">
                                 <?php echo isset($model->label) ? $model->label->name : ''; ?>
                               </span>
-                    <?php echo CHtml::hiddenField('Contact[contact_label_id]'
-                        , $model->contact_label_id, array('class' => 'hidden_id')); ?>
+                    <?php echo CHtml::hiddenField('Contact[contact_label_id]',
+                         $model->contact_label_id, array('class' => 'hidden_id')); ?>
                 </div>
             </td>
             <td>

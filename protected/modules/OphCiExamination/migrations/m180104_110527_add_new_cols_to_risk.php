@@ -2,9 +2,9 @@
 
 class m180104_110527_add_new_cols_to_risk extends OEMigration
 {
-	public function up()
-	{
-	    $this->createOETable('ophciexamination_risk_set_entry',
+    public function up()
+    {
+        $this->createOETable('ophciexamination_risk_set_entry',
             array(
                 'id' => 'pk',
                 'ophciexamination_risk_id' => 'int(11)',
@@ -12,31 +12,31 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
                 'age_min' => 'int(3) unsigned',
                 'age_max' => 'int(3) unsigned',
 
-            ),true);
+            ), true);
 
         $this->createOETable('ophciexamination_risk_set_assignment',
             array(
                 'id' => 'pk',
                 'ophciexamination_risk_entry_id' => 'int(11)',
                 'risk_set_id' => 'int(11)',
-            ),true
+            ), true
         );
-	    $this->createOETable('ophciexamination_risk_set',
-	        array(
-	            'id' => 'pk',
-	            'name' => 'varchar(255) NULL',
+        $this->createOETable('ophciexamination_risk_set',
+            array(
+                'id' => 'pk',
+                'name' => 'varchar(255) NULL',
                 'firm_id' => 'int(10) unsigned',
                 'subspecialty_id' =>  'int(10) unsigned',
-            ),true
+            ), true
         );
 
         $this->addForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set', 'firm_id', 'firm', 'id');
 
         $ophciexamination_risk = Yii::app()->db->schema->getTable('ophciexamination_risk');
-        if(isset($ophciexamination_risk->columns['required'])) {
-    	    $this->dropColumn("ophciexamination_risk", "required");
-    	    $this->dropColumn("ophciexamination_risk_version", "required");
+        if (isset($ophciexamination_risk->columns['required'])) {
+            $this->dropColumn("ophciexamination_risk", "required");
+            $this->dropColumn("ophciexamination_risk_version", "required");
         }
 
         $this->addForeignKey('ophciexamination_risk_set_assignment_risk_e', 'ophciexamination_risk_set_assignment', 'ophciexamination_risk_entry_id', 'ophciexamination_risk_set_entry', 'id');
@@ -48,7 +48,7 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
             ->where('name=:name', array(':name' => 'Cataract'))
             ->queryScalar();
             
-        if($subspecialty_cataract_id){
+        if ($subspecialty_cataract_id) {
             $this->insert('ophciexamination_risk_set', [
                 'name' => 'Cataract NOD',
                 'subspecialty_id' => $subspecialty_cataract_id
@@ -80,7 +80,7 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
             'ophciexamination_risk_id' => $anticoagulants_id,
         ]);
 
-        if($nod_set_id){
+        if ($nod_set_id) {
             $ophciexamination_risk_id = $this->dbConnection->createCommand()
                 ->select('id')
                 ->from('ophciexamination_risk_set_entry')
@@ -101,12 +101,12 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
                 'risk_set_id' => $nod_set_id
             ]);
         }
-	}
+    }
 
-	public function down()
-	{
-	    $this->dropForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set');
-	    $this->dropForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set');
+    public function down()
+    {
+        $this->dropForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set');
+        $this->dropForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set');
 
         $this->addColumn('ophciexamination_risk', "required", "tinyint(1) NOT NULL");
         $this->addColumn('ophciexamination_risk_version', "required", "tinyint(1) NOT NULL");
@@ -120,5 +120,5 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $this->dropOETable('ophciexamination_risk_set_assignment', true);
         $this->dropOETable('ophciexamination_risk_set', true);
 
-	}
+    }
 }

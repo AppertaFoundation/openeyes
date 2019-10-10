@@ -52,7 +52,7 @@ class AuditController extends BaseController
         } else {
             $data = $this->getData();
         }
-        
+
 
         $this->renderPartial('_list', array('data' => $data), false, true);
         echo '<!-------------------------->';
@@ -62,28 +62,38 @@ class AuditController extends BaseController
     public function criteria($count = false)
     {
         $criteria = new CDbCriteria();
+        $request = \Yii::app()->getRequest();
+        $user_name = $request->getParam('oe-autocompletesearch');
+        $site_id = $request->getParam('site_id');
+        $firm_id = $request->getParam('firm_id');
+        $action = $request->getParam('action');
+        $target_type = $request->getParam('target_type');
+        $event_type_id = $request->getParam('event_type_id');
+        $date_from = $request->getParam('date_from');
+        $date_to = $request->getParam('date_to');
+        $hos_num = $request->getParam('hos_num');
 
         if ($count) {
             $criteria->select = 'count(*) as count';
         }
 
-        if (@$_REQUEST['site_id']) {
+        if ($site_id) {
             $criteria->addCondition('site_id = :site_id');
-            $criteria->params[':site_id'] = $_REQUEST['site_id'];
+            $criteria->params[':site_id'] = $site_id;
         }
 
-        if (@$_REQUEST['firm_id']) {
-            $firm = Firm::model()->findByPk($_REQUEST['firm_id']);
+        if ($firm_id) {
+            $firm = Firm::model()->findByPk($firm_id);
             $firm_ids = array();
             foreach (Firm::model()->findAll('name=?', array($firm->name)) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {
-                $criteria->addInCondition('firm_id', $firm_ids);
+                $criteria->addInCondition('t.firm_id', $firm_ids);
             }
         }
 
-        if (@$_REQUEST['user']) {
+        if ($user_name) {
             $user_ids = array();
 
             $criteria2 = new CDbCriteria();
@@ -91,7 +101,7 @@ class AuditController extends BaseController
             $criteria2->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) = :term"));
 
             $params[':active'] = 1;
-            $params[':term'] = strtolower($_REQUEST['user']);
+            $params[':term'] = strtolower($user_name);
 
             $criteria2->params = $params;
 
@@ -102,38 +112,38 @@ class AuditController extends BaseController
             $criteria->addInCondition('user_id', $user_ids);
         }
 
-        if (@$_REQUEST['action']) {
+        if ($action) {
             $criteria->addCondition('action_id=:action_id');
-            $criteria->params[':action_id'] = $_REQUEST['action'];
+            $criteria->params[':action_id'] = $action;
         }
 
-        if (@$_REQUEST['target_type']) {
+        if ($target_type) {
             $criteria->addCondition('type_id=:type_id');
-            $criteria->params[':type_id'] = $_REQUEST['target_type'];
+            $criteria->params[':type_id'] = $target_type;
         }
 
-        if (@$_REQUEST['event_type_id']) {
+        if ($event_type_id) {
             $criteria->addCondition('event.event_type_id=:event_type_id');
-            $criteria->params[':event_type_id'] = $_REQUEST['event_type_id'];
+            $criteria->params[':event_type_id'] = $event_type_id;
         }
 
-        if (@$_REQUEST['date_from']) {
-            $date_from = Helper::convertNHS2MySQL($_REQUEST['date_from']).' 00:00:00';
+        if ($date_from) {
+            $date_from = Helper::convertNHS2MySQL($date_from).' 00:00:00';
             $criteria->addCondition('`t`.created_date >= :date_from');
             $criteria->params[':date_from'] = $date_from;
         }
 
-        if (@$_REQUEST['date_to']) {
-            $date_to = Helper::convertNHS2MySQL($_REQUEST['date_to']).' 23:59:59';
+        if ($date_to) {
+            $date_to_SQL = Helper::convertNHS2MySQL($date_to).' 23:59:59';
             $criteria->addCondition('`t`.created_date <= :date_to');
-            $criteria->params[':date_to'] = $date_to;
+            $criteria->params[':date_to'] = $date_to_SQL;
         }
 
-        if (@$_REQUEST['hos_num']) {
-            if ($patient = Patient::model()->find('hos_num=?', array($_REQUEST['hos_num']))) {
+        if ($hos_num) {
+            if ($patient = Patient::model()->find('hos_num=?', array($hos_num))) {
                 $criteria->addCondition('patient_id='.$patient->id);
             } else {
-                if ($patient = Patient::model()->find('hos_num=?', array(str_pad($_REQUEST['hos_num'], 7, '0', STR_PAD_LEFT)))) {
+                if ($patient = Patient::model()->find('hos_num=?', array(str_pad($hos_num, 7, '0', STR_PAD_LEFT)))) {
                     $criteria->addCondition('patient_id='.$patient->id);
                 } else {
                     $criteria->addCondition('patient_id=0');
@@ -208,10 +218,8 @@ class AuditController extends BaseController
         $criteria->order = 'first_name, last_name';
 
         foreach (User::model()->findAll($criteria) as $user) {
-            if ($contact = $user->contact) {
-                if (!in_array(trim($contact->first_name.' '.$contact->last_name), $users)) {
-                    $users[] = trim($contact->first_name.' '.$contact->last_name);
-                }
+            if (!in_array(trim($user->first_name.' '.$user->last_name), $users)) {
+                $users[] = trim($user->first_name.' '.$user->last_name);
             }
         }
 

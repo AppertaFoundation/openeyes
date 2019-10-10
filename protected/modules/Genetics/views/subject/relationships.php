@@ -15,8 +15,8 @@ Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
           </div>
         </div>
         <ul id="relationships_list">
-            <?php if($model->relationships):?>
-                <?php foreach ($model->relationships as $relationship):?>
+            <?php if ($model->relationships) :?>
+                <?php foreach ($model->relationships as $relationship) :?>
                     <li>
                         <span class="genetics_relationship_remove">
                             <i class="oe-i remove-circle small" title="Remove Relationship"></i>

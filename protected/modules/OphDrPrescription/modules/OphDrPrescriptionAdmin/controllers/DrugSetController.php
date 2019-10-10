@@ -163,7 +163,6 @@ class DrugSetController extends BaseAdminController
         $drugset->active = $drugSet['active'];
 
         if ($drugset->save()) {
-
             // we delete previous tapers and items, and insert the new ones
 
             $currentDrugRows = DrugSetItem::model()->findAll(new CDbCriteria(array('condition' => "drug_set_id = '".$drugset->id."'")));
