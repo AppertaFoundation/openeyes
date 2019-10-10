@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OEModule\PatientTicketing\models\TicketQueueAssignment;
 use Yii;
 
 /**
@@ -65,7 +66,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-                ['comments, entries', 'safe'],
+                ['comments, entries, event_id, id', 'safe'],
                 ['entries', 'required'],
                 ['id, event_id, comments', 'safe', 'on' => 'search'],
         ];
@@ -81,8 +82,6 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id'),
-            'patient_ticket_entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id',
-                'on' => 'status_id IN (select id from ophciexamination_clinicoutcome_status where patientticket=1)'),
         );
     }
 
@@ -130,6 +129,15 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         parent::afterSave();
     }
 
+    public function afterDelete()
+    {
+        $ticket = $this->getPatientTicket();
+        if ($ticket) {
+            $this->deleteRelatedTicket($ticket);
+        }
+        parent::afterDelete();
+    }
+
     public function getFollowUpQuantityOptions()
     {
         $opts = array();
@@ -166,5 +174,13 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         }
 
         return array();
+    }
+
+    public function deleteRelatedTicket($ticket) {
+        $queue_assignment = TicketQueueAssignment::model()->find('ticket_id=:ticket_id', [':ticket_id' => $ticket->id]);
+        if ($queue_assignment) {
+            $queue_assignment->delete();
+            $ticket->delete();
+        }
     }
 }

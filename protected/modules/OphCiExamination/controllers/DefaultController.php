@@ -1149,14 +1149,18 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCiExamination_ClinicOutcome($element, $data, $index)
     {
         $api = Yii::app()->moduleAPI->get('PatientTicketing');
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] : [];
+        $patient_ticket_ids = models\OphCiExamination_ClinicOutcome_Status::model()->getPatientTicketIds();
 
-        foreach ($element->patient_ticket_entries as $entry) {
-            if (isset($data['patientticket_queue'])) {
-                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                $queue_data = $api->extractQueueData($queue, $data);
-                $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
-            } else {
-                $api->updateTicketForEvent($this->event);
+        foreach ($entries as $entry) {
+            if (array_search($entry['status_id'], $patient_ticket_ids) !== false) {
+                if (isset($data['patientticket_queue'])) {
+                    $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                    $queue_data = $api->extractQueueData($queue, $data);
+                    $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
+                } else {
+                    $api->updateTicketForEvent($this->event);
+                }
             }
         }
 

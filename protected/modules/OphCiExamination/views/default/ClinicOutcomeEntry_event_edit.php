@@ -21,7 +21,7 @@ if (!isset($values)) {
     $values = array(
         'status_id' => $entry->status_id,
         'status' => $entry->getStatusLabel(),
-        'followup_quantity' => $entry->followup_quantity,
+        'followup_quantity' => $entry->followup_quantity ? $entry->followup_quantity : null,
         'followup_period_id' => $entry->followup_period_id,
         'followup_period' => $entry->getPeriodLabel(),
         'followup_comments' => $entry->followup_comments,

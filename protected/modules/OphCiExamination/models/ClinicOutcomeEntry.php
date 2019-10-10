@@ -146,6 +146,18 @@ class ClinicOutcomeEntry extends \BaseElement
         }
     }
 
+    public function afterDelete()
+    {
+        $ticket = $this->element->getPatientTicket();
+        $patient_ticket_ids = OphCiExamination_ClinicOutcome_Status::model()->getPatientTicketIds();
+
+        if (array_search($this->status_id, $patient_ticket_ids) !== false && $ticket) {
+            $this->element->deleteRelatedTicket($ticket);
+        }
+
+        parent::afterDelete();
+    }
+
     public function getStatusLabel() {
         return $this->status->name;
     }
