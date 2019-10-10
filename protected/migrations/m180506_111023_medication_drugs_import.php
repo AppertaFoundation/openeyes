@@ -50,7 +50,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['PRESCRIPTION_SET']})")->execute();
         Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
-        Yii::app()->db->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$medication_drugs_id.", {$usage_codes['MedicationDrug']})")->execute();
 
         /*
          * set medication_route table by drug_route table

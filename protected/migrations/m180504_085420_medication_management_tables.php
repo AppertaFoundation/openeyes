@@ -188,8 +188,6 @@ class m180504_085420_medication_management_tables extends OEMigration
             ['usage_code' => 'PRESCRIPTION_SET', 'name' => 'Prescription', 'active' => 1],
             ['usage_code' => 'DrugTag', 'name' => 'Drug Tags', 'hidden' => 1, 'active' => 0],
             ['usage_code' => 'Formulary', 'name' => 'Formulary', 'active' => 1],
-            ['usage_code' => 'MedicationDrug', 'name' => 'Medication Drug', 'hidden' => 1, 'active' => 0],
-            ['usage_code' => 'Management', 'name' => 'Management', 'hidden' => 1, 'active' => 0],
         ]);
     }
 
