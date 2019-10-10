@@ -40,7 +40,7 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="medications entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
+        <table class="medications entries js-entry-table"
                              id="<?= $model_name ?>_entry_table">
                     <colgroup>
                         <col class="cols-2">
@@ -163,6 +163,7 @@ $element_errors = $element->getErrors();
                 array(
                     "element" => $element,
                     "entry" => $empty_entry,
+                    "model_name" => $model_name,
                     "row_count" => "{{row_count}}",
                     "taper_count" => "{{taper_count}}",
                     "field_prefix" => $model_name."[entries][{{row_count}}][taper][{{taper_count}}]"
