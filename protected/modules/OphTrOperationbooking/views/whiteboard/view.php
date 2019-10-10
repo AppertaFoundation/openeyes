@@ -64,13 +64,13 @@ $cataract_card_list = array(
         'data' => array(
             array(
                 'content' => $data->axial_length,
-                'small_data' => $data->axial_length !== 'Unknown' ? 'mm' : null,
-                'extra_data' => 'Axial Length',
+                'small_data' => $data->axial_length !== 'Unknown' && isset($data->axial_length)  ? 'mm' : null,
+                'extra_data' => isset($data->axial_length) ? 'Axial Length' : null,
             ),
             array(
                 'content' => $data->acd,
-                'small_data' => $data->acd !== 'Unknown' ? 'mm' : null,
-                'extra_data' => 'ACD',
+                'small_data' => $data->acd !== 'Unknown' && isset($data->acd) ? 'mm' : null,
+                'extra_data' => isset($data->acd) ? 'ACD' : null,
             )
         )
     ),
