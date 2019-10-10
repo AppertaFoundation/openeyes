@@ -81,11 +81,11 @@ $cataract_card_list = array(
     ),
     'Equipment' => array(
         'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
-        'editable' => true,
+        'editable' => $data->booking->isEditable(),
     ),
     'Comments' => array(
         'data' => explode("\n", $data->comments),
-        'editable' => true,
+        'editable' => $data->booking->isEditable(),
     )
 );
 
@@ -149,11 +149,11 @@ $other_card_list = array(
     ),
     'Equipment' => array(
         'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
-        'editable' => true,
+        'editable' => $data->booking->isEditable(),
     ),
     'Comments' => array(
         'data' => explode("\n", $data->comments),
-        'editable' => true,
+        'editable' => $data->booking->isEditable(),
     ),
 );
 ?>
