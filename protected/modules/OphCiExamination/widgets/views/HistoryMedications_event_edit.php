@@ -46,7 +46,7 @@ foreach ($element->entries as $entry) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
-      <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+      <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications">
           <colgroup>
               <col class="cols-2">
               <col class="cols-6">
