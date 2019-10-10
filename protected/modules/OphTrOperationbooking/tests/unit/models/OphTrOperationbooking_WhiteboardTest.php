@@ -17,6 +17,11 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         'episodes' => Episode::class
     );
 
+    public static function setUpBeforeClass()
+    {
+        Yii::app()->getModule('OphCiExamination');
+    }
+
     protected function setUp()
     {
         parent::setUp();

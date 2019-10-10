@@ -16,6 +16,9 @@ switch ($data->complexity) {
         break;
 }
 
+$is_deleted = ((int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED
+    || (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_CANCELLED);
+
 $cataract_card_list = array(
     'Patient' => array(
         'data' => array(
@@ -28,7 +31,7 @@ $cataract_card_list = array(
         'data' => array(
             'content' => $data->eye->name,
             'extra_data' => $data->procedure,
-            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
+            'deleted' => $is_deleted,
         ),
         'colour' => $complexity_colour,
     ),
@@ -101,7 +104,7 @@ $other_card_list = array(
         'data' => array(
             'content' =>  $data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
             'extra_data' => $data->procedure,
-            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
+            'deleted' => $is_deleted,
         ),
         'colour' => $complexity_colour,
     ),
@@ -109,7 +112,7 @@ $other_card_list = array(
         'data' => $data->eye_id === Eye::BOTH ? array(
             'content' => 'Right',
             'extra_data' => $data->procedure,
-            'deleted' => (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED,
+            'deleted' => $is_deleted,
         ) : null,
         'colour' => $complexity_colour,
     ),
