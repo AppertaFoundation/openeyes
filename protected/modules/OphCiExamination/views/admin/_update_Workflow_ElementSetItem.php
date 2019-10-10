@@ -59,11 +59,11 @@
             <div class="grid-view">
               <div id="workflow-edit-controls" class="data-group">
                 <div>
-                  <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
+                    <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
                 </div>
                 <div>
-                  <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
-                  <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
+                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
+                    <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
                 </div>
               </div>
               <div>
