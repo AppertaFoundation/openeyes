@@ -17,9 +17,9 @@
  */
 ?>
 <div class="box admin lensAdmin">
-	<h2><?php echo $lens_type->id ? 'Edit' : 'Add'?> lens type</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
+    <h2><?php echo $lens_type->id ? 'Edit' : 'Add'?> lens type</h2>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -29,17 +29,17 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($lens_type, 'name')?>
-		<?php echo $form->textField($lens_type, 'description')?>
-		<?php echo $form->dropDownList($lens_type, 'position_id', CHtml::listData(OphInBiometry_Lens_Position::model()->findAll(array('order' => 'display_order')), 'id', 'name'))?>
-		<?php echo $form->textField($lens_type, 'comments')?>
-		<?php echo $form->textField($lens_type, 'acon')?>
-		<?php echo $form->textField($lens_type, 'sf')?>
-		<?php echo $form->textField($lens_type, 'pACD')?>
-		<?php echo $form->textField($lens_type, 'a0')?>
-		<?php echo $form->textField($lens_type, 'a1')?>
-		<?php echo $form->textField($lens_type, 'a2')?>
-		<?php echo $form->formActions()?>
+        <?php echo $form->textField($lens_type, 'name')?>
+        <?php echo $form->textField($lens_type, 'description')?>
+        <?php echo $form->dropDownList($lens_type, 'position_id', CHtml::listData(OphInBiometry_Lens_Position::model()->findAll(array('order' => 'display_order')), 'id', 'name'))?>
+        <?php echo $form->textField($lens_type, 'comments')?>
+        <?php echo $form->textField($lens_type, 'acon')?>
+        <?php echo $form->textField($lens_type, 'sf')?>
+        <?php echo $form->textField($lens_type, 'pACD')?>
+        <?php echo $form->textField($lens_type, 'a0')?>
+        <?php echo $form->textField($lens_type, 'a1')?>
+        <?php echo $form->textField($lens_type, 'a2')?>
+        <?php echo $form->formActions()?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 </div>

@@ -33,13 +33,13 @@ $nothing_selected_text = "Nothing selected.";
     <tbody>
     <tr>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('occupation_id')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('occupation_id')) ?>
       </td>
       <td>
           <div id="textField_occupation_id" class="cols-8">
               <?= isset($element->occupation) ?  $element->occupation->name :  $nothing_selected_text; ?>
           </div>
-          <?= $form->dropDownList(
+            <?= $form->dropDownList(
               $element,
               'occupation_id',
               CHtml::listData($element->occupation_options, 'id', 'name'),
@@ -47,8 +47,8 @@ $nothing_selected_text = "Nothing selected.";
               false,
               array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
           );
-          ?>
-          <?= $form->textField(
+?>
+            <?= $form->textField(
               $element,
               'type_of_job',
               array(
@@ -61,10 +61,10 @@ $nothing_selected_text = "Nothing selected.";
               null,
               array('label' => 4, 'field' => 5)
           );
-          ?>
+?>
       </td>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
       </td>
       <td>
           <div id="textField_driving_statuses" class="cols-8">
@@ -73,36 +73,36 @@ $nothing_selected_text = "Nothing selected.";
               } else {
                   $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
                       is_array($element->driving_statuses) ? $element->driving_statuses : []);
-                  echo implode(', ', $driving_statuses);
-              } ?>
+                    echo implode(', ', $driving_statuses);
+                } ?>
           </div>
 
       </td>
     </tr>
     <tr>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('smoking_status_id')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('smoking_status_id')) ?>
       </td>
       <td>
           <div id="textField_smoking_status_id" class="cols-8">
               <?= isset($element->smoking_status) ?  $element->smoking_status->name :  $nothing_selected_text; ?>
           </div>
-          <?= $form->dropDownList(
+            <?= $form->dropDownList(
               $element,
               'smoking_status_id',
               CHtml::listData($element->smoking_status_options, 'id', 'name'),
               ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
-          ?>
+?>
       </td>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
       </td>
       <td>
           <div id="textField_accommodation_id" class="cols-8">
               <?= isset($element->accommodation) ?  $element->accommodation->name :  $nothing_selected_text; ?>
           </div>
-          <?= $form->dropDownList(
+            <?= $form->dropDownList(
               $element,
               'accommodation_id',
               CHtml::listData($element->accommodation_options, 'id', 'name'),
@@ -112,13 +112,13 @@ $nothing_selected_text = "Nothing selected.";
     </tr>
     <tr>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
       </td>
       <td class="flex-layout flex-left">
           <div id="textField_alcohol_intake" class="cols-1 <?= (isset($element->alcohol_intake) ? '' : 'hidden') ?>">
-              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
+                <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
-          <?= $form->textField(
+            <?= $form->textField(
               $element,
               'alcohol_intake',
               array(
@@ -129,22 +129,22 @@ $nothing_selected_text = "Nothing selected.";
                   'hidden' => true
               )
           );
-          ?>
+?>
       </td>
       <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
+            <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
       </td>
       <td>
           <div id="textField_carer_id" class="cols-8">
               <?= isset($element->carer) ?  $element->carer->name :  $nothing_selected_text; ?>
           </div>
-          <?= $form->dropDownList(
+            <?= $form->dropDownList(
               $element,
               'carer_id',
               CHtml::listData($element->carer_options, 'id', 'name'),
               ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
-          ?>
+?>
       </td>
     </tr>
     <tr>
@@ -166,7 +166,7 @@ $nothing_selected_text = "Nothing selected.";
             data-comment-button="#add-social-history-popup .js-add-comments"
             style="display: <?php if (!$element->comments) {
                 echo 'none';
-            }?>">
+                            }?>">
            <textarea id="<?= $model_name ?>_comments"
                      name="<?= $model_name ?>[comments]"
                      class="js-comment-field cols-10"
@@ -184,7 +184,7 @@ $nothing_selected_text = "Nothing selected.";
             data-comment-container="#<?= $model_name ?>_entry_table .js-comment-container"
             style="visibility: <?php if ($element->comments) {
                 echo 'hidden';
-            } ?>">
+                               } ?>">
       <i class="oe-i comments small-icon "></i>
     </button>
     <button class="button hint green js-add-select-search" id="add-social-history-btn" type="button">

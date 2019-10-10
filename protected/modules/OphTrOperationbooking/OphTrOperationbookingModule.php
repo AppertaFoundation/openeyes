@@ -75,7 +75,7 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
     public function isTheatreDiaryDisabled()
     {
         $element_enabled = Yii::app()->params['disable_theatre_diary'];
-        if(is_null($element_enabled)){
+        if (is_null($element_enabled)) {
             $metadata = SettingMetadata::model()->find('`key`=?', array('disable_theatre_diary'));
             $setting = $metadata->getSetting($metadata->key, null, true);
             $element_enabled = $setting->value;

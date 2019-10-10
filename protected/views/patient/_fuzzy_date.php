@@ -28,36 +28,36 @@ if (isset($date)) {
 }
 ?>
 <fieldset class="data-group fuzzy_date <?php echo @$class?>">
-	<legend class="<?php echo $labelColumns;?>">
-		<?php echo $label;?>:
-	</legend>
-	<div class="<?php echo $fieldColumns;?>">
+    <legend class="<?php echo $labelColumns;?>">
+        <?php echo $label;?>:
+    </legend>
+    <div class="<?php echo $fieldColumns;?>">
         <?php // TODO: reconcile this with the field abstraction (the field abstraction is using classes for the fields, not names) ?>
         <div class="data-group">
-			<div class="cols-4 column">
-				<select name="fuzzy_day">
-					<option value="0">Day (optional)</option>
-					<?php for ($i = 1;$i <= 31;++$i) {?>
-						<option value="<?= $i?>"<?= ($i == $sel_day) ? ' selected' : ''?>><?= $i?></option>
-					<?php }?>
-				</select>
-			</div>
-			<div class="cols-4 column">
-				<select name="fuzzy_month">
-					<option value="0">Month (optional)</option>
-				<?php foreach (array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') as $i => $month) {?>
-					<option value="<?= $i + 1?>"<?= ($i + 1 == $sel_month) ? ' selected' : ''?>><?= $month?></option>
-				<?php }?>
-				</select>
-			</div>
-			<div class="cols-4 column end">
-				<select name="fuzzy_year">
-					<option value="0">Year (optional)</option>
-				<?php for ($i = date('Y') - 50;$i <= date('Y');++$i) {?>
-					<option value="<?= $i?>"<?= ($i == $sel_year) ? ' selected' : ''?>><?= $i?></option>
-				<?php }?>
-				</select>
-			</div>
-		</div>
-	</div>
+            <div class="cols-4 column">
+                <select name="fuzzy_day">
+                    <option value="0">Day (optional)</option>
+                    <?php for ($i = 1;$i <= 31;++$i) {?>
+                        <option value="<?= $i?>"<?= ($i == $sel_day) ? ' selected' : ''?>><?= $i?></option>
+                    <?php }?>
+                </select>
+            </div>
+            <div class="cols-4 column">
+                <select name="fuzzy_month">
+                    <option value="0">Month (optional)</option>
+                <?php foreach (array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') as $i => $month) {?>
+                    <option value="<?= $i + 1?>"<?= ($i + 1 == $sel_month) ? ' selected' : ''?>><?= $month?></option>
+                <?php }?>
+                </select>
+            </div>
+            <div class="cols-4 column end">
+                <select name="fuzzy_year">
+                    <option value="0">Year (optional)</option>
+                <?php for ($i = date('Y') - 50;$i <= date('Y');++$i) {?>
+                    <option value="<?= $i?>"<?= ($i == $sel_year) ? ' selected' : ''?>><?= $i?></option>
+                <?php }?>
+                </select>
+            </div>
+        </div>
+    </div>
 </fieldset>

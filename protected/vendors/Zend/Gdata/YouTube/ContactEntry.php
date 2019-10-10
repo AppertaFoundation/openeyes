@@ -100,13 +100,13 @@ class Zend_Gdata_YouTube_ContactEntry extends Zend_Gdata_YouTube_UserProfileEntr
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('yt') . ':' . 'status':
-            $status = new Zend_Gdata_YouTube_Extension_Status();
-            $status->transferFromDOM($child);
-            $this->_status = $status;
+            case $this->lookupNamespace('yt') . ':' . 'status':
+                $status = new Zend_Gdata_YouTube_Extension_Status();
+                $status->transferFromDOM($child);
+                $this->_status = $status;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

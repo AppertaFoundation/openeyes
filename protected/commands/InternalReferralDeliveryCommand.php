@@ -174,7 +174,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
             curl_setopt($ch, CURLOPT_URL, $login_page);
             // disable SSL certificate check for locally issued certificates
-            if(Yii::app()->params['disable_ssl_certificate_check']) {
+            if (Yii::app()->params['disable_ssl_certificate_check']) {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
@@ -209,7 +209,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
             curl_close($ch);
 
-            if(substr($content, 0, 4) !== "%PDF"){
+            if (substr($content, 0, 4) !== "%PDF") {
                 echo 'File is not a PDF for event id: '.$event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
@@ -299,7 +299,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             $put_header = !file_exists($csv_filename);
 
             $fp = fopen($csv_filename, 'ab');
-            if($put_header){
+            if ($put_header) {
                 fputcsv($fp, array_keys($data));
             }
             fputcsv($fp, $data);

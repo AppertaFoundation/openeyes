@@ -29,7 +29,7 @@
     <div class="alert-box success">
         <strong>Alerts</strong> - none known.
     </div>
-<?php else: ?>
+<?php else : ?>
     <div class="alert-box patient">
         <strong>Alerts</strong>
     </div>

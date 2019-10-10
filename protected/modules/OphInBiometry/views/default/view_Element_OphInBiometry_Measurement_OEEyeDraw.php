@@ -17,11 +17,11 @@
  */
 ?>
 <div class="data-value">
-	<?= Yii::app()->format->text($element->getCombined($side)) ?><br/>
-	Spherical equivalent: <?php echo number_format($element->{$side.'_sphere'} + 0.5 * $element->{$side.'_cylinder'}, 2)?>
-	<?php  if ($element->{$side.'_notes'}) {
-		?>
-		<?php  echo $element->textWithLineBreaks($side.'_notes')?>
-		<?php
-	}?>
+    <?= Yii::app()->format->text($element->getCombined($side)) ?><br/>
+    Spherical equivalent: <?php echo number_format($element->{$side.'_sphere'} + 0.5 * $element->{$side.'_cylinder'}, 2)?>
+    <?php  if ($element->{$side.'_notes'}) {
+        ?>
+        <?php  echo $element->textWithLineBreaks($side.'_notes')?>
+        <?php
+    }?>
 </div>

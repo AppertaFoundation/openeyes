@@ -98,7 +98,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                           }',
                             ]
                         );
-                        ?>
+?>
                     </td>
                 </tr>
                 </tbody>

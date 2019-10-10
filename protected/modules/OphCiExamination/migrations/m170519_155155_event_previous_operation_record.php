@@ -10,7 +10,7 @@ class m170519_155155_event_previous_operation_record extends OEMigration
 
 
     public function up()
-	{
+    {
         $this->createElementType('OphCiExamination', 'Previous Ophthalmic History', array(
             'class_name' => 'OEModule\OphCiExamination\models\PastSurgery',
             'display_order' => 20,
@@ -45,8 +45,8 @@ class m170519_155155_event_previous_operation_record extends OEMigration
         }
     }
 
-	public function down()
-	{
+    public function down()
+    {
         foreach (static::$archive_tables as $table) {
             $this->renameTable(static::$archive_prefix . $table, $table);
             $this->renameTable(static::$archive_prefix . $table . '_version', $table . '_version');
@@ -66,16 +66,16 @@ class m170519_155155_event_previous_operation_record extends OEMigration
             array(':element_type_id' => $element_type_id));
         $this->delete('element_type', 'id = :id',
             array(':id' => $element_type_id));
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

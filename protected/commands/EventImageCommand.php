@@ -141,7 +141,7 @@ EOH;
         $this->deleteEventImagesForEvent($event);
         $url = Yii::app()->params['event_image']['base_url'] . $event->eventType->class_name . '/default/createImage/' . $event->id;
 
-        if (@Yii::app()->params['lightning_viewer']['debug_logging']){
+        if (@Yii::app()->params['lightning_viewer']['debug_logging']) {
             Yii::log('Curling URL "' . $url);
         }
 
@@ -156,6 +156,6 @@ EOH;
 
     private function deleteEventImagesForEvent($event)
     {
-        EventImage::model()->deleteAll('event_id = ?' , [$event->id]);
+        EventImage::model()->deleteAll('event_id = ?', [$event->id]);
     }
 }

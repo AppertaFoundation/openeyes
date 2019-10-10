@@ -2,8 +2,8 @@
 
 class m170315_102839_ask_correspondence_approval extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('setting_metadata', array(
             'field_type_id' => '3',
             'key' => 'ask_correspondence_approval',
@@ -16,22 +16,22 @@ class m170315_102839_ask_correspondence_approval extends OEMigration
             'key' => 'ask_correspondence_approval',
             'value' => 'on',
         ));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('setting_metadata', '`key` = "ask_correspondence_approval"');
         $this->delete('setting_installation', '`key` = "ask_correspondence_approval"');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

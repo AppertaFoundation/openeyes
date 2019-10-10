@@ -30,7 +30,7 @@ $layoutColumns = array(
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
 
 <div class="element-fields element-eyes">
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
     <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
          data-side="<?= $eye_side ?>"
     >

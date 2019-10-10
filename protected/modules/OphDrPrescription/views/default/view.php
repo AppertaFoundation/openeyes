@@ -21,40 +21,40 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 ?>
 <?php $this->beginContent('//patient/event_container', ['Element' => $Element, 'no_face'=>true]); ?>
 
-	<?php
+    <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-        	if(!$Element->draft || $this->checkEditAccess()){
-        		$this->event_actions[] = EventAction::printButton();
-        	}
+    if ($this->checkPrintAccess()) {
+        if (!$Element->draft || $this->checkEditAccess()) {
+            $this->event_actions[] = EventAction::printButton();
         }
+    }
     ?>
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+    <?php $this->renderPartial('//base/_messages'); ?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php } elseif ($Element->draft) {?>
-		<div class="alert-box alert with-icon">
-			This prescription is a draft and can still be edited
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php } elseif ($Element->draft) {?>
+        <div class="alert-box alert with-icon">
+            This prescription is a draft and can still be edited
+        </div>
+    <?php }?>
 
-	<?php $this->renderOpenElements($this->action->id); ?>
-	<?php $this->renderOptionalElements($this->action->id); ?>
+    <?php $this->renderOpenElements($this->action->id); ?>
+    <?php $this->renderOptionalElements($this->action->id); ?>
 
-	<script type="text/javascript">
-		<?php 
-		if (isset(Yii::app()->session['print_prescription'])) {
+    <script type="text/javascript">
+        <?php
+        if (isset(Yii::app()->session['print_prescription'])) {
             unset(Yii::app()->session['print_prescription']);
-        ?>
-		$(document).ready(function() {
-			do_print_prescription();
-		});
-		<?php } ?>
-	</script>
+            ?>
+        $(document).ready(function() {
+            do_print_prescription();
+        });
+        <?php } ?>
+    </script>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>
 

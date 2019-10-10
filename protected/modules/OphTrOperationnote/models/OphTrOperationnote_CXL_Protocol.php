@@ -112,8 +112,8 @@ class OphTrOperationnote_CXL_Protocol extends BaseActiveRecordVersioned
     }
     public function getName($id)
     {
-        if($chosenName = $this->find("id = " . $id)){
-        return $chosenName->name;
+        if ($chosenName = $this->find("id = " . $id)) {
+            return $chosenName->name;
         }
     }
 }

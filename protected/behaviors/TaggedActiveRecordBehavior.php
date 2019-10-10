@@ -34,25 +34,20 @@ class TaggedActiveRecordBehavior extends CActiveRecordBehavior
 
     public function beforeSave($event)
     {
-        if(is_array($this->owner->tags))
-        {
+        if (is_array($this->owner->tags)) {
             return parent::beforeSave($event);
         }
 
-        if($this->owner->tags !== '')
-        {
+        if ($this->owner->tags !== '') {
             $tags = explode(",", $this->owner->tags);
             $tag_ids=array();
-            foreach($tags as $tag)
-            {
+            foreach ($tags as $tag) {
                 // Get tag id...
-                if($t = Tag::model()->findByAttributes(['name'=>$tag]))
-                {
+                if ($t = Tag::model()->findByAttributes(['name'=>$tag])) {
                     $tag_ids[] = $t->id;
                 }
                 // ...or create new tag
-                else
-                {
+                else {
                     $t = new Tag();
                     $t->name = $tag;
                     $t->save();
@@ -61,9 +56,7 @@ class TaggedActiveRecordBehavior extends CActiveRecordBehavior
             }
 
             $this->owner->tags = $tag_ids;
-        }
-        else
-        {
+        } else {
             $this->owner->tags = array();
         }
 
@@ -79,6 +72,7 @@ class TaggedActiveRecordBehavior extends CActiveRecordBehavior
 
     public function getTagNames()
     {
-        return implode(', ', array_map(function($e){ return $e->name; }, $this->owner->tags));
+        return implode(', ', array_map(function($e){ return $e->name;
+        }, $this->owner->tags));
     }
 }

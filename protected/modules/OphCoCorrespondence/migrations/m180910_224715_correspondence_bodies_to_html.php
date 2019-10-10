@@ -22,7 +22,7 @@ class m180910_224715_correspondence_bodies_to_html extends CDbMigration
         foreach ($this->dbConnection->createCommand()
                      ->select('*')->from('et_ophcocorrespondence_letter')
                      ->queryAll() as $i => $letter
-        ){
+        ) {
             $altered_body = preg_replace("/<br\\>/", "\n", $letter['body']);
 
             $this->update('et_ophcocorrespondence_letter',

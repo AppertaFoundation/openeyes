@@ -24,10 +24,10 @@
     <tbody>
     <tr>
       <td>
-          <?= CHtml::encode($element->getAttributeLabel('benefits')) ?>
+            <?= CHtml::encode($element->getAttributeLabel('benefits')) ?>
       </td>
       <td>
-          <?php echo $form->textArea(
+            <?php echo $form->textArea(
               $element,
               'benefits',
               array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
@@ -36,10 +36,10 @@
     </tr>
     <tr>
       <td>
-          <?= CHtml::encode($element->getAttributeLabel('risks')) ?>
+            <?= CHtml::encode($element->getAttributeLabel('risks')) ?>
       </td>
       <td>
-          <?php echo $form->textArea(
+            <?php echo $form->textArea(
               $element,
               'risks',
               array('rows' => 4, 'cols' => 80, 'nowrapper' => true)

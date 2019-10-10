@@ -116,17 +116,23 @@
 
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_0"
-                 value="today"<?php if (@$_POST['date-filter'] == 'today') { ?> checked="checked"<?php } ?>>
+                 value="today"<?php if (@$_POST['date-filter'] == 'today') {
+                        ?> checked="checked"<?php
+                              } ?>>
           Today
         </label>
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_1"
-                 value="week"<?php if (@$_POST['date-filter'] == 'week') { ?> checked="checked"<?php } ?>>
+                 value="week"<?php if (@$_POST['date-filter'] == 'week') {
+                        ?> checked="checked"<?php
+                             } ?>>
           Next 7 days
         </label>
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_2"
-                 value="month"<?php if (@$_POST['date-filter'] == 'month') { ?> checked="checked"<?php } ?>>
+                 value="month"<?php if (@$_POST['date-filter'] == 'month') {
+                        ?> checked="checked"<?php
+                              } ?>>
           Next 30 days
         </label>
 
@@ -136,8 +142,8 @@
       <h3>Filter by Date</h3>
 
       <div class="flex-layout">
-          <?=\CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
-          <?=\CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
+            <?=\CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
+            <?=\CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
       </div>
 
       <div class="flex-layout v-pad">
@@ -156,7 +162,7 @@
     <?php $this->endWidget() ?>
 
   <main class="oe-full-main">
-      <?php $this->renderPartial('//base/_messages'); ?>
+        <?php $this->renderPartial('//base/_messages'); ?>
 
     <!--<div class="alert-box info"><strong><span id="result_count">99</span> Results</strong></div>-->
     <div id="theatreList" class="theatres-list"></div>

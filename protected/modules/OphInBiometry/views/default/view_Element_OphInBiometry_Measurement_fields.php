@@ -27,9 +27,9 @@
                     SNR:
                 </td>
                 <td>
-                    <?php if ($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()): ?>
+                    <?php if ($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()) : ?>
                         N/A
-                    <?php else: ?>
+                    <?php else : ?>
                         <?=\CHtml::encode($element->{'snr_' . $side}) ?>
                     <?php endif; ?>
                 </td>
@@ -102,7 +102,7 @@
 
             </td>
             <td>
-              <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
             </td>
         </tr>
         <tr>

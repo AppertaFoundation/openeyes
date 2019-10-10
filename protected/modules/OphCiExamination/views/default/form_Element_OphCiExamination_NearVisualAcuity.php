@@ -27,31 +27,34 @@ $key = 0;
 
 <div class="element-both-eyes">
   <div>
-      <?php if ($element->isNewRecord) { ?>
+        <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?=\CHtml::dropDownList(
+            <?=\CHtml::dropDownList(
               'nearvisualacuity_unit_change',
               @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
               array('class' => 'inline'));
-          if ($element->unit->information) { ?>
+            if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
             </div>
-              <?php
-          } } ?>
+                  <?php
+            }
+        } ?>
   </div>
 </div>
 
 <div class="element-fields element-eyes">
-	<input type="hidden" name="nearvisualacuity_readings_valid" value="1" />
-	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <input type="hidden" name="nearvisualacuity_readings_valid" value="1" />
+    <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
+        ?> inactive <?php
+                               } ?>"
           data-side="<?= $eye_side ?>"
     >
       <div class="active-form data-group flex-layout"
@@ -84,10 +87,27 @@ $key = 0;
                 <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
             </div>
           </div>
+            <div id="nearvisualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                 style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#nearvisualacuity-<?= $eye_side ?>-comment-button">
+                <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                    array(
+                        'rows' => 1,
+                        'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                        'class' => 'cols-full js-comment-field',
+                        'style' => 'overflow-wrap: break-word; height: 24px;',
+                    )) ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
-             style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?> ">
-          <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading">
+            <button id="nearvisualacuity-<?= $eye_side ?>-comment-button"
+                    class="button js-add-comments" data-comment-container="#nearvisualacuity-<?= $eye_side ?>-comments"
+                    type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                <i class="oe-i comments small-icon"></i>
+            </button>
+          <button class="button hint green addReading" id="add-NearVisualAcuity-reading-btn-<?= $eye_side?>"
+                  style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?>"
+                  type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
         </div>
@@ -103,15 +123,15 @@ $key = 0;
     </div>
     <script type="text/javascript">
       new OpenEyes.UI.AdderDialog({
-        openButton: $('#<?= $eye_side ?>-add-near-va-btn'),
+        openButton: $("#add-NearVisualAcuity-reading-btn-<?= $eye_side?>"),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
-              return ['label' => $value, 'id' => $key];
-              }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
-                }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
+              }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
@@ -143,7 +163,7 @@ $key = 0;
     <?php endforeach; ?>
 </div>
 <script id="nearvisualacuity_reading_template" type="text/html">
-	<?php
+    <?php
     $this->renderPartial('form_Element_OphCiExamination_NearVisualAcuity_Reading', array(
             'name_stub' => CHtml::modelName($element).'[{{side}}_readings]',
             'key' => '{{key}}',
@@ -170,9 +190,9 @@ $assetManager->publish($baseAssetsPath.'/components/chosen/');
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {
+    $(document).ready(function() {
 
-		OphCiExamination_VisualAcuity_method_ids = [ <?php
+        OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
         foreach ($methods as $index => $method) {
             if (!$first) {
@@ -181,5 +201,5 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
             $first = false;
             echo $index;
         } ?> ];
-	});
+    });
 </script>

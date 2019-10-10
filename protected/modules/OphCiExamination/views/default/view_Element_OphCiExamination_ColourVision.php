@@ -39,9 +39,9 @@
                         ?>
                     </tbody>
                 </table>
-                <?php } else { ?>
+            <?php } else { ?>
                 <div class="data-value not-recorded">None given</div>
-                <?php } ?>
+            <?php } ?>
         </div>
     </div>
     <div class="js-element-eye left-eye cols-6">
@@ -70,7 +70,7 @@
             } else {
                 ?>
                 <div class="data-value not-recorded">None given</div>
-                <?php }
+            <?php }
             ?>
         </div>
     </div>
