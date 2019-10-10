@@ -1,5 +1,29 @@
 $(document).ready(function() {
 
+  let workflow_edited = false;
+
+  let bindActionWithWorkflowWarning = function (selector, actionType, actionFunction) {
+    $(selector).on(actionType, function(e) {
+      e.preventDefault();
+      let currentElement = $(this);
+
+      if (workflow_edited) {
+        let confirmationDialog = new OpenEyes.UI.Dialog.Confirm({
+          title: 'Warning',
+          content: 'The current workflow order has unsaved changes, are you sure you want to continue?'
+        });
+
+        confirmationDialog.content.on('click', '.ok', () => {
+          actionFunction(e, currentElement);
+        });
+
+        confirmationDialog.open();
+      } else {
+        actionFunction(e, currentElement);
+      }
+    });
+  };
+
 	$('.sortable').sortable({
 		update: function(event, ui) {
 			if (typeof(OphCiExamination_sort_url) !== 'undefined') {
@@ -66,13 +90,11 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#admin_workflow_steps tbody tr').click(function(e) {
-		e.preventDefault();
-
+  bindActionWithWorkflowWarning('#admin_workflow_steps tbody tr', 'click', function(e, currentElement) {
 		$('#admin_workflow_steps tbody tr').removeClass('selected');
-		$(this).addClass('selected');
+		currentElement.addClass('selected');
 
-		var id = $(this).data('id');
+		var id = currentElement.data('id');
 
 		$.ajax({
 			'type': 'GET',
@@ -115,8 +137,6 @@ $(document).ready(function() {
     setTimeout(()=>$('#workflow-flash').fadeOut(), duration);
   };
 
-  let workflow_edited = false;
-
   let bindWorkflowEditEventListeners = () => {
     // Activate edit mode when a change is made
     $('#step_element_types tbody').sortable({
@@ -143,6 +163,7 @@ $(document).ready(function() {
             'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
             'success': function (html) {
               $('#step_element_types').html(html);
+              bindWorkflowEditEventListeners();
               $('.spinner').css('display', 'none');
             },
             'error': function () {
@@ -183,9 +204,7 @@ $(document).ready(function() {
     });
 
     // Bind Add element button to current flow.
-    $('#et_add_element_type').click(function(e) {
-      e.preventDefault();
-
+    bindActionWithWorkflowWarning('#et_add_element_type', 'click', function(e) {
       if ($('#element_type_id').val() == '') {
         alert("Please select an element type to add");
         return;
@@ -272,9 +291,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#et_add_step').click(function(e) {
-		e.preventDefault();
-
+  bindActionWithWorkflowWarning('#et_add_step', 'click', function (e) {
 		$.ajax({
 			'type': 'POST',
 			'dataType': 'json',
@@ -309,9 +326,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#et_save_step_name').click(function(e) {
-		e.preventDefault();
-
+  bindActionWithWorkflowWarning('#et_save_step_name', 'click', function (e) {
 		if ($('#step_name').val() == '') {
 			alert("Name cannot be blank");
 			return;

@@ -58,13 +58,11 @@
           <td colspan="5">
             <div class="grid-view">
               <div id="workflow-edit-controls" class="data-group">
-                <div class="cols-3 column end">
+                <div>
                   <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
                 </div>
-                <div class="cols-3 column">
+                <div>
                   <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
-                </div>
-                <div class="cols-3 column end">
                   <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
                 </div>
               </div>
