@@ -34,31 +34,32 @@
     <script type="text/javascript">
         $(document).ready(function() {
             let id = 0;
-            let pageStack = $('.multipage-stack');
             let maxPages = <?= count($pages) ?>;
+
+            function scrollToPage(page) {
+                let pageStack = $('.multipage-stack');
+                pageStack.animate({
+                    scrollTop: pageStack.scrollTop() + $('#biom-' + (page + 1)).position().top
+                });
+            }
+
             $('#js-scroll-btn-down').click(function() {
                 if (id + 1 < maxPages) {
                     id++;
-                    pageStack.animate({
-                        scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
-                    });
+                    scrollToPage(id);
                 }
             });
 
             $('#js-scroll-btn-up').click(function() {
                 if (id > 0) {
                     id--;
-                    pageStack.animate({
-                        scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
-                    });
+                    scrollToPage(id);
                 }
             });
 
             $('.page-num-btn').click(function() {
                 id = $(this).data('page');
-                pageStack.animate({
-                    scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
-                });
+                scrollToPage(id);
             })
         });
     </script>

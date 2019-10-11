@@ -158,6 +158,8 @@ class WhiteboardController extends BaseDashboardController
             $whiteboard->loadData($id);
         }
 
+        $this->pageTitle = $whiteboard->patient_name;
+
         $this->render('view', array('data' => $whiteboard, 'booking_id' => $id), false, true);
     }
 
@@ -187,6 +189,8 @@ class WhiteboardController extends BaseDashboardController
         $criteria->limit = 1;
 
         $element = Element_OphCoDocument_Document::model()->find($criteria);
+
+        $this->pageTitle = $whiteboard->patient_name;
 
         $this->render('biometry', array('data' => $whiteboard, 'booking_id' => $id, 'document_event_id' => $element->event->id, 'pages' => $element->event->previewImages), false, true);
     }
