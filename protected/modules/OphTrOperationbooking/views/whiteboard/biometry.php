@@ -2,6 +2,7 @@
     /**
      * @var $booking_id int
      * @var $pages EventImage[]
+     * @var $document_event_id int
      */
 ?>
 <header class="oe-header">
@@ -27,18 +28,19 @@
     <div class="multipage-stack whiteboard">
         <?php
         foreach ($pages as $id => $page) : ?>
-            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document_event_id?>" alt="biom-<?= $id + 1?>"/>
+            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document_event_id ?>" alt="biom-<?= $id + 1?>"/>
         <?php endforeach; ?>
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
             let id = 0;
+            let pageStack = $('.multipage-stack');
             let maxPages = <?= count($pages) ?>;
             $('#js-scroll-btn-down').click(function() {
                 if (id + 1 < maxPages) {
                     id++;
-                    $('.multipage-stack').animate({
-                        scrollTop:  $('#biom-' + (id + 1)).offset().top
+                    pageStack.animate({
+                        scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
                     });
                 }
             });
@@ -46,16 +48,16 @@
             $('#js-scroll-btn-up').click(function() {
                 if (id > 0) {
                     id--;
-                    $('.multipage-stack').animate({
-                        scrollTop:  $('#biom-' + (id + 1)).offset().top
+                    pageStack.animate({
+                        scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
                     });
                 }
             });
 
             $('.page-num-btn').click(function() {
                 id = $(this).data('page');
-                $('.multipage-stack').animate({
-                    scrollTop:  $('#biom-' + (id + 1)).offset().top
+                pageStack.animate({
+                    scrollTop: pageStack.scrollTop() + $('#biom-' + (id + 1)).position().top
                 });
             })
         });
