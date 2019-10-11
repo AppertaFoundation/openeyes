@@ -1470,8 +1470,8 @@ class AnalyticsController extends BaseController
                 e.id as event_id
                 , p.id as patient_id
                 , UNIX_TIMESTAMP(e.event_date) as event_date
-                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
-                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
+                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date
+                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks
                 , UNIX_TIMESTAMP(w.start) as start
             ")
             ->from("event e")
@@ -1481,7 +1481,8 @@ class AnalyticsController extends BaseController
             ->leftjoin("firm f", "e2.firm_id = f.id")
             ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
             ->leftjoin("et_ophciexamination_clinicoutcome eoc", "eoc.event_id = e.id")
-            ->leftjoin("period", "period.id = eoc.followup_period_id")
+            ->leftjoin("ophciexamination_clinicoutcome_entry eoc_entry", "eoc_entry.element_id = eoc.id")
+            ->leftjoin("period", "period.id = eoc_entry.followup_period_id")
             ->leftjoin("worklist_patient wp", "p.id = wp.patient_id")
             ->leftjoin("worklist w", "wp.worklist_id = w.id")
             ->where("p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1")
@@ -1497,7 +1498,7 @@ class AnalyticsController extends BaseController
                 )
             ")
             ->andWhere("eoc.id is not null")
-            ->andWhere("eoc.followup_period_id is not null");
+            ->andWhere("eoc_entry.followup_period_id is not null");
 
         // extract out the query in the foreach loop
         // and integrate them into the following query
