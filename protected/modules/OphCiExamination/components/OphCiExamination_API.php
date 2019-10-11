@@ -2956,9 +2956,22 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                        <td><?= $entry->getEndDateDisplay($entry->prescription_item->duration->name); ?></td>
                     </tr>
-                    <?php foreach ($tapers as $taper) : ?>
+                    <?php
+										$taper_date = $entry->end_date;
+										foreach ($tapers as $taper) :
+												if ($taper->duration) {
+														if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+																$taper_display_date = $taper->duration->name;
+														} else if($taper_date){
+															$taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+															$taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+														}else {
+																$taper_display_date = 'Ongoing';
+														}
+												}
+										?>
                         <tr>
                             <td>
                                 <div class="oe-i child-arrow small no-click"></div>
@@ -2971,7 +2984,7 @@ class OphCiExamination_API extends \BaseAPI
                                 <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
                             </td>
                             <td>
-                                <?= $taper->duration ? $taper->duration->name : '' ?>
+                                <?= $taper_display_date ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -3023,14 +3036,43 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
             <?php foreach ($current_systemic_meds as $entry) : ?>
+							<?php $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers; ?>
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
                     <td>
                         <?= $entry->frequency ? $entry->frequency : ''; ?>
                     </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    <td><?= $entry->getEndDateDisplay($entry->prescription_item->duration->name); ?></td>
                 </tr>
+									<?php
+									$taper_date = $entry->end_date;
+									foreach ($tapers as $taper) :
+											if ($taper->duration) {
+													if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+															$taper_display_date = $taper->duration->name;
+													} else if($taper_date){
+															$taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+															$taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+													}else {
+															$taper_display_date = 'Ongoing';
+													}
+											}
+										?>
+										<tr>
+											<td>
+												<div class="oe-i child-arrow small no-click"></div>
+												<i> then</i>
+											</td>
+											<td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+											<td>
+												<?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+											</td>
+											<td>
+												<?= $taper_display_date ?>
+											</td>
+										</tr>
+									<?php endforeach; ?>
             <?php endforeach; ?>
             </tbody>
         </table>

@@ -155,7 +155,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency = $item->frequency;
         $this->start_date = date('Y-m-d', strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
-            $end_date = $item->stopDateFromDuration();
+            $end_date = $item->stopDateFromDuration(false);
 
             if ($end_date !== null) {
                 if (strtotime($end_date->format('Y-m-d')) < time()) {
@@ -360,6 +360,15 @@ class HistoryMedicationsEntry extends \BaseElement
             return $empty_text;
         }
     }
+
+    public function getTaperDateDisplay($currentDate, $taper_duration)
+		{
+				if ($taper_duration && $currentDate) {
+					return \Helper::formatFuzzyDate(date('Y-m-d', strtotime($currentDate. $taper_duration)));
+				} else {
+					return \Helper::formatFuzzyDate($this->end_date);
+				}
+		}
 
     public function getStartDateDisplay()
     {
