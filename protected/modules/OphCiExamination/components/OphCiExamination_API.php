@@ -2939,7 +2939,7 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) : ?>
-                    <?php $entry->prescription_item_id ? $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
+                    <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
                     <tr>
                         <td><?= $entry->getMedicationDisplay() ?></td>
                         <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
