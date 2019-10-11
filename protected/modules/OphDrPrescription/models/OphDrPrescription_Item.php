@@ -199,14 +199,14 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
         $start_date = new DateTime($this->prescription->event->event_date);
         $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
-        if($include_tapers){
-					foreach ($this->tapers as $taper) {
-						if (in_array($taper->duration->name, array('Other', 'Until review'))) {
-							return null;
-						}
-						$end_date->add(DateInterval::createFromDateString($taper->duration->name));
-					}
-				}
+        if ($include_tapers) {
+            foreach ($this->tapers as $taper) {
+                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                    return null;
+                }
+                $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+            }
+        }
         return $end_date;
     }
 
