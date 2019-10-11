@@ -16,39 +16,73 @@
  */
 ?>
 <?php /** @var EventMedicationUse $entry */ ?>
-<tr>
-    <td>
+<tr class="divider col-gap <?= isset($stopped) && $stopped ? "fade": ""; ?>">
+    <td rowspan="2">
+        <i class="oe-i <?= $entry_icon ?> small pad-right "></i>
+        <?= $entry->getMedicationDisplay(true) ?>
         <?php if ($this->mode !== static::$EVENT_PRINT_MODE) {
             $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
         } ?>
-        <?= $entry->getMedicationDisplay(true) ?>
-        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-            <a href="<?= $entry->getPrescriptionLink(); ?>">
-                &nbsp;<i class="oe-i drug-rx small" title="Prescribed"></i>
-            </a>
-        <?php endif; ?>
     </td>
     <td>
         <?php echo $entry->getAdministrationDisplay(); ?>
+        <?php $laterality = $entry->getLateralityDisplay(); ?>
+
+        <?php if ($entry->route && $entry->route->has_laterality) {
+            $laterality = $entry->getLateralityDisplay(); ?>
+            <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
+            <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
+        <?php } ?>
     </td>
-    <td><?php echo $entry->duration_id ? $entry->drugDuration->name : '' ?></td>
     <td>
+
+        <?php echo $entry->duration_id ? $entry->drugDuration->name : '' ?>
         <?php if ($entry->dispense_condition_id) {
-            echo $entry->dispense_condition->name . " / " . $entry->dispense_location->name;
+            echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
         } ?>
     </td>
-    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+    <td>
+        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
+            <i class="oe-i circle-green small js-has-tooltip" data-tooltip-content="Prescribed"></i>
+        <?php endif; ?>
     </td>
-    <td><?= $entry->getStartDateDisplay() ?></td>
-    <?php if (isset($stopped) && $stopped) { ?>
-        <td><?= $entry->getEndDateDisplay() ?></td>
-    <?php } ?>
+    <td>
+        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
+            <a href="<?= $entry->getPrescriptionLink(); ?>">
+                <i class="oe-i direction-right-circle medium-icon js-has-tooltip" data-tooltip-content="View Prescription"></i>
+            </a>
+        <?php endif; ?>
+    </td>
+</tr>
+<tr class="no-line col-gap <?=isset($stopped) && $stopped ? "fade": ""; ?>">
+    <td>
+        <div class="flex-meds-inputs">
+                <span>
+                <i class="oe-i start small pad"></i>
+            <?= $entry->getStartDateDisplay() ?>
+                    </span>
+            <?php if (isset($entry->end_date)) { ?>
+                <span>
+            <i class="oe-i stop small pad"></i>
+                <?= $entry->getEndDateDisplay() ?>
+                </span>
+            <?php } ?>
+        </div>
+    </td>
+    <td>
+        <i class="oe-i comments small no-click pad-right "></i>
+        <?php if ($entry->comments) { ?>
+            <span><?= $entry->comments; ?></span>
+        <?php } else { ?>
+            <span class="none">No comments</span>
+        <?php } ?>
+    </td>
+    <td></td>
+    <td></td>
 </tr>
 <?php if ($entry->taper_support) : ?>
     <?php foreach ($entry->tapers as $taper) : ?>
-        <tr>
+        <tr class="meds-taper col-gap <?= isset($stopped) && $stopped ? "fade" : "" ?>"  >
             <td>
                 <i class="oe-i child-arrow small no-click pad"></i>
                 <em class="fade">then</em>

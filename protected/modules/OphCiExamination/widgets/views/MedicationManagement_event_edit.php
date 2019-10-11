@@ -38,36 +38,25 @@ $element_errors = $element->getErrors();
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="field-row flex-layout full">
+    <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="cols-full entries js-entry-table <?php echo $element_errors ? 'highlighted-error error' : '' ?>"
-                             id="<?= $model_name ?>_entry_table cols-full">
-            <colgroup>
-                <col class="cols-2">
-                <col class="cols-3">
-                <col class="cols-2">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup>
-            <thead>
-            <tr>
-                <th>Drug</th>
-                <th>Dose/frequency/route</th>
-                <th>Stopped</th>
-                <th>Reason</th>
-                <th>Duration</th>
-                <th>Disp. cond.</th>
-                <th>Disp. loc.</th>
-                <th>
-                    <i class="oe-i drug-rx small no-click"></i>
-                </th>
-                <th></th>
-            </tr>
-            </thead>
+        <table class="medications entries js-entry-table"
+                             id="<?= $model_name ?>_entry_table">
+                    <colgroup>
+                        <col class="cols-2">
+                        <col class="cols-6">
+                        <col class="cols-3">
+                        <col class="cols-icon" span="2">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Dose/frequency/route/start/stop</th>
+                        <th>Duration/dispense/comments</th>
+                        <th><i class="oe-i drug-rx small no-click"></i></th>
+                        <th></th><!-- actions -->
+                    </tr>
+                    </thead>
             <tbody>
                 <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
@@ -174,6 +163,7 @@ $element_errors = $element->getErrors();
                 array(
                     "element" => $element,
                     "entry" => $empty_entry,
+                    "model_name" => $model_name,
                     "row_count" => "{{row_count}}",
                     "taper_count" => "{{taper_count}}",
                     "field_prefix" => $model_name."[entries][{{row_count}}][taper][{{taper_count}}]"
@@ -215,30 +205,39 @@ $element_errors = $element->getErrors();
             initRowsFromHistoryElement: function () {
 
                 let copyFields = <?=!$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false'?>;
-                $.each(window.HMController.$table.children("tbody").children("tr"), function (i, historyMedicationRow) {
+                $.each(window.HMController.$table.children("tbody").children("tr.js-first-row"), function (i, historyMedicationRow) {
                     let medicationHistoryBoundKey = $(historyMedicationRow).find('.js-bound-key').val();
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
 
-                    $.each(window.MMController.$table.children("tbody").children("tr"), function (index, medicationManagementRow) {
+                    $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function (index, medicationManagementRow) {
                         if (medicationHistoryBoundKey && $(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
-                            $medicationManagementRow = medicationManagementRow;
+                            $medicationManagementRow = $(medicationManagementRow);
 
                                                 }
                     });
 
+                    let historyMedicationKey = $(historyMedicationRow).data('key');
+                    let $historyMedicationFullRow = window.HMController.$table.find('tr[data-key=' + historyMedicationKey + ']');
+
+
                     if (copyFields && rowNeedsCopying) {
-                        $medicationManagementRow = window.HMController.copyRow($(historyMedicationRow), window.MMController.$table.children("tbody"));
+                        $medicationManagementRow = window.HMController.copyRow($historyMedicationFullRow, window.MMController.$table.children("tbody"));
                         window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
                     }
 
-                    let hidden = ($(historyMedicationRow).find(".js-to-be-copied").val() === "0");
+                    let hidden = (
+                        $(historyMedicationRow).find(".js-to-be-copied").val() === "false" ||
+                                                $(historyMedicationRow).find(".js-to-be-copied").val() === "0"
+                                        );
                     if (hidden) {
-                        $medicationManagementRow.addClass("hidden");
-                        $medicationManagementRow.find(".js-hidden").val("1");
+                        if(typeof $medicationManagementRow !== "undefined") {
+                            $medicationManagementRow.addClass("hidden");
+                            $medicationManagementRow.find(".js-hidden").val("1");
+                        }
                     }
                 });
 

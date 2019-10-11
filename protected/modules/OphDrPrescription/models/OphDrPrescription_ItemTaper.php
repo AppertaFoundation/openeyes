@@ -58,6 +58,7 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         return array(
                 array('frequency_id, duration_id', 'required'),
                 array('dose, item_id, id', 'safe'),
+								array('dose', 'numerical'),
                 //array('', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
