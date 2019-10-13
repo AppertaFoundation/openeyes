@@ -271,11 +271,13 @@ class GpController extends BaseController
 
         $output = array();
         foreach($labels as $label){
-            $output[] = array(
-                'id' => $label['id'],
-                'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
-                'value' => $label['first_name'].' '. $label['last_name'].' - '.$label['role']
-            );
+            if($this->loadModel($label['id'])->is_active){
+                $output[] = array(
+                  'id' => $label['id'],
+                  'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
+                  'value' => $label['first_name'].' '. $label['last_name'].' - '.$label['role']
+                );
+            }
         }
 
         echo CJSON::encode($output);
