@@ -32,7 +32,7 @@ class BaseAdminController extends BaseController
         $admin = new AdminSidebar();
         $admin->init();
         
-        if ($admin->getCurrentTitle()){
+        if ($admin->getCurrentTitle()) {
             $name = $admin->getCurrentTitle();
         } else {
             $name=ucfirst(basename($this->getId()));
