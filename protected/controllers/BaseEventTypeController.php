@@ -160,8 +160,9 @@ class BaseEventTypeController extends BaseModuleController
     {
         return ucfirst($this->getAction()->getId()) .
             ($this->event_type ? ' ' . $this->event_type->name : '') .
+            ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
             ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
-            ' - OE';
+             ' - OE' : '');
     }
 
     public function getTitle()
