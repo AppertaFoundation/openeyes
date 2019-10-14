@@ -424,7 +424,6 @@ class Medication extends BaseActiveRecordVersioned
         } else {
             return $this->medicationSets;
         }
-
     }
 
     /**

@@ -34,7 +34,8 @@ class MedicationController extends BaseController
                 array(
                     'patient' => $this->fetchModel('Patient', $patientId),
                 ),
-                false, true
+                false,
+                true
             );
         } else {
             if ($medicationId) {
@@ -59,7 +60,8 @@ class MedicationController extends BaseController
                     'ArchiveMedication' => $medication,
                     'firm' => Firm::model()->findByPk($this->selectedFirmId),
                 ),
-                false, true
+                false,
+                true
             );
         }
     }
@@ -154,8 +156,10 @@ class MedicationController extends BaseController
         if (@$_POST['MedicationAdherence']) {
             $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 
-            $medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id',
-                array(':patient_id' => $patient->id));
+            $medication_adherence = MedicationAdherence::model()->find(
+                'patient_id=:patient_id',
+                array(':patient_id' => $patient->id)
+            );
             if (!$medication_adherence) {
                 $medication_adherence = new MedicationAdherence();
                 $medication_adherence->patient_id = $patient->id;
