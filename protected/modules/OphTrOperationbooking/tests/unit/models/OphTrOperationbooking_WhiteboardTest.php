@@ -6,6 +6,7 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
 {
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
+        'operation_procedures' => OphTrOperationbooking_Operation_Procedures::class,
         'whiteboards' => OphTrOperationbooking_Whiteboard::class,
         'biometry_measurement' => Element_OphInBiometry_Measurement::class,
         'biometry_selection' => Element_OphInBiometry_Selection::class,
@@ -14,7 +15,10 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         'risks' => Element_OphCiExamination_Risks::class,
         'patients' => Patient::class,
         'events' => Event::class,
-        'episodes' => Episode::class
+        'episodes' => Episode::class,
+        'event_types' => EventType::class,
+        'element_types' => ElementType::class,
+        'eye' => Eye::class,
     );
 
     public static function setUpBeforeClass()
@@ -37,18 +41,18 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
     {
         return array(
             'New whiteboard' => array(
-                'booking_id' => 5,
+                'booking_id' => 26,
                 'fixtureId' => null,
-                'procedure' => 'Dacrocystogram',
+                'procedure' => 'Foobar Procedure',
                 'aconst' => null,
                 'equipment' => null,
                 'comment' => null,
                 'complexity' => Element_OphTrOperationbooking_Operation::COMPLEXITY_MEDIUM,
             ),
             'Existing editable whiteboard' => array(
-                'booking_id' => 6,
+                'booking_id' => 26,
                 'fixtureId' => 'whiteboard1',
-                'procedure' => 'Repositioning of Intraocular lens',
+                'procedure' => 'Foobar Procedure',
                 'aconst' => 118.0,
                 'equipment' => "Test equipment 1\nTest equipment 2",
                 'comment' => 'Test whiteboard',
