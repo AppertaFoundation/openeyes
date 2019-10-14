@@ -48,13 +48,20 @@ $cataract_card_list = array(
             ', ',
             array_map(
                 static function ($elem) {
-                    if ($elem->name === 'LA') {
-                        return 'Local';
+                    switch (trim($elem->name)) {
+                        case 'LA':
+                            return 'Local';
+                            break;
+                        case 'GA':
+                            return 'General';
+                            break;
+                        case 'No Anaesthetic':
+                            return 'None';
+                            break;
+                        default:
+                            return $elem->name;
+                            break;
                     }
-                    if ($elem->name === 'GA') {
-                        return 'General';
-                    }
-                    return $elem->name;
                 },
                 $data->booking->anaesthetic_type
             )
@@ -100,16 +107,16 @@ $other_card_list = array(
             $data->hos_num
         )
     ),
-    $data->eye_id === 3 ? 'Procedure (1st)' : 'Procedure' => array(
+    (int)$data->eye_id === Eye::BOTH ? 'Procedure (1st)' : 'Procedure' => array(
         'data' => array(
-            'content' =>  $data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
+            'content' =>  (int)$data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
             'extra_data' => $data->procedure,
             'deleted' => $is_deleted,
         ),
         'colour' => $complexity_colour,
     ),
     'Procedure (2nd)' => array(
-        'data' => $data->eye_id === Eye::BOTH ? array(
+        'data' => (int)$data->eye_id === Eye::BOTH ? array(
             'content' => 'Right',
             'extra_data' => $data->procedure,
             'deleted' => $is_deleted,
@@ -121,20 +128,27 @@ $other_card_list = array(
             ', ',
             array_map(
                 static function ($elem) {
-                    if ($elem->name === 'LA') {
-                        return 'Local';
+                    switch (trim($elem->name)) {
+                        case 'LA':
+                            return 'Local';
+                            break;
+                        case 'GA':
+                            return 'General';
+                            break;
+                        case 'No Anaesthetic':
+                            return 'None';
+                            break;
+                        default:
+                            return $elem->name;
+                            break;
                     }
-                    if ($elem->name === 'GA') {
-                        return 'General';
-                    }
-                    return $elem->name;
                 },
                 $data->booking->anaesthetic_type
             )
         )
     ),
     'Biometry' => array(
-        'data' => $data->eye->id === Eye::BOTH ? null : array(
+        'data' => (int)$data->eye->id === Eye::BOTH ? null : array(
             array(
                 'content' => $data->axial_length,
                 'small_data' => $data->axial_length !== 'Unknown' ? 'mm' : null,

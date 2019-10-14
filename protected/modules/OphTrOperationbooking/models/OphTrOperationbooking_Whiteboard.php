@@ -65,7 +65,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
 
         $eye = Eye::model()->findByPk($booking->eye_id);
-        if ($eye->name === 'Both') {
+        if ($eye->name === 'Both' && $booking->event->episode->firm->getSubspecialty()->name === 'Cataract') {
             throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
         }
         $eyeLabel = strtolower($eye->name);
@@ -101,7 +101,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
-            if ($biometry->attributes['lens_display_name_' . $eyeLabel]) {
+            if (isset($biometry->attributes['lens_display_name_' . $eyeLabel])) {
                 $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
                 $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
                 $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
