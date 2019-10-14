@@ -27,18 +27,26 @@
 } ?>
 
 <div class="row divider">
+    <h2>Set type:</h2>
     <form id="drug_set_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
         <div id="set-filters" class="flex-layout row">
-            <?php foreach (MedicationUsageCode::model()->findAll() as $usage_code) :?>
-                <button
-                        data-usage_code_id="<?=$usage_code->id;?>"
-                                                id="button_drug_type_usage_<?= preg_replace('/\s+/', '_', strtolower($usage_code->name));?>"
-                        type="button"
-                        class="large js-set-select <?=$isSelected($usage_code->id);?>"
-                ><?=$usage_code->name;?>
-                </button>
+            <button
+                data-usage_code_id='<?= DrugSetController::FILTER_USAGE_CODE_ID_FOR_ALL ?>'
+                id="usage_code_button_all"
+                type="button"
+                class="large js-set-select <?=$isSelected(DrugSetController::FILTER_USAGE_CODE_ID_FOR_ALL);?>"
+            >All
+            </button>
+            <?php foreach (MedicationUsageCode::model()->findAll(['condition' => 'active = 1']) as $usage_code) :?>
+            <button
+                data-usage_code_id="<?=$usage_code->id;?>"
+                id="usage_code_button_<?= strtolower($usage_code->usage_code); ?>"
+                type="button"
+                class="large js-set-select <?=$isSelected($usage_code->id);?>"
+            ><?=$usage_code->name;?>
+            </button>
             <?php endforeach; ?>
         </div>
 
