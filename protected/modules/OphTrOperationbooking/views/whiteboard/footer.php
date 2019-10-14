@@ -28,8 +28,7 @@
     </button>
 <?php else : ?>
     <button class="pro-theme" formaction="/OphTrOperationbooking/whiteboard/view/<?=$this->getWhiteboard()->event_id?>">
-        <span class="icon-text">Back</span>
-        <i class="oe-i arrow-left-bold pro-theme medium pad-left"></i>
+        <span class="icon-text">Overview</span>
     </button>
 <?php endif; ?>
 <?php $this->endWidget(); ?>

@@ -23,9 +23,6 @@
         <?php $this->renderPartial('//base/head/_assets'); ?>
     </head>
     <body class="open-eyes oe-grid">
-        <!-- Minimum screed width warning -->
-        <div id="oe-minimum-width-warning">Device width not supported</div>
-
         <?php $this->renderPartial('//base/_debug'); ?>
 
         <div class="openeyes-brand">
