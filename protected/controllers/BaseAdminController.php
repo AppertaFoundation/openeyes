@@ -27,6 +27,31 @@ class BaseAdminController extends BaseController
      */
     public $group = 'Core';
 
+    public function getPageTitle()
+    {
+        $admin = new AdminSidebar();
+        $admin->init();
+        
+        if ($admin->getCurrentTitle()){
+            $name = $admin->getCurrentTitle();
+        } else {
+            $name=ucfirst(basename($this->getId()));
+
+            if ($this->getAction()!==null && strcasecmp($this->getAction()->getId(), $this->defaultAction)) {
+                $name=$this->pageTitle=ucfirst($this->getAction()->getId()).' '.$name;
+            } else {
+                $name=$this->pageTitle=$name;
+            }
+        }
+
+        if ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
+            $name=$name . ' - OE';
+        }
+
+        return 'Admin - '.$name;
+    }
+
+
     public function accessRules()
     {
         return array(array('allow', 'roles' => array('admin')));
@@ -213,7 +238,7 @@ class BaseAdminController extends BaseController
                         $this->addFilterCriteria($criteria, $options['filter_fields']);
 
                         $to_delete = $model::model()->findAll($criteria);
-                        foreach ($to_delete as $i=>$item) {
+                        foreach ($to_delete as $i => $item) {
                             if (!$item->delete()) {
                                 $tx->rollback();
                                 $error = $item->getErrors();
