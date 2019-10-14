@@ -576,6 +576,10 @@ class MedicationSet extends BaseActiveRecordVersioned
             foreach ($this->medicationAutoRuleAttributes as $attribute) {
                 $attribute->delete();
             }
+        } else {
+            foreach ($this->medicationSetItems as $item) {
+                $item->delete();
+            }
         }
 
         return true;

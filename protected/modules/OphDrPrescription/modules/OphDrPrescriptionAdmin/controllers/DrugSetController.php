@@ -359,13 +359,8 @@ class DrugSetController extends BaseAdminController
                 if ($set->automatic) {
                     $deleted_rows = $set->removeUsageCode($usage_code);
                 } else {
-                    $count = $set->itemsCount();
-                    if (!$count) {
-                        if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
-                            $set->delete();
-                        }
-                    } else {
-                        $response['message'] .= "Set '{$set->name}' is not empty. Please delete the medications first.<br>";
+                    if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                        $set->delete();
                     }
                 }
             }
