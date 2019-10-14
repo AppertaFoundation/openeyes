@@ -86,7 +86,7 @@ class MedicationController extends BaseAdminController
         $criteria = $this->getSearchCriteria($search);
         $data['items'] = [];
 
-        $data_provider = new CActiveDataProvider('medication', [
+        $data_provider = new CActiveDataProvider('Medication', [
             'criteria' => $criteria,
         ]);
 
