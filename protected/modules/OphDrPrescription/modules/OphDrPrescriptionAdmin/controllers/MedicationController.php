@@ -44,7 +44,7 @@ class MedicationController extends BaseAdminController
         $filters = \Yii::app()->request->getParam('search');
         $criteria = $this->getSearchCriteria($filters);
 
-        $data_provider = new CActiveDataProvider('medication', [
+        $data_provider = new CActiveDataProvider('Medication', [
             'criteria' => $criteria,
         ]);
 
