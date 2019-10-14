@@ -10,8 +10,8 @@
         'enableAjaxValidation' => false,
     ))?>
 <?php if (!$biometry) : ?>
-    <button class="pro-theme" formaction="/OphTrOperationbooking/whiteboard/biometryReport/<?= $booking_id?>">
-        <span class="icon-text">Biometry</span>
+    <button class="pro-theme large" formaction="/OphTrOperationbooking/whiteboard/biometryReport/<?= $booking_id?>">
+        Biometry
     </button>
 <?php endif; ?>
 <?php if ($this->isRefreshable() && !$biometry) :?>
@@ -27,8 +27,8 @@
         <i class="oe-i remove-circle pro-theme medium pad-left"></i>
     </button>
 <?php else : ?>
-    <button class="pro-theme" formaction="/OphTrOperationbooking/whiteboard/view/<?=$this->getWhiteboard()->event_id?>">
-        <span class="icon-text">Overview</span>
+    <button class="pro-theme large" formaction="/OphTrOperationbooking/whiteboard/view/<?=$this->getWhiteboard()->event_id?>">
+        Overview
     </button>
 <?php endif; ?>
 <?php $this->endWidget(); ?>

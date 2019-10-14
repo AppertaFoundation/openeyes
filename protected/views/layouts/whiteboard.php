@@ -19,7 +19,9 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <?php $this->renderPartial('//base/head/_meta'); ?>
+        <?php $this->renderPartial('//base/head/_meta', array(
+            'whiteboard' => true,
+        )); ?>
         <?php $this->renderPartial('//base/head/_assets'); ?>
     </head>
     <body class="open-eyes oe-grid">
@@ -33,6 +35,6 @@
                 generate a hard copy.</h1>
         </div>
         <?php echo $content; ?>
-        <div id="dialog-container"></div>
+
     </body>
 </html>
