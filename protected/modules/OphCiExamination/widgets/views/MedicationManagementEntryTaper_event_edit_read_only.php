@@ -19,7 +19,7 @@
 /** @var OphDrPrescription_ItemTaper $entry */
 ?>
 
-<tr class="js-taper-row" data-parent-key="<?=$row_count?>" data-taper-key="<?=$taper_count?>">
+<tr class="meds-taper col-gap js-taper-row" data-parent-key="<?=$row_count?>" data-taper-key="<?=$taper_count?>">
 	<td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
 	<td>
 		<input class="cols-2 js-dose" style="display: inline-block;"  type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
@@ -27,19 +27,11 @@
 		<?= Chtml::hiddenField($field_prefix . '[frequency_id]', $entry->frequency_id);?>
 		<?= isset($entry->frequency) ? $entry->frequency->term : "" ?>
 	</td>
-	<td></td>
-	<td></td>
-	<td></td>
 	<td>
 		<?= Chtml::hiddenField($field_prefix . '[duration_id]', $entry->duration_id);?>
 		<?= isset($entry->duration) ? $entry->duration->name : ""?>
 	</td>
 	<td></td>
-	<td></td>
 	<td>
-		<?php $tooltip_no_prescribe_role = "This taper is from a prescribed medication and cannot be edited without prescribe permissions."; ?>
-		<span data-tooltip-content="<?= $tooltip_no_prescribe_role ?>" class="js-has-tooltip">
-				 <i class="oe-i trash js-remove disabled"></i>
-			</span>
 	</td>
 </tr>

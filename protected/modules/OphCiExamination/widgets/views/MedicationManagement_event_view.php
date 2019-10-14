@@ -17,63 +17,71 @@
 ?>
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id = CHtml::modelName($element) . '_element'; ?>
-<?php foreach (array(
-                   "Continued" => "getContinuedEntries",
-                   "Started" => "getEntriesStartedToday",
-                   "Stopped" => "getStoppedEntries",
-               ) as $section => $method) : ?>
-    <?php if (!empty($entries = $element->$method())) : ?>
-        <div class="element-data">
-            <div class="data-value">
-                <div class="tile-data overflow">
-                    <table>
-                        <colgroup>
-                            <col class="cols-3"/>
-                            <col class="cols-3"/>
-                            <col class="cols-1"/>
-                            <col class="cols-2"/>
-                            <col class="cols-1"/>
-                            <col class="cols-1"/>
-                            <?php if ($section === "Stopped") { ?>
-                                <col class="cols-1"/>
-                            <?php } ?>
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th><?php echo $section; ?></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <?php if ($section === "Stopped") { ?>
-                                <th></th>
-                            <?php } ?>
-                        </tr>
-                        <tr>
-                            <th>Medication</th>
-                            <th>Dose/Route/Frequency</th>
-                            <th>Duration</th>
-                            <th>Dispense Condition/Location</th>
-                            <th>Laterality</th>
-                            <th>Start date</th>
-                            <?php if ($section === "Stopped") { ?>
-                                <th>Stop date</th>
-                            <?php } ?>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($entries as $entry) : ?>
-                            <?php echo $this->render('MedicationManagementEntry_event_view',
-                                [
-                                    'entry' => $entry,
-                                    'stopped' => $section === "Stopped"
-                                ]); ?>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+<div class="element-data full-width">
+    <table class="medications">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+            <col class="cols-3">
+            <col class="cols-icon" span="2">
+            <!-- actions auto-->
+        </colgroup>
+        <thead>
+        <tr>
+            <th>Drug</th>
+            <th>Dose/frequency/route/start/stop</th>
+            <th>Duration/dispense/comments</th>
+            <th><i class="oe-i drug-rx small no-click"></i></th>
+            <th></th><!-- actions -->
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach (array(
+                                         "start" => "getContinuedEntries",
+                                         "direction-right " => "getEntriesStartedToday",
+                                     ) as $entry_icon => $method) :
+            $entries = $element->$method();
+    if (!empty($entries)) : ?>
+                <?php foreach ($entries as $entry) : ?>
+                    <?php echo $this->render('MedicationManagementEntry_event_view',
+                        [
+                            'entry' => $entry,
+                            'entry_icon' => $entry_icon
+                        ]); ?>
+                <?php endforeach; ?>
+
+    <?php endif; ?>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php $stoppedEntries = $element->getStoppedEntries();
+    if ($stoppedEntries) { ?>
+        <div class="collapse-data">
+            <div class="collapse-data-header-icon expand">
+                Stopped Medications <small>(<?= count($stoppedEntries) ?>)</small>
+            </div>
+            <div class="collapse-data-content" style="display:none;">
+
+                <table class="medications">
+                    <colgroup>
+                        <col class="cols-3">
+                        <col class="cols-5">
+                        <col class="cols-3">
+                        <col class="cols-icon" span="2">
+                    </colgroup>
+
+                    <tbody>
+                    <?php foreach ($stoppedEntries as $entry) : ?>
+                        <?php echo $this->render('MedicationManagementEntry_event_view',
+                            [
+                                'entry' => $entry,
+                                'entry_icon' => 'stop',
+                                'stopped' => true
+                            ]); ?>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    <?php endif; ?>
-<?php endforeach; ?>
+    <?php } ?>
+</div>

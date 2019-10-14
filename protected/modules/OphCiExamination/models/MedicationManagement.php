@@ -113,7 +113,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getContinuedEntries()
     {
-        $event_date = $this->event->event_date;
+        $event_date = substr($this->event->event_date, 0, 10);
 
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->start_date < $event_date &&
@@ -128,10 +128,10 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getEntriesStartedToday()
     {
-        $event_date = $this->event->event_date;
-        $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
-        return array_filter($this->visible_entries, function ($e) use ($event_date_YYYYMMDD) {
-            return ($e->start_date == $event_date_YYYYMMDD && is_null($e->end_date));
+        $event_date = substr($this->event->event_date, 0, 10);
+
+        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+            return ($e->start_date == $event_date && is_null($e->end_date) || $e->end_date > date('Y-m-d'));
         });
     }
 
@@ -326,7 +326,7 @@ class MedicationManagement extends BaseMedicationElement
                 if (!in_array($entry->id, $existing_mgment_items)) {
                     $prescription_Item = new \OphDrPrescription_Item();
                     $prescription_Item->event_id =$prescription->event_id;
-                    $prescription_Item->bound_key =  substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
+                    $prescription_Item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
                     $prescription_Item->setAttributes(array(
                         'usage_type' => \OphDrPrescription_Item::getUsageType(),
