@@ -62,7 +62,10 @@ class MedicationSet extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('name', 'isUnique'),
+
+            // 'on'=>'insert, update' because of the protected/commands/MedicationSetImportCommand.php
+            // it needs to handle duplicate names during the import
+            array('name', 'isUnique', 'on'=>'insert, update'),
             array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly'=>true),
             array('name', 'length', 'max'=>255),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),

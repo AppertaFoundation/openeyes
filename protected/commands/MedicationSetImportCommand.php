@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 /**
  * Class MedicationSetImportCommand
  */
@@ -70,13 +72,14 @@ EOH;
         $risk_tags = [];
 
         if ($current_set) {
-            // we need to rename because 2 sets cannot have the same name
-            $current_set->name = 'DEPRECATED_' . $current_set->name;
-            $current_set->update('name');
             $risk_tags = \OphCiExaminationRiskTag::model()->findAllByAttributes(['medication_set_id' => $current_set->id]);
         }
 
         $new_set = new MedicationSet();
+
+        // the 'name' attribute has a isUnique validation rule on insert and update, so we set the scenario null to
+        // allow duplicate names for this command
+        $new_set->scenario = null;
 
         $new_set->name = $set_name;
 
@@ -135,7 +138,7 @@ EOH;
                     \MedicationSetAutoRuleMedication::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetItem::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetRule::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
-                    \OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
                     foreach ($risk_tags as $risk_tag) {
                         $risk_tag->medication_set_id = $new_set->id;
