@@ -245,19 +245,21 @@
                 plusOrMinusHalf = 0,
                 plusOrMinusOnePercent = 0,
                 plusOrMinusHalfPercent = 0,
-                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0];
-
+                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0],
+                reading = 0
+                rowTotal = 0;
             for(var i = 0; i < data.length; i++){
-                total += parseInt(data[i][1], 10);                              
-                
+                rowTotal = data[i]['rowTotal'];
+                total += parseInt(rowTotal, 10);                              
+                reading = data[i]['reading'];
                 // 18 and 22 are the indexes of the -1 and +1 columns
-                if(data[i][0] < 18 || data[i][0] > 22){
-                    plusOrMinusOne += parseFloat(data[i][1], 10);
+                if(reading < -1 || reading > 1){
+                    plusOrMinusOne += parseFloat(rowTotal, 10);
                 }
                 
                 // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-                if(data[i][0] < 19 || data[i][0] > 21){
-                    plusOrMinusHalf += parseFloat(data[i][1], 10);
+                if(reading < -0.5 || reading > 0.5){
+                    plusOrMinusHalf += parseFloat(rowTotal, 10);
                 }
             }
             
@@ -267,19 +269,18 @@
               '<sub>Total eyes: ' + total +
               ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
             chart.data[0]['x'] = data.map(function (item) {
-              return item[0];
+              return item['reading'];
             });
             chart.data[0]['y'] = data.map(function (item) {
-              return item[1];
+              return item['rowTotal'];
             });
             chart.data[0]['customdata'] = data.map(function (item) {
-                return item[2];
+                return item['eventList'];
             });
-            chart.layout['yaxis']['range']=Math.max(...chart.data[0]['y']);
             chart.data[0]['hovertext'] = data.map(function (item) {
               return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
-                chart.layout['xaxis']['ticktext'][item[0]] +
-                '<br><i>Num Eyes:</i> '+ item[1];
+                item['reading'] +
+                '<br><i>Num Eyes:</i> '+ item['rowTotal'];
             });
             Plotly.redraw(chart);
         },
