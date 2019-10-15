@@ -224,7 +224,11 @@ $other_card_list = array(
                 'whiteboard' => $this->getWhiteboard(),
         )); ?>
     </div>
-    <footer class="wb3-actions down">
+    <!--
+    Manually specifying a high z-index here as the open/close button and footer
+    should appear above everything else on screen, especially the EyeDraw widget.
+    -->
+    <footer class="wb3-actions down" style="z-index: 9999">
         <?php $this->renderPartial('footer', array(
             'biometry' => false,
             'booking_id' => $booking_id,
