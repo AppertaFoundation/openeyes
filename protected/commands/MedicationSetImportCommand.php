@@ -147,7 +147,7 @@ EOH;
                 echo $msg . "\n";
                 \OELog::log($msg);
             }
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $trans->rollback();
             echo $exception->getMessage();
         }
