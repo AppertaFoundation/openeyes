@@ -51,21 +51,23 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $set_names = [];
+                    $is_glaucoma = false;
                     if ($entry->medication_id) {
-                        foreach ($entry->medication->getSetsByUsageCode('OESCape') as $item) {
-                            $set_names[] = $item->name;
+                        foreach ($entry->medication->getSetsByUsageCode('OESCape') as $set) {
+                            foreach ($set->medicationSetRules as $rule) {
+                                if ($rule->subspecialty && $rule->subspecialty->ref_spec === 'GL') {
+                                    $is_glaucoma = true;
+                                }
+                            }
                         }
                     }
 
-                    if ( !in_array($entry['route_id'], $lateral_routes) || !$set_names || !in_array('Glaucoma', $set_names)) {
+                    if ( !in_array($entry['route_id'], $lateral_routes) || !$is_glaucoma) {
                         continue;
                     }
 
                     $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
                     $drug_name = $entry->medication->preferred_term . $drug_aliases;
-                    /*$drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
-                    $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;*/
 
                     if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
                         continue;
