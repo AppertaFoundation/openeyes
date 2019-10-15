@@ -113,7 +113,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getContinuedEntries()
     {
-        $event_date = $this->event->event_date;
+        $event_date = substr($this->event->event_date, 0, 10);
 
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->start_date < $event_date &&
@@ -128,10 +128,10 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getEntriesStartedToday()
     {
-        $event_date = $this->event->event_date;
-        $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
-        return array_filter($this->visible_entries, function ($e) use ($event_date_YYYYMMDD) {
-            return ($e->start_date == $event_date_YYYYMMDD && is_null($e->end_date));
+        $event_date = substr($this->event->event_date, 0, 10);
+
+        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+            return ($e->start_date == $event_date && is_null($e->end_date) || $e->end_date > date('Y-m-d'));
         });
     }
 
@@ -326,7 +326,7 @@ class MedicationManagement extends BaseMedicationElement
                 if (!in_array($entry->id, $existing_mgment_items)) {
                     $prescription_Item = new \OphDrPrescription_Item();
                     $prescription_Item->event_id =$prescription->event_id;
-                    $prescription_Item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+                    $prescription_Item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
                     $prescription_Item->setAttributes(array(
                         'usage_type' => \OphDrPrescription_Item::getUsageType(),
@@ -394,7 +394,7 @@ class MedicationManagement extends BaseMedicationElement
         foreach ($entries as $entry) {
             $item = $this->getPrescriptionItem($entry);
             $item->original_item_id = $entry->id;
-            $item->bound_key = substr(bin2hex(random_bytes(10)), 0, 10);
+            $item->bound_key =  substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
             $prescription_creator->addItem($item);
         }
@@ -409,15 +409,23 @@ class MedicationManagement extends BaseMedicationElement
 
         foreach ($prescription_creator->elements['Element_OphDrPrescription_Details']->items as $item) {
             $class = self::$entry_class;
-            $entry = $class::model()->findBypk($item->id);
-            $entry->prescription_item_id = $item->original_item_id;
+            $entry = $class::model()->findBypk($item->original_item_id);
+            $entry->prescription_item_id = $item->id;
             $entry->save();
         }
 
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
-        // updte only prescription_id - no validation here
-        $this->update(['prescription_id']);
 
+        // To save in afterSave when it's a new record without doing an sql query we have to set the
+                // the isNewRecord to false , before saving the attribute and setting it back to true afterwards
+                // We're also using saveAttributes to avoid any calls to beforeSave and AfterSave
+        if ($this->getIsNewRecord()) {
+            $this->setIsNewRecord(false);
+            $this->saveAttributes(['prescription_id']);
+            $this->setIsNewRecord(true);
+        } else {
+            $this->saveAttributes(['prescription_id']);
+        }
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)

@@ -159,7 +159,7 @@ class EventMedicationUse extends BaseElement
     public function validateLaterality()
     {
         if (!$this->laterality && $this->route_id && $this->route->has_laterality === "1") {
-            $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
+            $this->addError('laterality', "You must specify laterality for route '{$this->route->term}'");
         }
     }
 

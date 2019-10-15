@@ -26,13 +26,15 @@ class DrugSetController extends BaseAdminController
 
     public $assetPath;
 
+    const FILTER_USAGE_CODE_ID_FOR_ALL = 'ALL';
+
     public function getFilters()
     {
         $default = [
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_code_ids' => [MedicationUsageCode::model()->find()->id], // default to start with
+            'usage_code_ids' => [self::FILTER_USAGE_CODE_ID_FOR_ALL],
         ];
 
         $filters = \Yii::app()->request->getParam('search');
@@ -98,7 +100,9 @@ class DrugSetController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
-        if (isset($filters['usage_code_ids']) && $filters['usage_code_ids'] ) {
+        if (isset($filters['usage_code_ids']) &&
+          $filters['usage_code_ids'] &&
+          !in_array(self::FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
             $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
         }
 
@@ -359,13 +363,8 @@ class DrugSetController extends BaseAdminController
                 if ($set->automatic) {
                     $deleted_rows = $set->removeUsageCode($usage_code);
                 } else {
-                    $count = $set->itemsCount();
-                    if (!$count) {
-                        if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
-                            $set->delete();
-                        }
-                    } else {
-                        $response['message'] .= "Set '{$set->name}' is not empty. Please delete the medications first.<br>";
+                    if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                        $set->delete();
                     }
                 }
             }

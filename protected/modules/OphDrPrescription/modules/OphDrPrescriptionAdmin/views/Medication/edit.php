@@ -99,6 +99,8 @@
                     </div>
                 </td>
             </tr>
+            <?php $DMD_disabled = !$model->source_type || strtolower($model->source_type) == 'local' ? 'disabled' : ''; ?>
+            <?php if (!$DMD_disabled) : ?>
             <tr>
                 <td>
                     <div class="data-group flex-layout cols-full">
@@ -171,17 +173,21 @@
                     </div>
                 </td>
             </tr>
+            <?php endif; ?>
             <tr>
                 <td>
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Form</label></div>
                         <div id="default-form" class="cols-5">
-                            <?= \CHtml::activeDropDownList($model, 'default_form_id',
+                            <?= \CHtml::activeDropDownList(
+                                $model,
+                                'default_form_id',
                                 \CHtml::listData(\Yii::app()->db->createCommand()->select("id, term")->from('medication_form')->queryAll(), 'id', 'term'),
                                 [
                                     'class' => 'cols-full',
                                     'empty' => '-- None --'
-                                ])?>
+                                ]
+                            )?>
                         </div>
                     </div>
                 </td>
@@ -191,12 +197,15 @@
                     <div class="data-group flex-layout cols-full">
                         <div class="cols-2"><label>Default Route</label></div>
                         <div id="default-route" class="cols-5">
-                            <?= \CHtml::activeDropDownList($model, 'default_route_id',
+                            <?= \CHtml::activeDropDownList(
+                                $model,
+                                'default_route_id',
                                 \CHtml::listData(\Yii::app()->db->createCommand()->select("id, term")->from('medication_route')->queryAll(), 'id', 'term'),
                                 [
                                     'class' => 'cols-full',
                                     'empty' => '-- None --'
-                                ])?>
+                                ]
+                            )?>
                         </div>
                     </div>
                 </td>
@@ -215,16 +224,17 @@
             </tr>
         </tbody>
     </table>
-    <?= $this->renderPartial('edit_attributes', ['medication' => $model]); ?>
-    <?= $this->renderPartial('edit_sets', ['medication' => $model]); ?>
-    <?= $this->renderPartial('edit_alternative_terms', ['medication' => $model]); ?>
+    <?= $this->renderPartial('/Medication/edit_attributes', ['medication' => $model]); ?>
+    <?= $this->renderPartial('/Medication/edit_sets', ['medication' => $model]); ?>
+    <?= $this->renderPartial('/Medication/edit_alternative_terms', ['medication' => $model]); ?>
     <?=\CHtml::submitButton(
         'Save',
         [
             'class' => 'button large green hint',
             'name' => 'save',
             'id' => 'et_save'
-        ])
+        ]
+    )
 ?>
     <?=\CHtml::submitButton(
         'Cancel',
@@ -233,6 +243,7 @@
             'data-uri' => '/OphDrPrescription/admin/Medication/index',
             'name' => 'cancel',
             'id' => 'et_cancel'
-        ])
+        ]
+    )
 ?>
 </form>

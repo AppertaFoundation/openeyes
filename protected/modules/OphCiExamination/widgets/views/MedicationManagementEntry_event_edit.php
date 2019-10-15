@@ -45,7 +45,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
     <tr
             data-key="<?=$row_count?>"
             data-event-medication-use-id="<?php echo $entry->id; ?>"
-            data-allergy-ids="<?php if (!is_null($entry->medication_id)) {
+            data-allergy-ids="<?php if (isset($entry->medication)) {
                 echo implode(",", array_map(function ($e) {
                     return $e->id;
 
@@ -53,13 +53,16 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                               } else {
                                   echo "{{& allergy_ids}}";
                               }?>"
-            class="<?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
+            class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden === "1" ? ' hidden' : '' ?>"
     >
 
-        <td>
-            <button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
-                <i class="oe-i child-arrow small"></i>
-            </button>
+        <td class="drug-details" rowspan="2">
+                    <?php if ($entry->originallyStopped) { ?>
+                        <i class="oe-i stop small pad"></i>
+                    <?php } ?>
+                    <span class="js-medication-display">
+            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
+            </span>
             <span class="js-prepended_markup">
             <?php
             if (!is_null($entry->medication_id)) {
@@ -74,12 +77,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             }
             ?>
           </span>
-            <span class="js-medication-display">
-            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
-      </span>
-            <?php if ($entry->originallyStopped) { ?>
-                <i class="oe-i stop small pad"></i>
-            <?php } ?>
+
+
 
             <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
             <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
@@ -94,108 +93,85 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
             <input type="hidden" name="<?= $field_prefix ?>[source_subtype]" class="js-source-subtype" value="{{source_subtype}}" disabled="disabled">
         </td>
-        <td class="dose-frequency-route">
-            <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
-                <?php
-                $dfrl_validation_error = array_intersect(
-                    array("dose", "frequency_id", "route_id", "laterality"),
-                    array_keys($entry->errors));
-                ?>
-                <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
-                <div class="flex-layout">
-                    <div class="alternative-display inline">
-                        <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
-                            echo 'style="display: none;"';
-                                                                         }?>>
-                            <?php if ($locked == 0) : ?>
-                            <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-                            <?php else : ?>
-                            <div class="textual-display">
-                            <?php endif; ?>
-                                <span class="js-textual-display-dose"><?= isset($entry->dose) ? $entry->dose . ' ' .$entry->dose_unit_term : ''; ?></span>&nbsp;
-                                <span class="js-textual-display-frequency"><?= $entry->frequency; ?></span>&nbsp;
-                                <span class="js-textual-display-route-laterality"><?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?> <?= (is_null($entry->route_id) ? "" : $entry->route); ?></span>
-                            <?php if ($locked == 1) : ?>
-                            </div>
-                            <?php else : ?>
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                        <div class="alternative-display-element" <?php if (!$direct_edit && !$dfrl_validation_error) {
-                            echo 'style="display: none;"';
-                                                                 }?>>
-                            <input class="cols-1 js-dose" style="width: 14%; display: inline-block;"  type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-                            <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
+        <td class="dose-frequency-route alternative-display">
+                                <?php
+                                $dfrl_validation_error = array_intersect(
+                                    array("dose", "frequency_id", "route_id", "laterality"),
+                                    array_keys($entry->errors));
+                                ?>
+                            <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>"
+                                <?php if (!$direct_edit && !$dfrl_validation_error) {
+                                    echo 'style="display: none;"';
+                                }?>>
+
+                            <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
                             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
+                                                        <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
                             <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
-                            <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-3')) ?>
+                            <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
                             <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
-                            <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
+                                                            <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>">
+                                                                                                                                <?php
+                                                                                                                                    $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
+                                                                                                                                ?>
+                                                                <label class="inline highlight <?= $lateralityClass?>">
+                                                                    <input value="2" name="eyelat-select-R" type="checkbox"
+                                                                                    <?= $entry->laterality === "2" || $entry->laterality === "3"? "checked" : ""?>>R
+                                                                </label>
+                                                                <label class="inline highlight <?= $lateralityClass?>"">
+                                                                    <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : ""?>> L
+                                                                </label>
+                                                            </span>
+                            <?php echo CHtml::hiddenField($field_prefix . '[laterality]',
                                 $entry->laterality,
-                                $laterality_options,
-                                array('empty' => '-Laterality-', 'class'=>'admin-route-options laterality cols-3', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
-                        </div>
+                                array('class'=>'laterality-input' )); ?>
                     </div>
-                </div>
-            </div>
-        </td>
-        <td class="end-date-column"  id="<?= $model_name."_entries_".$row_count."_end_date_error" ?>">
-            <div class="alternative-display inline">
-                <div class="alternative-display-element textual">
-                    <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
-                        <?php if (!is_null($entry->end_date)) : ?>
-                            <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
-                            <?php /* echo !is_null($entry->stop_reason_id) ?
-                            ' ('.$entry->stopReason->name.')' : ''; */?>
+                    <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
+                        echo 'style="display: none;"';
+                                                                     }?>>
+                        <?php if ($locked == 0) : ?>
+                        <a class="textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
                         <?php else : ?>
-                            stop
+                            <div class="textual-display">
                         <?php endif; ?>
-                    </a>
+                                                <?php $entry_text_display = $entry->getAdministrationDisplay();
+                                                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
+                                <?php if ($locked == 1) : ?>
+                            </div>
+                                <?php else : ?>
+                        </a>
+                                <?php endif; ?>
+                    </div>
+        </td>
+                <td>
+                    <div class="flex-meds-inputs">
+<!--                    Duration/dispense/comments-->
+                <?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
+                    CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
+                    array('empty' => '- Select -', 'class' => 'cols-4 js-duration', 'style' => $prescribe_hide_style)) ?>
+                <?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
+                    $entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
+                        'condition' => "active or id='" . $entry->dispense_condition_id . "'",
+                        'order' => 'display_order',
+                    )), 'id', 'name'), array('class' => 'js-dispense-condition cols-5', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
+
+                <?php
+                $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
+                $style = $entry->dispense_condition ? '' : 'display: none;';
+                echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
+                    CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-3', 'style' => $prescribe_hide_style));
+                ?>
+                    </div>
+            </td>
+                </td>
+            <td>
+<!--                PRESCRIBE-->
+                <?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
+                <div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
+                    <i class="oe-i no-permissions medium-icon js-has-tooltip"
+                         data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
                 </div>
-                <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
-                    <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
-                           style="width:80px" placeholder="yyyy-mm-dd" class="js-end-date"
-                           autocomplete="off">
-                    <i class="js-has-tooltip oe-i info small pad right"
-                       data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-                </fieldset>
-            </div>
-        </td>
-
-        <td id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>">
-            <div class="js-stop-reason-select"
-                 style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'js-stop-reason cols-11')) ?>
-            </div>
-        </td>
-        <td>
-            <?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
-                CHtml::listData(DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
-                array('empty' => '- Select -', 'class' => 'cols-full js-duration', 'style' => $prescribe_hide_style)) ?>
-        </td>
-        <td id="<?= $model_name."_entries_".$row_count."_dispense_condition_id_error" ?>">
-            <?=\CHtml::dropDownList($field_prefix.'[dispense_condition_id]',
-                $entry->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
-                    'condition' => "active or id='" . $entry->dispense_condition_id . "'",
-                    'order' => 'display_order',
-                )), 'id', 'name'), array('class' => 'js-dispense-condition cols-11', 'empty' => '- Select -', 'style' => $prescribe_hide_style)); ?>
-
-        </td>
-        <td id="<?= $model_name."_entries_".$row_count."_dispense_location_id_error" ?>">
-            <?php
-            $locations = $entry->dispense_condition ? $entry->dispense_condition->locations : array('');
-            $style = $entry->dispense_condition ? '' : 'display: none;';
-            echo CHtml::dropDownList($field_prefix.'[dispense_location_id]', $entry->dispense_location_id,
-                CHtml::listData($locations, 'id', 'name'), array('class' => 'js-dispense-location cols-11', 'style' => $prescribe_hide_style));
-            ?>
-        </td>
-        <td>
-                    <?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
-                    <div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
-                        <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                             data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
-                        </div>
-                    <div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
+                <div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
                     <?php if ($prescribe_access) { ?>
                         <label class="toggle-switch">
                             <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
@@ -208,16 +184,91 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                              data-tooltip-content="You do not have permissions"></i>
                         <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
                     <?php } ?>
-                    </div>
-        </td>
-        <td>
-            <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
+                </div>
+            </td>
+            <td>
+<!--                Actions-->
+                <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
                     "If you wish to delete it, it must be deleted from the Medication History element. " .
                     "Alternatively, mark this item as stopped."; ?>
-            <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
+                <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
                 <i class="oe-i trash js-remove"></i>
             </span>
+            </td>
+        </tr>
+        <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
+        <td class="nowrap">
+           <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
+
+                    <div class="alternative-display inline">
+            <div class="alternative-display-element textual">
+                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit || ($entry->hasErrors('end_date'))) {
+                    ?> style="display: none;"<?php
+                                                            }?>>
+                    <?php if (!is_null($entry->end_date)) : ?>
+                                            <i class="oe-i stop small pad"></i>
+                                            <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+                    <?php else : ?>
+                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                    <?php endif; ?>
+                </a>
+            </div>
+            <fieldset <?php if (!$direct_edit && !($entry->hasErrors('end_date'))) {
+                ?> style="display: none;"<?php
+                      }?> class="js-datepicker-wrapper js-end-date-wrapper">
+                            <i class="oe-i stop small pad"></i>
+                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
+                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                                             data-default="<?= date('Y-m-d') ?>"
+                                             style="width:80px" placeholder="yyyy-mm-dd"
+                                             autocomplete="off">
+            </fieldset>
+        </div>
+                </span>
+
+
+                    <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
+                                style="<?= is_null($entry->end_date) ? "display:none" : "" ?>">
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => ' js-stop-reason')) ?>
+        </span>
+                    <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+                        <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+                    </div>
         </td>
+            <td>
+            <div class="js-comment-container flex-layout flex-left"
+                     id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                     style="<?php if (!$entry->comments) :
+                            ?>display: none;<?php
+                            endif; ?>"
+                     data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+                <?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
+                    'class' => 'js-comment-field autosize cols-full',
+                    'rows' => '1',
+                    'placeholder' => 'Comments',
+                    'autocomplete' => 'off',
+                ]) ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
+            <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+                            class="button js-add-comments"
+                            data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                            type="button"
+                            data-hide-method = "display"
+                            style="<?php if ($entry->comments) :
+                                ?>display: none;<?php
+                                   endif; ?>"
+            >
+                <i class="oe-i comments small-icon"></i>
+            </button>
+
+            </td>
+        <td>
+                    <button class="js-add-taper" type="button" title="Add taper" style="<?=$prescribe_hide_style?>">
+                        <i class="oe-i child-arrow small"></i>
+                    </button>
+        </td>
+            <td></td>
     </tr>
 <?php
 
@@ -230,6 +281,7 @@ if (!empty($entry->tapers)) {
                 "element" => $this->element,
                 "entry" => $taper,
                 "row_count" => $row_count,
+                "model_name" => $model_name,
                 "taper_count" => $tcount,
                 "field_prefix" => $model_name."[entries][$row_count][taper][$tcount]"
             )
