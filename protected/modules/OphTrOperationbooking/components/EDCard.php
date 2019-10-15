@@ -1,16 +1,17 @@
 <?php
 
     /**
-     * Class ImageCard
+     * Class EDCard
      * @property $element Element_OphTrOperationnote_Cataract
      * @property $eye Eye
      */
-class ImageCard extends WBCard
+class EDCard extends WBCard
 {
+    protected $type = 'Image';
     public $doodles = array();
     public $eye;
     protected $css_class = 'data-image';
-    protected $baseViewFile = 'data/image_data';
+    protected $baseViewFile = 'data/ed_data';
     public function init()
     {
         $this->data = array(

@@ -204,7 +204,7 @@ $other_card_list = array(
             }
         }
         if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') {
-            $this->widget('ImageCard', array(
+            $this->widget('EDCard', array(
                 'title' => 'Axis',
                 'eye' => $data->eye,
                 'doodles' => $data->steep_k ? array(
