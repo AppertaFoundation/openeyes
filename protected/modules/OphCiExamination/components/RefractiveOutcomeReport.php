@@ -162,7 +162,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
      * @return array
      */
 
-    public function dataset(){
+    public function dataset()
+    {
 
         $ret = array();
 
@@ -187,7 +188,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             
             $ret_ind = array_search($diff, array_column($ret, 'text'));
 
-            if($ret_ind === false){
+            if ($ret_ind === false) {
                 array_push($ret, array(
                     'text' => (float)$diff,
                     'count' => 1,
@@ -199,7 +200,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             }
         }
         // this can be used to sort decimal / float number as defaultly usort will convert float to integer
-        usort($ret, function($a, $b){
+        usort($ret, function ($a, $b) {
             $result = 0;
             $result = $a['text'] > $b['text'] ? 1 : -1;
             return $result;
@@ -219,13 +220,14 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         return $dataSet;
     }
 
-    protected function setChartTitle($data){
+    protected function setChartTitle($data)
+    {
         $totalEyes = 'NO DATA';
         $plusOrMinusHalfPercent = 'NO DATA';
         $plusOrMinusOnePercent = 'NO DATA';
         $plusOrMinusOne = 0;
         $plusOrMinusHalf = 0;
-        if($data){
+        if ($data) {
             $totalEyes = 0;
             $plusOrMinusHalfPercent = 0;
             $plusOrMinusOnePercent = 0;
@@ -257,12 +259,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * set plot xaxis range,  tick
      */
-    protected function padPlotlyCategories($data=null)
+    protected function padPlotlyCategories($data = null)
     {
         // initial the value in case the $data is null
         $xaxis_max_val = 40;
         $step = 2.5;
-        if($data){
+        if ($data) {
             $xaxis_max_val = max(
                 abs(
                     max(
@@ -297,7 +299,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
-    public function tracesJson(){
+    public function tracesJson()
+    {
         $dataset = $this->dataset();
         $trace1 = array(
           'name' => 'Refractive Outcome',
@@ -305,16 +308,16 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
           'marker' => array(
             'color' => '#7cb5ec',
           ),
-          'x' => array_map(function($item){
+          'x' => array_map(function ($item) {
             return $item['reading'];
           }, $dataset),
-          'y'=> array_map(function($item){
+          'y'=> array_map(function ($item) {
             return $item['rowTotal'];
           }, $dataset),
-            'customdata' => array_map(function($item){
+            'customdata' => array_map(function ($item) {
                 return $item['eventList'];
             }, $dataset),
-          'hovertext' => array_map(function($item){
+          'hovertext' => array_map(function ($item) {
             return '<b>Refractive Outcome</b><br><i>Diff Post</i>: '
               . $item['reading']
               .'<br><i>Num Eyes:</i> '.$item['rowTotal'];
@@ -335,7 +338,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return string
      */
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         return json_encode($this->plotlyConfig);
     }
 
