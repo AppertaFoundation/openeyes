@@ -21,22 +21,22 @@ $event = $this->event;
 $event_type = $event->eventType->name;
 ?>
 <div class="metadata">
-	<?php if (!@$hide_created) { ?>
-		<p class="info">
+    <?php if (!@$hide_created) { ?>
+        <p class="info">
                     <small>
-			<?php echo $event_type ?> created by <span class="user"><?php echo $this->event->user->fullname ?></span>
-			on <?php echo $this->event->NHSDate('created_date') ?>
-			at <?php echo date('H:i', strtotime($this->event->created_date)) ?>
+            <?php echo $event_type ?> created by <span class="user"><?php echo $this->event->user->fullname ?></span>
+            on <?php echo $this->event->NHSDate('created_date') ?>
+            at <?php echo date('H:i', strtotime($this->event->created_date)) ?>
                     </small>
-		</p>
-	<?php }?>
-	<?php if (!@$hide_modified) { ?>
-		<p class="info">
+        </p>
+    <?php }?>
+    <?php if (!@$hide_modified) { ?>
+        <p class="info">
                     <small>
-			<?php echo $event_type ?> last modified by <span class="user"><?php echo $this->event->usermodified->fullname ?></span>
-			on <?php echo $this->event->NHSDate('last_modified_date') ?>
-			at <?php echo date('H:i', strtotime($this->event->last_modified_date)) ?>
+            <?php echo $event_type ?> last modified by <span class="user"><?php echo $this->event->usermodified->fullname ?></span>
+            on <?php echo $this->event->NHSDate('last_modified_date') ?>
+            at <?php echo date('H:i', strtotime($this->event->last_modified_date)) ?>
                     </small>
-		</p>
-	<?php }?>
+        </p>
+    <?php }?>
 </div>

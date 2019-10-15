@@ -18,11 +18,11 @@
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div
           class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
-              ?> inactive<?php
-          } ?>" data-side="<?= $eye_side ?>">
+                ?> inactive<?php
+                                } ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="eyedraw-row flex-layout flex-top">

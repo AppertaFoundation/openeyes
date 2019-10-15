@@ -33,7 +33,7 @@
                 <div class="cols-11">
                     <div id="js-listview-risks-pro" class="cols-full listview-pro">
                         <?php $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
-                        if(count($not_checked_required_risks) === 0) {
+                        if (count($not_checked_required_risks) === 0) {
                             unset($not_checked_required_risks);
                         } ?>
                         <table class="last-left">

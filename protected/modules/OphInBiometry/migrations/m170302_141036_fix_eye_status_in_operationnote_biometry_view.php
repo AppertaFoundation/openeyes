@@ -2,8 +2,8 @@
 
 class m170302_141036_fix_eye_status_in_operationnote_biometry_view extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
                              eol.id AS id,eol.eye_id AS eye_id,eol.last_modified_date AS last_modified_date,
                              eoc.target_refraction_left AS target_refraction_left,
@@ -35,10 +35,10 @@ class m170302_141036_fix_eye_status_in_operationnote_biometry_view extends CDbMi
                                  join event ev on((ev.id = eol.event_id))) 
                                  join episode ep on((ep.id = ev.episode_id))) 
                                  order by eol.last_modified_date;');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,
 							(SELECT name FROM ophinbiometry_lenstype_lens oll WHERE oll.id=lens_id_left) as lens_left,
@@ -61,16 +61,16 @@ class m170302_141036_fix_eye_status_in_operationnote_biometry_view extends CDbMi
 							JOIN event ev ON ev.id=eol.event_id
 							JOIN episode ep ON ep.id=ev.episode_id
 							ORDER BY eol.last_modified_date;');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

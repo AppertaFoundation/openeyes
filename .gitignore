@@ -49,6 +49,7 @@ package-lock.json
 /.recycle
 .vscode/
 /.vscode
+.deleted
 
 # Include core modules
 !/protected/modules/OphCiExamination/

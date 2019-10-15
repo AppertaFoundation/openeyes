@@ -26,7 +26,7 @@ $this->moduleNameCssClass .= ' edit';
         'id' => 'consent-form',
         'enableAjaxValidation' => false,
     ));
-    ?>
+?>
     <?php $this->displayErrors($errors) ?>
 
     <header class="element-header">

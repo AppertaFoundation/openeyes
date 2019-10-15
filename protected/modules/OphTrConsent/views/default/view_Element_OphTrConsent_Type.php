@@ -15,17 +15,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 <div class="element-data">
-	<div class="data-group">
-		<div class="cols-3 column">
-			<div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
-		</div>
-		<div class="cols-9 column">
-			<div class="data-value"><?php echo $element->type ? $element->type->name : 'None'?>
-			</div>
-		</div>
-	</div>
+    <div class="data-group">
+        <div class="cols-3 column">
+            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
+        </div>
+        <div class="cols-9 column">
+            <div class="data-value"><?php echo $element->type ? $element->type->name : 'None'?>
+            </div>
+        </div>
+    </div>
 </div>
 
 <input type="hidden" name="OphTrConsent_draft" id="OphTrConsent_draft" value="<?php echo $element->draft?>" />

@@ -151,7 +151,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         foreach ($this->getElements($element->elementType) as $child) {
-            if(!is_subclass_of($child, 'SplitEventTypeElement')) {
+            if (!is_subclass_of($child, 'SplitEventTypeElement')) {
                 continue;
             }
 

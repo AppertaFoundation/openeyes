@@ -8,7 +8,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
-        var clinical_data = <?= CJavaScript::encode($clinical_data); ?>;
+        var clinical_data = JSON.parse(<?= json_encode($clinical_data); ?>);
 
         var max_name_length = Math.max(...clinical_data['text'].map(function (item) {
             return item.length;

@@ -62,7 +62,7 @@
               <tr>
                 <td>
                   <span class="large-text">
-                      <?php echo $element->surgeon->fullNameAndTitle ?>
+                        <?php echo $element->surgeon->fullNameAndTitle ?>
                   </span>
                 </td>
                 <td>
@@ -72,7 +72,7 @@
                 </td>
                 <td>
                   <span class="large-text">
-                      <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
+                        <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
                   </span>
                 </td>
               </tr>

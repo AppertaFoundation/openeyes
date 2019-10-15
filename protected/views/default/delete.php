@@ -20,7 +20,7 @@
     $request_delete_access = $this->checkRequestDeleteAccess();
 ?>
 
-<?php if($delete_access || $request_delete_access) : ?>
+<?php if ($delete_access || $request_delete_access) : ?>
 <div class="oe-popup-wrap" id="js-delete-event" style="display: none; z-index:100">
     <div class="oe-popup">
         <?=\CHtml::form(['Default/' . ($delete_access ? 'delete' : 'requestDeletion') . '/' . $this->event->id], 'post', ['id' => 'deleteForm']) ?>

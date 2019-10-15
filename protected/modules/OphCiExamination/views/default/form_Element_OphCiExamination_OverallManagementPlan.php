@@ -88,7 +88,9 @@ $label_width = 5;
                   type="button"
                   class="button js-add-comments"
                   data-comment-container="#<?= CHtml::modelName($element) ?>_comment_container"
-                  style="<?php if ($element->comments): ?>display: none;<?php endif; ?>"
+                  style="<?php if ($element->comments) :
+                        ?>display: none;<?php
+                         endif; ?>"
           >
             <i class="oe-i comments small-icon"></i>
           </button>
@@ -98,7 +100,9 @@ $label_width = 5;
     </table>
     <div id="<?= CHtml::modelName($element) ?>_comment_container"
          class="flex-layout flex-left comment-group js-comment-container"
-         style="<?php if (!$element->comments): ?>display: none<?php endif; ?>;"
+         style="<?php if (!$element->comments) :
+                ?>display: none<?php
+                endif; ?>;"
          data-comment-button="#<?= CHtml::modelName($element) ?>_comment_button">
         <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
             array(
@@ -110,10 +114,10 @@ $label_width = 5;
     </div>
   </div>
   <div class="element-eyes sub-element">
-      <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-      <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-          $hasEyeFunc = 'has' . ucfirst($eye);
-          ?>
+        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+            $hasEyeFunc = 'has' . ucfirst($eye);
+            ?>
         <div
             class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
             data-side="<?= $eye ?>">
@@ -138,7 +142,7 @@ $label_width = 5;
             </div>
           </div>
         </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
   </div>
 
   <script type="text/javascript">

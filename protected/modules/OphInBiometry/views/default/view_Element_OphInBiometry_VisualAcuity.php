@@ -45,8 +45,8 @@
                             ?>
                             (Unable to assess<?php if ($element->right_eye_missing) {
                                 ?>, eye missing<?php
-                            }
-                            ?>)
+                                             }
+                                                ?>)
                             <?php
                         } elseif ($element->right_eye_missing) {
                             ?>
@@ -95,8 +95,8 @@
                             ?>
                             (Unable to assess<?php if ($element->left_eye_missing) {
                                 ?>, eye missing<?php
-                            }
-                            ?>)
+                                             }
+                                                ?>)
                             <?php
                         } elseif ($element->left_eye_missing) {
                             ?>

@@ -36,7 +36,7 @@ class FamilyHistory extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\FamilyHistory')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\FamilyHistory')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -44,9 +44,9 @@ class FamilyHistory extends \BaseEventElementWidget
             // TODO: Think about the importance of this date information, and therefore whether it should
             // TODO: be preserved across change events for the family history
 
-                if (!$element->no_family_history_date) {
-                    $element->no_family_history_date = date('Y-m-d H:i:s');
-                }
+            if (!$element->no_family_history_date) {
+                $element->no_family_history_date = date('Y-m-d H:i:s');
+            }
         } elseif ($element->no_family_history_date) {
             $element->no_family_history_date = null;
         }
@@ -76,7 +76,7 @@ class FamilyHistory extends \BaseEventElementWidget
                 $entries[] = $entry;
             }
             $element->entries = $entries;
-        }else {
+        } else {
             $element->entries = array();
         }
     }

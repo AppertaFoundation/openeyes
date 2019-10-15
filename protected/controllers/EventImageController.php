@@ -93,13 +93,13 @@ class EventImageController extends BaseController
          */
         $event_images = EventImage::model()->findAll($criteria);
 
-        foreach ($event_images as $event_image){
+        foreach ($event_images as $event_image) {
             $generated_image_event_ids[] = $event_image->event_id;
         }
 
         $remaining_event_ids = array_diff($event_ids, $generated_image_event_ids);
         $generated_image_urls = array();
-        foreach ($generated_image_event_ids as $id){
+        foreach ($generated_image_event_ids as $id) {
             $generated_image_urls[$id] = $this->createUrl('view', array('id' => $id));
         }
 
@@ -114,14 +114,13 @@ class EventImageController extends BaseController
     public function actionGetImageInfo($event_id)
     {
         try {
-            $url = $this->actionGetImageUrl($event_id , true);
+            $url = $this->actionGetImageUrl($event_id, true);
             $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
             if ($page_count != 0) {
                 $image_info = ['page_count' => $page_count, 'url' => $url];
                 echo CJSON::encode($image_info);
             }
-        }
-        catch (Exception $exception){
+        } catch (Exception $exception) {
             echo CJSON::encode(['error' => $exception->getMessage()]);
         }
     }
@@ -148,7 +147,7 @@ class EventImageController extends BaseController
         $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
 
         $model = EventImage::model()->find($criteria);
-        if(isset($model)) {
+        if (isset($model)) {
             $fileModTime = strtotime($model->last_modified_date);
             $headers = $this->getRequestHeaders();
 

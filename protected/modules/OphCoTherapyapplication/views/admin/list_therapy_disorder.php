@@ -23,34 +23,34 @@
     <h2><?php echo $title ?></h2>
 </div>
 
-	<?php $this->renderPartial('//base/_messages')?>
-	<form id="admin_diagnoses">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {?>
-					<tr class="clickable" data-id="<?php echo $model->id?>">
-						<td><input type="checkbox" name="diagnoses[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php if (!$parent_id) {?>
-								<a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewDiagnoses') . '?parent_id=' . $model->id?>">
-							<?php }?>
-							<?php echo $model->disorder->term?>
-							<?php if (!$parent_id) {?>
-								</a>
-							<?php }?>
-						</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="2">
+    <?php $this->renderPartial('//base/_messages')?>
+    <form id="admin_diagnoses">
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="selectall" id="selectall" /></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($model_list as $i => $model) {?>
+                    <tr class="clickable" data-id="<?php echo $model->id?>">
+                        <td><input type="checkbox" name="diagnoses[]" value="<?php echo $model->id?>" /></td>
+                        <td>
+                            <?php if (!$parent_id) {?>
+                                <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewDiagnoses') . '?parent_id=' . $model->id?>">
+                            <?php }?>
+                            <?php echo $model->disorder->term?>
+                            <?php if (!$parent_id) {?>
+                                </a>
+                            <?php }?>
+                        </td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="2">
                         <?=\CHtml::htmlButton('Add', ['name' => 'add2', 'class' => 'button large', 'id' => 'et_add2']);?>
                         <?=\CHtml::htmlButton('Delete', [
                                 'name' => 'delete',
@@ -61,14 +61,14 @@
                             ]);?>
 
 
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 
 <div id="add-new-form" style="display:none">
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'clinical-create',
             'enableAjaxValidation' => false,

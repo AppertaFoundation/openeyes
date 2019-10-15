@@ -5,14 +5,14 @@
         <?php echo $this->title ?>
         <?php if ($this->event->is_automated) { ?>
             <span id="automated-event">
-          <?php $this->renderPartial('//patient/event_automated'); ?>
+            <?php $this->renderPartial('//patient/event_automated'); ?>
         </span>
         <?php } ?>
         <?php if ($this->action->id === 'view') { ?>
             <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
         <?php } ?>
         <?php $extra_info = $this->getExtraTitleInfo();
-        if ($extra_info && $extra_info !== ""): ?>
+        if ($extra_info && $extra_info !== "") : ?>
             <div class="event-title-extra-info">
                 <?= $extra_info ?>
             </div>
@@ -82,7 +82,7 @@
     } ?>
 </main>
 
-<?php if ($this->action->id === 'view'): ?>
+<?php if ($this->action->id === 'view') : ?>
     <script type="text/javascript">
         $(function () {
             // For every eyedraw element

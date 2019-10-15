@@ -49,19 +49,34 @@ class ProtectedFileController extends BaseController
         readfile($file->getPath());
     }
 
-    public function actionView($id, $name)
+    public function actionView($id, $name, $rotate = null)
     {
         if (!$file = ProtectedFile::model()->findByPk($id)) {
             throw new CHttpException(404, 'File not found');
         }
         $filepath = $file->getPath();
+
         if (!file_exists($file->getPath())) {
             throw new CException('File not found on filesystem: '.$file->getPath());
         }
         header('Content-Type: '.$file->mimetype);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
-        header('Content-Length: '.$file->size);
+
+        $image_size = getimagesize($filepath);
+        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
+        if ($mime && $mime == 'image/jpeg') {
+            if ($rotate) {
+                $original = imagecreatefromjpeg($filepath);
+                $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
+                ob_start();
+                imagejpeg($rotated);
+                $size = ob_get_length();
+                header("Content-length: " . $size);
+                ob_flush();
+            }
+        }
+
         ob_clean();
         flush();
         readfile($filepath);

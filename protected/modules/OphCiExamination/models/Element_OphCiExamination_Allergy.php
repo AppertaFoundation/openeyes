@@ -73,12 +73,10 @@ class Element_OphCiExamination_Allergy extends \BaseEventTypeElement
             !\Yii::app()->request->getParam('no_allergies') &&
             !\Yii::app()->request->getParam('selected_allergies') &&
             !\Yii::app()->request->getParam('deleted_allergies')
-        )
-        {
+        ) {
             return;
         }
-        if (!\Yii::app()->request->getParam('no_allergies') && !\Yii::app()->request->getParam('selected_allergies'))
-        {
+        if (!\Yii::app()->request->getParam('no_allergies') && !\Yii::app()->request->getParam('selected_allergies')) {
             $this->addError($attribute, 'Please select an allergy or confirm patient has no allergies');
         }
     }

@@ -26,7 +26,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
     public function getTreatmentType()
     {
-      return TreatmentType::model()->findByPk($this->treatmentTypeId);
+        return TreatmentType::model()->findByPk($this->treatmentTypeId);
     }
 
     /**
@@ -188,7 +188,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                         // specific trial
                         $condition = "t_p.trial_id = :p_t_trial_$this->id";
                     }
-
                 } else {
                     // Any trial
                     $condition = 't_p.trial_id IS NOT NULL';
@@ -230,7 +229,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                           FROM trial_patient
                           WHERE status_id = :p_t_status_$this->id
                       ) ";
-
                 } else {
                     // not accepted/rejected in any trial
                     $condition .=

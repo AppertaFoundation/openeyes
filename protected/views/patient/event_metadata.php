@@ -45,7 +45,7 @@ WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != pr
 <div id="js-event-audit-trail" class="oe-popup-event-audit-trail" style="display: none;">
   <table>
     <tbody>
-    <?php if ($this->event->firm_id): ?>
+    <?php if ($this->event->firm_id) : ?>
         <tr>
             <td class="title">Created under</td>
             <td></td>
@@ -75,7 +75,7 @@ WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != pr
         <td></td>
         <td></td>
       </tr>
-        <?php foreach ($modifications as $modification): ?>
+        <?php foreach ($modifications as $modification) : ?>
             <?php $modified_user = \User::model()->findByPk($modification['last_modified_user_id']); ?>
         <tr>
           <td><?php echo $modified_user->getFullNameAndTitle(); ?></td>

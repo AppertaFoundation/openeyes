@@ -39,7 +39,7 @@ class m170404_185342_add_fundus_vitreous_fields extends OEMigration
     {
         $this->dropOETable('ophciexamination_fundus_vitreous');
         $this->dropOETable('ophciexamination_vitreous');
-        $this->delete('ophciexamination_vitreous', 'name = :name' , array(':name' => 'Formed, Attached'));
+        $this->delete('ophciexamination_vitreous', 'name = :name', array(':name' => 'Formed, Attached'));
         $this->execute('update ophciexamination_vitreous set display_order = display_order -1');
     }
     /*

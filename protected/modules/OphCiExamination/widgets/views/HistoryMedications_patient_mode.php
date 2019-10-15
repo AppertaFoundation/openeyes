@@ -45,7 +45,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php if ($current_systemic_meds) { ?>
                 <table id="<?= $model_name ?>_entry_table">
                     <tbody>
-                    <?php foreach ($current_systemic_meds as $entry): ?>
+                    <?php foreach ($current_systemic_meds as $entry) : ?>
                         <tr>
                             <td><?= $entry->getMedicationDisplay() ?></td>
                             <td>
@@ -139,7 +139,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <?php } ?>
 
                 <?php if ($stopped_eye_meds) { ?>
-
                     <div class="collapse-data">
                         <div class="collapse-data-header-icon expand">
                             Stopped

@@ -24,18 +24,18 @@ if (!isset($uniqueid)) {
 ?>
 <?php $this->renderPartial('//base/_messages'); ?>
 <div class='<?=$admin->div_wrapper_class?>' >
-    <?php if (!$admin->isSubList()): ?>
+    <?php if (!$admin->isSubList()) : ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
     <?php endif; ?>
     <?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
     <?php
     $returnUri = '';
-    if ($admin->isSubList()): ?>
+    if ($admin->isSubList()) : ?>
     <div id="generic-admin-sublist">
         <?php
-        if ($admin->getSubListParent() && is_array($admin->getSubListParent())):
-            foreach ($admin->getSubListParent() as $key => $value):
+        if ($admin->getSubListParent() && is_array($admin->getSubListParent())) :
+            foreach ($admin->getSubListParent() as $key => $value) :
                 ?>
                 <input type="hidden" name="default[<?= $key ?>]" value="<?= $value ?>"/>
                 <?php
@@ -45,9 +45,9 @@ if (!isset($uniqueid)) {
         ?>
         <input type="hidden" name="returnUri" id="returnUri" value="<?= $returnUri ?>"/>
 
-        <?php else: ?>
+    <?php else : ?>
         <form id="generic-admin-list">
-            <?php endif; ?>
+    <?php endif; ?>
             <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 
@@ -56,27 +56,29 @@ if (!isset($uniqueid)) {
                 <tr>
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <?php
-                    foreach ($admin->getListFields() as $listItem):
+                    foreach ($admin->getListFields() as $listItem) :
                         if ($listItem !== 'attribute_elements_id.id') :?>
                             <th>
-                                <?php if ($admin->isSortableColumn($listItem)): ?>
+                                <?php if ($admin->isSortableColumn($listItem)) : ?>
                                 <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
                                     Yii::app()->request->getQueryString()) ?>">
+                                <?php endif;
+                                ?>
+                                    <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
+                                    <?php if ($admin->isSortableColumn($listItem)) : ?>
+                                </a>
                                     <?php endif;
                                     ?>
-                                    <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
-                                    <?php if ($admin->isSortableColumn($listItem)): ?>
-                                </a>
-                            <?php endif;
-                            ?>
                             </th>
-                        <?php else: ?>
+                        <?php else : ?>
                             <th>Action</th>
                         <?php endif;
                     endforeach; ?>
                 </tr>
                 </thead>
-                <tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
+                <tbody <?php if (in_array('display_order', $admin->getListFields())) :
+                    echo 'class="sortable"';
+                       endif; ?>>
                 <?php
                 $retrieveResults = $admin->getSearch()->retrieveResults();
                 foreach ($retrieveResults as $i => $row) { ?>
@@ -85,38 +87,38 @@ if (!isset($uniqueid)) {
                         <td>
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>
-                        <?php foreach ($admin->getListFields() as $listItem):
-                            if ($listItem !== 'attribute_elements_id.id'):
+                        <?php foreach ($admin->getListFields() as $listItem) :
+                            if ($listItem !== 'attribute_elements_id.id') :
                                 ?>
                                 <td>
                                     <?php
                                     $attr_val = $admin->attributeValue($row, $listItem);
-                                    if (gettype($attr_val) === 'boolean'):
-                                        if ($admin->attributeValue($row, $listItem)):
+                                    if (gettype($attr_val) === 'boolean') :
+                                        if ($admin->attributeValue($row, $listItem)) :
                                             ?><i class="oe-i tick small"></i><?php
-                                        else:
+                                        else :
                                             ?><i class="oe-i remove small"></i><?php
                                         endif;
-                                    elseif(gettype($attr_val) === 'array'):
-                                        echo implode(',', $admin->attributeValue($row, $listItem));
-                                    elseif ($listItem === 'display_order'):
+                                        elseif (gettype($attr_val) === 'array') :
+                                            echo implode(',', $admin->attributeValue($row, $listItem));
+                                    elseif ($listItem === 'display_order') :
                                         ?>
                                         &uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
                                         <?php
-                                    else:
+                                    else :
                                         echo $attr_val;
                                     endif
                                     ?>
                                 </td>
                             <?php endif;
 
-                            if ($listItem === 'attribute_elements_id.id'):
+                            if ($listItem === 'attribute_elements_id.id') :
                                 $mappingId = $admin->attributeValue($row, $listItem);
                             endif;
 
-                            if ($listItem === 'attribute_elements.name'):?>
+                            if ($listItem === 'attribute_elements.name') :?>
                                 <td>
-                                    <?php if (($mappingId > 0)): ?>
+                                    <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color='#00F'"
                                            href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
                                     <?php endif; ?>
@@ -169,17 +171,17 @@ if (!isset($uniqueid)) {
                             'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
                         <?php
-                            if( !empty($_GET) && count($retrieveResults) < 1 ){
-                                echo "No results found. Total of " . $admin->getModel()->count() . " items.";
-                            }
+                        if ( !empty($_GET) && count($retrieveResults) < 1 ) {
+                            echo "No results found. Total of " . $admin->getModel()->count() . " items.";
+                        }
                         ?>
                     </td>
                 </tr>
                 </tfoot>
             </table>
-            <?php if ($admin->isSubList()): ?>
+            <?php if ($admin->isSubList()) : ?>
     </div>
-<?php else: ?>
+            <?php else : ?>
     </form>
-<?php endif; ?>
+            <?php endif; ?>
 </div>

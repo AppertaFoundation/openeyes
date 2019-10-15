@@ -36,20 +36,20 @@ foreach ($plate_positions as $pp) {
     <tbody>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('plate_position_id'); ?>
+            <?php echo $element->getAttributeLabel('plate_position_id'); ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'),
               $html_options,
               false, array('field' => 3)); ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?= $element->getAttributeLabel('plate_limbus'); ?>
+            <?= $element->getAttributeLabel('plate_limbus'); ?>
       </td>
       <td class="flex-layout flex-right">
-          <?=\CHtml::activeTextField($element, 'plate_limbus',
+            <?=\CHtml::activeTextField($element, 'plate_limbus',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
         <span class="field-info postfix align">
           mm
@@ -58,10 +58,10 @@ foreach ($plate_positions as $pp) {
     </tr>
     <tr>
       <td>
-          <?= $element->getAttributeLabel('tube_position_id'); ?>
+            <?= $element->getAttributeLabel('tube_position_id'); ?>
       </td>
       <td>
-          <?php echo $form->dropDownList($element, 'tube_position_id',
+            <?php echo $form->dropDownList($element, 'tube_position_id',
               CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
                   'id', 'name'), array('empty' => 'Select', 'nowrapper' => true), false,
               array('field' => 3)) ?>
@@ -69,35 +69,35 @@ foreach ($plate_positions as $pp) {
     </tr>
     <tr>
       <td>
-          <?= $element->getAttributeLabel('stent'); ?>
+            <?= $element->getAttributeLabel('stent'); ?>
       </td>
       <td>
-          <?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-          <?= $element->getAttributeLabel('slit'); ?>
-      </td>
-      <td>
-          <?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?= $element->getAttributeLabel('visco_in_ac'); ?>
+            <?= $element->getAttributeLabel('slit'); ?>
       </td>
       <td>
-          <?php echo $form->checkbox($element, 'visco_in_ac',
+            <?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+            <?= $element->getAttributeLabel('visco_in_ac'); ?>
+      </td>
+      <td>
+            <?php echo $form->checkbox($element, 'visco_in_ac',
               array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
       </td>
     </tr>
     <tr>
       <td>
-          <?= $element->getAttributeLabel('flow_tested'); ?>
+            <?= $element->getAttributeLabel('flow_tested'); ?>
       </td>
       <td>
-          <?php echo $form->checkbox($element, 'flow_tested',
+            <?php echo $form->checkbox($element, 'flow_tested',
               array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
       </td>
     </tr>

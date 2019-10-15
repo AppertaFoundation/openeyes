@@ -23,7 +23,7 @@
     </header>
     <div class="element-data full-width">
         <div class="cols-10">
-	<span class="priority-text"><?= $element->schedule_options->name; ?></span>
+    <span class="priority-text"><?= $element->schedule_options->name; ?></span>
         </div>
     </div>
 </section>
@@ -33,16 +33,16 @@
     </header>
     <div class="element-data full-width">
         <div class="cols-10">
-			<span class="priority-text">
+            <span class="priority-text">
 
-				<?php if ($element->patient_unavailables) {
+                <?php if ($element->patient_unavailables) {
                     foreach ($element->patient_unavailables as $unavailable) {?>
-							<?php echo Helper::convertDate2NHS($unavailable->start_date); ?> to <?php echo Helper::convertDate2NHS($unavailable->end_date); ?> (<?php echo $unavailable->reason->name ?>).
-					<?php }
-				} else { ?>
-					No known availability restrictions.
-				<?php } ?>
-			</span>
+                            <?php echo Helper::convertDate2NHS($unavailable->start_date); ?> to <?php echo Helper::convertDate2NHS($unavailable->end_date); ?> (<?php echo $unavailable->reason->name ?>).
+                    <?php }
+                } else { ?>
+                    No known availability restrictions.
+                <?php } ?>
+            </span>
         </div>
     </div>
 </section>

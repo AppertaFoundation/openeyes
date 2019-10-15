@@ -12,17 +12,17 @@
   <main class="oe-full-main">
 
 
-      <?php $form = $this->beginWidget('CActiveForm', array(
+        <?php $form = $this->beginWidget('CActiveForm', array(
           'id' => 'trial-form',
           'enableAjaxValidation' => true,
       )); ?>
 
-      <?php if ($trial->hasErrors()): ?>
+        <?php if ($trial->hasErrors()) : ?>
         <div class="alert-box error with-icon">
           <p>Please fix the following input errors:</p>
             <?= $form->errorSummary($trial) ?>
         </div>
-      <?php endif; ?>
+        <?php endif; ?>
 
     <table class="standard cols-full">
       <colgroup>
@@ -40,10 +40,10 @@
       </tr>
       <tr class="col-gap">
           <td>
-              <?= $form->labelEx($trial, 'ethics_number') ?>
+                <?= $form->labelEx($trial, 'ethics_number') ?>
           </td>
           <td>
-              <?= $form->textField($trial, 'ethics_number', array('size' => 50, 'maxlength' => 200)) ?>
+                <?= $form->textField($trial, 'ethics_number', array('size' => 50, 'maxlength' => 200)) ?>
           </td>
       </tr>
       <tr class="col-gap">
@@ -66,14 +66,14 @@
         </td>
       </tr>
 
-      <?php if (!$trial->getIsNewRecord()): ?>
+        <?php if (!$trial->getIsNewRecord()) : ?>
         <tr>
           <td>
             Date Range
           </td>
           <td class="flex-layour cols-full">
               <?php
-              $this->widget('application.widgets.DatePicker', array(
+                $this->widget('application.widgets.DatePicker', array(
                   'element' => $trial,
                   'name' => CHtml::modelName($trial) . '[started_date]',
                   'field' => 'started_date',
@@ -82,11 +82,11 @@
                       'nowrapper' => true,
                   ),
                   'value' => $trial->started_date,
-              ))
-              ?>
+                ))
+                ?>
 
               <?php
-              $this->widget('application.widgets.DatePicker', array(
+                $this->widget('application.widgets.DatePicker', array(
                   'element' => $trial,
                   'name' => CHtml::modelName($trial) . '[closed_date]',
                   'field' => 'closed_date',
@@ -96,18 +96,18 @@
                       'nowrapper' => true,
                   ),
                   'value' => $trial->closed_date,
-              ))
-              ?>
+                ))
+                ?>
 
           </td>
         </tr>
-      <?php endif; ?>
+        <?php endif; ?>
       <tr>
         <td>
             <?= $form->labelEx($trial, 'trial_type_id') ?>
         </td>
         <td>
-            <?php foreach (TrialType::model()->findAll() as $trial_type): ?>
+            <?php foreach (TrialType::model()->findAll() as $trial_type) : ?>
               <label>
                   <?php echo $form->radioButton($trial, 'trial_type_id',
                       array('value' => $trial_type->id, 'uncheckValue' => null)); ?>
@@ -119,7 +119,7 @@
       </tbody>
     </table>
 
-      <?php $this->endWidget(); ?>
+        <?php $this->endWidget(); ?>
 </div>
 
 
