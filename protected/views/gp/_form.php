@@ -85,6 +85,19 @@
             </td>
         </tr>
         <tr>
+            <td>Active</td>
+            <td>
+                <?=
+                    \CHtml::activeRadioButtonList(
+                        $gp,
+                        'is_active',
+                        [1 => 'Yes', 0 => 'No'],
+                        ['separator' => ' ']
+                    );
+                ?>
+            </td>
+        </tr>
+        <tr>
             <td colspan="2" class="align-right">
                 <?php
                     echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save');

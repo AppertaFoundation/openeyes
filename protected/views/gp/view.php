@@ -54,6 +54,12 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                             <?php echo CHtml::encode(isset($model->contact->label) ? $model->contact->label->name : ''); ?>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Active:</td>
+                        <td>
+                            <i id = 'activeStatus' class="oe-i <?= ($model->getActiveStatus($model->id) ? 'tick' : 'remove');?> small"></i>
+                        </td>
+                    </tr>
                     </tbody>
                     <!--Add the address row here when GPs get tied directly to practices rather than through patient records.-->
                 </table>

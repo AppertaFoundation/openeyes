@@ -1,6 +1,7 @@
 <?php
 /* @var $this GpController */
-/* @var $model Gp */
+/* @var $model Contact */
+/* @var $gp Practitioner */
 /* @var $context String */
 $this->pageTitle = 'Update Practitioner';
 //$dataProvided = $dataProvider->getData();
@@ -97,6 +98,19 @@ $this->pageTitle = 'Update Practitioner';
                                     <div>
                                         <div class="selected_gp">No result</div>
                                     </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Active</td>
+                                <td>
+                                  <?=
+                                  \CHtml::activeRadioButtonList(
+                                    $gp,
+                                    'is_active',
+                                    [1 => 'Yes', 0 => 'No'],
+                                    ['separator' => ' ']
+                                  );
+                                  ?>
                                 </td>
                             </tr>
                             <tr>
