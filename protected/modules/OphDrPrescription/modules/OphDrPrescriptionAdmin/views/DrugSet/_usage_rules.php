@@ -19,7 +19,10 @@ $sites = array_map(function ($e) {
 $subspecialties = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
 }, Subspecialty::model()->findAll());
- ?>
+$usage_codes = array_map(function ($e) use ($filtered_usage_code) {
+    return ['id' => $e->id, 'label' => $e->name, 'selected' => $e->id == $filtered_usage_code ];
+}, MedicationUsageCode::model()->findAll(['condition' => 'active = 1']));
+?>
 
  <div class="row">
     <div class="cols-12">
@@ -46,7 +49,7 @@ $subspecialties = array_map(function ($e) {
                         <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                     </td>
                     <td>
-                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData(MedicationUsageCode::model()->findAll(), 'id', 'name')); ?>
+                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData(MedicationUsageCode::model()->findAll(['condition' => 'active = 1']), 'id', 'name')); ?>
                     </td>
                     <td>
                         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -80,7 +83,7 @@ $subspecialties = array_map(function ($e) {
             {{subspecialty.label}}
         </td>
         <td>
-            <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData(MedicationUsageCode::model()->findAll(), 'id', 'name')); ?>
+            <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData(MedicationUsageCode::model()->findAll(['condition' => 'active = 1']), 'id', 'name')); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -100,6 +103,12 @@ $subspecialties = array_map(function ($e) {
                 'id': 'subspecialty',
                 'multiSelect': false,
                 header: "Subspecialty"
+            }),
+            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($usage_codes) ?>, {
+                'id': 'usage_code',
+                'multiSelect': false,
+                'mandatory': true,
+                header: "Usage Code"
             }),
         ],
         onReturn: function (adderDialog, selectedItems) {
@@ -124,6 +133,9 @@ $subspecialties = array_map(function ($e) {
 
             let rendered = Mustache.render(template, selObj);
             $("#rule_tbl > tbody").append(rendered);
+
+            $('select option[value=' + selObj['usage_code'].id + ']').attr('selected', 'selected');
+
             return true;
         },
         enableCustomSearchEntries: true,

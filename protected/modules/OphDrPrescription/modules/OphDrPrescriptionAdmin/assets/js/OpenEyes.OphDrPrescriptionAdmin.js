@@ -9,6 +9,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         this.loadingOverlay = new OpenEyes.UI.LoadingOverlay();
         this.initFilters();
         this.initTable();
+        this.bindFilterButtons();
     }
 
     DrugSetController._defaultOptions = {
@@ -38,6 +39,16 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             $row.find('.js-text').hide();
             controller.showEditFields($row, $tapers);
             return false;
+        });
+    };
+
+    DrugSetController.prototype.bindFilterButtons = function () {
+        // Set value on load
+        this.selected_code_filter = $('.js-set-select.green').data('usage_code_id');
+
+        $('#et_add_drugset').click( e => {
+            e.preventDefault();
+            window.location.href = baseUrl + $(e.target).data('uri') + '?filter=' + this.selected_code_filter;
         });
     };
 
@@ -114,6 +125,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         $('#set-filters').on('click', 'button:not(.green.hint)', function () {
             $(this).parent().find('button').removeClass('green hint');
             $(this).addClass('green hint').blur();
+
+            controller.selected_code_filter = $(this).data('usage_code_id');
             controller.refreshResult();
         });
 

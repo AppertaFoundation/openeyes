@@ -254,6 +254,7 @@ class DrugSetController extends BaseAdminController
 
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
+        $filtered_usage_code = \Yii::app()->request->getParam('filter');
 
         $set = MedicationSet::model()->findByPk($id);
 
@@ -346,7 +347,14 @@ class DrugSetController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $this->render('/DrugSet/edit', ['medication_set' => $set, 'medication_data_provider' => $data_provider, 'errors' => $set->getErrors()]);
+        $this->render('/DrugSet/edit', 
+            [
+                'medication_set' => $set,
+                'medication_data_provider' => $data_provider,
+                'filtered_usage_code' => $filtered_usage_code,
+                'errors' => $set->getErrors()
+            ]
+        );
     }
 
     public function actionDelete()
