@@ -193,13 +193,11 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                         }).open();
                     } else {
                         $.each(response, function (index, value) {
-                            console.log($field);
                             let filedata = $field.val().split('.');
                             let $hidden_field = $('#Element_OphCoDocument_Document_' + index);
                             let $td = $field.closest('td');
                             if ($hidden_field.length) {
                                 $hidden_field.val(value);
-                                console.log($hidden_field.val());
                             }
 
                             var view = controller.generateView(response, index, value, filedata);
