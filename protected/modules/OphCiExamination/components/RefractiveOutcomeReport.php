@@ -222,15 +222,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
     protected function setChartTitle($data)
     {
-        $totalEyes = 'NO DATA';
-        $plusOrMinusHalfPercent = 'NO DATA';
-        $plusOrMinusOnePercent = 'NO DATA';
+        $totalEyes = 0;
+        $plusOrMinusHalfPercent = 0;
+        $plusOrMinusOnePercent = 0;
         $plusOrMinusOne = 0;
         $plusOrMinusHalf = 0;
         if ($data) {
-            $totalEyes = 0;
-            $plusOrMinusHalfPercent = 0;
-            $plusOrMinusOnePercent = 0;
             foreach ($data as $dataRow) {
                 $totalEyes += (int) $dataRow['rowTotal'];
                 $tickText = $dataRow['reading'];
