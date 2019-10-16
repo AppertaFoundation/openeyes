@@ -289,7 +289,7 @@
                 xaxis_max_val = temp > xaxis_max_val ? temp : xaxis_max_val;
                 step = xaxis_max_val > 10 ? Math.ceil((xaxis_max_val * 2 / 40) * 2) / 2 : 0.5;
             }
-            chart.layout['xaxis']['range'] = [-xaxis_max_val, xaxis_max_val];
+            chart.layout['xaxis']['range'] = [-xaxis_max_val - step, xaxis_max_val + step];
             chart.layout['xaxis']['dtick'] = step;
             chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
             '<sub>Total eyes: ' + total +

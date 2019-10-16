@@ -276,7 +276,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             );
             $step = $xaxis_max_val > 10 ? ceil(($xaxis_max_val * 2 / 40) * 2) / 2 : 0.5;
         }
-        $this->plotlyConfig['xaxis']['range'] = [-$xaxis_max_val, $xaxis_max_val];
+        $this->plotlyConfig['xaxis']['range'] = [-$xaxis_max_val - $step, $xaxis_max_val + $step];
         $this->plotlyConfig['xaxis']['dtick'] = $step;
     }
 
