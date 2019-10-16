@@ -21,8 +21,9 @@ $sites = array_map(function ($e) {
 $subspecialties = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
 }, Subspecialty::model()->findAll());
-$usage_codes = array_map(function ($e) use ($filtered_usage_code) {
-    return ['id' => $e->id, 'label' => $e->name, 'selected' => $e->id == $filtered_usage_code ];
+$filtered_usage_code_id = isset($filtered_usage_code) ? $filtered_usage_code : -1;
+$usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
+    return ['id' => $e->id, 'label' => $e->name, 'selected' => $e->id == $filtered_usage_code_id ];
 }, $all_usage_codes);
 ?>
 
