@@ -247,23 +247,44 @@ $element_errors = $element->getErrors();
         });
 
         <?php
-            $site_id = $this->getApp()->session->get('selected_site_id');
-            $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true, $site_id);
-        foreach ($medications as &$medication) {
+        $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+        foreach ($common_systemic as &$medication) {
             $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
         }
-        ?>
 
+        $firm_id = $this->getApp()->session->get('selected_firm_id');
+        $site_id = $this->getApp()->session->get('selected_site_id');
+        if ($firm_id) {
+            /** @var Firm $firm */
+            $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+            $subspecialty_id = $firm->getSubspecialtyID();
+            $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+            foreach ($common_ophthalmic as &$medication) {
+                $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+            }
+        } else {
+            $common_ophthalmic = array();
+        }
+
+        ?>
         new OpenEyes.UI.AdderDialog({
             openButton: $('#mm-add-medication-btn'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
+            itemSets: [
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                ,
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+            ],
             onReturn: function (adderDialog, selectedItems) {
                 window.MMController.addEntriesWithAllergyCheck(selectedItems);
                 return true;
             },
             searchOptions: {
-                searchSource:  window.MMController.options.searchSource,
+                searchSource: window.MMController.options.searchSource,
             },
+            enableCustomSearchEntries: true,
+            searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
             booleanSearchFilterEnabled: true,
             booleanSearchFilterLabel: 'Include branded',
             booleanSearchFilterURLparam: 'include_branded'
