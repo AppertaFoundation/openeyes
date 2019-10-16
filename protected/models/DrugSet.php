@@ -105,4 +105,13 @@ class DrugSet extends BaseActiveRecordVersioned
                 'criteria' => $criteria,
         ));
     }
+
+    public function beforeDelete()
+		{
+			foreach ($this->items as $item) {
+				$item->delete();
+			}
+
+			return parent::beforeDelete();
+		}
 }
