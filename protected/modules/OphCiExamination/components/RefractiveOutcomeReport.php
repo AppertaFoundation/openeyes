@@ -184,7 +184,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $diff = ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2)) - (float) $row['predicted_refraction'];
             $diff = round($diff * 2) / 2;
             // there was some -0 value, the following line is just in case
-            $diff = $diff == -0 ? 0 : $diff;
+            $diff = (float)$diff === (float)-0 ? 0 : $diff;
             
             $ret_ind = array_search($diff, array_column($ret, 'text'));
 
