@@ -127,7 +127,6 @@ class DrugSetController extends BaseAdminController
      */
     public function actionDelete()
     {
-        // instead of delete we just set the active field to false
         if (Yii::app()->request->isPostRequest) {
             $ids = Yii::app()->request->getPost('DrugSet');
             foreach ($ids["id"] as $id) {
