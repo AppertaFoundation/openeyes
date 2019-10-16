@@ -25,6 +25,7 @@
  */
 class OphDrPrescription_Item extends EventMedicationUse
 {
+
     /**
      * @var int
      *
@@ -35,6 +36,13 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public $taper_support = true;
 
+		private $fpten_line_usage = array();
+
+		// Maximum characters per line on FP10 form is roughly 38.
+		// Maximum characters per line on WP10 form is roughly 32.
+		// Assuming the space left of the white margin can be used for printing, this could be expanded further.
+		const MAX_FPTEN_LINE_CHARS = 38;
+		const MAX_WPTEN_LINE_CHARS = 32;
     /**
      * Returns the static model of the specified AR class.
      */
@@ -80,6 +88,16 @@ class OphDrPrescription_Item extends EventMedicationUse
      * @return string
      * Method to ensure backwards compatibility
      */
+
+    /**
+     * Get the number of lines an attribute will use on an FP10 form.
+     * @param $attr string
+     * @return int
+     */
+    public function getAttrLength($attr)
+    {
+        return $this->fpten_line_usage[$attr];
+    }
 
     public function getDescription()
     {
@@ -128,6 +146,7 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     /**
      * @return DateTime|null
+     * @throws Exception
      */
     public function stopDateFromDuration()
     {
@@ -144,6 +163,53 @@ class OphDrPrescription_Item extends EventMedicationUse
             $end_date->add(DateInterval::createFromDateString($taper->duration->name));
         }
         return $end_date;
+    }
+
+    /**
+     * Get the number of lines that will be printed out for this specific item.
+     * @return int Number of lines used.
+     */
+    public function fpTenLinesUsed()
+    {
+        $settings = new SettingMetadata();
+        $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? self::MAX_WPTEN_LINE_CHARS : self::MAX_FPTEN_LINE_CHARS;
+        $item_lines_used = 0;
+        $drug_label = $this->drug->label;
+
+        foreach (array(
+            'item_drug' => $drug_label,
+            'item_dose' => $this->fpTenDose(),
+            'item_frequency' => $this->fpTenFrequency(),
+            'item_comment' => "Comment: $this->comments"
+                 ) as $key => $value) {
+            if ($value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            } else {
+                $this->fpten_line_usage[$key] = 0;
+            }
+        }
+
+        foreach ($this->tapers as $index => $taper) {
+            foreach (array(
+                         "taper{$index}_label" => 'then',
+                         "taper{$index}_dose" => $taper->fpTenDose(),
+                         "taper{$index}_frequency" => $taper->fpTenFrequency(),
+                     ) as $key => $value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            }
+        }
+
+        foreach ($this->fpten_line_usage as $line) {
+            $item_lines_used += $line;
+        }
+
+        if ($item_lines_used > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
+            // Add the extra horizontal rule at the bottom of each split print page to the line count.
+            $item_lines_used += (int)floor($item_lines_used / PrescriptionFormPrinter::MAX_FPTEN_LINES);
+        }
+
+        // Return the truncated number of lines.
+        return $item_lines_used;
     }
 
     public function getAdministrationDisplay()
@@ -214,6 +280,17 @@ class OphDrPrescription_Item extends EventMedicationUse
 
             $new_taper->save();
         }
+
+    public function fpTenFrequency()
+    {
+        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+    }
+
+    public function fpTenDose()
+    {
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
+            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+    }
     }
 
     public function saveTapers()

@@ -50,7 +50,7 @@
                                 0 => 'Different',
                             ),
                             'htmlOptions' => array (
-								'nowrapper' => true,
+                                'nowrapper' => true,
                             ),
                             'selected_item' => $element->is_same_condition ? $element->is_same_condition : 0,
                         )); ?>
