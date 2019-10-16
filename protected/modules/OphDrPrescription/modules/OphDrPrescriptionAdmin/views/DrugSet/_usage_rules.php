@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+$all_usage_codes = MedicationUsageCode::model()->findAll(['condition' => 'active = 1']);
+
 $sites = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
 }, Site::model()->findAll());
@@ -21,7 +23,7 @@ $subspecialties = array_map(function ($e) {
 }, Subspecialty::model()->findAll());
 $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
     return ['id' => $e->id, 'label' => $e->name, 'selected' => $e->id == $filtered_usage_code ];
-}, MedicationUsageCode::model()->findAll(['condition' => 'active = 1']));
+}, $all_usage_codes);
 ?>
 
  <div class="row">
@@ -36,7 +38,7 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
                 <th width="5%">Action</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class='js-usage-rule-table'>
             <?php foreach ($medication_set->medicationSetRules as $k => $rule): ?>
                 <tr data-key="<?= $k; ?>">
                     <td>
@@ -49,7 +51,7 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
                         <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                     </td>
                     <td>
-                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData(MedicationUsageCode::model()->findAll(['condition' => 'active = 1']), 'id', 'name')); ?>
+                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData($all_usage_codes, 'id', 'name')); ?>
                     </td>
                     <td>
                         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -83,7 +85,7 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
             {{subspecialty.label}}
         </td>
         <td>
-            <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData(MedicationUsageCode::model()->findAll(['condition' => 'active = 1']), 'id', 'name')); ?>
+            <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData($all_usage_codes, 'id', 'name')); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -111,6 +113,9 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
                 header: "Usage Code"
             }),
         ],
+        onOpen: function (adderDialog) {
+          adderDialog.refreshSelections();
+        },
         onReturn: function (adderDialog, selectedItems) {
             let selObj = {};
 
@@ -133,8 +138,8 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code) {
 
             let rendered = Mustache.render(template, selObj);
             $("#rule_tbl > tbody").append(rendered);
+            $('.js-usage-rule-table tr:last select option[value=' + selObj['usage_code'].id + ']').attr('selected', 'selected');
 
-            $('select option[value=' + selObj['usage_code'].id + ']').attr('selected', 'selected');
 
             return true;
         },

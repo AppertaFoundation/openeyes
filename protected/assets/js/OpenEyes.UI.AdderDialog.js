@@ -38,6 +38,7 @@
      */
     AdderDialog._defaultOptions = {
         itemSets: [],
+        container: null,
         openButton: null,
         onOpen: null,
         onClose: null,
@@ -173,6 +174,7 @@
                     dialog.generateDecimalValues(itemSet).appendTo($listContainer);
                 }
             });
+            this.options.container = $container;
         }
     };
 
@@ -249,6 +251,21 @@
         return this.popup.find('li.selected').map(function () {
             return $(this).data();
         }).get();
+    };
+
+    /**
+     * Makes sure that items that were set to 'selected' in the
+     * ItemSet are kept selected by default when the adder is opened
+     * optional, so to use must call in 'onOpen'
+     */
+    AdderDialog.prototype.refreshSelections = function() {
+        this.options.itemSets.forEach(itemSet => {
+            itemSet.items.forEach(item => {
+                if ('selected' in item && item.selected) {
+                    this.options.container.find('[data-label="'+item.label+'"]').addClass('selected');
+                }
+            });
+        });
     };
 
     /**
