@@ -16,11 +16,11 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
             $command->createCommand("INSERT INTO medication_set(name) values ('" . $glaucoma_tag['name'] . "')")->execute();
             $medication_set_id = $command->getLastInsertID();
 
-            // get the id of the OESCape usage code
+            // get the id of the OEScape usage code
             $oescape_usage_code_id = $command->createCommand()
                 ->select('id')
                 ->from('medication_usage_code')
-                ->where('usage_code = :usage_code', [':usage_code' => 'OESCape'])
+                ->where('usage_code = :usage_code', [':usage_code' => 'OEScape'])
                 ->queryScalar();
 
             // get Glaucoma subspecialty's Id
@@ -30,7 +30,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                 ->where('ref_spec = :ref_spec', [':ref_spec' => 'GL'])
                 ->queryScalar();
 
-            // add rule to OESCape Glaucoma
+            // add rule to OEScape Glaucoma
             $command->createCommand("INSERT INTO medication_set_rule (medication_set_id, subspecialty_id, usage_code_id)
 											VALUES ($medication_set_id, $gl_subspecialty_id, $oescape_usage_code_id )")->execute();
 

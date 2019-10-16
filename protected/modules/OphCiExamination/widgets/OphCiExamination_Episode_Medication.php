@@ -53,7 +53,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
                     $is_glaucoma = false;
                     if ($entry->medication_id) {
-                        foreach ($entry->medication->getSetsByUsageCode('OESCape') as $set) {
+                        foreach ($entry->medication->getSetsByUsageCode('OEScape') as $set) {
                             foreach ($set->medicationSetRules as $rule) {
                                 if ($rule->subspecialty && $rule->subspecialty->ref_spec === 'GL') {
                                     $is_glaucoma = true;

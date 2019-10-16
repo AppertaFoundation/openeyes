@@ -187,6 +187,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             ['usage_code' => 'COMMON_SYSTEMIC', 'name' => 'Common Systemic', 'active' => 1],
             ['usage_code' => 'PRESCRIPTION_SET', 'name' => 'Prescription', 'active' => 1],
             ['usage_code' => 'Formulary', 'name' => 'Formulary', 'active' => 1],
+            ['usage_code' => 'OEScape', 'name' => 'OEScape', 'active' => 1],
         ]);
     }
 
