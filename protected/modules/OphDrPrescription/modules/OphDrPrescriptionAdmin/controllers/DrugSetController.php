@@ -347,7 +347,7 @@ class DrugSetController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $this->render('/DrugSet/edit', 
+        $this->render('/DrugSet/edit',
             [
                 'medication_set' => $set,
                 'medication_data_provider' => $data_provider,
