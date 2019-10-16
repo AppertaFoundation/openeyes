@@ -103,14 +103,49 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 
 <script type="text/javascript">
     <?php
-    // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'DefaultController')) : ?>
-    var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
-    <?php else : ?>
-    var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
-    <?php endif; ?>
+    $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+    foreach ($common_systemic as &$medication) {
+        $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+    }
 
-    var prescriptionDrugSets = <?= CJSON::encode(
+    $firm_id = $this->getApp()->session->get('selected_firm_id');
+    $site_id = $this->getApp()->session->get('selected_site_id');
+    if ($firm_id) {
+        /** @var Firm $firm */
+        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        $subspecialty_id = $firm->getSubspecialtyID();
+        $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+        foreach ($common_ophthalmic as &$medication) {
+            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+        }
+    } else {
+        $common_ophthalmic = array();
+    }
+    ?>
+    new OpenEyes.UI.AdderDialog({
+        openButton: $('#add-prescription-btn'),
+        itemSets: [
+            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+            ,
+            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+        ],
+        onReturn: function (adderDialog, selectedItems) {
+            addItems(selectedItems);
+            return true;
+        },
+        searchOptions: {
+            searchSource: '/medicationManagement/findRefMedications',
+        },
+        enableCustomSearchEntries: true,
+        searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
+        booleanSearchFilterEnabled: true,
+        booleanSearchFilterLabel: 'Include branded',
+        booleanSearchFilterURLparam: 'include_branded'
+    });
+
+    let prescription_drug_sets = <?= CJSON::encode(
         array_map(function ($drugSet) {
             return [
                 'label' => $drugSet->name,
@@ -119,34 +154,19 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         }, $element->drugSets())
     ) ?>;
 
-    var prescriptionElementCommonDrugs = <?= CJSON::encode(
-        array_map(function ($drug) {
-            return [
-                'label' => $drug['preferred_term'],
-                'id' => $drug['id'],
-                'prepended_markup' => $this->widget('MedicationInfoBox', array('medication_id' => $drug['id']), true),
-                'allergies' => array_map(function ($e) {
-                    return $e->id;
-                }, $drug['allergies']),
-            ];
-        }, $element->commonDrugs())
-    ) ?>;
-
-    <?php
-        $drugTypes = [];
-    foreach ($element->drugTypes() as $key => $drugType) {
-        $drugTypes[] = [
-            'label' => $drugType,
-            'id' => $key
-        ];
-    }
-    ?>
-
-    var prescriptionElementDrugTypes = <?= CJSON::encode($drugTypes) ?>;
-
 	<?php if (isset($this->patient)) : ?>
-    let patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+    let patient_allergies = <?= CJSON::encode($this->patient->getAllergiesId()) ?>;
 	<?php endif; ?>
+
+    // This case handles displaying the button correctly whenever changing the dispense condition.
+    $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
+        fpTenPrintOption();
+    });
+
+    // This case handles displaying the button correctly when first accessing the edit screen.
+    $(document).ready(function() {
+        fpTenPrintOption();
+    })
 
 </script>
 

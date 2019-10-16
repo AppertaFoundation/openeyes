@@ -225,7 +225,7 @@
             });
         }
 
-        this.noSearchResultsWrapper = $('<span />').text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         if(dialog.options.booleanSearchFilterEnabled) {
@@ -634,7 +634,7 @@
                     if(typeof result.prepended_markup !== "undefined") {
                         $(result.prepended_markup).appendTo($listItem);
                     }
-                    $('<span />', {class: 'auto-width'}).text(dataset['data-label']).appendTo($listItem);
+                    $('<span />', {class: dialog.options.liClass}).text(dataset['data-label']).appendTo($listItem);
                     dialog.searchResultList.append($listItem);
                 });
 

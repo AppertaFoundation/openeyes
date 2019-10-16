@@ -15,6 +15,7 @@
         'id': null,
         'supportSigns': false,
         'style': "",
+        'liClass': "",
         'signs':{'minus' : '-' , 'plus' : '+'},
         'supportDecimalValues' : false,
         'decimalValues' : ['.00' , '.25' , '.50' , '.75'],

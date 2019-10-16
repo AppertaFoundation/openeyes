@@ -1597,7 +1597,9 @@ class DefaultController extends \BaseEventTypeController
                 $eye_id = \Eye::RIGHT;
             } else if (isset($entry['left_eye'])) {
                 $eye_id = \Eye::LEFT;
-            }
+            } else {
+            	continue;
+						}
 
             // create a string with concatenation of  the columns that must be unique
             $concat_data = $eye_id . $entry['disorder_id'] . $entry['date'];
