@@ -107,11 +107,11 @@ class DrugSet extends BaseActiveRecordVersioned
     }
 
     public function beforeDelete()
-		{
-			foreach ($this->items as $item) {
-				$item->delete();
-			}
+    {
+        foreach ($this->items as $item) {
+            $item->delete();
+        }
 
-			return parent::beforeDelete();
-		}
+            return parent::beforeDelete();
+    }
 }
