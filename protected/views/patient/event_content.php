@@ -55,20 +55,30 @@
                 $(document).ready(function () {
                     var $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function () {
-                        $date_input.show();
-                        $('.js-event-date').hide();
-                        $('.js-change-event-date').hide();
+                      $date_input.show();
+                      $date_input.select();
+                      $('.js-event-date').hide();
+                      $('.js-change-event-date').hide();
                     });
 
-                  $('.pickmeup.pmu-view-days').on('click', function () {
+                    $date_input.on('keypress click', function(){
+                     $('.pickmeup.pmu-view-days').show();
+                    });
+
+                    $date_input.on('blur', function(){
+                      $('.pickmeup.pmu-view-days').hide();
+                    });
+
+                    $('.pickmeup.pmu-view-days').on('click', function () {
                       if ($(this).hasClass('pmu-hidden')) {
-                          $date_input.hide();
-                          $('.js-event-date').html($date_input.val());
-                          $('.js-change-event-date').show();
-                          $('.js-event-date').show();
+                        $date_input.hide();
+                        $('.js-event-date').html($date_input.val());
+                        $('.js-change-event-date').show();
+                        $('.js-event-date').show();
+                        $('.pickmeup.pmu-view-days').hide();
                       }
-                  });
-              });
+                    });
+                });
           </script>
 
           <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
