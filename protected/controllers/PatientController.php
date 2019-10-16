@@ -149,7 +149,7 @@ class PatientController extends BaseController
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = Patient::model()->findByPk($id);
-        $this->pageTitle = "Summary";
+        $this->pageTitle = "Patient Summary";
 
         $episodes = $this->patient->episodes;
         $legacy_episodes = $this->patient->legacyepisodes;
@@ -787,7 +787,7 @@ class PatientController extends BaseController
 
     public function setPageTitle($pageTitle)
     {
-        if ($this->patient) {
+        if ($this->patient && (string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
             parent::setPageTitle($pageTitle . ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name);
         } else {
             parent::setPageTitle($pageTitle);
@@ -2213,7 +2213,8 @@ class PatientController extends BaseController
 
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
-        $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
+        $this->pageTitle = 'Update Patient' . ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
+            ' - ' . $patient->last_name . ', ' . $patient->first_name : '' );
         $gpcontact = isset($patient->gp) ? $patient->gp->contact : new Contact();
         $practice = isset($patient->practice) ? $patient->practice : new Practice();
         $practicecontact = isset($patient->practice) ? $patient->practice->contact : new Contact();
