@@ -656,10 +656,10 @@ class OphTrOperationbooking_API extends BaseAPI
         $element = new Element_OphTrOperationbooking_Operation();
         $status_id = Yii::app()->db->createCommand()
             ->select('status_id')
-            ->from($element->getVersionTableSchema()->name)
-                        ->join('ophtroperationbooking_operation_status ops ON ops.id = t.status_id')
-                        ->where('event_id = :event_id AND ops.name != :status_name', array(':event_id'=>$event_id, ':status_name'=>'Completed'))
-            ->order('last_modified_date DESC')
+            ->from($element->getVersionTableSchema()->name. ' t')
+            ->join('ophtroperationbooking_operation_status ops', 'ops.id = status_id')
+            ->where('event_id = :event_id AND ops.name != :status_name', array(':event_id'=>$event_id, ':status_name'=>'Completed'))
+            ->order('t.last_modified_date DESC')
             ->limit(1)
             ->queryScalar();
 
