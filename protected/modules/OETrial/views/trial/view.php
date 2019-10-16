@@ -144,9 +144,12 @@
         window.location.reload(false);
       },
       error: function (response) {
+        //  Changed to meet requirements of CERA-583, there was no popup box shown earlier because content:response throws an error
+        var displayError = response.responseText;
+        displayError = displayError.substring(displayError.search('<p>'),displayError.indexOf('(') ) + '</p>';
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: response
+          content: displayError
         }).open();
       },
     });
