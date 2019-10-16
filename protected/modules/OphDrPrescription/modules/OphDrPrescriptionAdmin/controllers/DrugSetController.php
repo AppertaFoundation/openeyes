@@ -254,7 +254,7 @@ class DrugSetController extends BaseAdminController
 
         $data = \Yii::app()->request->getParam('MedicationSet');
         $filters = \Yii::app()->request->getParam('search', []);
-        $filtered_usage_code = \Yii::app()->request->getParam('filter');
+        $filtered_usage_code = \Yii::app()->request->getParam('usage_code');
 
         $set = MedicationSet::model()->findByPk($id);
 

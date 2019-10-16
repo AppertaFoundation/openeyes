@@ -48,7 +48,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
         $('#et_add_drugset').click( e => {
             e.preventDefault();
-            window.location.href = baseUrl + $(e.target).data('uri') + '?filter=' + this.selected_code_filter;
+            window.location.href = baseUrl + $(e.target).data('uri') + '?usage_code=' + this.selected_code_filter;
         });
     };
 
