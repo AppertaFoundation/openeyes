@@ -1592,30 +1592,101 @@ class AnalyticsController extends BaseController
                 }
             }
         }
-        $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
-        $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
-        foreach ($patient_tickets as $ticket) {
-            $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
-            $current_event = $ticket->event;
+        // absolete active record and extracted the logic out into a couple of queries
+        /*
+            $ticket_assignments_command combined:
+            * ticket active record
+            * getfollowup function in patientticket_api
+            * checkPatientWorklist() in this controller, which is intended to retrieve latest worklist start date
+            * getLatestExaminationEvent() in this controller
+        */
+        $ticket_assignments_command = Yii::app()->db->createCommand()
+            ->select('
+                ptt.id ticket_id
+              , ptt.patient_id patient_id
+              , ptt.event_id event_id
+              , e.created_user_id event_owner
+              , pta.assignment_date assignment_date
+              , pta.details details
+              , MAX(e.event_date) event_date
+              , MAX(w.start) worklist_date
+            ')
+            ->from('patientticketing_ticket ptt')
+            ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
+            ->join('event e', 'e.id = ptt.event_id')
+            ->join('worklist_patient wp', 'ptt.patient_id = wp.patient_id')
+            ->join('worklist w', 'wp.worklist_id = w.id')
+            ->join('event_type et', 'e.event_type_id = et.id')
+            ->where('LOWER(et.name) = :examination', array('examination' => 'examination'))
+            ->group('ptt.patient_id, ptt.event_id');
+        $ticket_assignments = $ticket_assignments_command->queryAll();
+
+        // as the details field in database is an json array,
+        // this needs to be convert to php associated array
+        $ticket_assignments = array_map(function($item){
+            $item['details'] = json_decode($item['details'], true);
+            return $item;
+        }, $ticket_assignments);
+
+        // store value outcome and use ticket id as key
+        $value_outcome = array();
+
+        // retrieve all options out
+        $ticket_assignments_outcome_opts_command = Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('patientticketing_ticketassignoutcomeoption');
+        $ticket_assignments_outcome_opts = $ticket_assignments_outcome_opts_command->queryAll();
+
+        // store options and use options id as key
+        $ticket_assignments_outcome_opts_dup = array();
+        foreach($ticket_assignments_outcome_opts as $opts){
+            $ticket_assignments_outcome_opts_dup[$opts['id']] = $opts;
+        }
+
+        foreach($ticket_assignments as $ticket_assignment) {
+            if(!isset($ticket_assignment['details'])){
+                continue;
+            }
+            foreach($ticket_assignment['details'] as $item){
+                if(isset($item['widget_name']) && $item['widget_name'] === 'TicketAssignOutcome') {
+                    if(isset($item['value']['outcome'])){
+                        $inner_val_outcome = $item['value']['outcome'];
+                        if($ticket_assignments_outcome_opts_dup[$inner_val_outcome]) {
+                            if((int)$ticket_assignments_outcome_opts_dup[$inner_val_outcome]['followup'] === 1) {
+                                $item['value']['assignment_date'] = $ticket_assignment['assignment_date'];
+                                $value_outcome[$ticket_assignment['ticket_id']] = $item['value'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($ticket_assignments as $ticket) {
+            $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
+            if(!$ticket_followup){
+                continue;
+            }
+            $current_event = $ticket['event_date'];
             $assignment_time = strtotime($ticket_followup['assignment_date']);
             if ( ($start_date && $assignment_time < $start_date) ||
                 ($end_date && $assignment_time > $end_date)) {
                 continue;
             }
             if (isset($this->surgeon, $current_event)) {
-                if ($this->surgeon !== $current_event->created_user_id) {
+                if ($this->surgeon !== $ticket['event_owner']) {
                     continue;
                 }
             }
-            $current_patient = $ticket->patient;
+            $current_patient_id = $ticket['patient_id'];
             if ($diagnosis) {
-                $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
+                $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
                 if (!in_array($diagnosis, $current_patient_diagnoses)) {
                     continue;
                 }
             }
-            $latest_worklist_time = $this->checkPatientWorklist($current_patient->id);
-            $latest_examination = $current_patient->getLatestExaminationEvent();
+            $latest_worklist_time = strtotime($ticket['worklist_date']);
+            $latest_examination = strtotime($ticket['event_date']);
             if (isset($latest_examination)) {
                 $latest_examination_date = strtotime($latest_examination->event_date);
             } else {
@@ -1649,13 +1720,13 @@ class AnalyticsController extends BaseController
                     if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
                         $followup_csv_data['overdue'][] =
                             array(
-                                'patient_id'=>$current_patient->id,
+                                'patient_id'=>$current_patient_id,
                                 'weeks'=>$over_weeks,
                             );
                         if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
                         } else {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient->id;
+                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
                         }
                     }
                 } else {
@@ -1666,13 +1737,13 @@ class AnalyticsController extends BaseController
                     if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
                         $followup_csv_data['coming'][] =
                             array(
-                                'patient_id'=>$current_patient->id,
+                                'patient_id'=>$current_patient_id,
                                 'weeks'=>$coming_weeks,
                             );
                         if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                            $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                            $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
                         } else {
-                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient->id;
+                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
                         }
                     }
                 }
