@@ -124,7 +124,7 @@
             <tr>
                 <td colspan="4">
                     <?= \CHtml::submitButton('Add', [
-                        'id' => 'et_add',
+                        'id' => 'et_add_drugset',
                         'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
                         'class' => 'button large'
                     ]); ?>

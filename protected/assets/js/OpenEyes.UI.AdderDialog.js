@@ -275,6 +275,7 @@
             'data-multiselect': itemSet.options.multiSelect,
             'data-id': itemSet.options.id,
             'data-deselectOnReturn': itemSet.options.deselectOnReturn,
+            'data-resetSelectionToDefaultOnReturn': itemSet.options.resetSelectionToDefaultOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
@@ -284,7 +285,7 @@
       if(typeof item.prepended_markup !== "undefined") {
             $(item.prepended_markup).appendTo($listItem);
         }$('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
-      if (item.selected) {
+      if (item.selected || item.defaultSelected) {
         $listItem.addClass('selected');
       }
 
@@ -523,18 +524,27 @@
         }
 
         if (shouldClose) {
+            let itemSets = dialog.popup.find('ul');
             if (dialog.options.deselectOnReturn) {
-                let itemSets = dialog.popup.find('ul');
-                itemSets.each(function () {
-                    let deselect = $(dialog).data('deselectonreturn');
-                    if (typeof deselect === "undefined" || deselect) {
-                        $(dialog).find('li').removeClass('selected');
+                itemSets.each(function (index, itemSet) {
+                    let deselect = $(itemSet).data('deselectonreturn');
+                    let reset = $(itemSet).data('resetselectiontodefaultonreturn');
+                    if (typeof deselect === "undefined" || deselect || reset) {
+                        $(itemSet).find('li').removeClass('selected');
                     }
                 });
             }
 
-            // deselect options when closing the adderDialog
-            dialog.popup.find('.selected').removeClass('selected');
+            itemSets.each(function (itemSetIndex, itemSet) {
+                if ($(itemSet).data('resetselectiontodefaultonreturn')) {
+                    $(itemSet).find('li').each(function (listIndex, listItem) {
+                        let itemData = dialog.options.itemSets[itemSetIndex].items[listIndex];
+                        if ('defaultSelected' in itemData && itemData.defaultSelected) {
+                            $(listItem).addClass('selected');
+                        }
+                    });
+                }
+            });
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
