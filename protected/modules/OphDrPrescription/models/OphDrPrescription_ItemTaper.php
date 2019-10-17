@@ -130,4 +130,16 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         $fields = array('frequency_id, duration_id', 'dose');
         return $this->getAttributes($fields) == $taper->getAttributes($fields);
     }
+
+
+	public function fpTenFrequency()
+	{
+		return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+	}
+
+	public function fpTenDose()
+	{
+		return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->item->drug->dose_unit}" : $this->dose)
+			. ', ' . $this->item->route->name . ($this->item->route_option ? ' (' . $this->item->route_option->name . ')' : null);
+	}
 }
