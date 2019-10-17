@@ -29,7 +29,6 @@ return [
                 'Auto set rules' => '/OphDrPrescription/admin/AutoSetRule/index',
                 'Local Drugs' => '/OphDrPrescription/localDrugsAdmin/list',
                 'DM+D Drugs' => '/OphDrPrescription/dmdDrugsAdmin/list',
-                'Export' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
 
 
                 'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
