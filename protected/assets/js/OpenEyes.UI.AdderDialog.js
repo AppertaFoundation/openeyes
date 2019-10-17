@@ -38,7 +38,6 @@
      */
     AdderDialog._defaultOptions = {
         itemSets: [],
-        container: null,
         openButton: null,
         onOpen: null,
         onClose: null,
@@ -174,7 +173,6 @@
                     dialog.generateDecimalValues(itemSet).appendTo($listContainer);
                 }
             });
-            this.options.container = $container;
         }
     };
 
@@ -251,21 +249,6 @@
         return this.popup.find('li.selected').map(function () {
             return $(this).data();
         }).get();
-    };
-
-    /**
-     * Makes sure that items that were set to 'selected' in the
-     * ItemSet are kept selected by default when the adder is opened
-     * optional, so to use must call in 'onOpen'
-     */
-    AdderDialog.prototype.refreshSelections = function() {
-        this.options.itemSets.forEach(itemSet => {
-            itemSet.items.forEach(item => {
-                if ('selected' in item && item.selected) {
-                    this.options.container.find('[data-label="'+item.label+'"]').addClass('selected');
-                }
-            });
-        });
     };
 
     /**
@@ -542,16 +525,14 @@
         if (shouldClose) {
             if (dialog.options.deselectOnReturn) {
                 let itemSets = dialog.popup.find('ul');
-                itemSets.each(function () {
-                    let deselect = $(dialog).data('deselectonreturn');
+                itemSets.each(function (index, itemSet) {
+                    let deselect = $(itemSet).data('deselectonreturn');
                     if (typeof deselect === "undefined" || deselect) {
-                        $(dialog).find('li').removeClass('selected');
+                        $(itemSet).find('li').removeClass('selected');
                     }
                 });
             }
 
-            // deselect options when closing the adderDialog
-            dialog.popup.find('.selected').removeClass('selected');
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
