@@ -180,7 +180,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <?php endforeach; ?>
                         </tbody>
                     </table>
-                <?php endif; ?>
+                <?php } ?>
             <?php endif; ?>
         </div>
     </div>

@@ -281,6 +281,8 @@ class OphDrPrescription_Item extends EventMedicationUse
             $new_taper->save();
         }
 
+    }
+
     public function fpTenFrequency()
     {
         return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
@@ -290,7 +292,6 @@ class OphDrPrescription_Item extends EventMedicationUse
     {
         return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
             . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
-    }
     }
 
     public function saveTapers()
