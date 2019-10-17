@@ -49,7 +49,7 @@ if (!isset($values)) {
     </span>
     </td>
     <td>
-        <?php $errorClass = ($entry->hasErrors('has_risk') ? 'error' : '') ?>
+        <?php $hasRiskErrorClass = ($entry->hasErrors('has_risk') ? 'error' : '') ?>
         <?php if ($removable) {
             if ($values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
@@ -68,18 +68,18 @@ if (!isset($values)) {
                 echo CHtml::hiddenField($field_prefix . '[has_risk]', (string)HistoryRisksEntry::$PRESENT);
             }
         } else { ?>
-            <label class="inline highlight <?= $errorClass?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
                     array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
                 Not checked
             </label>
-            <label class="inline highlight <?= $errorClass?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
                     array('value' => HistoryRisksEntry::$PRESENT)); ?>
                 Yes
             </label>
-            <label class="inline highlight <?= $errorClass?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
                     array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
