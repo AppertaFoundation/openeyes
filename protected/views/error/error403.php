@@ -20,7 +20,7 @@ $this->layout = '//layouts/error';
 ?>
 <h2>Forbidden</h2>
 <div class="alert-box error">
-	<strong>You do not have permission to access this page</strong>
+    <strong>You do not have permission to access this page</strong>
 </div>
 <?php echo $this->renderPartial('//error/support') ?>
 <p class="date"><?php echo date('r'); ?></p>

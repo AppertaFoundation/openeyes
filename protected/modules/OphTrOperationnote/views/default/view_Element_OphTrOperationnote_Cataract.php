@@ -170,7 +170,7 @@
                     </tr>
 
 
-                    <?php if ($element->getSetting('fife')): ?>
+                    <?php if ($element->getSetting('fife')) : ?>
                         <tr>
                             <td>
                                 <div class="data-label">

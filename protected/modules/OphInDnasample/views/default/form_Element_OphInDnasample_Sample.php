@@ -17,7 +17,7 @@
  */
 ?>
 <fieldset class="element-fields">
-	<?php
+    <?php
     $form->activeWidget('DropDownList', $element, 'type_id',
         array(
             'data' => CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
@@ -30,10 +30,10 @@
 
     <?php
         $hidden = $element->other_sample_type ? '' : 'hidden'; //hide if null
-        if( $element->getError('other_sample_type') ){
-            // show the field if there is an error
-            $hidden = '';
-        }
+    if ( $element->getError('other_sample_type') ) {
+        // show the field if there is an error
+        $hidden = '';
+    }
     ?>
     <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="data-group <?php echo $hidden; ?>">
         <div class="cols-2 column">
@@ -53,12 +53,13 @@
     $form->activeWidget('TextField', $element, 'volume');
     $form->activeWidget('TextField', $element, 'destination');
 
-    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true);
+    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true);
 
     $form->dropDownList(
         $element,
         'consented_by',
-        CHtml::listData($users, 'id', function($row){return $row->last_name.', '.$row->first_name;}),
+        CHtml::listData($users, 'id', function($row){return $row->last_name.', '.$row->first_name;
+        }),
         array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true)))
     );
 

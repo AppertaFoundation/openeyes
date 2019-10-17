@@ -68,7 +68,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     const LETTER_REMOVAL = 4;
 
     // these reflect an actual status, relating to actions required rather than letters sent
-    const STATUS_WHITE = 0; // no action required.	the default status.
+    const STATUS_WHITE = 0; // no action required.  the default status.
     const STATUS_PURPLE = 1; // no invitation letter has been sent
     const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
     const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
@@ -338,7 +338,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public function beforeValidate()
     {
-        if(!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
+        if (!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
             $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
         }
         return parent::beforeValidate();
@@ -442,7 +442,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if( !count($this->anaesthetic_type_assignments)){
+        if ( !count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -602,7 +602,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * Returns the letter status for an operation.
      *
      * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
-     *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
+     *   on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
      *
      * return int
      */
@@ -695,7 +695,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $rtt_date = $this->getRTTBreach();
 
         $criteria = new CDbCriteria();
-        if($firm->id) {
+        if ($firm->id) {
             $criteria->compare('firm_id', $firm->id);
         } else {
             $criteria->addCondition('firm_id is null');
@@ -728,7 +728,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                         } else {
                             $hasFreeProcedures = false;
                             foreach ($sessiondata[$date] as $session) {
-
                                 // Check if at least one session has enough allocated max_procedures to allow the booking
                                 if (!$session->operationBookable($this)) {
                                     continue;
@@ -912,7 +911,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function hasAnaestheticTypeByCode($code)
     {
         return count(array_filter($this->anaesthetic_type,
-                function($a_type) use ($code) { return $a_type == $code;})
+                function($a_type) use ($code) { return $a_type == $code;
+                })
             ) > 0;
     }
 
@@ -1017,8 +1017,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                                  ->with(array(
                                 'firm' => array(
                                         'joinType' => 'JOIN',
-                                ),
-                        ))
+                                 ),
+                                 ))
                          ->findAll($criteria) as $session) {
             $available_time = $session->availableMinutes;
             if ($available_time < $this->total_duration) {
@@ -1725,8 +1725,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public function getAnaesthetist_required(){
         $anaesthetist_required = false;
-        foreach($this->anaesthetic_type as $anaesthetic_type){
-            if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
+        foreach ($this->anaesthetic_type as $anaesthetic_type) {
+            if ( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ) {
                 $anaesthetist_required = true;
             }
         }

@@ -31,7 +31,7 @@ class BaseReportController extends BaseController
 
     public function checkSurgonOrRole()
     {
-        if( Yii::app()->user->isSurgeon() || Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+        if ( Yii::app()->user->isSurgeon() || Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             return true;
         }
 
@@ -112,7 +112,7 @@ class BaseReportController extends BaseController
 
             $post = $_POST;
             unset($post['YII_CSRF_TOKEN']);
-            Audit::add('Reports', 'display', "<pre>" . print_r($post, true) . "</pre>",null, ['model' => $report_class]);
+            Audit::add('Reports', 'display', "<pre>" . print_r($post, true) . "</pre>", null, ['model' => $report_class]);
 
             $report->run();
 

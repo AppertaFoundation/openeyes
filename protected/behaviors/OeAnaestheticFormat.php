@@ -21,19 +21,19 @@
  */
 class OeAnaestheticFormat extends CActiveRecordBehavior
 {
-	function convertToString($anaesthetic_element){
-		$toreturn = implode(', ', array_map(function ($element) {
-			return $element->name;
-		}, $anaesthetic_element));
+    function convertToString($anaesthetic_element){
+        $toreturn = implode(', ', array_map(function ($element) {
+            return $element->name;
+        }, $anaesthetic_element));
 
-		return $toreturn ?: 'None';
-	}
+        return $toreturn ?: 'None';
+    }
 
-	function convertToList($anaesthetic_element){
-		$toreturn = implode('</li><li>', array_map(function ($element) {
-			return $element->name;
-		}, $anaesthetic_element));
+    function convertToList($anaesthetic_element){
+        $toreturn = implode('</li><li>', array_map(function ($element) {
+            return $element->name;
+        }, $anaesthetic_element));
 
-		return '<li>'.($toreturn ?: 'None').'</li>';
-	}
+        return '<li>'.($toreturn ?: 'None').'</li>';
+    }
 }

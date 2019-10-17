@@ -15,12 +15,12 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (isset(Yii::app()->params['patient_alert_widgets'])): ?>
+if (isset(Yii::app()->params['patient_alert_widgets'])) : ?>
   <div class="messages patient fixed js-patient-messages">
       <?php foreach (Yii::app()->params['patient_alert_widgets'] as $paw) {
-          $this->widget($paw['class'], array(
+            $this->widget($paw['class'], array(
               'patient' => $this->patient,
-          ));
+            ));
       } ?>
   </div>
 <?php endif; ?>

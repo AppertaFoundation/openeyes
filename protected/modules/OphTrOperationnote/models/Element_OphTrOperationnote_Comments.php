@@ -77,12 +77,11 @@ class Element_OphTrOperationnote_Comments extends Element_OpNote
     public function checkMinimalLengthIfNeeded($attribute, $params)
     {
         $mandatory_post_op_instructions = SettingMetadata::model()->findByAttributes(array('key' => 'mandatory_post_op_instructions'));
-        if( $mandatory_post_op_instructions->getSettingName() == 'On' ) {
-            if(strlen($this->$attribute) < $params['min']){
+        if ( $mandatory_post_op_instructions->getSettingName() == 'On' ) {
+            if (strlen($this->$attribute) < $params['min']) {
                 $message = $this->getAttributeLabel($attribute).' is a required field';
                 $this->addError($attribute, $message, $params);
             }
-
         }
     }
 

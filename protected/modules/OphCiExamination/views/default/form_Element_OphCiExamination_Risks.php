@@ -20,5 +20,5 @@
   <div>
     Comments:
   </div>
-	<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'rows'=>1, 'nowrapper' => true), false, array('placeholder' => 'Enter comments'), array('label' => 1, 'field' => 11))?>
+    <?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'rows'=>1, 'nowrapper' => true), false, array('placeholder' => 'Enter comments'), array('label' => 1, 'field' => 11))?>
 </div>

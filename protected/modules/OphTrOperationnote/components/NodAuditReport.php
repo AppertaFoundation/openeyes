@@ -72,19 +72,19 @@ class NodAuditReport extends Report implements ReportInterface
      *
      * @return CDbDataReader|mixed
      */
-    protected function queryData($surgeon, $dateFrom, $dateTo,$type)
+    protected function queryData($surgeon, $dateFrom, $dateTo, $type)
     {
         $this->command->reset();
         $this->command->from('et_ophtroperationnote_cataract eoc')
             ->join('event e1', 'eoc.event_id = e1.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = e1.id')
-            ->leftJoin('episode ep1','ep1.id=e1.episode_id')
-            ->leftJoin('episode ep2','ep2.patient_id = ep1.patient_id')
-            ->leftJoin('event e2','e2.episode_id = ep2.id')
+            ->leftJoin('episode ep1', 'ep1.id=e1.episode_id')
+            ->leftJoin('episode ep2', 'ep2.patient_id = ep1.patient_id')
+            ->leftJoin('event e2', 'e2.episode_id = ep2.id')
             ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
             ->andWhere('e1.deleted=0')
             ->andWhere('e2.deleted=0');
-        switch ($type){
+        switch ($type) {
             //visual
             case 'VA':
                 $this->command->select('eoc.id as cataract_element_id, 
@@ -92,9 +92,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eov.id as va_element_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_visualacuity eov','eov.event_id = e2.id')
+                    ->leftJoin('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
                     ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)',array(':days'=>$this->months))
+                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             //refraction
@@ -104,9 +104,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eor.id as refraction_element_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_refraction eor','eor.event_id = e2.id')
+                    ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
                     ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)',array(':days'=>$this->months))
+                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             //biometry
@@ -115,12 +115,12 @@ class NodAuditReport extends Report implements ReportInterface
                                         eoc.event_id as cataract_event_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophinbiometry_measurement eom','eom.event_id = e2.id')
-                    ->leftJoin('ophinbiometry_imported_events oie','oie.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_selection eos','eos.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_calculation eoc2','eoc2.id = eos.formula_id_left')
+                    ->leftJoin('et_ophinbiometry_measurement eom', 'eom.event_id = e2.id')
+                    ->leftJoin('ophinbiometry_imported_events oie', 'oie.event_id = e2.id')
+                    ->leftJoin('et_ophinbiometry_selection eos', 'eos.event_id = e2.id')
+                    ->leftJoin('et_ophinbiometry_calculation eoc2', 'eoc2.id = eos.formula_id_left')
                     ->andWhere('eom.deleted = 0')
-                    ->andWhere('DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date, e2.event_date)>0',array(':days'=> $this->months));
+                    ->andWhere('DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date, e2.event_date)>0', array(':days'=> $this->months));
                 break;
             case 'CT':
                 $this->command->select('eoc.id as cataract_element_id, 
@@ -137,15 +137,15 @@ class NodAuditReport extends Report implements ReportInterface
                                         eopc.id as post_op_complication_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_postop_complications eopc','eopc.event_id = e2.id')
-                    ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0',array(':days'=>$this->months))
+                    ->leftJoin('et_ophciexamination_postop_complications eopc', 'eopc.event_id = e2.id')
+                    ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0', array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
             // indication for surgery
             case 'IS':
                 $this->command->select('eoc.id as cataract_element_id, eoc.event_id as cataract_event_id, eod.id as diagnosis_id')
-                    ->leftJoin('et_ophtroperationnote_procedurelist eop','eop.event_id = eoc.event_id')
-                    ->leftJoin('et_ophtroperationbooking_diagnosis eod','eod.event_id = eop.booking_event_id')
+                    ->leftJoin('et_ophtroperationnote_procedurelist eop', 'eop.event_id = eoc.event_id')
+                    ->leftJoin('et_ophtroperationbooking_diagnosis eod', 'eod.event_id = eop.booking_event_id')
                     ->group('eoc.id');
                 break;
             case 'PRE-EXAM':
@@ -157,11 +157,11 @@ class NodAuditReport extends Report implements ReportInterface
                 break;
             case 'E/I':
                 $this->command->select('eoc.id as cataract_element_id, eoc.event_id as cataract_event_id, ep1.patient_id as patient_id,')
-                    ->leftJoin('et_ophtroperationnote_procedurelist eop','eop.event_id = eoc.event_id')
-                    ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment oppa','oppa.procedurelist_id = eop.id')
-                    ->leftJoin('proc','proc.id = oppa.proc_id')
-                    ->leftJoin('et_ophtroperationbooking_diagnosis eod','eod.event_id = eop.booking_event_id')
-                    ->leftJoin('user','et_ophtroperationnote_surgeon.surgeon_id=user.id')
+                    ->leftJoin('et_ophtroperationnote_procedurelist eop', 'eop.event_id = eoc.event_id')
+                    ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment oppa', 'oppa.procedurelist_id = eop.id')
+                    ->leftJoin('proc', 'proc.id = oppa.proc_id')
+                    ->leftJoin('et_ophtroperationbooking_diagnosis eod', 'eod.event_id = eop.booking_event_id')
+                    ->leftJoin('user', 'et_ophtroperationnote_surgeon.surgeon_id=user.id')
                     ->andWhere('proc.term LIKE "%phacoemulsification%"')
                     ->andWhere('e1.event_date IS NOT NULL')
                     ->andWhere('user.doctor_grade_id IS NOT NULL')
@@ -169,7 +169,6 @@ class NodAuditReport extends Report implements ReportInterface
                     ->andWhere('et_ophtroperationnote_surgeon.surgeon_id IS NOT NULL')
                     ->group('eoc.id');
                 break;
-
         }
 
         if ($dateFrom) {
@@ -205,70 +204,70 @@ class NodAuditReport extends Report implements ReportInterface
         }
 
         foreach ($surgeon_id_list as $surgeon_id) {
-            if(!isset($return_data['VA'])){
-                $return_data['VA'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'VA'),$surgeon_id['id']);
-            }else{
-                $return_data['VA'] = array_merge_recursive($return_data['VA'],$this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'VA'),$surgeon_id['id']));
+            if (!isset($return_data['VA'])) {
+                $return_data['VA'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'VA'), $surgeon_id['id']);
+            } else {
+                $return_data['VA'] = array_merge_recursive($return_data['VA'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'VA'), $surgeon_id['id']));
             }
 
-            if (!isset($return_data['RF'])){
-                $return_data['RF'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'RF'),$surgeon_id['id']);
-            }else{
-                $return_data['RF'] = array_merge_recursive($return_data['RF'],$this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'RF'),$surgeon_id['id']));
+            if (!isset($return_data['RF'])) {
+                $return_data['RF'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'RF'), $surgeon_id['id']);
+            } else {
+                $return_data['RF'] = array_merge_recursive($return_data['RF'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'RF'), $surgeon_id['id']));
             }
 
-            if (!isset($return_data['PCR_RISK'])){
-                $return_data['PCR_RISK'] = $this->PCRRiskDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'RISK'));
-            }else{
-                $return_data['PCR_RISK'] = array_merge_recursive($return_data['PCR_RISK'],$this->PCRRiskDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'RISK')));
+            if (!isset($return_data['PCR_RISK'])) {
+                $return_data['PCR_RISK'] = $this->PCRRiskDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'RISK'));
+            } else {
+                $return_data['PCR_RISK'] = array_merge_recursive($return_data['PCR_RISK'], $this->PCRRiskDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'RISK')));
             }
 
-            if (!isset($return_data['COMPLICATION'])){
-                $return_data['COMPLICATION'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'COMPLICATION'),$surgeon_id['id']);
-            }else{
-                $return_data['COMPLICATION'] = array_merge_recursive($return_data['COMPLICATION'],$this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'COMPLICATION'),$surgeon_id['id']));
+            if (!isset($return_data['COMPLICATION'])) {
+                $return_data['COMPLICATION'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'COMPLICATION'), $surgeon_id['id']);
+            } else {
+                $return_data['COMPLICATION'] = array_merge_recursive($return_data['COMPLICATION'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'COMPLICATION'), $surgeon_id['id']));
             }
 
-            if (!isset($return_data['INDICATION_FOR_SURGERY'])){
-                $return_data['INDICATION_FOR_SURGERY'] = $this->IndicationForSurgeryDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'IS'));
-            }else{
-                $return_data['INDICATION_FOR_SURGERY'] = array_merge_recursive($return_data['INDICATION_FOR_SURGERY'],$this->IndicationForSurgeryDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'IS')));
+            if (!isset($return_data['INDICATION_FOR_SURGERY'])) {
+                $return_data['INDICATION_FOR_SURGERY'] = $this->IndicationForSurgeryDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'IS'));
+            } else {
+                $return_data['INDICATION_FOR_SURGERY'] = array_merge_recursive($return_data['INDICATION_FOR_SURGERY'], $this->IndicationForSurgeryDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'IS')));
             }
 
-            if (!isset($return_data['BM'])){
-                $return_data['BM'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'BM'),$surgeon_id['id']);
-            }else{
-                $return_data['BM'] = array_merge_recursive($return_data['BM'],$this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'BM'),$surgeon_id['id']));
+            if (!isset($return_data['BM'])) {
+                $return_data['BM'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'BM'), $surgeon_id['id']);
+            } else {
+                $return_data['BM'] = array_merge_recursive($return_data['BM'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'BM'), $surgeon_id['id']));
             }
-            if (!isset($return_data['PRE-EXAM'])){
-                $return_data['PRE-EXAM'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'PRE-EXAM'),$surgeon_id['id']);
-            }else{
-                $return_data['PRE-EXAM'] = array_merge_recursive($return_data['PRE-EXAM'],$this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'PRE-EXAM'),$surgeon_id['id']));
+            if (!isset($return_data['PRE-EXAM'])) {
+                $return_data['PRE-EXAM'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'PRE-EXAM'), $surgeon_id['id']);
+            } else {
+                $return_data['PRE-EXAM'] = array_merge_recursive($return_data['PRE-EXAM'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'PRE-EXAM'), $surgeon_id['id']));
             }
-            if (!isset($return_data['E/I'])){
-                $return_data['E/I'] = $this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'E/I'),$surgeon_id['id']);
-            }else{
-                $return_data['E/I'] = array_merge_recursive($return_data['E/I'],$this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to,'E/I'),$surgeon_id['id']));
+            if (!isset($return_data['E/I'])) {
+                $return_data['E/I'] = $this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'E/I'), $surgeon_id['id']);
+            } else {
+                $return_data['E/I'] = array_merge_recursive($return_data['E/I'], $this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'E/I'), $surgeon_id['id']));
             }
-            if (!isset($return_data['total'])){
-                $return_data['total'] = count($this->queryData($surgeon_id['id'],$this->from,$this->to,'CT'));
-            }else{
-                $return_data['total'] += count($this->queryData($surgeon_id['id'],$this->from,$this->to,'CT'));
+            if (!isset($return_data['total'])) {
+                $return_data['total'] = count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
+            } else {
+                $return_data['total'] += count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
             }
         }
         return $return_data;
     }
 
-    public function InsertDataToArray($data,$surgeon_id){
+    public function InsertDataToArray($data, $surgeon_id){
         $return_data = array(
             'pre-complete'=>array(),
             'post-complete'=>array(),
         );
-        $cataract_elements = $this->queryData($surgeon_id,$this->from,$this->to,'CT');
+        $cataract_elements = $this->queryData($surgeon_id, $this->from, $this->to, 'CT');
         $cataract_events = array();
 
-        foreach ($cataract_elements as $row){
-            array_push($cataract_events,$row['cataract_event_id']);
+        foreach ($cataract_elements as $row) {
+            array_push($cataract_events, $row['cataract_event_id']);
         }
         if (isset($data)) {
             foreach ($data as $case) {
@@ -296,10 +295,10 @@ class NodAuditReport extends Report implements ReportInterface
             'known'=> array(),
             'not_known'=> array(),
         );
-        foreach ($data as $case){
-            if ($case['pcr_risk'] !== null){
+        foreach ($data as $case) {
+            if ($case['pcr_risk'] !== null) {
                 array_push($return_data['known'], $case['cataract_event_id']);
-            }else{
+            } else {
                 array_push($return_data['not_known'], $case['cataract_event_id']);
             }
         }
@@ -311,29 +310,29 @@ class NodAuditReport extends Report implements ReportInterface
             'complete'=>array(),
             'incomplete'=>array(),
         );
-        foreach ($data as $case){
-            if ($case['diagnosis_id'] !== null){
+        foreach ($data as $case) {
+            if ($case['diagnosis_id'] !== null) {
                 array_push($return_data['complete'], $case['cataract_event_id']);
-            }else{
+            } else {
                 array_push($return_data['incomplete'], $case['cataract_event_id']);
             }
         }
         return $return_data;
     }
-    public function NodEligibilityDataToArray($data,$surgeon_id){
+    public function NodEligibilityDataToArray($data, $surgeon_id){
         $return_data=array(
             'eligible'=>array(),
             'ineligible'=>array(),
         );
-        $cataract_elements = $this->queryData($surgeon_id,$this->from,$this->to,'CT');
+        $cataract_elements = $this->queryData($surgeon_id, $this->from, $this->to, 'CT');
         $cataract_events = array();
 
-        foreach ($cataract_elements as $row){
-            array_push($cataract_events,$row['cataract_event_id']);
+        foreach ($cataract_elements as $row) {
+            array_push($cataract_events, $row['cataract_event_id']);
         }
-        foreach ($data as $case){
+        foreach ($data as $case) {
             $current_patient = Patient::model()->findByPk($case['patient_id']);
-            if (isset($current_patient) && $current_patient->getAge() >= 18){
+            if (isset($current_patient) && $current_patient->getAge() >= 18) {
                 array_push($return_data['eligible'], $case['cataract_event_id']);
             }
         }

@@ -31,24 +31,28 @@ $numHash = crc32($element->getElementTypeName());
 $attributes = $this->getAttributesForProcedure($element->proc_id);
 $itemSets = [];
 foreach ($attributes as $attribute) {
-	$items = array();
+    $items = array();
 
-	foreach ($attribute->options as $option) {
-		$items[] = ['label' => (string)$option->value.", "];
-	}
+    foreach ($attribute->options as $option) {
+        $items[] = ['label' => (string)$option->value.", "];
+    }
 
-	$itemSets[] = ['items' => $items ,
-		'header' => $attribute->label ,
-		'multiSelect' => $attribute->is_multiselect
-	];
+    $itemSets[] = ['items' => $items ,
+        'header' => $attribute->label ,
+        'multiSelect' => $attribute->is_multiselect
+    ];
 }
 ?>
 
 <section
     class="edit element full on-demand sub-element
-      <?php echo $element->elementType->class_name ?>
-      <?php if (@$ondemand) { ?>hidden<?php } ?>
-      <?php if ($this->action->id === 'update' && !$element->event_id) { ?>missing<?php } ?>"
+        <?php echo $element->elementType->class_name ?>
+        <?php if (@$ondemand) {
+            ?>hidden<?php
+        } ?>
+        <?php if ($this->action->id === 'update' && !$element->event_id) {
+            ?>missing<?php
+        } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -85,13 +89,13 @@ foreach ($attributes as $attribute) {
       </tbody>
     </table>
 
-      <?php if(!empty($attributes)): ?>
+        <?php if (!empty($attributes)) : ?>
       <div class="add-data-actions flex-item-bottom">
           <button class="button hint green js-add-select-search" type="button" id="add_attribute_<?=$numHash?>">
               <i class="oe-i plus pro-theme"></i>
           </button>
       </div>
-      <?php endif; ?>
+        <?php endif; ?>
 
   </div>
   <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][proc_id]"

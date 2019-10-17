@@ -85,7 +85,7 @@ class ReportController extends BaseReportController
         } else {
             throw new CHttpException(404, 'Report not found');
         }
-        if ($template == "analytics"){
+        if ($template == "analytics") {
             $reportObj->setTemplate('//report/plotly_report_analytics');
         }
 

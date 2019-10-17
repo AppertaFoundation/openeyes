@@ -17,22 +17,24 @@
  */
 ?>
 <div class="data-group diagnosis-selection">
-	<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-		<label for="<?php echo "{$class}_{$field}";?>">
-			<?php echo $label?>:
-		</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
+    <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {
+        ?> hide<?php
+                     }?>">
+        <label for="<?php echo "{$class}_{$field}";?>">
+            <?php echo $label?>:
+        </label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field'];?> column end">
 
-		<!-- Here we show the selected diagnosis -->
-		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="hide">
-		</div>
+        <!-- Here we show the selected diagnosis -->
+        <div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="hide">
+        </div>
 
-		<div class="dropdown-row">
-			<?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
-		</div>
-		<div class="autocomplete-row">
-			<?php
+        <div class="dropdown-row">
+            <?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
+        </div>
+        <div class="autocomplete-row">
+            <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                     'name' => "{$class}[$field]",
                     'id' => "{$class}_{$field}_0",
@@ -66,15 +68,15 @@
                     ),
             ));
             ?>
-			<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-				id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
-		</div>
-	</div>
+            <input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
+                id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html('<strong>' + $('option:selected', this).text() + '</strong>');
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
-		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
-	});
+    $('#<?php echo $class?>_<?php echo $field?>').change(function() {
+        $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html('<strong>' + $('option:selected', this).text() + '</strong>');
+        $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
+        $('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
+    });
 </script>

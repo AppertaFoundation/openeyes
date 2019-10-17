@@ -121,7 +121,7 @@ class Document //extends BaseActiveRecord
         $data['document_set_id'] = $document_set_id;
         $array['data']['document_set_id'] = $document_set_id;
 
-//		$contacts[0] = array('type'=>'PATIENT')
+//      $contacts[0] = array('type'=>'PATIENT')
         if ($jsonOutput) {
             $json = json_encode($array);
 
@@ -275,9 +275,8 @@ class Document //extends BaseActiveRecord
         }
 
         if (isset($data['DocumentTarget'])) {
-            
             // Before saving new Targets we check if there were any Recipients to remove
-            if( Yii::app()->controller->action->id === 'update'){
+            if ( Yii::app()->controller->action->id === 'update') {
                 $this->removeTargetAndOutput($doc_set->id, $data['DocumentTarget']);
             }
 
@@ -292,18 +291,16 @@ class Document //extends BaseActiveRecord
 
                 if (isset($post_document_target['attributes']['id'])) {
                     $data['id'] = $post_document_target['attributes']['id'];
-                }              
+                }
                 $doc_target = $this->createNewDocTarget($doc_instance, $data);
 
                 if (isset($post_document_target['DocumentOutput'])) {
-                    
                     // If an output id is not posted back we remove it from the DB
-                    if(isset($post_document_target['attributes']['id'])){
+                    if (isset($post_document_target['attributes']['id'])) {
                         $this->removeOutputs($post_document_target['attributes']['id'], $post_document_target['DocumentOutput']);
                     }
                     
                     foreach ($post_document_target['DocumentOutput'] as $document_output) {
-
                         if (isset($document_output['output_type'])) {
                             $data = array(
                                 'output_type' => $document_output['output_type'],
@@ -313,9 +310,9 @@ class Document //extends BaseActiveRecord
                                 $data['id'] = $document_output['id'];
                             }
 
-                            if( $this->is_draft && ($data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
+                            if ( $this->is_draft && ($data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ) {
                                 $data['output_status'] = "DRAFT";
-                            } else if($this->is_draft == 0 && ( $data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
+                            } else if ($this->is_draft == 0 && ( $data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ) {
                                 $data['output_status'] = "PENDING";
                             }
 
@@ -365,7 +362,7 @@ class Document //extends BaseActiveRecord
         $doc_output->output_type = $data['output_type'];
         $doc_output->requestor_id = 'OE';
 
-        if( isset($data['output_status']) && $doc_output->output_type != "COMPLETE"){
+        if ( isset($data['output_status']) && $doc_output->output_type != "COMPLETE") {
             $doc_output->output_status = $data['output_status'];
         }
 
@@ -384,49 +381,44 @@ class Document //extends BaseActiveRecord
     {
         $document_set = DocumentSet::model()->findByPk($document_id);
         
-        if( isset($document_set->document_instance[0]->document_target) ){
-            
+        if ( isset($document_set->document_instance[0]->document_target) ) {
             // get saved document_targets
             $document_targets = $document_set->document_instance[0]->document_target;
-            foreach($document_targets as $document_target){
-                
+            foreach ($document_targets as $document_target) {
                 //check if the document_target is in he posted ones
                 $is_in = false;
-                foreach($new_document_targets as $new_document_target){
-                    if( isset($new_document_target['attributes']['id']) && $document_target->id == $new_document_target['attributes']['id']){
+                foreach ($new_document_targets as $new_document_target) {
+                    if ( isset($new_document_target['attributes']['id']) && $document_target->id == $new_document_target['attributes']['id']) {
                         $is_in = true;
                     }
                 }
                 
                 // the target in the DB is not posted back so we can delete it as they removed it from the UI
-                if(!$is_in){
-
+                if (!$is_in) {
                     $deletable = true;
-                    foreach($document_target->document_output as $document_output){
-                        
+                    foreach ($document_target->document_output as $document_output) {
                         // we don't delete if it is already DocMan delivered
-                        if( $document_output->output_status == 'COMPLETE' && $document_output->output_type == 'Docman' ){
+                        if ( $document_output->output_status == 'COMPLETE' && $document_output->output_type == 'Docman' ) {
                             $deletable = false;
                         }
                     }
                     
-                    if($deletable){
-                        foreach($document_target->document_output as $document_output){
+                    if ($deletable) {
+                        foreach ($document_target->document_output as $document_output) {
                             $document_output->delete();
                         }
                         $document_target->delete();
                     }
                 }
             }
-            
         }
     }
     
     protected function removeOutputs($document_target_id, $new_document_outputs)
     {
         $document_output_ids = array();
-        foreach($new_document_outputs as $document_output){
-            if( isset($document_output['id']) && isset($document_output['output_type']) ){
+        foreach ($new_document_outputs as $document_output) {
+            if ( isset($document_output['id']) && isset($document_output['output_type']) ) {
                 $document_output_ids[] = $document_output['id'];
             }
         }

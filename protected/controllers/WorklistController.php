@@ -44,24 +44,24 @@ class WorklistController extends BaseController
         $date_to = Yii::app()->request->getQuery('date_to');
         $redirect = false;
 
-        if(!isset(Yii::app()->session['worklist'])){
+        if (!isset(Yii::app()->session['worklist'])) {
             Yii::app()->session['worklist'] = [];
         }
 
-        if($date_from || $date_to){
+        if ($date_from || $date_to) {
             Yii::app()->session['worklist'] = ['date_from' => $date_from, 'date_to' => $date_to];
         }
 
-        if(count(Yii::app()->session['worklist']) > 0){
-            foreach(['date_from', 'date_to'] as $date){
-                if(Yii::app()->session['worklist'][$date] && !${$date}){
+        if (count(Yii::app()->session['worklist']) > 0) {
+            foreach (['date_from', 'date_to'] as $date) {
+                if (Yii::app()->session['worklist'][$date] && !${$date}) {
                     ${$date} = str_replace(" ", "+", Yii::app()->session['worklist'][$date]);
                     $redirect = true;
                 }
             }
         }
 
-        if($redirect){
+        if ($redirect) {
             return $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
         }
 

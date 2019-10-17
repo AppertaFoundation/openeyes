@@ -1038,13 +1038,7 @@ $(document).ready(function() {
             new_principal = true;
         }
 
-        $(this).closest('tr').find('input[type="hidden"]').map(function() {
-            if ($(this).val() == disorder_id) {
-                $(this).remove();
-            }
-        });
-
-        $(this).parent().parent().remove();
+        $(this).closest('tr').remove();
 
         if (new_principal) {
             $('input[name="principal_diagnosis"]:first').attr('checked','checked');
@@ -1990,8 +1984,7 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   }
 
   var dummy_text = $('#follow-up-dummy-input');
-  dummy_text.val(label_str);
-  dummy_text.trigger('oninput');
+  dummy_text.html(label_str);
 }
 
 function OphCiExamination_AddAllergy(){

@@ -9,7 +9,7 @@ class InstitutionTest extends CDbTestCase
 
     public function testGetCurrent_Success()
     {
-        Yii::app()->params['institution_code'] = 'foo';
+        Yii::app()->params['institution_code'] = getenv('OE_INSTITUTION_CODE') ? getenv('OE_INSTITUTION_CODE') : 'NEW';
         $this->assertEquals($this->institutions('moorfields'), Institution::model()->getCurrent());
     }
 

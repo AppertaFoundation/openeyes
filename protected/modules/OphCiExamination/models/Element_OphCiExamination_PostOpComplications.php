@@ -166,59 +166,58 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          *
          * @return array
          */
-        public function getRecordedComplications($eye_id, $operation_note_id = null)
+    public function getRecordedComplications($eye_id, $operation_note_id = null)
         {
-            $recordedComplications = array();
+        $recordedComplications = array();
 
-            $model = new OphCiExamination_Et_PostOpComplications();
+        $model = new OphCiExamination_Et_PostOpComplications();
 
-            $criteria = new \CDbCriteria();
+        $criteria = new \CDbCriteria();
 
-            $criteria->addCondition('t.element_id = :element_id');
-            $criteria->addCondition('t.eye_id = :eye_id');
-            $criteria->params['element_id'] = $this->id;
+        $criteria->addCondition('t.element_id = :element_id');
+        $criteria->addCondition('t.eye_id = :eye_id');
+        $criteria->params['element_id'] = $this->id;
 
-            if ($operation_note_id) {
-                $criteria->addCondition('t.operation_note_id = :operation_note_id');
-                $criteria->params['operation_note_id'] = $operation_note_id;
-            }
+        if ($operation_note_id) {
+            $criteria->addCondition('t.operation_note_id = :operation_note_id');
+            $criteria->params['operation_note_id'] = $operation_note_id;
+        }
 
-            $criteria->params['eye_id'] = $eye_id;
+        $criteria->params['eye_id'] = $eye_id;
 
-            $complications = $model->findAll($criteria);
+        $complications = $model->findAll($criteria);
 
-            if (!$complications) {
+        if (!$complications) {
+            //check if the post contains any post op complication ( isnt saved )
+            $postOpComplications = \Yii::app()->request->getParam('complication_items', null);
 
-                //check if the post contains any post op complication ( isnt saved )
-                $postOpComplications = \Yii::app()->request->getParam('complication_items', null);
+            $eyeLetter = $eye_id == \Eye::RIGHT ? 'R' : 'L';
 
-                $eyeLetter = $eye_id == \Eye::RIGHT ? 'R' : 'L';
+            if (isset($postOpComplications[$eyeLetter])) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', $postOpComplications[$eyeLetter]);
+                $complications = OphCiExamination_PostOpComplications::model()->findAll($criteria);
 
-                if (isset($postOpComplications[$eyeLetter])) {
-                    $criteria = new \CDbCriteria();
-                    $criteria->addInCondition('id', $postOpComplications[$eyeLetter]);
-                    $complications = OphCiExamination_PostOpComplications::model()->findAll($criteria);
-
-                    if ($complications) {
-                        foreach ($complications as $complication) {
-                            $recordedComplications[] = array(
-                                'id' => $complication->id,
-                                'name' => $complication->name,
-                            );
-                        }
+                if ($complications) {
+                    foreach ($complications as $complication) {
+                        $recordedComplications[] = array(
+                            'id' => $complication->id,
+                            'name' => $complication->name,
+                        );
                     }
                 }
-            } else {
-                foreach ($complications as $complication) {
-                    $recordedComplications[] = array(
-                        'id' => $complication->complication->id,
-                        'name' => $complication->complication->name,
-                    );
-                }
             }
-
-            return $recordedComplications;
+        } else {
+            foreach ($complications as $complication) {
+                $recordedComplications[] = array(
+                    'id' => $complication->complication->id,
+                    'name' => $complication->complication->name,
+                );
+            }
         }
+
+        return $recordedComplications;
+    }
 
     public function afterSave()
     {
@@ -240,7 +239,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 // L or R is used as an index to sided items
                 $complication_items_index = ucfirst($eye_side[0]);
                 if ($this->hasEye($eye_side) ) {
-                    if(isset($complication_items[$complication_items_index])) {
+                    if (isset($complication_items[$complication_items_index])) {
                         $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id, $operation_note_id);
                     }
                 } else {
@@ -292,69 +291,69 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          *
          * @return array list of op notes
          */
-        public function getOperationNoteList()
+    public function getOperationNoteList()
         {
-            $patient_id = \Yii::app()->request->getParam('patient_id');
+        $patient_id = \Yii::app()->request->getParam('patient_id');
 
-            if (!$patient_id && isset($this->event->episode->patient->id) ) {
-                $patient_id = $this->event->episode->patient->id;
-            }
+        if (!$patient_id && isset($this->event->episode->patient->id) ) {
+            $patient_id = $this->event->episode->patient->id;
+        }
 
-            $response = array();
+        $response = array();
 
-            if ($patient_id) {
-                $short_format = array();
+        if ($patient_id) {
+            $short_format = array();
 
-                $event_type = \EventType::model()->find("class_name = 'OphTrOperationnote'");
+            $event_type = \EventType::model()->find("class_name = 'OphTrOperationnote'");
+
+            $criteria = new \CDbCriteria();
+
+            $event = new \Event();
+
+            $criteria->addCondition('patient_id = :patient_id');
+            $criteria->addCondition('event_type_id = :event_type_id');
+            $criteria->params['patient_id'] = $patient_id;
+            $criteria->params['event_type_id'] = $event_type->id;
+            $criteria->order = 't.created_date DESC';
+
+            $eventLists = $event->with('episode')->findAll($criteria);
+
+            foreach ($eventLists as $event) {
+                $procedureListModel = new \Element_OphTrOperationnote_ProcedureList();
 
                 $criteria = new \CDbCriteria();
 
-                $event = new \Event();
+                $criteria->addCondition('event_id = :event_id');
+                $criteria->params['event_id'] = $event->id;
 
-                $criteria->addCondition('patient_id = :patient_id');
-                $criteria->addCondition('event_type_id = :event_type_id');
-                $criteria->params['patient_id'] = $patient_id;
-                $criteria->params['event_type_id'] = $event_type->id;
-                $criteria->order = 't.created_date DESC';
+                $procedureList = $procedureListModel->findAll($criteria);
 
-                $eventLists = $event->with('episode')->findAll($criteria);
+                $date = new \DateTime($event->created_date);
+                $name = $date->format('d M Y').' ';
 
-                foreach ($eventLists as $event) {
-                    $procedureListModel = new \Element_OphTrOperationnote_ProcedureList();
+                $short_format = array();
 
-                    $criteria = new \CDbCriteria();
+                foreach ($procedureList as $procesdures) {
+                    $name .= ($procesdures->eye_id != \Eye::BOTH ? ($procesdures->eye->name) : '').' ';
 
-                    $criteria->addCondition('event_id = :event_id');
-                    $criteria->params['event_id'] = $event->id;
-
-                    $procedureList = $procedureListModel->findAll($criteria);
-
-                    $date = new \DateTime($event->created_date);
-                    $name = $date->format('d M Y').' ';
-
-                    $short_format = array();
-
-                    foreach ($procedureList as $procesdures) {
-                        $name .= ($procesdures->eye_id != \Eye::BOTH ? ($procesdures->eye->name) : '').' ';
-
-                        foreach ($procesdures->procedures as $procesdure) {
-                            $short_format[] = $procesdure->short_format;
-                        }
-
-                        $name .= implode(' + ', $short_format);
-
-                        if (strlen($name) > 60) {
-                            $name = substr($name, 0, 57);
-                            $name .= '...';
-                        }
+                    foreach ($procesdures->procedures as $procesdure) {
+                        $short_format[] = $procesdure->short_format;
                     }
 
-                    $response[$event->id] = $name;
-                }
-            }
+                    $name .= implode(' + ', $short_format);
 
-            return $response;
+                    if (strlen($name) > 60) {
+                        $name = substr($name, 0, 57);
+                        $name .= '...';
+                    }
+                }
+
+                $response[$event->id] = $name;
+            }
         }
+
+        return $response;
+    }
 
     public function getFullComplicationList($eye_id)
     {

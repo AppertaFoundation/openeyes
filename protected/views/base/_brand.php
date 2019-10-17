@@ -38,7 +38,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 
   <div class="group">
     <h4>Feedback</h4>
-		<p>Send us <a href="<?php echo Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
+        <p>Send us <a href="<?php echo Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
   </div>
 
   <div class="group">
@@ -52,14 +52,14 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
   <div class="group">
     <h4>Support</h4>
     <p>
-        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']): ?>
+        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
           <span class="large-text"> Need Help?
-              <?php if (Yii::app()->params['helpdesk_phone']): ?>
-								<?php echo Yii::app()->params['helpdesk_phone'] ?>
-              <?php endif; ?>
-              <?php if (Yii::app()->params['helpdesk_email']): ?>
-                  <?php echo Yii::app()->params['helpdesk_email'] ?>
-              <?php endif; ?>
+              <?php if (Yii::app()->params['helpdesk_phone']) : ?>
+                                <?php echo Yii::app()->params['helpdesk_phone'] ?>
+                <?php endif; ?>
+              <?php if (Yii::app()->params['helpdesk_email']) : ?>
+                    <?php echo Yii::app()->params['helpdesk_email'] ?>
+                <?php endif; ?>
           </span>
         <?php endif; ?>
     </p>
@@ -93,7 +93,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
       // show all elements
       setTimeout(function () {$('.open-eyes').show();}, 100);
 
-        <?php if (!Yii::app()->user->isGuest): ?>
+        <?php if (!Yii::app()->user->isGuest) : ?>
       // Change the user's theme setting if they are logged in
       $.ajax({
         'type': 'GET',

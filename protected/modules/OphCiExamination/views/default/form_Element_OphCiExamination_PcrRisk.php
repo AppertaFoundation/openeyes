@@ -44,7 +44,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
     <?php
     if ($this->patient->getDiabetes()) {
         $diabeticOptions = ['Y' => 'Diabetes present'];
-    }else{
+    } else {
         $diabeticOptions = ['NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'];
     }
 
@@ -95,7 +95,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
     ];
     echo $form->hiddenInput($element, 'eye_id', false, ['class' => 'sideField']);
 
-    foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
+    foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
         $pcrRisk = new PcrRisk();
         $display = ($element->{'has' . ucfirst($eye)}()) ? 'block' : 'none'; ?>
 
@@ -121,9 +121,9 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                     </colgroup>
                     <tbody>
 
-                    <?php foreach ($dropDowns as $key => $data): ?>
+                    <?php foreach ($dropDowns as $key => $data) : ?>
                         <tr class="col-gap">
-                            <?php if ($key === 'doctor_grade_id'): ?>
+                            <?php if ($key === 'doctor_grade_id') : ?>
                                 <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade"
                                      class="cols-full">
                                     <td class="cols-4 column">
@@ -134,12 +134,12 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                                         <select id="<?= 'pcrrisk_' . $eye . '_doctor_grade_id' ?>"
                                                 class="pcr_doctor_grade cols-full"
                                                 name="OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk[<?= $eye ?>_doctor_grade_id]">
-                                            <?php if (is_array($grades)): ?>
-                                                <?php foreach ($grades as $grade): ?>
+                                            <?php if (is_array($grades)) : ?>
+                                                <?php foreach ($grades as $grade) : ?>
                                                     <?php
-                                                    if ($element->{$eye . '_doctor_grade_id'} === $grade->id):
+                                                    if ($element->{$eye . '_doctor_grade_id'} === $grade->id) :
                                                         $selected = 'selected';
-                                                    else:
+                                                    else :
                                                         $selected = '';
                                                     endif;
                                                     ?>
@@ -150,25 +150,25 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                                         </select>
                                     </td>
                                 </div>
-                            <?php
-                            else:
-                                if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
-                                    $element->{'right_diabetic'} = $element->{'left_diabetic'};
-                                } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
-                                    $element->{'left_diabetic'} = $element->{'right_diabetic'};
-                                }
-                                if ($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N') {
-                                    $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
-                                } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
-                                    $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
-                                } ?>
+                                <?php
+                                else :
+                                    if ($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N') {
+                                        $element->{'right_diabetic'} = $element->{'left_diabetic'};
+                                    } elseif ($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N') {
+                                        $element->{'left_diabetic'} = $element->{'right_diabetic'};
+                                    }
+                                    if ($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N') {
+                                        $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
+                                    } elseif ($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N') {
+                                        $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
+                                    } ?>
                                 <td>
-                                    <?= $element->getAttributeLabel($eye . '_' . $key) ?>
+                                        <?= $element->getAttributeLabel($eye . '_' . $key) ?>
                                 </td>
                                 <td>
-                                    <?= CHtml::activeDropDownList($element, $eye . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
+                                        <?= CHtml::activeDropDownList($element, $eye . '_' . $key, $data['options'], ['class' => $data['class'] . ' cols-full']); ?>
                                 </td>
-                            <?php endif; ?>
+                                <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

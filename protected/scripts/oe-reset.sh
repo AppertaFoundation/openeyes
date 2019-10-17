@@ -132,13 +132,14 @@ do
     shift # move to next parameter
 done
 
-# If we are checking out new branch,then pass all unprocessed commands to checkout command
+# If we are checking out new branch,then pass all unprocessed commands to checkout command and set single-branch and depth for speed
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
+		checkoutparams="$chekoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
-            $checkoutparams="$checkoutparams $i"
+            checkoutparams="$checkoutparams $i"
         done
     else
         echo "Unknown Parameter(s):"

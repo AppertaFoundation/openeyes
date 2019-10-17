@@ -2,8 +2,8 @@
 
 class m170605_102024_OE6684_alter_uv_pulse extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         // Add in nameTemp field
         $this->addColumn('ophtroperationnote_cxl_uv_pulse_duration',
             'nameTemp', 'VARCHAR(128)');
@@ -52,22 +52,22 @@ class m170605_102024_OE6684_alter_uv_pulse extends OEMigration
         //Drop nameOLD
         $this->dropColumn('ophtroperationnote_cxl_uv_pulse_duration', 'nameOLD');
         $this->dropColumn('ophtroperationnote_cxl_uv_pulse_duration_version', 'nameOLD');
-	}
+    }
 
-	public function down()
-	{
-		echo "m170605_102024_OE6684_alter_uv_pulse does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m170605_102024_OE6684_alter_uv_pulse does not support migration down.\n";
+        return false;
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -94,10 +94,11 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function testFirmEqualitySearch()
     {
         $expected = array();
-        foreach (array(3, 7) as $patientNum) {
+        /*foreach (array(3) as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
-        }
+        }*/
 
+        $this->parameter->operation = 'LIKE';
         $this->parameter->term = 'Myopia';
         $this->parameter->firm_id = 2;
 
@@ -107,6 +108,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         foreach ($results as $result) {
             $ids[] = $result['id'];
         }
+
         $patients = Patient::model()->findAllByPk($ids);
 
         $this->assertEquals($expected, $patients);
@@ -141,7 +143,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function testSearchFirmInequality()
     {
         $expected = array();
-        foreach (array(1, 2, 4, 5, 6, 8, 9) as $patientNum) {
+        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9) as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
         }
 

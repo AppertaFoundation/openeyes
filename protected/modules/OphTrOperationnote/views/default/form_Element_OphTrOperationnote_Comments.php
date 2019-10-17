@@ -30,7 +30,7 @@
         ) ?>
     </div>
       <div>
-          <?php echo $form->textArea(
+            <?php echo $form->textArea(
               $element,
               'postop_instructions',
               array(),
@@ -61,25 +61,29 @@
             $gp_letter_setting = $gp_letter_setting ? ($gp_letter_setting === 'on' ? true : false) : false;
             $gp_letter_setting = $this->request->getParam('auto_generate_gp_letter_after_surgery', $gp_letter_setting);
 
-            $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optopm_post_op_letter_after_surgery');
+            $optom_setting = \SettingMetadata::model()->getSetting('auto_generate_optom_post_op_letter_after_surgery');
             $optom_setting = $optom_setting ? ($optom_setting === 'on' ? true : false) : false;
-            $optom_setting = $this->request->getParam('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);
+            $optom_setting = $this->request->getParam('auto_generate_optom_post_op_letter_after_surgery', $optom_setting);
         ?>
 
+        <?php if (\SettingMetadata::model()->getSetting('default_post_op_drug_set')) :?>
         <label class="inline highlight">
             <?=\CHtml::hiddenField('auto_generate_prescription_after_surgery', 0);?>
-            <?=\CHtml::checkBox('auto_generate_prescription_after_surgery', $prescription_setting);?>Generate standard prescription
+            <?= \CHtml::checkBox('auto_generate_prescription_after_surgery', $prescription_setting); ?> Generate standard prescription
         </label>
+        <?php endif; ?>
 
+        <?php if (\SettingMetadata::model()->getSetting('default_post_op_letter')) :?>
         <label class="inline highlight">
             <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
             <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
         </label>
+        <?php endif; ?>
 
-        <?php if (\SettingMetadata::model()->getSetting('default_optop_post_op_letter')) :?>
+        <?php if (\SettingMetadata::model()->getSetting('default_optom_post_op_letter')) :?>
             <label class="inline highlight">
-                <?=\CHtml::hiddenField('auto_generate_optopm_post_op_letter_after_surgery', 0);?>
-                <?=\CHtml::checkBox('auto_generate_optopm_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
+                <?=\CHtml::hiddenField('auto_generate_optom_post_op_letter_after_surgery', 0);?>
+                <?=\CHtml::checkBox('auto_generate_optom_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
             </label>
         <?php endif; ?>
 
@@ -96,10 +100,10 @@
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key,];
-          },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
+          }, array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
-				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

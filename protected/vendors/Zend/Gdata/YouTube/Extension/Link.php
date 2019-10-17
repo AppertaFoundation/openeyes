@@ -87,13 +87,13 @@ class Zend_Gdata_YouTube_Extension_Link extends Zend_Gdata_App_Extension_Link
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('yt') . ':' . 'token':
-            $token = new Zend_Gdata_YouTube_Extension_Token();
-            $token->transferFromDOM($child);
-            $this->_token = $token;
+            case $this->lookupNamespace('yt') . ':' . 'token':
+                $token = new Zend_Gdata_YouTube_Extension_Token();
+                $token->transferFromDOM($child);
+                $this->_token = $token;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }
@@ -127,7 +127,7 @@ class Zend_Gdata_YouTube_Extension_Link extends Zend_Gdata_App_Extension_Link
     */
     public function getTokenValue()
     {
-      return $this->getToken()->getText();
+        return $this->getToken()->getText();
     }
 
 }

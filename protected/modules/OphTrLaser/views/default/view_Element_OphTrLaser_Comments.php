@@ -18,10 +18,10 @@
 ?>
 <div class="element-data full-width">
   <div class="data-value">
-      <?php if($element->comments !== ''): ?>
+        <?php if ($element->comments !== '') : ?>
         <span><?php echo $element->textWithLineBreaks('comments') ?></span>
-      <?php else: ?>
+        <?php else : ?>
         <span class="none">None</span>
-      <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div>

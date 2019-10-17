@@ -2,9 +2,9 @@
 
 class m180910_044802_uservoice_remove extends CDbMigration
 {
-	public function up()
-	{
-//	    Removing uservoice settings from the portal
+    public function up()
+    {
+//      Removing uservoice settings from the portal
         $this->delete('setting_installation', '`key` = \'uservoice_use_logged_in_user\'');
         $this->delete('setting_installation', '`key` = \'uservoice_override_account_id\'');
         $this->delete('setting_installation', '`key` = \'uservoice_override_account_name\'');
@@ -28,22 +28,22 @@ class m180910_044802_uservoice_remove extends CDbMigration
             'key' => 'feedback_link',
             'value' => 'https://forums.apperta.org/c/openeyes'
         ));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('setting_installation', '`key` = \'feedback_link\'');
         $this->delete('setting_metadata', '`key` = \'feedback_link\'');
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

@@ -22,14 +22,14 @@
  *
  * The followings are the available columns in table 'patient_oph_info':
  *
- * @property int	$id
+ * @property int    $id
  * @property int  $patient_id
  * @property string  $cvi_status_date
  * @property int  $cvi_status_id
  * @property datetime  $created_date
  * @property datetime  $last_modified_date
- * @property int	$created_user_id
- * @property int	$last_modified_user_id
+ * @property int    $created_user_id
+ * @property int    $last_modified_user_id
  *
  * The followings are the available model relations:
  * @property Patient $patient

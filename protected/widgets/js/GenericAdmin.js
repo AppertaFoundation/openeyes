@@ -47,7 +47,6 @@ $(document).ready(function() {
 	}
 
 	$('.generic-admin.sortable tbody').sortable({
-		helper: 'clone',
 		start: function() {
 			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('row'));
 		},

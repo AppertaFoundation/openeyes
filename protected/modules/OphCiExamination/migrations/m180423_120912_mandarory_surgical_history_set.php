@@ -2,8 +2,8 @@
 
 class m180423_120912_mandarory_surgical_history_set extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable('ophciexamination_surgical_history_set', array(
                 'id' => 'pk',
                 'name' => 'varchar(255) NULL',
@@ -32,12 +32,12 @@ class m180423_120912_mandarory_surgical_history_set extends OEMigration
 
     }
 
-	public function down()
-	{
-		$this->dropForeignKey('surgical_history_set_entry_surgical_history', 'ophciexamination_surgical_history_set_entry');
-		$this->dropOETable('ophciexamination_surgical_history_set_entry', true);
-		$this->dropForeignKey('surgical_history_set_subspecialty', 'ophciexamination_surgical_history_set');
-		$this->dropForeignKey('surgical_history_set_firm', 'ophciexamination_surgical_history_set');
-		$this->dropOETable('ophciexamination_surgical_history_set', true);
-	}
+    public function down()
+    {
+        $this->dropForeignKey('surgical_history_set_entry_surgical_history', 'ophciexamination_surgical_history_set_entry');
+        $this->dropOETable('ophciexamination_surgical_history_set_entry', true);
+        $this->dropForeignKey('surgical_history_set_subspecialty', 'ophciexamination_surgical_history_set');
+        $this->dropForeignKey('surgical_history_set_firm', 'ophciexamination_surgical_history_set');
+        $this->dropOETable('ophciexamination_surgical_history_set', true);
+    }
 }

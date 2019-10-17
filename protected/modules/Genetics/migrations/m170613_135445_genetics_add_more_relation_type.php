@@ -2,8 +2,8 @@
 
 class m170613_135445_genetics_add_more_relation_type extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->update('genetics_relationship', array('relationship' => 'Sibling (full)'), 'relationship = "Sibling"');
 
         $relationships = array(
@@ -33,10 +33,10 @@ class m170613_135445_genetics_add_more_relation_type extends CDbMigration
         foreach ($relationships as $relationship) {
             $this->insert('genetics_relationship', array('relationship' => $relationship));
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->update('genetics_relationship', array('relationship' => 'Sibling'), 'relationship = "Sibling (full)"');
 
         $relationships = array(
@@ -65,6 +65,6 @@ class m170613_135445_genetics_add_more_relation_type extends CDbMigration
 
         foreach ($relationships as $relationship) {
             $this->delete('genetics_relationship', 'relationship = "' . $relationship . '"');
-	    }
-	}
+        }
+    }
 }

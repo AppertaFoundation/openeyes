@@ -36,7 +36,7 @@ foreach ($this->patient->episodes as $ep) {
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
             'subspecialty' => $ep->getSubspecialtyText(),
-            'is_glaucoma' => isset($diagnosis->term)? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
+            'is_glaucoma' => isset($diagnosis->term) ? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
             'date' => $ep->getDisplayDate(),
         ];
     }
@@ -48,28 +48,28 @@ foreach ($this->patient->episodes as $ep) {
 <?php $model_name = CHtml::modelName($element); ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
-    <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="<?= \CHtml::modelName($element); ?>[force_validation]"/>
     <input type="hidden" name="glaucoma_diagnoses[]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table id="<?= $model_name ?>_diagnoses_table" class="cols-10">
-			<colgroup>
-				<col class="cols-4">
-				<col class="cols-2">
-				<col class="cols-2">
-				<col class="cols-3">
-				<col class="cols-1">
-			</colgroup>
-			<thead>
-				<tr>
-					<th>Diagnosis</th>
-					<th>Side</th>
-					<th>Principal</th>
-					<th>Date</th>
-					<th></th>
-				</tr>
-			</thead>
+            <colgroup>
+                <col class="cols-4">
+                <col class="cols-2">
+                <col class="cols-2">
+                <col class="cols-3">
+                <col class="cols-1">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Diagnosis</th>
+                    <th>Side</th>
+                    <th>Principal</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
         <tbody id="OphCiExamination_diagnoses" class="js-diagnoses">
         <?php
 
@@ -136,70 +136,91 @@ foreach ($this->patient->episodes as $ep) {
 <script type="text/javascript">
     var diagnosesController;
     $(document).ready(function () {
-      diagnosesController = new OpenEyes.OphCiExamination.DiagnosesController({
-        element: $('#<?=$model_name?>_element'),
-        subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
-      });
-      $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
+        diagnosesController = new OpenEyes.OphCiExamination.DiagnosesController({
+            element: $('#<?=$model_name?>_element'),
+            subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
+        });
+        $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
         <?php
         $firm_id = Yii::app()->session['selected_firm_id'];
         $firm = \Firm::model()->findByPk($firm_id);
 
         $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
-        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAll();
-        ?>
+        $commonNotEmptyOphthalmicDisorderGroups = [];
+        foreach ($disorder_list as $disorder) {
+            if (isset($disorder['group']) && $disorder['group'] != "") {
+                $commonNotEmptyOphthalmicDisorderGroups[] = $disorder['group_id'];
+            }
+        }
 
-      new OpenEyes.UI.AdderDialog({
-        openButton: $('#add-ophthalmic-diagnoses'),
-        itemSets: [ new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($disorderGroup) {
-                return [
-                    'label' => $disorderGroup->name,
-                    'filter-value' => $disorderGroup->id,
-                    'is_filter' => true,
-                ];
-            }, $commonOphthalmicDisorderGroups)) ?>, {'header': 'Disorder Group', 'id': 'disorder-group-filter', 'deselectOnReturn': false}),
-            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($disorder_item) {
-                return [
-                        'type' => $disorder_item['type'],
-                        'label' => $disorder_item['label'],
-                    'id' => $disorder_item['id'] ,
-                    'filter_value' => $disorder_item['group_id'],
-                    'is_glaucoma' => $disorder_item['is_glaucoma'],
-                    'secondary' => json_encode($disorder_item['secondary']),
-                    'alternate' => json_encode($disorder_item['alternate']),
-                ];
-            }, $disorder_list)
-        ) ?>, {'multiSelect': true, 'id': 'disorder-list'}),
-           ],
-        searchOptions: {
-          searchSource: diagnosesController.options.searchSource,
-          code: diagnosesController.options.code,
-        },
-        onReturn: function (adderDialog, selectedItems, selectedAdditions) {
-            var diag = [];
-            for (let i in selectedItems) {
-                let item = selectedItems[i];
-                if(!item.is_filter) {
-                    // If common item is a 'finding', we add it to the findings element instead
-                    // Otherwise treat it as a diagnosis
-                    if (item.type === 'finding') {
-                        OphCiExamination_AddFinding(item.id, item.label);
-                    } else {
-                        diag.push(item);
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAll();
+        $filteredOphthalmicDisorderGroups = [];
+
+        foreach ($commonOphthalmicDisorderGroups as $disorderGroup) {
+            if (in_array($disorderGroup->id, $commonNotEmptyOphthalmicDisorderGroups)) {
+                $filteredOphthalmicDisorderGroups[] = $disorderGroup;
+            }
+        }?>
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-ophthalmic-diagnoses'),
+            itemSets: [
+                <?php if (!empty($filteredOphthalmicDisorderGroups)) { ?>
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($disorderGroup) {
+                        return [
+                            'label' => $disorderGroup->name,
+                            'filter-value' => $disorderGroup->id,
+                            'is_filter' => true,
+                        ];
+                    }, $filteredOphthalmicDisorderGroups)) ?>, {
+                    'header': 'Disorder Group',
+                    'id': 'disorder-group-filter',
+                    'deselectOnReturn': false,
+                }),
+                <?php }?>
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($disorder_item) {
+                        return [
+                            'type' => $disorder_item['type'],
+                            'label' => $disorder_item['label'],
+                            'id' => $disorder_item['id'],
+                            'filter_value' => $disorder_item['group_id'],
+                            'is_glaucoma' => $disorder_item['is_glaucoma'],
+                            'secondary' => json_encode($disorder_item['secondary']),
+                            'alternate' => json_encode($disorder_item['alternate']),
+                        ];
+                    }, $disorder_list)
+                ) ?>, {'multiSelect': true, 'id': 'disorder-list'}),
+            ],
+            searchOptions: {
+                searchSource: diagnosesController.options.searchSource,
+                code: diagnosesController.options.code,
+            },
+            onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+                var diag = [];
+                for (let i in selectedItems) {
+                    let item = selectedItems[i];
+                    if (!item.is_filter) {
+                        // If common item is a 'finding', we add it to the findings element instead
+                        // Otherwise treat it as a diagnosis
+                        if (item.type === 'finding') {
+                            OphCiExamination_AddFinding(item.id, item.label);
+                        } else {
+                            diag.push(item);
+                        }
                     }
                 }
-            }
-            diagnosesController.addEntry(diag);
-            if(selectedAdditions){
-              diagnosesController.addEntry(selectedAdditions);
-            }
-          return true;
-        },
-          listFilter:true,
-          filterListId: "disorder-group-filter",
-          listForFilterId: "disorder-list"
-      });
+                diagnosesController.addEntry(diag);
+                if (selectedAdditions) {
+                    diagnosesController.addEntry(selectedAdditions);
+                }
+                return true;
+            },
+            listFilter: true,
+            filterListId: "disorder-group-filter",
+            listForFilterId: "disorder-list",
+            liClass: "restrict-width extended"
+        });
     })
 </script>

@@ -22,20 +22,20 @@ if ($this->checkPrintAccess()) {
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php } elseif (Element_OphTrConsent_Type::model()->find('event_id=?', array($this->event->id))->draft) {?>
-		<div class="alert-box alert with-icon">
-			This consent form is a draft and can still be edited
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php } elseif (Element_OphTrConsent_Type::model()->find('event_id=?', array($this->event->id))->draft) {?>
+        <div class="alert-box alert with-icon">
+            This consent form is a draft and can still be edited
+        </div>
+    <?php }?>
 
-	<?php  $this->renderOpenElements($this->action->id); ?>
+    <?php  $this->renderOpenElements($this->action->id); ?>
 
-	<?php // The "print" value is set by the controller and comes from the user session ?>
-	<input type="hidden" name="OphTrConsent_print" id="OphTrConsent_print" value="<?php echo $print;?>" />
-	<iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
+    <?php // The "print" value is set by the controller and comes from the user session ?>
+    <input type="hidden" name="OphTrConsent_print" id="OphTrConsent_print" value="<?php echo $print;?>" />
+    <iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent(); ?>

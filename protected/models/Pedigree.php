@@ -157,7 +157,7 @@ class Pedigree extends BaseActiveRecord
         $query = $this->getDbConnection()->createCommand($sql);
         $diagnosis = $query->queryRow();
 
-        if($diagnosis){
+        if ($diagnosis) {
             $this->disorder_id = $diagnosis['id'];
         } else {
             $this->disorder_id = null;
@@ -192,10 +192,8 @@ class Pedigree extends BaseActiveRecord
     public function getAffectedSubjectsCount()
     {
         $count = 0;
-        foreach($this->subjects as $subject)
-        {
-            if($subject->statusForPedigree($this->id) == 'Affected')
-            {
+        foreach ($this->subjects as $subject) {
+            if ($subject->statusForPedigree($this->id) == 'Affected') {
                 $count++;
             }
         }

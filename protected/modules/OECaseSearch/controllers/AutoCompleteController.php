@@ -88,7 +88,7 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
         $procedures = Procedure::model()->findAll($criteria);
 
         $options = array();
-        foreach ($procedures as $procedure){
+        foreach ($procedures as $procedure) {
             $options[] = $procedure->term;
         }
 
@@ -98,7 +98,7 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
         $criteria->addNotInCondition('operation', $options);
         $past_ops = \OEModule\OphCiExamination\models\PastSurgery_Operation::model()->findAll($criteria);
 
-        foreach ($past_ops as $op){
+        foreach ($past_ops as $op) {
             $options[] = $op->operation;
         }
 

@@ -99,12 +99,12 @@ class PastSurgery_Operation extends \BaseEventTypeElement
     }
 
     public function behaviors()
-		{
-			return ['OeDateFormat' => [
-				'class' => 'application.behaviors.OeDateFormat',
-				'date_columns' => [],
-				'fuzzy_date_field' => 'date']];
-		}
+        {
+            return ['OeDateFormat' => [
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date']];
+    }
 
     /**
      * Checking whether side_id is not null

@@ -2,8 +2,8 @@
 
 class m180412_084547_last_pulse_sc extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $event_type_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -18,10 +18,10 @@ class m180412_084547_last_pulse_sc extends CDbMigration
             'description' => 'Last pulse measurement.',
             'last_modified_user_id' => '1',
         ));
-	}
+    }
 
-	public function down()
-	{
-		$this->delete('patient_shortcode', '`default_code`="lpu"');
-	}
+    public function down()
+    {
+        $this->delete('patient_shortcode', '`default_code`="lpu"');
+    }
 }

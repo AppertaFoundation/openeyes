@@ -33,7 +33,7 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
 
     }
     
-     public function actionEdit($id = false)
+    public function actionEdit($id = false)
     {
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Box::model(), $this);
         if ($id) {
@@ -41,9 +41,9 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
         }
         $admin->setModelDisplayName('Dna Storage Box');
         $admin->setEditFields(array(
-            'value'     => 'text',
-            'maxletter' => 'text',
-            'maxnumber' => 'text',
+           'value'     => 'text',
+           'maxletter' => 'text',
+           'maxnumber' => 'text',
         ));
         $admin->editModel();
     }

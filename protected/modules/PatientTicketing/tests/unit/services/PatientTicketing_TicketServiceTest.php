@@ -88,9 +88,11 @@ class PatientTicketing_TicketServiceTest extends \CDbTestCase
         $active_tickets = $svc->getTicketsForPatient($patient, true);
         $all_tickets = $svc->getTicketsForPatient($patient, false);
         // just map the ids for comparison with expected results
-        $test_active_ticket_ids = array_map(function ($t) {return $t->id;}, $active_tickets);
+        $test_active_ticket_ids = array_map(function ($t) {return $t->id;
+        }, $active_tickets);
         sort($test_active_ticket_ids);
-        $test_all_ticket_ids = array_map(function ($t) {return $t->id;}, $all_tickets);
+        $test_all_ticket_ids = array_map(function ($t) {return $t->id;
+        }, $all_tickets);
         sort($test_all_ticket_ids);
 
         $this->assertEquals(count($def_active_tickets), count($active_tickets), 'Default method call and active call matches');

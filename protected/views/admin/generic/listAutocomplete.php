@@ -19,34 +19,34 @@
 
         <form id="generic-admin-list">
             <table class="standard">
-		<?php
+        <?php
         if (is_array($admin->getFilterFields())) {
             foreach ($admin->getFilterFields() as $field => $params) { ?>
                 <tr>
                     <td><?php echo $params['label']; ?></td>
                     <td>
-					<?php
+                    <?php
                     $searchParams = $this->request->getParam('search');
-                if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
-                    $selectedValue[$params['dropDownName']] = $searchParams['filterid'][$params['dropDownName']]['value'];
-                } else {
-                    $selectedValue[$params['dropDownName']] = $params['defaultValue'];
-                }
-                if (!isset($params['emptyLabel'])) {
-                    $params['emptyLabel'] = 'Select';
-                }
-                if (isset($params['dependsOnFilterName'])) {
-                    $filterQuery = array(
+                    if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
+                        $selectedValue[$params['dropDownName']] = $searchParams['filterid'][$params['dropDownName']]['value'];
+                    } else {
+                        $selectedValue[$params['dropDownName']] = $params['defaultValue'];
+                    }
+                    if (!isset($params['emptyLabel'])) {
+                        $params['emptyLabel'] = 'Select';
+                    }
+                    if (isset($params['dependsOnFilterName'])) {
+                        $filterQuery = array(
                             'condition' => $params['dependsOnDbFieldName'].'=:paramID',
                             'order' => $params['listDisplayField'],
                             'params' => array(':paramID' => $selectedValue[$params['dependsOnFilterName']]),
                         );
-                    if (isset($params['dependsOnJoinedTable'])) {
-                        $filterQuery = array_merge($filterQuery, array('with' => $params['dependsOnJoinedTable']));
+                        if (isset($params['dependsOnJoinedTable'])) {
+                            $filterQuery = array_merge($filterQuery, array('with' => $params['dependsOnJoinedTable']));
+                        }
+                    } else {
+                        $filterQuery = array('order' => $params['listDisplayField']);
                     }
-                } else {
-                    $filterQuery = array('order' => $params['listDisplayField']);
-                }
 
                     // for some functions we need to exclude fields from search
                     if (isset($params['excludeSearch']) && $params['excludeSearch']) {
@@ -57,7 +57,7 @@
                         $htmlClass = 'filterfieldselect cols-full';
                     }
 
-                echo CHtml::dropDownList($fieldName,
+                    echo CHtml::dropDownList($fieldName,
                         $selectedValue[$params['dropDownName']],
                         CHtml::listData($params['listModel']->findAll($filterQuery),
                             $params['listIdField'],
@@ -66,10 +66,10 @@
                             'class' => $htmlClass,
                             'empty' => $params['emptyLabel'],
                         ));
-                ?>
+                    ?>
                 </td>
                 </tr>
-			<?php
+                <?php
             }
         }
         ?>
@@ -80,7 +80,7 @@
                 <table class="standard">
                     <thead>
                     <tr>
-                        <?php foreach ($admin->getListFields() as $listItem): ?>
+                        <?php foreach ($admin->getListFields() as $listItem) : ?>
                             <th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
                         <?php endforeach; ?>
                         <th>Action</th>
@@ -90,27 +90,27 @@
                     <?php
                     foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
                         <tr>
-                            <?php foreach ($admin->getListFields() as $listItem): ?>
+                            <?php foreach ($admin->getListFields() as $listItem) : ?>
                                 <td>
                                     <?php
                                     if ($listItem == 'default') {
-                                        if ($admin->attributeValue($row, $listItem)):
+                                        if ($admin->attributeValue($row, $listItem)) :
                                             ?><i class="oe-i tick small"></i><?php
-                                        else:
+                                        else :
                                             ?><i class="oe-i remove small"></i><?php
                                         endif;
                                     } else {
-                                        if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-                                            if ($admin->attributeValue($row, $listItem)):
+                                        if (gettype($admin->attributeValue($row, $listItem)) === 'boolean') :
+                                            if ($admin->attributeValue($row, $listItem)) :
                                                 ?><i class="oe-i tick small"></i><?php
-                                            else:
+                                            else :
                                                 ?><i class="oe-i remove small"></i><?php
                                             endif;
-                                        else:
-                                            echo $admin->attributeValue($row, $listItem);
+                                            else :
+                                                echo $admin->attributeValue($row, $listItem);
                                         endif;
                                     }
-                        ?>
+                                    ?>
                                 </td>
                             <?php endforeach; ?>
                             <td>
@@ -140,7 +140,7 @@
                                     $minLength = 1;
                                     $triggerSearch = '';
                                 }
-                                $this->widget('application.widgets.AutoCompleteSearch',['field_name' => $acFieldData['fieldName']]);
+                                $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => $acFieldData['fieldName']]);
                             }
                             ?>
                             <b>Select from list to add new</b>

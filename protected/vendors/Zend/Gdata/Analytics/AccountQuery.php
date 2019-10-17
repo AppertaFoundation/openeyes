@@ -54,7 +54,7 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
    
     /**
      * @var bool
-     */ 
+     */
     protected $_webproperties = false;
     /**
      * @var bool
@@ -126,7 +126,7 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     public function webproperties($accountId = '~all')
     {
         $this->_webproperties = true;
-        $this->setAccountId($accountId);    
+        $this->setAccountId($accountId);
         return $this;
     }
     
@@ -139,7 +139,7 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     {
         $this->_profiles = true;
         if (null !== $accountId) {
-            $this->setAccountId($accountId);    
+            $this->setAccountId($accountId);
         }
         $this->setWebpropertyId($webpropertyId);
         return $this;
@@ -155,10 +155,10 @@ class Zend_Gdata_Analytics_AccountQuery extends Zend_Gdata_Query
     {
         $this->_goals = true;
         if (null !== $accountId) {
-            $this->setAccountId($accountId);    
+            $this->setAccountId($accountId);
         }
         if (null !== $webpropertyId) {
-            $this->setWebpropertyId($webpropertyId);    
+            $this->setWebpropertyId($webpropertyId);
         }
         $this->setProfileId($profileId);
         return $this;
