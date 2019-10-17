@@ -1623,7 +1623,7 @@ class AnalyticsController extends BaseController
 
         // as the details field in database is an json array,
         // this needs to be convert to php associated array
-        $ticket_assignments = array_map(function($item){
+        $ticket_assignments = array_map(function ($item) {
             $item['details'] = json_decode($item['details'], true);
             return $item;
         }, $ticket_assignments);
@@ -1639,20 +1639,20 @@ class AnalyticsController extends BaseController
 
         // store options and use options id as key
         $ticket_assignments_outcome_opts_dup = array();
-        foreach($ticket_assignments_outcome_opts as $opts){
+        foreach ($ticket_assignments_outcome_opts as $opts) {
             $ticket_assignments_outcome_opts_dup[$opts['id']] = $opts;
         }
 
-        foreach($ticket_assignments as $ticket_assignment) {
-            if(!isset($ticket_assignment['details'])){
+        foreach ($ticket_assignments as $ticket_assignment) {
+            if (!isset($ticket_assignment['details'])) {
                 continue;
             }
-            foreach($ticket_assignment['details'] as $item){
-                if(isset($item['widget_name']) && $item['widget_name'] === 'TicketAssignOutcome') {
-                    if(isset($item['value']['outcome'])){
+            foreach ($ticket_assignment['details'] as $item) {
+                if (isset($item['widget_name']) && $item['widget_name'] === 'TicketAssignOutcome') {
+                    if (isset($item['value']['outcome'])) {
                         $inner_val_outcome = $item['value']['outcome'];
-                        if($ticket_assignments_outcome_opts_dup[$inner_val_outcome]) {
-                            if((int)$ticket_assignments_outcome_opts_dup[$inner_val_outcome]['followup'] === 1) {
+                        if ($ticket_assignments_outcome_opts_dup[$inner_val_outcome]) {
+                            if ((int)$ticket_assignments_outcome_opts_dup[$inner_val_outcome]['followup'] === 1) {
                                 $item['value']['assignment_date'] = $ticket_assignment['assignment_date'];
                                 $value_outcome[$ticket_assignment['ticket_id']] = $item['value'];
                             }
@@ -1664,7 +1664,7 @@ class AnalyticsController extends BaseController
 
         foreach ($ticket_assignments as $ticket) {
             $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
-            if(!$ticket_followup){
+            if (!$ticket_followup) {
                 continue;
             }
             $current_event = $ticket['event_date'];
