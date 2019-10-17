@@ -275,6 +275,7 @@
             'data-multiselect': itemSet.options.multiSelect,
             'data-id': itemSet.options.id,
             'data-deselectOnReturn': itemSet.options.deselectOnReturn,
+            'data-resetSelectionToDefaultOnReturn': itemSet.options.resetSelectionToDefaultOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
@@ -523,16 +524,27 @@
         }
 
         if (shouldClose) {
+            let itemSets = dialog.popup.find('ul');
             if (dialog.options.deselectOnReturn) {
-                let itemSets = dialog.popup.find('ul');
                 itemSets.each(function (index, itemSet) {
                     let deselect = $(itemSet).data('deselectonreturn');
-                    if (typeof deselect === "undefined" || deselect) {
+                    let reset = $(itemSet).data('resetselectiontodefaultonreturn');
+                    if (typeof deselect === "undefined" || deselect || reset) {
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
             }
 
+            itemSets.each(function (itemSetIndex, itemSet) {
+                if ($(itemSet).data('resetselectiontodefaultonreturn')) {
+                    $(itemSet).find('li').each(function (listIndex, listItem) {
+                        let itemData = dialog.options.itemSets[itemSetIndex].items[listIndex];
+                        if ('selected' in itemData && itemData.selected) {
+                            $(listItem).addClass('selected');
+                        }
+                    });
+                }
+            });
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item

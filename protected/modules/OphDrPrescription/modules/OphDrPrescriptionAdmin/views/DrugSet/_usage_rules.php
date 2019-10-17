@@ -111,7 +111,7 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
                 'id': 'usage_code',
                 'multiSelect': false,
                 'mandatory': true,
-                'deselectOnReturn': false,
+                'resetSelectionToDefaultOnReturn': true,
                 header: "Usage Code"
             }),
         ],
