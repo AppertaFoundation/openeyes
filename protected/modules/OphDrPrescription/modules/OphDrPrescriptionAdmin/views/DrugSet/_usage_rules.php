@@ -23,7 +23,7 @@ $subspecialties = array_map(function ($e) {
 }, Subspecialty::model()->findAll());
 $filtered_usage_code_id = isset($filtered_usage_code) ? $filtered_usage_code : -1;
 $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
-    return ['id' => $e->id, 'label' => $e->name, 'selected' => $e->id == $filtered_usage_code_id ];
+    return ['id' => $e->id, 'label' => $e->name, 'defaultSelected' => $e->id == $filtered_usage_code_id ];
 }, $all_usage_codes);
 ?>
 

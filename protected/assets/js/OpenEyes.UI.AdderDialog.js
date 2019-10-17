@@ -285,7 +285,7 @@
       if(typeof item.prepended_markup !== "undefined") {
             $(item.prepended_markup).appendTo($listItem);
         }$('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
-      if (item.selected) {
+      if (item.selected || item.defaultSelected) {
         $listItem.addClass('selected');
       }
 
@@ -539,7 +539,7 @@
                 if ($(itemSet).data('resetselectiontodefaultonreturn')) {
                     $(itemSet).find('li').each(function (listIndex, listItem) {
                         let itemData = dialog.options.itemSets[itemSetIndex].items[listIndex];
-                        if ('selected' in itemData && itemData.selected) {
+                        if ('defaultSelected' in itemData && itemData.defaultSelected) {
                             $(listItem).addClass('selected');
                         }
                     });
