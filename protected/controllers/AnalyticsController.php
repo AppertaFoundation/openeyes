@@ -1600,27 +1600,35 @@ class AnalyticsController extends BaseController
             * checkPatientWorklist() in this controller, which is intended to retrieve latest worklist start date
             * getLatestExaminationEvent() in this controller
         */
-        $ticket_assignments_command = Yii::app()->db->createCommand()
+        $tickets_command = Yii::app()->db->createCommand()
             ->select('
                 ptt.id ticket_id
               , ptt.patient_id patient_id
               , ptt.event_id event_id
               , e.created_user_id event_owner
-              , pta.assignment_date assignment_date
-              , pta.details details
               , MAX(e.event_date) event_date
               , MAX(w.start) worklist_date
             ')
             ->from('patientticketing_ticket ptt')
-            ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
             ->join('event e', 'e.id = ptt.event_id')
-            ->join('worklist_patient wp', 'ptt.patient_id = wp.patient_id')
-            ->join('worklist w', 'wp.worklist_id = w.id')
             ->join('event_type et', 'e.event_type_id = et.id')
+            ->leftjoin('worklist_patient wp', 'ptt.patient_id = wp.patient_id')
+            ->leftjoin('worklist w', 'wp.worklist_id = w.id')
             ->where('LOWER(et.name) = :examination', array('examination' => 'examination'))
             ->group('ptt.patient_id, ptt.event_id');
+        $tickets = $tickets_command->queryAll();
+        $ticket_ids = array_column($tickets, 'ticket_id');
+        $ticket_assignments_command = Yii::app()->db->createCommand()
+            ->select('
+                ptt.id ticket_id
+              , pta.id assignment_id
+              , pta.assignment_date assignment_date
+              , pta.details details
+            ')
+            ->from('patientticketing_ticket ptt')
+            ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
+            ->where(array('IN', 'ptt.id', $ticket_ids));
         $ticket_assignments = $ticket_assignments_command->queryAll();
-
         // as the details field in database is an json array,
         // this needs to be convert to php associated array
         $ticket_assignments = array_map(function($item){
@@ -1662,11 +1670,8 @@ class AnalyticsController extends BaseController
             }
         }
 
-        foreach ($ticket_assignments as $ticket) {
+        foreach ($tickets as $ticket) {
             $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
-            if(!$ticket_followup){
-                continue;
-            }
             $current_event = $ticket['event_date'];
             $assignment_time = strtotime($ticket_followup['assignment_date']);
             if ( ($start_date && $assignment_time < $start_date) ||
@@ -1688,7 +1693,7 @@ class AnalyticsController extends BaseController
             $latest_worklist_time = strtotime($ticket['worklist_date']);
             $latest_examination = strtotime($ticket['event_date']);
             if (isset($latest_examination)) {
-                $latest_examination_date = strtotime($latest_examination->event_date);
+                $latest_examination_date = strtotime($latest_examination);
             } else {
                 $latest_examination_date = null;
             }
