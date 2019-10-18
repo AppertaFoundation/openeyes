@@ -329,7 +329,7 @@ function getDispenseLocation(dispense_condition) {
 $(function () {
   new OpenEyes.UI.AdderDialog({
     openButton: $('#add-standard-set-btn'),
-    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescription_drug_sets)],
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescription_drug_sets,{'header': 'Set name',})],
     onReturn: function (adderDialog, selectedItems) {
 			$('#event-content').trigger('change');
       for (let i = 0; i < selectedItems.length; ++i) {
