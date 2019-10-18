@@ -21,6 +21,7 @@
         'decimalValues' : ['.00' , '.25' , '.50' , '.75'],
         'splitIntegerNumberColumns': [], // array with min&max interval allowed for each column
         'deselectOnReturn' : true,
+        'resetSelectionToDefaultOnReturn' : false,
     };
 
   ItemSet.prototype.create = function () {

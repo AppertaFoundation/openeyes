@@ -1223,24 +1223,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get the va from the given episode for the right side of the episode patient.
-     * @param Pateint $patient
-     * @param bool $include_nr_values
-     * @param string $before_date
-     * @param bool $use_context
-     * @return OphCiExamination_VisualAcuity_Reading
-     */
-    public function getLetterVisualAcuityForEpisodeRight(
-        $patient,
-        $include_nr_values = false,
-        $before_date = NULL,
-        $use_context = false
-    )
-    {
-        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
-    }
-
-    /**
      * get the list of possible unit values for Visual Acuity.
      *
      * currently operates on the assumption there is always Snellen Metre available as a VA unit, and provides this
