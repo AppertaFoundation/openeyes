@@ -26,7 +26,7 @@
   -->
 <div class="element-data full-width">
     <div class="data-group">
-        <?php if (!$this->patient->hasRiskStatus()) { ?>
+        <?php if ($this->patient->hasRiskStatus()) { ?>
             <div class="data-value flex-layout flex-top">Patient has no known risks.</div>
         <?php } else { ?>
             <div class="flex-layout flex-top">
