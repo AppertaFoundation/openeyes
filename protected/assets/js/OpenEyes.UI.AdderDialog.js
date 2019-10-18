@@ -633,9 +633,11 @@
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
+                dialog.searchResultList.show();
+            } else{
+                dialog.searchResultList.toggle(!no_data);
             }
 
-            dialog.searchResultList.show();
             dialog.searchingSpinnerWrapper.hide();
             });
     };
