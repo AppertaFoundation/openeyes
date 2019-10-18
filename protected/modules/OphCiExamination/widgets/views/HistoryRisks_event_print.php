@@ -19,7 +19,7 @@
  */
 ?>
 <div class="cols-12">
-    <?php if (!$this->patient->hasRiskStatus()) { ?>
+    <?php if ($this->patient->hasRiskStatus()) { ?>
         <p class="data-value flex-layout flex-top">Patient has no known risks.</p>
     <?php } else { ?>
         <div class="data-value flex-layout flex-top">
