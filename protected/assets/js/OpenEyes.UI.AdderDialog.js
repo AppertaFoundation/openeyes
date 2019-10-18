@@ -635,7 +635,7 @@
                 dialog.appendCustomEntryOption(text, dialog);
             }
 
-            dialog.searchResultList.toggle(!no_data);
+            dialog.searchResultList.show();
             dialog.searchingSpinnerWrapper.hide();
             });
     };
