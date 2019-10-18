@@ -634,7 +634,7 @@
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
                 dialog.searchResultList.show();
-            } else{
+            } else {
                 dialog.searchResultList.toggle(!no_data);
             }
 
