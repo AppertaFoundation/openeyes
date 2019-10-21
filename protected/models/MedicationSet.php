@@ -540,8 +540,11 @@ class MedicationSet extends BaseActiveRecordVersioned
                 foreach ($items as $id) {
                     $values[] = "({$this->id},$id)";
                 }
-                Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
+                if ($values) {
+                    Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
 									VALUES ".implode(",", $values))->execute();
+                }
+
             }
         }
 
