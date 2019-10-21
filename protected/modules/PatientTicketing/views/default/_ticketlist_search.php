@@ -111,8 +111,7 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <input id="patient-search" type="text" class="cols-11" placeholder="Hospital Number, NHS Number, Firstname Surname or Surname, Firstname">
-
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
@@ -175,29 +174,27 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        OpenEyes.UI.Search.init($('#patient-search'));
-        OpenEyes.UI.Search.setLoader($('.js-spinner-as-icon'));
-        OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function (event, uid) {
-            let $list = $('#patient-result-list');
-            let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-            let $hidden = $('<input>', {type: 'hidden', id: uid.item.id, value: uid.item.id, name: 'patient-ids[]'});
-
-            $list.html('');
-            $list.append($item.append($hidden));
-
-            // clear input field
-            $(this).val('');
-            return false;
-
-        });
-
-        OpenEyes.UI.Search.getElement().autocomplete('option', 'source', function (request, response) {
-                $.getJSON('/PatientTicketing/default/patientSearch', {
-                    term: request.term,
-                    ajax: 'ajax',
-                    closedTickets: +$('#closed-tickets').is(':checked')
-                }, response);
-        });
+        let $autoComplete = $('#oe-autocompletesearch')
+            .removeClass('cols-full')
+            .addClass('cols-11')
+            .attr('placeholder', 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname');
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $autoComplete,
+                url: '/PatientTicketing/default/patientSearch',
+                onSelect: function(){
+                    let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let $list = $('#patient-result-list');
+                    let $item = $('<li>', {'data-patient-id': AutoCompleteResponse.id}).html(AutoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
+                    let $hidden = $('<input>', {type: 'hidden', id: AutoCompleteResponse.id, value: AutoCompleteResponse.id, name: 'patient-ids[]'});
+                    $list.html('');
+                    $list.append($item.append($hidden));
+                    // clear input field
+                    $(this).val('');
+                    return false;
+                }
+            });
+        }
 
 
 
