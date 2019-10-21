@@ -111,7 +111,7 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname', 'layoutColumns' => '11']]); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
@@ -174,19 +174,15 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        let $autoComplete = $('#oe-autocompletesearch')
-            .removeClass('cols-full')
-            .addClass('cols-11')
-            .attr('placeholder', 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname');
         if(OpenEyes.UI.AutoCompleteSearch !== undefined){
             OpenEyes.UI.AutoCompleteSearch.init({
-                input: $autoComplete,
+                input: $('#oe-autocompletesearch'),
                 url: '/PatientTicketing/default/patientSearch',
                 onSelect: function(){
-                    let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     let $list = $('#patient-result-list');
-                    let $item = $('<li>', {'data-patient-id': AutoCompleteResponse.id}).html(AutoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-                    let $hidden = $('<input>', {type: 'hidden', id: AutoCompleteResponse.id, value: AutoCompleteResponse.id, name: 'patient-ids[]'});
+                    let $item = $('<li>', {'data-patient-id': autoCompleteResponse.id}).html(autoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
+                    let $hidden = $('<input>', {type: 'hidden', id: autoCompleteResponse.id, value: autoCompleteResponse.id, name: 'patient-ids[]'});
                     $list.html('');
                     $list.append($item.append($hidden));
                     // clear input field
