@@ -160,7 +160,7 @@ class WhiteboardController extends BaseDashboardController
 
         $this->pageTitle = $whiteboard->patient_name;
 
-        $this->render('view', array('data' => $whiteboard, 'booking_id' => $id), false, true);
+        $this->render('view', array('data' => $whiteboard, 'booking_id' => $id));
     }
 
     public function actionBiometryReport($id)
@@ -176,23 +176,13 @@ class WhiteboardController extends BaseDashboardController
             $whiteboard->loadData($id);
         }
 
-        $event = Event::model()->findByPk($id);
-        $episode = Episode::model()->findByPk($event->episode_id);
-        $patient = Patient::model()->findByPk($episode->patient_id);
-
-        $criteria = new CDbCriteria();
-        $criteria->with = array('event.episode.patient');
-        $criteria->addCondition('patient_id = :patient_id');
-        $criteria->addCondition('event_sub_type = :sub_type');
-        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => 2);
-        $criteria->order = 't.last_modified_date DESC';
-        $criteria->limit = 1;
-
-        $element = Element_OphCoDocument_Document::model()->find($criteria);
-
         $this->pageTitle = $whiteboard->patient_name;
 
-        $this->render('biometry', array('data' => $whiteboard, 'booking_id' => $id, 'document_event_id' => $element->event->id, 'pages' => $element->event->previewImages), false, true);
+        $this->render('biometry', array(
+            'data' => $whiteboard,
+            'booking_id' => $id,
+            'document' => $whiteboard->biometry_report,
+        ));
     }
 
     /**

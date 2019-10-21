@@ -14,11 +14,11 @@
     <nav class="multipage-nav">
         <h3>Biometry</h3>
         <div class="page-jump">
-            <?php foreach ($pages as $id => $page) : ?>
+            <?php foreach ($document->event->previewImages as $id => $page) : ?>
             <div class="page-num-btn" data-page="<?= $id ?>"><?= $id + 1 ?></div>
             <?php endforeach; ?>
         </div>
-        <?php if (count($pages) > 1) : ?>
+        <?php if (count($document->event->previewImages) > 1) : ?>
         <div class="page-scroll">
             <div class="page-scroll-btn up" id="js-scroll-btn-up"></div>
             <div class="page-scroll-btn down" id="js-scroll-btn-down"></div>
@@ -27,14 +27,14 @@
     </nav>
     <div class="multipage-stack whiteboard">
         <?php
-        foreach ($pages as $id => $page) : ?>
-            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document_event_id ?>" alt="biom-<?= $id + 1?>"/>
+        foreach ($document->event->previewImages as $id => $page) : ?>
+            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document->event->id ?>" alt="biom-<?= $id + 1?>"/>
         <?php endforeach; ?>
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
             let id = 0;
-            let maxPages = <?= count($pages) ?>;
+            let maxPages = <?= count($document->event->previewImages) ?>;
 
             function scrollToPage(page) {
                 let pageStack = $('.multipage-stack');

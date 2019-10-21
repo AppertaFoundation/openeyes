@@ -44,6 +44,19 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
             'steep_k',
             'decimal(6, 2)'
         );
+        $this->addOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'biometry_report_id',
+            'int'
+        );
+
+        $this->addForeignKey(
+            'ophtroperationbooking_whiteboard_biom_report_fk',
+            'ophtroperationbooking_whiteboard',
+            'biometry_report_id',
+            'et_ophcodocument_document',
+            'id'
+        );
     }
 
     public function down()
@@ -79,6 +92,16 @@ class m190916_004623_add_new_whiteboard_columns extends OEMigration
         $this->dropOEColumn(
             'ophtroperationbooking_whiteboard',
             'steep_k'
+        );
+
+        $this->dropForeignKey(
+            'ophtroperationbooking_whiteboard_biom_report_fk',
+            'ophtroperationbooking_whiteboard'
+        );
+
+        $this->dropOEColumn(
+            'ophtroperationbooking_whiteboard',
+            'biometry_report_id'
         );
     }
 }

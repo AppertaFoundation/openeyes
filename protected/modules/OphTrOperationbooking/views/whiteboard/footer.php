@@ -9,7 +9,7 @@
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'enableAjaxValidation' => false,
     ))?>
-<?php if (!$biometry) : ?>
+<?php if (!$biometry && $this->getWhiteboard()->biometry_report) : ?>
     <button class="pro-theme large" formaction="/OphTrOperationbooking/whiteboard/biometryReport/<?= $booking_id?>">
         Biometry
     </button>

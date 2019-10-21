@@ -40,6 +40,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'joinType' => 'INNER JOIN',
                 'alias' => 'booking',
             ),
+            'biometry_report' => array(
+                self::BELONGS_TO,
+                'Element_OphCoDocument_Document',
+                'id',
+            ),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
     }
@@ -74,7 +79,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $episode = Episode::model()->findByPk($event->episode_id);
         $patient = Patient::model()->findByPk($episode->patient_id);
         $contact = Contact::model()->findByPk($patient->contact_id);
+
         $biometry = $this->recentBiometry($patient);
+        $report = $this->recentBiometryReport($patient);
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
@@ -92,6 +99,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
+        if ($report) {
+            $this->biometry_report = $report;
+        }
+
         $this->iol_model = 'Unknown';
         $this->iol_power = 'None';
         $this->axial_length = 'Unknown';
@@ -101,7 +112,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
-            if (isset($biometry->attributes['lens_display_name_' . $eyeLabel])) {
+            if (isset($biometry->attributes["lens_display_name_$eyeLabel"])) {
                 $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
                 $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
                 $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
@@ -257,6 +268,23 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         //default value when no Risk element exists
         return 'Not checked';
+    }
+
+    /**
+     * @param $patient Patient
+     * @return Element_OphCoDocument_Document|null
+     */
+    protected function recentBiometryReport($patient)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->addCondition('event_sub_type = :sub_type');
+        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => 2);
+        $criteria->order = 't.last_modified_date DESC';
+        $criteria->limit = 1;
+
+        return Element_OphCoDocument_Document::model()->find($criteria);
     }
 
     /**
