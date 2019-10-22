@@ -12,7 +12,6 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once Yii::app()->basePath.'/modules/OphTrOperationbooking/components/OphTrOperationbooking_API.php';
 
 class OphTrOperationbooking_API_Test extends CDbTestCase
 {
@@ -33,9 +32,16 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
         'theatres' => 'OphTrOperationbooking_Operation_Theatre',
     );
 
+    public static function setupBeforeClass()
+    {
+        Yii::import('application.modules.OphTrOperationbooking.components.*');
+    }
+
     public function testGetLatestOperationBookingDiagnosis()
     {
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+
+        Yii::app()->session['selected_firm_id'] = 2;
 
         $this->assertEquals('Myopia', $api->getLatestCompletedOperationBookingDiagnosis($this->patients('patient3')));
     }
@@ -64,26 +70,11 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
     {
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
 
-        $operations = $api->getOperationsForEpisode(1);
+        $operations = $api->getOperationsForEpisode($this->patients('patient3'));
 
         $this->assertCount(1, $operations);
         $this->assertInstanceOf('Element_OphTrOperationbooking_Operation', $operations[0]);
         $this->assertEquals(13, $operations[0]->id);
-    }
-
-    public function testGetOpenBookingsForEpisode()
-    {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $bookings = $api->getOpenBookingsForEpisode(6);
-
-        $this->assertCount(2, $bookings);
-
-        $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $bookings[0]);
-        $this->assertEquals(5, $bookings[0]->id);
-
-        $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $bookings[1]);
-        $this->assertEquals(8, $bookings[1]->id);
     }
 
     public function testGetOperationProcedures()
@@ -104,6 +95,7 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
         foreach ($this->statuses as $status) {
             $api->setOperationStatus($eo->event_id, $status['name']);
+            //$this->assertTrue($eo->save(false));
 
             $this->assertEquals($status['name'], Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($eo->event_id))->status->name);
         }
