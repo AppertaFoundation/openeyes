@@ -544,7 +544,6 @@ class MedicationSet extends BaseActiveRecordVersioned
                     Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
 									VALUES ".implode(",", $values))->execute();
                 }
-
             }
         }
 
