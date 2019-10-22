@@ -100,12 +100,13 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         $total_risks = 0;
         if ($fixtureId !== null) {
             $this->whiteboard = $this->whiteboards($fixtureId);
+            $this->whiteboard->loadData($booking_id);
         } else {
             $this->whiteboard = new OphTrOperationbooking_Whiteboard();
             $this->whiteboard->loadData($booking_id);
         }
         $risks = $this->whiteboard->getPatientRisksDisplay($total_risks);
         $this->assertEquals(0, $total_risks);
-        $this->assertEquals('<div class="alert-box success">No Risks</div>', $risks);
+        $this->assertEquals('', $risks);
     }
 }

@@ -1732,4 +1732,13 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         return $anaesthetist_required;
     }
+
+    public function getAllBookingRisks()
+    {
+        $risks = array();
+        foreach ($this->procedures as $procedure) {
+            array_merge($risks, $procedure->risks);
+        }
+        return $risks;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this->data
+ * @var $this RiskCard
  */
 $total_risks = 0;
 $risks = $this->whiteboard->getPatientRisksDisplay($total_risks);
@@ -36,12 +36,14 @@ if ($this->data->anticoagulant_name !== 'No Anticoagulants') {
         </div>
     <?php endif; ?>
     <?php echo $risks ?>
-    <?php if ($this->data->anticoagulant_name === 'No Anticoagulants') : ?>
+    <?php if ($this->data->anticoagulant_name === 'No Anticoagulants'
+        && in_array($this->getAnticoagulantRisk(), $this->whiteboard->booking->getAllBookingRisks(), true)) : ?>
         <div class="alert-box success">
             No Anticoagulants
         </div>
     <?php endif; ?>
-    <?php if ($this->data->alpha_blocker_name === 'No Alpha Blockers') : ?>
+    <?php if ($this->data->alpha_blocker_name === 'No Alpha Blockers'
+        && in_array($this->getAlphaBlockerRisk(), $this->whiteboard->booking->getAllBookingRisks(), true)) : ?>
         <div class="alert-box success">
             No Alpha Blockers
         </div>

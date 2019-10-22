@@ -359,7 +359,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             )
         );
 
-        $display = implode('</div><div class="alert-box warning">', $lines);
+        $display = '';
+
+        foreach ($lines as $line) {
+            $display .= '<div class="alert-box warning">' . $line . '</div>';
+        }
 
         if ($display === '') {
             $total_risks = 0;
@@ -367,6 +371,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $total_risks = count($lines);
         }
 
-        return $display === '' ? '<div class="alert-box success">No Risks</div>' : ('<div class="alert-box warning">' . $display . '</div>');
+        // Add positive risk labels for significant risks that are not present.
+        foreach ($this->booking->getAllBookingRisks() as $risk) {
+            if (!in_array($risk, $risks, true)) {
+                $display .= '<div class="alert-box success">' . "No {$risk->name}" . '</div>';
+            }
+        }
+
+        return $display;
     }
 }
