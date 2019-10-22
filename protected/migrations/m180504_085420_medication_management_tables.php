@@ -46,6 +46,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'antecedent_medication_set_id' => 'INT NULL',
             'deleted_date'          => 'DATE NULL',
             'display_order'         => 'INT NULL',
+            'hidden'                => 'BOOLEAN NOT NULL DEFAULT 0'
         ), true);
 
         $this->createIndex('fk_ref_set_idx', 'medication_set', 'antecedent_medication_set_id');

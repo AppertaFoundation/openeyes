@@ -76,7 +76,7 @@ class m190214_102307_automatic_medication_sets extends OEMigration
                     if ($ref_medication_id) {
                         $command->createCommand("INSERT INTO medication_set_item(medication_id, medication_set_id) values (" . $ref_medication_id . ", " . $medication_set_id . " )")->execute();
 
-                        $q = "INSERT INTO medication_set_auto_rule_medication (medication_set_id, medication_id, include_children) values ({$medication_set_id}, {$ref_medication_id}, 0)";
+                        $q = "INSERT INTO medication_set_auto_rule_medication (medication_set_id, medication_id, include_children, include_parent) values ({$medication_set_id}, {$ref_medication_id}, 1, 1)";
                         $command->createCommand($q)->execute();
                     }
                 }
