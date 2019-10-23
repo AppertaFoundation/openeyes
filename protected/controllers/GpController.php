@@ -190,14 +190,12 @@ class GpController extends BaseController
         $this->performAjaxValidation($contact);
         $this->performAjaxValidation($model);
 
-
         if (isset($_POST['Contact']) && isset($_POST['Gp']['is_active'])) {
 
             $contact->attributes = $_POST['Contact'];
             $model->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
             $this->performAjaxValidation($model);
-            list($contact, $model) = $this->performGpSave($contact, $model);
 
             if(isset($_POST['ContactPracticeAssociate'])) {
                 $index = 0;
