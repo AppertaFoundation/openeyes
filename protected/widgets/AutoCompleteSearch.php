@@ -19,4 +19,5 @@ class AutoCompleteSearch extends BaseCWidget
 {
     public $field_name = 'oe-autocompletesearch';
     public $html_options;
+    public $layout_columns;
 }
