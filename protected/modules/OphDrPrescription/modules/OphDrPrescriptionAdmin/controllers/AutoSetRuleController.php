@@ -26,6 +26,8 @@ class AutoSetRuleController extends BaseAdminController
 
     public $assetPath;
 
+    const FILTER_USAGE_CODE_ID_FOR_ALL = 'ALL';
+
     public function actionIndex()
     {
         $asset_manager = \Yii::app()->getAssetManager();
@@ -65,14 +67,14 @@ class AutoSetRuleController extends BaseAdminController
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_code_ids' => [MedicationUsageCode::model()->find()->id], // default to start with
+            'usage_code_ids' => [self::FILTER_USAGE_CODE_ID_FOR_ALL],
         ];
 
         $filters = \Yii::app()->request->getParam('search');
 
         if (!$filters) {
             $filters = \Yii::app()->session->get('sets_filters');
-            $filters = $filters ? $filters : $default;
+          //  $filters = $filters ? $filters : $default;
         } else {
             \Yii::app()->session['sets_filters'] = $filters;
         }
@@ -98,11 +100,29 @@ class AutoSetRuleController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
+        if (isset($filters['usage_code_ids']) &&
+            $filters['usage_code_ids'] &&
+            !in_array(self::FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
+            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+        }
+
         if (isset($filters['query']) && $filters['query']) {
             $criteria->addSearchCondition('name', $filters['query']);
         }
 
         $criteria->addCondition("automatic = 1");
+
+        foreach (['site_id', 'subspecialty_id'] as $search_key) {
+            if (isset($filters[$search_key]) && $filters[$search_key]) {
+                $criteria->addCondition("medicationSetRules . {$search_key} = :$search_key");
+                $criteria->params[":$search_key"] = $filters[$search_key];
+            }
+        }
+
+        // just make sure usage_code_ids is set every time
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
+        }
 
         return $criteria;
     }
