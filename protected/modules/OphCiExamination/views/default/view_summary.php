@@ -82,7 +82,7 @@ if ($historyElement) {
                     No current Eye Medications
                 </div>
                 <?php } ?>
-                <?php if ($stopped_eye_medications) : ?>
+                <?php if ($stopped_eye_medications) { ?>
             <div class="collapse-data">
                 <div class="collapse-data-header-icon expand">
                     Stopped
