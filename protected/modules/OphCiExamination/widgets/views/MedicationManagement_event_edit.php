@@ -119,6 +119,7 @@ $element_errors = $element->getErrors();
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
+            <button id="mm-add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
             <button class="button hint green js-add-select-search" id="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
@@ -289,6 +290,22 @@ $element_errors = $element->getErrors();
             booleanSearchFilterLabel: 'Include branded',
             booleanSearchFilterURLparam: 'include_branded'
         });
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#mm-add-standard-set-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($drugSet) {
+                    return [
+                        'label' => $drugSet->name,
+                        'id' => $drugSet->id
+                    ];
+                }, Element_OphDrPrescription_Details::model()->drugSets())
+            ) ?>,{'header': 'Set name',})],
+            onReturn: function (adderDialog, selectedItems) {
+                window.MMController.processSetEntries(selectedItems[0].id);
+            }
+        });
+
 
         let $changeEventDate = $('.js-change-event-date');
         $changeEventDate.addClass('disabled');

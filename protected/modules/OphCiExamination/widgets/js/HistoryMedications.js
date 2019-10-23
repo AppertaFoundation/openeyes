@@ -44,6 +44,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$table = this.$element.find('.js-entry-table');
     this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
+    this.taperTemplateText = this.$element.find('.taper-template').text();
     this.drugsByRisk = {};
     this.medicationSearchRequest = null;
       this.fields = [
@@ -52,6 +53,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'dose',
           'dose_unit_term',
           'frequency_id',
+          'duration_id',
           'route_id',
           'laterality',
           'start_date',
@@ -76,41 +78,42 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   }
 
   HistoryMedicationsController._defaultOptions = {
-    modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
-    element: undefined,
-    addButtonSelector: '.js-add-select-search',
-    popup:'#add-to-medication',
-    removeButtonSelector: 'i.js-remove',
-    searchSource: '/medicationManagement/findRefMedications',
-    routeOptionSource: '/medication/retrieveDrugRouteOptions',
-    searchAsTypedPrefix: 'As typed: ',
-    drugFieldSelector: 'input[name$="[drug_id]"]',
-    medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
-    asTypedFieldSelector: 'input[name$="[medication_name]"]',
-    medicationSelectOptions:'#history-medication-select-options',
-    medicationSearchOptions: '.history-medication-search-options',
-    medicationSearchInput: '#history-medication-search-field',
-    medicationSearchResult: '#history-medication-search-results',
-    medicationNameSelector: '.medication-name',
-    medicationDisplaySelector: '.js-medication-display',
-    startDateButtonSelector: '.start-medication.enable',
-    cancelStartDateButtonSelector: '.start-medication.cancel',
-    stopDateFieldSelector: 'input[name$="[stop_date]"]',
-    stopDateButtonSelector: '.stop-medication.enable',
-    cancelStopDateButtonSelector: '.stop-medication.cancel',
-    routeFieldSelector: 'select[name$="[route_id]"]',
+        modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
+        element: undefined,
+        addButtonSelector: '.js-add-select-search',
+        popup:'#add-to-medication',
+        removeButtonSelector: 'i.js-remove',
+        searchSource: '/medicationManagement/findRefMedications',
+        drugSetFormSource: '/medicationManagement/getDrugSetForm',
+        routeOptionSource: '/medication/retrieveDrugRouteOptions',
+        searchAsTypedPrefix: 'As typed: ',
+        drugFieldSelector: 'input[name$="[drug_id]"]',
+        medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
+        asTypedFieldSelector: 'input[name$="[medication_name]"]',
+        medicationSelectOptions:'#history-medication-select-options',
+        medicationSearchOptions: '.history-medication-search-options',
+        medicationSearchInput: '#history-medication-search-field',
+        medicationSearchResult: '#history-medication-search-results',
+        medicationNameSelector: '.medication-name',
+        medicationDisplaySelector: '.js-medication-display',
+        startDateButtonSelector: '.start-medication.enable',
+        cancelStartDateButtonSelector: '.start-medication.cancel',
+        stopDateFieldSelector: 'input[name$="[stop_date]"]',
+        stopDateButtonSelector: '.stop-medication.enable',
+        cancelStopDateButtonSelector: '.stop-medication.cancel',
+        routeFieldSelector: 'select[name$="[route_id]"]',
 		routeOptionWrapperSelector: '.admin-route-options',
-    routeOptionInputSelector: '.laterality-input',
-    patientAllergies: [],
-      allAllergies: {},
-      classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
+        routeOptionInputSelector: '.laterality-input',
+        patientAllergies: [],
+          allAllergies: {},
+          classes_that_dont_break_binding: ['js-end-date', 'js-stop-reason'],
 
-      // Customizable callbacks
+        // Customizable callbacks
 
-      onInit: function(){},
-      onControllerBound: function (controller, name){},
-      onAddedEntry: function($row, controller){},
-      onRemovedEntry: function ($row, controller) {}
+          onInit: function(){},
+          onControllerBound: function (controller, name){},
+          onAddedEntry: function($row, controller){},
+          onRemovedEntry: function ($row, controller) {}
   };
 
   /**
@@ -252,7 +255,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if(!checked) {
         		let $data_key = $row.attr('data-key');
 						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
-					$full_row.find(".js-disppense-location option").empty();
+					$full_row.find(".js-dispense-location option").empty();
 					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
 					$full_row.find(".js-add-taper").hide();
         }
@@ -492,21 +495,31 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.setRowData = function ($row, data, excl_fields)
     {
         var self = this;
-        var rc = $row.attr("data-key");
+        var rc;
+        var tc;
+        if ($row.hasClass('js-taper-row')) {
+            rc = $row.attr("data-parent-key");
+            tc = "[taper][" + $row.attr("data-taper-key") + "]";
+        } else {
+            rc = $row.attr("data-key");
+            tc = "";
+            $row.find(".js-btn-prescribe").click();
+            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
+        }
         $.each(this.fields, function(i, field){
             if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
                 if(typeof data[field] !== "undefined") {
-									var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
-									$input.val(data[field]);
-									if(field === "laterality") {
-										$row.find(self.options.routeOptionWrapperSelector).find('input').each(function(){
-												if($(this).val() === data[field] || data[field] === "3") {
-													$(this).prop( "checked", true);
-												} else {
-													$(this).prop( "checked", false);
-												}
-										});
-									}
+                    var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]"+ tc + "["+field+"]']");
+                    $input.val(data[field]);
+                    if(field === "laterality") {
+                        $row.find(self.options.routeOptionWrapperSelector).find('input').each(function(){
+                                if($(this).val() === data[field] || data[field] === "3") {
+                                    $(this).prop( "checked", true);
+                                } else {
+                                    $(this).prop( "checked", false);
+                                }
+                        });
+                    }
                 }
             }
         });
@@ -610,6 +623,68 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         return true;
+    };
+
+    HistoryMedicationsController.prototype.addSet = function (set_id) {
+        let controller = this;
+        $.getJSON(controller.options.drugSetFormSource, {
+            key: OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key'),
+            patient_id: OE_patient_id,
+            set_id: set_id,
+        }, function (response) {
+            let rows = controller.createRow(response);
+            for (let i in response) {
+                if (response[i]['tapers'] !== undefined) {
+                    for (let taper_index in response[i]['tapers']) {
+                        response.push(response[i]['tapers'][taper_index]);
+                    }
+                }
+            }
+
+            let $newrow = controller.appendRowsToTable(rows, response);
+
+            controller.displayTableHeader();
+            // return the last created row
+            return $newrow;
+
+        });
+    };
+
+    HistoryMedicationsController.prototype.processSetEntries = function(set_id) {
+        let controller = this;
+        let allergies = controller.getMergedAllergies();
+        $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs",{
+            set_id: set_id
+        }, function (response) {
+            if (typeof allergies !== undefined) {
+                let matching_allergies = [];
+                let medications = JSON.parse(response);
+
+                for (let medication in medications) {
+                    for (let allergy in medication.allergies) {
+                        if (inArray(allergy, allergies)) {
+                            matching_allergies.push(medication.label);
+                        }
+                    }
+                }
+
+                if (matching_allergies.length > 0) {
+                    let dialog = new OpenEyes.UI.Dialog.Confirm({
+                        content: "Patient is allergic to " +
+                            matching_allergies.join(', ') +
+                            ". Are you sure you want to add them?"
+                    });
+                    dialog.on('ok', function () {
+                        controller.addSet(set_id);
+                    }.bind(this));
+                    dialog.open();
+                } else {
+                    controller.addSet(set_id);
+                }
+            } else {
+                controller.addSet(set_id);
+            }
+        });
     };
 
     HistoryMedicationsController.prototype.updateTextualDisplay = function ($row) {
@@ -876,6 +951,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       var newRows = [];
       var template = this.templateText;
+      let taperTemplate = this.taperTemplateText;
       var element = this.$element;
       var data = {};
 
@@ -890,6 +966,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     for (var i in medications) {
       data = medications[i];
+      data['tapers'] = medications[i]['tapers'];
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
@@ -898,6 +975,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       newRows.push(Mustache.render(
           template,
           data ));
+
+      if (data['tapers'] !== undefined) {
+          for(let taper_index in data['tapers']) {
+              data['tapers'][taper_index]['row_count'] = data['row_count'];
+              data['tapers'][taper_index]['taper_count'] = taper_index;
+              newRows.push(Mustache.render(
+                  taperTemplate,
+                  data['tapers'][taper_index]));
+          }
+      }
+
     }
 
     return newRows;
@@ -946,6 +1034,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' + allergy_names.join(", ") + '"></i>';
     };
 
+    HistoryMedicationsController.prototype.appendRowsToTable = function (rows, medication, do_callback = false) {
+        var $newrow;
+        for (var i in rows) {
+            $newrow = $(rows[i]);
+
+            $newrow.appendTo(this.$table.children('tbody'));
+            this.setRowData($newrow, medication[i]);
+            let $lastRow = this.$table.find('tbody tr.js-first-row:last');
+
+            if (!$newrow.hasClass('js-taper-row')) {
+                this.initialiseRow($lastRow);
+                this.loadDrugDefaults($lastRow, medication[i]);
+            }
+
+            if(do_callback) {
+                this.options.onAddedEntry($lastRow, this);
+            }
+        }
+
+        return $newrow;
+    };
+
     HistoryMedicationsController.prototype.addEntry = function (selectedItems, do_callback)
     {
         var medication = [];
@@ -978,21 +1088,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         var rows = this.createRow(medication);
-        var $newrow;
-        for (var i in rows) {
-            $newrow = $(rows[i]);
-
-            $newrow.appendTo(this.$table.children('tbody'));
-            this.setRowData($newrow, medication[i]);
-            let $lastRow = this.$table.find('tbody tr.js-first-row:last');
-
-            this.initialiseRow($lastRow);
-            this.loadDrugDefaults($lastRow, medication[i]);
-
-            if(do_callback) {
-                this.options.onAddedEntry($lastRow, this);
-            }
-        }
+        let $newrow = this.appendRowsToTable(rows, medication, do_callback);
 
         $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
         $(this.options.medicationSearchInput).val('');
