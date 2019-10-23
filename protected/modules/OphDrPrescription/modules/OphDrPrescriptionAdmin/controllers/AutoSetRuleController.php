@@ -324,6 +324,11 @@ class AutoSetRuleController extends BaseAdminController
     public function actionListMedications()
     {
         $set_id = \Yii::app()->request->getParam('set_id');
+        if (!$set_id) {
+            \Yii::app()->user->setFlash('error', 'Set not found.');
+            $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+        }
+        
         $medication_set_name = \MedicationSet::model()->findByPk($set_id)->name;
 
         $criteria = new \CDbCriteria();

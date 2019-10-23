@@ -23,8 +23,8 @@
 <div class="cols-12">
     <table id="medicationset-medications-list" class="standard">
         <colgroup>
-            <col style="cols-1">
-            <col style="cols-5">
+            <col class="cols-1">
+            <col class="cols-5">
         </colgroup>
         <thead>
             <tr>

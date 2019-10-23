@@ -15,6 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php if (\Yii::app()->user->hasFlash('error')) : ?>
+    <div class='alert-box error'>
+        <?= \Yii::app()->user->getFlash('error'); ?>
+    </div>
+<?php endif; ?>
+
 <div class="row divider">
     <h2>Automatic medication sets</h2>
 </div>
