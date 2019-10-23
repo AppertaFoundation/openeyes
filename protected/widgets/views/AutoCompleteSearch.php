@@ -1,5 +1,5 @@
 <div class="patient-activity">
-	<input placeholder="<?= (isset($html_options['placeholder']) ? $html_options['placeholder'] : 'Type to search') ?>" class="cols-<?= (isset($layout_columns['field']) ? $layout_columns['field'] : 'full') ?> search autocompletesearch" id="<?= $field_name; ?>" type="text" value="" name="<?= $field_name; ?>" autocomplete="off">
+	<input placeholder="<?= $htmlOptions['placeholder'] ?>" class="cols-<?= $layoutColumns['field'] ?> search autocompletesearch" id="<?= $field_name; ?>" type="text" value="" name="<?= $field_name; ?>" autocomplete="off">
 	<ul class="oe-autocomplete hidden" id="ui-id-1" tabindex="0">
 	</ul>
 	<div class="data-group no-result warning alert-box hidden">

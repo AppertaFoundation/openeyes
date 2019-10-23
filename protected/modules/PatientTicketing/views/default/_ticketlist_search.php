@@ -111,7 +111,7 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname'], 'layout_columns' => ['field' => '11']]); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname'], 'layoutColumns' => ['field' => '11']]); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
