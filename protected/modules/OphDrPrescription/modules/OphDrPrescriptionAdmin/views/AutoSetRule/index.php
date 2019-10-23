@@ -82,7 +82,7 @@
                 <td colspan="4">
                     <?= \CHtml::submitButton('Add', [
                         'id' => 'et_add',
-                        'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
+                        'data-uri' => "/OphDrPrescription/admin/AutoSetRule/edit",
                         'class' => 'button large'
                     ]); ?>
                     <?= \CHtml::button('Delete', [
@@ -90,7 +90,7 @@
                         'class' => 'button large',
                     ]); ?>
                     <?=\CHtml::linkButton('Rebuild all sets now',
-                        array('href' => '/OphDrPrescription/medicationSetAutoRulesAdmin/populateAll',
+                        array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll',
                             'class' => 'button large')); ?>
 
                 </td>

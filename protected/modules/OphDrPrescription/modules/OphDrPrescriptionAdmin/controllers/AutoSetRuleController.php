@@ -268,7 +268,7 @@ class AutoSetRuleController extends BaseAdminController
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
         Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
-        $this->redirect('/OphDrPrescription/medicationSetAutoRulesAdmin/list');
+        $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
     }
 
     public function actionDelete()
@@ -319,6 +319,32 @@ class AutoSetRuleController extends BaseAdminController
 
         echo \CJSON::encode($result);
         \Yii::app()->end();
+    }
+
+    public function actionListMedications()
+    {
+        $set_id = \Yii::app()->request->getParam('set_id');
+        $medication_set_name = \MedicationSet::model()->findByPk($set_id)->name;
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['medicationSets'];
+        $criteria->together = true;
+        $criteria->addSearchCondition('medication_set_id', $set_id);
+
+        $data_provider = new CActiveDataProvider('Medication', [
+            'criteria' => $criteria
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/AutoSetRule/listMedications', [
+            'medication_set_name' => $medication_set_name,
+            'data_provider' => $data_provider,
+        ]);
     }
 
     public function actionAddMedicationToSet()
