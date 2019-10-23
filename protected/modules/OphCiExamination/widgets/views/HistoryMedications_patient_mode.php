@@ -137,7 +137,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </table>
                 <?php endif; ?>
 
-                <?php if ($stopped_eye_meds) : ?>
+                <?php if ($stopped_eye_meds) { ?>
+                    <div class="collapse-data">
+                        <div class="collapse-data-header-icon expand">
+                            Stopped
+                            <small>(<?= sizeof($stopped_eye_meds) ?>)</small>
+                        </div>
+                        <div class="collapse-data-content">
                     <table>
                         <thead>
                         <tr>
@@ -174,7 +180,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <?php endforeach; ?>
                         </tbody>
                     </table>
-                <?php endif; ?>
+                <?php } ?>
             <?php endif; ?>
         </div>
     </div>

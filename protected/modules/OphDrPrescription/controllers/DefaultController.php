@@ -18,6 +18,10 @@ class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
 
+    const FP10_PRINT_MODE = 2;
+    const WP10_PRINT_MODE = 3;
+    const NORMAL_PRINT_MODE = 1;
+
     protected static $action_types = array(
         'drugList' => self::ACTION_TYPE_FORM,
         'repeatForm' => self::ACTION_TYPE_FORM,
@@ -41,15 +45,36 @@ class DefaultController extends BaseEventTypeController
 
     public function actionView($id)
     {
-        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+        $model = Element_OphDrPrescription_Details::model()
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
         $this->editable = $model->isEditableByMedication();
         if ( $this->editable == true ) {
-            $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+            $this->editable = $this->userIsAdmin() || $model->draft
+            || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         }
         return parent::actionView($id);
     }
 
+    /**
+     * Defines JS data structure for common drug lookup in prescription.
+     */
+    protected function setCommonDrugMetadata()
+    {
+        $this->jsVars['common_drug_metadata'] = array();
+        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $medication) {
+            $this->jsVars['common_drug_metadata'][$medication->id] = array(
+                    'medication_set_id' => array_map(function ($e) {
+                        return $e->id;
+                    }, $medication->getTypes()),
+                    'preservative_free' => (int)$medication->isPreservativeFree(),
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
     protected function initEdit()
     {
         if (!$this->checkPrintAccess()) {
@@ -59,18 +84,24 @@ class DefaultController extends BaseEventTypeController
         $assetManager = Yii::app()->getAssetManager();
         $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
-        
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
+
         $this->showAllergyWarning();
-        // Save and print clicked, stash print flag
-        if (isset($_POST['saveprint'])) {
+
+        if (isset($_POST['saveprintform'])) {
+            // Save and print FP10 clicked, stash print form flag
+            $form_format = strtolower(SettingMetadata::model()->getSetting('prescription_form_format'));
+            Yii::app()->session["print_prescription_$form_format"] = true;
+        } elseif (isset($_POST['saveprint'])) {
+            // Save and print clicked, stash print flag
             Yii::app()->session['print_prescription'] = true;
         }
+        return true;
     }
 
     public function printActions()
     {
-        return array('print', 'markPrinted', 'doPrint');
+        return array('print', 'printFpTen', 'markPrinted', 'doPrint');
     }
 
     /**
@@ -94,6 +125,7 @@ class DefaultController extends BaseEventTypeController
 
     /**
      * Some additional initialisation for create.
+     * @throws CHttpException
      */
     protected function initActionCreate()
     {
@@ -103,12 +135,12 @@ class DefaultController extends BaseEventTypeController
 
     /**
      * Some additional initialisation for create.
+     * @throws CHttpException
      */
     protected function initActionUpdate()
     {
         parent::initActionUpdate();
         $this->initEdit();
-
     }
 
     /**
@@ -123,8 +155,13 @@ class DefaultController extends BaseEventTypeController
 
         // set required js variables
         $cs = Yii::app()->getClientScript();
-        $cs->registerScript('scr_prescription_view',
-            "prescription_print_url = '".Yii::app()->createUrl('/OphDrPrescription/default/print/'.$this->event->id)."';\n", CClientScript::POS_READY);
+        $cs->registerScript(
+            'scr_prescription_view',
+            "prescription_print_url = '"
+            .Yii::app()->createUrl('/OphDrPrescription/default/print/'.$this->event->id)
+            ."';\n",
+            CClientScript::POS_READY
+        );
 
         // Get prescription details element
         $element = Element_OphDrPrescription_Details::model()->findByAttributes(array('event_id' => $this->event->id));
@@ -152,11 +189,11 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found: '.$id);
         }
         $prescription->printed = 1;
-        if (!$prescription->update(["printed"])) {
+        if (!$prescription->update(['printed'])) {
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
-        if (!$this->event->save()) {
+        if (!$this->event->update(["info"])) {
             throw new Exception('Unable to save event: '.print_r($this->event->getErrors(), true));
         }
     }
@@ -170,7 +207,7 @@ class DefaultController extends BaseEventTypeController
     protected function setElementDefaultOptions($element, $action)
     {
         parent::setElementDefaultOptions($element, $action);
-        if ($action == 'create' && get_class($element) == 'Element_OphDrPrescription_Details') {
+        if ($action === 'create' && $element instanceof \Element_OphDrPrescription_Details) {
             // Prepopulate prescription with set by episode status
             // FIXME: It's brittle relying on the set name matching the status
             $items = array();
@@ -402,7 +439,7 @@ class DefaultController extends BaseEventTypeController
     protected function saveEventComplexAttributesFromData($data)
     {
         foreach ($this->open_elements as $element) {
-            if (get_class($element) == 'Element_OphDrPrescription_Details') {
+            if (get_class($element) === 'Element_OphDrPrescription_Details') {
                 $items = [];
                 if (isset($data['Element_OphDrPrescription_Details']['items'])) {
                     foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
@@ -448,21 +485,37 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPrint($id)
     {
-        Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-        Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+        $print_mode = Yii::app()->request->getParam('print_mode', null);
+
+        $user = User::model()->findByPk(Yii::app()->user->id);
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
-        if ( $pdf_documents == 1 ) {
+
+        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
+            Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
+            Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] = true;
+            $this->render('print_fpten', array(
+                'user' => $user,
+                'print_mode' => $print_mode
+            ));
+        } elseif ($pdf_documents === 1) {
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
         } else {
+            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
             $this->render('print');
-            if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
-            if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+            if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
                 $this->render('print', array('copy' => 'patient'));
             }
         }
@@ -483,11 +536,11 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
 
         $document_count = 1;
-        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+        if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
             $document_count++;
         }
 
-        if (Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+        if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
             $document_count++;
         }
 
@@ -505,11 +558,19 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDoPrint($id)
     {
+        $print_mode = Yii::app()->request->getParam('print_mode');
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($id))) {
             throw new Exception("Prescription not found for event id: $id");
         }
 
-        $prescription->print = 1;
+        if ($print_mode === 'FP10') {
+            $prescription->print = self::FP10_PRINT_MODE;
+        } elseif ($print_mode === 'WP10') {
+            $prescription->print = self::WP10_PRINT_MODE;
+        } else {
+            $prescription->print = self::NORMAL_PRINT_MODE;
+        }
+
         $prescription->draft = 0;
 
         if (!$prescription->save()) {
@@ -549,10 +610,10 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found for event id: '.$event_id);
         }
 
-        if ($prescription->print == 1) {
+        if ($prescription->print >= 1) {
             $prescription->print = 0;
 
-            if (!$prescription->update(["printed"])) {
+            if (!$prescription->update(['print', 'printed'])) {
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }
@@ -611,7 +672,7 @@ class DefaultController extends BaseEventTypeController
     public function renderPrescriptionItem($key, $source)
     {
         $item = new OphDrPrescription_Item();
-                $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
+        $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
         if (is_a($source, 'OphDrPrescription_Item')) {
             // Source is a prescription item, so we should clone it
             foreach (array(
@@ -704,16 +765,17 @@ class DefaultController extends BaseEventTypeController
         global $reason_id;
         global $reason_other_text;
 
-        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+        $model = Element_OphDrPrescription_Details::model()
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        if (is_null($reason) && !$model->draft) {
+        if ($reason === null && !$model->draft) {
             $this->render('ask_reason', array(
                 'id'        =>  $id,
                 'draft'     => $model->draft,
                 'printed'   => $model->printed
             ));
         } else {
-            if (isset($_GET['do_not_save']) && $_GET['do_not_save']=='1') {
+            if (isset($_GET['do_not_save']) && $_GET['do_not_save']==='1') {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
                // $_POST=null;
@@ -767,7 +829,7 @@ class DefaultController extends BaseEventTypeController
      * Group the different kind of drug items for the printout
      *
      * @param $items
-     * @return Item[]
+     * @return OphDrPrescription_Item[]
      */
     public function groupItems($items)
     {
@@ -782,7 +844,11 @@ class DefaultController extends BaseEventTypeController
     public function getSiteAndTheatreForLatestEvent()
     {
         if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-            if ($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true)) {
+            if ($site_theatre = $api->getElementFromLatestEvent(
+                'Element_OphTrOperationnote_SiteTheatre',
+                $this->patient,
+                true
+            )) {
                 return $site_theatre;
             }
         }

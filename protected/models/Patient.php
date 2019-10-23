@@ -1848,6 +1848,14 @@ class Patient extends BaseActiveRecordVersioned
         return Episode::model()->getCurrentEpisodeBySubspecialtyId($this->id, $subspecialty_id);
     }
 
+    public function getEvents()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->params = array(':pid' => $this->id);
+
+        return Event::model()->with('episode')->findAll($criteria);
+    }
     public function getLatestEvent()
     {
         $criteria = new CDbCriteria();

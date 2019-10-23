@@ -335,10 +335,16 @@ class Medication extends BaseActiveRecordVersioned
         $criteria->together = true;
         $criteria->compare('usageCode.usage_code', $usage_code);
         if (!is_null($subspecialty_id)) {
-            $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
+            $criteria->addCondition('medicationSetRules.subspecialty_id = :subspecialty_id OR medicationSetRules.subspecialty_id IS NULL');
+            $criteria->params[':subspecialty_id'] = $subspecialty_id;
+        } else {
+            $criteria->addCondition('medicationSetRules.subspecialty_id IS NULL');
         }
         if (!is_null($site_id)) {
-            $criteria->compare("medicationSetRules.site_id", $site_id);
+            $criteria->addCondition('medicationSetRules.site_id = :site_id OR medicationSetRules.site_id IS NULL');
+            $criteria->params[':site_id'] = $site_id;
+        } else {
+            $criteria->addCondition('medicationSetRules.site_id IS NULL');
         }
         $sets = MedicationSet::model()->findAll($criteria);
 

@@ -397,6 +397,103 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Renders one letter for one recipient internally... It returns the rendered HTML as a string
+     *
+     * @param $letter
+     * @param $recipient_address
+     * @return string
+     */
+    private function renderOneRecipient($letter, $recipient_address)
+    {
+        return $this->render('print', array(
+            'element' => $letter,
+            'letter_address' => $recipient_address
+        ), true);
+    }
+
+    /**
+     * Gets all the recipients for a letter based on the ElementLetter model
+     *
+     * @param $id
+     * @return array
+     */
+    private function getRecipients($id, $is_view = false)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        $recipients = array();
+
+        // after "Save and Print" button clicked we only print out what the user checked
+        if (!$is_view && \Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
+
+            if ($letter->document_instance) {
+                // check if the first recipient is GP
+                $document_instance = $letter->document_instance[0];
+                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                    ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
+
+                if ($to_recipient_gp) {
+                    // print an extra copy to note
+                    if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                        $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
+                    }
+                }
+            }
+
+            $print_outputs = $letter->getOutputByType("Print");
+            if ($print_outputs) {
+                foreach ($print_outputs as $print_output) {
+                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
+                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
+
+                    //extra printout for note when the main recipient is NOT GP
+                    if ($document_target->ToCc == 'To' && $document_target->contact_type != Yii::app()->params['gp_label']) {
+                        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
+                        }
+                    }
+                }
+            }
+        } else {
+
+            /**
+             * this is a hotfix for DocMan, when we generate correspondences
+             * where the main recipient is NOT the GP than we need to cherrypick it
+             */
+            if ( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ) {
+                $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
+                foreach ($gp_targets as $gp_target) {
+                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
+                }
+
+                return $recipients;
+            }
+
+            $recipients[] = $letter->getToAddress();
+
+            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+                if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                    $recipients[] = $letter->getToAddress();
+                }
+                if (!$is_view) {
+                    foreach ($letter->getCcTargets() as $letter_address) {
+                        $recipients[] = $letter_address;
+                    }
+                }
+            }
+        }
+
+        // This fix is for when there is no "print" recipient the first if block would return nothing
+        // but on the correspondence view page we still need to display
+        if (!$recipients) {
+            $recipients[] = $letter->getToAddress();
+        }
+
+        return $recipients;
+
+    }
+
+    /**
      * The normal print action had been replaced by the PDFPrint in Correspondence...
      *
      * @param int $id
@@ -405,6 +502,109 @@ class DefaultController extends BaseEventTypeController
     public function actionPrint($id)
     {
         return true;
+    }
+
+    /**
+     * The PDFPrint action is used in all cases, normal print action won't work!
+     * This is required to make sure that the PDF attachments can be merged to the letter.
+     * TODO: need to check audit trail!
+     *
+     * @param $id
+     * @param boolean $returnContent
+     * @throws Exception
+     */
+    public function actionPDFPrint($id, $returnContent = true)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        $this->printInit($id);
+        $this->layout = '//layouts/print';
+
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $recipient = Yii::app()->request->getParam('recipient');
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $is_view = Yii::app()->request->getParam('is_view', false);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $print_outputs = $letter->getOutputByType("Print");
+
+        if (Yii::app()->request->getQuery('all', false)) {
+            $this->pdf_print_suffix = 'all';
+        }
+        if (\Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
+            $this->pdf_print_suffix = 'all';
+        }
+
+        /**
+         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
+         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
+         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
+         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
+         * therefore pdf_print_documents will be always 1
+         */
+        $this->pdf_print_documents = 1;
+
+        if ($print_outputs) {
+            foreach ($print_outputs as $output) {
+                $output->output_status = "COMPLETE";
+                $output->save();
+            }
+        }
+        // render 1 recipient's letter + attachments at once...
+        // we need the letter as PDF
+        $attachments = $letter->getAllAttachments();
+        $recipients = $this->getRecipients($id, $is_view);
+
+        // check if printing is necessary
+        if (count($recipients) == 0) {
+            return true;
+        }
+
+        $this->pdf_output = new PDF_JavaScript();
+
+        foreach ($recipients as $recipient) {
+            $html_letter =  $this->renderOneRecipient($letter, $recipient);
+            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
+            if (!isset($_GET['html']) || !$_GET['html']) {
+                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
+            }
+
+            // add attachments for each
+            if (count($attachments)>0) {
+                foreach ($attachments as $attachment) {
+                    $this->addPDFToOutput($attachment['path']);
+                }
+            }
+        }
+
+        if ($inject_autoprint_js) {
+            $script = 'print(true);';
+            $this->pdf_output->IncludeJS($script);
+        }
+
+
+        $pdf_path = $this->getPdfPath($event);
+
+        $this->pdf_output->Output("F", $pdf_path);
+
+        $event->unlock();
+        if (!isset($_GET['html']) || !$_GET['html']) {
+            if ($returnContent) {
+                header('Content-Type: application/pdf');
+                header('Content-Length: ' . filesize($pdf_path));
+                readfile($pdf_path);
+            }
+        }
+
+        //@unlink($pdf_path);
+    }
+
+    public function getPdfPath($event)
+    {
+        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
     }
 
     /**
@@ -684,197 +884,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * The PDFPrint action is used in all cases, normal print action won't work!
-     * This is required to make sure that the PDF attachments can be merged to the letter.
-     * TODO: need to check audit trail!
-     *
-     * @param $id
-     * @param boolean $returnContent
-     * @throws Exception
-     */
-    public function actionPDFPrint($id, $returnContent = true)
-    {
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
-
-        $this->printInit($id);
-        $this->layout = '//layouts/print';
-
-        if (!$event = Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-
-        $recipient = Yii::app()->request->getParam('recipient');
-        $auto_print = Yii::app()->request->getParam('auto_print', true);
-        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
-
-        $print_outputs = $letter->getOutputByType("Print");
-
-        if (Yii::app()->request->getQuery('all', false)) {
-            $this->pdf_print_suffix = 'all';
-        }
-        if (\Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
-            $this->pdf_print_suffix = 'all';
-        }
-
-        /**
-         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
-         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
-         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
-         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
-         * therefore pdf_print_documents will be always 1
-         */
-        $this->pdf_print_documents = 1;
-
-        if ($print_outputs) {
-            foreach ($print_outputs as $output) {
-                $output->output_status = "COMPLETE";
-                $output->save();
-            }
-        }
-        // render 1 recipient's letter + attachments at once...
-        // we need the letter as PDF
-        $attachments = $letter->getAllAttachments();
-        $recipients = $this->getRecipients($id);
-
-        // check if printing is necessary
-        if (count($recipients) == 0) {
-            return true;
-        }
-
-        $this->pdf_output = new PDF_JavaScript();
-
-        foreach ($recipients as $recipient) {
-            $html_letter = $this->renderOneRecipient($letter, $recipient);
-            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
-            if (!isset($_GET['html']) || !$_GET['html']) {
-                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
-            }
-
-            // add attachments for each
-            if (count($attachments) > 0) {
-                foreach ($attachments as $attachment) {
-                    $this->addPDFToOutput($attachment['path']);
-                }
-            }
-        }
-
-        if ($inject_autoprint_js) {
-            $script = 'print(true);';
-            $this->pdf_output->IncludeJS($script);
-        }
-
-
-        $pdf_path = $this->getPdfPath($event);
-
-        $this->pdf_output->Output("F", $pdf_path);
-
-        $event->unlock();
-        if (!isset($_GET['html']) || !$_GET['html']) {
-            if ($returnContent) {
-                header('Content-Type: application/pdf');
-                header('Content-Length: ' . filesize($pdf_path));
-                readfile($pdf_path);
-            }
-        }
-
-        //@unlink($pdf_path);
-    }
-
-    /**
-     * Gets all the recipients for a letter based on the ElementLetter model
-     *
-     * @param $id
-     * @return array
-     */
-    private function getRecipients($id)
-    {
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
-
-        $recipients = array();
-
-        // after "Save and Print" button clicked we only print out what the user checked
-        if (\Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
-            if ($letter->document_instance) {
-                // check if the first recipient is GP
-                $docunemt_instance = $letter->document_instance[0];
-                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)', array(
-                    ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL',));
-
-                if ($to_recipient_gp) {
-                    // print an extra copy to note
-                    if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                        $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
-                    }
-                }
-            }
-
-            $print_outputs = $letter->getOutputByType("Print");
-            if ($print_outputs) {
-                foreach ($print_outputs as $print_output) {
-                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
-                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
-
-                    //extra printout for note when the main recipient is NOT GP
-                    if ($document_target->ToCc == 'To' && $document_target->contact_type != Yii::app()->params['gp_label']) {
-                        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
-                        }
-                    }
-                }
-            }
-        } else {
-
-            /**
-             * this is a hotfix for DocMan, when we generate correspondences
-             * where the main recipient is NOT the GP than we need to cherrypick it
-             */
-            if (isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1") {
-                $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
-                foreach ($gp_targets as $gp_target) {
-                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
-                }
-
-                return $recipients;
-            }
-
-            $recipients[] = $letter->getToAddress();
-
-            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                    $recipients[] = $letter->getToAddress();
-                }
-                foreach ($letter->getCcTargets() as $letter_address) {
-                    $recipients[] = $letter_address;
-                }
-            }
-        }
-
-        // This fix is for when there is no "print" recipient the first if block would return nothing
-        // but on the correspondence view page we still need to display
-        if (!$recipients) {
-            $recipients[] = $letter->getToAddress();
-        }
-
-        return $recipients;
-
-    }
-
-    /**
-     * Renders one letter for one recipient internally... It returns the rendered HTML as a string
-     *
-     * @param $letter
-     * @param $recipient_address
-     * @return string
-     */
-    private function renderOneRecipient($letter, $recipient_address)
-    {
-        return $this->render('print', array(
-            'element' => $letter,
-            'letter_address' => $recipient_address
-        ), true);
-    }
-
-    /**
      * Merges a PDF file to the end of the output
      *
      * @param $pdf_path
@@ -896,11 +905,6 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_output->Cell(0, 10, 'please try re-printing the event to re-generate attachments', 0, 2, 'C');
         }
 
-    }
-
-    public function getPdfPath($event)
-    {
-        return $event->imageDirectory . '/event_' . $this->pdf_print_suffix . ".pdf";
     }
 
     /**
