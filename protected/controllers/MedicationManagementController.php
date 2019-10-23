@@ -47,7 +47,7 @@ class MedicationManagementController extends BaseController
 
     private function getMedicationItem($key, $patient_id, $source)
     {
-       $item = array();
+        $item = array();
 
         if (is_a($source, 'MedicationSetItem')) {
             $medication = Medication::model()->findByPk($source->medication_id);
