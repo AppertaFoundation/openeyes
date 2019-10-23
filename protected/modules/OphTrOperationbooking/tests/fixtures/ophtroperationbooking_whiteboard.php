@@ -2,7 +2,7 @@
     return array(
         'whiteboard1' => array(
             'id' => 1,
-            'event_id' => 10,
+            'event_id' => 26,
             'eye_id' => 1,
             'patient_name' => 'Test Patient',
             'date_of_birth' => '21-12-1991',
@@ -21,12 +21,12 @@
         ),
         'whiteboard2' => array(
             'id' => 2,
-            'event_id' => 6,
+            'event_id' => 10,
             'eye_id' => 1,
             'patient_name' => 'Test Patient',
             'date_of_birth' => '21-12-1991',
             'hos_num' => '12345',
-            'procedure' => 'Repositioning of Intraocular lens',
+            'procedure' => 'Test Procedure',
             'allergies' => 'Atropine',
             'iol_model' => 'Akreos Adapt',
             'iol_power' => '21.50',

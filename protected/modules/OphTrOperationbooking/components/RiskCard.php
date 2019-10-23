@@ -1,16 +1,13 @@
 <?php
 
-/**
- * Class RiskCard
- * This is a bespoke whiteboard card that displays patient allergies and risks.
- *
- * @property $whiteboard OphTrOperationBooking_Whiteboard
- */
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 
+/**
+ * Class RiskCard
+ * @property $data OphTrOperationbooking_Whiteboard
+ */
 class RiskCard extends WBCard
 {
-    public $whiteboard;
     protected $baseViewFile = 'wb_allergies_and_risks';
     protected $type = 'Special';
     protected $alpha_risk;

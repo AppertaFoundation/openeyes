@@ -370,4 +370,17 @@ return array(
         'delete_reason' => null,
         'delete_pending' => false,
     ),
+    'event27' => array(
+        'episode_id' => 6,
+        'created_user_id' => 1,
+        'event_type_id' => 1000,
+        'last_modified_user_id' => 1,
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+        'created_date' => '2014-01-01 00:00:40',
+        'event_date' => null,
+        'info' => 'someinfo',
+        'deleted' => false,
+        'delete_reason' => null,
+        'delete_pending' => false,
+    ),
 );

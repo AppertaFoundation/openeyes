@@ -221,7 +221,6 @@ $other_card_list = array(
         }
         $this->widget('RiskCard', array(
                 'data' => $data,
-                'whiteboard' => $this->getWhiteboard(),
         )); ?>
     </div>
     <!--
