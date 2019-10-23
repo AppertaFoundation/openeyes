@@ -34,9 +34,9 @@
         </thead>
         <tbody>
             <?php
-                foreach ($data_provider->getData() as $medication) {
-                    $this->renderPartial('/AutoSetRule/_medication_row', ['medication' => $medication]);
-                }
+            foreach ($data_provider->getData() as $medication) {
+                $this->renderPartial('/AutoSetRule/_medication_row', ['medication' => $medication]);
+            }
             ?>
         </tbody>
         <tfoot class="pagination-container">
