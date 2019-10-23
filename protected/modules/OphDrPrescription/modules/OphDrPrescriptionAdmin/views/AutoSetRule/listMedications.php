@@ -33,11 +33,12 @@
             </tr>
         </thead>
         <tbody>
-            <?php
-            foreach ($data_provider->getData() as $medication) {
-                $this->renderPartial('/AutoSetRule/_medication_row', ['medication' => $medication]);
-            }
-            ?>
+            <?php foreach ($data_provider->getData() as $medication) { ?>
+                <tr>
+                    <td><?=$medication->id?></td>
+                    <td><?=$medication->preferred_term?></td>
+                </tr>
+            <?php } ?>
         </tbody>
         <tfoot class="pagination-container">
         <tr>
