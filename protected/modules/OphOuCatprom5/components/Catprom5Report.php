@@ -18,17 +18,14 @@
 
 namespace OEModule\OphOuCatprom5\components;
 
+use Yii; //TODO: Remove this and all logging
+
 class Catprom5Report extends \Report implements \ReportInterface
 {
     /**
      * @var int
      */
     protected $months;
-
-    /**
-     * @var array
-     */
-    protected $procedures = array();
 
     /**
      * @var array
@@ -45,14 +42,16 @@ class Catprom5Report extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'Rasch Score',
-        'range' => [0,21],
+        // 'range' => [-10,8],
         'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
-        'tickangle' => -45,
+        'tickmode' => 'linear',
+        // 'tickangle' => -45,
+        // 'dtick' => 1
       ),
       'yaxis' => array(
-        'title' => 'Number of Scores',
+        'title' => 'Number of Patients',
         'showline' => true,
         'showgrid' => true,
         'ticks' => 'outside',
@@ -65,12 +64,7 @@ class Catprom5Report extends \Report implements \ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 0);
-        $this->procedures = $app->getRequest()->getQuery('procedures', array('null'));
 
-        //if they selected all set to empty array to ignore procedure check in query
-        if (in_array('all', $this->procedures)) {
-            $this->procedures = array();
-        }
 
         parent::__construct($app);
     }
@@ -79,38 +73,94 @@ class Catprom5Report extends \Report implements \ReportInterface
      * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
-     * @param int   $months
-     * @param array $procedures
      *
      * @return array|\CDbDataReader
      */
-    protected function queryData($dateFrom, $dateTo, $months = 0, $procedures = array())
+    protected function queryData($dateFrom, $dateTo)
     {
         $this->getExaminationEvent();
 
         $this->command->reset();
-        $this->command->select('post_examination.episode_id, note_event.episode_id, note_event.event_date as op_date, note_event.id, op_procedure.eye_id,
-        post_examination.event_date as post_exam_date, post_examination.event_date as post_exam_date, post_examination.id as post_id, patient.id as patient_id,
-        left_sphere, right_sphere, left_cylinder, right_cylinder, predicted_refraction, note_event.id as event_id')
-            ->from('et_ophtroperationnote_surgeon')
-            ->join('event note_event', 'note_event.id = et_ophtroperationnote_surgeon.event_id')
-            ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
-            ->join('episode', 'note_event.episode_id = episode.id')
-            ->join('patient', 'episode.patient_id = patient.id')
-            ->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
-               AND post_examination.event_type_id = :examination
-               AND post_examination.event_date >= note_event.event_date
-               AND post_examination.created_date > note_event.created_date',
-                array(
-                    'examination' => $this->examinationEvent['id'],
-                    )
-            )
-            ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
-            ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
-            ->where('post_examination.deleted <> 1 and note_event.deleted <> 1')
-            ->order('post_exam_date desc');
+// v0 All catprom5 events - drill through wont work
+        // $this->command->select(' 
+        // cp5er.event_id as cataract_element_id, #this is fake
+        // e2.event_date as catprom5_date,
+        // cp5er.event_id as catprom5_element_id,
+        // cp5er.total_rasch_measure as rasch_score,
+        // cp5er.total_raw_score as raw_score')
+        //     ->from('episode ep2')
+        //     ->join('event e2', 'e2.episode_id = ep2.id')
+        //     ->Join('cat_prom5_event_result cp5er','e2.id = cp5er.event_id');
 
-        
+//v1 all catprom 5 events for paitents that have operations
+        // $this->command->select(' 
+        // eoc.event_id as cataract_element_id,
+        // e1.event_date as cataract_date,
+        // e2.event_date as catprom5_date,
+        // cp5er.event_id as catprom5_element_id,
+        // cp5er.total_rasch_measure as rasch_score,
+        // cp5er.total_raw_score as raw_score')
+        //     ->from('et_ophtroperationnote_cataract eoc')
+        //     ->join('event e1', 'eoc.event_id = e1.id')
+        //     ->join('episode ep1', 'ep1.id=e1.episode_id')
+        //     ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
+        //     ->join('event e2', 'e2.episode_id = ep2.id')
+        //     ->Join('cat_prom5_event_result cp5er','e2.id = cp5er.event_id');
+
+//v2 catprom 5 events that are after operations
+            // $this->command->select(' 
+            // eoc.event_id as cataract_element_id,
+            // e1.event_date as cataract_date,
+            // e2.event_date as catprom5_date,
+            // cp5er.event_id as catprom5_element_id,
+            // cp5er.total_rasch_measure as rasch_score,
+            // cp5er.total_raw_score as raw_score')
+            //     ->from('et_ophtroperationnote_cataract eoc')
+            //     ->join('event e1', 'eoc.event_id = e1.id')
+            //     ->join('episode ep1', 'ep1.id=e1.episode_id')
+            //     ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
+            //     ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date >= e1.event_date')
+            //     ->Join('cat_prom5_event_result cp5er','e2.id = cp5er.event_id');
+
+//v3  the diff between catprom 5 events before and after operations
+                $this->command->select(' 
+                eoc.event_id as cataract_element_id,
+
+                cp5er2.event_id as C2_catprom5_element_id,
+                cp5er2.total_rasch_measure as C2_rasch_score,
+                cp5er2.total_raw_score as C2_raw_score,
+
+                cp5er3.event_id as C3_catprom5_element_id,
+                cp5er3.total_rasch_measure as C3_rasch_score,
+                cp5er3.total_raw_score as C3_raw_score,
+                (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_score
+                ')
+                    ->from('et_ophtroperationnote_cataract eoc')
+                    ->join('event e1', 'eoc.event_id = e1.id')
+                    ->join('episode ep1', 'ep1.id=e1.episode_id')
+
+                    ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
+                    ->join('event e2', 'e2.episode_id = ep2.id')
+                    ->Join('cat_prom5_event_result cp5er2','e2.id = cp5er2.event_id')
+                    
+                    ->join('episode ep3', 'ep3.patient_id = ep1.patient_id')
+                    ->join('event e3', 'e3.episode_id = ep3.id
+                    and e2.id != e3.id #Not the same event
+                    and e2.event_date < e3.event_date  #e2 is earlier than e3')                    
+                    ->Join('cat_prom5_event_result cp5er3','e3.id = cp5er3.event_id')
+                    
+                    ;
+
+
+
+          //   if ($dateFrom) {
+          //     $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+          //     Yii::log($dateFrom);
+          // }
+  
+          // if ($dateTo) {
+          //     $this->command->andWhere('note_event.event_date <= :dateTo', array('dateTo' => $dateTo));
+          // }
         return $this->command->queryAll();
     }
 
@@ -120,58 +170,20 @@ class Catprom5Report extends \Report implements \ReportInterface
 
     public function dataset(){
 
-        $data = $this->queryData($this->from, $this->to, $this->months, $this->procedures);
-        // var_export($data);
-        $count = array();
-        $this->padPlotlyCategories();
-
-      // fill up the array with 0, have to send 0 to highcharts if there is no data
-        for ($i = 0; $i <= 21; $i++) {
-            $count[] = array(0,array());
-        }
-        $bestvalues = array();
-        foreach ($data as $row) {
-            $side = 'right';
-            if ($row['eye_id'] === '1') {
-                $side = 'left';
-            }
-            $diff = ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2)) - (float) $row['predicted_refraction'];
-
-            $diff = round($diff * 2) / 2;
-            $diff_index = array_search($diff, $this->plotlyConfig['xaxis']['ticktext']);
-
-            if ($diff_index >= 0 && $diff_index <= (count($this->plotlyConfig['xaxis']['tickvals']) - 1)) {
-                if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
-                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
-  //                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                } elseif (abs($this->plotlyConfig['xaxis']['tickvals'][$diff_index]) < abs($this->plotlyConfig['xaxis']['tickvals'][$bestvalues[$row['patient_id'].$side][0]])) {
-  //                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                    $bestvalues[$row['patient_id'].$side] = array($diff_index,$row['event_id']);
-                }
-            }
-        }
-
-        foreach ($bestvalues as $key => $diff) {
-            if (!array_key_exists("$diff[0]", $count)) {
-                $count["$diff[0]"] = array(0,array());
-            }
-            ++$count["$diff[0]"][0];
-            array_push($count["$diff[0]"][1], $diff[1]);
-        }
-
-        ksort($count, SORT_NUMERIC);
-
+        $data = $this->queryData($this->from, $this->to, $this->months);
         $dataSet = array();
-        foreach ($count as $category => $total) {
-            $rowTotal = array((float) $category, $total[0],$total[1]);
-            $dataSet[$category] = $rowTotal;
+        foreach($data as $row) {
+          $rash_score = strval($row['rasch_score']);
+          $ret_ind = array_search($rash_score, array_keys($dataSet));
+          if($ret_ind === false) {
+            $dataSet[$rash_score]["count"] = 1;
+            $dataSet[$rash_score]["ids"][] = $row["cataract_element_id"];
+            // Yii::log(var_export($dataSet, true));
+          } else {
+            $dataSet[$rash_score]["count"]++;
+            array_push($dataSet[$rash_score]["ids"],$row['cataract_element_id']);
+          }
         }
-
-        $this->plotlyConfig['yaxis']['range'] = [0, max(array_map(function($item){
-            return $item[1];
-        }, $dataSet))];
-        
-        // var_export($dataSet);
         return $dataSet;
     }
 
@@ -181,16 +193,7 @@ class Catprom5Report extends \Report implements \ReportInterface
 
     protected function padPlotlyCategories()
     {
-        $this->command->reset();
-        $this->command->select('rasch_measure')
-        ->from('cat_prom5_score_map')
-        ->order('raw_score');
-        $raschVals =$this->command->queryAll();
-        
-        for ($j = 0; $j <count($raschVals);$j++) {
-            $this->plotlyConfig['xaxis']['ticktext'][] = number_format($raschVals[$j]['rasch_measure'],2);
-            $this->plotlyConfig['xaxis']['tickvals'][] = $j;
-        }
+        $this->plotlyConfig['xaxis']['range'] = [-9, 9];
     }
 
 
@@ -211,6 +214,9 @@ class Catprom5Report extends \Report implements \ReportInterface
 
     public function tracesJson(){
         $dataset = $this->dataset();
+        $temp = array_keys($dataset);
+        // Yii::log(var_export($temp, true));
+        // $temp_val = array_values($dataset["count"]);
         $trace1 = array(
           'name' => 'Catprom5',
           'type' => 'bar',
@@ -218,18 +224,23 @@ class Catprom5Report extends \Report implements \ReportInterface
             'color' => '#7cb5ec',
           ),
           'x' => array_map(function($item){
-            return $item[0];
-          }, $dataset),
+            return $item;
+          }, $temp),
           'y'=> array_map(function($item){
-            return $item[1];
-          }, $dataset),
-            'customdata' => array_map(function($item){
-                return $item[2];
-            }, $dataset),
-          'hovertext' => array_map(function($item){
-            return '<b>Catprom5</b><br><i>Diff Post: </i>'.$this->plotlyConfig['xaxis']['ticktext'][$item[0]]. 
-            '<br><i>Num results:</i> '.$item[1];
-          }, $dataset),
+            // Yii::log(var_export($item, true));
+            return $item['count'];
+          }, array_values($dataset)),
+          'width'=>array_map(function($item){
+            return 1;
+          }, $temp),
+          'customdata' => array_map(function($item){
+              return $item['ids'];
+          }, array_values($dataset)),
+          'hovertext' => array_map(function($item, $item2){
+            return '<b>Catprom5</b><br><i>Diff Post: </i>'. $item .
+            // $this->plotlyConfig['xaxis']['ticktext'][$item[0]]. 
+            '<br><i>Num results:</i> '. $item2['count'];
+          }, $temp, $dataset),
           'hoverinfo' => 'text',
           'hoverlabel' => array(
             'bgcolor' => '#fff',
@@ -247,55 +258,10 @@ class Catprom5Report extends \Report implements \ReportInterface
      * @return string
      */
     public function plotlyConfig(){
-        $this->padPlotlyCategories();
-
-        $data = $this->dataset();
-        $totalEyes = 0;
-        $plusOrMinusOne = 0;
-        $plusOrMinusHalf = 0;
-        $plusOrMinusHalfPercent = 0;
-        $plusOrMinusOnePercent = 0;
-
-        foreach ($data as $dataRow) {
-            $totalEyes += (int) $dataRow[1];
-
-          // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-            if ($dataRow[0] < 19 || $dataRow[0] > 21) {
-                $plusOrMinusHalf += (int) $dataRow[1];
-            }
-
-          // 18 and 22 are the indexes of the -1 and +1 columns
-            if ($dataRow[0] < 18 || $dataRow[0] > 22) {
-                $plusOrMinusOne += (int) $dataRow[1];
-            }
-        }
-        if ($plusOrMinusOne > 0) {
-            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
-        }
-
-        if ($plusOrMinusHalf > 0) {
-            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
-        }
-
-        $this->plotlyConfig['title'] = 'Catprom5: Rasch Scores';
+    $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
         // . '<br><sub>Total eyes: ' . $totalEyes
         // . ', ±0.5D: ' .$plusOrMinusHalfPercent
         // . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
         return json_encode($this->plotlyConfig);
-    }
-
-    /**
-     * @return array
-     */
-    protected function cataractProcedures()
-    {
-        $cataractProcedures = array();
-        $cataractElement = \ElementType::model()->findByAttributes(array('name' => 'Cataract'));
-        if ($cataractElement) {
-            $procedure = new \Procedure();
-            $cataractProcedures = $procedure->getProceduresByOpNote($cataractElement['id']);
-        }
-
-        return $cataractProcedures;
     }
 }
