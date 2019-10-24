@@ -15,6 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php if (\Yii::app()->user->hasFlash('error')) : ?>
+    <div class='alert-box error'>
+        <?= \Yii::app()->user->getFlash('error'); ?>
+    </div>
+<?php endif; ?>
+
 <div class="row divider">
     <h2>Automatic medication sets</h2>
 </div>
@@ -82,7 +88,7 @@
                 <td colspan="4">
                     <?= \CHtml::submitButton('Add', [
                         'id' => 'et_add',
-                        'data-uri' => "/OphDrPrescription/admin/drugSet/edit",
+                        'data-uri' => "/OphDrPrescription/admin/AutoSetRule/edit",
                         'class' => 'button large'
                     ]); ?>
                     <?= \CHtml::button('Delete', [
@@ -90,7 +96,7 @@
                         'class' => 'button large',
                     ]); ?>
                     <?=\CHtml::linkButton('Rebuild all sets now',
-                        array('href' => '/OphDrPrescription/medicationSetAutoRulesAdmin/populateAll',
+                        array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll',
                             'class' => 'button large')); ?>
 
                 </td>
