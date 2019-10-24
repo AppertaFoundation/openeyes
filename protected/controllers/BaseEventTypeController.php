@@ -2622,7 +2622,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->whiteOutImageImagickBackground($imagickPage);
 
         $imagickPage->writeImage($pagePreviewPath);
-        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
+        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye_id' => $eye]);
 
         if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
             @unlink($pagePreviewPath);

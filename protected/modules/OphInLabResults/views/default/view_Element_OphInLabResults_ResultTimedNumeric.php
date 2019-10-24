@@ -8,7 +8,7 @@
   </tr>
   <tr>
       <td><div class="data-label">Result:</div></td>
-      <td><div class="data-value"><?= CHtml::encode($element->result) . " " .
+      <td><div class="data-value" style="white-space: pre-wrap;"><?= CHtml::encode($element->result) . " " .
             ($element->resultType->show_units ? CHtml::encode($element->unit) : "") ?></div></td>
       <td>
           <span class="large-text highlighter orange js-lab-result-warning"

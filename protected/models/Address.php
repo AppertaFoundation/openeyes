@@ -155,7 +155,7 @@ class Address extends BaseActiveRecordVersioned
         }
 
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-            if (!empty($this->$field) && trim($this->$field) != ',') {
+            if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
                 if ($field == 'address1') {
                     $line = str_replace(',', '', $line);
