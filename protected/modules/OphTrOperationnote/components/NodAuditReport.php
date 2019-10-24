@@ -169,18 +169,6 @@ class NodAuditReport extends Report implements ReportInterface
                     ->andWhere('et_ophtroperationnote_surgeon.surgeon_id IS NOT NULL')
                     ->group('eoc.id');
                 break;
-                case 'CATPROM5':
-                    $this->command->select('eoc.id as cataract_element_id,
-                                            eoc.event_id as cataract_event_id,
-                                            e1.event_date as cataract_date,
-                                            e2.event_date as other_date,
-                                            cp5er.event_id as catprom5_element_id,
-                                            cp5er.total_rasch_measure as rasch_score,
-                                            cp5er.total_raw_score as raw_score')
-                        ->leftJoin('cat_prom5_event_result cp5er','e2.id = cp5er.event_id')
-                        ->andWhere('cp5er.event_id is not null')
-                        ->group('e2.id, e1.id');
-                    break;
         }
 
         if ($dateFrom) {
@@ -260,11 +248,6 @@ class NodAuditReport extends Report implements ReportInterface
                 $return_data['E/I'] = $this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'E/I'), $surgeon_id['id']);
             } else {
                 $return_data['E/I'] = array_merge_recursive($return_data['E/I'], $this->NodEligibilityDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'E/I'), $surgeon_id['id']));
-            }
-            if (!isset($return_data['CATPROM5'])) {
-                $return_data['CATPROM5'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']);
-            } else {
-                $return_data['CATPROM5'] = array_merge_recursive($return_data['CATPROM5'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']));
             }
             if (!isset($return_data['total'])) {
                 $return_data['total'] = count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
@@ -378,9 +361,7 @@ class NodAuditReport extends Report implements ReportInterface
                 'Pre-operative Risk Factors',
                 'Post-op Complications',
                 'Indication For Surgery',
-                'Eligibility For NOD Audit',
-                'CatProm5 Pre-op',
-                'CatProm5 Post-op'
+                'Eligibility For NOD Audit'
             ),
             'y' => array(
                 count($dataset['VA']['pre-incomplete'])/$dataset['total'],
@@ -393,8 +374,6 @@ class NodAuditReport extends Report implements ReportInterface
                 count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
                 count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
                 count($dataset['E/I']['ineligible'])/$dataset['total'],
-                count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
-                count($dataset['CATPROM5']['post-incomplete'])/$dataset['total'],
             ),
             'customdata'=>array(
                 $dataset['VA']['pre-incomplete'],
@@ -407,8 +386,6 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['COMPLICATION']['post-incomplete'],
                 $dataset['INDICATION_FOR_SURGERY']['incomplete'],
                 $dataset['E/I']['ineligible'],
-                $dataset['CATPROM5']['pre-incomplete'],
-                $dataset['CATPROM5']['post-incomplete'],
             ),
         );
         $trace1 = array(
@@ -425,8 +402,6 @@ class NodAuditReport extends Report implements ReportInterface
                 'Post-op Complications',
                 'Indication For Surgery',
                 'Eligibility For NOD Audit',
-                'CatProm5 Pre-op',
-                'CatProm5 Post-op'
             ),
             'y' => array(
                 count($dataset['VA']['pre-complete'])/$dataset['total'],
@@ -439,8 +414,6 @@ class NodAuditReport extends Report implements ReportInterface
                 count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
                 count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
                 count($dataset['E/I']['eligible'])/$dataset['total'],
-                count($dataset['CATPROM5']['pre-complete'])/$dataset['total'],
-                count($dataset['CATPROM5']['post-complete'])/$dataset['total'],
             ),
             'customdata'=>array(
                 $dataset['VA']['pre-complete'],
@@ -453,8 +426,6 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['COMPLICATION']['post-complete'],
                 $dataset['INDICATION_FOR_SURGERY']['complete'],
                 $dataset['E/I']['eligible'],
-                $dataset['CATPROM5']['pre-complete'],
-                $dataset['CATPROM5']['post-complete'],
             ),
         );
 
