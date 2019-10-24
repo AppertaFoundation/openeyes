@@ -495,21 +495,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.setRowData = function ($row, data, excl_fields)
     {
         var self = this;
-        var rc;
-        var tc;
+        var row_data_key;
+        var taper_data_key;
         if ($row.hasClass('js-taper-row')) {
-            rc = $row.attr("data-parent-key");
-            tc = "[taper][" + $row.attr("data-taper-key") + "]";
+            row_data_key = $row.attr("data-parent-key");
+            taper_data_key = "[taper][" + $row.attr("data-taper-key") + "]";
         } else {
-            rc = $row.attr("data-key");
-            tc = "";
+            row_data_key = $row.attr("data-key");
+            taper_data_key = "";
             $row.find(".js-btn-prescribe").click();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
         $.each(this.fields, function(i, field){
             if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
                 if(typeof data[field] !== "undefined") {
-                    var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]"+ tc + "["+field+"]']");
+                    var $input = $("[name='"+self.options.modelName+"[entries]["+ row_data_key +"]"+ taper_data_key + "["+field+"]']");
                     $input.val(data[field]);
                     if(field === "laterality") {
                         $row.find(self.options.routeOptionWrapperSelector).find('input').each(function(){
@@ -557,6 +557,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
        return merged_allergies;
     };
 
+    HistoryMedicationsController.prototype.createAllergiesDialog = function(allergic_drugs)
+    {
+        return new OpenEyes.UI.Dialog.Confirm({
+            content: "Patient is allergic to " +
+                allergic_drugs.join() +
+                ". Are you sure you want to add them?"
+        });
+    };
+
     /**
      * Check if the selected entries are relevant to current allergies
      * Then add them depending on user choice
@@ -594,11 +603,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         if(allergic_drugs.length > 0) {
 
-            var dialog = new OpenEyes.UI.Dialog.Confirm({
-                content: "Patient is allergic to " +
-                allergic_drugs.join() +
-                ". Are you sure you want to add them?"
-            });
+            var dialog = controller.createAllergiesDialog(allergic_drugs);
 
             dialog.on('ok', function () {
                 controller.addEntry(selectedItems);
@@ -628,24 +633,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryMedicationsController.prototype.addSet = function (set_id) {
         let controller = this;
         $.getJSON(controller.options.drugSetFormSource, {
-            key: OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key'),
-            patient_id: OE_patient_id,
             set_id: set_id,
         }, function (response) {
             let rows = controller.createRow(response);
-            for (let i in response) {
-                if (response[i]['tapers'] !== undefined) {
-                    for (let taper_index in response[i]['tapers']) {
-                        response.push(response[i]['tapers'][taper_index]);
-                    }
+            response.forEach(function(medication) {
+                if(medication['tapers'] !== undefined) {
+                    medication['tapers'].forEach(function(taper) {
+                        response.push(taper);
+                    });
                 }
-            }
+            });
 
-            let $newrow = controller.appendRowsToTable(rows, response);
+            let $new_rows = controller.appendRowsToTable(rows, response);
 
             controller.displayTableHeader();
             // return the last created row
-            return $newrow;
+            return $new_rows;
 
         });
     };
@@ -669,11 +672,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 }
 
                 if (matching_allergies.length > 0) {
-                    let dialog = new OpenEyes.UI.Dialog.Confirm({
-                        content: "Patient is allergic to " +
-                            matching_allergies.join(', ') +
-                            ". Are you sure you want to add them?"
-                    });
+                    let dialog = controller.createAllergiesDialog(matching_allergies);
                     dialog.on('ok', function () {
                         controller.addSet(set_id);
                     }.bind(this));
@@ -977,13 +976,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           data ));
 
       if (data['tapers'] !== undefined) {
-          for(let taper_index in data['tapers']) {
-              data['tapers'][taper_index]['row_count'] = data['row_count'];
-              data['tapers'][taper_index]['taper_count'] = taper_index;
+          data['tapers'].forEach(function(taper, taper_key) {
+              taper['row_count'] = data['row_count'];
+              taper['taper_count'] = taper_key;
               newRows.push(Mustache.render(
                   taperTemplate,
-                  data['tapers'][taper_index]));
-          }
+                  taper
+              ));
+          });
       }
 
     }

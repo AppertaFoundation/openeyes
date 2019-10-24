@@ -302,7 +302,9 @@ $element_errors = $element->getErrors();
                 }, Element_OphDrPrescription_Details::model()->drugSets())
             ) ?>,{'header': 'Set name',})],
             onReturn: function (adderDialog, selectedItems) {
-                window.MMController.processSetEntries(selectedItems[0].id);
+                selectedItems.forEach(function(item) {
+                    window.MMController.processSetEntries(item.id);
+                });
             }
         });
 

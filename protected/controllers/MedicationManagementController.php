@@ -30,22 +30,20 @@ class MedicationManagementController extends BaseController
         );
     }
 
-    public function actionGetDrugSetForm($key, $patient_id, $set_id)
+    public function actionGetDrugSetForm($set_id)
     {
-        $key = (integer) $key;
         $items = MedicationSet::model()->findByPk($set_id)->items;
         $set_items = array();
         if ($items) {
             foreach ($items as $item) {
-                $set_items[] = $this->getMedicationItem($key, $patient_id, $item);
-                ++$key;
+                $set_items[] = $this->getMedicationItem($item);
             }
         }
 
         echo CJSON::encode($set_items);
     }
 
-    private function getMedicationItem($key, $patient_id, $source)
+    private function getMedicationItem($source)
     {
         $item = array();
 
