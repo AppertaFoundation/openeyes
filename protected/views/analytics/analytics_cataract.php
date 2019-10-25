@@ -4,6 +4,8 @@
     <div id="visual-acuity-grid" class="analytics-cataract"></div>
     <div id="refractive-outcome-grid" class="analytics-cataract"></div>
     <div id="nod-audit-grid" class="analytics-cataract"></div>
+    <div id="catprom5-pre-grid" class="analytics-cataract"></div>
+    <div id="catprom5-post-grid" class="analytics-cataract"></div>
     <div id="catprom5-grid" class="analytics-cataract"></div>
 </div>
 
@@ -37,11 +39,21 @@
             $('#nod-audit-grid').show();
             OpenEyes.Dash.init('#nod-audit-grid');
             OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=NodAudit&template=analytics', null, 10);
+        }else if ($('#catprom5-pre-grid').html()){
+            $('#catprom5-pre-grid').html("");
+            $('#catprom5-pre-grid').show();
+            OpenEyes.Dash.init('#catprom5-pre-grid');
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCaprom5\\components\\Catprom5&template=analytics&catprom5=pre', null, 10);
+        }else if ($('#catprom5-post-grid').html()){
+            $('#catprom5-post-grid').html("");
+            $('#catprom5-post-grid').show();
+            OpenEyes.Dash.init('#catprom5-post-grid');
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCaprom5\\components\\Catprom5&template=analytics&catprom5=post', null, 10);
         }else if ($('#catprom5-grid').html()){
             $('#catprom5-grid').html("");
             $('#catprom5-grid').show();
             OpenEyes.Dash.init('#catprom5-grid');
-            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCaprom5\\components\\Catprom5&template=analytics', null, 10);
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCaprom5\\components\\Catprom5&template=analytics&catprom5=diff', null, 10);
         }
         viewAllDates();
         if ($('#analytics_allsurgeons').val() == 'on'){

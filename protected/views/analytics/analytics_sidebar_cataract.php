@@ -30,7 +30,9 @@
                 <li><a href="#" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
                 <li><a href="#" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
                 <li><a href="#" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
-                <li><a href="#" data-report="CA5" class="js-cataract-report-type">Catprom5</a></li>
+                <li><a href="#" data-report="C5A" class="js-cataract-report-type">Cat-PROM5 pre-op</a></li>
+                <li><a href="#" data-report="C5B" class="js-cataract-report-type">Cat-PROM5 post-op</a></li>
+                <li><a href="#" data-report="C5C" class="js-cataract-report-type">Cat-PROM5 difference </a></li>
             </ul>
             <form id="search-form">
                 <div id="search-form-report-search-section"></div>
@@ -152,9 +154,17 @@
                 OpenEyes.Dash.init('#nod-audit-grid');
                 OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=NodAudit&template=analytics', null, 10);
                 break;
-            case "CA5":
+            case "C5A":
+                OpenEyes.Dash.init('#catprom5-pre-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=pre', null, 10);
+                break;
+            case "C5B":
+                OpenEyes.Dash.init('#catprom5-post-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=post', null, 10);
+                break;
+            case "C5C":
                 OpenEyes.Dash.init('#catprom5-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics', null, 10);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=diff', null, 10);
                 break;
         }
     });
