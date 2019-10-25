@@ -136,7 +136,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             </div>
                                 <?php else : ?>
                                     <span class="tabspace"></span>
-                                    <button type='button' class="textual-display hint" onclick="switch_alternative(this);">Change Dose/Freq ...</button>
+                                    <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
                             </div>
                                 <?php endif; ?>
                     </div>
