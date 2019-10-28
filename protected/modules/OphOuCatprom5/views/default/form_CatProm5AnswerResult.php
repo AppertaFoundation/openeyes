@@ -16,10 +16,15 @@
         ?>
     <tr>
       <td>
+        <?php
+        if($index !=0){ // if this isn't the first row, add a divider
+          ?>
+        <hr class="divider">
+        <?php } ?>
         <?php echo $ques->id.' . '. $ques->question; ?>
       </td>
     </tr>
-    <tr>
+    <tr style='border-bottom: none;'><!--there doesn't need to be a border after here -->
       <td>
         <?php if (isset($answerResult_item)  && isset($answerResult_item->id)) { ?>
             <?=\CHtml::hiddenField( $name_stub .'['. $index .'][id]', @$answerResult_item->id)?>
@@ -37,13 +42,14 @@
                      data-score="<?= $answer_item->score?>"
                      type="radio"
                      name="<?= $name_stub .'['. $index .'][answer_id]'?>"
+                     data-question="<?=$ques->id?>"
+                     required
                      <?= isset($answerResult_item->answer_id)&& @$answerResult_item->answer_id===$answer_item->id ?'checked':''?>
               >
               <span><?= $answer_item->answer ?></span>
             </label>
         <?php } ?>
         </fieldset>
-        <hr class="divider">
       </td>
     </tr>
     <?php } ?>
