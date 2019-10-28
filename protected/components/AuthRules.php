@@ -127,6 +127,10 @@ class AuthRules
      */
     public function canRequestEventDeletion(Firm $firm, Event $event)
     {
+        //CERA-585 the event delete button should hide for non admin user after 1 day
+        if(Yii::app()->params['institution_code']=='CERA'){
+            return false;
+        }
         if ($event->delete_pending) {
             return false;
         }
