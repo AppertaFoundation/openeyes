@@ -352,7 +352,7 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
-                            <span class="js-name" style="text-align:justify">
+                            <span class="js-name" style="text-align:justify; max-width: 90%;">
                               <?php
                                   if ($patient->gp_id && $patient->practice_id) {
                                       $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
@@ -450,7 +450,14 @@ foreach ($ethnic_list as $key=>$item){
                                     //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
                                     if($gp && ($gp->id != $patient->gp_id || $practice->id != $patient->practice_id)){
                                         ?>
-                                        <li><span class="js-name" style="text-align:justify"><?=$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress?></span><i id="js-remove-extra-gp-<?=$gp->id;?>-<?=$practice->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i><input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>"><input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="<?=$practice->id?>"></li>
+                                        <li>
+                                            <span class="js-name" style="text-align:justify; max-width: 90%;">
+                                              <?=$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress?>
+                                            </span>
+                                            <i id="js-remove-extra-gp-<?=$gp->id;?>-<?=$practice->id;?>" class="oe-i remove-circle small-icon pad-left js-remove-extra-gps"></i>
+                                            <input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="<?=$gp->id?>">
+                                            <input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="<?=$practice->id?>">
+                                        </li>
                                     <?php }
                                 }
                             }
@@ -705,6 +712,8 @@ $this->renderPartial('../patient/crud/create_contact_form',
                     $('.'+id).html(response.content);
                 }else if(id == 'js-selected_extra_gps'){
                     $('.'+id).append(response.content);
+                    var wrapper = $('#selected_extra_gps_wrapper');
+                    wrapper.find('.js-name').attr('style','text-align:justify; max-width: 90%;');
                 }
                 $('#js-remove-extra-gp-' + response.gp_id + '-' + response.practice_id).click(function(){
                     // If else condition is added to handle both the cases (i.e. when removing contact/gp) as they have been implemented differently.
