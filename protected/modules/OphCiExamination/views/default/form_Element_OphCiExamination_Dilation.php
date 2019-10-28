@@ -61,7 +61,7 @@ foreach ($dilation_drugs as $d_drug) {
             <button class="button hint green js-add-select-search" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
-            <div id="add-to-dilation" class="oe-add-select-search" style="display: none;" type="button">
+            <div id="add-to-dilation-<?= $eye_side ?>" class="oe-add-select-search" style="display: none;" type="button">
               <div class="close-icon-btn">
                 <i class="oe-i remove-circle medium"></i>
               </div>
@@ -99,7 +99,7 @@ foreach ($dilation_drugs as $d_drug) {
         $(function () {
           var side = $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation\'] ' +
             '.<?=$eye_side?>-eye');
-          var popup = side.find('#add-to-dilation');
+          var popup = side.find('#add-to-dilation-<?=$eye_side?>');
 
           var controller = null;
           $(document).ready(function () {
@@ -111,6 +111,19 @@ foreach ($dilation_drugs as $d_drug) {
               controller.OphCiExamination_Dilation_addTreatment($(this), '<?= $eye_side ?>');
               $(this).removeClass('selected');
             });
+          });
+
+          $(document).click(function(e) {
+            var target = e.target;
+            var dialog= "#add-to-dilation-<?=$eye_side?>";
+            var dialog_style = $(dialog).attr('style');
+            if (typeof dialog_style !== typeof undefined && dialog_style !== false){
+              if (!$(dialog).attr('style').includes("display: none")){
+                if (!$(target).is(dialog) && !$(target).parents().is(dialog) && $(target).attr('type')!=="button") {
+                  $(dialog).hide();
+                }
+              }
+            }
           });
 
           setUpAdder(

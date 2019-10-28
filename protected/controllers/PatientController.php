@@ -91,10 +91,10 @@ class PatientController extends BaseController
                 'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
             ),
-						array('allow',
-							'actions'=>array('summary'),
-							'roles'=>array('User'),
-						)
+            array('allow',
+                'actions'=>array('summary'),
+                'roles'=>array('User'),
+            )
         );
     }
 
@@ -1806,7 +1806,7 @@ class PatientController extends BaseController
             // Don't save if the user just changed the "Patient Source"
             if ($_POST["changePatientSource"] == 0) {
                 list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers,'');
             } else {
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
@@ -1866,6 +1866,7 @@ class PatientController extends BaseController
      * @param PatientIdentifier[] $patient_identifiers
      * @param PatientReferral $referral
      * @param PatientUserReferral $patient_user_referral
+     * @param  $prevUrl
      * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
      *
      * @throws
@@ -1876,7 +1877,7 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers)
+        $patient_identifiers, $prevUrl)
     {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
@@ -1897,7 +1898,11 @@ class PatientController extends BaseController
                     && $patient->isNewRecord
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
-                } else {
+                } else if ($prevUrl !== ''){
+                    $redirect = array($prevUrl);
+                }
+
+                else {
                     $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
@@ -2177,7 +2182,7 @@ class PatientController extends BaseController
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             if ($_POST['changePatientSource'] == 0) {
                 list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $prevUrl);
             }
         }
 
@@ -2231,34 +2236,37 @@ class PatientController extends BaseController
         foreach($gps as $gp){
             $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id'=>$gp->id));
             $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-            if(count($practice_contact_associates) == 0 ) {
-                $output[] = array(
-                    'gpTitle' => $gp->contact->title,
-                    'gpFirstName' => $gp->contact->first_name,
-                    'gpLastName' => $gp->contact->last_name,
-                    'gpPhoneno' => $gp->contact->primary_phone,
-                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                    'label' => $gp->correspondenceName.$role,
-                    'value' => $gp->id,
-                    'practiceId' => ''
-                );
-            } else {
-                foreach($practice_contact_associates as $practice_contact_associate) {
-                    if (isset($practice_contact_associate->practice)){
-                        $practice = $practice_contact_associate->practice;
-                        $practiceId = $practice->id;
-                        $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
-                        $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
-                        $output[] = array(
-                            'gpTitle' => $gp->contact->title,
-                            'gpFirstName' => $gp->contact->first_name,
-                            'gpLastName' => $gp->contact->last_name,
-                            'gpPhoneno' => $gp->contact->primary_phone,
-                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                            'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
-                            'value' => $gp->id,
-                            'practiceId' => $practiceId
-                        );
+            // CERA-513 the autocomplete search result should not show the inactivated gp
+            if($gp->is_active){
+                if(count($practice_contact_associates) == 0 ) {
+                    $output[] = array(
+                        'gpTitle' => $gp->contact->title,
+                        'gpFirstName' => $gp->contact->first_name,
+                        'gpLastName' => $gp->contact->last_name,
+                        'gpPhoneno' => $gp->contact->primary_phone,
+                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                        'label' => $gp->correspondenceName.$role,
+                        'value' => $gp->id,
+                        'practiceId' => '',
+                    );
+                } else {
+                    foreach($practice_contact_associates as $practice_contact_associate) {
+                        if (isset($practice_contact_associate->practice)){
+                            $practice = $practice_contact_associate->practice;
+                            $practiceId = $practice->id;
+                            $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                            $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
+                            $output[] = array(
+                                'gpTitle' => $gp->contact->title,
+                                'gpFirstName' => $gp->contact->first_name,
+                                'gpLastName' => $gp->contact->last_name,
+                                'gpPhoneno' => $gp->contact->primary_phone,
+                                'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                                'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
+                                'value' => $gp->id,
+                                'practiceId' => $practiceId,
+                            );
+                        }
                     }
                 }
             }
@@ -2330,7 +2338,7 @@ class PatientController extends BaseController
         }
     }
 
-  public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
+    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2346,7 +2354,7 @@ class PatientController extends BaseController
                 ));
             }
         }
-  }
+    }
 
     /**
      * Ajax method for viewing previous elements.

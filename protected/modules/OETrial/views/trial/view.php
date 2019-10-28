@@ -85,7 +85,7 @@
           <tr class="col-gap">
             <td>Description</td>
             <td colspan="3">
-                <?= CHtml::encode($trial->description) ?>
+                <?= nl2br(CHtml::encode($trial->description)) ?>
             </td>
           </tr>
         <?php endif; ?>
@@ -144,9 +144,12 @@
         window.location.reload(false);
       },
       error: function (response) {
+        //  Changed to meet requirements of CERA-583, there was no popup box shown earlier because content:response throws an error
+        var displayError = response.responseText;
+        displayError = displayError.substring(displayError.search('<p>'),displayError.indexOf('(') ) + '</p>';
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: response
+          content: displayError
         }).open();
       },
     });

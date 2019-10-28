@@ -398,7 +398,7 @@ foreach ($ethnic_list as $key=>$item){
                 <?= $form->fileField($referral, 'uploadedFile'); ?>
             </td>
         </tr>
-        
+
         <tr>
           <td>
             <?= $form->label($patientuserreferral, 'Referred to') ?>
@@ -739,7 +739,7 @@ $this->renderPartial('../patient/crud/create_contact_form',
         }
         )
     }
-    
+
     function extraContactFormCleaning(){
         $("#extra-gp-form")[0].reset();
         $("#extra_gp_errors").text("");

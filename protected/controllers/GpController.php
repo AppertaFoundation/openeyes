@@ -187,12 +187,16 @@ class GpController extends BaseController
         $contact = $model->contact;
         $cpas = $model->contactPracticeAssociate;
         $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
-
         $this->performAjaxValidation($contact);
+        $this->performAjaxValidation($model);
 
-        if (isset($_POST['Contact'])) {
+        if (isset($_POST['Contact']) && isset($_POST['Gp']['is_active'])) {
+
             $contact->attributes = $_POST['Contact'];
+            $model->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
+            $this->performAjaxValidation($model);
+
             if(isset($_POST['ContactPracticeAssociate'])) {
                 $index = 0;
                 foreach($_POST['ContactPracticeAssociate'] as $cpa) {
@@ -219,6 +223,7 @@ class GpController extends BaseController
 
         $this->render('update', array(
             'model' => $contact,
+            'gp' => $model,
             'cpas' => $cpas,
         ));
     }
@@ -264,11 +269,13 @@ class GpController extends BaseController
 
         $output = array();
         foreach($labels as $label){
-            $output[] = array(
-                'id' => $label['id'],
-                'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
-                'value' => $label['first_name'].' '. $label['last_name'].' - '.$label['role']
-            );
+            if($this->loadModel($label['id'])->is_active){
+                $output[] = array(
+                  'id' => $label['id'],
+                  'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
+                  'value' => $label['first_name'].' '. $label['last_name'].' - '.$label['role']
+                );
+            }
         }
 
         echo CJSON::encode($output);
