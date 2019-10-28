@@ -85,7 +85,7 @@
           <tr class="col-gap">
             <td>Description</td>
             <td colspan="3">
-                <?= CHtml::encode($trial->description) ?>
+                <?= nl2br(CHtml::encode($trial->description)) ?>
             </td>
           </tr>
         <?php endif; ?>
