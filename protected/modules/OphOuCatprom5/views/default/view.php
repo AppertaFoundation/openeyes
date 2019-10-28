@@ -1,5 +1,5 @@
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>false));?>
+$this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
 <?php
 // Event actions

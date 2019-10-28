@@ -19,7 +19,7 @@
 
 <?php
 $form_id = 'catprom5-update';
-$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 $this->breadcrumbs = array($this->module->id);
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
@@ -27,8 +27,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
   'id' => $form_id,
   'enableAjaxValidation' => false,
   'layoutColumns' => array(
-    'label' => 4,
-    'field' => 8,
+    'label' => 2,
+    'field' => 10,
   ),
 ));
 ?>
