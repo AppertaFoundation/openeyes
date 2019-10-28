@@ -53,7 +53,7 @@ if (!empty($episode)) {
                 ?>
               <strong>
                 <?php if ($summary) : ?>
-                <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+                    <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
                 class="js-has-tooltip fa oe-i info small"
                 data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
                 <?php else : ?>
@@ -65,7 +65,7 @@ if (!empty($episode)) {
         </section>
             <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
 
-        <?php } ?>
+      <?php } ?>
     <section class="element tile">
       <header class="element-header">
         <h3 class="element-title">Principal diagnosis:</h3>
@@ -103,7 +103,7 @@ if (!empty($episode)) {
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems
 
-        as $summaryItem) {
+ as $summaryItem) {
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
             'episode' => $episode,
@@ -122,7 +122,7 @@ if (!empty($episode)) {
           <h3 id="<?= $summaryItem->getClassName(); ?>" class="element-title">
               <?= $summaryItem->name; ?>
               <?php if ($widget->collapsible) { ?>
-                <?php } ?>
+              <?php } ?>
           </h3>
         </header>
           <?php if ($widget->collapsible) : ?>
@@ -135,7 +135,7 @@ if (!empty($episode)) {
                   </div>
                 </div>
             </div>
-            <?php endif; ?>
+          <?php endif; ?>
         <div class="full-width summary-content">
             <?php $widget->run(); ?>
         </div>

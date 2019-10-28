@@ -37,7 +37,7 @@
         ?>
       <strong>
         <?php if ($summary) : ?>
-        <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+            <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
         class="js-has-tooltip fa oe-i info small"
         data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
         <?php else : ?>
