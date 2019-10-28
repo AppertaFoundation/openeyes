@@ -435,6 +435,18 @@ class BaseEventTypeController extends BaseModuleController
             throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
         }
 
+        if ($_REQUEST) {
+            $_REQUEST = $this->sanitizeInput($_REQUEST);
+        }
+
+        if ($_POST) {
+            $_POST = $this->sanitizeInput($_POST);
+        }
+
+        if ($_GET) {
+            $_GET = $this->sanitizeInput($_GET);
+        }
+
         $this->initAction($action->id);
 
         $this->verifyActionAccess($action);
@@ -1629,9 +1641,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
         //Find the groupings
-        for ($element_index = 0, $tile_index = 0, $row_index = 0;
-             $element_index < $element_count;
-             $element_index++) {
+        for ($element_index = 0, $tile_index = 0, $row_index = 0; $element_index < $element_count; $element_index++) {
             $element = $elements[$element_index];
 
             //if the tile size can't be determined assume a full row
@@ -2312,7 +2322,8 @@ class BaseEventTypeController extends BaseModuleController
         echo 'ok';
     }
 
-    public function readInEventImageSettings(){
+    public function readInEventImageSettings()
+    {
         $this->event = Event::model()->findByPk($_GET['id']);
         if (!isset($this->event) || !isset($this->event->eventType)) {
             return;
@@ -2595,7 +2606,7 @@ class BaseEventTypeController extends BaseModuleController
         $result = $this->savePdfPreviewAsEventImage(null, $eye);
         if (!$result) {
             // If nothing was saved, then it has multiple pages
-            for ($page = 0; ; ++$page) {
+            for ($page = 0;; ++$page) {
                 $result = $this->savePdfPreviewAsEventImage($page, $eye);
                 if (!$result) {
                     break;
@@ -2642,7 +2653,8 @@ class BaseEventTypeController extends BaseModuleController
      * @param $imagick Imagick
      * @throws Exception
      */
-    protected function whiteOutImageImagickBackground($imagick){
+    protected function whiteOutImageImagickBackground($imagick)
+    {
         if ($imagick->getImageAlphaChannel()) {
             // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
             $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);
