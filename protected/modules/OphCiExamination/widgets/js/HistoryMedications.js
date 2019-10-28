@@ -177,7 +177,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     // setup current table row behaviours
     controller.$table.find('tbody tr.js-first-row').each(function() {
-      controller.initialiseRow($(this));
+      controller.initialiseRowEventTriggers($(this));
     });
 
     // adding entries
@@ -227,7 +227,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
   };
 
-  HistoryMedicationsController.prototype.initialiseRow = function($row, data)
+  HistoryMedicationsController.prototype.initialiseRowEventTriggers = function($row, data)
   {
       var controller = this;
       let key = $row.data('key');
@@ -492,12 +492,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return obj;
     };
 
+    HistoryMedicationsController.prototype.isTaper = function ($row) {
+        return $row.hasClass('js-taper-row');
+    };
+
     HistoryMedicationsController.prototype.setRowData = function ($row, data, excl_fields)
     {
         var self = this;
         var row_data_key;
         var taper_data_key;
-        if ($row.hasClass('js-taper-row')) {
+        if (this.isTaper($row)) {
             row_data_key = $row.attr("data-parent-key");
             taper_data_key = "[taper][" + $row.attr("data-taper-key") + "]";
         } else {
@@ -644,7 +648,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 }
             });
 
-            let $new_rows = controller.appendRowsToTable(rows, response);
+            let $new_rows = controller.addMedicationItemRows(rows, response);
 
             controller.displayTableHeader();
             // return the last created row
@@ -781,7 +785,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.usage_type = $target.attr("data-usage-type");
 
         this.boundController.setRowData($row, data);
-        this.boundController.initialiseRow($row, data);
+        this.boundController.initialiseRowEventTriggers($row, data);
         if(data.end_date !== "") {
             this.showStopControls($row);
         }
@@ -1034,7 +1038,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' + allergy_names.join(", ") + '"></i>';
     };
 
-    HistoryMedicationsController.prototype.appendRowsToTable = function (rows, medication, do_callback = false) {
+    HistoryMedicationsController.prototype.addMedicationItemRows = function (rows, medication, do_callback = false) {
         var $newrow;
         for (var i in rows) {
             $newrow = $(rows[i]);
@@ -1043,8 +1047,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.setRowData($newrow, medication[i]);
             let $lastRow = this.$table.find('tbody tr.js-first-row:last');
 
-            if (!$newrow.hasClass('js-taper-row')) {
-                this.initialiseRow($lastRow);
+            if (!this.isTaper($newrow)) {
+                this.initialiseRowEventTriggers($lastRow);
                 this.loadDrugDefaults($lastRow, medication[i]);
             }
 
@@ -1088,7 +1092,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         var rows = this.createRow(medication);
-        let $newrow = this.appendRowsToTable(rows, medication, do_callback);
+        let $newrow = this.addMedicationItemRows(rows, medication, do_callback);
 
         $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
         $(this.options.medicationSearchInput).val('');
