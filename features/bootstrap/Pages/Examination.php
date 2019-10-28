@@ -1656,7 +1656,7 @@ class Examination extends EventPage {
 		}
 	}
 	public function removeAllElements() {
-		$element = $this->getElement ( 'js-active-elements' );
+		$element = $this->getElement ( 'activeElements' );
 		//Why not get them all and just close them all in one? Because they all get explicit xpath indexes
         // [4] for instance, which causes crashes when [1] through [3] are already gone and
         // there is no [4]
