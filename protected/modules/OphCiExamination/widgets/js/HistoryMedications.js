@@ -646,15 +646,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 }
             });
 
-            let $new_rows = [];
             for (let i in rows) {
-                $new_rows.push(controller.addMedicationItemRow(rows[i], response[i]));
+                controller.addMedicationItemRow($(rows[i]), response[i]);
             }
 
             controller.displayTableHeader();
-
-            return $new_rows;
-
         });
     };
 
@@ -1044,14 +1040,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' + allergy_names.join(", ") + '"></i>';
     };
 
-    HistoryMedicationsController.prototype.addMedicationItemRow = function (row, medication, do_callback = false) {
-        let $newrow = $(row);
-
-        $newrow.appendTo(this.$table.children('tbody'));
-        this.setRowData($newrow, medication);
+    HistoryMedicationsController.prototype.addMedicationItemRow = function ($row, medication, do_callback = false) {
+        $row.appendTo(this.$table.children('tbody'));
+        this.setRowData($row, medication);
         let $lastRow = this.$table.find('tbody tr.js-first-row:last');
 
-        if (!this.isTaper($newrow)) {
+        if (!this.isTaper($row)) {
             this.initialiseRowEventTriggers($lastRow);
             this.loadDrugDefaults($lastRow, medication);
         }
@@ -1059,12 +1053,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if(do_callback) {
             this.options.onAddedEntry($lastRow, this);
         }
-
-        return $newrow;
     };
 
     HistoryMedicationsController.prototype.addEntry = function (selectedItems, do_callback)
     {
+        let controller = this;
         var medication = [];
 
         $.each(selectedItems, function (i, e) {
@@ -1094,16 +1087,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         });
 
-        var rows = this.createRow(medication);
-        let $newrow = this.addMedicationItemRow(rows, medication, do_callback);
+        let rows = controller.createRow(medication);
+        rows.forEach(function (row) {
+            controller.addMedicationItemRow($(row), medication, do_callback);
+        });
 
-        $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
-        $(this.options.medicationSearchInput).val('');
-        $(this.options.medicationSearchResult).empty();
+        $(controller.options.medicationSelectOptions).find('.selected').removeClass('selected');
+        $(controller.options.medicationSearchInput).val('');
+        $(controller.options.medicationSearchResult).empty();
 
-        this.displayTableHeader();
-        // return the last created row
-        return $newrow;
+        controller.displayTableHeader();
     };
 
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
