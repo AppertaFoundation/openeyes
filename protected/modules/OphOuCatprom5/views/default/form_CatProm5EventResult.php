@@ -13,18 +13,18 @@ $name_stub = CHtml::modelName($element) . '[catProm5AnswerResults]';
     <!-- Element title -->
     <h3 class="element-title">Questionnaire Score</h3>
   </header>
-<div class="element-fields full-width flex-layout">
-  <div class="cols-11">
+<div class="element-fields full-width flex-layout cols-10">
+  <div class="cols-5">
     <div class="flex-layout flex-left">
         <?php echo $form->hiddenInput($element, 'total_raw_score', false, array())?>
-        Raw Score : 
+        Raw Score  (absolute): &nbsp;
       <div class="highlighter large-text" id="js_cat_prom5_total_score"><?= isset($element->total_raw_score)?$element->total_raw_score:0 ?></div>
     </div>
   </div><!-- cols -->
-  <div class="cols-11">
+  <div class="cols-5">
     <div class="flex-layout flex-right">
         <?php echo $form->hiddenInput($element, 'total_rasch_measure', false, array())?>
-        Estimated Rasch Score : 
+        Estimated Rasch Measure : &nbsp;
         <div class="highlighter large-text" id="js_cat_prom5_rasch_measure"><?= isset($element->total_rasch_measure)?$element->total_rasch_measure:'Please answer questions 1-5' ?></div>
     </div>
   </div><!-- cols -->
@@ -47,7 +47,7 @@ $name_stub = CHtml::modelName($element) . '[catProm5AnswerResults]';
             ques[radios[i].dataset['question'] -1]=1; //mark this questions as answered
           }
         }
-        rasch = scoreToRasch(score); // calculate preview rasch
+        rasch = scoreToRasch(score); // calculate preview rasch measure
 
         for(let q=0; q<5;q++){ //flag any unanswered questions
           if (!ques[q]){

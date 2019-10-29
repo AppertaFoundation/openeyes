@@ -3,7 +3,7 @@
       $answerResults = $element->catProm5AnswerResults;
 ?>
 
-<table class="cols-full">
+<table class="cols-10">
   <tbody>
     <?php foreach ($questions as $ques) {
         $index = $ques->id - 1;
