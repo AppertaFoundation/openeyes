@@ -44,6 +44,8 @@ class MedicationManagementController extends BaseController
                 }
                 echo CJSON::encode($set_items);
             }
+        } else {
+            throw new \CHttpException(404, 'Could not find medication set.');
         }
 
     }
