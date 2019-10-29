@@ -73,6 +73,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return newRows;
     };
 
+    ContactsController.prototype.isContactInTable = function (selected_contacts) {
+        let same_contact = false;
+        let controller = this;
+        let contact_ids = [];
+        controller.$table.find('tbody tr').each(function () {
+            contact_ids[contact_ids.length] = parseInt($(this).find('input').val());
+        });
+
+        selected_contacts.forEach(function (contact) {
+           if (contact_ids.includes(contact.id)) {
+               controller.showSameContactDialog(contact);
+               same_contact = true;
+           }
+        });
+
+        return same_contact;
+    };
+
     /**
      * Add a family history section if its valid.
      */
@@ -143,6 +161,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         return contactLabelCount >= contactLimit;
+    };
+
+    ContactsController.prototype.showSameContactDialog = function (contact) {
+        let dialog = new OpenEyes.UI.Dialog.Alert({
+            content: contact.label + " is already in the list of contacts."
+        });
+        dialog.open();
     };
 
     ContactsController.prototype.showPatientContactLimitDialog = function (
