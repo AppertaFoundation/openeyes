@@ -32,51 +32,51 @@ class MedicationManagementController extends BaseController
 
     public function actionGetDrugSetForm($set_id)
     {
-        $items = MedicationSet::model()->findByPk($set_id)->items;
-        $set_items = array();
-        if ($items) {
-            foreach ($items as $item) {
-                $set_items[] = $this->getMedicationItem($item);
+        $medication_set = MedicationSet::model()->findByPk($set_id);
+        if ($medication_set) {
+            $items = $medication_set->items;
+            if ($items) {
+                foreach ($items as $item) {
+                    if (is_a($item, 'MedicationSetItem')) {
+                        $set_items[] = $this->extractEntryFromSet($item);
+                    }
+                }
+                echo CJSON::encode($set_items);
             }
         }
 
-        echo CJSON::encode($set_items);
     }
 
-    private function getMedicationItem($source)
+    private function extractEntryFromSet($set_item)
     {
         $item = array();
 
-        if (is_a($source, 'MedicationSetItem')) {
-            $medication = Medication::model()->findByPk($source->medication_id);
-            $item['medication_id'] = (int) $source->medication_id;
-            $item['medication_name'] = $medication->preferred_term;
-            $item['source_subtype'] = $medication->source_subtype;
-            $item['frequency_id'] = (int) $source->default_frequency_id;
-            $item['default_form'] = (int) ($source->default_form_id ? $source->default_form_id : $source->medication->default_form_id);
-            $item['dose'] = $source->default_dose;
-            $item['dose_unit_term'] = $source->default_dose_unit_term ? $source->default_dose_unit_term : $source->medication->default_dose_unit_term;
-            $item['route_id'] = (int) ($source->default_route_id ? $source->default_route_id : $source->medication->default_route_id);
-            $item['duration_id'] = (int) $source->default_duration_id;
-            $item['to_be_copied'] = true;
-            $item['will_copy'] = true;
+        $medication = Medication::model()->findByPk($set_item->medication_id);
+        $item['medication_id'] = (int) $set_item->medication_id;
+        $item['medication_name'] = $medication->preferred_term;
+        $item['source_subtype'] = $medication->source_subtype;
+        $item['frequency_id'] = (int) $set_item->default_frequency_id;
+        $item['default_form'] = (int) ($set_item->default_form_id ? $set_item->default_form_id : $set_item->medication->default_form_id);
+        $item['dose'] = $set_item->default_dose;
+        $item['dose_unit_term'] = $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : $set_item->medication->default_dose_unit_term;
+        $item['route_id'] = (int) ($set_item->default_route_id ? $set_item->default_route_id : $set_item->medication->default_route_id);
+        $item['duration_id'] = (int) $set_item->default_duration_id;
+        $item['to_be_copied'] = true;
+        $item['will_copy'] = true;
 
-            if ($source->tapers) {
-                $tapers = array();
-                foreach ($source->tapers as $taper) {
-                    $taper_model = array();
-                    $taper_model['duration_id'] = (int) ($taper->duration_id ? $taper->duration_id : $item['duration_id']);
-                    $taper_model['frequency_id'] = (int) ($taper->frequency_id ? $taper->frequency_id : $item['frequency_id']);
-                    $taper_model['dose'] = $taper->dose ? $taper->dose : $item['dose'];
-                    $tapers[] = $taper_model;
-                }
-                $item['tapers'] = $tapers;
+        if ($set_item->tapers) {
+            $tapers = array();
+            foreach ($set_item->tapers as $taper) {
+                $taper_model = array();
+                $taper_model['duration_id'] = (int) ($taper->duration_id ? $taper->duration_id : $item['duration_id']);
+                $taper_model['frequency_id'] = (int) ($taper->frequency_id ? $taper->frequency_id : $item['frequency_id']);
+                $taper_model['dose'] = $taper->dose ? $taper->dose : $item['dose'];
+                $tapers[] = $taper_model;
             }
-
-            return $item;
+            $item['tapers'] = $tapers;
         }
 
-
+        return $item;
     }
 
     public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 50)

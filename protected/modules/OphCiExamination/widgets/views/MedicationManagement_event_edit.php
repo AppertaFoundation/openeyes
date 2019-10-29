@@ -308,7 +308,6 @@ $element_errors = $element->getErrors();
             }
         });
 
-
         let $changeEventDate = $('.js-change-event-date');
         $changeEventDate.addClass('disabled');
         if ($changeEventDate.is(":hidden")) {
