@@ -36,6 +36,7 @@ class MedicationManagementController extends BaseController
         if ($medication_set) {
             $items = $medication_set->items;
             if ($items) {
+                $set_items = array();
                 foreach ($items as $item) {
                     if (is_a($item, 'MedicationSetItem')) {
                         $set_items[] = $this->extractEntryFromSet($item);

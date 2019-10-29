@@ -646,8 +646,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 }
             });
 
-            for (let i in rows) {
-                controller.addMedicationItemRow($(rows[i]), response[i]);
+            for (let row_index in rows) {
+                controller.addMedicationItemRow($(rows[row_index]), response[row_index]);
             }
 
             controller.displayTableHeader();
