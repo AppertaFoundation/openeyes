@@ -18,19 +18,13 @@
 
 namespace OEModule\OphOuCatprom5\components;
 
-use Yii; //TODO: Remove this and all logging
+use Yii;
 
 class Catprom5Report extends \Report implements \ReportInterface
 {
     /**
-     * @var int
-     */
-    protected $months;
-
-    /**
      * @var array
      */
-
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
@@ -41,7 +35,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'Rasch Score',
+        'title' => 'Rasch Measure',
         'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
@@ -57,17 +51,6 @@ class Catprom5Report extends \Report implements \ReportInterface
         'dtickrange'=>['min',null],
       ),
     );
-
-    /**
-     * @param $app
-     */
-    public function __construct($app)
-    {
-        $this->months = $app->getRequest()->getQuery('months', 0);
-
-
-        parent::__construct($app);
-    }
 
     /**
      * @param $surgeon
@@ -92,7 +75,7 @@ class Catprom5Report extends \Report implements \ReportInterface
             e1.event_date as cataract_date,
             e2.event_date as catprom5_date,
             cp5er.event_id as catprom5_element_id,
-            cp5er.total_rasch_measure as rasch_score,
+            cp5er.total_rasch_measure as rasch_measure,
             cp5er.total_raw_score as raw_score')
                 ->from('et_ophtroperationnote_cataract eoc')
                 ->join('event e1', 'eoc.event_id = e1.id')
@@ -108,7 +91,7 @@ class Catprom5Report extends \Report implements \ReportInterface
             e1.event_date as cataract_date,
             e2.event_date as catprom5_date,
             cp5er.event_id as catprom5_element_id,
-            cp5er.total_rasch_measure as rasch_score,
+            cp5er.total_rasch_measure as rasch_measure,
             cp5er.total_raw_score as raw_score')
                 ->from('et_ophtroperationnote_cataract eoc')
                 ->join('event e1', 'eoc.event_id = e1.id')
@@ -124,13 +107,13 @@ class Catprom5Report extends \Report implements \ReportInterface
                 eoc.event_id as cataract_element_id,
 
                 cp5er2.event_id as C2_catprom5_element_id,
-                cp5er2.total_rasch_measure as C2_rasch_score,
+                cp5er2.total_rasch_measure as C2_rasch_measure,
                 cp5er2.total_raw_score as C2_raw_score,
 
                 cp5er3.event_id as C3_catprom5_element_id,
-                cp5er3.total_rasch_measure as C3_rasch_score,
+                cp5er3.total_rasch_measure as C3_rasch_measure,
                 cp5er3.total_raw_score as C3_raw_score,
-                (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_score
+                (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_measure
                 ')
                     ->from('et_ophtroperationnote_cataract eoc')
                     ->join('event e1', 'eoc.event_id = e1.id')
@@ -149,13 +132,18 @@ class Catprom5Report extends \Report implements \ReportInterface
             break;
         }
 
-            if ($dateFrom) {
-              $this->command->andWhere('note_event.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-              // Yii::log($dateFrom);
+          if ($dateFrom) {
+            Yii::log(var_dump($dateFrom).  'from' );
+            $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+            // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
           }
   
           if ($dateTo) {
-              $this->command->andWhere('note_event.event_date <= :dateTo', array('dateTo' => $dateTo));
+            Yii::log(var_dump($dateFrom).  'to' );
+            $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
+            // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
           }
         return $this->command->queryAll();
     }
@@ -169,26 +157,17 @@ class Catprom5Report extends \Report implements \ReportInterface
         $data = $this->queryData($this->from, $this->to);
         $dataSet = array();
         foreach($data as $row) {
-          $rash_score = strval($row['rasch_score']);
+          $rash_score = strval($row['rasch_measure']);
           $ret_ind = array_search($rash_score, array_keys($dataSet));
           if($ret_ind === false) {
             $dataSet[$rash_score]["count"] = 1;
             $dataSet[$rash_score]["ids"][] = $row["cataract_element_id"];
-            // Yii::log(var_export($dataSet, true));
           } else {
             $dataSet[$rash_score]["count"]++;
             array_push($dataSet[$rash_score]["ids"],$row['cataract_element_id']);
           }
         }
         return $dataSet;
-    }
-
-    /**
-     *
-     */
-    protected function padPlotlyCategories()
-    {
-        $this->plotlyConfig['xaxis']['range'] = [-9, 9];
     }
 
 
@@ -219,7 +198,6 @@ class Catprom5Report extends \Report implements \ReportInterface
             return $item;
           }, $temp),
           'y'=> array_map(function($item){
-            // Yii::log(var_export($item, true));
             return $item['count'];
           }, array_values($dataset)),
           'width'=>array_map(function($item){
@@ -253,11 +231,11 @@ class Catprom5Report extends \Report implements \ReportInterface
       $test= Yii::app()->request->getParam('catprom5');
       switch($test){
         case 'pre':
-          $this->plotlyConfig['title'] = 'Catprom5: Pre-operation';
+          $this->plotlyConfig['title'] = 'Catprom5: Pre-op';
           $this->plotlyConfig['xaxis']['range'] = [-10,8];
         break;
         case 'post':
-          $this->plotlyConfig['title'] = 'Catprom5: Post-operation';
+          $this->plotlyConfig['title'] = 'Catprom5: Post-op';
           $this->plotlyConfig['xaxis']['range'] = [-10,8];          
         break;
         case 'diff':

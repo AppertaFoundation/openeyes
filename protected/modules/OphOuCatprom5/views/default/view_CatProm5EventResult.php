@@ -11,17 +11,13 @@ $this->renderPartial('view_CatProm5AnswerResult', array(
     <!-- Element title -->
     <h3 class="element-title">Questionnaire Score</h3>
   </header>
-  <div class="element-data full-width flex-layout">
-    <div class="cols-11">
-      <div class="flex-layout flex-left">      
-        Raw Score : 
-        <div class="highlighter large-text" id="idg-js-demo-score"><?= $element->total_raw_score ?></div>
+  <div class="element-data full-width flex-layout cols-10">
+    <div class="cols-3">
+      <div class="flex-layout flex-left">Raw Score (absolute): &nbsp;<div class="highlighter large-text" id="idg-js-demo-score"><?= $element->total_raw_score ?></div>
       </div>
     </div>
-    <div class="cols-11">
-      <div class="flex-layout flex-right">
-        Rasch Score : 
-        <div class="highlighter large-text" id="idg-js-demo-score"><?= $element->total_rasch_measure ?></div>
+    <div class="cols-3">
+      <div class="flex-layout flex-right">Rasch Measure : &nbsp;<div class="highlighter large-text" id="idg-js-demo-score"><?= $element->total_rasch_measure ?></div>
       </div>
     </div>
   </div>
