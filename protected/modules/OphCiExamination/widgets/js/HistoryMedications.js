@@ -1088,8 +1088,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         let rows = controller.createRow(medication);
-        rows.forEach(function (row) {
-            controller.addMedicationItemRow($(row), medication, do_callback);
+        rows.forEach(function (row, index) {
+            controller.addMedicationItemRow($(row), medication[index], do_callback);
         });
 
         $(controller.options.medicationSelectOptions).find('.selected').removeClass('selected');
