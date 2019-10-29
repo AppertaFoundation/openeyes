@@ -61,5 +61,8 @@
         }
     });
 </script>
-<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv_cataract.js')?>"></script>
+<script src="
+<  ?= 
+// Yii::app()->assetManager->createUrl('js/analytics/analytics_csv_cataract.js')?>
+"></script>
 -->
