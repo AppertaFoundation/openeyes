@@ -1472,7 +1472,7 @@ class AnalyticsController extends BaseController
                 , UNIX_TIMESTAMP(e.event_date) as event_date
                 , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
                 , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
-                , UNIX_TIMESTAMP(w.start) as start
+                , MAX(UNIX_TIMESTAMP(w.start)) as start
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1497,7 +1497,8 @@ class AnalyticsController extends BaseController
                 )
             ")
             ->andWhere("eoc.id is not null")
-            ->andWhere("eoc.followup_period_id is not null");
+            ->andWhere("eoc.followup_period_id is not null")
+            ->group("p.id");
 
         // extract out the query in the foreach loop
         // and integrate them into the following query
@@ -1507,7 +1508,7 @@ class AnalyticsController extends BaseController
                 e.id as event_id
                 , p.id as patient_id
                 , UNIX_TIMESTAMP(e.event_date) as event_date
-                , UNIX_TIMESTAMP(wp.when) as 'when'
+                , MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1531,7 +1532,8 @@ class AnalyticsController extends BaseController
                 WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0 
                 and lower(e3.name) like lower('%document%')
                 )
-            ");
+            ")
+            ->group('p.id');
         if ($diagnosis) {
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id', 'distinct')
