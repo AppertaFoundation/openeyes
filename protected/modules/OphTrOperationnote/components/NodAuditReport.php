@@ -258,7 +258,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function InsertDataToArray($data, $surgeon_id){
+    public function InsertDataToArray($data, $surgeon_id)
+    {
         $return_data = array(
             'pre-complete'=>array(),
             'post-complete'=>array(),
@@ -290,7 +291,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function PCRRiskDataToArray($data){
+    public function PCRRiskDataToArray($data)
+    {
         $return_data = array(
             'known'=> array(),
             'not_known'=> array(),
@@ -305,7 +307,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function IndicationForSurgeryDataToArray($data){
+    public function IndicationForSurgeryDataToArray($data)
+    {
         $return_data=array(
             'complete'=>array(),
             'incomplete'=>array(),
@@ -319,7 +322,8 @@ class NodAuditReport extends Report implements ReportInterface
         }
         return $return_data;
     }
-    public function NodEligibilityDataToArray($data, $surgeon_id){
+    public function NodEligibilityDataToArray($data, $surgeon_id)
+    {
         $return_data=array(
             'eligible'=>array(),
             'ineligible'=>array(),
@@ -350,7 +354,7 @@ class NodAuditReport extends Report implements ReportInterface
         $dataset = $this->dataSet();
         $incomplete_y = array();
         $complete_y = array();
-        if($dataset['total'] !== 0){
+        if ($dataset['total'] !== 0) {
             $incomplete_y = array(
                 count($dataset['VA']['pre-incomplete'])/$dataset['total'],
                 count($dataset['VA']['post-incomplete'])/$dataset['total'],
@@ -438,7 +442,8 @@ class NodAuditReport extends Report implements ReportInterface
         return json_encode(array($trace1, $trace2));
     }
 
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         return json_encode($this->plotlyConfig);
     }
 
