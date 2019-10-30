@@ -74,7 +74,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     ContactsController.prototype.isContactInTable = function (selected_contacts) {
-        let contact_already_exists  = false;
+        let contact_already_exists = false;
         let controller = this;
         let current_contact_ids = [];
         controller.$table.find('tbody tr').each(function () {
