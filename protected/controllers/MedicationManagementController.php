@@ -30,6 +30,58 @@ class MedicationManagementController extends BaseController
         );
     }
 
+    public function actionGetDrugSetForm($set_id)
+    {
+        $medication_set = MedicationSet::model()->findByPk($set_id);
+        if ($medication_set) {
+            $items = $medication_set->items;
+            if ($items) {
+                $set_items = array();
+                foreach ($items as $item) {
+                    if (is_a($item, 'MedicationSetItem')) {
+                        $set_items[] = $this->extractEntryFromSet($item);
+                    }
+                }
+                echo CJSON::encode($set_items);
+            }
+        } else {
+            throw new \CHttpException(404, 'Could not find medication set.');
+        }
+
+    }
+
+    private function extractEntryFromSet($set_item)
+    {
+        $item = array();
+
+        $medication = Medication::model()->findByPk($set_item->medication_id);
+        $item['medication_id'] = (int) $set_item->medication_id;
+        $item['medication_name'] = $medication->preferred_term;
+        $item['source_subtype'] = $medication->source_subtype;
+        $item['frequency_id'] = (int) $set_item->default_frequency_id;
+        $item['default_form'] = (int) ($set_item->default_form_id ? $set_item->default_form_id : $set_item->medication->default_form_id);
+        $item['dose'] = $set_item->default_dose;
+        $item['dose_unit_term'] = $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : $set_item->medication->default_dose_unit_term;
+        $item['route_id'] = (int) ($set_item->default_route_id ? $set_item->default_route_id : $set_item->medication->default_route_id);
+        $item['duration_id'] = (int) $set_item->default_duration_id;
+        $item['to_be_copied'] = true;
+        $item['will_copy'] = true;
+
+        if ($set_item->tapers) {
+            $tapers = array();
+            foreach ($set_item->tapers as $taper) {
+                $taper_model = array();
+                $taper_model['duration_id'] = (int) ($taper->duration_id ? $taper->duration_id : $item['duration_id']);
+                $taper_model['frequency_id'] = (int) ($taper->frequency_id ? $taper->frequency_id : $item['frequency_id']);
+                $taper_model['dose'] = $taper->dose ? $taper->dose : $item['dose'];
+                $tapers[] = $taper_model;
+            }
+            $item['tapers'] = $tapers;
+        }
+
+        return $item;
+    }
+
     public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 50)
     {
         $ret_data = [];
