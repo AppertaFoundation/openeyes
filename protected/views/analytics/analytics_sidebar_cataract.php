@@ -3,7 +3,7 @@
         .download-csv-container{
             position: relative;
             padding: 0;
-        }a
+        }
         #js-download-csv, #js-download-anonymized-csv{
             position: absolute;
             height: 100%;
@@ -40,9 +40,9 @@
                 <li><a href="#" data-container="#visual-acuity-grid" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
                 <li><a href="#" data-container="#refractive-outcome-grid" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
                 <li><a href="#" data-container="#nod-audit-grid" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
-                <li><a href="#" data-container="#catprom5-preop-grid" data-report="C5A" class="js-cataract-report-type">Cat-PROM5 pre-op</a></li>
-                <li><a href="#" data-container="#catprom5-postop-grid" data-report="C5B" class="js-cataract-report-type">Cat-PROM5 post-op</a></li>
-                <li><a href="#" data-container="#catprom5-diff-grid" data-report="C5C" class="js-cataract-report-type">Cat-PROM5 difference </a></li>
+                <li><a href="#" data-container="#catprom5-pre-grid" data-report="C5A" class="js-cataract-report-type">Cat-PROM5 pre-op</a></li>
+                <li><a href="#" data-container="#catprom5-post-grid" data-report="C5B" class="js-cataract-report-type">Cat-PROM5 post-op</a></li>
+                <li><a href="#" data-container="#catprom5-grid" data-report="C5C" class="js-cataract-report-type">Cat-PROM5 difference </a></li>
             </ul>
             <form id="search-form" autocomplete="off">
                 <div id="search-form-report-search-section"></div>
@@ -75,7 +75,7 @@
             </form>
         </div>
         <div class="extra-actions">
-            <button id="js-download-csv" class="pro-theme cols-full download-csv-container">
+            <button class="pro-theme cols-full download-csv-container">
                 <a id="js-download-csv">Download (CSV)</a>
             </button>
         </div>

@@ -78,7 +78,7 @@ class CatProm5EventResultTest extends CDbTestCase {
     $expected = array(
       'id' => 'ID',
       'total_raw_score' => 'Total Raw Score',
-      'total_rasch_measure' => 'Total Rasch Measure',
+      'total_rasch_measure' => 'Total Rasch Score',
       'event_id' => 'Event',
     );
 
