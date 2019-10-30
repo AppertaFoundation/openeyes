@@ -26,6 +26,21 @@ var analytics_cataract = (function () {
 			'OEModule_OphCiExamination_components_RefractiveOutcomeReport',
 			'#refractive-outcome-grid',
 			'RO',
+		],
+		'/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=pre': [
+			'OEModule_OphOuCatprom5_components_Catprom5Report',
+			'#catprom5-pre-grid',
+			'C5A',
+		],
+		'/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=post': [
+			'OEModule_OphOuCatprom5_components_Catprom5Report',
+			'#catprom5-post-grid',
+			'C5B',
+		],
+		'/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&catprom5=diff': [
+			'OEModule_OphOuCatprom5_components_Catprom5Report',
+			'#catprom5-grid',
+			'C5C',
 		]
 	};
 

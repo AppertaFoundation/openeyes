@@ -1,7 +1,7 @@
 <?php $answerResults = $element->catProm5AnswerResults; ?>
 
-<div class="element-data full-width">
-  <div class="cols-10">
+<div class="element-data full-width cols-10">
+  <div>
     <table class="cols-full large-text">
       <colgroup>
         <col class="cols-6">
