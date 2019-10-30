@@ -33,7 +33,7 @@ $(document).ready(function () {
   // Set Intraocular reading attribute field validation error
   let readings = $('.OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure .element-fields [id*="reading_time"]');
   readings.each((i,reading) => {
-    if (!$(reading).val().match('^[0-9]{1,2}:[0-9]{2}$')) {
+    if (!$(reading).val().match('^[0-9]{2}:[0-9]{2}$')) {
       $(reading).addClass('highlighted-error error');   
     }
   });
