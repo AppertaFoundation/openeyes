@@ -122,7 +122,7 @@ if ($historyElement) {
                         </div>
                     </div>
                 </div>
-            	<?php } ?>
+                <?php } ?>
             <?php } ?>
             </div>
     </section>

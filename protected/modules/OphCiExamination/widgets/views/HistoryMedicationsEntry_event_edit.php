@@ -98,12 +98,13 @@ $allergy_ids = !is_null($entry->medication_id) ?
         <div id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>">
             <div class="flex-meds-inputs">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
-                        <a class="textual-display-dose textual-display hint" href="javascript:void(0);"
-                             onclick="switch_alternative(this);">
+                    <div class="alternative-display-element textual flex-meds-inputs" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
+                        <div class="textual-display hint">
                             <?php $entry_text_display = $entry->getAdministrationDisplay();
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
-                        </a>
+                        </div>
+                        <span class="tabspace"></span>
+                        <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]"
@@ -221,7 +222,7 @@ $allergy_ids = !is_null($entry->medication_id) ?
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
                         class="js-stop-reason-select cols-5"
                         style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => ' js-stop-reason')) ?>
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
         </span>
             <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
