@@ -78,7 +78,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let controller = this;
         let current_contact_ids = [];
         controller.$table.find('tbody tr').each(function () {
-            current_contact_ids.push(parseInt($(this).find("input[name='" + controller.options.modelName + "[contact_id][]']").val()));
+            current_contact_ids.push(parseInt($(this).find("input[name*='[contact_id]']").val()));
         });
 
         let existing_contact = selected_contacts.find(function (contact) {
