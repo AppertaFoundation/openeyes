@@ -40,7 +40,7 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="medications entries js-entry-table"
+        <table class="medications entries js-entry-table js-current-medications"
                              id="<?= $model_name ?>_entry_table">
                     <colgroup>
                         <col class="cols-2">

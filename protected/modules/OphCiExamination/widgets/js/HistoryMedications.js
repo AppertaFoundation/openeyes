@@ -42,6 +42,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('.js-entry-table');
+    this.$currentMedicationsTable = this.$element.find('.js-entry-table.js-current-medications');
     this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
@@ -982,7 +983,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         for (var i in rows) {
             $newrow = $(rows[i]);
 
-            $newrow.appendTo(this.$table.children('tbody'));
+            $newrow.appendTo(this.$currentMedicationsTable.children('tbody'));
             this.setRowData($newrow, medication[i]);
             let $lastRow = this.$table.find('tbody tr.js-first-row:last');
 
