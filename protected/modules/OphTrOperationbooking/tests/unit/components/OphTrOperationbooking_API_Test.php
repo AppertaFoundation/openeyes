@@ -45,8 +45,8 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
     {
         parent::setUp();
 
-        $this->api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
         Yii::app()->session['selected_firm_id'] = 2;
+        $this->api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
     }
 
     public function testGetLatestOperationBookingDiagnosis()
