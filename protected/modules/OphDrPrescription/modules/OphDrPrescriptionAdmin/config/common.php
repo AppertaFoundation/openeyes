@@ -20,8 +20,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                'OphDrPrescription/admin/<controller:\w+>/<action:\w+>' => '/OphDrPrescription/OphDrPrescriptionAdmin/<controller>/<action>',
-                'OphDrPrescription/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphDrPrescription/OphDrPrescriptionAdmin/<controller>/<action>',
+                'OphDrPrescription/OphDrPrescriptionAdmin/<controller:\w+>/<action:\w+>' => '/OphDrPrescription/OphDrPrescriptionAdmin/<controller>/<action>',
+                'OphDrPrescription/OphDrPrescriptionAdmin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphDrPrescription/OphDrPrescriptionAdmin/<controller>/<action>',
             ]
         ]
     ],
