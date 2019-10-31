@@ -57,7 +57,7 @@ EOH;
             $event_medication_use = EventMedicationUse::model()->findAll(
                 'medication_id = :medication_id',
                 [":medication_id" => $medication_drug->id]);
-            if(count($event_medication_use) === 0) {
+            if (count($event_medication_use) === 0) {
                 $this->deleteMedication($medication_drug);
             }
         }
@@ -66,18 +66,18 @@ EOH;
     private function deleteOldDrugAndMedicationTables()
     {
 
-            foreach(['drug', 'drug_allergy_assignment', 'drug_set_item',
-                        'ophciexamination_history_medications_entry',
-                        'ophdrprescription_item',
-                        'site_subspecialty_drug',
-                        'medication_drug',
-                        'drug_set',
-                        'drug_set_item_taper'
-                    ] as $table_to_rename) {
-                Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
-                $version_table_to_rename = $table_to_rename . "_version";
-                Yii::app()->db->createCommand("RENAME TABLE " . $version_table_to_rename . " TO archive_" . $version_table_to_rename)->execute();
-            }
+        foreach (['drug', 'drug_allergy_assignment', 'drug_set_item',
+                     'ophciexamination_history_medications_entry',
+                     'ophdrprescription_item',
+                     'site_subspecialty_drug',
+                     'medication_drug',
+                     'drug_set',
+                     'drug_set_item_taper'
+                 ] as $table_to_rename) {
+            Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
+            $version_table_to_rename = $table_to_rename . "_version";
+            Yii::app()->db->createCommand("RENAME TABLE " . $version_table_to_rename . " TO archive_" . $version_table_to_rename)->execute();
+        }
 
     }
 
