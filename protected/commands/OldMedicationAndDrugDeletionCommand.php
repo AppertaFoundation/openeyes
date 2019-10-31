@@ -35,7 +35,7 @@ class OldMedicationAndDrugDeletionCommand extends CConsoleCommand
 'Delete medication and drugs with redundant tables after import
 
 USAGE
-  php yiic oldmedicationanddrugdeletioncommand 
+  php yiic oldmedicationanddrugdeletion
          
 EOH;
 
