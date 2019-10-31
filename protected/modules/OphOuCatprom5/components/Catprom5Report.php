@@ -70,12 +70,12 @@ class Catprom5Report extends \Report implements \ReportInterface
             case 'pre':
             //catprom 5 events that are before operations
                 $this->command->select(' 
-            eoc.event_id as cataract_element_id,
-            e1.event_date as cataract_date,
-            e2.event_date as catprom5_date,
-            cp5er.event_id as catprom5_element_id,
-            cp5er.total_rasch_measure as rasch_measure,
-            cp5er.total_raw_score as raw_score')
+                  eoc.event_id as cataract_element_id,
+                  e1.event_date as cataract_date,
+                  e2.event_date as catprom5_date,
+                  cp5er.event_id as catprom5_element_id,
+                  cp5er.total_rasch_measure as rasch_measure,
+                  cp5er.total_raw_score as raw_score')
                   ->from('et_ophtroperationnote_cataract eoc')
                   ->join('event e1', 'eoc.event_id = e1.id')
                   ->join('episode ep1', 'ep1.id=e1.episode_id')
@@ -86,12 +86,12 @@ class Catprom5Report extends \Report implements \ReportInterface
             case 'post':
               //catprom 5 events that are after operations
                 $this->command->select(' 
-            eoc.event_id as cataract_element_id,
-            e1.event_date as cataract_date,
-            e2.event_date as catprom5_date,
-            cp5er.event_id as catprom5_element_id,
-            cp5er.total_rasch_measure as rasch_measure,
-            cp5er.total_raw_score as raw_score')
+                    eoc.event_id as cataract_element_id,
+                    e1.event_date as cataract_date,
+                    e2.event_date as catprom5_date,
+                    cp5er.event_id as catprom5_element_id,
+                    cp5er.total_rasch_measure as rasch_measure,
+                    cp5er.total_raw_score as raw_score')
                     ->from('et_ophtroperationnote_cataract eoc')
                     ->join('event e1', 'eoc.event_id = e1.id')
                     ->join('episode ep1', 'ep1.id=e1.episode_id')
@@ -103,17 +103,17 @@ class Catprom5Report extends \Report implements \ReportInterface
             default:
             //the diff between catprom 5 events before and after operations
                 $this->command->select(' 
-                eoc.event_id as cataract_element_id,
+                    eoc.event_id as cataract_element_id,
 
-                cp5er2.event_id as C2_catprom5_element_id,
-                cp5er2.total_rasch_measure as C2_rasch_measure,
-                cp5er2.total_raw_score as C2_raw_score,
+                    cp5er2.event_id as C2_catprom5_element_id,
+                    cp5er2.total_rasch_measure as C2_rasch_measure,
+                    cp5er2.total_raw_score as C2_raw_score,
 
-                cp5er3.event_id as C3_catprom5_element_id,
-                cp5er3.total_rasch_measure as C3_rasch_measure,
-                cp5er3.total_raw_score as C3_raw_score,
-                (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_measure
-                ')
+                    cp5er3.event_id as C3_catprom5_element_id,
+                    cp5er3.total_rasch_measure as C3_rasch_measure,
+                    cp5er3.total_raw_score as C3_raw_score,
+                    (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_measure
+                    ')
                     ->from('et_ophtroperationnote_cataract eoc')
                     ->join('event e1', 'eoc.event_id = e1.id')
                     ->join('episode ep1', 'ep1.id=e1.episode_id')
