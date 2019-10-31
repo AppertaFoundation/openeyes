@@ -98,3 +98,4 @@ php $WROOT/protected/yiic importdrugs copytooe
 php $WROOT/protected/yiic medicationsetimport --filename=/var/www/openeyes/protected/data/dmd_data/Drug-Type-Mappings.xlsx
 php $WROOT/protected/yiic populateautomedicationsets
 php $WROOT/protected/yiic localmedicationtodmdmedication
+php $WROOT/protected/yiic oldmedicationanddrugdeletioncommand
