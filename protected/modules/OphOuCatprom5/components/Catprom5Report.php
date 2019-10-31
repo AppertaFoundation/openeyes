@@ -35,7 +35,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'Rasch Measure',
+        'title' => 'Rasch Score',
         'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
