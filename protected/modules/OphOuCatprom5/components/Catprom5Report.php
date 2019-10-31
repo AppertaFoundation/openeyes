@@ -66,39 +66,38 @@ class Catprom5Report extends \Report implements \ReportInterface
         $this->command->reset();
 
         $test= Yii::app()->request->getParam('catprom5');
-        switch($test){
-
-          case 'pre':
-          //catprom 5 events that are before operations
-            $this->command->select(' 
+        switch ($test) {
+            case 'pre':
+            //catprom 5 events that are before operations
+                $this->command->select(' 
             eoc.event_id as cataract_element_id,
             e1.event_date as cataract_date,
             e2.event_date as catprom5_date,
             cp5er.event_id as catprom5_element_id,
             cp5er.total_rasch_measure as rasch_measure,
             cp5er.total_raw_score as raw_score')
-                ->from('et_ophtroperationnote_cataract eoc')
-                ->join('event e1', 'eoc.event_id = e1.id')
-                ->join('episode ep1', 'ep1.id=e1.episode_id')
-                ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
-                ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date <= e1.event_date')
-                ->Join('cat_prom5_event_result cp5er','e2.id = cp5er.event_id');
+                  ->from('et_ophtroperationnote_cataract eoc')
+                  ->join('event e1', 'eoc.event_id = e1.id')
+                  ->join('episode ep1', 'ep1.id=e1.episode_id')
+                  ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
+                  ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date <= e1.event_date')
+                  ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
           break;
-        case 'post':
-          //catprom 5 events that are after operations
-            $this->command->select(' 
+            case 'post':
+              //catprom 5 events that are after operations
+                $this->command->select(' 
             eoc.event_id as cataract_element_id,
             e1.event_date as cataract_date,
             e2.event_date as catprom5_date,
             cp5er.event_id as catprom5_element_id,
             cp5er.total_rasch_measure as rasch_measure,
             cp5er.total_raw_score as raw_score')
-                ->from('et_ophtroperationnote_cataract eoc')
-                ->join('event e1', 'eoc.event_id = e1.id')
-                ->join('episode ep1', 'ep1.id=e1.episode_id')
-                ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
-                ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date >= e1.event_date')
-                ->Join('cat_prom5_event_result cp5er','e2.id = cp5er.event_id');
+                    ->from('et_ophtroperationnote_cataract eoc')
+                    ->join('event e1', 'eoc.event_id = e1.id')
+                    ->join('episode ep1', 'ep1.id=e1.episode_id')
+                    ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
+                    ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date >= e1.event_date')
+                    ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
             break;
             case 'dif':
             default:
@@ -121,30 +120,30 @@ class Catprom5Report extends \Report implements \ReportInterface
 
                     ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
                     ->join('event e2', 'e2.episode_id = ep2.id')
-                    ->Join('cat_prom5_event_result cp5er2','e2.id = cp5er2.event_id')
+                    ->Join('cat_prom5_event_result cp5er2', 'e2.id = cp5er2.event_id')
                     
                     ->join('episode ep3', 'ep3.patient_id = ep1.patient_id')
                     ->join('event e3', 'e3.episode_id = ep3.id
                     and e2.id != e3.id #Not the same event
-                    and e2.event_date < e3.event_date  #e2 is earlier than e3')                    
-                    ->Join('cat_prom5_event_result cp5er3','e3.id = cp5er3.event_id')
+                    and e2.event_date < e3.event_date  #e2 is earlier than e3')
+                    ->Join('cat_prom5_event_result cp5er3', 'e3.id = cp5er3.event_id')
                     ;
             break;
         }
 
-          if ($dateFrom) {
+        if ($dateFrom) {
             Yii::log(var_dump($dateFrom).  'from' );
             $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
             $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
             // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-          }
+        }
   
-          if ($dateTo) {
+        if ($dateTo) {
             Yii::log(var_dump($dateFrom).  'to' );
             $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
             $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
             // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
-          }
+        }
         return $this->command->queryAll();
     }
 
@@ -152,20 +151,21 @@ class Catprom5Report extends \Report implements \ReportInterface
      * @return array
      */
 
-    public function dataset(){
+    public function dataset()
+    {
 
         $data = $this->queryData($this->from, $this->to);
         $dataSet = array();
-        foreach($data as $row) {
-          $rash_score = strval($row['rasch_measure']);
-          $ret_ind = array_search($rash_score, array_keys($dataSet));
-          if($ret_ind === false) {
-            $dataSet[$rash_score]["count"] = 1;
-            $dataSet[$rash_score]["ids"][] = $row["cataract_element_id"];
-          } else {
-            $dataSet[$rash_score]["count"]++;
-            array_push($dataSet[$rash_score]["ids"],$row['cataract_element_id']);
-          }
+        foreach ($data as $row) {
+            $rash_score = strval($row['rasch_measure']);
+            $ret_ind = array_search($rash_score, array_keys($dataSet));
+            if ($ret_ind === false) {
+                $dataSet[$rash_score]["count"] = 1;
+                $dataSet[$rash_score]["ids"][] = $row["cataract_element_id"];
+            } else {
+                $dataSet[$rash_score]["count"]++;
+                array_push($dataSet[$rash_score]["ids"], $row['cataract_element_id']);
+            }
         }
         return $dataSet;
     }
@@ -185,7 +185,8 @@ class Catprom5Report extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
-    public function tracesJson(){
+    public function tracesJson()
+    {
         $dataset = $this->dataset();
         $temp = array_keys($dataset);
         $trace1 = array(
@@ -194,19 +195,19 @@ class Catprom5Report extends \Report implements \ReportInterface
           'marker' => array(
             'color' => '#7cb5ec',
           ),
-          'x' => array_map(function($item){
+          'x' => array_map(function ($item) {
             return $item;
           }, $temp),
-          'y'=> array_map(function($item){
+          'y'=> array_map(function ($item) {
             return $item['count'];
           }, array_values($dataset)),
-          'width'=>array_map(function($item){
+          'width'=>array_map(function ($item) {
             return 1;
           }, $temp),
-          'customdata' => array_map(function($item){
+          'customdata' => array_map(function ($item) {
               return $item['ids'];
           }, array_values($dataset)),
-          'hovertext' => array_map(function($item, $item2){
+          'hovertext' => array_map(function ($item, $item2) {
             return '<b>Catprom5</b><br><i>Diff Post: </i>'. $item .
             '<br><i>Num results:</i> '. $item2['count'];
           }, $temp, $dataset),
@@ -226,23 +227,24 @@ class Catprom5Report extends \Report implements \ReportInterface
     /**
      * @return string
      */
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
       
-      $test= Yii::app()->request->getParam('catprom5');
-      switch($test){
-        case 'pre':
-          $this->plotlyConfig['title'] = 'Catprom5: Pre-op';
-          $this->plotlyConfig['xaxis']['range'] = [-10,8];
-        break;
-        case 'post':
-          $this->plotlyConfig['title'] = 'Catprom5: Post-op';
-          $this->plotlyConfig['xaxis']['range'] = [-10,8];          
-        break;
-        case 'diff':
-        default:
-          $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
-        break;
-    }
+        $test= Yii::app()->request->getParam('catprom5');
+        switch ($test) {
+            case 'pre':
+                $this->plotlyConfig['title'] = 'Catprom5: Pre-op';
+                $this->plotlyConfig['xaxis']['range'] = [-10,8];
+          break;
+            case 'post':
+                $this->plotlyConfig['title'] = 'Catprom5: Post-op';
+                $this->plotlyConfig['xaxis']['range'] = [-10,8];
+          break;
+            case 'diff':
+            default:
+                $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
+          break;
+        }
         return json_encode($this->plotlyConfig);
     }
 }
