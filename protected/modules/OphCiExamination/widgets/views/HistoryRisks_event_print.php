@@ -25,11 +25,11 @@
     <?php } else { ?>
         <?php
             $entries = [];
-            foreach ([(string)HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$PRESENT, (string)HistoryRisksEntry::$NOT_CHECKED] as $key) {
-                $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
-                    return $e->has_risk === $key;
-                }));
-            }
+        foreach ([(string)HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$PRESENT, (string)HistoryRisksEntry::$NOT_CHECKED] as $key) {
+            $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
+                return $e->has_risk === $key;
+            }));
+        }
         ?>
         <div class="data-value flex-layout flex-top">
             <div class="cols-12">
