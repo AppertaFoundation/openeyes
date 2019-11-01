@@ -665,7 +665,7 @@ class OphTrOperationbooking_API extends BaseAPI
 
         return $status_id !== false ? $status_id : Yii::app()->db->createCommand()->select('id')
                     ->from('ophtroperationbooking_operation_status')
-                    ->where(['name= :name', ['name' => 'Scheduled']])->queryColumn();
+                    ->where('name=:name', [':name' => 'Scheduled'])->queryScalar();
     }
 
     /**
