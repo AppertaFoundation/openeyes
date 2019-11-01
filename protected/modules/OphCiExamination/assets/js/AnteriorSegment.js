@@ -330,12 +330,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         // Newly added doodle is passed in message object
         var newDoodle = msgArray['object'];
 
-        // Remove biological lens if IOL inserted
-        if (newDoodle.className == 'ACIOL' || newDoodle.className == 'PCIOL') {
-          var biologicalLens = newDoodle.drawing.lastDoodleOfClass('Lens');
-          if (biologicalLens) {
-            newDoodle.drawing.deleteDoodlesOfClass(biologicalLens.className);
-          }
+        // Remove any doodles that violate unique group property with added doodle
+        if ('classGroupUnique' in newDoodle) {
+          let offendingDoodles = newDoodle.drawing.doodleArray.filter(
+            doodle => (doodle.className !== newDoodle.className) &&
+                      ('classGroupUnique' in doodle) &&
+                      (doodle.classGroupUnique === newDoodle.classGroupUnique)
+          );
+          offendingDoodles.forEach( doodle => {
+            newDoodle.drawing.deleteDoodlesOfClass(doodle.className);
+          });
         }
 
         // Check pair array for doodle to add to secondary
