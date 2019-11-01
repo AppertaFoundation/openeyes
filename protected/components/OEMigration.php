@@ -506,22 +506,31 @@ class OEMigration extends CDbMigration
         foreach ($element_types as $element_type_class => $element_type_data) {
             $default = isset($element_type_data['default']) ? $element_type_data['default'] : 1;
             $confirmedDisplayOrder = isset($element_type_data['display_order']) ?
-                $element_type_data['display_order'] : $display_order * 10;
-            //this is needed to se the parent id for those elements set as children elements of another element type
-            $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
+            $element_type_data['display_order'] : $display_order * 10;
             $required = isset($element_type_data['required']) ? $element_type_data['required'] : null;
 
-            $this->insert(
-                'element_type',
-                array(
+            $to_insert = array(
                     'name' => $element_type_data['name'],
                     'class_name' => $element_type_class,
                     'event_type_id' => $event_type_id,
                     'display_order' => $confirmedDisplayOrder,
                     'default' => $default,
-                    'element_group_id' => $thisGroupId,
                     'required' => $required,
-                )
+                );
+
+            $element_type = Yii::app()->db->schema->getTable('element_type');
+            if(isset($element_type->columns['element_group_id'])) {
+                //this is needed to se the parent id for those elements set as children elements of another element type
+                $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
+                $to_insert['element_group_id'] = $thisGroupId;
+            } else if(isset($element_type->columns['parent_element_type_id'])) {
+                $thisParentId = isset($element_type_data['parent_element_type_id']) ? $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
+                $to_insert['parent_element_type_id'] = $thisParentId;
+            }
+
+            $this->insert(
+                'element_type',
+                $to_insert
             );
 
             $this->migrationEcho(
@@ -716,6 +725,10 @@ class OEMigration extends CDbMigration
             $code = "z$n";
 
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
+        }
+
+        if(!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
+            $event_type_id = NULL;
         }
 
         $cols = array(

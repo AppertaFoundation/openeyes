@@ -16,6 +16,18 @@ function current_service_data_to_csv(anonymized = false){
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, Weeks\n";
     }
      data.forEach(function (item) {
+         let item_patient = $('#'+item['patient_id']);
+         let patient_name = item_patient.find('.js-csv-name').html();
+         patient_name = patient_name.split(' ');
+         item = [
+             (patient_name[0] == undefined)? '': patient_name[0],
+             (patient_name[1] == undefined)? '': patient_name[1],
+             item_patient.find('.js-csv-hos_num').html(),
+             item_patient.find('.js-csv-dob').html(),
+             item_patient.find('.js-csv-age').html(),
+             item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
+             item['weeks'],
+         ];
          if(anonymized){
              item = item.slice(3);
          }
@@ -39,13 +51,27 @@ function current_custom_data_to_csv(additional_type,anonymized=false){
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
     }
     var data = Object.values(window.csv_data_for_report['custom_data']);
+    console.log(data);
     var file_name = "clinical_data";
     data.forEach(function (item) {
+        let item_patient = $('#'+item['patient_id']);
+        let patient_name = item_patient.find('.js-csv-name').html();
+        patient_name = patient_name.split(' ');
+        item = {
+            'left':item['left'],
+            'right':item['right'],
+            'diagnoses':item_patient.find('.js-csv-diagnoses').html().replace(/,/g,'|'),
+            'hos_num':item_patient.find('.js-csv-hos_num').html(),
+            'age':item_patient.find('.js-csv-age').html(),
+            'dob':item_patient.find('.js-csv-dob').html(),
+            'first_name': (patient_name[0] == undefined)? '': patient_name[0],
+            'second_name':(patient_name[1] == undefined)? '': patient_name[1],
+        };
         if (!anonymized){
             csv_file += item['first_name']+","+item['second_name']+","+item['hos_num']+",";
         }
         csv_file += item['dob']+","+item['age']+",";
-        csv_file = convert_array_to_string_in_csv(csv_file,item['diagnoses']);
+        csv_file += item['diagnoses']+",";
         csv_file = convert_array_to_string_in_csv(csv_file,item['left']['VA']);
         csv_file = convert_array_to_string_in_csv(csv_file,item['left'][additional_type]);
         csv_file = convert_array_to_string_in_csv(csv_file,item['right']['VA']);

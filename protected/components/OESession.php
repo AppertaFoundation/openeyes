@@ -24,7 +24,7 @@ class OESession extends CDbHttpSession
             //prevent the saving of blank ids into the user session table
             return false;
         } else {
-            parent::writeSession($id, $data);
+            return parent::writeSession($id, $data);
         }
     }
 }

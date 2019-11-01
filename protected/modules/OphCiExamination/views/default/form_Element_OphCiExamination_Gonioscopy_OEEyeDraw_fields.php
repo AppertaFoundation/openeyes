@@ -28,7 +28,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     <label for="<?php echo $side . '_gonioscopy_mode'; ?>">
       Mode:
     </label>
-      <?=\CHtml::dropDownList($side . '_gonioscopy_mode', 'Basic',
+      <?=\CHtml::dropDownList($side . '_gonioscopy_mode', '',
           array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
               'class' => 'gonioscopy-mode',
               'options' => array(
@@ -114,6 +114,19 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     <div class="cols-10 column end autoreport-display">
       <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
     </div>
+  </div>
+
+  <div class="data-group">
+    <label for="<?= CHtml::modelName($element) . '_' . $side . '_iris_id'; ?>">
+      <?= $element->getAttributeLabel($side . '_iris_id') ?>:
+    </label>
+    <?=\CHtml::activeDropDownList($element, $side . '_iris_id',
+            \CHtml::listData($element->getIrisOptions(), 'id', 'name'),
+            [
+              'empty' => 'Not recorded',
+              'class' => 'iris',
+              'options' => $html_options,
+            ]) ?>
   </div>
 
   <div class="data-group">

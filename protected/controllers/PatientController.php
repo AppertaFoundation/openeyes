@@ -98,6 +98,8 @@ class PatientController extends BaseController
         );
     }
 
+
+
     public function behaviors()
     {
         return array(
@@ -140,7 +142,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        $this->redirect(array('episodes', 'id' => $id));
+        $this->redirect(array('summary', 'id' => $id));
     }
 
     public function actionSummary($id) {
@@ -214,9 +216,16 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            $item = $dataProvider->getData()[0];
+            $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generatePatientLandingPageLink($item)));
+
+            //in case the PASAPI returns 1 new patient we perform a new search
+							if ($patient->isNewRecord && $patient->hos_num) {
+								$this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+							}
+
+            $this->redirect(array($api->generatePatientLandingPageLink($patient)));
+
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -376,7 +385,7 @@ class PatientController extends BaseController
             ),
         );
 
-        if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
+        if ($this->checkAccess('OprnEditEpisode', $this->episode) && $this->episode->firm) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
@@ -401,7 +410,7 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
-        if (!$this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) || isset($_POST['episode_cancel'])) {
+        if (!$this->checkAccess('OprnEditEpisode', $this->episode) || isset($_POST['episode_cancel'])) {
             $this->redirect(array('patient/episode/'.$this->episode->id));
 
             return;
@@ -448,7 +457,7 @@ class PatientController extends BaseController
         $this->event_tabs = array(
             array(
                 'label' => 'View',
-                'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+                'href' => Yii::app()->createUrl('/patient/summary/'.$this->episode->id),
             ),
             array(
                 'label' => 'Edit',
@@ -1627,7 +1636,7 @@ class PatientController extends BaseController
                 $episode = $patient->addEpisode($firm);
             }
 
-            $this->redirect(array('/patient/episode/'.$episode->id));
+            $this->redirect(array('/patient/summary/'.$episode->id));
         }
 
         return $this->renderPartial('//patient/add_new_episode', array(
@@ -1746,29 +1755,32 @@ class PatientController extends BaseController
                 $referral->attributes = $_POST['PatientReferral'];
             }
 
-            if (isset($_POST['ExtraContact'])){
-                $gp_ids = $_POST['ExtraContact']['gp_id'];
-                if(isset($_POST['ExtraContact']['practice_id'])) {
-                    $practice_ids = $_POST['ExtraContact']['practice_id'];
-                    $pca_models = array();
-                    for($i =0;$i<sizeof($gp_ids);$i++) {
-                        $pca_model = new PatientContactAssociate();
-                        $pca_model->gp_id = $gp_ids[$i];
-                        $pca_model->practice_id = $practice_ids[$i];
-                        $pca_models[] = $pca_model;
-                    }
-                } else {
-                    $pca_models = array();
-                    foreach ($gp_ids as $gp_id){
-                        $pca_model = new PatientContactAssociate();
-                        $pca_model->gp_id = $gp_id;
-                        $pca_models[] = $pca_model;
-                    }
-                }
-                if (!empty($pca_models)){
-                    $patient->patientContactAssociates = $pca_models;
-                }
+            if (Yii::app()->params['institution_code'] === 'CERA') {
+							if (isset($_POST['ExtraContact'])){
+									$gp_ids = $_POST['ExtraContact']['gp_id'];
+									if(isset($_POST['ExtraContact']['practice_id'])) {
+											$practice_ids = $_POST['ExtraContact']['practice_id'];
+											$pca_models = array();
+											for($i =0;$i<sizeof($gp_ids);$i++) {
+													$pca_model = new PatientContactAssociate();
+													$pca_model->gp_id = $gp_ids[$i];
+													$pca_model->practice_id = $practice_ids[$i];
+													$pca_models[] = $pca_model;
+											}
+									} else {
+											$pca_models = array();
+											foreach ($gp_ids as $gp_id){
+													$pca_model = new PatientContactAssociate();
+													$pca_model->gp_id = $gp_id;
+													$pca_models[] = $pca_model;
+											}
+									}
+									if (!empty($pca_models)){
+											$patient->patientContactAssociates = $pca_models;
+									}
+							}
             }
+
 
             if (isset($_POST['PatientUserReferral'])) {
                 $patient_user_referral = new PatientUserReferral();

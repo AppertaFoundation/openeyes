@@ -134,4 +134,13 @@ class Element_OphTrOperationnote_GenericProcedure extends Element_OnDemand
     {
         return false;
     }
+
+    public function setDefaultOptions(Patient $patient = null)
+    {
+        $genericProcedureData = OphTrOperationNote_Generic_Procedure_Data::model()->find(
+            'proc_id =:proc_id',
+            ['proc_id' => $this->proc_id]);
+        $this->comments = isset($genericProcedureData) ? $genericProcedureData->default_text: null;
+        parent::setDefaultOptions($patient);
+    }
 }

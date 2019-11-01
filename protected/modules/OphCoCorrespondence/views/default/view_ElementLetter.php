@@ -20,7 +20,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
-    <div class="cols-5 ">
+    <div class="cols-3">
         <table class="cols-full">
             <?php if($correspondeceApp === "on") { ?>
             <tr>
@@ -40,6 +40,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                 </td>
             </tr>
             <?php } ?>
+					  <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
             <tr>
                 <td class="data-label">
                     From
@@ -116,6 +117,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                     ?>
                 </td>
             </tr>
+					<?php } ?>
         </table>
     </div>
     <div class="spinner-overlay">
@@ -127,8 +129,18 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
-         style="background-color: white; color: black; display:none;">
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
+         <?php
+         // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
+         if ($element->draft) {?>
+         style="background-color: white; color: black; display:none;
+                 background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
+                 background-position-x: center;
+                 background-position-y: top;
+                 background-size: initial;
+                 background-repeat-x: no-repeat;
+                 background-repeat-y: no-repeat;">
+            <?php }?>
             <header>
                 <?php
             $ccString = "";
@@ -189,6 +201,9 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , []);
+        let options = [];
+        // OE-8581 Disable lightning image loading due to speed issues
+        options['disableAjaxCall'] = true;
+        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
     });
 </script>

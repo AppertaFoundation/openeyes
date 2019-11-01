@@ -18,7 +18,9 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="furtherfindings-multi-select">
-      <?php echo $form->multiSelectListFreeText(
+      <?php
+      $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+      echo $form->multiSelectListFreeText(
           $element,
           CHtml::modelName($element) . '[further_findings_assignment]',
           'further_findings_assignment',
@@ -27,7 +29,7 @@
               CHtml::listData(
                   Finding::model()->activeOrPk(
                       $element->furtherFindingsAssigned)->bySubspecialty(
-                      $this->firm->getSubspecialty())->findAll(),
+                      $firm->getSubspecialty())->findAll(),
                   'id',
                   'name')
           ),

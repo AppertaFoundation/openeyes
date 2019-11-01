@@ -9,7 +9,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $('textarea').autosize();
+    autosize($('textarea'));
 
     // restrict the number of characters to be inserted into the textarea
     $('#Element_OphInLabResults_Inr_comment').live("keypress", function(e) {

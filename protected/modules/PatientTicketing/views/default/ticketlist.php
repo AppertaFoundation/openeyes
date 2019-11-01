@@ -33,10 +33,10 @@
       <col>
       <col class="cols-2"> <!-- patient -->
       <col>
+      <col class="cols-1"><!-- date -->
       <col class="cols-1">
-      <col class="cols-1">
-      <col class="cols-2"><!-- clinical info -->
-      <col class="cols-4"><!-- referral notes -->
+      <col class="cols-3"><!-- clinical info -->
+      <col class="cols-3"><!-- notes -->
       <col>
     </colgroup>
     <thead>
@@ -57,5 +57,10 @@
         $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
     } ?>
     </tbody>
+    <tfoot class="pagination-container">
+        <td colspan="9">
+            <?php $this->widget('LinkPager', ['pages' => $pagination]); ?>
+        </td>
+    </tfoot>
   </table>
 </main>

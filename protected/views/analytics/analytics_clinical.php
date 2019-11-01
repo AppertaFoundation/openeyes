@@ -9,6 +9,10 @@
     $(document).ready(function () {
         var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
         var clinical_data = <?= CJavaScript::encode($clinical_data); ?>;
+
+        var max_name_length = Math.max(...clinical_data['text'].map(function (item) {
+            return item.length;
+        }));
         window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
         var data = [{
             name: clinical_data['title'],
@@ -16,14 +20,18 @@
             y: clinical_data['y'],
             customdata: clinical_data['customdata'],
             type: 'bar',
+            hoverinfo:'x+y',
             orientation: 'h'
         }];
-        clinical_layout['margin']['l'] = 250;
+        clinical_layout['margin']['l'] = max_name_length*7;
+        clinical_layout['xaxis']['showticksuffix'] = 'none';
+        clinical_layout['xaxis']['title'] = 'Number of Patient';
+        clinical_layout['xaxis']['tick0'] = 0;
+        clinical_layout['xaxis']['dtick'] = Math.round((Math.max(...clinical_data['x'])+10)/50)*5;
         clinical_layout['yaxis']['showgrid'] = false;
         clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
         clinical_layout['yaxis']['ticktext'] = clinical_data['text'];
         clinical_layout['clickmode'] = 'event';
-        clinical_layout['hovermode'] = 'y';
         Plotly.newPlot(
             'js-hs-chart-analytics-clinical', data ,clinical_layout, analytics_options
         );
@@ -38,8 +46,11 @@
                     //click on "other" bar, redraw the chart show details of other disorders.
                     custom_data['type'] = 'bar';
                     custom_data['orientation'] = 'h';
+                    custom_data['hoverinfo'] = 'x+y';
                     clinical_layout['yaxis']['tickvals'] = custom_data['y'];
                     clinical_layout['yaxis']['ticktext'] = custom_data['text'];
+                    clinical_layout['xaxis']['dtick'] = Math.round((Math.max(...custom_data['x'])+10)/50)*5;
+
                     Plotly.react(
                         'js-hs-chart-analytics-clinical', [custom_data], clinical_layout, analytics_options
                     );

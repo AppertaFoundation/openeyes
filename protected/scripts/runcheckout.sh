@@ -132,11 +132,6 @@ do
             delete=(openeyes)
             modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
         ;;
-		--depth) cloneparams="$cloneparams --depth $2"
-		shift
-		;;
-		--single-branch) cloneparams="$cloneparams --single-branch"
-		;;
     	*)  if [ ! -z "$1" ]; then
     			if [ "$branch" == "$defaultbranch" ]; then
     				branch=$1

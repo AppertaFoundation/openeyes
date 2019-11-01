@@ -45,6 +45,10 @@ node_modules
 /assets/
 /protected/files/*
 package-lock.json
+.recycle/
+/.recycle
+.vscode/
+/.vscode
 
 # Include core modules
 !/protected/modules/OphCiExamination/

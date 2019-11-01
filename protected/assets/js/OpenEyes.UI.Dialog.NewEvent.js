@@ -500,45 +500,47 @@
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
         
         if(selectedContextItem.length !== 0){
-            if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))){
+         //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
                 let postData = {
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                     eventId: OE_event_id,
                     patientId: self.options.patientId,
                     selectedContextId: selectedContextItem.data('context-id'),
-                    selectedSubspecialtyId: selectedSubspecialtyItem.data('service-id'),
+                    selected_firm_id: selectedSubspecialtyItem.data('service-id'),
                     selectedWorkflowStepId: selectedWorkflowStepItem.data('workflow-id')
                 };
                 
                 if(newSubspecialty.length !== 0){
-                    postData.selectedSubspecialtyId = newSubspecialty.data('service-id')
+                    postData.selected_firm_id = newSubspecialty.data('service-id');
                 }
-                $.post("/ChangeEvent/UpdateEpisode",postData,function(successful){
-                    if(successful === "true"){
-                        $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
-                        $('#change-firm').trigger('click');
-                        // MutationObserver
-                        let observer = new MutationObserver(function(mutationsList, observer){
-                            for(let mutation of mutationsList) {
-                                if (mutation.type === 'childList' && mutation.addedNodes.length > 0){
-                                    for(let nodeList of mutation.addedNodes){
-                                        if(nodeList.id === 'site-and-firm-form'){
-                                            // stop observing
-                                            observer.disconnect();
-                                            $('#site-and-firm-form').closest('.oe-popup').css('visibility','hidden');
-                                            $('#SiteAndFirmForm_firm_id').find('option[value="'+postData.selectedContextId+'"]').attr('selected','selected').trigger('change');
-                                            $('#site-and-firm-form').trigger('submit');
-                                        }
-                                    }
+                $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
+
+                if (postData !== undefined) {
+                    $.post("/ChangeEvent/UpdateEpisode", postData, function(result) {
+                        if(result === "true"){
+                            $('.'+self.options.popupClass+' .close-icon-btn').trigger('click');
+
+                            $.post("/site/changesiteandfirm", {
+                                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                                SiteAndFirmForm: {
+                                    'site_id': OE_site_id,
+                                    'firm_id': postData.selectedContextId
+                                },
+
+                            }, function() {
+
+                                if (typeof moduleName && moduleName === 'OphCiExamination') {
+                                    window.location.href = `/OphCiExamination/default/step/${OE_event_id}?patient_id=${OE_patient_id}&step_id=${postData.selectedWorkflowStepId}`;
+                                } else {
+                                    window.location.reload();
                                 }
-                            }
-                        });
-                        observer.observe(document.getElementsByTagName('body')[0], { attributes: true, childList: true, subtree: true });
-                    }
-                });
-            }
+                            });
+                        }
+                    });
+                }
+           // }
         }
-    }
+    };
 
     exports.NewEvent = NewEventDialog;
 }(OpenEyes.UI.Dialog, OpenEyes.Util));

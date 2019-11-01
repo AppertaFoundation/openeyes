@@ -53,6 +53,29 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Return bites based on the ini_get returns value e.g. 2M
+     * @param $val
+     * @return int|string
+     */
+    public function return_bytes($val) {
+        $val = (int)trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        switch($last) {
+            case 'g':
+                $val *= (1024 * 1024 * 1024); //1073741824
+                break;
+            case 'm':
+                $val *= (1024 * 1024); //1048576
+                break;
+            case 'k':
+                $val *= 1024;
+                break;
+        }
+
+        return $val;
+    }
+
+    /**
      * Returns the allowed file size in MB or bytes
      * @param bool $to_mb
      * @return int

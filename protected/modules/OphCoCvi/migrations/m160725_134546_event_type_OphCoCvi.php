@@ -297,7 +297,7 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		$this->createTable('et_ophcocvi_clinicinfo_disorder_assignment', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'element_id' => 'int(10) unsigned NOT NULL',
-			'ophcocvi_clinicinfo_disorder_id' => 'BIGINT unsigned NOT NULL',
+			'ophcocvi_clinicinfo_disorder_id' => 'int(10) unsigned NOT NULL',
 			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -317,7 +317,7 @@ class m160725_134546_event_type_OphCoCvi extends CDbMigration
 		$this->createTable('et_ophcocvi_clinicinfo_disorder_assignment_version', array(
 			'id' => 'int(10) unsigned NOT NULL',
 			'element_id' => 'int(10) unsigned NOT NULL',
-			'ophcocvi_clinicinfo_disorder_id' => 'BIGINT unsigned NOT NULL',
+			'ophcocvi_clinicinfo_disorder_id' => 'int(10) unsigned NOT NULL',
 			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',

@@ -87,7 +87,9 @@
             <?php echo $element->getAttributeLabel($side.'_comments')?>:
         </td>
         <td class="cols-8">
-            <?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
+            <div class="comment-block" >
+                <?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
+            </div>
         </td>
       </tr>
     <?php endif;?>

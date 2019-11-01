@@ -5,12 +5,9 @@ class m180307_235515_update_pupillary_abnormalities_element_type extends CDbMigr
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
-        $group_id = $this->dbConnection->createCommand()->select('id')->from('element_group')->where('name = "Visual Function"')->queryScalar();
-
         $this->update('element_type',
             array(
                 'name' => 'Pupils',
-                'element_group_id' => $group_id,
                 'display_order' => 135,
             ),
             "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");

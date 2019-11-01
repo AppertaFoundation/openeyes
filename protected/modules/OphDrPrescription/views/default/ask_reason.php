@@ -58,7 +58,6 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
         <div class="column cols-6">
             <div id="other_reason_controls" style="display: none;">
                 <a href="javascript:void(-1);" id="submit_other" style="color: #3fa522;"><i class="oe-i tick large"></i></a>
-                <br/>
                 <a href="javascript:void(-1);" id="cancel_other" style="color: #eb5911;"><i class="oe-i remove large"></i></a>
             </div>
         </div>

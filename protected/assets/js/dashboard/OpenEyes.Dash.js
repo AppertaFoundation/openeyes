@@ -112,12 +112,21 @@
             var chart,
                 $searchForm = $(this),
                 chartId = $searchForm.parents('.report-container').find('.chart-container').attr('id');
+            if($('#js-analytics-spinner').length){
+                $("#"+chartId).hide();
+                $('#js-analytics-spinner').show();
+            }
 
             $.ajax({
                 url: $(this).attr('action'),
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
+
+                    if($('#js-analytics-spinner').length){
+                        $('#js-analytics-spinner').hide();
+                        $("#"+chartId).show();
+                    }
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
@@ -395,16 +404,16 @@
                 data['INDICATION_FOR_SURGERY']['incomplete'],
                 data['E/I']['ineligible'],
             ];
-            chart.data[1]['y'] = completedData.map(function (item) {
+            chart.data[0]['y'] = completedData.map(function (item) {
                 return item.length/data['total'];
             });
-            chart.data[0]['y'] = incompletedData.map(function (item) {
+            chart.data[1]['y'] = incompletedData.map(function (item) {
                 return item.length/data['total'];
             });
-            chart.data[1]['customdata'] = completedData.map(function (item) {
+            chart.data[0]['customdata'] = completedData.map(function (item) {
                 return item;
             });
-            chart.data[0]['customdata'] = incompletedData.map(function (item) {
+            chart.data[1]['customdata'] = incompletedData.map(function (item) {
                 return item;
             });
             Plotly.redraw(chart);

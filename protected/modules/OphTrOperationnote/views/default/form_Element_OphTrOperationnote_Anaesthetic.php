@@ -159,7 +159,7 @@ if (count($element->anaesthetic_type_assignments) == 0) {
                   array(
                       'rows' => 4,
                       'cols' => 40,
-                      'class' => 'js-comment-field',
+                      'class' => 'js-comment-field autosize',
                   )) ?>
           </td>
         </tr>

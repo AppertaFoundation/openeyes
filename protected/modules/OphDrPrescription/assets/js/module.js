@@ -30,7 +30,7 @@ $(document).ready(function () {
     return true;
   }
 
-  $('#Element_OphDrPrescription_Details_comments').autosize();
+  autosize($('#Element_OphDrPrescription_Details_comments'));
 
   $(document).on('click', '#et_save_print', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);

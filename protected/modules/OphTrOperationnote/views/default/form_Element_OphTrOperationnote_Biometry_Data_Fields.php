@@ -72,7 +72,7 @@ $biometry_data = [
                 <td>
                     <div class="data-value js-predicted-refraction"
                          id="predicted_refraction_<?php echo $side ?>">
-                    <?php echo $element->{'predicted_refraction_' . $side} ? $element->{'predicted_refraction_' . $side} : 'None' ?>
+                    <?php echo isset($element->{'predicted_refraction_' . $side}) ? $element->{'predicted_refraction_' . $side} : 'None' ?>
                     </div>
                 </td>
             </tr>

@@ -188,7 +188,7 @@
     $(this.options.scratchpadButtonSelector).text(txt);
 
     if (showScratchpad) {
-      $(this.options.scratchpadInputSelector).autosize();
+      autosize($(this.options.scratchpadInputSelector));
       $(this.options.scratchpadPopupSelector).draggable({
         containment: "body",
         stop: function (event, ui) {
@@ -296,7 +296,7 @@
       delete(window.changedTickets[queueset_id]);
       if (Object.keys(window.changedTickets).length == 0) window.patientTicketChanged = false;
       //$(this).parents('.alert-box').find('.js-toggle').trigger('click');
-      window.location = "/PatientTicketing/default/?queueset_id=" + queueset_id + "&cat_id=" + category_id;
+      window.location = "/PatientTicketing/default/?queueset_id=" + queueset_id + "&cat_id=" + category_id+"&unset_patientticketing=true";
     });
 
     $(document).on('click', '.js-auto-save', function (e) {

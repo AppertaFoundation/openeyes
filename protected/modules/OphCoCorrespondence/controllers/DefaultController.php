@@ -90,7 +90,6 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
-            $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
 
             $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
                 array('site_id' => Yii::app()->session['selected_site_id'],
@@ -205,6 +204,13 @@ class DefaultController extends BaseEventTypeController
             $data['sel_address_target'] = get_class($contact).$contact->id;
         }
 
+        if ($macro->recipient && $macro->recipient->name == 'Optometrist' ) {
+            $contact = $patient->getPatientOptometrist();
+            if(isset($contact)) {
+                $data['sel_address_target'] = get_class($contact) . $contact->id;
+            }
+        }
+
         if (isset($contact)) {
             $address = $contact->getLetterAddress(array(
                 'patient' => $patient,
@@ -260,6 +266,20 @@ class DefaultController extends BaseEventTypeController
                     'include_prefix' => true,
                 ));
             $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="'.get_class($cc_contact).$cc_contact->id.'" />';
+        }
+
+        if ($macro->cc_optometrist) {
+            $cc_contact = $contact = $patient->getPatientOptometrist();
+            if($cc_contact) {
+                $cc['text'][] = $cc_contact->getLetterAddress(array(
+                    'patient' => $patient,
+                    'include_name' => true,
+                    'include_label' => true,
+                    'delimiter' => ', ',
+                    'include_prefix' => true,
+                ));
+                $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="' . get_class($cc_contact) . $cc_contact->id . '" />';
+            }
         }
 
         if ($macro->cc_drss) {
@@ -530,12 +550,21 @@ class DefaultController extends BaseEventTypeController
      */
     private function addPDFToOutput($pdf_path)
     {
-        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
-        for ($i = 1; $i <= $pagecount; $i++) {
+        if(file_exists($pdf_path)){
+            $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+            for ($i = 1; $i <= $pagecount; $i++) {
+                $this->pdf_output->AddPage('P');
+                $tplidx = $this->pdf_output->ImportPage($i);
+                $this->pdf_output->useTemplate($tplidx);
+            }
+        } else {
             $this->pdf_output->AddPage('P');
-            $tplidx = $this->pdf_output->ImportPage($i);
-            $this->pdf_output->useTemplate($tplidx);
+            $this->pdf_output->SetFont('Arial','B',16);
+            $this->pdf_output->SetY(($this->pdf_output->GetPageHeight()/2)-10);
+            $this->pdf_output->Cell(0,10,'Attachment unavailable -',0,2,'C');
+            $this->pdf_output->Cell(0,10,'please try re-printing the event to re-generate attachments',0,2,'C');
         }
+
     }
 
     /**

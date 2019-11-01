@@ -59,7 +59,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
                 $dataElement.find('.js-remove-element').on('click', removeResultElement);
                 $('.lab-results-type').parent().after($dataElement);
                 enableButtons();
-                $('textarea').autosize();
+                autosize($('textarea'));
             }
         });
     }

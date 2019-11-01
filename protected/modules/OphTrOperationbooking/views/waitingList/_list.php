@@ -167,7 +167,11 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
         </td>
           <?php if ($this->module->isTheatreDiaryDisabled()): ?>
             <td>
-              <button data-event-id="<?php echo $eo->event_id; ?>" class="button blue hint btn-booked">Booked</button>
+              <a href="/OphTrOperationbooking/default/update/<?php echo $eo->event_id; ?>?waiting-list=1" class="button blue hint">Edit Booking</a>
+            </td>
+          <?php else: ?>
+            <td>
+              <a href="/OphTrOperationbooking/booking/schedule/<?php echo $eo->event_id; ?>?waiting-list=1" class="button blue hint">Schedule Operation</a>
             </td>
           <?php endif; ?>
       </tr>

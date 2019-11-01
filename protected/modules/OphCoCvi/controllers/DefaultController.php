@@ -61,8 +61,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $create_new_cvi = $this->request->getParam('createnewcvi', null);
         if ($create_new_cvi !== null) {
-            $cancel_url = $this->episode ? '/patient/episode/' . $this->episode->id
-                : '/patient/episodes/' . $this->patient->id;
+            $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
             if ($create_new_cvi == 1) {
                 if (!$this->getManager()->canCreateEventForPatient($this->patient)) {
                     $this->getApp()->user->setFlash('warning.cvi_create', 'You cannot create another CVI whilst one exists that has not been issued.');

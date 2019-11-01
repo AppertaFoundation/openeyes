@@ -154,6 +154,7 @@ $recipients_data = $recipients_data + $none_option;
                 <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right', 'nowrapper' => true)) ?>
                 <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right', 'nowrapper' => true)) ?>
                 <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'cc_optometrist', array('text-align' => 'right', 'nowrapper' => true)) ?>
                 <?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right', 'nowrapper' => true)) ?>
             </td>
             <td></td>

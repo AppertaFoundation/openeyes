@@ -21,25 +21,29 @@
  *
  * The following are the available columns in table 'contact':
  *
- * @property int          $id
- * @property string       $nick_name
- * @property string       $primary_phone
- * @property string       $title
- * @property string       $first_name
- * @property string       $last_name
- * @property string       $qualifications
+ * @property int $id
+ * @property string $nick_name
+ * @property string $primary_phone
+ * @property string $title
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $qualifications
+ * @property string $comment
+ * @property string $national_code
+ * @property int $active
+ *
  *
  * The following are the available model relations:
- * @property Gp           $gp
- * @property Address[]    $addresses
- * @property Address      $address Primary address
- * @property Address      $homeAddress Home address
- * @property Address      $correspondAddress Correspondence address
+ * @property Gp $gp
+ * @property Address[] $addresses
+ * @property Address $address Primary address
+ * @property Address $homeAddress Home address
+ * @property Address $correspondAddress Correspondence address
  * @property ContactLabel $label
  *
  * The following are pseudo (calculated) fields
- * @property string       $salutationName
- * @property string       $fullName
+ * @property string $salutationName
+ * @property string $fullName
  */
 class Contact extends BaseActiveRecordVersioned
 {
@@ -68,8 +72,10 @@ class Contact extends BaseActiveRecordVersioned
     {
         return array(
             array('nick_name', 'length', 'max' => 80),
-            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
-            array('first_name, last_name', 'required', 'on' => array('manualAddPatient','referral','self_register','other_register','manage_gp')),
+            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
+             contact_label_id, active, comment, national_code, fax',
+                'safe'),
+            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp', 'manage_practice')),
             array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
@@ -124,8 +130,8 @@ class Contact extends BaseActiveRecordVersioned
             'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
             'title' => 'Title',
-            'first_name' =>  $this->scenario === 'manage_practice' ? 'Practice Name' : 'First Name',
-            'last_name' => 'Last Name',
+            'first_name' => $this->scenario === 'manage_practice' ? 'Practice Name' : 'First name',
+            'last_name' => 'Last name',
             'qualifications' => 'Qualifications',
             'contact_label_id' => 'Label',
         );
@@ -151,6 +157,13 @@ class Contact extends BaseActiveRecordVersioned
         ));
     }
 
+    public function behaviors()
+    {
+        return array(
+            'ContactBehavior' => 'ContactBehavior',
+        );
+    }
+
     /**
      * @return string Full name
      */
@@ -174,7 +187,11 @@ class Contact extends BaseActiveRecordVersioned
      */
     public function getSalutationName()
     {
-        return $this->title . ' ' . $this->last_name;
+        if($this->title) {
+            return $this->title . ' ' . $this->last_name;
+        } else {
+            return $this->first_name . ' ' . $this->last_name;
+        }
     }
 
     public function contactLine($location = false)
@@ -253,11 +270,20 @@ class Contact extends BaseActiveRecordVersioned
     }
 
     protected function performAjaxValidation($model)
+		{
+			if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
+				echo CActiveForm::validate($model);
+				Yii::app()->end();
+			}
+		}
+
+    public function getActiveContacts($patient_id)
     {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
-            echo CActiveForm::validate($model);
-            Yii::app()->end();
-        }
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('t.active = 1');
+        $criteria->join .= "JOIN contact_label cl ON cl.id = t.contact_label_id";
+        $criteria->addCondition('cl.is_private = 0');
+        return Contact::model()->with('label')->findAll($criteria);
     }
 }
 

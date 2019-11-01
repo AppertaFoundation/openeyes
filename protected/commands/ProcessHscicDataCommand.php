@@ -601,7 +601,8 @@ EOH;
      */
     private function importPractice($data)
     {
-        if (!($practice = Practice::model()->findByAttributes(array('code' => $data['code'])))) {
+        $practice = Practice::model()->findByAttributes(array('code' => $data['code']));
+        if (!$practice) {
             $practice = new Practice();
             $practice->code = $data['code'];
         }

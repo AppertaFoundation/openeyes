@@ -44,7 +44,7 @@ $(document).ready(function() {
 
 	$('tr.all-episode').unbind('click').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/patient/episode/'+$(this).attr('id');
+		window.location.href = baseUrl+'/patient/summary/'+$(this).attr('id');
 	});
 
 	$('a.removeContact').die('click').live('click',function(e) {

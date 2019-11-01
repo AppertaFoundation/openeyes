@@ -99,7 +99,7 @@
         <tr>
             <td>
                 <?=\CHtml::radioButtonList(
-                    'date',
+                    'date_type',
                     2,
                     ['1' => 'Import date', '2' => 'Study date'],
                     ['separator' => '  ']

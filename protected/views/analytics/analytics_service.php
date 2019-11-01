@@ -5,6 +5,11 @@
     function constructPlotlyData(service_data) {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
         service_layout['xaxis']['rangemode'] = 'nonnegative';
+        service_layout['xaxis']['dtick'] = 5;
+        service_layout['xaxis']['range'] = [0, 80];
+        service_layout['yaxis']['title'] = 'Patient count';
+        service_layout['yaxis']['tickformat'] = 'd';
+        service_layout['yaxis']['dtick'] = 1;
 
         var overdue_data = {
             name: "Overdue followups",
@@ -15,11 +20,10 @@
             customdata: Object.values(service_data['overdue']),
             type: 'bar',
         };
-        if (overdue_data['x'].length < 10) {
-            overdue_data['width'] = 0.2;
-        }
 
+        var overdue_max = Math.max(...overdue_data['y'])+5 > 20? Math.max(...overdue_data['y']) + 5: 20;
         var overdue_count = overdue_data['y'].reduce((a, b) => a + b, 0);
+
         var coming_data ={
             name: "Followups coming due",
             x: Object.keys(service_data['coming']),
@@ -29,12 +33,8 @@
             customdata: Object.values(service_data['coming']),
             type: 'bar',
         };
-        if (coming_data['x'].length < 10 ) {
-            coming_data['width'] = 0.2;
-        }
-
+        var coming_max = Math.max(...coming_data['y'])+5 > 20? Math.max(...coming_data['y']) + 5: 20;
         var coming_count = coming_data['y'].reduce((a, b) => a + b, 0);
-
 
 
         var waiting_data ={
@@ -46,35 +46,49 @@
             customdata: Object.values(service_data['waiting']),
             type: 'bar',
         };
-        if (waiting_data['x'].length < 10 ) {
-            waiting_data['width'] = 0.2;
-        }
+        var waiting_max = Math.max(...waiting_data['y'])+5 > 20? Math.max(...waiting_data['y']) + 5: 20;
         var waiting_count = waiting_data['y'].reduce((a, b) => a + b, 0);
+      
+        for (const item of [overdue_data, coming_data, waiting_data]){
+          if (item['x'].length == 0) {
+            item['x'] = [null];
+            item['y'] = [null];
+          }
+        }
 
         var first_plot_data;
         if ($('#js-hs-app-follow-up-overdue').hasClass("selected")){
             first_plot_data = [overdue_data];
+            service_layout['xaxis']['title'] = "Overdue followups (weeks)";
+            service_layout['yaxis']['range'] = [0, overdue_max];
         }else if($('#js-hs-app-follow-up-coming').hasClass("selected")){
             first_plot_data=[coming_data];
+            service_layout['xaxis']['title'] = "Followups coming due (weeks)";
+            service_layout['yaxis']['range'] = [0, coming_max];
+
         }else if($('#js-hs-app-follow-up-waiting').hasClass("selected")){
             first_plot_data=[waiting_data];
+            service_layout['xaxis']['title'] = "Waiting time for new patients (weeks)";
+            service_layout['yaxis']['range'] = [0, waiting_max];
         }
 
         $('#js-hs-chart-analytics-service').html("");
+
         Plotly.newPlot(
             'js-hs-chart-analytics-service', first_plot_data ,service_layout, analytics_options
         );
 
-        $('#js-hs-app-follow-up-coming').html('Follow-Up(' + coming_count + ')');
-        $('#js-hs-app-follow-up-overdue').html('Delayed(' + overdue_count + ')');
-        $('#js-hs-app-follow-up-waiting').html('Waiting time(' + waiting_count + ')');
+        $('#js-hs-app-follow-up-coming').html('Followups coming due(' + coming_count + ')');
+        $('#js-hs-app-follow-up-overdue').html('Overdue followups(' + overdue_count + ')');
+        $('#js-hs-app-follow-up-waiting').html('Waiting time for new patients(' + waiting_count + ')');
         $('#js-hs-app-follow-up-coming').on('click', function () {
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-overdue').removeClass('selected');
             $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
-
+            service_layout['xaxis']['title'] = "Followups coming due (weeks)";
+            service_layout['yaxis']['range'] = [0, coming_max];
             Plotly.react(
                 'js-hs-chart-analytics-service', [coming_data] ,service_layout, analytics_options
             );
@@ -86,7 +100,8 @@
             $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
-
+            service_layout['xaxis']['title'] = "Overdue followups (weeks)";
+            service_layout['yaxis']['range'] = [0, overdue_max];
             Plotly.react(
                 'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
             );
@@ -97,7 +112,8 @@
             $('#js-hs-app-follow-up-overdue').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
-
+            service_layout['xaxis']['title'] = "Waiting time for new patients (weeks)";
+            service_layout['yaxis']['range'] = [0, waiting_max];
             Plotly.react(
                 'js-hs-chart-analytics-service', [waiting_data] ,service_layout, analytics_options
             );

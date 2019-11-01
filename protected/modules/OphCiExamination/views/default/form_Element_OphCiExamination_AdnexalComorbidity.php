@@ -43,8 +43,9 @@
         </div>
     <?php
     $items = array();
+    $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
     $itemSets = array();
-    foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+    foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
         foreach ($attribute->getAttributeOptions() as $option) {
             $items[] = ['label' => (string)$option->slug];
         }

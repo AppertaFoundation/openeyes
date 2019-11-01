@@ -72,8 +72,44 @@ function setGlaucomaDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length) {
-        $(pcrEl).val('Y');
+    let input_glaucoma = $('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]');
+    let glaucoma_present = {'right-eye':false, 'left-eye':false};
+
+    if (input_glaucoma.length) {
+        let glaucoma_present_nk = true;
+
+        $.each(input_glaucoma, function(i,v){
+            let parent_row = $(this).closest('tr');
+            let side_checked = parent_row.find('.oe-eye-lat-icons :checked');
+
+            if(side_checked.length){
+                glaucoma_present_nk = false;
+                switch(side_checked.length){
+                    case 2:
+                        glaucoma_present['right-eye'] = true;
+                        glaucoma_present['left-eye'] = true;
+                    break;
+                    case 1:
+                        glaucoma_present[side_checked.data('eye-side')+'-eye'] = true;
+                    break;
+                }
+            }
+        });
+
+        if(glaucoma_present_nk){
+            $(pcrEl).val('NK');
+        } else {
+            $.each(['right-eye', 'left-eye'],function(i,eye){
+                let pcrrisk_section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .'+eye);
+
+                if(glaucoma_present[eye]){
+                    pcrrisk_section.find(pcrEl).val('Y');
+                } else {
+                    pcrrisk_section.find(pcrEl).val('N');
+                }
+            });
+        }
+
     } else {
         $(pcrEl).val('N');
     }
@@ -315,7 +351,12 @@ function mapExaminationToPcr() {
                 "pcr": undefined,
                 "func": setRisks,
                 "init": true
-            }
+            },
+            ".oe-eye-lat-icons :checkbox": {
+                "pcr": '.pcrrisk_glaucoma',
+                "func": setGlaucomaDisorder,
+                "init": true
+            },
         },
         examinationObj,
         examinationEl;

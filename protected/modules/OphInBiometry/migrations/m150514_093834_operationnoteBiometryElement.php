@@ -4,9 +4,9 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
 {
     public function up()
     {
-        $currentTables = $this->dbConnection->getSchema()->getTableNames();
+        $findTable = Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element');
 
-        if (!in_array('ophtroperationnote_procedure_element', $currentTables)) {
+        if (!$findTable) {
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';
         } else {
             $eventType = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name',
@@ -46,7 +46,7 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
                 $elementType = $currentElementType;
             }
 
-            $procedureNames = array('Extracapsular cataract extraction', 'Extracapsular cataract extraction and insertion of IOL', 'Intracapsular cataract extraction');
+            $procedureNames = array('Extracapsular cataract extraction', 'Extracapsular cataract extraction and insertion of Intraocular lens', 'Intracapsular cataract extraction');
 
             foreach ($procedureNames as $procedureName) {
                 $proc = $this->dbConnection->createCommand()->select('*')->from('proc')->where('term = :term',

@@ -21,7 +21,6 @@ namespace OEModule\PatientTicketing\controllers;
 use OEModule\PatientTicketing\models;
 use OEModule\PatientTicketing\services;
 use OEModule\PatientTicketing\components\AutoSaveTicket;
-use services\Patient;
 use Yii;
 
 class DefaultController extends \BaseModuleController
@@ -161,6 +160,11 @@ class DefaultController extends \BaseModuleController
 
         $cat_id = Yii::app()->request->getParam('cat_id', null);
         $qs_id = Yii::app()->request->getParam('queueset_id', null);
+        $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing', null);
+
+        if ($unset_patientticketing === "true") {
+            unset(Yii::app()->session['patientticket_ticket_ids']);
+        }
 
         if (!$cat_id) {
             throw new \CHttpException(404, 'Category ID required');
@@ -174,7 +178,7 @@ class DefaultController extends \BaseModuleController
 
         $queueset = null;
         $tickets = null;
-        $pages = null;
+        $pagination = null;
         $patient_filter = null;
         $patient_list = [];
 
@@ -224,10 +228,9 @@ class DefaultController extends \BaseModuleController
                 list($criteria, $patient_filter) = $this->buildTicketFilterCriteria($filter_options, $queueset);
 
                 $count = models\Ticket::model()->count($criteria);
-                $pages = new \CPagination($count);
-
-                $pages->pageSize = $this->page_size;
-                $pages->applyLimit($criteria);
+                $pagination = new \CPagination($count);
+                $pagination->pageSize = $this->page_size;
+                $pagination->applyLimit($criteria);
 
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
@@ -252,7 +255,7 @@ class DefaultController extends \BaseModuleController
                 'queueset' => $queueset,
                 'tickets' => $tickets,
                 'patient_filter' => $patient_filter,
-                'pages' => $pages,
+                'pagination' => $pagination,
                 'cat_id' => $cat_id,
                 'patient_list' => $patient_list,
             ));

@@ -4,7 +4,7 @@ use OEModule\OphCiExamination\models;
 
 class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 {
-    public function run_oescape()
+    public function run_oescape($widgets_no = 1)
     {
         $this->render('OphCiExamination_OEscape_Medication');
     }

@@ -87,7 +87,7 @@
           <?php $priorities = \Yii::app()->request->getPost('priority-ids', []); ?>
         <label class="inline highlight">
             <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
-          <i class="oe-i circle-green small pad"></i>
+          <i class="oe-i circle-red small pad"></i>
         </label>
         <label class="inline highlight">
             <?= \CHtml::checkBox('priority-ids[]', in_array(2, $priorities), ['value' => 2]); ?>
@@ -95,7 +95,7 @@
         </label>
         <label class="inline highlight">
             <?= \CHtml::checkBox('priority-ids[]', in_array(3, $priorities), ['value' => 3]); ?>
-          <i class="oe-i circle-red small pad"></i>
+          <i class="oe-i circle-green small pad"></i>
         </label>
         <small>
           <label class="inline highlight">

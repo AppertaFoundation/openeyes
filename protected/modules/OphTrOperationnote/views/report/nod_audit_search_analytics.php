@@ -6,7 +6,7 @@
                     <h3>Months Since Operation</h3>
                     <select name="months" id="months-since-operation" style="font-size: 1em; width: inherit" >
                         <?php
-                        $monthsoptions = array(1, 0.25,0.5,0.75,2,3,4);
+                        $monthsoptions = array(4, 0.25,0.5,0.75,1,2,3);
                         foreach ($monthsoptions as $option):?>
                             <option value="<?=$option?>"><?=$option?></option>
                         <?php endforeach;?>

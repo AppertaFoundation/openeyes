@@ -17,7 +17,7 @@
  */
 
 // Event actions
-$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/' . $episode->id),
+$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/summary/' . $episode->id),
     array('level' => 'cancel'));
 $this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'save'));
 

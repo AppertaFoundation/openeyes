@@ -21,7 +21,7 @@
     <tbody>
     <?php foreach ($element->{"{$side}_values"} as $value): ?>
       <tr>
-        <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name ?>mm Hg</td>
+        <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name.'mm Hg' ?></td>
         <td>
           <i class="oe-i time small no-click pad"></i>
             <?= substr($value->reading_time, 0, 5) ?>
@@ -31,7 +31,8 @@
     <?php endforeach ?>
     </tbody>
   </table>
-    <?php if ($element->{"{$side}_comments"}): ?>
-    <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
-    <?php endif; ?>
 <?php endif ?>
+
+<?php if ($element->{"{$side}_comments"}): ?>
+    <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
+<?php endif; ?>

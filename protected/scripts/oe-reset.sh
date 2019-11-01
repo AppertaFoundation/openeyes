@@ -93,12 +93,13 @@ do
     		;;
     	--no-files) nofiles=1
     		;;
-    	--genetics-enable)
-    		bash $SCRIPTDIR/add-genetics.sh
-    	;;
-    	--genetics-disable)
-    		bash $SCRIPTDIR/add-genetics.sh -r
-    	;;
+        # TODO: fix genetics
+    	# --genetics-enable)
+    	# 	bash /vagrant/install/add-genetics.sh
+    	# ;;
+    	# --genetics-disable)
+    	# 	bash /vagrant/install/add-genetics.sh -r
+    	# ;;
     	-p) # set dbpassword and move on to next param
             dbpassword="$2"
             shift
@@ -136,7 +137,6 @@ done
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
-		checkoutparams="$chekoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
             checkoutparams="$checkoutparams $i"

@@ -121,6 +121,7 @@ class BookingController extends OphTrOperationbookingEventController
                     foreach ($theatre->sessions as $_session) {
                         if ($session->id == $_session->id) {
                             $bookable = $_session->operationBookable($operation);
+                            $there_is_place_for_complex_booking = $_session->isTherePlaceForComplexBooking($operation);
                         }
                     }
                 }
@@ -205,13 +206,15 @@ class BookingController extends OphTrOperationbookingEventController
             'firm' => $firm,
             'firm_list' => $booked_firm_list,
             'date' => $date,
-            'selectedDate' => @$selectedDate,
+            'selectedDate' => isset($selectedDate) ? $selectedDate : null,
             'sessions' => $operation->getFirmCalendarForMonth($firm, $date, $schedule_options),
-            'theatres' => @$theatres,
-            'session' => @$session,
-            'bookings' => @$bookings,
-            'bookable' => @$bookable,
-            'errors' => @$errors,
+            'theatres' => isset($theatres) ? $theatres : null,
+            'session' => isset($session) ? $session : null,
+            'bookings' => isset($bookings) ? $bookings : null,
+            'bookable' => isset($bookable) ? $bookable : null,
+            'there_is_place_for_complex_booking' => isset($there_is_place_for_complex_booking) ?
+                $there_is_place_for_complex_booking : null,
+            'errors' => isset($errors) ? $errors : null,
         ));
     }
 

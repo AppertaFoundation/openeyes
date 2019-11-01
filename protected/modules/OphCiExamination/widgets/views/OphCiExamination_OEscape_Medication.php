@@ -26,15 +26,18 @@
           color:'#ffffff',
         },
       };
-
+      
       for (key in meds_data[side]){
         text_trace['x'].push(new Date(meds_data[side][key][0]['low']));
         text_trace['y'].push(key);
         text_trace['text'].push(key);
+
         for (i in meds_data[side][key]){
           var x_range = meds_data[side][key][i]['high'] - meds_data[side][key][i]['low'];
           var start_time = meds_data[side][key][i]['low'];
           var end_time = meds_data[side][key][i]['high'];
+          var start_date = new Date(start_time);
+          var end_date = new Date(end_time);
           var x_values = [];
           var y_values = [];
           for (var d = start_time; d < end_time; d= d+14*oneday_time){
@@ -47,7 +50,7 @@
             mode: "lines",
             x: x_values,
             y: y_values,
-            hovertext: key+"<br>"+x_values[0].toLocaleDateString()+"-"+x_values[1].toLocaleDateString(),
+            hovertext: key+"<br>"+dateToDMY(start_date)+"-"+dateToDMY(end_date),
             hoverinfo: 'text',
             hoverlabel: trace_hoverlabel,
             line: {
@@ -70,4 +73,12 @@
       Plotly.newPlot('plotly-Meds-'+side, data, layout_meds, options_plotly);
     }
   });
+
+  function dateToDMY(date) {
+    var strArray=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var d = date.getDate();
+    var m = strArray[date.getMonth()];
+    var y = date.getFullYear();
+    return '' + (d <= 9 ? '0' + d : d) + '/' + m + '/' + y;
+  }
 </script>

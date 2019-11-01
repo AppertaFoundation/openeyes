@@ -80,7 +80,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         $this->render('OphCiExamination_Episode_IOPHistory', array('chart' => $chart));
     }
 
-    public function run_oescape(){
+    public function run_oescape($widgets_no = 1){
         $this->render('OphCiExamination_OEscape_IOPHistory');
     }
 

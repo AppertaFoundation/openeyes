@@ -91,7 +91,7 @@
 
             <button id="refraction-<?= $eye_side ?>-comment-button"
                     class="button js-add-comments" data-comment-container="#refraction-<?= $eye_side ?>-comments"
-                    type="button" style="<?= $element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
+                    type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
               <i class="oe-i comments small-icon"></i>
             </button>
 

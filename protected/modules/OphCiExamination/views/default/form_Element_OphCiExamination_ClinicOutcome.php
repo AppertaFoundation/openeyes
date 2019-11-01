@@ -17,6 +17,7 @@
  */
 ?>
 <?php
+use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 
 $model_name = CHtml::modelName($element);
 
@@ -165,7 +166,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
               </td>
               <td class="flex-layout flex-top follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                   <ul class="add-options" id="follow-up-role-options">
-                      <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll() as $role): ?>
+                      <?php foreach (OphCiExamination_ClinicOutcome_Role::model()->active()->findAll() as $role): ?>
                         <li data-str="<?= $role->name ?>" data-role-id="<?= $role->id ?>"
                             class="<?= $element->role_id == $role->id ? 'selected' : '' ?>">
                           <span class="restrict-width"><?= $role->name ?></span>
@@ -177,7 +178,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
               <td class="follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                 <div class="flex-layout flex-top flex-left">
                     <?=\CHtml::textField('follow_up_role_comments', $element->role_comments,
-                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Role')) ?>
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Name (optional)')) ?>
                 </div>
                   </div>
               </td>

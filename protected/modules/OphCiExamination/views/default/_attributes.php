@@ -39,7 +39,7 @@ if ($element->elementType->name!="Clinic Outcome"):
         array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
           $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
       }
-      foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
+      foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
     <td>
       <div class="flex-layout flex-top flex-left">
         <ul class="add-options cols-full" data-multi="false" data-clickadd="false">

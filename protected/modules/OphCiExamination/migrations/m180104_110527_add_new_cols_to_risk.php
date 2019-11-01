@@ -33,8 +33,11 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $this->addForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set', 'firm_id', 'firm', 'id');
 
-	    $this->dropColumn("ophciexamination_risk", "required");
-	    $this->dropColumn("ophciexamination_risk_version", "required");
+        $ophciexamination_risk = Yii::app()->db->schema->getTable('ophciexamination_risk');
+        if(isset($ophciexamination_risk->columns['required'])) {
+    	    $this->dropColumn("ophciexamination_risk", "required");
+    	    $this->dropColumn("ophciexamination_risk_version", "required");
+        }
 
         $this->addForeignKey('ophciexamination_risk_set_assignment_risk_e', 'ophciexamination_risk_set_assignment', 'ophciexamination_risk_entry_id', 'ophciexamination_risk_set_entry', 'id');
         $this->addForeignKey('ophciexamination_risk_set_assignment_set', 'ophciexamination_risk_set_assignment', 'risk_set_id', 'ophciexamination_risk_set', 'id');
@@ -44,11 +47,14 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $subspecialty_cataract_id = $this->dbConnection->createCommand()->select('id')->from('subspecialty')
             ->where('name=:name', array(':name' => 'Cataract'))
             ->queryScalar();
+            
+        if($subspecialty_cataract_id){
+            $this->insert('ophciexamination_risk_set', [
+                'name' => 'Cataract NOD',
+                'subspecialty_id' => $subspecialty_cataract_id
+            ]);
+        }
 
-        $this->insert('ophciexamination_risk_set', [
-            'name' => 'Cataract NOD',
-            'subspecialty_id' => $subspecialty_cataract_id
-        ]);
 
         $nod_set_id = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_risk_set')
             ->where('name=:name', array(':name' => 'Cataract NOD'))
@@ -74,25 +80,27 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
             'ophciexamination_risk_id' => $anticoagulants_id,
         ]);
 
-        $ophciexamination_risk_id = $this->dbConnection->createCommand()
-            ->select('id')
-            ->from('ophciexamination_risk_set_entry')
-            ->where('ophciexamination_risk_id=:ophciexamination_risk_id', array(':ophciexamination_risk_id' => $alpha_blocker_id))
-            ->queryScalar();
-        $this->insert('ophciexamination_risk_set_assignment', [
-            'ophciexamination_risk_entry_id' => $ophciexamination_risk_id,
-            'risk_set_id' => $nod_set_id
-        ]);
+        if($nod_set_id){
+            $ophciexamination_risk_id = $this->dbConnection->createCommand()
+                ->select('id')
+                ->from('ophciexamination_risk_set_entry')
+                ->where('ophciexamination_risk_id=:ophciexamination_risk_id', array(':ophciexamination_risk_id' => $alpha_blocker_id))
+                ->queryScalar();
+            $this->insert('ophciexamination_risk_set_assignment', [
+                'ophciexamination_risk_entry_id' => $ophciexamination_risk_id,
+                'risk_set_id' => $nod_set_id
+            ]);
 
-        $ophciexamination_risk_id = $this->dbConnection->createCommand()
-            ->select('id')
-            ->from('ophciexamination_risk_set_entry')
-            ->where('ophciexamination_risk_id=:ophciexamination_risk_id', array(':ophciexamination_risk_id' => $anticoagulants_id))
-            ->queryScalar();
-        $this->insert('ophciexamination_risk_set_assignment', [
-            'ophciexamination_risk_entry_id' => $ophciexamination_risk_id,
-            'risk_set_id' => $nod_set_id
-        ]);
+            $ophciexamination_risk_id = $this->dbConnection->createCommand()
+                ->select('id')
+                ->from('ophciexamination_risk_set_entry')
+                ->where('ophciexamination_risk_id=:ophciexamination_risk_id', array(':ophciexamination_risk_id' => $anticoagulants_id))
+                ->queryScalar();
+            $this->insert('ophciexamination_risk_set_assignment', [
+                'ophciexamination_risk_entry_id' => $ophciexamination_risk_id,
+                'risk_set_id' => $nod_set_id
+            ]);
+        }
 	}
 
 	public function down()

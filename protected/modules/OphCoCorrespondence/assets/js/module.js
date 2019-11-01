@@ -36,7 +36,6 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-        $('.autosize').autosize();
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
@@ -64,6 +63,7 @@ function updateCorrespondence(macro_id)
             }
         });
     }
+	autosize($('.autosize'));
 }
 
 function togglePrintDisabled (isSignedOff) {
@@ -330,7 +330,7 @@ $(document).ready(function() {
 					if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 						window.location.href = window.location.href.replace('/update/','/view/');
 					} else {
-						window.location.href = baseUrl+'/patient/episodes/'+OE_patient_id;
+						window.location.href = baseUrl+'/patient/summary/'+OE_patient_id;
 					}
 				},
 				"No, go back": function() {

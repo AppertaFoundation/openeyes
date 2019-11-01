@@ -19,6 +19,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
 ?>
 <table>
   <tbody>
+  <?php if (!is_null($element->{$side . '_clinicalret'})) { ?>
   <tr>
     <td>
       <label for="<?=\CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
@@ -72,6 +73,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
     </td>
   </tr>
+  <?php } ?>
   <?php $nsc_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGrading_NSCRetinopathy::model()->activeOrPk($element->{$side . '_nscretinopathy_id'})->findAll() ?>
   <tr>
     <td>

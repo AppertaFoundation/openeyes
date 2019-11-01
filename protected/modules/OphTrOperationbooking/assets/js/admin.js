@@ -165,13 +165,10 @@ $(document).ready(function() {
 
 	$('#OphTrOperationbooking_Operation_Session_max_procedures').on('keyup', function(e) {
 		e.preventDefault();
-		var limit = parseInt($('#current-proc-count').html());
-		if (limit > 0 && parseInt($(this).val()) < limit) {
-			$('#current-proc-count').parent().parent().addClass('warn');
-		}
-		else {
-			$('#current-proc-count').parent().parent().removeClass('warn');
-		}
+		var currentProcCount = parseInt($('#current-proc-count').html());
+		let addAlertClass = currentProcCount > 0 && parseInt($(this).val()) < currentProcCount;
+		let $tr = $('#current-proc-count').closest('tr');
+		$tr.toggleClass('alert-box alert', addAlertClass);
 	});
 
 	$(this).on('click','#et_add_session',function(e) {

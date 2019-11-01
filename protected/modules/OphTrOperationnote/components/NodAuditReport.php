@@ -17,14 +17,14 @@ class NodAuditReport extends Report implements ReportInterface
      */
     public function __construct($app)
     {
-        $this->months = $app->getRequest()->getQuery('months', 1);
+        $this->months = $app->getRequest()->getQuery('months', 4);
         $this->months = ceil($this->months*30);
 
         parent::__construct($app);
     }
 
     protected $plotlyConfig = array(
-        'title'=>'NOD Audit Completeness Report',
+        'title'=>'NOD Audit Report',
         'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
         'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
         'font' => array(
@@ -347,7 +347,8 @@ class NodAuditReport extends Report implements ReportInterface
     public function tracesJson()
     {
         $dataset = $this->dataSet();
-        $trace1 = array(
+
+        $trace2 = array(
             'name'=>'Incomplete',
             'type' => 'bar',
             'x' => array(
@@ -387,7 +388,8 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['ineligible'],
             ),
         );
-        $trace2 = array(
+
+        $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',
             'x' => array(

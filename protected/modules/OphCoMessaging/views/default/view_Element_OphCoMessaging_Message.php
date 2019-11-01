@@ -24,19 +24,19 @@ if (!isset($comment)) {
 ?>
 
 <div class="element-data full-width flex-layout flex-top">
-  <div class="cols-5">
-    <table class="label-value">
-        <colgroup>
-            <col class="cols-5">
-        </colgroup>
-        <tbody>
+    <div class="cols-5">
+        <table class="label-value">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
             <tr>
                 <td>
                     <div class="data-label">From</div>
                 </td>
                 <td>
                     <?php
-                        echo $element->user->getFullnameAndTitle();
+                    echo $element->user->getFullnameAndTitle();
                     ?>
                 </td>
             </tr>
@@ -70,77 +70,76 @@ if (!isset($comment)) {
                 </td>
                 <td>
                     <div><?php
-                            if ($element->urgent) { ?>
-                                <span class="highlighter">Yes</span>
-                            <?php } else {
-                                ?> <span>No</span>
-                            <?php }
-                          ?>
+                        if ($element->urgent) { ?>
+                            <span class="highlighter">Yes</span>
+                        <?php } else {
+                            ?> <span>No</span>
+                        <?php }
+                        ?>
                     </div>
                 </td>
             </tr>
-        </tbody>
+            </tbody>
 
-    </table>
-
-
-  </div>
-  <div class="cols-6">
-      <div class="row <?php echo $element->comments ? 'divider' : ''?>">
-        <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
-      </div>
-
-    <?php foreach ($element->comments as $comment) { ?>
-        <p>
-            <i class="oe-i child-arrow small pad-right no-click"></i>
-           <em><?= Yii::app()->format->Ntext($comment->comment_text) ?></em>
-        </p>
-        <table class="label-value">
-            <tbody>
-            <tr>
-                <td>
-                    <div class="data-label">Reply date</div>
-                </td>
-                <td>
-                    <div class="data-value"><?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
-                </td>
-            </tr><tr>
-                <td>
-                    <div class="data-label">From</div>
-                </td>
-                <td>
-                    <div class="data-value"><?php echo $comment->user->getFullnameAndTitle();?></div>
-                </td>
-            </tr>			</tbody>
         </table>
-    <?php } ?>
 
-    <?php if ($this->canComment()) { ?>
 
-          <?php
-          $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-              'id' => 'comment-form',
-              'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array('id' => $this->event->id)),
-              'enableAjaxValidation' => false,
-              'layoutColumns' => array(
-                  'label' => 2,
-                  'field' => 10,
-              ),
-          ));
-          ?>
-          <div class="row">
-              <p><i class="oe-i child-arrow small pad-right no-click"></i><em class="fade">Reply …</em></p>
-              <?php echo $form->textArea($comment, 'comment_text',
-                  array('rows' => 5, 'nowrapper' => true),
-                  false,
-                  array('class' => 'cols', 'placeholder' => 'Your mesage ...'),
-                  array('field' => 10))
-              ?>
-                  <div class="flex-layout flex-right">
-                  <button class="green hint">Send reply</button>
-              </div>
-          </div>
-          <?php $this->endWidget() ?>
-    <?php } ?>
-</div>
+    </div>
+    <div class="cols-6">
+        <div class="row <?php echo $element->comments ? 'divider' : ''?>">
+            <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
+        </div>
+
+        <?php foreach ($element->comments as $comment) { ?>
+            <p>
+                <i class="oe-i child-arrow small pad-right no-click"></i>
+                <em><?= Yii::app()->format->Ntext($comment->comment_text) ?></em>
+            </p>
+            <table class="label-value">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="data-label">Reply date</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
+                    </td>
+                </tr><tr>
+                    <td>
+                        <div class="data-label">From</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo $comment->user->getFullnameAndTitle();?></div>
+                    </td>
+                </tr>			</tbody>
+            </table>
+        <?php } ?>
+
+        <?php if ($this->canComment()) { ?>
+
+            <?php
+            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                'id' => 'comment-form',
+                'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array('id' => $this->event->id)),
+                'enableAjaxValidation' => false,
+                'layoutColumns' => array(
+                    'label' => 2,
+                    'field' => 10,
+                ),
+            )); ?>
+            <div class="row">
+                <p><i class="oe-i child-arrow small pad-right no-click"></i><em class="fade">Reply …</em></p>
+                <textarea class="cols-full column cols" placeholder="Your message"
+                          id="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment_comment_text"
+                          name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment[comment_text]"
+                          rows=5
+                ></textarea>
+
+                <div class="flex-layout flex-right">
+                    <button class="green hint">Send reply</button>
+                </div>
+            </div>
+            <?php $this->endWidget() ?>
+        <?php } ?>
+    </div>
 </div>

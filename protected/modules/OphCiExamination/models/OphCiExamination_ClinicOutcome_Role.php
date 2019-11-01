@@ -63,7 +63,8 @@ class OphCiExamination_ClinicOutcome_Role extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name, display_order, requires_comment', 'required'),
-                array('id, name, display_order, requires_comment', 'safe', 'on' => 'search'),
+                array('id, name, display_order, requires_comment, active', 'safe', 'on' => 'search'),
+                array('active', 'safe'),
         );
     }
 

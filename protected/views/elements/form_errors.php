@@ -47,7 +47,7 @@
                     $field.addClass('highlighted-error error');
                 } else {
                     if (!$field.parent().hasClass('highlighted-error error')) {
-                        $field.addClass('highlighted-error');
+                        $field.addClass('highlighted-error error');
                     }
                 }
             } else {

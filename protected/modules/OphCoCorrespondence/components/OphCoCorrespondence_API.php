@@ -35,11 +35,11 @@ class OphCoCorrespondence_API extends BaseAPI
 
         return $letter->isEditable();
     }
-    
+
     public function showDeleteIcon($event_id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($event_id));
-        
+
         return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
     }
 
@@ -355,9 +355,17 @@ class OphCoCorrespondence_API extends BaseAPI
             $data['to']['contact_id'] = $contact->contact->id;
         }
 
+        if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
+            $contact = $contact = $patient->getPatientOptometrist();
+            if (isset($contact)) {
+                $data['to']['contact_type'] = "Optometrist";
+                $data['to']['contact_id'] = $contact->id;
+            }
+        }
+
         if (isset($contact)) {
             $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
-            $data['to']['contact_nickname'] = $this->getNickname($contact->contact->id);
+            $data['to']['contact_nickname'] = $this->getNickname(isset($contact->contact) ? $contact->contact->id : $contact->id);
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -408,6 +416,23 @@ class OphCoCorrespondence_API extends BaseAPI
                     'include_prefix' => false,
                 ));
             $k++;
+        }
+
+        if ($macro->cc_optometrist) {
+            $cc_contact = $contact = $patient->getPatientOptometrist();
+            if($cc_contact) {
+                $data['cc'][$k]['contact_type'] = "Optometrist";
+                $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
+                $data['cc'][$k]['contact_id'] = $cc_contact->id;
+                $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
+                    'patient' => $patient,
+                    'include_name' => false,
+                    'include_label' => false,
+                    'delimiter' => "\n",
+                    'include_prefix' => false,
+                ));
+                $k++;
+            }
         }
 
         if ($macro->cc_drss) {
@@ -594,10 +619,10 @@ class OphCoCorrespondence_API extends BaseAPI
         $event->save();
         return $event;
     }
-    
+
     /**
      * Returns the letter targets by element id
-     * 
+     *
      * @param int $id
      * @return array
      */
@@ -625,6 +650,11 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($m[1] == 'Contact') {
             // NOTE we are assuming that Contact must be a Person model here
             $contact = Person::model()->find('contact_id=?', array($m[2]));
+            if($contact == null){
+                $contact = Contact::model()->findByPk($m[2]);
+            }
+        } else if($m[1] == 'Optometrist') {
+            $contact = Contact::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
                 throw new Exception("{$m[1]} not found: {$m[2]}");
@@ -638,20 +668,21 @@ class OphCoCorrespondence_API extends BaseAPI
         $text_ElementLetter_address = $contact->getLetterAddress(array(
             'patient' => $patient,
             'include_name' => true,
-            'include_label' => true,
+            'include_label' => false,
             'delimiter' => "\n",
         ));
-        
+
         $address = $contact->getLetterAddress(array(
             'patient' => $patient,
             'include_name' => false,
-            'include_label' => true,
+            'include_label' => false,
             'delimiter' => "\n",
         ));
 
-
-        if ($m[1] == 'ContactPracticeAssociate'){
-            $contact = $contact->gp;
+				if (Yii::app()->params['institution_code'] === 'CERA') {
+					if ($m[1] == 'ContactPracticeAssociate'){
+							$contact = $contact->gp;
+					}
         }
 
         if (!$address) {
@@ -661,33 +692,35 @@ class OphCoCorrespondence_API extends BaseAPI
         if (!$text_ElementLetter_address) {
             $text_ElementLetter_address = '';
         }
-        
+
         if (method_exists($contact, 'getCorrespondenceName')) {
             $correspondence_name = $contact->correspondenceName;
         } else {
             $correspondence_name = $contact->fullName;
         }
-        
+
         if($m[1] == 'CommissioningBodyService'){
             $correspondence_name = implode(',', $correspondence_name);
         }
-        
+
         $contact_type = $m[1];
         if($m[1] == 'CommissioningBodyService'){
             $contact_type = 'DRSS';
         } else if($m[1] == 'Practice'){
             $contact_type = 'Gp';
+        } else if ($m[1] == 'Optometrist') {
+            $contact_type = 'Optometrist';
         }
-        
-        if( !in_array($contact_type, array('Gp','Patient','DRSS')) ){
+
+        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist')) ){
             $contact_type = 'Other';
         }
 
         return $data = array(
             'contact_type' => $contact_type,
-            'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
+            'contact_id' => isset($contact->contact) ? $contact->contact->id : $contact->id,
             'contact_name' => $correspondence_name,
-            'contact_nickname' => isset($contact->contact->nick_name) ? $contact->contact->nick_name : null,           
+            'contact_nickname' => isset($contact->contact) ? $contact->contact->nick_name : $contact->nick_name,
             'address' => $address ? $address : "The contact does not have a valid address.",
             'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
@@ -761,19 +794,19 @@ class OphCoCorrespondence_API extends BaseAPI
         $document_target = DocumentTarget::model()->findByPk($document_target_id);
         $contact = Contact::model()->findByPk($document_target->contact_id);
         $patient = $document_target->document_instance->correspondence_event->episode->patient;
-     
+
         $letter = ElementLetter::model()->findByPk($letter_id);
-        
+
         if($letter){
             foreach(array_keys($letter->address_targets) as $contact_string){
 
                 $address = $this->getAddress($patient->id, $contact_string);
-                
+
                 if($address['contact_type'] == $type){
                     $document_target->contact_name = $address['contact_name'];
                     $document_target->address = $address['address'];
                     $document_target->contact_id = $address['contact_id'];
-                    
+
                     $document_target->save();
                 }
             }
@@ -917,7 +950,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 return $contact->nick_name;
             }
         }
-        
+
         return;
     }
 }

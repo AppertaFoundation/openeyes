@@ -214,6 +214,41 @@ class BaseAPI
     }
 
     /**
+     * Returns the given element type from the most recent Events that occurred on the same day for this module, if that element is present.
+     * Otherwise will return null.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param boolean $use_context
+     * @param string $before - date formatted string
+     * @return BaseEventTypeElement|null
+     */
+    public function getElementFromLatestSameDayEvents($element, Patient $patient, $use_context = false, $before = null)
+    {
+        $events = $this->getEvents($patient, $use_context, $before);
+        if ($events) {
+            $latest_event = $events[0];
+            $event_ids = [];
+
+            ## Seeing as the events are in chronological order, same date events should be next to each other
+            foreach($events AS $event){
+                if($event->event_date === $latest_event->event_date){
+                    $event_ids[] = $event->id;
+                } else {                
+                    ## therefore once the array index has moved passed relevant matches, all other events are irrelevant
+                    break;
+                }
+            }
+            $criteria = new CDbCriteria();
+            $criteria->addInCondition('event_id', $event_ids);
+
+            return $element::model()
+                ->with('event')
+                ->findAll($criteria);
+        }
+    }
+
+    /**
      * @param $element
      * @param Patient $patient
      * @param bool $use_context
