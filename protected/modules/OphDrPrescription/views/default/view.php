@@ -83,9 +83,7 @@ if (isset(Yii::app()->session['print_prescription'])) {?>
             <?php
             unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']);
         }?>
-
     </script>
-<?php endif; ?>
 
 <?php $this->renderPartial('//default/delete'); ?>
 <?php $this->endContent(); ?>
