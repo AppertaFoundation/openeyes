@@ -72,6 +72,25 @@ class OphTrOperationbooking_API extends BaseAPI
             ->findAll($criteria);
     }
 
+    public function getIncompleteOperationsForEpisode($patient, $use_context = false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('status_id', Yii::app()->db->createCommand()->select('id')
+            ->from('ophtroperationbooking_operation_status')
+            ->where(['not in','name', ['Completed', 'On-Hold']])->queryColumn());
+
+        if ($operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria)) {
+            foreach ($operations as $key => $operation) {
+                $operations[$key]['booking'] = $operation->booking;
+            }
+            return $operations;
+        }
+    }
 
     public function getOperationsForEpisode($patient, $use_context = false)
     {
