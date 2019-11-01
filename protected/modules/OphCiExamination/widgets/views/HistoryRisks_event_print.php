@@ -25,6 +25,7 @@
     <?php } else { ?>
         <?php
             $entries = $element->getHistoryRisksEntries();
+            $keys = $element->getHistoryRisksEntryKeys();
             $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
         ?>
         <div class="data-value flex-layout flex-top">
@@ -44,7 +45,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <?php foreach ([(string) HistoryRisksEntry::$PRESENT, (string) HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$NOT_CHECKED] as $attribute) { ?>
+                            <?php foreach ($keys as $attribute) { ?>
                                 <td>
                                     <span class="large-text">
                                         <?php if (count($entries[$attribute] > 0)) { ?>
@@ -55,7 +56,7 @@
                                                     <?php } ?>
                                                     <br>
                                                 <?php } ?>
-                                        <?php } else if ($attribute === (string) HistoryRisksEntry::$NOT_CHECKED && count($not_checked_required_risks) > 0) { ?>
+                                        <?php } else if ($attribute === $keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
                                                 <?php foreach ($not_checked_required_risks as $entry) { ?>
                                                     <?= $entry ?>
                                                     <br>
