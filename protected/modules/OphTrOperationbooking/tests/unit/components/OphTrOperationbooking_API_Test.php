@@ -250,11 +250,11 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
     public function testGetLastNonCompleteStatus()
     {
-//        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event8')));
+        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event8')->id));
     }
 
     public function testGetLastNonCompleteStatus_Default()
     {
-        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event8')->id));
+        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event2')->id));
     }
 }
