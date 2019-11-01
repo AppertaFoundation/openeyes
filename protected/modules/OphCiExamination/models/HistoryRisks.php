@@ -206,6 +206,16 @@ class HistoryRisks extends \BaseEventTypeElement
         return $entries;
     }
 
+    public function getHistoryRisksEntries()
+    {
+        $entries = [];
+        foreach ([(string) HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$PRESENT, (string) HistoryRisksEntry::$NOT_CHECKED] as $key) {
+            $entries[$key] = array_values(array_filter($this->getSortedEntries(), function ($e) use ($key) {
+                return $e->has_risk === $key;
+            }));
+        }
+        return $entries;
+    }
 
     /**
      * @param $attribute

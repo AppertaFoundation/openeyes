@@ -34,12 +34,7 @@
                 <div class="cols-11">
                     <div id="js-listview-risks-pro" class="cols-full listview-pro">
                         <?php
-                        $entries = [];
-                        foreach ([(string) HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$PRESENT, (string) HistoryRisksEntry::$NOT_CHECKED] as $key) {
-                            $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
-                                return $e->has_risk === $key;
-                            }));
-                        }
+                        $entries = $element->getHistoryRisksEntries();
                         $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
                         if (count($not_checked_required_risks) === 0) {
                             unset($not_checked_required_risks);

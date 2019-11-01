@@ -24,12 +24,8 @@
         <p class="data-value flex-layout flex-top">Patient has no known risks.</p>
     <?php } else { ?>
         <?php
-            $entries = [];
-            foreach ([(string)HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$PRESENT, (string)HistoryRisksEntry::$NOT_CHECKED] as $key) {
-                $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
-                    return $e->has_risk === $key;
-                }));
-            }
+            $entries = $element->getHistoryRisksEntries();
+            $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
         ?>
         <div class="data-value flex-layout flex-top">
             <div class="cols-12">
@@ -48,8 +44,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <?php $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
-                            foreach ([(string) HistoryRisksEntry::$PRESENT, (string) HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$NOT_CHECKED] as $attribute) { ?>
+                            <?php foreach ([(string) HistoryRisksEntry::$PRESENT, (string) HistoryRisksEntry::$NOT_PRESENT, (string) HistoryRisksEntry::$NOT_CHECKED] as $attribute) { ?>
                                 <td>
                                     <span class="large-text">
                                         <?php if (count($entries[$attribute] > 0)) { ?>
