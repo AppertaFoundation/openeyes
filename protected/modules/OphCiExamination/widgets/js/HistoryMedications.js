@@ -42,6 +42,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('.js-entry-table');
+    this.$currentMedicationsTable = this.$element.find('.js-entry-table.js-current-medications');
     this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.taperTemplateText = this.$element.find('.taper-template').text();
@@ -1041,9 +1042,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.addMedicationItemRow = function ($row, medication, do_callback = false) {
-        $row.appendTo(this.$table.children('tbody'));
+        $row.appendTo(this.$currentMedicationsTable.children('tbody'));
         this.setRowData($row, medication);
-        let $lastRow = this.$table.find('tbody tr.js-first-row:last');
+        let $lastRow = this.$currentMedicationsTable.find('tbody tr.js-first-row:last');
 
         if (!this.isTaper($row)) {
             this.initialiseRowEventTriggers($lastRow);
