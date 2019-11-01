@@ -24,8 +24,8 @@
         <p class="data-value flex-layout flex-top">Patient has no known risks.</p>
     <?php } else { ?>
         <?php
-            $entries = $element->getHistoryRisksEntries();
-            $keys = $element->getHistoryRisksEntryKeys();
+            $history_risks_entries = $element->getHistoryRisksEntries();
+            $history_risks_entry_keys = $element->getHistoryRisksEntryKeys();
             $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
         ?>
         <div class="data-value flex-layout flex-top">
@@ -45,18 +45,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <?php foreach ($keys as $attribute) { ?>
+                            <?php foreach ($history_risks_entry_keys as $attribute) { ?>
                                 <td>
                                     <span class="large-text">
-                                        <?php if (count($entries[$attribute] > 0)) { ?>
-                                                <?php foreach ($entries[$attribute] as $entry) { ?>
+                                        <?php if (count($history_risks_entries[$attribute] > 0)) { ?>
+                                                <?php foreach ($history_risks_entries[$attribute] as $entry) { ?>
                                                     <?= $entry->getDisplayRisk() ?>
                                                     <?php if ($entry['comments'] != '') { ?>
                                                         (Comments: <?= $entry['comments'] ?> )
                                                     <?php } ?>
                                                     <br>
                                                 <?php } ?>
-                                        <?php } else if ($attribute === $keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
+                                        <?php } else if ($attribute === $history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
                                                 <?php foreach ($not_checked_required_risks as $entry) { ?>
                                                     <?= $entry ?>
                                                     <br>

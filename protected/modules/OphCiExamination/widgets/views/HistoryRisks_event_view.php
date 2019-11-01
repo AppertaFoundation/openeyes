@@ -34,8 +34,8 @@
                 <div class="cols-11">
                     <div id="js-listview-risks-pro" class="cols-full listview-pro">
                         <?php
-                        $entries = $element->getHistoryRisksEntries();
-                        $keys = $element->getHistoryRisksEntryKeys();
+                        $history_risks_entries = $element->getHistoryRisksEntries();
+                        $history_risks_entry_keys = $element->getHistoryRisksEntryKeys();
                         $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
                         if (count($not_checked_required_risks) === 0) {
                             unset($not_checked_required_risks);
@@ -46,9 +46,9 @@
                             <tr>
                                 <td class="nowrap fade">Present</td>
                                 <td>
-                                    <?php if (count($entries[$keys[HistoryRisksEntry::$PRESENT]]) > 0) { ?>
+                                    <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$PRESENT]]) > 0) { ?>
                                         <ul class="dot-list">
-                                            <?php foreach ($entries[$keys[HistoryRisksEntry::$PRESENT]] as $entry) { ?>
+                                            <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$PRESENT]] as $entry) { ?>
                                                 <li>
                                                 <li><?= $entry->getDisplayRisk(); ?></li>
                                                 <?php if ($entry['comments'] != '') { ?>
@@ -67,9 +67,9 @@
                             <tr>
                                 <td class="nowrap fade">Unchecked</td>
                                 <td>
-                                    <?php if (count($entries[$keys[HistoryRisksEntry::$NOT_CHECKED]]) > 0) { ?>
+                                    <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED]]) > 0) { ?>
                                         <ul class="dot-list">
-                                            <?php foreach ($entries[$keys[HistoryRisksEntry::$NOT_CHECKED]] as $entry) { ?>
+                                            <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED]] as $entry) { ?>
                                                 <li>
                                                 <li><?= $entry->getDisplayRisk(); ?></li>
                                                 <?php if ($entry['comments'] != '') { ?>
@@ -96,9 +96,9 @@
                             <tr>
                                 <td class="nowrap fade">Absent</td>
                                 <td>
-                                    <?php if (count($entries[$keys[HistoryRisksEntry::$NOT_PRESENT]]) > 0) { ?>
+                                    <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_PRESENT]]) > 0) { ?>
                                         <ul class="dot-list">
-                                            <?php foreach ($entries[$keys[HistoryRisksEntry::$NOT_PRESENT]] as $entry) { ?>
+                                            <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_PRESENT]] as $entry) { ?>
                                                 <li>
                                                 <li><?= $entry->getDisplayRisk(); ?></li>
                                                 <?php if ($entry['comments'] != '') { ?>
@@ -128,8 +128,8 @@
                                     <col class="cols-4">
                                 </colgroup>
                                 <tbody>
-                                <?php if (count($entries[$keys[HistoryRisksEntry::$PRESENT]]) > 0) { ?>
-                                    <?php foreach ($entries[$keys[HistoryRisksEntry::$PRESENT]] as $entry) : ?>
+                                <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$PRESENT]]) > 0) { ?>
+                                    <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$PRESENT]] as $entry) : ?>
                                         <tr>
                                             <td><?= $entry->getDisplayRisk(); ?></td>
                                             <td>
@@ -159,8 +159,8 @@
                                     <col class="cols-4">
                                 </colgroup>
                                 <tbody>
-                                <?php if (count($entries[$keys[HistoryRisksEntry::$NOT_CHECKED]]) > 0) { ?>
-                                    <?php foreach ($entries[$keys[HistoryRisksEntry::$NOT_CHECKED]] as $entry) : ?>
+                                <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED]]) > 0) { ?>
+                                    <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED]] as $entry) : ?>
                                         <tr>
                                             <td><?= $entry->getDisplayRisk(); ?></td>
                                             <td>
@@ -195,8 +195,8 @@
                                     <col class="cols-4">
                                 </colgroup>
                                 <tbody>
-                                <?php if (count($entries[$keys[HistoryRisksEntry::$NOT_PRESENT]]) > 0) { ?>
-                                    <?php foreach ($entries[$keys[HistoryRisksEntry::$NOT_PRESENT]] as $entry) : ?>
+                                <?php if (count($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_PRESENT]]) > 0) { ?>
+                                    <?php foreach ($history_risks_entries[$history_risks_entry_keys[HistoryRisksEntry::$NOT_PRESENT]] as $entry) : ?>
                                         <tr>
                                             <td><?= $entry->getDisplayRisk(); ?></td>
                                             <td>
