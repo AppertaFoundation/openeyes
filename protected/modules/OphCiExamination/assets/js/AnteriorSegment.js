@@ -175,48 +175,37 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
    * Drives the loading of the cross section doodles from the doodles in the primary (enface) view
    */
   AnteriorSegmentController.prototype.loadSecondaryDoodles = function () {
-    if (!this.secondaryDoodlesLoaded) {
-      for (let i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
-        let doodle = this.primaryDrawing.doodleArray[i];
-        if (this.options.pairArray.hasOwnProperty(doodle.className)) {
-          // it's a doodle that we want to pair into the secondary Drawing
-          let secondaryClass = this.options.pairArray[doodle.className];
-          // create the doodle
-          let secondaryDoodle = this.secondaryDrawing.addDoodle(secondaryClass);
-          // then ensure we've got all the parameters set correctly.
-          let syncParameters = secondaryDoodle.getLinkedParameters(doodle.className);
-          if (typeof(syncParameters) !== "undefined") {
-            for (let j in syncParameters['source']) {
-              let parameter = syncParameters['source'][j];
-              this.setDoodleParameter(doodle, parameter, secondaryDoodle, parameter);
-            }
-            for (let j in syncParameters['store']) {
-              let pMap = syncParameters['store'][j];
-              this.setDoodleParameter(doodle, pMap[1], secondaryDoodle, pMap[0]);
-            }
-            this.setDoodleParameter(doodle, 'id', secondaryDoodle, 'linkedDoodle');
-          }
-        }
-      }
-      this.secondaryDrawing.resetDoodleSet = window.JSON.parse('[' + this.secondaryDrawing.json() + ']');
-      this.secondaryDoodlesLoaded = true;
-      this.secondaryDrawing.deselectDoodles();
-    }
+    let getSecondaryDoodles = (doodle, secondaryClass) => {
+      return [this.secondaryDrawing.addDoodle(secondaryClass)];
+    };
+    this.bindSecondaryDoodles(getSecondaryDoodles);
+    this.secondaryDrawing.resetDoodleSet = window.JSON.parse('[' + this.secondaryDrawing.json() + ']');
+    this.secondaryDoodlesLoaded = true;
   };
 
   /**
-   * Makes sure primary and secondary doodles are linked again after reset
+   * Link doodles after reset
    */
   AnteriorSegmentController.prototype.refreshSecondaryDoodles = function () {
+    let getSecondaryDoodles = (doodle, secondaryClass) => {
+      return this.secondaryDrawing.doodleArray.filter(
+        doodle => doodle.className === secondaryClass
+      );
+    };
+    this.bindSecondaryDoodles(getSecondaryDoodles);
+  };
+
+  /**
+   * Makes sure primary and secondary doodles are linked.
+   */
+  AnteriorSegmentController.prototype.bindSecondaryDoodles = function (getSecondaryDoodles) {
     for (let i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
       let doodle = this.primaryDrawing.doodleArray[i];
       if (this.options.pairArray.hasOwnProperty(doodle.className)) {
         // it's a doodle that we want to pair into the secondary Drawing
         let secondaryClass = this.options.pairArray[doodle.className];
         // fetch matching doodles
-        let secondaryDoodles = this.secondaryDrawing.doodleArray.filter(
-          doodle => doodle.className === secondaryClass
-        );
+        let secondaryDoodles = getSecondaryDoodles(doodle, secondaryClass);
 
         // then ensure we've got all the parameters set correctly.
         secondaryDoodles.forEach( secondaryDoodle => {
