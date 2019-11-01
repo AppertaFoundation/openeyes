@@ -205,6 +205,40 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   };
 
   /**
+   * Makes sure primary and secondary doodles are linked again after reset
+   */
+  AnteriorSegmentController.prototype.refreshSecondaryDoodles = function () {
+    for (let i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
+      let doodle = this.primaryDrawing.doodleArray[i];
+      if (this.options.pairArray.hasOwnProperty(doodle.className)) {
+        // it's a doodle that we want to pair into the secondary Drawing
+        let secondaryClass = this.options.pairArray[doodle.className];
+        // fetch matching doodles
+        let secondaryDoodles = this.secondaryDrawing.doodleArray.filter(
+          doodle => doodle.className === secondaryClass
+        );
+
+        // then ensure we've got all the parameters set correctly.
+        secondaryDoodles.forEach( secondaryDoodle => {
+          let syncParameters = secondaryDoodle.getLinkedParameters(doodle.className);
+          if (typeof(syncParameters) !== "undefined") {
+            for (let j in syncParameters['source']) {
+              let parameter = syncParameters['source'][j];
+              this.setDoodleParameter(doodle, parameter, secondaryDoodle, parameter);
+            }
+            for (let j in syncParameters['store']) {
+              let pMap = syncParameters['store'][j];
+              this.setDoodleParameter(doodle, pMap[1], secondaryDoodle, pMap[0]);
+            }
+            this.setDoodleParameter(doodle, 'id', secondaryDoodle, 'linkedDoodle');
+          }
+        });
+      }
+    }
+    this.secondaryDrawing.deselectDoodles();
+  };
+
+  /**
    * Syncing parameters back to the enface doodles that are not "naturally" synced
    *
    * @param edClass - the class of doodle on the primary drawing
@@ -259,6 +293,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
   AnteriorSegmentController.prototype.primaryDrawingNotification = function (msgArray) {
     switch (msgArray['eventName']) {
       case 'afterReset':
+        this.refreshSecondaryDoodles();
         this.SyncIrisColourWithGonioscopy();
         break;
       case 'ready':
@@ -486,6 +521,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           const change = msgArray['object'];
           if (this.options.reversePairArray[change.doodle.className] !== undefined) {
             const primaryDoodle = this.primaryDrawing.doodleOfId(change.doodle.linkedDoodle);
+            if (!primaryDoodle) {
+              break;
+            }
             const syncParameters = change.doodle.getLinkedParameters(this.options.reversePairArray[change.doodle.className]);
             if (typeof(syncParameters) !== "undefined") {
               var synced = false;
