@@ -38,7 +38,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="format-detection" content="telephone=no">
         <?php
-        if(Yii::app()->controller->id === 'whiteboard'){ ?>
+        if (Yii::app()->controller->id === 'whiteboard') { ?>
             <title>Whiteboard</title>
         <?php } else { ?>
             <title>OpenEyes Analytics</title>

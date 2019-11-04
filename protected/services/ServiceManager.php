@@ -84,7 +84,8 @@ class ServiceManager extends \CApplicationComponent
      */
     public function getFhirService($fhir_type, array $profiles)
     {
-        $candidates = array_filter($this->service_config, function ($config) use ($fhir_type) { return $config['fhir_type'] == $fhir_type; });
+        $candidates = array_filter($this->service_config, function ($config) use ($fhir_type) { return $config['fhir_type'] == $fhir_type;
+        });
 
         if (!$candidates) {
             throw new NotFound("Unsupported resource type: '{$fhir_type}'");

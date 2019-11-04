@@ -25,7 +25,9 @@ if (@$htmlOptions['id']) {
 }
 ?>
 <?php if (!@$htmlOptions['nowrapper']) { ?>
-<div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
+<div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) {
+    ?> style="display: none;"<?php
+                                  } ?>>
     <?php unset($htmlOptions['hidden']) ?>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?=\CHtml::modelName($element) . '_' . $field . '_0'; ?>">
@@ -33,11 +35,11 @@ if (@$htmlOptions['id']) {
     </label>
   </div>
   <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-      <?php } ?>
+<?php } ?>
     <input class="<?= @$htmlOptions['class'] ?>"
            style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
-           <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
+            <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
            placeholder="yyyy-mm-dd"
            name="<?= $name ?>"
            value="<?= $value ?>"
@@ -49,15 +51,15 @@ if (@$htmlOptions['id']) {
         hide_on_select: true,
         default_date: false,
         max: '<?= @$options['maxDate'] ?>',
-          <?php if (array_key_exists('minDate', $options)) { ?>
+            <?php if (array_key_exists('minDate', $options)) { ?>
         min: <?= $options['minDate'] === 'today' ? 'new Date()' : 'new Date("' . $options['minDate'] . '")' ?>,
-          <?php } ?>
+            <?php } ?>
       });
       if (pmu && datefield.val()) {
         pmu.set_date(new Date(datefield.val()));
       }
     </script>
-      <?php if (!@$htmlOptions['nowrapper']) { ?>
+        <?php if (!@$htmlOptions['nowrapper']) { ?>
   </div>
 </div>
-<?php } ?>
+        <?php } ?>

@@ -41,16 +41,36 @@ class WorklistController extends BaseController
         return parent::beforeAction($action);
     }
 
-    private function getWorkLists($date_from = null, $date_to = null)
-	{
-		return $this->manager->getCurrentAutomaticWorklistsForUser(null,
-			$date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-	}
-
-    public function actionView($date_from = null, $date_to = null)
+    public function actionView()
     {
         $this->layout = 'main';
-        $this->render('index', array('worklists' => $this->getWorkLists($date_from, $date_to)));
+        $date_from = Yii::app()->request->getQuery('date_from');
+        $date_to = Yii::app()->request->getQuery('date_to');
+        $redirect = false;
+
+        if (!isset(Yii::app()->session['worklist'])) {
+            Yii::app()->session['worklist'] = [];
+        }
+
+        if ($date_from || $date_to) {
+            Yii::app()->session['worklist'] = ['date_from' => $date_from, 'date_to' => $date_to];
+        }
+
+        if (count(Yii::app()->session['worklist']) > 0) {
+            foreach (['date_from', 'date_to'] as $date) {
+                if (Yii::app()->session['worklist'][$date] && !${$date}) {
+                    ${$date} = str_replace(" ", "+", Yii::app()->session['worklist'][$date]);
+                    $redirect = true;
+                }
+            }
+        }
+
+        if ($redirect) {
+            return $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));
+        }
+
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+        $this->render('index', array('worklists' => $worklists));
     }
 
     /**
@@ -135,4 +155,8 @@ class WorklistController extends BaseController
 		$this->render('//worklist/print', array('worklists' => $unique_worklists));
     }
 
+    public function actionClearDates(){
+        Yii::app()->session->remove('worklist');
+        return $this->redirect(array('/worklist/view'));
+    }
 }

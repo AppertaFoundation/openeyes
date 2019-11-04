@@ -28,14 +28,23 @@
     </div>
     <div class="cols-half">
       <div class="data-label">Previous Management</div>
-      <div class="data-value">
-        <div class="inline-previous-element"
-             data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
-             data-no-results-text="No previous management recorded"
-             data-limit="1"
-             data-template-id="previous-management-template">Loading previous management information ...
-        </div>
-      </div>
+        <?php
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+      // Get the latest summary from the array although the method seems
+      // to currently only return the latest summary.
+        $summary = $exam_api->getManagementSummaries($this->patient);
+        $summary = $summary ? $summary[0] : null;
+        ?>
+      <strong>
+        <?php if ($summary) : ?>
+            <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+        class="js-has-tooltip fa oe-i info small"
+        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
+        <?php else : ?>
+        No previous managements recorded.
+        <?php endif; ?>
+      </strong>
+      
     </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
@@ -44,11 +53,6 @@
     </button>
   </div>
 </div>
-<script type="text/html" id="previous-management-template">
-  <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span
-        class="js-has-tooltip fa oe-i info small"
-        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
-</script>
 
 <?php
 $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
@@ -77,7 +81,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
+                inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         autosize.update(inputText);
         inputText.trigger('oninput');
         return true;

@@ -23,17 +23,17 @@
         <?php if ( Yii::app()->params['watermark_admin'] ) { ?>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
         <i class="oe-i info pro-theme small pad-left"></i>
-		<?php } elseif (Yii::app()->params['watermark']) { ?>
+        <?php } elseif (Yii::app()->params['watermark']) { ?>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
         <i class="oe-i info pro-theme small pad-left"></i>
-		<?php } ?>
+        <?php } ?>
     </div>
 <?php } elseif (Yii::app()->params['watermark_short'] || Yii::app()->params['watermark'] ) {?>
     <div id="oe-admin-notifcation">
         <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
-		<?php if (Yii::app()->params['watermark']) { ?>
+        <?php if (Yii::app()->params['watermark']) { ?>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
         <i class="oe-i info pro-theme small pad-left "></i>
-		<?php } ?>
+        <?php } ?>
     </div>
 <?php }?>

@@ -17,6 +17,7 @@
 
 $openHotlistItems = UserHotlistItem::model()->getHotlistItems(1);
 $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'));
+$core_api = new CoreAPI();
 
 ?>
 <div class="oe-hotlist-panel" id="js-hotlist-panel">
@@ -49,7 +50,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
                 <tbody>
 
                 <?php foreach ($openHotlistItems as $hotlistItem) : ?>
-                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
+                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem, 'core_api' => $core_api)); ?>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -72,7 +73,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
             <table class="activity-list closed">
                 <tbody>
                 <?php foreach ($closedHotlistItems as $hotlistItem) : ?>
-                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
+                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem, 'core_api' => $core_api)); ?>
                 <?php endforeach; ?>
                 </tbody>
             </table>

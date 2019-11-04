@@ -3,7 +3,7 @@
 class m180601_114000_insert_oescape_summaries extends CDbMigration
 {
     public function safeUp()
-	{
+    {
         $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array('OphCiExamination'))->queryScalar();
 
         $this->insert('oescape_summary_item', array('event_type_id' => $event_type_id, 'name' => 'Visual Acuity History'));
@@ -28,8 +28,8 @@ class m180601_114000_insert_oescape_summaries extends CDbMigration
 
     }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
 
         $VA_id = $this->getDbConnection()->createCommand('select id from oescape_summary_item where name ="Visual Acuity History"')->queryRow();
         $Med_id = $this->getDbConnection()->createCommand('select id from oescape_summary_item where name ="Medication"')->queryRow();
@@ -40,9 +40,9 @@ class m180601_114000_insert_oescape_summaries extends CDbMigration
         $cataract_id = $this->getDbConnection()->createCommand('select id from subspecialty where name ="Cataract"')->queryRow();
         $MR_sub_id =  $this->getDbConnection()->createCommand('select id from subspecialty where name ="Medical Retina"')->queryRow();
 
-        $this->delete('oescape_summary','`item_id` ='.$Med_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
-        $this->delete('oescape_summary','`item_id` ='.$VA_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
-        $this->delete('oescape_summary','`item_id` ='.$IOP_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$Med_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$VA_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
+        $this->delete('oescape_summary', '`item_id` ='.$IOP_id['id'].' and `subspecialty_id`='.$glaucoma_id['id']);
         $this->delete('oescape_summary', '`item_id` ='.$MR_id['id'].' and `subspecialty_id`='.$MR_sub_id['id']);
         $this->delete('oescape_summary', '`item_id` ='.$VA_id['id'].' and `subspecialty_id`='.$cataract_id['id']);
 

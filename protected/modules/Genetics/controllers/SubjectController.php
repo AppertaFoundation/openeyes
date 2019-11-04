@@ -86,7 +86,7 @@ class SubjectController extends BaseModuleController
         $admin = new Crud(GeneticsPatient::model(), $this);
         $genetics_patient = GeneticsPatient::model()->findByPk($id);
 
-        if (!$genetics_patient){
+        if (!$genetics_patient) {
             $genetics_patient = new GeneticsPatient();
         }
         if ($id) {
@@ -96,25 +96,25 @@ class SubjectController extends BaseModuleController
             $htmlOptions = null;
         }
 
-        if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
+        if (isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)) {
             $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
 
             $admin->getModel()->patient = $this->patient;
             $admin->getModel()->patient_id = $this->patient->id;
 
-                switch($this->patient->gender){
-                    case 'M':
-                        $genderValue = 1;
-                        break;
-                    case 'F':
-                        $genderValue = 2;
-                        break;
-                    case 'U':
-                        $genderValue = 3;
-                        break;
-                    default:
-                        $genderValue = 4;
-                }
+            switch ($this->patient->gender) {
+                case 'M':
+                    $genderValue = 1;
+                    break;
+                case 'F':
+                    $genderValue = 2;
+                    break;
+                case 'U':
+                    $genderValue = 3;
+                    break;
+                default:
+                    $genderValue = 4;
+            }
             $admin->getModel()->is_deceased = $this->patient->is_deceased;
             $htmlOptions = array('options' => array($genderValue => array('selected'=>true)));
         }
@@ -266,10 +266,9 @@ class SubjectController extends BaseModuleController
         $model = new GeneticsPatient('search');
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['GeneticsPatient'])) {
-
             //thanks for the awesome implementation of the //disorder/disorderAutoComplete.php
             //I cannot remove the 'search' from the name attribute without refactoring several things
-            if( isset($_GET['search']['patient_disorder_id']) ){
+            if ( isset($_GET['search']['patient_disorder_id']) ) {
                 $_GET['GeneticsPatient']['patient_disorder_id'] = $_GET['search']['patient_disorder_id'];
             }
 

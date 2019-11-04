@@ -3,7 +3,7 @@
 ?>
 
 <h2>Stored signature</h2>
-<?php if($user->checkSignature()) {?>
+<?php if ($user->checkSignature()) {?>
   <div class="standard">
     You have a captured signature in the system, if you want to check the signature image please enter your 4 digit PIN:
     <div id="div_signature_pin" class="data-group">
@@ -27,7 +27,7 @@
       <li>Follow the prompts from there.</li>
     </ul>
   </div>
-    <?php } else {?>
+<?php } else {?>
   <table class="standard">
     <tbody>
     <tr>

@@ -25,27 +25,27 @@
         <h2><?php echo $title ?></h2>
     </div>
 
-	<form id="admin_treatments">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {?>
-					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editTreatment/<?php echo $model->id?>">
-						<td><input type="checkbox" name="treatments[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php echo $model->name?>
-						</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="2">
+    <form id="admin_treatments">
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="selectall" id="selectall" /></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($model_list as $i => $model) {?>
+                    <tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editTreatment/<?php echo $model->id?>">
+                        <td><input type="checkbox" name="treatments[]" value="<?php echo $model->id?>" /></td>
+                        <td>
+                            <?php echo $model->name?>
+                        </td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="2">
                         <?=\CHtml::submitButton('Add', [
                             'name' => 'add',
                             'class' => 'button large',
@@ -60,9 +60,9 @@
                             'data-object' => 'treatments',
                         ]);?>
 
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

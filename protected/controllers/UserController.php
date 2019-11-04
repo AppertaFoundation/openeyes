@@ -24,46 +24,46 @@ class UserController extends BaseController
         );
     }
 
-	public function actionAutoComplete($term, $consultant_only = false)
-	{
-		$res = array();
-		if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
-			$term = strtolower($term);
+    public function actionAutoComplete($term, $consultant_only = false)
+    {
+        $res = array();
+        if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
+            $term = strtolower($term);
 
-			$criteria = new \CDbCriteria;
-			$criteria->compare("LOWER(username)", $term, true, 'OR');
-			$criteria->compare("LOWER(first_name)", $term, true, 'OR');
-			$criteria->compare("LOWER(last_name)", $term, true, 'OR');
-			$words = explode(" ", $term);
-			if (count($words) > 1) {
-				// possibly slightly verbose approach to checking first and last name combinations
-				// for searches
-				$first_criteria = new \CDbCriteria();
-				$first_criteria->compare("LOWER(first_name)", $words[0], true);
-				$first_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 1, count($words) - 1)), true);
-				$last_criteria = new \CDbCriteria();
-				$last_criteria->compare("LOWER(first_name)", $words[count($words) - 1], true);
-				$last_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 0, count($words) - 2)), true);
-				$first_criteria->mergeWith($last_criteria, 'OR');
-				$criteria->mergeWith($first_criteria, 'OR');
-			}
+            $criteria = new \CDbCriteria;
+            $criteria->compare("LOWER(username)", $term, true, 'OR');
+            $criteria->compare("LOWER(first_name)", $term, true, 'OR');
+            $criteria->compare("LOWER(last_name)", $term, true, 'OR');
+            $words = explode(" ", $term);
+            if (count($words) > 1) {
+                // possibly slightly verbose approach to checking first and last name combinations
+                // for searches
+                $first_criteria = new \CDbCriteria();
+                $first_criteria->compare("LOWER(first_name)", $words[0], true);
+                $first_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 1, count($words) - 1)), true);
+                $last_criteria = new \CDbCriteria();
+                $last_criteria->compare("LOWER(first_name)", $words[count($words) - 1], true);
+                $last_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 0, count($words) - 2)), true);
+                $first_criteria->mergeWith($last_criteria, 'OR');
+                $criteria->mergeWith($first_criteria, 'OR');
+            }
 
-			if ($consultant_only) {
-				$criteria->compare("is_consultant", true);
-			}
-			$criteria->compare('active', true);
+            if ($consultant_only) {
+                $criteria->compare("is_consultant", true);
+            }
+            $criteria->compare('active', true);
 
-			foreach (\User::model()->findAll($criteria) as $user) {
-				$res[] = array(
-					'id' => $user->id,
-					'label' => $user->getFullNameAndTitle(),
-					'value' => $user->getFullName(),
-					'username' => $user->username,
-				);
-			}
-		}
-		echo \CJSON::encode($res);
-	}
+            foreach (\User::model()->findAll($criteria) as $user) {
+                $res[] = array(
+                    'id' => $user->id,
+                    'label' => $user->getFullNameAndTitle(),
+                    'value' => $user->getFullName(),
+                    'username' => $user->username,
+                );
+            }
+        }
+        echo \CJSON::encode($res);
+    }
 
 
     public function actionSurgeonGrade($id)

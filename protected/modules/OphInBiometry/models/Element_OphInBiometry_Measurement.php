@@ -40,7 +40,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
 
     /**
      * set defaults
-     */    
+     */
     public function init(){
         $this->axial_length_left = null;
         $this->axial_length_right = null;
@@ -68,8 +68,8 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
     
     
     public function beforeSave(){
-        if($this->snr_left==='')$this->snr_left = null;
-        if($this->snr_right==='')$this->snr_right = null;
+        if ($this->snr_left==='')$this->snr_left = null;
+        if ($this->snr_right==='')$this->snr_right = null;
         return parent::beforeSave();
     }
     

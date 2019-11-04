@@ -2,23 +2,23 @@
 
 class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
 {
-	/*
+    /*
     public function up()
-	{
+    {
 
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
 
-	}
-	*/
+    }
+    */
 
 
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	    $this->createTable('ophdrprescription_edit_reasons',
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+        $this->createTable('ophdrprescription_edit_reasons',
             array(
                 'id' => 'pk',
                 'caption' => 'string NOT NULL',
@@ -28,12 +28,12 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
                 'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1'
             ));
 
-	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int NULL');
-	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_other', 'varchar(256) NULL');
+        $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int NULL');
+        $this->addColumn('et_ophdrprescription_details', 'edit_reason_other', 'varchar(256) NULL');
         $this->addColumn('et_ophdrprescription_details_version', 'edit_reason_id', 'int NULL');
         $this->addColumn('et_ophdrprescription_details_version', 'edit_reason_other', 'varchar(256) NULL');
-	    $this->addForeignKey(
-	        'et_ophdrprescription_details_edit_reason_fk',
+        $this->addForeignKey(
+            'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details',
             'edit_reason_id',
             'ophdrprescription_edit_reasons',
@@ -46,7 +46,7 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
                 'display_order' => 99
             ));
 
-	    $this->insert('ophdrprescription_edit_reasons',
+        $this->insert('ophdrprescription_edit_reasons',
             array(
                 'caption' => 'Incorrect drug prescribed - not dispensed',
                 'display_order' => 1
@@ -65,18 +65,18 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             ));
 
 
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->dropForeignKey(
             'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details');
-	    $this->dropColumn('et_ophdrprescription_details', 'edit_reason_id');
+        $this->dropColumn('et_ophdrprescription_details', 'edit_reason_id');
         $this->dropColumn('et_ophdrprescription_details', 'edit_reason_other');
         $this->dropColumn('et_ophdrprescription_details_version', 'edit_reason_id');
         $this->dropColumn('et_ophdrprescription_details_version', 'edit_reason_other');
-	    $this->dropTable('ophdrprescription_edit_reasons');
-	}
+        $this->dropTable('ophdrprescription_edit_reasons');
+    }
 
 }

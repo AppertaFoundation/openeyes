@@ -46,11 +46,11 @@ if ($treatment && $treatment->decisiontree) {
                     <option value="">Select</option>
                     <option value="0" <?php if ($val == '0') {
                         echo 'selected';
-                    } ?>>No
+                                      } ?>>No
                     </option>
                     <option value="1" <?php if ($val == '1') {
                         echo 'selected';
-                    } ?>>Yes
+                                      } ?>>Yes
                     </option>
                   </select>
                 <?php } elseif ($node->response_type->datatype == 'va') { ?>
@@ -61,8 +61,8 @@ if ($treatment && $treatment->decisiontree) {
                       <?php foreach ($node->response_type->getChoices() as $id => $label) { ?>
                         <option value="<?php echo $id; ?>" <?php if ($val == $id) {
                             echo 'selected';
-                        } ?>><?php echo $label; ?></option>
-                      <?php } ?>
+                                       } ?>><?php echo $label; ?></option>
+                        <?php } ?>
                   </select>
                 <?php } else { ?>
                   <input type="text"

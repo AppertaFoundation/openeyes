@@ -18,32 +18,32 @@
 ?>
 <?php
     $no_wrapper = false;
-    if (@$htmlOptions['nowrapper']) {
-        $no_wrapper = true;
-        unset($htmlOptions['nowrapper']);
-    }
+if (@$htmlOptions['nowrapper']) {
+    $no_wrapper = true;
+    unset($htmlOptions['nowrapper']);
+}
     $htmlOptions['class'] = @$htmlOptions['class'];
     $htmlOptions['class'] .= ' dropDownTextSelection';
-    if (@$htmlOptions['delimited']) {
-        $htmlOptions['class'] .= ' delimited';
-        unset($htmlOptions['delimited']);
-    }
+if (@$htmlOptions['delimited']) {
+    $htmlOptions['class'] .= ' delimited';
+    unset($htmlOptions['delimited']);
+}
     $htmlOptions['id'] = 'dropDownTextSelection_'.CHtml::modelName($element).'_'.$field;
-    if (!@$htmlOptions['empty']) {
-        $htmlOptions['empty'] = 'Select';
-    }
+if (!@$htmlOptions['empty']) {
+    $htmlOptions['empty'] = 'Select';
+}
 ?>
 <?php if (!$no_wrapper) { ?>
 <div id="div_<?=\CHtml::modelName($element) ?>_<?php echo $field ?>_TextSelection" class="data-group">
-	<div class="cols-<?php echo $layoutColumns['label'];?> column">
-		<label for="<?php echo $htmlOptions['id'];?>">
-			<?=\CHtml::encode($element->getAttributeLabel($field)) ?>:
-		</label>
-	</div>
-	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
-		<?php }?>
-		<?=\CHtml::dropDownList('', null, $options, $htmlOptions); ?>
-		<?php if (!$no_wrapper) { ?>
-	</div>
+    <div class="cols-<?php echo $layoutColumns['label'];?> column">
+        <label for="<?php echo $htmlOptions['id'];?>">
+            <?=\CHtml::encode($element->getAttributeLabel($field)) ?>:
+        </label>
+    </div>
+    <div class="cols-<?php echo $layoutColumns['field'];?> column end">
+<?php }?>
+        <?=\CHtml::dropDownList('', null, $options, $htmlOptions); ?>
+        <?php if (!$no_wrapper) { ?>
+    </div>
 </div>
-<?php } ?>
+        <?php } ?>

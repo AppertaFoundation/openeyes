@@ -1,4 +1,4 @@
-<div class="element-data">
+<div class="element-data full-width">
     <table class="large last-left">
         <tbody>
         <tr>

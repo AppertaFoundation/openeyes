@@ -33,7 +33,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
         <h2 id="worklist_<?= $worklist->id ?>"><?=$worklist->name ?> : <?= $worklist->getDisplayDate() ?></h2>
     </div>
 
-    <?php if ($data_provider->totalItemCount <= 0): ?>
+    <?php if ($data_provider->totalItemCount <= 0) : ?>
         <div class="alert-box info">
             No patients in this worklist.
         </div>

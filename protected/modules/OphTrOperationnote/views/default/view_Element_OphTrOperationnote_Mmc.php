@@ -31,28 +31,28 @@
           <tr>
             <th><?= CHtml::encode($element->getAttributeLabel('application_type_id')) ?></th>
             <th><?= CHtml::encode($element->getAttributeLabel('concentration_id')) ?></th>
-              <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
+                <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE) : ?>
                 <th><?= CHtml::encode($element->getAttributeLabel('duration')) ?></th>
                 <th><?= CHtml::encode($element->getAttributeLabel('number')) ?></th>
               <th><?= CHtml::encode($element->getAttributeLabel('washed')) ?></th>
-              <?php else: ?>
+                <?php else : ?>
               <th><?= CHtml::encode($element->getAttributeLabel('volume_id')) ?></th>
               <th><?= CHtml::encode($element->getAttributeLabel('dose')) ?></th>
-              <?php endif; ?>
+                <?php endif; ?>
           </tr>
           </thead>
           <tbody>
           <tr>
             <td><?= $element->application_type->name ?></td>
             <td><?= $element->concentration->value ?></td>
-              <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
+                <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE) : ?>
                 <td><?= $element->duration ?></td>
                 <td><?= $element->number ?></td>
                 <td><?= $element->washed ? 'Yes' : 'No' ?></td>
-              <?php else: ?>
+                <?php else : ?>
                 <td><?= $element->volume->value ?></td>
                 <td><?= $element->dose ?></td>
-              <?php endif; ?>
+                <?php endif; ?>
           </tr>
           </tbody>
         </table>

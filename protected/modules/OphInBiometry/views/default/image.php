@@ -26,12 +26,12 @@ if ($this->is_auto) { ?>
     <div class="large-2 column" style="margin-left: 10px;">
       <div class="data-label">Surgeon:
         <b> <?php
-            if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
-                echo OphInBiometry_Surgeon::model()->findByAttributes(
-                    array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
-                )->name;
-            }
-            ?>
+        if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
+            echo OphInBiometry_Surgeon::model()->findByAttributes(
+                array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
+            )->name;
+        }
+        ?>
         </b>
       </div>
     </div>

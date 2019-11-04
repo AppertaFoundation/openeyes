@@ -2,9 +2,9 @@
 
 class m190403_161000_add__more_report_views extends CDbMigration
 {
-	public function safeUp()
-	{
-	    $this->execute("CREATE OR REPLACE VIEW `v_patient_episodes` AS
+    public function safeUp()
+    {
+        $this->execute("CREATE OR REPLACE VIEW `v_patient_episodes` AS
     SELECT
         `p`.`id` AS `patient_id`,
         `ep`.`id` AS `episode_id`,
@@ -42,7 +42,7 @@ class m190403_161000_add__more_report_views extends CDbMigration
     ORDER BY `p`.`id`
 	");
 
-	    $this->execute("CREATE OR REPLACE VIEW `v_patient_diagnoses` AS
+        $this->execute("CREATE OR REPLACE VIEW `v_patient_diagnoses` AS
     SELECT
         `p`.`patient_id` AS `patient_id`,
         `p`.`eye_id` AS `eye_id`,
@@ -78,11 +78,11 @@ class m190403_161000_add__more_report_views extends CDbMigration
         LEFT JOIN `specialty` `s` ON ((`s`.`id` = `d`.`specialty_id`)))
     ORDER BY `patient_id`
 	");
-	}
+    }
 
-	public function safeDown()
-	{
-		$this->execute("DROP VIEW v_patient_episodes");
-		$this->execute("DROP VIEW v_patient_diagnoses");
-	}
+    public function safeDown()
+    {
+        $this->execute("DROP VIEW v_patient_episodes");
+        $this->execute("DROP VIEW v_patient_diagnoses");
+    }
 }

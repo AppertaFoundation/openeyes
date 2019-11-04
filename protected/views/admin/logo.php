@@ -34,15 +34,13 @@
         margin-bottom: 20px;
     }
 </style>
-<?php if (Yii::app()->user->hasFlash('success')): ?>
-
+<?php if (Yii::app()->user->hasFlash('success')) : ?>
     <div class="flash-success">
         <?php echo Yii::app()->user->getFlash('success'); ?>
     </div>
 
 <?php endif; ?>
-<?php if (Yii::app()->user->hasFlash('error')): ?>
-
+<?php if (Yii::app()->user->hasFlash('error')) : ?>
     <div class="error">
         <?php echo Yii::app()->user->getFlash('error'); ?>
     </div>
@@ -85,7 +83,7 @@
             <tr>
                 <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (recommended dimensions is less than 500x100 pixels)</td>
                 <td>
-                    <?php 
+                    <?php
                     if (!empty($headerLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$headerLogo; ?>"  />
                         <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
@@ -95,12 +93,12 @@
             </tr>
             <tr>
                 <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (recommended dimensions is less than dimensions 120x100 pixels)</td>
-                <td><?php 
-                    if (!empty($secondaryLogo)) { ?>
+                <td><?php
+                if (!empty($secondaryLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
                         <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
                         <?php echo '<br/><br/><br/>';
-                    } ?> 
+                } ?> 
                     <?php echo $form->fileField($model, 'secondary_logo'); ?>
                 </td>
             </tr>
