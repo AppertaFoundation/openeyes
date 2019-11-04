@@ -284,7 +284,7 @@ class WorklistManager extends CComponent
      */
     public function getWorklistDefinitions($exclude_unbooked = false)
     {
-        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->findAll();
+        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->displayOrder()->findAll();
     }
 
     /**
@@ -480,6 +480,7 @@ class WorklistManager extends CComponent
             }
 
             foreach ($model->findAll($criteria) as $definition) {
+                $definition->scenario = 'sortDisplayOrder';
                 if (!array_key_exists($definition->id, $display_lookup)) {
                     throw new Exception('Missing definition id for re-ordering request.');
                 }

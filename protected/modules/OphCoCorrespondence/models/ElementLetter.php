@@ -626,7 +626,7 @@ class ElementLetter extends BaseEventTypeElement
             $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
             $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
 
-            if ( isset( $attachments_last_event_id )) {
+            if (isset($attachments_last_event_id)) {
                 $order = 1;
                 foreach ($attachments_last_event_id as $key => $last_event) {
                     $eventAssociatedContent = new EventAssociatedContent();
@@ -1041,9 +1041,14 @@ class ElementLetter extends BaseEventTypeElement
      * @return string
      */
     public function checkPrint(){
-        if ((strpos(Yii::app()->request->urlReferrer, 'update') || strpos(Yii::app()->request->urlReferrer, 'create')) && !$this->draft) {
-            return "1";
+        $cookies = Yii::app()->request->cookies;
+        $print_output = $this->getOutputByType();
+        $additional_print_info = (count($print_output) > 1 ? '&all=1' : '');
+        if ($cookies->contains('savePrint')) {
+            if (!$this->draft && $print_output) {
+                return "1".$additional_print_info;
+            }
         }
-        return "0";
+        return "0".$additional_print_info;
     }
 }

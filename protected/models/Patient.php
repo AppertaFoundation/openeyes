@@ -665,7 +665,6 @@ class Patient extends BaseActiveRecordVersioned
             <?php foreach ($this->getOphthalmicDiagnosesSummary() as $diagnosis) : ?>
                 <?php list($side, $disorder_term, $date) = explode('~', $diagnosis, 3); ?>
                 <tr>
-                    <td><?= Helper::convertDate2NHS($date) ?></td>
                     <td><?= mb_strtoupper($side).' '.$disorder_term?></td>
                 </tr>
             <?php endforeach; ?>
@@ -1830,6 +1829,14 @@ class Patient extends BaseActiveRecordVersioned
         return $episode;
     }
 
+    public function getEvents()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->params = array(':pid' => $this->id);
+
+        return Event::model()->with('episode')->findAll($criteria);
+    }
     public function getLatestEvent()
     {
         $criteria = new CDbCriteria();
@@ -2119,10 +2126,13 @@ class Patient extends BaseActiveRecordVersioned
     public function getOphthalmicDiagnosesSummary()
     {
         $principals = array();
+        $api = new \OEModule\OphCiExamination\components\OphCiExamination_API();
+
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate();
+                $diagnosis = $api->getPrincipalOphtalmicDiagnosis($ep, $d->id);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getFormatedDate() . '~' . (isset($diagnosis->element_diagnoses->event_id) ? $diagnosis->element_diagnoses->event_id : '');
             }
         }
 

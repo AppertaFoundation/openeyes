@@ -17,8 +17,9 @@
 
 /**
  * @var UserHotlistItem $hotlistItem
+ * @var CoreAPI $core_api
  */
-$core_api = new CoreAPI();
+
 ?>
 <tr class="js-hotlist-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient"
     data-id="<?= $hotlistItem->id ?>"

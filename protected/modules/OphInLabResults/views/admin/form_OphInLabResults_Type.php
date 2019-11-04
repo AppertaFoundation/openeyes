@@ -45,8 +45,28 @@
                 )) ?>
             </td>
         </tr>
-
         <tr>
+            <td>Show Units</td>
+            <td>
+                <?= \CHtml::activeCheckbox(
+                    $model,
+                    'show_units',
+                    [ 'id' => 'show-units-checkbox' ]
+                ); ?>
+            </td>
+        </tr>
+        <tr class="js-unit-fields"
+            style="<?= $model->show_units ? "" : "display:none" ?>">
+            <td>Allow user to change units</td>
+            <td>
+                <?= \CHtml::activeCheckbox(
+                    $model,
+                    'allow_unit_change'
+                ); ?>
+            </td>
+        </tr>
+        <tr class="js-unit-fields"
+            style="<?= $model->show_units ? "" : "display:none" ?>">
             <td>Default Units</td>
             <td>
                 <?= \CHtml::activeTextArea(
@@ -186,6 +206,10 @@
                 $('.js-drop-down-fields').hide()
             }
 
-        })
+        });
+
+        $('#show-units-checkbox').change( event => {
+            $('.js-unit-fields').toggle(event.target.checked);
+        });
     })
 </script>

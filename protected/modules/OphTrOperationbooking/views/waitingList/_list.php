@@ -107,7 +107,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
               <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
             <?php } ?>
             <?php if ($eo->sentGPLetter()) { ?>
-              <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= \Yii::app()->params['gp_label']." Removal"></i>
+                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\Yii::app()->params['gp_label']." Removal"?>"></i>
             <?php } ?>
         </td>
 

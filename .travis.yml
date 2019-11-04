@@ -3,18 +3,32 @@ dist: bionic
 
 services:
   - docker
+  - xvfb
 
-before_install:
-  - docker pull appertaopeneyes/ci:latest
-
-script:
-  - docker run --name=oe -e OE_MODE=TEST -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH -v ~/.ssh/id_rsa:/run/secrets/SSH_PRIVATE_KEY -v $TRAVIS_BUILD_DIR:/var/www/openeyes appertaopeneyes/ci:latest
+jobs:
+  include:
+    - # PR builds - behat
+      if: type = pull_request
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
+      name: "Behat"
+    - # PR builds - phpunit
+      if: type = pull_request
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH phpunit
+      name: "PHPUnit"
+    - # Branch builds - behat
+      if: type = push AND (branch in (master, develop) OR branch =~ /^release\/v\S*$/ OR branch =~ /^bugfix\/\S*$/)
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH behat
+      name: "Behat (branch)"
+    - # Branch builds - phpunit
+      if: type = push AND (branch in (master, develop) OR branch =~ /^release\/v\S*$/ OR branch =~ /^bugfix\/\S*$/)
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH phpunit
+      name: "PHPUnit (branch)"
 
 
 notifications:
   slack:
     on_pull_requests: false
     rooms:
-      - secure: "PdYJWqt4/qE66HHjMFcH08zI677nEYK8D206j1MEPv311LS9jaoGiiDxMDGqhpa1xILsmlPbnjMXaGFTgyj2Im74Z1yTteLxPToyb/HjpWvaHpHVrAZdDWunPqV80YmJUed6OpGQ6t7ojvU8shmYup5McF7p70YxnwbQ7UCUA9X90zb0wqQAF3Tzj2a+UtkpDobIEyBuW724P3/rqIU/BhN9ruiRIv4nC/BuaX4q1BppkXX9LYZ8yW2gOGLv+bxI0w2UYUptZmu9rNaObBvoiH8yDZB6sPH33lESnmH5w9eQgpJ9Vz0tPvt6U8HuFXQu7uwCXI87FsWM2u27Z2rZPKOmX8DRQYamLmoK+f0WyeL1OXl6d11dzxZzvWSEblM7D5yfdqQcnUVM1mgghm4+5/+8QK0FsmnnrWyUma8oUWZsSqv1oFvmysEwZR+KCYs97h/NBO00QzdlOAPrFS7S1ExgLpLE90B+ImuwR6lqytY4/jttn/Hdn2eQkk9hlvM8LvVTzVetFMAgbdscImEN3ZubTTkuDVto3EtmGdiipN6hNCNUEU83pIdwEvhuSFnolQQq/ad/tmzFEYBlkMH871mqcZPcj6ZA4pGOnbRIGCzbcl9/4vXDdypfrvhN1QwnbZL1H4n4yQQ+mVe9Yq4Qef9CaHYP6W2Ef8XOpEXPEHY="
+      - secure: "$slack_room"
     on_success: change
     on_failure: always

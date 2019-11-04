@@ -1,5 +1,3 @@
-
-
 <?php
 /**
  * OpenEyes
@@ -129,7 +127,6 @@ class WorklistBehavior extends CBehavior
         // if there is an event->worklist_patient_id we check if the worklist is EyeCasualty and is for today
         $worklist_patient_today_AE = null;
         if ($this->owner->event->worklist_patient_id) {
-
             $criteria = new \CDbCriteria();
 
             $criteria->with = ['worklist.displayContext.subspecialty'];
@@ -150,7 +147,7 @@ class WorklistBehavior extends CBehavior
         }
 
         // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
-        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
+        if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
             $unbooked_worklist_manager = new \UnbookedWorklist();
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
 

@@ -16,7 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php $model_name = CHtml::modelName($element); ?>
 <div class="element-fields flex-layout full-width ">
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <div class="data-group">
         <div class="cols-2 column">
             <label>Ready for second eye?</label>

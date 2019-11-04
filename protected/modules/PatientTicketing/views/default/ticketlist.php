@@ -43,8 +43,8 @@
     <tr>
       <th>List</th>
       <th>Patient</th>
-      <th><i class="oe-i arrow-down-bold small pad active"></i></th>
-      <th><i class="oe-i arrow-down-bold small pad active"></i></th>
+      <th></th>
+      <th></th>
       <th>Context</th>
       <th>Clinic Info</th>
       <th>Notes</th>
