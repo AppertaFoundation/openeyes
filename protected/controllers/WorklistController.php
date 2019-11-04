@@ -31,10 +31,10 @@ class WorklistController extends BaseController
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
-        if($action->getId() === "print") {
-			$newblue_path = 'application.assets.newblue';
-			Yii::app()->assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null);
-		}
+        if ($action->getId() === "print") {
+            $newblue_path = 'application.assets.newblue';
+            Yii::app()->assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null);
+        }
 
         $this->manager = new WorklistManager();
 
@@ -130,19 +130,23 @@ class WorklistController extends BaseController
         $this->redirect('/worklist/manual');
     }
 
-	public function actionPrint($date_from = null, $date_to = null, $list_id = null)
-	{
-		$this->layout = '//layouts/print';
-		$worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
-		if($list_id) {
-			$worklists = array_filter($worklists, function($e) use($list_id){ return (int)$e->id === (int)$list_id; });
-		}
+    public function actionPrint($date_from = null, $date_to = null, $list_id = null)
+    {
+        $this->layout = '//layouts/print';
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+        if ($list_id) {
+            $worklists = array_filter($worklists, function ($e) use ($list_id) {
+                return (int)$e->id === (int)$list_id;
 
-		
-		$this->render('//worklist/print', array('worklists' => $worklists));
+            });
+        }
+
+        
+        $this->render('//worklist/print', array('worklists' => $worklists));
     }
 
-    public function actionClearDates(){
+    public function actionClearDates()
+    {
         Yii::app()->session->remove('worklist');
         return $this->redirect(array('/worklist/view'));
     }

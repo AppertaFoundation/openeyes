@@ -37,8 +37,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
         <div class="alert-box info">
             No patients in this worklist.
         </div>
-    <?php else: ?>
-
+    <?php else : ?>
     <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller <?=$is_printing?"allow-page-break":""?>">
         <colgroup>
             <col class="cols-1"><!--Time-->
@@ -84,9 +83,13 @@ $is_printing = isset($is_printing) && ($is_printing === true);
                     <td><?=$wl_patient->patient->hos_num;?></td>
                     <?php /*<!--PSD--><td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>*/?>
                     <td>
-                        <?php if(!$is_printing): ?><a href="<?=$link;?>"><?php endif; ?>
+                        <?php if (!$is_printing) :
+                            ?><a href="<?=$link;?>"><?php
+                        endif; ?>
                             <?=$wl_patient->patient->getHSCICName();?>
-							<?php if(!$is_printing): ?></a><?php endif; ?>
+                            <?php if (!$is_printing) :
+                                ?></a><?php
+                            endif; ?>
                     </td>
 
                     <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
