@@ -240,8 +240,8 @@ foreach ($element->entries as $entry) {
                     }
                     if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
-                        // Adder dialog for HM should only allow one medication to 
-                        // be added at a time
+                        // This callback is called once per Medication added
+                        // to HM therefore the returned new_row length must be 1
                         if ($new_row && $new_row.length === 1) {
                             $new_row = $($new_row[0]);
                             controller.disableRemoveButton($new_row);
