@@ -74,6 +74,8 @@ class m190722_003449_create_cat_prom5_question_answer_table extends OEMigration
 
         $this->insert('cat_prom5_answers', array('question_id' => 5, 'answer' => 'I cannot read any more because of my eyesight', 'score' => 4));
 
+        $this->insert('cat_prom5_answers', array('question_id' => 5, 'answer' => 'I cannot read because of other reasons', 'score' => 2));
+
         //Question 6
 
         $this->insert('cat_prom5_answers', array('question_id' => 6, 'answer' => 'I gave all the answers and wrote them down myself', 'score' => 0));
