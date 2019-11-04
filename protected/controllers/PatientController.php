@@ -253,7 +253,7 @@ class PatientController extends BaseController
     public function actionGetPlansProblems($patient_id, $inc_deactive = false)
     {
         $criteria = new CDbCriteria();
-        if(!$inc_deactive){
+        if (!$inc_deactive) {
             $criteria->addCondition("active=1");
         }
         $criteria->addCondition("patient_id=:patient_id");
@@ -263,11 +263,13 @@ class PatientController extends BaseController
         $plans = [];
         foreach ($plans_problems as $plan_problem) {
             $user_created = $plan_problem->createdUser;
+            $last_modifier = $plan_problem->lastModifiedUser;
 
             $attributes = $plan_problem->attributes;
-            $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
+            $attributes['title'] = ($user_created ? 'by '.$user_created->getFullNameAndTitle() : '');
             $attributes['create_at'] = \Helper::convertDate2NHS($plan_problem->created_date);
             $attributes['last_modified'] = \Helper::convertDate2NHS($plan_problem->last_modified_date);
+            $attributes['last_modified_by'] = ($last_modifier ? 'by '.$last_modifier->getFullNameAndTitle() : '');
             $plans[] = $attributes;
         }
 
@@ -625,7 +627,6 @@ class PatientController extends BaseController
             $criteria->addCondition('episode.patient_id = :patient_id');
             $criteria->params[':patient_id'] = $this->patient->id;
             $criteria->order = "event.event_date ASC";
-            $iop = models\Element_OphCiExamination_IntraocularPressure::model()->find($criteria);
 
             if ($cct_element) {
                 if ($cct_element->hasLeft()) {
@@ -636,11 +637,12 @@ class PatientController extends BaseController
                 }
                 $header_data['CCT']['date'] = \Helper::convertMySQL2NHS($cct_element->event->event_date);
             }
+            $iop = $exam_api->getBaseIOPValues($patient);
 
             if ($iop) {
-                $header_data['IOP']['right'] = $iop->getReading('right');
-                $header_data['IOP']['left'] = $iop->getReading('left');
-                $header_data['IOP']['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                $header_data['IOP']['right'] = $iop['right'];
+                $header_data['IOP']['left'] = $iop['left'];
+                $header_data['IOP']['date'] = $iop['date'];
             }
 
             $max_iop = $exam_api->getMaxIOPValues($patient);

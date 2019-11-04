@@ -258,7 +258,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <?php } ?>
 
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
                                 <tr>
                                     <td><?= $name ?></td>
                                     <td>

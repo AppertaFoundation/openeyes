@@ -462,7 +462,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         // code adapted from module.js to verify if diagnosis already in table or not
         var alreadyInList = false;
-        var listSide = null;
         var row, $tr;
 
         // iterate over table rows.
