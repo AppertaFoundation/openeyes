@@ -133,26 +133,13 @@ class WorklistController extends BaseController
 	public function actionPrint($date_from = null, $date_to = null, $list_id = null)
 	{
 		$this->layout = '//layouts/print';
-		$worklists = $this->getWorkLists($date_from, $date_to);
+		$worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
 		if($list_id) {
 			$worklists = array_filter($worklists, function($e) use($list_id){ return (int)$e->id === (int)$list_id; });
 		}
 
-		// TODO
-		// This may be related to OE-8793
-		// When that bug is fixed, the following filter
-		// won't be needed any more
-
-		$unique_ids = array();
-		$unique_worklists = array();
-		foreach ($worklists as $wl) {
-			if(!in_array($wl->id, $unique_ids)) {
-				$unique_worklists[] = $wl;
-				$unique_ids[] = $wl->id;
-			}
-		}
-
-		$this->render('//worklist/print', array('worklists' => $unique_worklists));
+		
+		$this->render('//worklist/print', array('worklists' => $worklists));
     }
 
     public function actionClearDates(){
