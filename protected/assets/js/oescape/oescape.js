@@ -23,15 +23,36 @@ $(document).ready(function () {
     var side = $(e.target).attr('data-side');
     var other_side = side === 'left' ? 'right' : 'left';
 
-    $('.js-oes-eyeside').removeClass('selected'); //deselect the other button
-    $(this).addClass('selected'); //select the button
-    $('.plotly-' + side).show(); //show the new side
-    $('.plotly-' + other_side).hide(); //hide the other side
+    $('.js-oes-eyeside').removeClass('selected'); //deselect the other buttons
+    $(this).addClass('selected'); //select the current button
+    switch(side){
+      case 'left':
+        
+          // $('.plotly-left').appendTo($('.oes-left-side'))
+          $('.plotly-left').show(); //show the new side
+          $('.plotly-right').hide(); //hide the other side
+          break;
 
-    if ($('.oes-right-side').find('.oes-data-row-input')){
-      $('#oct_stack_' + side).show();
-      $('#oct_stack_' + other_side).hide();
+      case 'right':
+          $('.plotly-right').show(); //show the new side
+          $('.plotly-left').hide(); //hide the other side
+          
+          break;
+      
+      case 'both':
+        
+          $('.plotly-left').appendTo($('.oes-right-side'))
+          $('.plotly-right, .plotly-left').show(); //show the both sides
+        break;
+
+        
     }
+
+
+    // if ($('.oes-right-side').find('.oes-data-row-input')){
+    //   $('#oct_stack_' + side).show();
+    //   $('#oct_stack_' + other_side).hide();
+    // }
 
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
@@ -140,16 +161,33 @@ function setOEScapeSize(size_str){
 
   var current_width = $(document).width()*sizes[size_str].percent/100;
   var left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
-  right.css({"width":$(document).width()-left_width});
+  var right_width = $(document).width()-left_width;
+  right.css({"width": right_width});
   right.toggle(size_str !== 'full');
-  var update = {
+  var left_update = {
     width: left_width,
   };
+  var right_update = {
+    width: right_width>0?right_width:1,
+  };
+  // console.log(right_update);
+  if (eye_side != 'both'){
+    var plotly_list_l = $('.plotly-'+eye_side);
+  }
+  else{
+    var plotly_list_l = $('.plotly-right');
+    var plotly_list_r = $('.plotly-left');
 
-  var plotly_list = $('.plotly-'+eye_side);
-  for (var i = 0; i < plotly_list.length; i++){
-    var plotly_id = plotly_list[i].id;
-    Plotly.relayout(plotly_id, update);
+    for (let i = 0; i < plotly_list_r.length; i++){
+      let plotly_id = plotly_list_r[i].id;
+      Plotly.relayout(plotly_id, right_update);
+      console.log(plotly_id+" ding");
+    }
+  }
+  for (let i = 0; i < plotly_list_l.length; i++){
+    let plotly_id = plotly_list_l[i].id;
+    Plotly.relayout(plotly_id, left_update);
+    console.log(plotly_id+" ding");
   }
 }
 
