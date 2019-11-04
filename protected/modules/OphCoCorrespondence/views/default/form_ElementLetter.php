@@ -396,7 +396,7 @@ $creating = isset($creating) ? $creating : false;
             <tr>
               <td>From</td>
               <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => 'Search for users full title and details']]); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]); ?>
                 <?php echo $form->textArea($element, 'footer', array('label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text autosize', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 54px;")) ?>
               </td>
             </tr>
