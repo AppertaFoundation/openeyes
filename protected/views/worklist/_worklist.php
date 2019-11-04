@@ -25,6 +25,7 @@ $core_api = new CoreAPI();
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.TableController.js'), ClientScript::POS_END);
 
+$is_printing = isset($is_printing) && ($is_printing === true);
 ?>
 
 <div class="worklist-group js-filter-group" id="js-worklist-<?=$worklist->id?>-wrapper">
@@ -37,7 +38,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             No patients in this worklist.
         </div>
     <?php else : ?>
-    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller">
+    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller <?=$is_printing?"allow-page-break":""?>">
         <colgroup>
             <col class="cols-1"><!--Time-->
             <col class="cols-1"><!--Hos Num-->
@@ -81,7 +82,15 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                     <td><?=$wl_patient->scheduledtime;?></td>
                     <td><?=$wl_patient->patient->hos_num;?></td>
                     <?php /*<!--PSD--><td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>*/?>
-                    <td><a href="<?=$link;?>"><?=$wl_patient->patient->getHSCICName();?></a></td>
+                    <td>
+                        <?php if (!$is_printing) :
+                            ?><a href="<?=$link;?>"><?php
+                        endif; ?>
+                            <?=$wl_patient->patient->getHSCICName();?>
+                            <?php if (!$is_printing) :
+                                ?></a><?php
+                            endif; ?>
+                    </td>
 
                     <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
                         <?php /*visibility: hidden; to keep the nice spacing, when PSD will be ready everything will be clean and shiny */ ?>
@@ -98,7 +107,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                 </tr>
             <?php endforeach;?>
         </tbody>
-        <tfoot>
+        <tfoot <?=$is_printing?"class=\"hidden\"":""?>>
         <tr>
             <td colspan="8">
                 <?php $this->widget('LinkPager', [ 'pages' => $data_provider->getPagination() ]); ?>
