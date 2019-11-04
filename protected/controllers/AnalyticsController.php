@@ -305,7 +305,7 @@ class AnalyticsController extends BaseController
     {
         $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num,
       p.nhs_num as nhs_num,
-      p.id AS id,
+      p.id AS patient_id,
       CONCAT(c.first_name, \' \', c.last_name) AS name,
       p.dob as dob,
       IF(p.date_of_death IS NOT NULL,
