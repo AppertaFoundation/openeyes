@@ -72,7 +72,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
                                             <i class="oe-i info small pro-theme js-has-tooltip"
-                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                             </i>
                                         <?php } ?>
                                       </td>
@@ -114,7 +114,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <td>
                                   <?php if ($entry->getDoseAndFrequency()) {?>
                                       <i class="oe-i info small pro-theme js-has-tooltip"
-                                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                       </i>
                                     <?php } ?>
                               </td>
@@ -207,7 +207,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                         <td>
                                             <?php if ($entry->getDoseAndFrequency()) {?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
-                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                 </i>
                                             <?php } ?>
                                         </td>
@@ -245,7 +245,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                             <td>
                                                 <?php if ($entry->getDoseAndFrequency()) {?>
                                                     <i class="oe-i info small pro-theme js-has-tooltip"
-                                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                     </i>
                                                 <?php } ?>
                                             </td>
