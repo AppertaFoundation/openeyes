@@ -79,12 +79,14 @@ class OphTrOperationbooking_API extends BaseAPI
             ->from('ophtroperationbooking_operation_status')
             ->where(['not in','name', ['Completed', 'On-Hold']])->queryColumn());
 
-        if ($operations = $this->getElements(
+        $operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context,
             null,
-            $criteria)) {
+            $criteria);
+
+        if ($operations) {
             foreach ($operations as $key => $operation) {
                 $operations[$key]['booking'] = $operation->booking;
             }
