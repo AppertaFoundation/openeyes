@@ -314,8 +314,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         this.resetting = true;
         break;
 
-      case 'doodleAdded':
-
+      case 'doodleAdded': {
         // Newly added doodle is passed in message object
         let newDoodle = msgArray['object'];
 
@@ -351,7 +350,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           this.storeToHiddenField(this.$corticalCataract, newDoodle.corticalGrade);
         }
         break;
-      case 'doodleDeleted':
+      }
+      case 'doodleDeleted': {
         if (this.resetting) {
           // don't worry about delete notifications whilst resetting eyedraws.
           break;
@@ -394,7 +394,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           this.storeToHiddenField(this.$corticalCataract, '');
         }
         break;
-      case 'parameterChanged':
+      }
+      case 'parameterChanged': {
         let change = msgArray['object'];
         let selectedDoodle = msgArray['selectedDoodle'];
         if (this.secondaryDoodlesLoaded) {
@@ -436,6 +437,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           }
         }
         break;
+      }
     }
   };
 
