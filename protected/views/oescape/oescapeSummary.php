@@ -47,7 +47,7 @@ if (!empty($subspecialty)) { ?>
             $widget->run_right_side();
       } ?>
   <!-- <div id="charts-container-right" class="highchart-area <?= $subspecialty->short_name; ?>"> -->
-    <button class="selected plot-display-label reset-zoom" >Reset Zoom Level</button>
+    <button id='reset-zoom-right' class="selected plot-display-label reset-zoom" style='display:none'>Reset Zoom Level</button>
   <!-- </div> -->
   </div>
 

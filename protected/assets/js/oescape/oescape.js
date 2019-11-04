@@ -27,22 +27,31 @@ $(document).ready(function () {
     $(this).addClass('selected'); //select the current button
     switch(side){
       case 'left':
-        
-          // $('.plotly-left').appendTo($('.oes-left-side'))
+          $('.plotly-left').appendTo($('.oes-left-side')) //move left to left side   
           $('.plotly-left').show(); //show the new side
           $('.plotly-right').hide(); //hide the other side
+          $('#reset-zoom-right').hide(); //hide the 2nd reset zoom button
+          //enable previous right side content
+          $('.oes-right-side > div').not('.plotly-left').hide();
           break;
 
-      case 'right':
+      case 'right':        
+          $('.plotly-left').appendTo($('.oes-left-side')) //move left to left side   
           $('.plotly-right').show(); //show the new side
           $('.plotly-left').hide(); //hide the other side
-          
+          $('#reset-zoom-right').hide(); //hide the 2nd reset zoom button 
+          //enable previous right side content
+          $('.oes-right-side > div').not('.plotly-left').hide();
           break;
       
       case 'both':
         
-          $('.plotly-left').appendTo($('.oes-right-side'))
-          $('.plotly-right, .plotly-left').show(); //show the both sides
+          $('.plotly-left').appendTo($('.oes-right-side')) //move to right side
+          $('.plotly-right, .plotly-left').show(); //show both sides
+          $('#reset-zoom-right').show(); //show the 2nd reset zoom button
+
+          //disable previous right side content
+          $('.oes-right-side > div').not('.plotly-left').hide();
         break;
 
         
@@ -182,7 +191,7 @@ function setOEScapeSize(size_str){
       let plotly_id = plotly_list_r[i].id;
       Plotly.relayout(plotly_id, right_update);
       console.log(plotly_id+" ding");
-    }
+    }    
   }
   for (let i = 0; i < plotly_list_l.length; i++){
     let plotly_id = plotly_list_l[i].id;
