@@ -77,21 +77,11 @@ class AdminSidebar extends BaseCWidget
     {
         $state = 'collapsed';
 
-        if (Yii::app()->request->cookies['adminSidebarGroupStates']) {
-            $value = json_decode(\Yii::app()->request->cookies['adminSidebarGroupStates']->value, true);
-
-            if (array_key_exists($box_title, $value)) {
-                $state = $value[$box_title];
-            }
-        }
-
         foreach ($this->menu_items as $_box_title => $box_items) {
             foreach ($box_items as $_name => $data) {
                 if ($box_title === $_box_title && Yii::app()->getController()->request->requestUri == $data ||
                     isset(\Yii::app()->controller->group) && \Yii::app()->controller->group == $box_title) {
-                    $state = 'expanded';
-                } else {
-                    $state = 'collapsed';
+                    return 'expanded';
                 }
             }
         }

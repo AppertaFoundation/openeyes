@@ -104,7 +104,7 @@ abstract class DataObjectTest_BaseObj extends DataObject
     public static function getFhirTemplate()
     {
         class_exists('DataTemplate');
-        $template = \PHPUnit_Framework_MockObject_Generator::getMock('DataTemplateComponent', array(), array(), '', false);
+        $template = (new \PHPUnit_Framework_MockObject_Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
         $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('match')
             ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
             }));

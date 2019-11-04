@@ -221,21 +221,32 @@
                 updateProcedureSelect(identifier);
             } else if (popped) {
                 // No subsections, so we should be safe to just push it back into the list
-                $('ul.add-options.js-search-results').append('<option value="' + popped["id"] + '">' + popped["name"] + '</option>').removeAttr('disabled');
-                sort_selectbox($('ul.add-options.js-search-results'));
+                $('ul.add-options[data-id="select"]').append(
+                    '<li data-label="'+popped["name"]+'" data-id="'+popped["id"]+'">' +
+                        '<span class="auto-width">'+popped["name"]+'</span>' +
+                    '</li>'
+                ).removeAttr('disabled');
+                sort_ul($('ul.add-options[data-id="select"]'));
             }
 
             return false;
         }
 
-        function selectSort(a, b) {
-            if (a.innerHTML == rootItem) {
-                return -1;
-            } else if (b.innerHTML == rootItem) {
-                return 1;
-            }
-            return (a.innerHTML > b.innerHTML) ? 1 : -1;
-        };
+        function sort_ul(element) {
+            let rootItem = element.children('li:first').text();
+            element.append(element.children('li').sort(selectSortSuper(rootItem)));
+        }
+
+        function selectSortSuper(rootItem) {
+            return function selectSort(a, b) {
+                if (a.innerHTML == rootItem) {
+                    return -1;
+                } else if (b.innerHTML == rootItem) {
+                    return 1;
+                }
+                return (a.innerHTML > b.innerHTML) ? 1 : -1;
+            };
+        }
 
         $('select[id^=subsection_id]').unbind('change').change(function () {
             var m = $(this).attr('id').match(/^subsection_id_(.*)$/);
@@ -244,7 +255,8 @@
 
         function initialiseProcedureAdder() {
             $('.add-options[data-id="subsections"]').on('click', 'li', function () {
-                updateProcedureDialog($(this).data('id'));
+                let id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
+                updateProcedureDialog(id);
             });
             if ($('.add-options[data-id="subsections"] > li').length === 0) {
                 $('.add-options[data-id="subsections"]').hide();
@@ -253,6 +265,9 @@
             if ($('.add-options[data-id="select"] > li').length === 0) {
                 $('.add-options[data-id="select"]').hide();
             }
+            
+            // Set select dialog to show defaults when first loading
+            updateProcedureDialog('');
         }
 
         function updateProcedureDialog(subsection) {
@@ -263,10 +278,25 @@
                     'data': {'subsection': subsection, 'dialog': true, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
                     'success': function (data) {
                         $('.add-options[data-id="select"]').each(function () {
-                            $(this).html(data);
+                            $(this).html(data).find('li').find('span').removeClass('auto-width').addClass('restrict-width extended');
                             $(this).show();
                         });
                     }
+                });
+            } else {
+                <?php
+                $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+                $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+                $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
+                $formatted_procedures = "";
+                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                    $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
+                    "<span class='auto-width'>$subspecialty_procedure</span></li>";
+                }
+                ?>
+                $('.add-options[data-id="select"]').each(function () {
+                    $(this).html("<?= $formatted_procedures ?>");
+                    $(this).show();
                 });
             }
         }
@@ -335,7 +365,7 @@
             return false;
         });
 
-        <?php if ($durations): ?>
+        <?php if ($durations) : ?>
         $(document).ready(function () {
             if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
                 $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
@@ -404,9 +434,10 @@
                         array_map(function ($key, $item) {
                             return ['label' => $item, 'id' => $key];
                         }, array_keys($procedures), $procedures)
-                    ) ?>, {'id': 'select', 'multiSelect': true})
+                    ) ?>, {'id': 'select', 'multiSelect': true, 'liClass': ' restrict-width extended'})
                 ],
-
+                liClass: 'restrict-width extended',
+                popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
                     var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
                     for (i in selectedItems) {
