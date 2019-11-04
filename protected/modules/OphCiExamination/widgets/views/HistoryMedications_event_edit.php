@@ -240,8 +240,13 @@ foreach ($element->entries as $entry) {
                     }
                     if(data.will_copy) {
                         $new_row = controller.MMController.addEntry([data], false);
-                        controller.disableRemoveButton($new_row);
-                        controller.bindEntries($row, $new_row);
+                        // Adder dialog for HM should only allow one medication to 
+                        // be added at a time
+                        if ($new_row && $new_row.length === 1) {
+                            $new_row = $($new_row[0]);
+                            controller.disableRemoveButton($new_row);
+                            controller.bindEntries($row, $new_row);
+                        }
                     }
                 }
             }
