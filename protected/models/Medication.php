@@ -127,6 +127,8 @@ class Medication extends BaseActiveRecordVersioned
             'allergies' => [self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, ['medication_set_id' => "medication_set_id"], "through" => "medicationSetItems2"],
             "defaultForm" => [self::BELONGS_TO, MedicationForm::class, 'default_form_id'],
             "defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
+
+            'medicationSetAutoRuleMedication' => [self::HAS_MANY, MedicationSetAutoRuleMedication::class, 'medication_id'],
         ];
     }
 

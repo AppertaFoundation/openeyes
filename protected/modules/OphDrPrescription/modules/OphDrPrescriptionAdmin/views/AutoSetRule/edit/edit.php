@@ -64,7 +64,7 @@
             </table>
         </div>
     </div>
-    <?= $this->renderPartial('../DrugSet/_usage_rules', ['medication_set' => $set]); ?>
+    <?= $this->renderPartial('/DrugSet/_usage_rules', ['medication_set' => $set]); ?>
     <div class="row divider">
         <?php $this->renderPartial('edit/edit_attributes', ['set' => $set]); ?>
     </div>
@@ -74,7 +74,8 @@
     </div>
 
     <div class="row divider">
-        <?php $this->renderPartial('edit/edit_individual_medications', ['set' => $set]); ?>
+        <?php //$this->renderPartial('edit/edit_individual_medications', ['set' => $set]); ?>
+        <?php $this->renderPartial('../DrugSet/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
 
     <?= \OEHtml::submitButton() ?>
@@ -82,3 +83,20 @@
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
     ]) ?>
 </form>
+<script>
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+            tableSelector: '#meds-list',
+            searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
+            templateSelector: '#medication_template'
+    });
+    $('#meds-list').data('drugSetController', drugSetController);
+
+        let tableInlineEditController = new OpenEyes.PrescriptionAdminMedicationSet({
+            tableSelector: '#meds-list',
+            templateSelector: '#medication_template',
+            onAjaxError: function() {
+                drugSetController.refreshResult();
+            }
+    });
+    $('#meds-list').data('tableInlineEditController', tableInlineEditController);
+</script>

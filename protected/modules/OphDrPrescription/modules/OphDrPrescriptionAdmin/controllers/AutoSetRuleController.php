@@ -230,7 +230,9 @@ class AutoSetRuleController extends BaseAdminController
 
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
         Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
+        $filters = \Yii::app()->request->getParam('search', []);
         $data = \Yii::app()->request->getParam('MedicationSet');
 
         $set = MedicationSet::model()->findByPk($id);
@@ -261,7 +263,31 @@ class AutoSetRuleController extends BaseAdminController
             }
         }
 
-        $this->render('/AutoSetRule/edit/edit', ['set' => $set, 'error' => $error]);
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['medicationSetItems', 'medicationSetItems.medicationSet'];
+        $criteria->with = ['medicationSetAutoRuleMedication'];
+        $criteria->together = true;
+        $criteria->addCondition('medicationSetAutoRuleMedication.medication_set_id = :set_id');
+        $criteria->params[':set_id'] = $set->id;
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', $filters['query']);
+        }
+
+        $data_provider = new CActiveDataProvider('Medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/AutoSetRule/edit/edit', [
+            'set' => $set, 'error' => $error,
+            'medication_data_provider' => $data_provider,
+        ]);
     }
 
     public function actionPopulateAll()
@@ -294,6 +320,66 @@ class AutoSetRuleController extends BaseAdminController
     }
 
     public function actionUpdateMedicationDefaults()
+    {
+        $result['success'] = false;
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (\Yii::app()->request->isPostRequest) {
+                $set_id = \Yii::app()->request->getParam('set_id');
+                $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
+                $medication_data = \Yii::app()->request->getParam('Medication', []);
+                $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
+
+                if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+                    $item = \MedicationSetItem::model()->findByPk($item_data['id']);
+
+                    if ($item) {
+                        $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                        $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                        $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                        $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+
+                        $item->tapers = array();
+
+                        if ($tapers) {
+                            $taper_array = array();
+                            foreach ($tapers as $taper) {
+                                $taper = json_decode($taper, true);
+                                $new_taper = new MedicationSetItemTaper();
+                                if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
+                                    $new_taper->id = $taper['MedicationSetItemTaper[id]'];
+                                    $new_taper->setIsNewRecord(false);
+                                }
+                                $new_taper->medication_set_item_id = $item_data['id'];
+                                $new_taper->dose = $taper['MedicationSetItemTaper[dose]'];
+                                $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
+                                $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
+
+                                $taper_array[] = $new_taper;
+                            }
+                            $item->tapers = $taper_array;
+                        }
+
+                        $result['success'] = $item->save();
+                        $result['errors'] = $item->getErrors();
+
+                        if ($result['success'] === true) {
+                                $transaction->commit();
+                            } else {
+                                $transaction->rollback();
+                            }
+                    }
+                }
+            }
+        } catch (Exception $e) {
+                $transaction->rollback();
+            } finally {
+                echo \CJSON::encode($result);
+            \Yii::app()->end();
+        }
+    }
+
+    public function actionUpdateMedicationDefaultsOLD()
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {

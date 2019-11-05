@@ -69,7 +69,7 @@ EOH;
                 } else {
                     $transaction = Yii::app()->db->beginTransaction();
                     $this->updateLocalMedicationWithDmdMedicationAttributes($current_medication, $target_medication);
-                                        $target_medication_set_items =  MedicationSetItem::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
+                     $target_medication_set_items =  MedicationSetItem::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
 
                     foreach ($target_medication_set_items as $set_item) {
                         $current_medication_set_item = MedicationSetItem::model()->findByAttributes([
@@ -84,12 +84,29 @@ EOH;
                         }
                     }
 
+                    /* Auto set */
+
+                    $target_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
+
+                    foreach ($target_medication_auto_set_items as $set_item) {
+                            $current_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findByAttributes([
+                                    'medication_id' => $current_medication->id,
+                                    'medication_set_id' => $set_item->medication_set_id
+                                    ]);
+                            if (isset($current_medication_auto_set_items)) {
+                                    $set_item->delete();
+                                } else {
+                                    $set_item->medication_id = $current_medication->id;
+                                    $set_item->save();
+                                }
+                    }
+
                     if ($current_medication->save() && $target_medication->save()) {
                         $transaction->commit();
                     } else {
                         $transaction->rollback();
                         Yii::log('Unable to update Medication with id :' . $current_medication->id .
-                            " with Medication id: " . $target_medication->id . " attributes");
+                            " with Medication id: " . $target_medication->id . " attributes (MedicationSetAutoRuleMedication)");
                     }
                 }
             }
