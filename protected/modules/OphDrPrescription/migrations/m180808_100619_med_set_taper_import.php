@@ -43,7 +43,7 @@ class m180808_100619_med_set_taper_import extends CDbMigration
                                       )
                                       ")->bindValues(array(
                         ":drug_id" => $taper["drug_id"],
-                        ":ref_set_name" => $taper['drug_set_name'] . " (manual)",
+                        ":ref_set_name" => $taper['drug_set_name'] . " (manual)",_meds_in_set.php
                         ":subspecialty_id" => $taper['subspecialty_id'],
                         ":dose" => (float)$taper['dose'],
                         ":frequency_id" => $taper["frequency_id"],

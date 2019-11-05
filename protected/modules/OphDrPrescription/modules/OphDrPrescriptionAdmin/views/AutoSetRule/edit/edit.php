@@ -75,7 +75,7 @@
 
     <div class="row divider">
         <?php //$this->renderPartial('edit/edit_individual_medications', ['set' => $set]); ?>
-        <?php $this->renderPartial('../DrugSet/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
+        <?php $this->renderPartial('edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
 
     <?= \OEHtml::submitButton() ?>

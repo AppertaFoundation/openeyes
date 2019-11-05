@@ -60,6 +60,13 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 			'medicationSet' => array(self::BELONGS_TO, MedicationSet::class, 'medication_set_id'),
 			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+
+            'defaultDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'default_duration_id'),
+            'defaultDispenseCondition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'default_dispense_condition_id'),
+            'defaultDispenseLocation' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'default_dispense_location_id'),
+            'defaultFrequency' => array(self::BELONGS_TO, 'MedicationFrequency', 'default_frequency_id'),
+            'defaultForm' => array(self::BELONGS_TO, 'MedicationForm', 'default_form_id'),
+            'defaultRoute' => array(self::BELONGS_TO, 'MedicationRoute', 'default_route_id'),
 		);
 	}
 
