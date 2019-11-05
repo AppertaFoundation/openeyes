@@ -18,7 +18,7 @@
 
 <?php
 if (!empty($element->correspondence_in_large_letters)) :
-?>
+    ?>
 <div class="element-data full-width">
     <table class="label-value last-left">
         <tbody>
@@ -35,5 +35,5 @@ if (!empty($element->correspondence_in_large_letters)) :
     </table>
 </div>
     <?php
-    endif;
-    ?>
+endif;
+?>

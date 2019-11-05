@@ -2,8 +2,8 @@
 
 class m190604_093420_add_element_accessible_information_standards extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $this->createOETable('et_ophciexamination_accessible_information_standards', array(
             'id' => 'pk',
@@ -24,14 +24,14 @@ class m190604_093420_add_element_accessible_information_standards extends OEMigr
             'display_order' => 10,
             'group_name' => 'Accessible Information Standards',
         ));
-	}
+    }
 
-	public function down()
-	{
-	    $this->delete('element_group', 'name = ?', ['Accessible Information Standards']);
+    public function down()
+    {
+        $this->delete('element_group', 'name = ?', ['Accessible Information Standards']);
         $id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards');
         $this->delete('element_type', 'id = ?', [$id]);
         $this->dropForeignKey('et_ophciexamination_accessible_information_standards_ev_fk', 'et_ophciexamination_accessible_information_standards');
         $this->dropOETable('et_accessible_information_standards');
-	}
+    }
 }
