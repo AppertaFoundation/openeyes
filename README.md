@@ -4,7 +4,7 @@ OpenEyes
 Introduction
 ------------
 
-OpenEyes is a collaborative, open source, project led by the OpenEyes Foundation (http://www.openeyes.org.uk/). The goal is to produce a framework which will allow the rapid, and continuous development of an electronic patient record (EPR for ophthalmology in particular and eye care in general). Clinical and technical contributions are made by Hospitals, Institutions, Academic departments, Companies, and Individuals.
+OpenEyes is a collaborative, open source, project led by the OpenEyes subcommittee of the Apperta Foundation (http://www.openeyes.org.uk/). The goal is to produce a framework which will allow the rapid, and continuous development of an electronic patient record (EPR for ophthalmology in particular and eye care in general). Clinical and technical contributions are made by Hospitals, Institutions, Academic departments, Companies, and Individuals.
 
 The initial focus is on Ophthalmology, but the design is sufficiently flexible to be used for any clinical specialty.
 
