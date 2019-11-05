@@ -255,7 +255,8 @@
 
         function initialiseProcedureAdder() {
             $('.add-options[data-id="subsections"]').on('click', 'li', function () {
-                updateProcedureDialog($(this).data('id'));
+                let id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
+                updateProcedureDialog(id);
             });
             if ($('.add-options[data-id="subsections"] > li').length === 0) {
                 $('.add-options[data-id="subsections"]').hide();
@@ -264,6 +265,9 @@
             if ($('.add-options[data-id="select"] > li').length === 0) {
                 $('.add-options[data-id="select"]').hide();
             }
+            
+            // Set select dialog to show defaults when first loading
+            updateProcedureDialog('');
         }
 
         function updateProcedureDialog(subsection) {
@@ -278,6 +282,21 @@
                             $(this).show();
                         });
                     }
+                });
+            } else {
+                <?php
+                $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+                $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+                $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
+                $formatted_procedures = "";
+                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                    $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
+                    "<span class='auto-width'>$subspecialty_procedure</span></li>";
+                }
+                ?>
+                $('.add-options[data-id="select"]').each(function () {
+                    $(this).html("<?= $formatted_procedures ?>");
+                    $(this).show();
                 });
             }
         }
