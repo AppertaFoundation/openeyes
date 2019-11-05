@@ -239,11 +239,11 @@ foreach ($element->entries as $entry) {
                         data.locked = 1;
                     }
                     if(data.will_copy) {
-                        $new_row = controller.MMController.addEntry([data], false);
+                        new_rows = controller.MMController.addEntry([data], false);
                         // This callback is called once per Medication added
                         // to HM therefore the returned new_row length must be 1
-                        if ($new_row && $new_row.length === 1) {
-                            $new_row = $($new_row[0]);
+                        if (new_rows && new_rows.length === 1) {
+                            $new_row = $(new_rows[0]);
                             controller.disableRemoveButton($new_row);
                             controller.bindEntries($row, $new_row);
                         }
