@@ -21,7 +21,7 @@ if (!empty($subspecialty)) { ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">
-  <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
+  <div id="charts-container-leftside" class="highchart-area <?= $subspecialty->short_name; ?>">
     <?php $summaryItems = array();
         $summaryItems = OescapeSummaryItem::model()->enabled($subspecialty->id)->findAll();
     if (!$summaryItems) {
@@ -46,9 +46,6 @@ if (!empty($subspecialty)) { ?>
   if (isset($widget)) {
             $widget->run_right_side();
       } ?>
-  <!-- <div id="charts-container-right" class="highchart-area <?= $subspecialty->short_name; ?>"> -->
-    <button id='reset-zoom-right' class="selected plot-display-label reset-zoom" style='display:none'>Reset Zoom Level</button>
-  <!-- </div> -->
   </div>
 
 <?php } ?>
@@ -60,15 +57,19 @@ if (!empty($subspecialty)) { ?>
 
   $(document).ready(function () {
   //set min and max
-    //  if left side
-  if($('.rangeslider-container').parents('.plotly-VA')[0].style.display){
+  eye_side = $('.js-oes-eyeside.selected').data('side');
+  switch(eye_side){
+    case 'left':
     min_value = new Date($('.plotly-left')[0]['layout']['xaxis']['range'][0]);
     max_value = new Date($('.plotly-left')[0]['layout']['xaxis']['range'][1]);
-   }
-   else{
+    break;
+    case 'right':
+    default:      
     min_value = new Date($('.plotly-right')[0]['layout']['xaxis']['range'][0]);
     max_value = new Date($('.plotly-right')[0]['layout']['xaxis']['range'][1]);
-   }
+    break;
+    
+  }
 
     let charts = [];
     charts['VA'] = [];
@@ -92,7 +93,7 @@ if (!empty($subspecialty)) { ?>
       $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
     });
 
-    if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General')){
+    if ($("#charts-container-leftside").hasClass('Glaucoma')||$("#charts-container-leftside").hasClass('General')){
       $('.right-side-content').show();
 
       let limits = {};
