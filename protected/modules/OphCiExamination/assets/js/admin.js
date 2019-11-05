@@ -205,17 +205,23 @@ $(document).ready(function() {
 
     // Bind Add element button to current flow.
     bindActionWithWorkflowWarning('#et_add_element_type', 'click', function(e) {
-      if ($('#element_type_id').val() == '') {
+      if ($('#element_type_id').val() === '') {
         alert("Please select an element type to add");
         return;
       }
 
+      let data = {
+        'element_type_id': $('#element_type_id').val(),
+        'step_id': $('#admin_workflow_steps tr.selected').data('id'),
+        'YII_CSRF_TOKEN': YII_CSRF_TOKEN
+      };
+
       $.ajax({
         'type': 'POST',
-        'data': 'element_type_id='+$('#element_type_id').val()+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+        'data': data,
         'url': baseUrl+'/OphCiExamination/admin/addElementTypeToWorkflowStep',
         'success': function(resp) {
-          if (resp != "1") {
+          if (resp !== "1") {
             alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
           } else {
             $('#admin_workflow_steps tr.selected').click();
@@ -228,16 +234,22 @@ $(document).ready(function() {
     $('a.removeElementType').click(function(e) {
       e.preventDefault();
 
-      var row = $(this).parent().parent();
-      var element_type_name = row.children('td:first').text();
-      var element_type_id = $(this).data('element-type-id');
+      let row = $(this).parent().parent();
+      let element_type_name = row.children('td:first').text();
+      let element_type_id = $(this).data('element-type-id');
+
+      let data = {
+        'element_type_item_id': $(this).attr('rel'),
+        'step_id': $('#admin_workflow_steps tr.selected').data('id'),
+        'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
+      };
 
       $.ajax({
         'type': 'POST',
-        'data': 'element_type_item_id='+$(this).attr('rel')+'&step_id='+$('#admin_workflow_steps tr.selected').data('id')+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+        'data': data,
         'url': baseUrl+'/OphCiExamination/admin/removeElementTypeFromWorkflowStep',
         'success': function(resp) {
-          if (resp != "1") {
+          if (resp !== "1") {
             alert("Something went wrong trying to remove the element type.	Please try again or contact support for assistance.");
           } else {
             row.remove();
