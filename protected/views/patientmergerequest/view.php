@@ -17,7 +17,7 @@
  */
 ?>
 
-<div id="patientMergeWrapper" class="main-event container">
+<div id="patientMergeWrapper" class="container content main-event">
     <?php $this->renderPartial('//base/_messages') ?>
   <div class="element-fields full-width flex-layout flex-top col-gap element">
       <div class="cols-3">
@@ -45,7 +45,7 @@
     <div class="cols-12 flex-layout">
       <div class="cols-5">
         <h2 class="secondaryPatient">Secondary</h2>
-          <?php $this->renderPartial('//patientmergerequest/_patient_details',
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'secondary')) ?>
       </div>
 
@@ -58,7 +58,7 @@
 
       <div class="cols-5">
         <h2 class="primaryPatient">Primary</h2>
-          <?php $this->renderPartial('//patientmergerequest/_patient_details',
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
               array('model' => $model, 'type' => 'primary')) ?>
       </div>
     </div>

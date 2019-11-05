@@ -11,7 +11,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
 $this->displayErrors($errors)?>
-
 <?php $this->renderOpenElements($this->action->id, $form); ?>
 
 <?php $this->displayErrors($errors, true)?>

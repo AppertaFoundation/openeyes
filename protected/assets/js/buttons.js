@@ -68,11 +68,13 @@ function enableButtons(selector) {
 
 	var $selector = $(selector || 'button, .button');
 
-    $selector
-	.not('.cancel')
-	.removeClass('inactive')
-	.attr('disabled', false)
-	.off('click.disable');
+    $selector.each(function(i, button){
+    	$(button).not('.cancel')
+            .removeClass('inactive')
+            .removeAttr('disabled')
+			.prop('disabled', false)
+            .off('click.disable');
+	});
 
 	$('.spinner').hide();
 }

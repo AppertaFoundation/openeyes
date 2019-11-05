@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    autosize($('.autosize'));
+
     var $globalFirmRights = $("input[name='User[global_firm_rights]']");
 
     $('#selectall').click(function () {

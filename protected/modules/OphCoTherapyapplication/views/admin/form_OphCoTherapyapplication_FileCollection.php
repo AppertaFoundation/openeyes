@@ -59,7 +59,7 @@
                         <a href="<?php echo $file->getDownloadURL() ?>">download</a> | <a class="removeFile">delete</a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>

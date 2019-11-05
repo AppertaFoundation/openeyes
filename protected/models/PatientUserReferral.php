@@ -23,10 +23,10 @@ class PatientUserReferral extends BaseActiveRecord
   /**
    * @return string the associated database table name
    */
-  public function tableName()
-  {
-    return 'patient_user_referral';
-  }
+    public function tableName()
+    {
+        return 'patient_user_referral';
+    }
 
   /**
    * @return array validation rules for model attributes.
@@ -44,40 +44,40 @@ class PatientUserReferral extends BaseActiveRecord
         'id, patient_id, user_id',
         'safe',
         'on' => 'search',
-      ),
-    );
-  }
+        ),
+        );
+    }
 
   /**
    * @return array relational rules.
    */
-  public function relations()
-  {
-    // NOTE: you may need to adjust the relation name and the related
-    // class name for the relations automatically generated below.
-    return array(
-      'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-      'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-      'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-      'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-    );
-  }
+    public function relations()
+    {
+      // NOTE: you may need to adjust the relation name and the related
+      // class name for the relations automatically generated below.
+        return array(
+        'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+        'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+        'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+        'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+        );
+    }
 
   /**
    * @return array customized attribute labels (name=>label)
    */
-  public function attributeLabels()
-  {
-    return array(
-      'id' => 'ID',
-      'patient_id' => 'Patient',
-      'user_id' => 'User',
-      'last_modified_user_id' => 'Last Modified User',
-      'last_modified_date' => 'Last Modified Date',
-      'created_user_id' => 'Created User',
-      'created_date' => 'Created Date',
-    );
-  }
+    public function attributeLabels()
+    {
+        return array(
+        'id' => 'ID',
+        'patient_id' => 'Patient',
+        'user_id' => 'User',
+        'last_modified_user_id' => 'Last Modified User',
+        'last_modified_date' => 'Last Modified Date',
+        'created_user_id' => 'Created User',
+        'created_date' => 'Created Date',
+        );
+    }
 
   /**
    * Retrieves a list of models based on the current search/filter conditions.
@@ -91,21 +91,21 @@ class PatientUserReferral extends BaseActiveRecord
    * @return CActiveDataProvider the data provider that can return the models
    * based on the search/filter conditions.
    */
-  public function search()
-  {
-    $criteria = new CDbCriteria;
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-    $criteria->compare('id', $this->id);
-    $criteria->compare('patient_id', $this->patient_id, true);
-    $criteria->compare('user_id', $this->user_id, true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('patient_id', $this->patient_id, true);
+        $criteria->compare('user_id', $this->user_id, true);
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
-  }
+        return new CActiveDataProvider($this, array(
+        'criteria' => $criteria,
+        ));
+    }
 
-  public function getUserName()
-  {
-    return $this->user->getFullName();
-  }
+    public function getUserName()
+    {
+        return $this->user->getFullName();
+    }
 }

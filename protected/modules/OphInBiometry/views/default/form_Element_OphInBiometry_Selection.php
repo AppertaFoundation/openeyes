@@ -18,26 +18,67 @@
 ?>
 
 <div class="element-fields element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-      <div id="<?= $eye_side ?>-eye-selection"
-           class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?>inactive<?php } ?>"
-           data-side="<?= $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-            <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-            <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
-                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+        <div id="<?= $eye_side ?>-eye-selection"
+             class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
+                    ?>inactive<?php
+                                   } ?>"
+             data-side="<?= $eye_side ?>" style="display: <?= $this->action->id === "create" ? "none" : "" ?>">
+            <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+                <?php if ($this->is_auto) { ?>
+                    <label class="inline highlight"
+                           for="<?= Chtml::modelName($element) . '_manually_overriden_' . $eye_side ?>">
+                        <?= \CHtml::activeCheckBox($element, 'manually_overriden_' . $eye_side,
+                            array('class' => 'js-manually-override-lens-selection ' . Chtml::modelName($element) . '_manually_overriden_' . $eye_side)); ?>
+                        Manually override lens choice
+                    </label>
+                <?php } ?>
+                <?php $manually_overriden = $element->{'manually_overriden_' . $eye_side}; ?>
+
+                <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
+                    array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
+                        'manual_override' => false,
+                        'disable' => $manually_overriden
+                    )); ?>
+                <?php if ($this->is_auto) {
+                    $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
+
+                        array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
+                            'manual_override' => true,
+                            'disable' => !$manually_overriden));
+                } ?>
+            </div>
+            <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                <div class="add-side">
+                    Set <?= $eye_side ?> side lens type
+                </div>
+            </div>
         </div>
-        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <div class="add-side">
-            Set <?= $eye_side ?> side lens type
-          </div>
-        </div>
-      </div>
-      <?php if ($this->action->id === "create") {?>
-        <div class="js-element-eye <?= $eye_side ?>-eye column">
-            Selection editing is not available.
-        </div>
-      <?php } ?>
+        <?php if ($this->action->id === "create") { ?>
+            <div class="js-element-eye <?= $eye_side ?>-eye column">
+                Selection editing is not available.
+            </div>
+        <?php } ?>
     <?php endforeach; ?>
 </div>
+
+<script type="text/javascript">
+    $('.js-manually-override-lens-selection').on('click', function () {
+        let checked = $(this).is(':checked');
+        let $form = $(this).closest('.active-form');
+        let $manual_override_container = $form.find('.js-manual-override');
+        let $auto_values_container = $form.find('.js-auto-values');
+
+        $manual_override_container.toggle(checked);
+        $manual_override_container.find('input,select').prop("disabled", !checked);
+        $auto_values_container.find('input,select').prop("disabled", checked);
+        $auto_values_container.toggle(!checked);
+    });
+
+    $(document).ready(function () {
+        $('.js-disable-data-group').find('input').prop("disabled", true);
+    });
+
+</script>

@@ -43,22 +43,22 @@ $based_on = implode(', ', $based_on);
     <button id="js-clear-search-btn" class="blue hint cols-full clear-search">Clear search results</button>
   </div>
   <div class="results-all">
-      <?php $this->renderPartial('//base/_messages');
-      $dataProvided = $data_provider->getData();
-      $items_per_page = $data_provider->getPagination()->getPageSize();
-      $page_num = $data_provider->getPagination()->getCurrentPage();
-      $from = ($page_num * $items_per_page) + 1;
-      $to = ($page_num + 1) * $items_per_page;
-      if ($to > $total_items) {
-          $to = $total_items;
-      }
-      ?>
+        <?php $this->renderPartial('//base/_messages');
+        $dataProvided = $data_provider->getData();
+        $items_per_page = $data_provider->getPagination()->getPageSize();
+        $page_num = $data_provider->getPagination()->getCurrentPage();
+        $from = ($page_num * $items_per_page) + 1;
+        $to = ($page_num + 1) * $items_per_page;
+        if ($to > $total_items) {
+            $to = $total_items;
+        }
+        ?>
     <table class="standard search-results clickable-rows">
         <colgroup>
         </colgroup>
       <thead>
       <tr>
-          <?php foreach (array(
+            <?php foreach (array(
                              'No.',
                              'Title',
                              'First name',
@@ -70,32 +70,32 @@ $based_on = implode(', ', $based_on);
                          ) as $i => $field) { ?>
               <th id="patient-grid_c<?php echo $i; ?>">
                   <?php
-                  $new_sort_dir = 0;
-                  if ($i == $sort_by) {
-                      $new_sort_dir = 1 - $sort_dir;
-                      echo CHtml::link(
+                    $new_sort_dir = 0;
+                    if ($i == $sort_by) {
+                        $new_sort_dir = 1 - $sort_dir;
+                        echo CHtml::link(
                           $field,
                           Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
-                          , array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
-                      );
-                      ?>
+                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
+                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                        );
+                        ?>
                       <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
-                  <?php } else {
-                      echo CHtml::link(
+                    <?php } else {
+                        echo CHtml::link(
                           $field,
                           Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
-                          , array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
-                      );
-                  }
-                  ?>
+                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
+                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                        );
+                    }
+                    ?>
               </th>
-          <?php } ?>
+            <?php } ?>
       </tr>
       </thead>
       <tbody>
-      <?php foreach ($dataProvided as $i => $result) { ?>
+        <?php foreach ($dataProvided as $i => $result) { ?>
         <tr id="r<?php echo $result->id ?>" class="clickable found-patient"
             data-link="<?php echo $core_api->generatePatientLandingPageLink($result); ?>"
             <?php
@@ -114,7 +114,7 @@ $based_on = implode(', ', $based_on);
           <td><?php echo $result->gender ?></td>
           <td><?php echo $result->nhsnum ?></td>
         </tr>
-      <?php } ?>
+        <?php } ?>
       </tbody>
       <tfoot>
       <tr>

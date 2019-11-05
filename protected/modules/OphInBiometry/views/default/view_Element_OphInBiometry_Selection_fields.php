@@ -1,19 +1,19 @@
 <div class="element-data">
   <?php
-    if (empty($element->{'lens_' . $side})) {
+  if (empty($element->{'lens_' . $side})) {
         ?>
       <div class="cols-12 column">
         <div class="field-info">
             <?php echo 'No selection has been made - click the "Choose Lens" button to select a lens.'; ?>
         </div>
       </div>
-        <?php } else {
-        if ($this->selectionValues) {
-            $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
-                array(
-                    'id' => $this->selectionValues[0]->{"formula_id_$side"},
-                ));
-        } ?>
+    <?php } else {
+      if ($this->selectionValues) {
+          $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
+              array(
+                  'id' => $this->selectionValues[0]->{"formula_id_$side"},
+              ));
+      } ?>
         <div class="data-group">
             <table class="cols-11 large-text borders">
                 <colgroup>
@@ -42,11 +42,11 @@
                     </td>
                     <td>
                         <div class="data-value"><?php if (isset($data)) {
-                                foreach ($data as $k => $v) {
-                                    echo $v->{'name'};
-                                    break;
-                                }
-                            } ?>
+                            foreach ($data as $k => $v) {
+                                echo $v->{'name'};
+                                break;
+                            }
+                                                } ?>
                         </div>
                     </td>
                     <td colspan="2"></td>
@@ -62,7 +62,7 @@
                         <div class="data-value">
                             <?php
                             $aconst = 'None';
-                            if ($this->is_auto) {
+                            if ($this->is_auto && !$element->{"manually_overriden_" . $side}) {
                                 $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array('event_id' => $element->event->id));
                                 foreach ($iolrefValues as $iolrefData) {
                                     if (isset($data)) {
@@ -126,7 +126,6 @@
             </table>
         </div>
         <?php
-
     }
     ?>
 </div>

@@ -14,7 +14,7 @@
         </thead>
         <tbody>
         <tr>
-          <?php foreach ($patients as $patient): ?>
+          <?php foreach ($patients as $patient) : ?>
             <tr>
               <td><?php echo CHtml::link($patient->hos_num,
                   Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?></td>
@@ -27,12 +27,12 @@
                       Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
               </td>
             </tr>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
         </tr>
         </tbody>
       </table>
     </td>
-  <?php else: ?>
+    <?php else : ?>
     <p>No conflicts found.</p>
-  <?php endif; ?>
+    <?php endif; ?>
 </tr>

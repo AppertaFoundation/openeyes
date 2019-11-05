@@ -88,7 +88,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getStoppedOrderedEntries()
     {
         $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
-            return $entry->end_date && $entry->end_date <= date('Y-m-d' , strtotime($this->event->event_date));
+            return $entry->end_date && $entry->end_date <= date('Y-m-d', strtotime($this->event->event_date));
         });
         return $stoppedEntries;
     }
@@ -96,7 +96,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getCurrentOrderedEntries()
     {
         $currentEntries = array_filter($this->orderedEntries, function ($entry) {
-            return !$entry->end_date || $entry->end_date > date('Y-m-d' , strtotime($this->event->event_date));
+            return !$entry->end_date || $entry->end_date > date('Y-m-d', strtotime($this->event->event_date));
         });
         return $currentEntries;
     }
@@ -105,7 +105,7 @@ class HistoryMedications extends \BaseEventTypeElement
     {
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                return \CHtml::modelName($this) . '_entry_table tbody tr:eq(' . ($match[1]-1) . ')';
+                return \CHtml::modelName($this) . '_entries tbody tr:eq(' . ($match[1]-1) . ')';
             }
         }
         return parent::errorAttributeException($attribute, $message);

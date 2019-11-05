@@ -134,12 +134,14 @@ return array(
         'contact_id' => 6,
         'is_local' => 0,
     ),
-
     'patient9' => array(
+        'id' => 9,
         'hos_num' => 5550101,
         'first_name' => 'Rod',
         'last_name' => 'Flange',
         'dob' => '1979-09-08',
+        'date_of_death' => '2019-07-10',
+        'is_deceased' => '1',
         'title' => 'MR',
         'primary_phone' => '0208 1111111',
         'address_id' => 1,

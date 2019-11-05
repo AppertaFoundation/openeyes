@@ -23,17 +23,21 @@ $logoHelper = new LogoHelper();
 
 ?>
 <header class="header">
-	<div class="title">
-	<?php echo $logoHelper->render('//base/_logo_seal'); ?>
-	<h1><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
-	</div>
-	<div class="data-group">
-		<!-- Patient details -->
-		<div class="cols-4 column patient">
-			<strong><?php echo $this->patient->contact->fullName?></strong>
-			<br />
-			<p>
-			<?php echo $this->patient->getLetterAddress(array(
+    <div class="title">
+    <?php echo $logoHelper->render('//base/_logo_seal'); ?>
+    <h1><?php if ($this->attachment_print_title != null ) {
+        echo $this->attachment_print_title;
+        } else {
+            echo $event_type;
+        } ?></h1>
+    </div>
+    <div class="data-group">
+        <!-- Patient details -->
+        <div class="cols-4 column patient">
+            <strong><?php echo $this->patient->contact->fullName?></strong>
+            <br />
+            <p>
+            <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
 			</p>

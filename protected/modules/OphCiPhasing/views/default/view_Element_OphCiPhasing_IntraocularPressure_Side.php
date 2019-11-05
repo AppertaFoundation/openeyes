@@ -18,7 +18,9 @@
 ?>
 <?php if ($element->{'has' . $side}()) { ?>
     <div>
-        <?php echo $element->{strtolower($side) . '_instrument'}->name ?> <?php if ($element->{strtolower($side) . '_dilated'}) { ?>(dilated)<?php } ?>
+        <?php echo $element->{strtolower($side) . '_instrument'}->name ?> <?php if ($element->{strtolower($side) . '_dilated'}) {
+            ?>(dilated)<?php
+        } ?>
     </div>
     <ul>
         <?php foreach ($element->{strtolower($side) . '_readings'} as $reading) { ?>

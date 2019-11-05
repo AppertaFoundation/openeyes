@@ -19,25 +19,24 @@
 
 <div class='<?=$div_wrapper_class?>'>
 <?php if (!$get_row) {
-
     if ($filter_fields) { ?>
-		<form method="get">
-			<?php foreach ($filter_fields as $filter_field) { ?>
-				<div class="data-group">
-					<div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
-					<div class="cols-5 column end"><?=
+        <form method="get">
+            <?php foreach ($filter_fields as $filter_field) { ?>
+                <div class="data-group">
+                    <div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
+                    <div class="cols-5 column end"><?=
                         CHtml::dropDownList(
                             $filter_field['field'], $filter_field['value'],
                             SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-                        );
-    ?></div>
-				</div>
-			<?php } ?>
-		</form>
-	<?php }
+                                                   );
+                                                    ?></div>
+                </div>
+            <?php } ?>
+        </form>
+    <?php }
     if ($filters_ready) { ?>
-		<?= CHtml::beginForm() ?>
+        <?= CHtml::beginForm() ?>
 
 		<table class="standard generic-admin">
 			<thead>
@@ -78,8 +77,8 @@ if (!$get_row && $filters_ready) {
     if (!$this->new_row_url) {
         $this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
                             'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
-                } ?>
-			</tbody>
+    } ?>
+            </tbody>
             <?php if ($model::model()->hasAttribute('default')) {?>
                 <tr>
                     <td class="generic-admin-no-default">
@@ -100,12 +99,12 @@ if (!$get_row && $filters_ready) {
                         <?=\CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
                     </td>
                 </tr>
-				</tfoot>
+                </tfoot>
 
-		</table>
-		<div>
+        </table>
+        <div>
 
-		</div>
-	<?= CHtml::endForm() ?>
+        </div>
+    <?= CHtml::endForm() ?>
 <?php } ?>
 </div>

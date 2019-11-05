@@ -134,9 +134,9 @@
     <p>
         <?php if ($css_class == 'impaired') { ?>
         <div class="dotted-write"></div>
-    <?php } else { ?>
+        <?php } else { ?>
         <div class="dotted-write"></div>
-    <?php } ?>
+        <?php } ?>
     </p>
     <p>
         (Where incapacity is likely to be temporary, for example if patient unconscious, or where patient has fluctuating capacity)
@@ -156,7 +156,7 @@
         (to be signed by a person or persons close to the patient, if they wish)
     </p>
     <p>
-        <strong>I/We have been involved in a discussion with the relevant health professionals over the treatment of……………………………(patient’s name).	I/We understand that he/she is unable to give his/her own consent, based on the criteria set out in this form.	I/We also understand that treatment can lawfully be provided if it is in his/her best interests to receive it.</strong>
+        <strong>I/We have been involved in a discussion with the relevant health professionals over the treatment of……………………………(patient’s name).    I/We understand that he/she is unable to give his/her own consent, based on the criteria set out in this form.  I/We also understand that treatment can lawfully be provided if it is in his/her best interests to receive it.</strong>
     </p>
     <span>
         Any other comments (including any concerns about decision)
@@ -165,12 +165,12 @@
     <div class="dotted-write"></div>
     <?php echo $this->renderPartial('signature_table2', array('vi' => ($css_class == 'impaired'), 'address' => true)) ?>
     <p>
-        If a person close to the patient was not available in person, has this matter been discussed in any other way (eg over the telephone?)	Yes&nbsp;&nbsp;&nbsp;No<br/><br/>
+        If a person close to the patient was not available in person, has this matter been discussed in any other way (eg over the telephone?)  Yes&nbsp;&nbsp;&nbsp;No<br/><br/>
         <?php if ($css_class == 'impaired') { ?>
             Details:<div class="dotted-write"></div>
-    <?php } else { ?>
+        <?php } else { ?>
         Details:<div class="dotted-write"></div>
-    <?php } ?>
+        <?php } ?>
     </p>
     <p>
         <strong>Signature of health professional proposing treatment</strong>
@@ -184,7 +184,12 @@
     <p>
         Where second opinion sought, s/he should sign below to confirm agreement:
     </p>
-    <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
+    <?php echo $this->renderPartial('signature_table1', array(
+            'vi' => ($css_class == 'impaired'),
+            'consultant' => $elements['Element_OphTrConsent_Other']->consultant,
+            'mask_consultant' => true
+        )
+    ) ?>
     <div class="break"></div>
     <p>
         <strong>Guidance to health professionals</strong> (to be read in conjunction with consent policy)
@@ -211,7 +216,7 @@
         <li><strong>unable to use and weigh this information in the decision-making process.</strong></li>
     </ul>
     <p>
-        <strong>Before making a judgement that a patient lacks capacity you must take all steps reasonable in the circumstances to assist the patient in taking their own decisions (this will clearly not apply if the patient is unconscious). This may involve explaining what is involved in very simple language, using pictures and communication and decision-aids as appropriate. People close to the patient (spouse/partner, family, friends and carers) may often be able tomust be consulted as to how best to	help, as may specialist colleagues such as speech and language therapists or learning disability teams, and independent advocates or supporters.</strong>
+        <strong>Before making a judgement that a patient lacks capacity you must take all steps reasonable in the circumstances to assist the patient in taking their own decisions (this will clearly not apply if the patient is unconscious). This may involve explaining what is involved in very simple language, using pictures and communication and decision-aids as appropriate. People close to the patient (spouse/partner, family, friends and carers) may often be able tomust be consulted as to how best to  help, as may specialist colleagues such as speech and language therapists or learning disability teams, and independent advocates or supporters.</strong>
     </p>
     <p>
         <strong>Capacity is ‘decision-specific’: a patient may lack capacity to take a particular complex decision, but be quite able to take other more straight-forward decisions or parts of decisions.</strong>
@@ -239,7 +244,7 @@
         <strong>Two incapacitated patients, whose physical condition is identical, may therefore have different best interests.</strong>
     </p>
     <p>
-        <strong>Unless the patient has clearly indicated that particular individuals should not be involved in their care, or unless the urgency of their situation prevents it, you should attempt to must involve people close to the patient (spouse/partner,	family and friends, carer, supporter or advocate) in the decision-making process. Those close to the patient cannot require you to provide particular treatment which you do not believe to be clinically appropriate. However they will know the patient much better than you do, and therefore are likely to be able to provide valuable information about the patient’s wishes, feelings, beliefs	and values. In the case of a patient who does not have anyone close enough to help in the decision-making process (other than paid care staff) and for whom serious medical treatment is proposed, you must consult an Independent Medical Capacity Advocate for an assessment of the patient’s best interests.</strong>
+        <strong>Unless the patient has clearly indicated that particular individuals should not be involved in their care, or unless the urgency of their situation prevents it, you should attempt to must involve people close to the patient (spouse/partner,    family and friends, carer, supporter or advocate) in the decision-making process. Those close to the patient cannot require you to provide particular treatment which you do not believe to be clinically appropriate. However they will know the patient much better than you do, and therefore are likely to be able to provide valuable information about the patient’s wishes, feelings, beliefs    and values. In the case of a patient who does not have anyone close enough to help in the decision-making process (other than paid care staff) and for whom serious medical treatment is proposed, you must consult an Independent Medical Capacity Advocate for an assessment of the patient’s best interests.</strong>
     </p>
     <p>
         <strong>Second opinions and court involvement<br/>

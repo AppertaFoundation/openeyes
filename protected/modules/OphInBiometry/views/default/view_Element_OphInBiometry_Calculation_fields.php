@@ -7,7 +7,9 @@
             <td>
                 <b><?php echo CHtml::encode($element->getAttributeLabel('comments_' . $side)) ?></b>
             </td>
-            <td class="field-info<?php if ($element->{'comments_' . $side}) { ?> iolDisplay<?php } ?>"
+            <td class="field-info<?php if ($element->{'comments_' . $side}) {
+                ?> iolDisplay<?php
+                                 } ?>"
                 style="word-break: break-word;">
                 <?php echo CHtml::encode($element->{'comments_' . $side}) ?>
             </td>

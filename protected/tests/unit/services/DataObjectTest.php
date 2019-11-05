@@ -106,9 +106,11 @@ abstract class DataObjectTest_BaseObj extends DataObject
         class_exists('DataTemplate');
         $template = \PHPUnit_Framework_MockObject_Generator::getMock('DataTemplateComponent', array(), array(), '', false);
         $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('match')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj); }));
+            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
+            }));
         $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('generate')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($values) { return (object) $values; }));
+            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($values) { return (object) $values;
+            }));
 
         return $template;
     }

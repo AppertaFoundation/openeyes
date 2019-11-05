@@ -97,16 +97,16 @@ class SnippetController extends ModuleAdminController
                 'viewName' => '//admin/generic/shortcodeText',
                 'viewArguments' => array('model' => $this->admin->getModel()),
             ),
-            'event_type' => array(
+            'element_type' => array(
                 'widget' => 'DropDownList',
-                'options' => CHtml::listData(EventType::model()->findAll(), 'class_name', 'name'),
+                'options' => CHtml::listData(ElementType::model()->findAll(), 'class_name', 'name'),
                 'htmlOptions' => array('empty' => '- Select -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'element_type' => array(
+            'event_type' => array(
                 'widget' => 'DropDownList',
-                'options' => CHtml::listData(ElementType::model()->findAll(), 'class_name', 'name'),
+                'options' => CHtml::listData(EventType::model()->findAll(), 'class_name', 'name'),
                 'htmlOptions' => array('empty' => '- Select -'),
                 'hidden' => false,
                 'layoutColumns' => null,

@@ -75,7 +75,7 @@ $deceased = $this->patient->isDeceased();
                 <?php echo $this->patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
-                <?php if ($deceased): ?>
+                <?php if ($deceased) : ?>
                     <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
                 <?php endif; ?>
                 <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
@@ -114,7 +114,7 @@ $deceased = $this->patient->isDeceased();
             </div>
 
             <?php
-            if (Yii::app()->user->checkAccess('OprnViewClinical')){?>
+            if (Yii::app()->user->checkAccess('OprnViewClinical')) {?>
             <div class="patient-management js-management-btn">
                 <svg viewBox="0 0 30 30" class="icon">
                     <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
@@ -161,7 +161,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.j
 ?>
 <script type="text/javascript">
     $(function () {
-        //console.log($('[id=oe-patient-details][data-patient-id=<?//= $this->patient->id?>//]'));
+        //console.log($('[id=oe-patient-details][data-patient-id=<?php //= $this->patient->id?>//]'));
         PatientPanel.patientPopups.init($('[id=oe-patient-details][data-patient-id=<?= $this->patient->id?>]'));
         // PatientPanel.patientPopups.init();
 

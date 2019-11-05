@@ -256,13 +256,12 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             $result['preferredInfoFormat' . $fmt->code] = 'X';
             if ($fmt->require_email) {
                 $result['preferredInfoFormatEmailAddress'] = $this->info_email ?: ' ';
-            }
-            else {
+            } else {
                 $result['preferredInfoFormatEmailAddress'] = ' ';
             }
         }
 
-        if ($this->preferred_language_text){
+        if ($this->preferred_language_text) {
             $result['preferredLanguage'] = $this->preferred_language_text;
         } else {
             $result['preferredLanguage'] = $this->preferred_language ? $this->preferred_language->name : ' ';
@@ -323,8 +322,7 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             if (array_key_exists($answer->patient_factor_id, $data)) {
                 $this->updateAnswer($answer, $data[$answer->patient_factor_id]);
                 unset($data[$answer->patient_factor_id]);
-            }
-            else {
+            } else {
                 if (!$answer->delete()) {
                     throw new \Exception('Unable to delete CVI Patient Factor Answer: ' . print_r($answer->getErrors(), true));
                 }

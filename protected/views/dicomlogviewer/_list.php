@@ -21,38 +21,38 @@
 </div>
 
 <div class="cols-12 column">
-		<div class="box generic">
-			<?php
+        <div class="box generic">
+            <?php
             if (empty($data['items'])) {?>
-				<div class="alert-box">
-					No Dicom logs match the search criteria.
-				</div>
-			<?php
+                <div class="alert-box">
+                    No Dicom logs match the search criteria.
+                </div>
+                <?php
             } else {?>
-				<div class="pagination"></div>
-				<table class="standard audit-logs">
-					<thead>
-						<tr>
-							<th>File Name</th>
-							<th>Import Date</th>
-							<th>Study date</th>
-							<th>Station ID</th>
-							<th>Location</th>
-							<th>Type</th>
-							<th>Patient Number</th>
-							<th>Status</th>
-							<th>Study Instance ID</th>
-							<th>Comment</th>
-							<th><i>More</i></th>
-						</tr>
-					</thead>
-					<tbody id="auditListData">
-						<?php foreach ($data['files_data'] as $i => $log) {
-						  $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
-						}?>
-					</tbody>
-				</table>
-				<div class="pagination last"></div>
-			<?php }?>
-		</div>
-	</div>
+                <div class="pagination"></div>
+                <table class="standard audit-logs">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Import Date</th>
+                            <th>Study date</th>
+                            <th>Station ID</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Patient Number</th>
+                            <th>Status</th>
+                            <th>Study Instance ID</th>
+                            <th>Comment</th>
+                            <th><i>More</i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditListData">
+                        <?php foreach ($data['files_data'] as $i => $log) {
+                            $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
+                        }?>
+                    </tbody>
+                </table>
+                <div class="pagination last"></div>
+            <?php }?>
+        </div>
+    </div>

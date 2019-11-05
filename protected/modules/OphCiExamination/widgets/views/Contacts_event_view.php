@@ -46,15 +46,17 @@ $element_errors = $element->getErrors();
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <?php $gp_contact = $this->patient->gp->contact; ?>
-                    <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
-                    <td><?= $gp_contact->getFullName() ?></td>
-                    <td><?= $gp_contact->address ? $gp_contact->address->email : "" ?></td>
-                    <td><?= $gp_contact->primary_phone ?></td>
-                    <td><?= $gp_contact->address ? $gp_contact->address->getLetterLine() : "" ?></td>
-                    <td></td>
-                </tr>
+                <?php if (isset($this->patient->gp)) { ?>
+                    <tr>
+                        <?php $gp_contact = $this->patient->gp->contact; ?>
+                        <td><?= $gp_contact->label ? $gp_contact->label->name : "" ?></td>
+                        <td><?= $gp_contact->getFullName() ?></td>
+                        <td><?= $gp_contact->address ? $gp_contact->address->email : "" ?></td>
+                        <td><?= $gp_contact->primary_phone ?></td>
+                        <td><?= $gp_contact->address ? $gp_contact->address->getLetterLine() : "" ?></td>
+                        <td></td>
+                    </tr>
+                <?php } ?>
                 <?php
                 foreach ($this->contact_assignments as $contact_assignment) { ?>
                     <?php $contact = $contact_assignment->contact; ?>
@@ -64,7 +66,7 @@ $element_errors = $element->getErrors();
                         <td><?= $contact->address ? $contact->address->email : "" ?></td>
                         <td><?= $contact->primary_phone ?></td>
                         <td><?= $contact->address ? $contact->address->getLetterLine() : "" ?></td>
-                        <td style="overflow-wrap:break-word;"><?= $contact_assignment->comment ? Yii::app()->format->Ntext($contact_assignment->comment): "" ?></td>
+                        <td style="overflow-wrap:break-word;"><?= $contact_assignment->comment ? Yii::app()->format->Ntext($contact_assignment->comment) : "" ?></td>
                     </tr>
                 <?php } ?>
                 </tbody>

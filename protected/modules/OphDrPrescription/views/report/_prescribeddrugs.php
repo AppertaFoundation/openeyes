@@ -33,12 +33,12 @@
         </tr>
     </thead>
     <tbody>
-        <?php if (empty($report->items)):?>
+        <?php if (empty($report->items)) :?>
             <tr>
                 <td colspan="6">No drugs were found with the selected search criteria.</td>
             </tr>
-        <?php else: ?>
-            <?php foreach ($report->items as $drug):?>
+        <?php else : ?>
+            <?php foreach ($report->items as $drug) :?>
                 <?php
                 $drugObj = new Drug();
                 $drugObj->attributes = $drug;

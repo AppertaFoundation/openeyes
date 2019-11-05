@@ -8,7 +8,7 @@
   </tr>
   <tr>
       <td><div class="data-label">Result:</div></td>
-      <td><div class="data-value"><?= CHtml::encode($element->result) ?></div></td>
+      <td><div class="data-value"><?= CHtml::encode($element->result) . " " . CHtml::encode($element->unit) ?></div></td>
   </tr>
   <tr>
       <td><div class="data-label">Comment</div></td>

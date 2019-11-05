@@ -193,7 +193,7 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $can_own_an_episode
      * @return array
      */
-    public function getList($subspecialty_id = null, $include_id = null , $runtime_selectable = null , $can_own_an_episode = null)
+    public function getList($subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
     {
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')

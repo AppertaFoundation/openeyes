@@ -43,6 +43,10 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
+                'actions' => array('deactivatePlansProblems', 'updatePlansProblems'),
+                'roles' => array('Edit'),
+            ),
+            array('allow',
                 'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
@@ -145,7 +149,8 @@ class PatientController extends BaseController
         $this->redirect(array('summary', 'id' => $id));
     }
 
-    public function actionSummary($id) {
+    public function actionSummary($id)
+    {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = Patient::model()->findByPk($id);
         $this->pageTitle = "Summary";
@@ -173,6 +178,111 @@ class PatientController extends BaseController
             'patient' => $this->patient,
             'no_episodes' => $no_episodes,
         ));
+    }
+
+    /**
+     * Inactivate plan for given patient
+     *
+     * @param $plan_id
+     * @param $patient_id
+     * @throws Exception
+     */
+    public function actionDeactivatePlansProblems($plan_id, $patient_id)
+    {
+        $plan = PlansProblems::model()->findByPk($plan_id);
+        $plan->active = false;
+        $plan->save();
+
+        echo $this->actionGetPlansProblems($patient_id, true);
+    }
+
+    /**
+     * Save the new plans and update old ones
+     *
+     * @param $plan_ids
+     * @param $new_plan
+     * @param $patient_id
+     */
+    public function actionUpdatePlansProblems()
+    {
+        $request = Yii::app()->request;
+        $plan_ids = $request->getPost('plan_ids');
+        $new_plan = $request->getPost('new_plan');
+        $patient_id = $request->getPost('patient_id');
+
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            if ($new_plan) {
+                $display_order = (is_array($plan_ids) ? count($plan_ids)+1 : 1);
+                $plan_name = strip_tags($new_plan);
+                $plan = new PlansProblems();
+                $plan->name = $plan_name;
+                $plan->display_order = $display_order;
+                $plan->patient_id = $patient_id;
+                if (!$plan->validate()) {
+                    $this->validationFailed();
+                }
+                $plan->save();
+            }
+
+            if ($plan_ids) {
+                foreach ($plan_ids as $display_order => $plan_id) {
+                    if ($plan_id) {
+                        $plan = PlansProblems::model()->findByPk($plan_id);
+                        $plan->display_order = $display_order+1;
+                        if (!$plan->validate()) {
+                            $this->validationFailed();
+                        }
+                        $plan->save();
+                    }
+                }
+            }
+
+            $transaction->commit();
+        } catch (Exception $exception) {
+            \Yii::log($exception);
+            $transaction->rollback();
+        }
+
+
+        echo $this->actionGetPlansProblems($patient_id);
+    }
+
+    /**
+     * Get a list of plans and problems for given patient
+     *
+     * @param $patient_id
+     * @return false|string
+     */
+    public function actionGetPlansProblems($patient_id, $inc_deactive = false)
+    {
+        $criteria = new CDbCriteria();
+        if(!$inc_deactive){
+            $criteria->addCondition("active=1");
+        }
+        $criteria->addCondition("patient_id=:patient_id");
+        $criteria->params[":patient_id"] = $patient_id;
+
+        $plans_problems = PlansProblems::model()->findAll($criteria);
+        $plans = [];
+        foreach ($plans_problems as $plan_problem) {
+            $user_created = $plan_problem->createdUser;
+
+            $attributes = $plan_problem->attributes;
+            $attributes['title'] = $user_created->title . " " . $user_created->last_name . " " . $user_created->first_name;
+            $attributes['create_at'] = \Helper::convertDate2NHS($plan_problem->created_date);
+            $attributes['last_modified'] = \Helper::convertDate2NHS($plan_problem->last_modified_date);
+            $plans[] = $attributes;
+        }
+
+        return json_encode($plans);
+    }
+
+    protected function validationFailed()
+    {
+        header("HTTP/1.0 400 Bad Request");
+        \Yii::log($plan->getErrors());
+        die(json_encode($plan->getErrors()));
     }
 
     public function actionSearch()
@@ -225,7 +335,6 @@ class PatientController extends BaseController
 							}
 
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
-
         } else {
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
@@ -263,7 +372,6 @@ class PatientController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
                     'nhsnum' => $patient->nhsnum,
-                    // in script.js we override the behaviour for showing search results and its require the label key to be present
                     'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
                     'is_deceased' => $patient->is_deceased,
                 );
@@ -291,7 +399,7 @@ class PatientController extends BaseController
      */
     public function redirectIfMerged($redirect_link = null)
     {
-        if( $this->patient && ($merged = $this->patient->isMergedInto()) ){
+        if ( $this->patient && ($merged = $this->patient->isMergedInto()) ) {
             $primary_patient = $this->loadModel($merged->primary_id);
 
             //display the flash message
@@ -425,7 +533,7 @@ class PatientController extends BaseController
                 if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
                     if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
                         $diagnosisDate = isset($_POST['DiagnosisSelection']['date']) ? $_POST['DiagnosisSelection']['date'] : false;
-                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'] , $diagnosisDate);
+                        $this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'], $_POST['eye_id'], $diagnosisDate);
                     }
                 }
 
@@ -585,9 +693,8 @@ class PatientController extends BaseController
         // For every document sub type...
         /* @var OphCoDocument_Sub_Types $documentTyoe */
         foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
-
             // Find the document events for that subtype ...
-            $documentEvents = array_filter($eventTypeMap['Document'], function($documentEvent) use ($documentType) {
+            $documentEvents = array_filter($eventTypeMap['Document'], function ($documentEvent) use ($documentType) {
                 $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
                 return $documentElement->sub_type->id === $documentType->id;
             });
@@ -1857,7 +1964,7 @@ class PatientController extends BaseController
         }
 
         $patient_identifiers = [];
-        foreach($_POST['PatientIdentifier'] as $post_info) {
+        foreach ($_POST['PatientIdentifier'] as $post_info) {
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
             $patient_identifier->id = $post_info['id'];
@@ -1894,7 +2001,6 @@ class PatientController extends BaseController
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
-
             $success =
                 $this->patientSaveInner(
                     $contact,
@@ -1927,8 +2033,7 @@ class PatientController extends BaseController
                              'address',
                              'patient_user_referral',
                              'patient_identifiers'
-                         ] as $model)
-                {
+                         ] as $model) {
                     if (isset(${$model})) {
                         if (is_array(${$model})) {
                             foreach (${$model} as $item) {
@@ -2226,7 +2331,7 @@ class PatientController extends BaseController
         $patient->save();
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if(!isset($_GET['ajax'])){
+        if (!isset($_GET['ajax'])) {
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
         }
     }
@@ -2245,44 +2350,55 @@ class PatientController extends BaseController
         $gps = Gp::model()->with('contact')->findAll($criteria);
 
         $output = array();
-        foreach($gps as $gp){
-            $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id'=>$gp->id));
-            $role = $gp->getGPROle()? ' - '.$gp->getGPROle():'';
-            // CERA-513 the autocomplete search result should not show the inactivated gp
-            if($gp->is_active){
-                if(count($practice_contact_associates) == 0 ) {
-                    $output[] = array(
-                        'gpTitle' => $gp->contact->title,
-                        'gpFirstName' => $gp->contact->first_name,
-                        'gpLastName' => $gp->contact->last_name,
-                        'gpPhoneno' => $gp->contact->primary_phone,
-                        'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                        'label' => $gp->correspondenceName.$role,
-                        'value' => $gp->id,
-                        'practiceId' => '',
-                    );
-                } else {
-                    foreach($practice_contact_associates as $practice_contact_associate) {
-                        if (isset($practice_contact_associate->practice)){
-                            $practice = $practice_contact_associate->practice;
-                            $practiceId = $practice->id;
-                            $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
-                            $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
-                            $output[] = array(
-                                'gpTitle' => $gp->contact->title,
-                                'gpFirstName' => $gp->contact->first_name,
-                                'gpLastName' => $gp->contact->last_name,
-                                'gpPhoneno' => $gp->contact->primary_phone,
-                                'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' =>  $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                                'label' => $gp->correspondenceName.$providerNo.$role.$practiceNameAddress,
-                                'value' => $gp->id,
-                                'practiceId' => $practiceId,
-                            );
-                        }
-                    }
-                }
-            }
+
+        if (Yii::app()->params['institution_code'] === 'CERA') {
+					foreach ($gps as $gp) {
+						$practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
+						$role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+						// CERA-513 the autocomplete search result should not show the inactivated gp
+						if ($gp->is_active) {
+							if (count($practice_contact_associates) == 0) {
+								$output[] = array(
+									'gpTitle' => $gp->contact->title,
+									'gpFirstName' => $gp->contact->first_name,
+									'gpLastName' => $gp->contact->last_name,
+									'gpPhoneno' => $gp->contact->primary_phone,
+									'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+									'label' => $gp->correspondenceName . $role,
+									'value' => $gp->id,
+									'practiceId' => '',
+								);
+							} else {
+								foreach ($practice_contact_associates as $practice_contact_associate) {
+									if (isset($practice_contact_associate->practice)) {
+										$practice = $practice_contact_associate->practice;
+										$practiceId = $practice->id;
+										$practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+										$providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
+										$output[] = array(
+											'gpTitle' => $gp->contact->title,
+											'gpFirstName' => $gp->contact->first_name,
+											'gpLastName' => $gp->contact->last_name,
+											'gpPhoneno' => $gp->contact->primary_phone,
+											'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+											'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
+											'value' => $gp->id,
+											'practiceId' => $practiceId,
+										);
+									}
+								}
+							}
+						}
+					}
+				} else {
+						foreach ($gps as $gp) {
+							$output[] = array(
+								'label' => $gp->correspondenceName,
+								'value' => $gp->id
+							);
+						}
         }
+
         echo CJSON::encode($output);
         Yii::app()->end();
     }
@@ -2301,7 +2417,7 @@ class PatientController extends BaseController
         $practices = Practice::model()->findAll($criteria);
 
         $output = array();
-        foreach($practices as $practice){
+        foreach ($practices as $practice) {
             $output[] = array(
                 'label' => $practice->getPracticeNames(),
                 'value' => $practice->id
@@ -2333,16 +2449,13 @@ class PatientController extends BaseController
             $this->renderPartial('crud/_conflicts_error', array(
                 'errors' => $patients['error'],
             ));
-
-        }
-        else {
+        } else {
             if (count($patients) !== 0) {
                 $this->renderPartial('crud/_conflicts', array(
                     'patients' => $patients,
                     'name' => $firstName . ' ' . $last_name
                 ));
-            }
-            else {
+            } else {
                 $this->renderPartial('crud/_conflicts', array(
                     'name' => $firstName . ' ' . $last_name
                 ));
@@ -2450,7 +2563,7 @@ class PatientController extends BaseController
             $p_file = ProtectedFile::createFromFile($tmp_name);
             $p_file->name = $file["name"]["uploadedFile"];
 
-            if(!in_array($p_file->mimetype,$allowed_file_types) ) {
+            if (!in_array($p_file->mimetype, $allowed_file_types) ) {
                 $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
                 $referral->addError('uploadedFile', $message);
             }
@@ -2476,7 +2589,7 @@ class PatientController extends BaseController
 
         if (!$document_saved) {
             $patient_source = $_POST['Patient']['patient_source'];
-            if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
+            if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
                 //If there is no existing referral letter document, add an error
                 if ($this->checkExistingReferralLetter($patient)){
                     $referral->addError('uploadedFile', 'Referral requires a letter file');
@@ -2540,17 +2653,18 @@ class PatientController extends BaseController
      * @return array(Episode, bool) The created or found episode and whether or not is was created
      * @throws Exception If a episode could not be found or created
      */
-    private function getOrCreateEpisode($patient, $firm_id){
+    private function getOrCreateEpisode($patient, $firm_id)
+    {
         $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
         $episode_is_new = false;
-        if (!$episode){
+        if (!$episode) {
             $episode_is_new = true;
             $episode = new Episode();
             $episode->patient_id = $patient->id;
             $episode->firm_id = $firm_id;
             $episode->support_services = false;
             $episode->start_date = date('Y-m-d H:i:s');
-            if (!$episode->save()){
+            if (!$episode->save()) {
                 throw new Exception('Could not get episode');
             }
         }

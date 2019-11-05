@@ -7,12 +7,9 @@ CREATE DATABASE \`${DATABASE_NAME:-openeyes}\`;
 GRANT ALL PRIVILEGES ON *.* TO '${DATABASE_TEST_USER:-openeyes}';
 FLUSH PRIVILEGES;"
 echo "Done."
-echo "unzipping sample data..."
-MODULEROOT=protected/modules
-[ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d $MODULEROOT/sample/sql/ || :
-echo "Importing sample data..."
-echo "Importing dev data..."
-mysql ${DATABASE_NAME:-openeyes} -u root < $MODULEROOT/sample/sql/openeyes_sample_data.sql
-echo "Importing test data..."
-mysql ${DATABASE_TEST_NAME:-openeyes_test} -u root < $MODULEROOT/sample/sql/openeyes_sample_data.sql
-echo "Done."
+#echo "Importing sample data..."
+#echo "Importing dev data..."
+#mysql $DATABASE_NAME -u root < protected/modules/sample/sql/openeyes_sample_data.sql
+#echo "Importing test data..."
+#mysql $DATABASE_TEST_NAME -u root < protected/modules/sample/sql/openeyes_sample_data.sql
+#echo "Done."

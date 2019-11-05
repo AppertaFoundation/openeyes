@@ -109,15 +109,15 @@ if (@$_POST[get_class($element)]) {
     </td>
   </tr>
   <tr>
-      <?php
-      $opts = array(
+        <?php
+        $opts = array(
           'options' => array(),
           'nowrapper'=>true,
       );
       $interventions = OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findAll();
 
-      foreach ($interventions as $intervention) {
-          $opts['options'][$intervention->id] = array(
+        foreach ($interventions as $intervention) {
+            $opts['options'][$intervention->id] = array(
               'data-description-label' => $intervention->description_label,
               'data-is-deviation' => $intervention->is_deviation,
           );
@@ -134,7 +134,9 @@ if (@$_POST[get_class($element)]) {
             $element->{$side . '_intervention_id'},  1,false, false, false, $opts, $layoutColumns) ?>
       </td>
   </tr>
-  <tr style="<?php if (!$intervention_id) { echo 'display: none;'; } ?>">
+  <tr style="<?php if (!$intervention_id) {
+        echo 'display: none;';
+             } ?>">
     <td class="flex-layout flex-left" style="height:auto;">
       <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <label for="<?php echo get_class($element) . '_' . $side . '_description'; ?>">
@@ -146,12 +148,14 @@ if (@$_POST[get_class($element)]) {
         </label>
       </div>
       <div class="cols-<?php echo $layoutColumns['field']; ?>" >
-          <?php echo $form->textArea($element, $side . '_description', array('nowrapper' => true)) ?>
+            <?php echo $form->textArea($element, $side . '_description', array('nowrapper' => true)) ?>
       </div>
     </td>
   </tr>
   <tr id="<?php echo get_class($element) . '_' . $side; ?>_deviation_fields"
-      style=" <?php if (!$need_reason) {echo 'display: none;';} ?>">
+      style=" <?php if (!$need_reason) {
+            echo 'display: none;';
+              } ?>">
     <td class="flex-layout flex-left"
         style="height:auto;">
       <div class="cols-<?php echo $layoutColumns['label']; ?>">
@@ -160,17 +164,17 @@ if (@$_POST[get_class($element)]) {
         </div>
       </div>
       <div class="cols-<?php echo $layoutColumns['field']; ?>">
-          <?php
-          $html_options = array(
+            <?php
+            $html_options = array(
               'options' => array(),
               'empty' => 'Select',
               'div_id' => get_class($element) . '_' . $side . '_deviationreasons',
               'div_class' => 'elementField',
               'label' => $element->getAttributeLabel($side . '_deviationreasons'),
               'nowrapper' => true,
-          );
+            );
 
-          echo $form->multiSelectList(
+            echo $form->multiSelectList(
               $element,
               get_class($element) . '[' . $side . '_deviationreasons]',
               $side . '_deviationreasons',
@@ -187,16 +191,16 @@ if (@$_POST[get_class($element)]) {
                   'label' => 4,
                   'field' => 6,
               )
-          );
-          ?>
+            );
+            ?>
       </div>
     </td>
     <td></td>
   </tr>
   <tr id="<?php echo get_class($element) . '_' . $side; ?>_standard_intervention_not_exists"
-      <?php if ($exists != '0') {
-          echo 'style="display: none;"';
-      } ?>>
+        <?php if ($exists != '0') {
+            echo 'style="display: none;"';
+        } ?>>
     <td>
         <?php echo $form->radioBoolean($element, $side . '_condition_rare', array(), $layoutColumns); ?>
         <?php echo $form->textArea($element, $side . '_incidence', array(), false, array(), $layoutColumns); ?>
@@ -286,9 +290,9 @@ if (@$_POST[get_class($element)]) {
     <td></td>
   </tr>
   <tr id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_factor_details"
-      <?php if (!$patient_factors) {
-          echo 'style="display: none;"';
-      } ?>>
+        <?php if (!$patient_factors) {
+            echo 'style="display: none;"';
+        } ?>>
     <td>
         <?php echo $form->textArea($element, $side . '_patient_factor_details', array(), false, array(),
             $layoutColumns) ?>
@@ -338,9 +342,9 @@ if (@$_POST[get_class($element)]) {
     <td></td>
   </tr>
   <tr id="<?php echo get_class($element) . '_' . $side ?>_urgency_reason"
-      <?php if (!$urgent) {
-          echo 'style="display: none;"';
-      } ?>>
+        <?php if (!$urgent) {
+            echo 'style="display: none;"';
+        } ?>>
     <td>
         <?php echo $form->textArea($element, $side . '_urgency_reason', array(), false, array(), $layoutColumns) ?>
     </td>
@@ -354,16 +358,16 @@ if (@$_POST[get_class($element)]) {
         </div>
       </div>
       <div class="cols-<?php echo $layoutColumns['field']; ?>">
-          <?php
-          $html_options = array(
+            <?php
+            $html_options = array(
               'options' => array(),
               'empty' => 'Select',
               'div_id' => get_class($element) . '_' . $side . '_filecollections',
               'div_class' => 'elementField',
               'label' => 'File Attachments',
               'nowrapper' => true,
-          );
-          $collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
+            );
+            $collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
           //TODO: have sorting with display_order when implemented
           /*
           $collections = OphCoTherapyapplication_FileCollection::::model()->findAll(array('order'=>'display_order asc'));
@@ -371,7 +375,7 @@ if (@$_POST[get_class($element)]) {
               $html_options['options'][(string) $collection->id] = array('data-order' => $collection->display_order);
           }
           */
-          $form->multiSelectList(
+            $form->multiSelectList(
               $element,
               get_class($element) . '[' . $side . '_filecollections]',
               $side . '_filecollections',
@@ -385,8 +389,8 @@ if (@$_POST[get_class($element)]) {
               false,
               false,
               array('label' => 4, 'field' => 6)
-          );
-          ?>
+            );
+            ?>
       </div>
     </td>
     <td></td>

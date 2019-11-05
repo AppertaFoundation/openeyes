@@ -16,13 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<div class="element-data">
-		<div class="data-group">
-			<div class="cols-3 column"><div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('user1_id'))?></div></div>
-			<div class="cols-9 column end"><div class="data-value <?php echo $element->user1 ? '' : 'not-recorded'?>"><?php echo $element->user1 ? $element->user1->fullName : 'Not recorded'?></div></div>
-		</div>
-		<div class="data-group">
-			<div class="cols-3 column"><div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('user2_id'))?></div></div>
-			<div class="cols-9 column end"><div class="data-value <?php echo $element->user2 ? '' : 'not-recorded'?>"><?php echo $element->user2 ? $element->user2->fullName : 'Not recorded'?></div></div>
-		</div>
-	</div>
+    <div class="element-data">
+        <div class="data-group">
+            <div class="cols-3 column"><div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('user1_id'))?></div></div>
+            <div class="cols-9 column end"><div class="data-value <?php echo $element->user1 ? '' : 'not-recorded'?>"><?php echo $element->user1 ? $element->user1->fullName : 'Not recorded'?></div></div>
+        </div>
+        <div class="data-group">
+            <div class="cols-3 column"><div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('user2_id'))?></div></div>
+            <div class="cols-9 column end"><div class="data-value <?php echo $element->user2 ? '' : 'not-recorded'?>"><?php echo $element->user2 ? $element->user2->fullName : 'Not recorded'?></div></div>
+        </div>
+    </div>

@@ -26,12 +26,12 @@ $model_name = CHtml::modelName($element);
 $pastIOPs = $this->getPastIOPs();
 ?>
 
-<?php if ($this->element):
+<?php if ($this->element) :
     echo \CHtml::activeHiddenField($this->element, "id");
 endif; ?>
 
 <div class="element-fields element-eyes">
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
         <div class="cols-6 js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
             <div class="active-form data-group flex-layout">
                 <?php $this->render(

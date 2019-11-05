@@ -239,7 +239,7 @@ class GpController extends BaseController
         $labels = ContactLabel::model()->findAll($criteria);
 
         $output = array();
-        foreach($labels as $label){
+        foreach ($labels as $label) {
             $output[] = array(
                 'label' => $label->name,
                 'value' => $label->name,

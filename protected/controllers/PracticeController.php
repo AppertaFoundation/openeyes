@@ -496,7 +496,6 @@ class PracticeController extends BaseController
             $criteria->addSearchCondition('LOWER(address2)', $search_term, true, 'OR');
             $criteria->addSearchCondition('LOWER(city)', $search_term, true, 'OR');
             $criteria->addSearchCondition('LOWER(postcode)', $search_term, true, 'OR');
-
         }
         $dataProvider = new CActiveDataProvider('Practice', array(
             'criteria' => $criteria,
@@ -531,7 +530,7 @@ class PracticeController extends BaseController
      */
     protected function performAjaxValidation($model)
     {
-            if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

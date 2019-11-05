@@ -84,7 +84,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             ],
                             array('class' => 'button hint green')
                         );
-                        ?>
+?>
                     </td>
                 </tr>
                 </tbody>

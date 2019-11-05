@@ -2,8 +2,8 @@
 
 class m190522_130900_change_keratoconus_element_type_to_the_right_element_group extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
 
         $examination_event_type = EventType::model()->find('name = ?', ['Examination']);
 
@@ -12,11 +12,11 @@ class m190522_130900_change_keratoconus_element_type_to_the_right_element_group 
         $this->update('element_type',
             ['element_group_id' => $element_group->id],
             'class_name = :class_name', [':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History']);
-	}
+    }
 
-	public function down()
-	{
-		echo "does not support migration down.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "does not support migration down.\n";
+        return false;
+    }
 }

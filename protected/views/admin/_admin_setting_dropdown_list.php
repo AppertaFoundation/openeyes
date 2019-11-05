@@ -16,11 +16,11 @@
 
 <?php $selectedKey = $metadata->getSetting($metadata->key); ?>
 <select name="<?= $metadata->key ?>" id="<?= $metadata->key ?>">
-  <?php foreach (unserialize($metadata->data) as $key => $value) {?>
+    <?php foreach (unserialize($metadata->data) as $key => $value) {?>
     <option
-      <?= $selectedKey == $key ? 'selected="selected"' : '' ?>
+        <?= $selectedKey == $key ? 'selected="selected"' : '' ?>
       value="<?= $key ?>">
-      <?= $value ?>
+        <?= $value ?>
     </option>
-  <?php } ?>
+    <?php } ?>
 </select>

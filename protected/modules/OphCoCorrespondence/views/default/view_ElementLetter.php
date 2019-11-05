@@ -18,28 +18,61 @@
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
-$correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];?>
 <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
         <table class="cols-full">
-            <?php if($correspondeceApp === "on") { ?>
-            <tr>
-                <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
-                <td>
-                    <div class="data-value" style="text-align: right">
+            <tbody>
+                <?php if ($correspondeceApp === "on") { ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value" style="text-align: right">
+                            <?php
+                            if ($element->is_signed_off == NULL) {
+                                echo 'N/A';
+                            } else if ((int)$element->is_signed_off == 1) {
+                                echo 'Yes';
+                            } else {
+                                echo 'No';
+                            }
+                            ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Text size</td>
+                    <td>Large Font</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <small class="fade">To</small><br>
                         <?php
-                        if($element->is_signed_off == NULL){
-                            echo 'N/A';
-                        } else if((int)$element->is_signed_off == 1){
-                            echo 'Yes';
+                            $ccString = "";
+                            $toAddress = "";
+                        if ($element->document_instance) {
+                            foreach ($element->document_instance as $instance) {
+                                foreach ($instance->document_target as $target) {
+                                    if ($target->ToCc == 'To') {
+                                           $toAddress = $target->contact_name . "\n" . $target->address;
+                                    } else {
+                                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                    }
+                                }
+                            }
                         } else {
-                            echo 'No';
+                            $toAddress = $element->address;
+                            foreach (explode("\n", trim($element->cc)) as $line) {
+                                if (trim($line)) {
+                                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                                }
+                            }
                         }
+                            echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
                         ?>
-                    </div>
                 </td>
             </tr>
-            <?php } ?>
 					  <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
             <tr>
                 <td class="data-label">
@@ -118,8 +151,6 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                 </td>
             </tr>
 					<?php } ?>
-        </table>
-    </div>
     <div class="spinner-overlay">
         <i class="spinner"></i>
         <img src="#"
@@ -194,10 +225,18 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
             <?php else: ?>
                 <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
             <?php endif; ?>
+		</div>
+								<?php } ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="cols-9">
+        <div class="spinner-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <p style="margin-bottom: 100px;">Generating PDFs</p>
+            <i class="spinner"></i>
         </div>
-<div class="js-correspondence-image-overlay">
-</div>
-
+        <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+    </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {

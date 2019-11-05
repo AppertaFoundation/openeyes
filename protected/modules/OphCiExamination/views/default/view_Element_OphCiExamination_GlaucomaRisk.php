@@ -18,6 +18,6 @@
 ?>
 <div class="sub-element-data">
   <div class="pill <?php echo $element->risk->class?>">
-      <?php echo $element->risk->name?>
+        <?php echo $element->risk->name?>
   </div>
 </div>

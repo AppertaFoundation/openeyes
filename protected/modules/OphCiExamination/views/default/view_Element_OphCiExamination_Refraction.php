@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="js-element-eye <?= $eye_side ?>-eye column">
             <table class="large">
                 <colgroup>
@@ -26,18 +26,18 @@
                 </colgroup>
                 <tbody>
 
-                <?php if ($element->hasEye($eye_side)): ?>
+                <?php if ($element->hasEye($eye_side)) : ?>
                     <tr>
                         <td><?= Yii::app()->format->text($element->getCombined($eye_side)) ?></td>
                         <?php $SE = $element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'};?>
                         <td>SE: <?=$SE > 0 ? '+' : ''?><?= number_format($SE, 2) ?></td>
                         <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
                     </tr>
+                    <?php if ($element->{$eye_side . '_notes'}): ?>
                     <tr>
-                        <?php if ($element->{$eye_side . '_notes'}): ?>
-                            <td colspan="3"><?php echo $element->textWithLineBreaks($eye_side . '_notes') ?></td>
-                        <?php endif; ?>
+                        <td colspan="3"><?php echo $element->textWithLineBreaks($eye_side . '_notes') ?></td>
                     </tr>
+                    <?php endif; ?>
                 <?php else: ?>
                     <tr>
                         <td colspan="3">

@@ -17,7 +17,7 @@
  */
 
 // phpunit --filter PatientMergeTest unit/components/PatientMergeTest.php
-// 
+//
 // /var/www/openeyes/protected/tests>phpunit --filter PatientMerge unit/components/PatientMergeTest.php
 
 class PatientMergeTest extends CDbTestCase
@@ -69,7 +69,7 @@ class PatientMergeTest extends CDbTestCase
         $this->assertFalse($result['is_conflict'], 'Personal details should be the same at this point.');
         $this->assertEmpty($result['details']);
 
-        // Change the dob and gender 
+        // Change the dob and gender
         $primary_patient->gender = 'M';
         $primary_patient->dob = '1981-12-21';
     
@@ -629,8 +629,8 @@ class PatientMergeTest extends CDbTestCase
         
         list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
         
-        $this->assertEquals($start_date,  $episode7->start_date);
-        $this->assertEquals($end_date,  $episode9->end_date);
+        $this->assertEquals($start_date, $episode7->start_date);
+        $this->assertEquals($end_date, $episode9->end_date);
         
         /******/
         
@@ -642,8 +642,8 @@ class PatientMergeTest extends CDbTestCase
         
         list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
         
-        $this->assertEquals($start_date,  $episode9->start_date);
-        $this->assertEquals($end_date,  $episode9->end_date);
+        $this->assertEquals($start_date, $episode9->start_date);
+        $this->assertEquals($end_date, $episode9->end_date);
         
         /******/
         
@@ -652,8 +652,8 @@ class PatientMergeTest extends CDbTestCase
         
         list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
         
-        $this->assertEquals($start_date,  $episode9->start_date);
-        $this->assertEquals($end_date,  null);
+        $this->assertEquals($start_date, $episode9->start_date);
+        $this->assertEquals($end_date, null);
         
         /******/
         
@@ -665,8 +665,8 @@ class PatientMergeTest extends CDbTestCase
         
         list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
         
-        $this->assertEquals($start_date,  $episode9->start_date);
-        $this->assertEquals($end_date,  null);
+        $this->assertEquals($start_date, $episode9->start_date);
+        $this->assertEquals($end_date, null);
         
         /******/
         
@@ -678,8 +678,8 @@ class PatientMergeTest extends CDbTestCase
         
         list($start_date, $end_date) = $merge_handler->getTwoEpisodesStartEndDate($episode7, $episode9);
         
-        $this->assertEquals($start_date,  $episode9->start_date);
-        $this->assertEquals($end_date,  $episode7->end_date);
+        $this->assertEquals($start_date, $episode9->start_date);
+        $this->assertEquals($end_date, $episode7->end_date);
 
     }
 

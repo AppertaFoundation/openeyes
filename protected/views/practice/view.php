@@ -63,7 +63,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     </tbody>
                 </table>
                 <div class="align-right">
-                <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
+                <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')) : ?>
               <a  href="<?= $this->createUrl('/practice/update', array('id' => $model->id))?>">
                   <button class="button hint blue pad pro-theme"
 

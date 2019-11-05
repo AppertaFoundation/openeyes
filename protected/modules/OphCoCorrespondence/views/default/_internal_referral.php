@@ -48,8 +48,8 @@
       <div class="cols-2 column "><label>Condition:* </label></div>
 
       <div class="cols-3 column end">
-          <?php
-          $this->widget('application.widgets.RadioButtonList', array(
+            <?php
+            $this->widget('application.widgets.RadioButtonList', array(
               'element' => $element,
               'name' => CHtml::modelName($element) . "[is_same_condition]",
               'label_above' => true,
@@ -60,7 +60,7 @@
                   0 => 'Different Condition',
               ),
               'selected_item' => $element->is_same_condition ? $element->is_same_condition : 0,
-          )); ?>
+            )); ?>
       </div>
 
     </div>
@@ -70,8 +70,8 @@
       <div class="cols-3 column end">
         <label class="inline">
           <label>
-              <?=\CHtml::activeCheckBox($element, 'is_urgent'); ?>
-              <?php echo $element->getAttributeLabel('is_urgent'); ?>
+                <?=\CHtml::activeCheckBox($element, 'is_urgent'); ?>
+                <?php echo $element->getAttributeLabel('is_urgent'); ?>
           </label>
         </label>
       </div>

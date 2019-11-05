@@ -225,7 +225,7 @@ class AdminController extends ModuleAdminController
                 echo json_encode(array(
                     'success' => (int)$instruction->save()
                 ));
-            } elseif (isset($_POST['action']) && $_POST['action'] == 'delete'){
+            } elseif (isset($_POST['action']) && $_POST['action'] == 'delete') {
                 $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
 
                 echo json_encode(array(

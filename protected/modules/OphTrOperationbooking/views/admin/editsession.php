@@ -17,8 +17,8 @@
  */
 ?>
 <div class="box admin cols-5">
-	<h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
-	<?php
+    <h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm',
         [
             'id' => 'adminform',
@@ -26,7 +26,7 @@
             'focus' => '#username',
         ]
     )?>
-	<?php echo $form->errorSummary($session); ?>
+    <?php echo $form->errorSummary($session); ?>
 
     <table class="standard cols-full">
         <tbody>
@@ -88,14 +88,14 @@
                 <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]); ?></td>
             </tr>
             <?php $current = $session->getBookedProcedureCount();
-                if($current) { ?>
+            if ($current) { ?>
                     <tr class = "<?= $session->isProcedureCountLimited() && $current > $session->getMaxProcedureCount() ? "alert-box alert" : "" ?>">
                         <td>Current Booked Procedures</td>
                         <td>
                             <div class="field-value" id="current-proc-count"><?= $current ?></div>
                         </td>
                     </tr>
-                <?php }
+            <?php }
             ?>
 
             <?php $boolean_fields = ['consultant', 'paediatric', 'anaesthetist', 'general_anaesthetic', 'available'];
@@ -106,7 +106,9 @@
                 </tr>
             <?php endforeach; ?>
 
-            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {?> style="display: none;"<?php } ?> >
+            <tr id="unavailablereason_id_wrapper" <?php if ($session->available) {
+                ?> style="display: none;"<?php
+                                                  } ?> >
                 <td>
                     <label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?= $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
                 </td>
@@ -116,8 +118,8 @@
             </tr>
         </tbody>
     </table>
-	<?php echo $form->errorSummary($session); ?>
-	<?php echo $form->formActions(array(
+    <?php echo $form->errorSummary($session); ?>
+    <?php echo $form->formActions(array(
         'delete' => $session->id ? 'Delete' : false,
     ));?>
     <?php $this->endWidget()?>
@@ -228,8 +230,8 @@
         });
     });
 
-	$('.btn_cancel_remove_session').click(function(e) {
-		e.preventDefault();
-		$('#confirm_delete_session').dialog('close');
-	});
+    $('.btn_cancel_remove_session').click(function(e) {
+        e.preventDefault();
+        $('#confirm_delete_session').dialog('close');
+    });
 </script>

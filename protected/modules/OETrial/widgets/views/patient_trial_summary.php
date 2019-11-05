@@ -7,9 +7,9 @@
     <div class="group">
       <div class="label"></div>
       <div class="data">
-          <?php if (count($this->patient->trials) === 0) { ?>
+            <?php if (count($this->patient->trials) === 0) { ?>
             <div class="nil-recorded">No trials recorded.</div>
-          <?php } else { ?>
+            <?php } else { ?>
             <table>
               <thead>
               <tr>
@@ -24,10 +24,10 @@
               </tr>
               </thead>
               <tbody>
-              <?php
+                <?php
               /* @var TrialPatient $trialPatient */
-              foreach ($this->patient->trials as $trialPatient): //
-                  ?>
+                foreach ($this->patient->trials as $trialPatient) : //
+                    ?>
                 <tr>
                   <td>
                       <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
@@ -39,16 +39,16 @@
                       } ?>
                   </td>
                   <td>
-                      <?php
-                      $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
-                      if (sizeof($coordinators)) {
-                        foreach ($coordinators as $item){
-                          echo $item->user->getFullName().'<br>';
+                        <?php
+                        $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
+                        if (sizeof($coordinators)) {
+                            foreach ($coordinators as $item) {
+                                echo $item->user->getFullName().'<br>';
+                            }
+                        } else {
+                            echo 'N/A';
                         }
-                      } else {
-                          echo 'N/A';
-                      }
-                      ?>
+                        ?>
                   </td>
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
@@ -60,10 +60,10 @@
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
-          <?php } ?>
+            <?php } ?>
       </div>
     </div>
   </div>

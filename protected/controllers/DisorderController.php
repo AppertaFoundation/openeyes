@@ -25,7 +25,7 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'view', 'autoComplete'),
+                'actions' => array('index', 'view', 'autocomplete','getcommonlyuseddiagnoses'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -232,7 +232,7 @@ class DisorderController extends BaseController
     public function actionGetCommonlyUsedDiagnoses($type)
     {
         $return = array();
-        if($type === 'systemic'){
+        if ($type === 'systemic') {
             foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
                 $return[] = $this->disorderStructure($disorder);
             };
@@ -307,12 +307,11 @@ class DisorderController extends BaseController
         $errors = array();
         $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
-        if(!$subspecialty_id){
+        if (!$subspecialty_id) {
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
         }
 
         if (Yii::app()->request->isPostRequest) {
-
             $transaction = Yii::app()->db->beginTransaction();
 
             $display_orders = Yii::app()->request->getParam('display_order', array());
@@ -365,17 +364,15 @@ class DisorderController extends BaseController
                 $transaction->commit();
 
                 Yii::app()->user->setFlash('success', 'List updated.');
-
             } else {
                 foreach ($errors as $error) {
-                    foreach($error as $attribute => $error_array){
+                    foreach ($error as $attribute => $error_array) {
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
 
                 $transaction->rollback();
-
             }
             $this->redirect(Yii::app()->request->url);
         }
@@ -459,17 +456,15 @@ class DisorderController extends BaseController
                 $transaction->commit();
 
                 Yii::app()->user->setFlash('success', 'List updated.');
-
             } else {
                 foreach ($errors as $error) {
-                    foreach($error as $attribute => $error_array){
+                    foreach ($error as $attribute => $error_array) {
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
 
                 $transaction->rollback();
-
             }
             $this->redirect(Yii::app()->request->url);
         }
@@ -497,7 +492,7 @@ class DisorderController extends BaseController
      */
     public function actionView($id)
     {
-        $this->render('view',array(
+        $this->render('view', array(
             'model'=>$this->loadModel($id),
         ));
     }
@@ -513,17 +508,16 @@ class DisorderController extends BaseController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
-            foreach ($_POST['Disorder'] as $key=> $value){
+        if (isset($_POST['Disorder'])) {
+            foreach ($_POST['Disorder'] as $key=> $value) {
                 $model->$key = $value;
             }
             $model->attributes=$_POST['Disorder'];
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('create',array(
+        $this->render('create', array(
             'model'=>$model,
         ));
     }
@@ -540,17 +534,16 @@ class DisorderController extends BaseController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
-            foreach ($_POST['Disorder'] as $key=> $value){
+        if (isset($_POST['Disorder'])) {
+            foreach ($_POST['Disorder'] as $key=> $value) {
                 $model->$key = $value;
             }
 
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('update',array(
+        $this->render('update', array(
             'model'=>$model,
         ));
     }
@@ -576,15 +569,15 @@ class DisorderController extends BaseController
     {
         $model=new Disorder('search');
         $model->unsetAttributes();  // clear any default values
-        if(isset($_GET['Disorder']))
+        if (isset($_GET['Disorder']))
             $model->attributes=$_GET['Disorder'];
 
-        if(Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')){
-            $this->render('admin',array(
+        if (Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')) {
+            $this->render('admin', array(
                 'model'=>$model,
             ));
         } else {
-            $this->render('index',array(
+            $this->render('index', array(
                 'model'=>$model,
             ));
         }
@@ -600,8 +593,8 @@ class DisorderController extends BaseController
     public function loadModel($id)
     {
         $model=Disorder::model()->findByPk($id);
-        if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+        if ($model===null)
+            throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }
 
@@ -611,8 +604,7 @@ class DisorderController extends BaseController
      */
     protected function performAjaxValidation($model)
     {
-        if(isset($_POST['ajax']) && $_POST['ajax']==='disorder-form')
-        {
+        if (isset($_POST['ajax']) && $_POST['ajax']==='disorder-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
@@ -622,7 +614,7 @@ class DisorderController extends BaseController
         $specialties = Specialty::model()->findAll();
         if ($data->specialty_id !== null || $data->specialty_id != '') {
             foreach ($specialties as $specialty) {
-                if($specialty->id == $data->specialty_id) {
+                if ($specialty->id == $data->specialty_id) {
                     return $specialty->name;
                 }
             }
@@ -693,7 +685,6 @@ class DisorderController extends BaseController
 
                     Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
                     $this->redirect(Yii::app()->request->url);
-
                 }
                 Audit::add('admin', 'delete', $item->primaryKey, null, array(
                     'module' => (is_object($this->module)) ? $this->module->id : 'core',

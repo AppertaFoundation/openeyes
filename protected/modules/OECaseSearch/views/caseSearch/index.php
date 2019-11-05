@@ -21,7 +21,7 @@ $this->pageTitle = 'Case Search';
     <nav class="oe-full-side-panel">
         <h3>Actions</h3>
         <ul>
-            <?php if ($this->trialContext):?>
+            <?php if ($this->trialContext) :?>
             <li>
                 <a href="/OETrial/trial/view/<?=$this->trialContext->id?>">Back to Trial</a>
             </li>
@@ -48,7 +48,7 @@ $this->pageTitle = 'Case Search';
                             endif; ?>
                             </tbody>
                         </table>
-                        <?php foreach ($fixedParams as $id => $param):
+                        <?php foreach ($fixedParams as $id => $param) :
                             $this->renderPartial('fixed_parameter_form', array(
                                 'model' => $param,
                                 'id' => $id
@@ -64,7 +64,7 @@ $this->pageTitle = 'Case Search';
                                 null,
                                 $paramList,
                                 array('empty' => '- Add a parameter -', 'id' => 'js-add-param'));
-                            ?>
+?>
                         </div>
                     </div>
                     <div class="search-actions flex-layout flex-left">
@@ -81,7 +81,7 @@ $this->pageTitle = 'Case Search';
             </div>
             <div class="element">
                 <?php
-                if ($patients->itemCount > 0):
+                if ($patients->itemCount > 0) :
                     //Just create the widget here so we can render it's parts separately
                     /** @var $searchResults CListView */
                     $searchResults =

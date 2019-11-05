@@ -1,12 +1,12 @@
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
 
   <h2 class="event-title">
-      <?php echo $this->title ?>
-      <?php if ($this->event->is_automated) {
-          echo " - ";
-          $this->renderPartial('//patient/event_automated');
-      } ?>
-      <?php if ($this->action->id === 'view') { ?>
+        <?php echo $this->title ?>
+        <?php if ($this->event->is_automated) {
+            echo " - ";
+            $this->renderPartial('//patient/event_automated');
+        } ?>
+        <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
       <?php } ?>
 
@@ -98,7 +98,7 @@
     } ?>
 </main>
 
-<?php if ($this->action->id === 'view'): ?>
+<?php if ($this->action->id === 'view') : ?>
   <script type="text/javascript">
     $(function () {
       // For every eyedraw element

@@ -35,7 +35,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
             <?php } ?>
         </nav>
     </div>
-    <?php $this->renderPartial('//patient/add_new_event',array(
+    <?php $this->renderPartial('//patient/add_new_event', array(
         'button_selector' => '#add-event',
         'episodes' => array(),
         'context_firm' => $this->firm,
@@ -162,7 +162,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
         <div class="patient-overview">
             <table class="standard">
                 <tbody>
-                <?php foreach ($events as $event):
+                <?php foreach ($events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                     <tr>
                         <td>
@@ -291,6 +291,14 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
 							<div class="data-value">
 								<?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
 							</div>
+						</div>
+					</section>
+					<section class="element view full ">
+						<header class="element-header">
+							<h3 class="element-title">Problems &amp; Plans</h3>
+						</header>
+						<div class="element-data full-width">
+							<?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
 						</div>
 					</section>
 				</div>

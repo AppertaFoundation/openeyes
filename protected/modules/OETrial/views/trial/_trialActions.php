@@ -27,7 +27,7 @@
             $this->createUrl('permissions', array('id' => $trial->id))); ?>
     </li>
 
-      <?php if (Yii::app()->user->checkAccess('OprnGenerateReport')): ?>
+        <?php if (Yii::app()->user->checkAccess('OprnGenerateReport')) : ?>
         <li>
             <?php echo CHtml::beginForm($this->createUrl('report/downloadReport')); ?>
             <?php echo CHtml::hiddenField('report-name', 'TrialCohort'); ?>
@@ -36,16 +36,16 @@
             <?php echo CHtml::linkButton('Download Report'); ?>
             <?php echo CHtml::endForm(); ?>
         </li>
-      <?php endif; ?>
+        <?php endif; ?>
 
-      <?php if ($permission->can_manage): ?>
+        <?php if ($permission->can_manage) : ?>
         <li>
             <?php echo CHtml::beginForm(array('delete'), 'post', array('id' => 'delete-trial-form')); ?>
             <?php echo CHtml::hiddenField('id', $trial->id); ?>
             <?php echo CHtml::linkButton('Delete Trial', array('id' => 'delete-trial-submit')); ?>
             <?php echo CHtml::endForm(); ?>
         </li>
-      <?php endif; ?>
+        <?php endif; ?>
   </ul>
 </nav>
 <script type="application/javascript">

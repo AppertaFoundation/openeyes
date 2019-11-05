@@ -65,7 +65,7 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="column">
-              <?= CHtml::activeDropDownList(
+                <?= CHtml::activeDropDownList(
                   $element,
                   $eye.'_laser_status_id',
                   CHtml::listData($statuses, 'id', 'name'),
@@ -83,12 +83,12 @@ $model_name = CHtml::modelName($element);
       <td style="text-align: left">
         <div class="cols-full row column">
           <div class="cols-full">
-              <?php if (Yii::app()->hasModule('OphTrLaser')):
-                  $event = EventType::model()->find("class_name = 'OphTrLaser'");?>
+                <?php if (Yii::app()->hasModule('OphTrLaser')) :
+                    $event = EventType::model()->find("class_name = 'OphTrLaser'");?>
                 <span class="field-info hint">
                   Ensure a <?=$event->name?> event is added for this patient when procedure is completed
                 </span>
-              <?php endif?>
+                <?php endif?>
           </div>
         </div>
       </td>
@@ -104,7 +104,7 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="column end">
-              <?=\CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
+                <?=\CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
             <div class="cols-full"
                  id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason_other"
                  style="<?= (!$show_deferral_other)? "display: none":""?>"
@@ -114,7 +114,7 @@ $model_name = CHtml::modelName($element);
                     $eye.'_laser_deferralreason_other',
                     array('rows' => '1', 'cols' => '40', 'class' => 'autosize', 'nowrapper' => true)
                 )
-                ?>
+                            ?>
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="column end lasertype">
-              <?=\CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                   $element,
                   $eye.'_lasertype_id',
                   CHtml::listData($lasertypes, 'id', 'name'),
@@ -147,8 +147,7 @@ $model_name = CHtml::modelName($element);
     $show_other = false;
     if (@$_POST[$model_name]) {
         if ($lasertype = \OEModule\OphCiExamination\models\OphCiExamination_LaserManagement_LaserType::model()->findByPk(
-            (int) @$_POST[$model_name][$eye.'_lasertype_id']))
-        {
+            (int) @$_POST[$model_name][$eye.'_lasertype_id'])) {
             $show_other = $lasertype->other;
         }
     } else {
@@ -162,7 +161,7 @@ $model_name = CHtml::modelName($element);
       <td class="flex-layout data-group">
             <div class="column">
               <label for="<?php echo $model_name.'_'.$eye.'_lasertype_other';?>">
-                  <?php echo $element->getAttributeLabel($eye.'_lasertype_other'); ?>:
+                    <?php echo $element->getAttributeLabel($eye.'_lasertype_other'); ?>:
               </label>
             </div>
             <div class="column">
@@ -187,7 +186,7 @@ $model_name = CHtml::modelName($element);
             </label>
           </div>
           <div class="cols-9">
-              <?= $form->textArea(
+                <?= $form->textArea(
                   $element,
                   $eye.'_comments',
                   array('rows' => 1, 'nowrapper' => true),

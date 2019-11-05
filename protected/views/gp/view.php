@@ -68,7 +68,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <span class="icon-showhide">Show/hide this section</span>
             </a>
         </div>
-        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')): ?>
+        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')) : ?>
             <div class="large-4 column end">
                 <div class="box generic">
                     <div class="row">

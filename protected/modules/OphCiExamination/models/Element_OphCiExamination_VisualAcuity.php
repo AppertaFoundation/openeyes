@@ -86,8 +86,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,
-					right_unable_to_assess, left_eye_missing, right_eye_missing, cvi_alert_dismissed', 'safe'),
+            array(' right_readings, left_readings, eye_id, unit_id, left_unable_to_assess,right_unable_to_assess,
+             left_eye_missing, right_eye_missing, cvi_alert_dismissed, left_notes, right_notes', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, , eye_id', 'safe', 'on' => 'search'),
@@ -132,6 +132,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'left_eye_missing' => 'Eye missing',
             'right_eye_missing' => 'Eye missing',
             'cvi_alert_dismissed' => 'Is CVI alert dismissed',
+            'right_notes' => 'Comments',
+            'left_notes' => 'Comments'
         );
     }
 
@@ -142,7 +144,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
 
-        if(array_key_exists($model, $_POST)) {
+        if(array_key_exists($model, $_POST) || Yii::app()->params['institution_code'] !== 'CERA') {
 					$va = $_POST[$model];
 					foreach (array('left', 'right') as $side) {
 						if (!$this->eyeHasSide($side, $va['eye_id'])) {
@@ -343,28 +345,28 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         return $best;
     }
 
-	/**
-	 * Get the best reading based on the type
-	 *
-	 * @param string $side
-	 * @param $method
-	 */
-	public function getBestReadingByMethods($side,$methods)
+    /**
+     * Get the best reading based on the type
+     *
+     * @param string $side
+     * @param $method
+     */
+    public function getBestReadingByMethods($side, $methods)
     {
         $best = null;
-		foreach($methods as $method) {
-			foreach ($this->{$side.'_readings'} as $reading) {
-				if($reading->method->id == $method->id) {
-					if (!$best || $reading->value >= $best->value) {
-						$best = $reading;
-					}
-				}
-			}
-		}
+        foreach ($methods as $method) {
+            foreach ($this->{$side.'_readings'} as $reading) {
+                if ($reading->method->id == $method->id) {
+                    if (!$best || $reading->value >= $best->value) {
+                        $best = $reading;
+                    }
+                }
+            }
+        }
         if ($best) {
             return $best->convertTo($best->value);
         }
-		return $best;
+        return $best;
     }
 
     /**
@@ -456,7 +458,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
-       $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
+        $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
             'name = ?',
             array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])

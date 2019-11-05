@@ -54,7 +54,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($dataProvided as $gp): ?>
+            <?php foreach ($dataProvided as $gp) : ?>
                 <tr id="r<?php echo $gp->id; ?>" class="clickable">
                     <td><?php echo CHtml::encode($gp->getCorrespondenceName()); ?></td>
                     <td><?php echo CHtml::encode($gp->contact->primary_phone); ?></td>
@@ -82,7 +82,17 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </tr>
             </tfoot>
         </table>
-
+        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')) : ?>
+            <div class="large-4 column end">
+                <div class="row">
+                    <div class="large-12 column end">
+                        <div class="box generic">
+                            <p><?php echo CHtml::link('Create Practitioner', $this->createUrl('/gp/create')); ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
 </div>

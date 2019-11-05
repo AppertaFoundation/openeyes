@@ -26,7 +26,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
     public function getTreatmentType()
     {
-      return TreatmentType::model()->findByPk($this->treatmentTypeId);
+        return TreatmentType::model()->findByPk($this->treatmentTypeId);
     }
 
     /**
@@ -278,7 +278,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         ) {
             $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentTypeId;
         }
-        
+
         return $binds;
     }
 

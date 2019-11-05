@@ -112,8 +112,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $none_position = $this->getNoneIolPosition();
 
-        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
+        if (isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])) {
+            if (Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id) {
                 if (!$this->iol_type_id) {
                     $this->addError('iol_type_id', 'IOL type cannot be blank');
                 }
@@ -134,8 +134,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $none_position = $this->getNoneIolPosition();
 
-        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
+        if (isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])) {
+            if (Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id) {
                 $value = $this->predicted_refraction;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
@@ -154,8 +154,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $none_position = $this->getNoneIolPosition();
 
-        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
+        if (isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])) {
+            if (Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id) {
                 $value = $this->iol_power;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
@@ -193,7 +193,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $model_name = "OphTrOperationnote_IOLType";
 
-        if(\Yii::app()->hasModule("OphInBiometry")){
+        if (\Yii::app()->hasModule("OphInBiometry")) {
             $model_name = "OphInBiometry_LensType_Lens";
         }
 
@@ -249,8 +249,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         $position_none = $this->getNoneIolPosition();
 
         //if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-        if(! $this->iol_position_id || $this->iol_position_id == $position_none->id)
-        {
+        if (! $this->iol_position_id || $this->iol_position_id == $position_none->id) {
             $this->iol_power = null;
             $this->iol_type_id = null;
             $this->predicted_refraction = null;
@@ -321,7 +320,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         $curr_by_id = array();
 
-        if(is_array($this->operative_device_assignments)){
+        if (is_array($this->operative_device_assignments)) {
             foreach ($this->operative_device_assignments as $oda) {
                 $curr_by_id[$oda->operative_device_id] = $oda;
             }
@@ -447,7 +446,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
         $complications = Yii::app()->request->getPost('OphTrOperationnote_CataractComplications');
         if (!$complications || !count($complications)) {
-            if(!$this->complications || !count($this->complications)) {
+            if (!$this->complications || !count($this->complications)) {
                 $this->addError('Complications', 'Cataract Complications cannot be blank.');
             }
         } else {
@@ -486,14 +485,12 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     private function getNoneIolPosition()
         {
             $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
-            if($position_none)
-            {
-                return $position_none;
-            }else
-            {
-                return false;
-            }
+        if ($position_none) {
+            return $position_none;
+        } else {
+            return false;
         }
+    }
 
         /**
      * Load in the correction values for the eyedraw fields

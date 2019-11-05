@@ -13,7 +13,7 @@ non-medical staff such as optometrists in the delivery of share programs of eye 
 
 Disclaimer
 ----------
-OpenEyes is provided under an GNU Affero GPL v3.0  (AGPL v3.0)  license and all terms of that license apply (https://www.gnu.org/licenses/agpl-3.0.en.html). Use of the OpenEyes software or code is entirely at user risk. The OpenEyes Foundation does not accept any responsibility for loss or damage to any person, property or reputation as a result of using the software or code. No warranty is provided by any party, implied or otherwise. For use of the software or code.  This software and code is not guaranteed safe to use in a clinical environment; any user is advised to undertake a safety assessment to confirm that deployment matches local clinical safety requirements. 
+OpenEyes is provided under an GNU Affero GPL v3.0  (AGPL v3.0)  license and all terms of that license apply (https://www.gnu.org/licenses/agpl-3.0.en.html). Use of the OpenEyes software or code is entirely at user risk. The Apperta Foundation does not accept any responsibility for loss or damage to any person, property or reputation as a result of using the software or code. No warranty is provided by any party, implied or otherwise. For use of the software or code.  This software and code is not guaranteed safe to use in a clinical environment; any user is advised to undertake a safety assessment to confirm that deployment matches local clinical safety requirements. 
 
 Resources
 ---------
@@ -39,7 +39,7 @@ Issues in the core should be logged through the [github issues system](https://g
 
 Setup
 ---------
-To make life easier and also help ensure consistency in environments we use Docker. Full setup instructions can be found in the [appertaopeneyes docker hub repository](https://cloud.docker.com/u/appertaopeneyes/repository/docker/appertaopeneyes/web-allin1)
+To make life easier and also help ensure consistency in environments we use Docker. Full setup instructions can be found in the [appertaopeneyes docker hub repository](https://hub.docker.com/r/appertaopeneyes/web-allin1)
 
 Once the build has finished you can access OpenEyes using the link:
 
@@ -47,5 +47,5 @@ Once the build has finished you can access OpenEyes using the link:
 
 **Note:** [Google Chrome](https://www.google.com/chrome/) is the *only* supported browser for OpenEyes.
 
-**Note:** There are many options/variables/tags avilable in the Docker conatiner. If the options are omitted then default values are used. More information can be found on the [docker hub page](https://cloud.docker.com/u/appertaopeneyes/repository/docker/appertaopeneyes/web-allin1)
+**Note:** There are many options/variables/tags avilable in the Docker conatiner. If the options are omitted then default values are used. More information can be found on the [docker hub page](https://hub.docker.com/r/appertaopeneyes/web-allin1)
 

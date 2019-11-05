@@ -279,7 +279,6 @@ $(document).ready(function() {
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
-        $('#'+event_form ).append('<input type="hidden" name="saveprint" value="1" /> ');
 
         if(attachment_check == 1){
             disableButtons();
@@ -541,7 +540,7 @@ $(document).ready(function() {
 				'type': 'GET',
 				'url': baseUrl+'/OphCoCorrespondence/Default/getString?patient_id='+OE_patient_id+'&string_type='+m[1]+'&string_id='+m[2],
 				'success': function(text) {
-          element_letter_controller.addAtCursor(text);
+					element_letter_controller.addAtCursor(text.replace(/\n/g, "<br>"));
 					obj.val('');
 				}
 			});

@@ -257,7 +257,8 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
     {
         $tickets = models\Ticket::model()->with('current_queue')->findAllByAttributes(array('patient_id' => $patient->id));
         $q_rs = $this->getQueueSetQueues($this->read($queueset_id), false);
-        $q_ids = array_map(function ($a) { return $a->id; }, $q_rs);
+        $q_ids = array_map(function ($a) { return $a->id;
+        }, $q_rs);
 
         foreach ($tickets as $t) {
             if (in_array($t->current_queue->id, $q_ids)) {

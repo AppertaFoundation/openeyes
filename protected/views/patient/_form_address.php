@@ -23,20 +23,20 @@
 ?>
 <tr>
   <td>
-      <?= $form->label($address, 'address_type_id') ?>
+        <?= $form->label($address, 'address_type_id') ?>
     <br/>
-      <?= $form->error($address, 'address_type_id') ?>
+        <?= $form->error($address, 'address_type_id') ?>
   </td>
   <td>
-      <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
+        <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
           array('empty' => '-- select --')); ?>
   </td>
 <tr>
 <tr>
   <td>
-      <?= $form->labelEx($address, 'address1') ?>
+        <?= $form->labelEx($address, 'address1') ?>
     <br/>
-      <?= $form->error($address, 'address1') ?>
+        <?= $form->error($address, 'address1') ?>
   </td>
   <td>
       <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
@@ -45,9 +45,9 @@
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'address2') ?>
+        <?= $form->labelEx($address, 'address2') ?>
     <br/>
-      <?= $form->error($address, 'address2') ?>
+        <?= $form->error($address, 'address2') ?>
   </td>
   <td>
       <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
@@ -56,9 +56,9 @@
 </tr>
 <tr>
   <td>
-      <?= $form->labelEx($address, 'city') ?>
+        <?= $form->labelEx($address, 'city') ?>
     <br/>
-      <?= $form->error($address, 'city') ?>
+        <?= $form->error($address, 'city') ?>
   </td>
   <td>
       <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
@@ -67,9 +67,9 @@
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'postcode') ?>
+        <?= $form->labelEx($address, 'postcode') ?>
     <br/>
-      <?= $form->error($address, 'postcode') ?>
+        <?= $form->error($address, 'postcode') ?>
   </td>
   <td>
       <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
@@ -78,9 +78,9 @@
 
 <tr>
   <td>
-      <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
+        <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
     <br/>
-      <?= $form->error($address, Yii::app()->params['county_label']) ?>
+        <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
       <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
@@ -92,7 +92,7 @@
   <td class="required">
       <?= $form->label($address, 'country_id') ?>
     <br/>
-      <?= $form->error($address, 'country_id') ?>
+        <?= $form->error($address, 'country_id') ?>
   </td>
   <td>
       <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries))  && Yii::app()->controller->action->id !== 'update'?

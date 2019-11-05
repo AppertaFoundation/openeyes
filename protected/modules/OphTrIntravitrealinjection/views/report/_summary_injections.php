@@ -17,14 +17,14 @@
  */
 ?>
 <form id="current_report" action="<?php echo Yii::app()->createUrl('OphTrIntravitrealinjection/report/downloadReport')?>" method="post">
-	<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-	<input type="hidden" name="report-name" value="Injections" />
-	<input type="hidden" name="date_from" value="<?php echo $report->date_from?>" />
-	<input type="hidden" name="date_to" value="<?php echo $report->date_to?>" />
-	<input type="hidden" name="given_by_id" value="<?php echo $report->given_by_id?>" />
-	<input type="hidden" name="summary" value="<?php echo $report->summary?>" />
-	<input type="hidden" name="pre_va" value="<?php echo $report->pre_va?>" />
-	<input type="hidden" name="post_va" value="<?php echo $report->post_va?>" />
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+    <input type="hidden" name="report-name" value="Injections" />
+    <input type="hidden" name="date_from" value="<?php echo $report->date_from?>" />
+    <input type="hidden" name="date_to" value="<?php echo $report->date_to?>" />
+    <input type="hidden" name="given_by_id" value="<?php echo $report->given_by_id?>" />
+    <input type="hidden" name="summary" value="<?php echo $report->summary?>" />
+    <input type="hidden" name="pre_va" value="<?php echo $report->pre_va?>" />
+    <input type="hidden" name="post_va" value="<?php echo $report->post_va?>" />
 </form>
 <table class="standard cols-full">
 	<thead>
@@ -67,3 +67,6 @@
 		<?php }?>
 	</tbody>
 </table>
+<div>
+    <button type="submit" class="classy blue mini" id="download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
+</div>

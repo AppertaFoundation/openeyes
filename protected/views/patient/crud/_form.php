@@ -67,7 +67,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->errorSummary(array($contact, $patient, $address, $referral)) ?>
             <?= $form->errorSummary($patient_identifiers) ?>
         </div>
-      <?php } ?>-->
+        <?php } ?>-->
 
     <table class="standard highlight-rows">
       <tbody>
@@ -150,13 +150,13 @@ foreach ($ethnic_list as $key=>$item){
       </tr>
       <tr>
         <td class="required">
-          <?= $form->label($patient, 'patient_source') ?>
+            <?= $form->label($patient, 'patient_source') ?>
           <br/>
-          <?= $form->error($patient, 'patient_source') ?>
+            <?= $form->error($patient, 'patient_source') ?>
         </td>
         <td>
           <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
-          <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
+            <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
             array(
               'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
               'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
@@ -206,7 +206,7 @@ foreach ($ethnic_list as $key=>$item){
       </tr>
       <tr>
         <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
-          <?= $form->label($address, 'email') ?>
+            <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -226,7 +226,7 @@ foreach ($ethnic_list as $key=>$item){
           <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
               <?= $form->label($patient, 'hos_num') ?>
             <br/>
-              <?= $form->error($patient, 'hos_num') ?>
+                <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
             <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
@@ -243,7 +243,7 @@ foreach ($ethnic_list as $key=>$item){
             <?= Yii::app()->params['nhs_num_label']?>
           </td>
           <td>
-              <?= $form->textField($patient, 'nhs_num',
+                <?= $form->textField($patient, 'nhs_num',
                   array(
                       'size' => 40,
                       'maxlength' => 40,
@@ -251,7 +251,7 @@ foreach ($ethnic_list as $key=>$item){
                       'placeholder' => $patient->getAttributeLabel('nhs_num'),
                       'autocomplete' => Yii::app()->params['html_autocomplete']
                   )); ?>
-              <?= $form->error($patient, 'nhs_num') ?>
+                <?= $form->error($patient, 'nhs_num') ?>
           </td>
         </tr>
 <!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
@@ -290,7 +290,7 @@ foreach ($ethnic_list as $key=>$item){
               is deceased
             </label>
             <br/>
-              <?= $form->error($patient, 'is_deceased') ?>
+                <?= $form->error($patient, 'is_deceased') ?>
           </td>
           <td>
             <div class="flex-layout date_of_death" style="<?= $patient->is_deceased == 0 ? 'display: none;' : '' ?>">
@@ -407,20 +407,20 @@ foreach ($ethnic_list as $key=>$item){
           </td>
           <td>
 
-             <?php $this->widget('applicaiton.widgets.AutoCompleteSearch',['field_name'=>'autocomplete_user_id']);?>
+                <?php $this->widget('applicaiton.widgets.AutoCompleteSearch', ['field_name'=>'autocomplete_user_id']);?>
 
 
             <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_referral_to">
                 <li>
                   <span class="js-name">
-                      <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
+                        <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-referral-to"></i>
                 </li>
               </ul>
 
-              <?= CHtml::hiddenField('PatientUserReferral[user_id]',  $patientuserreferral->user_id,
+                <?= CHtml::hiddenField('PatientUserReferral[user_id]', $patientuserreferral->user_id,
                 array('class' => 'hidden_id')); ?>
             </div>
             <div id="no_referred_to_result" style="display: none;">

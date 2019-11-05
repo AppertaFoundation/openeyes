@@ -23,11 +23,11 @@ $event = $this->event;
 $event_type = $event->eventType->name;
 ?>
 <header class="header">
-	<?= $logoHelper->render() ?>
-		<div class="cols-4 column patient">
-			<strong><?php echo $this->patient->contact->fullName?></strong>
-			<br />
-			<?php echo $this->patient->getLetterAddress(array(
+    <?= $logoHelper->render() ?>
+        <div class="cols-4 column patient">
+            <strong><?php echo $this->patient->contact->fullName?></strong>
+            <br />
+            <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
 			<br />
@@ -35,7 +35,7 @@ $event_type = $event->eventType->name;
             <?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ')?><strong><?php echo $this->patient->hos_num ?></strong>
 			<br />
             <?php echo Yii::app()->params['nhs_num_label']?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
-			<br />
-			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
-		</div>
+            <br />
+            DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+        </div>
 </header>

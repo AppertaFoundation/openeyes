@@ -2,8 +2,8 @@
 
 class m180215_155226_adding_system_setting_tour_disable extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('setting_installation', array('key' => 'disable_auto_feature_tours', 'value' => 'off'));
         $this->insert('setting_metadata', array(
             'display_order' => 0,
@@ -14,11 +14,11 @@ class m180215_155226_adding_system_setting_tour_disable extends CDbMigration
             'default_value' => 'off',
             'last_modified_user_id' => 1)
         );
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('setting_installation', "`key` = 'disable_auto_feature_tours'");
         $this->delete('setting_metadata', "`key` = 'disable_auto_feature_tours'");
-	}
+    }
 }

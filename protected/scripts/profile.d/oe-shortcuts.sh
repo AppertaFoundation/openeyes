@@ -30,6 +30,6 @@ alias oelogson="tail $WROOT/protected/runtime/application.log -f &"
 alias oelogsoff="kill -9 $(pgrep -f protected/runtime/application.log)"
 
 alias oeviewlogs="tail -n 150 $WROOT/protected/runtime/application.log"
-alias oeviewmigratelogs="more /etc/openeyes/migrate.log"
+alias oeviewmigratelogs="more $WROOT/protected/runtime/migrate.log"
 
 alias oe-reloadaliases="$SCRIPTDIR/set-profile.sh --no-envs && source /etc/profile.d/oe-shortcuts.sh"

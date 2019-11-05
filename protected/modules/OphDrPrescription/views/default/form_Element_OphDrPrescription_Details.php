@@ -70,15 +70,15 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           Clear all
         </button>
 
-          <?php
+            <?php
           // we need to separate the public and admin view
-          if (is_a(Yii::app()->getController(), 'DefaultController') &&
-              $this->getPreviousPrescription($element->id)): ?>
+            if (is_a(Yii::app()->getController(), 'DefaultController') &&
+              $this->getPreviousPrescription($element->id)) : ?>
             <button type="button" class="button hint blue"
                     id="repeat_prescription" name="repeat_prescription">
               Add repeat prescription
             </button>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
 
       <div>
@@ -107,9 +107,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 <script type="text/javascript">
     <?php
     // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'DefaultController')): ?>
+    if (is_a(Yii::app()->getController(), 'DefaultController')) : ?>
     var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
-    <?php else: ?>
+    <?php else : ?>
     var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
     <?php endif; ?>
 
@@ -129,7 +129,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
                 'id' => $drug['id'],
                 'allergies' => CJSON::encode(array_map(function($allergy){
                         return $allergy->id;
-                        } , $drug->allergies)),
+                }, $drug->allergies)),
             ];
         }, $element->commonDrugs())
     ) ?>;
@@ -143,7 +143,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         }, $element->drugTypes())
     ) ?>;
 
-    <?php if(isset($this->patient)){ ?>
+    <?php if (isset($this->patient)) { ?>
     var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
     <?php } ?>
 

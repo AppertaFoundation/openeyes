@@ -111,7 +111,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <h3 class="element-title">Visual Acuity</h3>
             </header>
         <div class="indent-correct element-eyes element-fields">
-          <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+          <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
           <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?= $eye_side?>">
             <div class="active-form data-group">
               <table class="cols-full">
@@ -137,7 +137,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                           array('size' => 5, 'nowrapper' => true)); ?>
                   </td>
                 </tr>
-                <?php if ($eye_side=='right'){ ?>
+                <?php if ($eye_side=='right') { ?>
                 <tr>
                   <td>
                       <?php $this->widget('EyeLateralityWidget', array('laterality' => 'both')) ?>
@@ -157,7 +157,7 @@ if ($this->checkClinicalEditAccess()) { ?>
               </table>
             </div>
           </div>
-          <?php } ?>
+            <?php } ?>
         </div>
         </section>
       <section class="element full edit">
