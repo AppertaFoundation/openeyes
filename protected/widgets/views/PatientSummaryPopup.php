@@ -149,8 +149,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                         } ?>
 
                         <?php
-                        $examination_accessibleinfostandards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient);
-                        if (!empty($examination_accessibleinfostandards->correspondence_in_large_letters)) :
+                        $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient);
+                        if (!empty($examination_accessible_info_standards->correspondence_in_large_letters)) :
                             ?>
                             <tr>
                                 <td>
@@ -158,7 +158,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                 </td>
                             </tr>
                             <tr>
-                                <td><?= $examination_accessibleinfostandards->getAttributeLabel('correspondence_in_large_letters') ?></td>
+                                <td><?= $examination_accessible_info_standards->getAttributeLabel('correspondence_in_large_letters') ?></td>
                                 <td><span class="large-text">Yes</span></td>
                             </tr>
                         <?php endif; ?>
