@@ -16,8 +16,8 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
             // create new automatic set based on the non-automatic
             $new_set = new MedicationSet();
             $new_set->attributes = $set->attributes;
+            $new_set->id = null;
             $new_set->automatic = 1;
-            $new_set->created_user_id = 3;
             $new_set->created_date = date('Y-m-d H:i:s');
 
             // Cannot have a medication set with the name
@@ -26,11 +26,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
             $set->refresh();
 
             if (!$new_set->save()) {
-
-                echo '<pre>' . print_r($new_set->getErrors(), true) . '</pre>';
-                file_put_contents('/tmp/debug_error.txt', print_r($new_set->getErrors(), true), FILE_APPEND);
-            } else {
-                file_put_contents('/tmp/debug.txt', "{$new_set->id} | ", FILE_APPEND);
+                \OELog::log(print_r($new_set->getErrors(), true));
             }
 
             // create entry in medication_set_auto_rule_medication for every medication set item in set
@@ -51,14 +47,21 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                     }
                 }
 
-                $set_auto_rule->save();
+                if (!$set_auto_rule->save()) {
+                    \OELog::log(print_r($set_auto_rule->getErrors(), true));
+                }
+            }
 
-                foreach ($set->medicationSetRules as $set_rule) {
-                    $new_rule = new MedicationSetRule();
-                    $new_rule->attributes = $set_rule->attributes;
-                    $new_rule->medication_set_id = $new_set->id;
-                    $new_rule->created_user_id = 3;
-                    $new_rule->save();
+            foreach ($set->medicationSetRules as $set_rule) {
+                $new_rule = new MedicationSetRule();
+                foreach (['subspecialty_id', 'site_id', 'usage_code', 'usage_code_id', 'deleted_date'] as $attr) {
+                    $new_rule->{$attr} = $set_rule->{$attr};
+                }
+
+                $new_rule->medication_set_id = $new_set->id;
+
+                if (!$new_rule->save()) {
+                    \OELog::log(print_r($new_rule->getErrors(), true));
                 }
             }
         }
