@@ -30,8 +30,17 @@
  * @property OphDrPrescription_ItemTaper[] $tapers
  * @property string $comments
  */
+
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
+    private $fpten_line_usage = array();
+
+    // Maximum characters per line on FP10 form is roughly 38.
+    // Maximum characters per line on WP10 form is roughly 32.
+    // Assuming the space left of the white margin can be used for printing, this could be expanded further.
+    const MAX_FPTEN_LINE_CHARS = 38;
+    const MAX_WPTEN_LINE_CHARS = 32;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -61,11 +70,13 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             array('drug_id, dose, route_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'required'),
             array('route_option_id', 'validateRouteOption'),
             array('comments', 'length', 'max'=>256),
-            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
+            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id,
+            last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
             //array('', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
+            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id,
+            dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -149,6 +160,16 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * Get the number of lines an attribute will use on an FP10 form.
+     * @param $attr string
+     * @return int
+     */
+    public function getAttrLength($attr)
+    {
+        return $this->fpten_line_usage[$attr];
+    }
+
     public function getDescription()
     {
         $return = $this->drug->label;
@@ -190,22 +211,72 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     /**
      * @return DateTime|null
+     * @throws Exception
      */
-    public function stopDateFromDuration()
+    public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->duration->name, array('Other', 'Until review'))) {
+        if (in_array($this->duration->name, array('Other', 'Once', 'Until review'))) {
             return null;
         }
 
         $start_date = new DateTime($this->prescription->event->event_date);
         $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
-        foreach ($this->tapers as $taper) {
-            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
-                return null;
+        if ($include_tapers) {
+            foreach ($this->tapers as $taper) {
+                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                    return null;
+                }
+                $end_date->add(DateInterval::createFromDateString($taper->duration->name));
             }
-            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
         }
         return $end_date;
+    }
+
+    /**
+     * Get the number of lines that will be printed out for this specific item.
+     * @return int Number of lines used.
+     */
+    public function fpTenLinesUsed()
+    {
+        $settings = new SettingMetadata();
+        $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? self::MAX_WPTEN_LINE_CHARS : self::MAX_FPTEN_LINE_CHARS;
+        $item_lines_used = 0;
+        $drug_label = $this->drug->label;
+
+        foreach (array(
+            'item_drug' => $drug_label,
+            'item_dose' => $this->fpTenDose(),
+            'item_frequency' => $this->fpTenFrequency(),
+            'item_comment' => "Comment: $this->comments"
+                 ) as $key => $value) {
+            if ($value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            } else {
+                $this->fpten_line_usage[$key] = 0;
+            }
+        }
+
+        foreach ($this->tapers as $index => $taper) {
+            foreach (array(
+                         "taper{$index}_label" => 'then',
+                         "taper{$index}_dose" => $taper->fpTenDose(),
+                         "taper{$index}_frequency" => $taper->fpTenFrequency(),
+                     ) as $key => $value) {
+                $this->fpten_line_usage[$key] =  substr_count(wordwrap($value, $max_lines, '/newline/'), '/newline/') + 1;
+            }
+        }
+
+        foreach ($this->fpten_line_usage as $line) {
+            $item_lines_used += $line;
+        }
+
+        if ($item_lines_used > PrescriptionFormPrinter::MAX_FPTEN_LINES) {
+            // Add the extra horizontal rule at the bottom of each split print page to the line count.
+            $item_lines_used += (int)floor($item_lines_used / PrescriptionFormPrinter::MAX_FPTEN_LINES);
+        }
+
+        // Return the truncated number of lines.
+        return $item_lines_used;
     }
 
     public function getAdministrationDisplay()
@@ -224,5 +295,16 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             }
         }
         return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
+    }
+
+    public function fpTenFrequency()
+    {
+        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+    }
+
+    public function fpTenDose()
+    {
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
+            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
     }
 }

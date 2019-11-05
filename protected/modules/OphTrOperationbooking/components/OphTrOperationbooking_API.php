@@ -72,6 +72,27 @@ class OphTrOperationbooking_API extends BaseAPI
             ->findAll($criteria);
     }
 
+    public function getIncompleteOperationsForEpisode($patient, $use_context = false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('status_id', Yii::app()->db->createCommand()->select('id')
+            ->from('ophtroperationbooking_operation_status')
+            ->where(['not in','name', ['Completed', 'On-Hold']])->queryColumn());
+
+        $operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
+
+        if ($operations) {
+            foreach ($operations as $key => $operation) {
+                $operations[$key]['booking'] = $operation->booking;
+            }
+            return $operations;
+        }
+    }
 
     public function getOperationsForEpisode($patient, $use_context = false)
     {
@@ -100,7 +121,7 @@ class OphTrOperationbooking_API extends BaseAPI
         $criteria = new CDbCriteria();
                 $criteria->addInCondition('status_id', Yii::app()->db->createCommand()->select('id')
                     ->from('ophtroperationbooking_operation_status')
-                    ->where(['in','name', ['Scheduled', 'Rescheduled', 'Requires rescheduling', ]])->queryColumn());
+                    ->where(['in','name', ['Scheduled', 'Rescheduled', ]])->queryColumn());
 
         return $this->getElements(
             'Element_OphTrOperationbooking_Operation',

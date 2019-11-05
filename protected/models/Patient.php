@@ -222,7 +222,8 @@ class Patient extends BaseActiveRecordVersioned
     }
 
 //    Generates an auto incremented Hospital Number
-    public function autoCompleteHosNum(){
+    public function autoCompleteHosNum()
+    {
         if (Yii::app()->params['set_auto_increment'] == 'on') {
             $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
             $command = Yii::app()->db->createCommand($query);
@@ -443,7 +444,7 @@ class Patient extends BaseActiveRecordVersioned
                 $this->{$date_column} = null;
             }
         }
-        
+
         return parent::beforeSave();
     }
 
@@ -477,7 +478,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return true;
     }
-    
+
     public function isEditable()
     {
         return $this->is_local && ( Yii::app()->user->checkAccess('TaskAddPatient'));
@@ -526,7 +527,7 @@ class Patient extends BaseActiveRecordVersioned
                 }
 
                 // sort the remainder
-                uasort($by_specialty, function($a, $b){
+                uasort($by_specialty, function ($a, $b) {
                     return strcasecmp($a['specialty'], $b['specialty']);
                 });
             }
@@ -619,17 +620,17 @@ class Patient extends BaseActiveRecordVersioned
     {
         $allEpisodesDiagnoses = array();
         $allOphthalmicDiagnoses = array();
-        
+
         foreach ($this->episodes as $oneEpisode) {
             if ($oneEpisode->diagnosis) {
                 $allEpisodesDiagnoses[] = $oneEpisode->eye->adjective . ' ' . $oneEpisode->diagnosis->term;
             }
         }
-        
-        foreach ( $this->ophthalmicDiagnoses as $oneDiagnosis ) {
+
+        foreach ($this->ophthalmicDiagnoses as $oneDiagnosis) {
             $allOphthalmicDiagnoses[] = $oneDiagnosis->eye->adjective . ' ' . $oneDiagnosis->disorder->term;
         }
-        
+
         return array_merge($allOphthalmicDiagnoses, $allEpisodesDiagnoses);
     }
 
@@ -647,7 +648,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->getDiagnosesTermsArray() as $diagnosisTerm) {
             $allDiagnoses[$diagnosisTerm] = $prefix.$diagnosisTerm;
         }
-        
+
         $allDiagnosesString = implode($separator, $allDiagnoses).($lastSeparatorNeeded ? $separator:'');
         return $allDiagnosesString;
     }
@@ -657,7 +658,8 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getUniqueOphthalmicDiagnosesTable(){
+    public function getUniqueOphthalmicDiagnosesTable()
+    {
         ob_start();
         ?>
         <table class="standard">
@@ -1313,7 +1315,7 @@ class Patient extends BaseActiveRecordVersioned
     public function setNoFamilyHistory()
     {
         trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
-        
+
         if (!empty($this->familyHistory)) {
             throw new Exception('Unable to set no family history date as patient still has family history assigned');
         }
@@ -1829,6 +1831,14 @@ class Patient extends BaseActiveRecordVersioned
         return $episode;
     }
 
+    public function getEvents()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->params = array(':pid' => $this->id);
+
+        return Event::model()->with('episode')->findAll($criteria);
+    }
     public function getLatestEvent()
     {
         $criteria = new CDbCriteria();
@@ -1840,7 +1850,8 @@ class Patient extends BaseActiveRecordVersioned
         return Event::model()->with('episode')->find($criteria);
     }
 
-    public function getLatestExaminationEvent(){
+    public function getLatestExaminationEvent()
+    {
         $event_type = EventType::model()->findByAttributes(array("name"=>"Examination"));
 
         $criteria = new CDbCriteria();
@@ -2105,7 +2116,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getSystemicDiagnosesSummary()
     {
-        return array_map(function($diagnosis) {
+        return array_map(function ($diagnosis) {
             return $diagnosis->systemicDescription;
         }, $this->systemicDiagnoses);
     }
@@ -2148,7 +2159,7 @@ class Patient extends BaseActiveRecordVersioned
         return array_unique(
             array_merge(
                 $principals,
-                array_map(function($diagnosis) {
+                array_map(function ($diagnosis) {
                     return $diagnosis->ophthalmicDescription;
                 }, $unique_ophthalmic_diagnoses)
             )
@@ -2167,7 +2178,7 @@ class Patient extends BaseActiveRecordVersioned
         if ($this->no_allergies_date) {
             return array('Patient has no known allergies');
         }
-        return array_map(function($allergy) {
+        return array_map(function ($allergy) {
             return $allergy->name;
         }, $this->allergies);
     }
@@ -2177,7 +2188,7 @@ class Patient extends BaseActiveRecordVersioned
         if (!$this->hasAllergyStatus() || $this->no_allergies_date) {
             return false;
         } else {
-            return array_map(function($allergy) {
+            return array_map(function ($allergy) {
                 return $allergy->id;
             }, $this->allergies);
         }
@@ -2235,7 +2246,8 @@ class Patient extends BaseActiveRecordVersioned
         return PatientMergeRequest::model()->find($criteria);
     }
 
-    public function getPatientOptometrist(){
+    public function getPatientOptometrist()
+    {
         $criteria = new CDbCriteria();
         $criteria->join = 'join patient_contact_assignment on patient_contact_assignment.contact_id = t.id ';
         $criteria->join .= 'join contact_label on contact_label.id = t.contact_label_id';
@@ -2247,6 +2259,49 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->params[':active'] = 1;
 
         return Contact::model()->find($criteria);
+    }
+
+    public function removeBiologicalLensDiagnoses($eye)
+    {
+        $biological_lens_disorders = [53889007, 193576003, 315353005, 12195004, 253224008, 253225009, 116669003];
+
+        foreach ($this->episodes as $episode) {
+            if (in_array($episode->disorder_id, $biological_lens_disorders)) {
+                if ($episode->eye_id === $eye->id || intval($episode->eye_id) === Eye::BOTH) {
+                    if (intval($eye->id) === Eye::BOTH) {
+                        $episode->eye_id = null;
+                        $episode->disorder_id = null;
+                        $episode->disorder_date = null;
+                    } else {
+                        if(intval($episode->eye_id) === Eye::BOTH) {
+                            $episode->eye_id = intval($eye->id) == Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
+                        } else {
+                            $episode->eye_id = null;
+                            $episode->disorder_id = null;
+                            $episode->disorder_date = null;
+                        }
+                    }
+                }
+                $episode->save();
+            }
+        }
+
+        foreach ($this->secondarydiagnoses as $diagnosis) {
+            if (in_array($diagnosis->disorder_id, $biological_lens_disorders)) {
+                if ($diagnosis->eye_id === $eye->id || intval($diagnosis->eye_id) === Eye::BOTH) {
+                    if (intval($eye->id) === Eye::BOTH) {
+                        $diagnosis->delete();
+                    } else {
+                        if (intval($diagnosis->eye_id) === Eye::BOTH) {
+                            $diagnosis->eye_id = intval($eye->id) === Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
+                            $diagnosis->save();
+                        } else {
+                            $diagnosis->delete();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

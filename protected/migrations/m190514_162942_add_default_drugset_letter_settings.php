@@ -10,7 +10,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
                 'field_type_id' => $field_type_id,
                 'key' => $key,
                 'name' => $name,
-                'default_value' => $default_value,
+                'default_value' => '',
                 'data' => '',
                 'display_order' => 2
             ]
