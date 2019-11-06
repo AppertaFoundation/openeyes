@@ -31,74 +31,63 @@ $(document).ready(function () {
           $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
           $('#plotly-VA-left').appendTo($('#js-hs-chart-VA'));          
           $('#plotly-MR-left').appendTo($('#charts-container-leftside'));
-          
           // fix ordering for IOP under general
           if ($("#charts-container-leftside").hasClass('General')){
             $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
           }
-
-          
           $('.plotly-left').show(); //show the left eye
           $('.plotly-right').hide(); //hide the right eye
           $('.ResetZoomPadRight').remove(); //reset zoom button space
           $('.SelectorPadRight').remove();//reset dropdown space
-
-          $('.oes-right-side > div').not('.plotly-left').show();       //enable previous right side content
-
-          break;
-
-      case 'right':        
-          $('#plotly-Meds-right').appendTo($('#js-hs-chart-Meds'));
-          $('#plotly-IOP-right').appendTo($('#js-hs-chart-IOP'));
-          $('#plotly-VA-right').appendTo($('#js-hs-chart-VA'));
-          $('#plotly-MR-right').appendTo($('#js-hs-chart-VA'));
-          
-          // fix ordering for IOP under general
-          if ($("#charts-container-leftside").hasClass('General')){
-            $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
+          //enable previous right side content
+          $('.oes-right-side > div').not('.plotly-left').show();       
+          if ($('.oes-right-side').find('.oes-data-row-input')){
+            $('#oct_stack_' + side).show();
+            $('#oct_stack_' + other_side).hide();
           }
-
-          $('.plotly-right').show(); //show the right eye
-          $('.plotly-left').hide(); //hide the left eye
-          $('.ResetZoomPadRight').remove(); //reset zoom button space           
-          $('.SelectorPadRight').remove(); //reset dropdown space
-
-          $('.oes-right-side > div').not('.plotly-left').show();      //enable previous right side content
-
-
           break;
-      
+
       case 'both':
-        
-          //disable previous right side content
-          $('.oes-right-side > div').not('.plotly-left').hide();
-          
-          $('<div class="ResetZoomPadRight" style=" padding:' + $('.reset-zoom').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));
+          $('.oes-right-side > div').not('.plotly-left').hide();  //disable previous right side content
+          $('<div class="ResetZoomPadRight" style=" padding:' + $('.reset-zoom').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
           $('#plotly-Meds-left , #plotly-IOP-left').appendTo($('.oes-right-side'));   
-          //add padding for selectors
-          $('<div class="SelectorPadRight" style=" padding:' + $('#va_history_unit_id').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));
-          $('<div class="SelectorPadRight" style=" padding:' + $('#mr_history_va_unit_id').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));
+          //add padding for selectors on right
+          $('<div class="SelectorPadRight" style=" padding:' + $('#va_history_unit_id').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side')); 
+          $('<div class="SelectorPadRight" style=" padding:' + $('#mr_history_va_unit_id').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));  
     
-          $('#plotly-VA-left').appendTo($('.oes-right-side'));                 
-          $('#plotly-MR-left').appendTo($('.oes-right-side'));
+          $('#plotly-VA-left').appendTo($('.oes-right-side')); //adding content to right side             
+          $('#plotly-MR-left').appendTo($('.oes-right-side')); //adding content to right side
 
           // fix ordering for IOP under GENERAL OPHTHALMOLOGY
           if ($("#charts-container-leftside").hasClass('General')){
             $('#plotly-IOP-left').appendTo($('.oes-right-side'));
           }
-
           $('.plotly-right, .plotly-left').show(); //show both sides
           $('.oes-right-side').css('padding', '20px 0 20px 0'); // fix right side padding css
-        break;
-
+        break;   
         
+        case 'right': 
+        default:       
+        $('#plotly-Meds-right').appendTo($('#js-hs-chart-Meds'));
+        $('#plotly-IOP-right').appendTo($('#js-hs-chart-IOP'));
+        $('#plotly-VA-right').appendTo($('#js-hs-chart-VA'));
+        $('#plotly-MR-right').appendTo($('#js-hs-chart-VA'));
+        // fix ordering for IOP under general
+        if ($("#charts-container-leftside").hasClass('General')){
+          $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
+        }
+        $('.plotly-right').show(); //show the right eye
+        $('.plotly-left').hide(); //hide the left eye
+        $('.ResetZoomPadRight').remove(); //reset zoom button space           
+        $('.SelectorPadRight').remove(); //reset dropdown space
+        //enable previous right side content
+        $('.oes-right-side > div').not('.plotly-left').show();      
+        if ($('.oes-right-side').find('.oes-data-row-input')){
+          $('#oct_stack_' + side).show();
+          $('#oct_stack_' + other_side).hide();
+        }
+        break;     
     }
-
-
-    // if ($('.oes-right-side').find('.oes-data-row-input')){
-    //   $('#oct_stack_' + side).show();
-    //   $('#oct_stack_' + other_side).hide();
-    // }
 
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
