@@ -131,7 +131,10 @@ EOH;
     {
         $pending_documents = $this->getDocumentsByOutputStatus("PENDING");
         foreach ($pending_documents as $document) {
-            $this->event = Event::model()->findByPk($document->document_target->document_instance->correspondence_event_id);
+            $this->event = Event::model()->findByAttributes(
+                ['id' => $document->document_target->document_instance->correspondence_event_id],
+                'delete_pending != 1'
+            );
 
             $this->processDocumentOutput($document);
         }
