@@ -14,6 +14,7 @@
  */
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
+<div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
 
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
@@ -29,7 +30,6 @@
           'name')
       )?>
   </form>
-<div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
   <div id="plotly-VA-right" class="plotly-VA plotly-right plotly-section" data-eye-side="right"></div>
   <div id="plotly-VA-left" class="plotly-VA plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
