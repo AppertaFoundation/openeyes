@@ -25,20 +25,29 @@
 
     </div>
     <form id="admin_list_disorders">
-        <table class="standard cols-full">
+        <input type="hidden" name="page" value="1">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+        <table class="standard generic-admin cols-full sortable" id="et_sort" data-uri = "/OphInLabResults/oeadmin/resultType/sortTypes">
             <colgroup>
                 <col class="cols-1">
                 <col class="cols-1">
                 <col class="cols-3">
                 <col class="cols-3">
-                <col class="cols-2">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-1">
+                <col class="cols-3">
+                <col class="cols-1">
             </colgroup>
             <thead>
             <tr>
+                <th>Order</th>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>Type</th>
                 <th>Element Id</th>
                 <th>Field Type</th>
+                <th>Show Units</th>
+                <th>Units Editable</th>
                 <th>Default Units</th>
                 <th>Custom Warning Message</th>
                 <th>Show on Whiteboard</th>
@@ -48,10 +57,16 @@
             <?php foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphInLabResults/oeadmin/resultType/edit/<?php echo $model->id ?>">
+                    <td class="reorder">
+                        <span>&uarr;&darr;</span>
+                        <?= CHtml::hiddenField($model_class."[display_order][]", $model->id); ?>
+                    </td>
                     <td><input type="checkbox" name="resultTypes[]" value="<?php echo $model->id ?>"/></td>
                     <td><?= $model->type; ?></td>
                     <td><?= $model->result_element_type->name ?></td>
                     <td><?= $model->fieldType->name ?></td>
+                    <td><?= $model->show_units ?></td>
+                    <td><?= $model->allow_unit_change ?></td>
                     <td><?= $model->default_units ?></td>
                     <td><?= $model->custom_warning_message ?></td>
                     <td><?= $model->show_on_whiteboard ?></td>
@@ -114,6 +129,10 @@
                     }
                 }
             });
+        });
+
+        $('.generic-admin.sortable tbody').sortable({
+            stop: OpenEyes.Admin.saveSorted
         });
     });
 </script>

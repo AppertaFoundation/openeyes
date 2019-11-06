@@ -4,7 +4,7 @@
          convertNoticesToExceptions="false"
          convertWarningsToExceptions="true"
          stopOnFailure="false"
-         verbose="true"
+         verbose="false"
          >
     <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>

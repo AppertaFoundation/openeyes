@@ -357,6 +357,10 @@ $(document).ready(function () {
 
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
     $('.js-document-upload-wrapper').data('controller', uploader);
+
+    $(this).on('click','#et_print', function (e) {
+        e.preventDefault();
+        printEvent(null);
+    });
+
 });
-
-

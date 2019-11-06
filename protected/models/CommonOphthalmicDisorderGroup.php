@@ -38,4 +38,9 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
             array('name', 'required'),
         );
     }
+
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
 }

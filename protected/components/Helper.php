@@ -30,6 +30,8 @@ class Helper
     const EPOCHDAY = 86400000;
     const EPOCHWEEK = 604800000;
     const EPOCHMONTH = 2629743000;
+    const FULL_YEAR_FORMAT = 'd/m/Y';
+
 
     /**
      * Convert NHS dates to MySQL format.
@@ -121,6 +123,16 @@ class Helper
             return $empty_string;
         }
     }
+
+	public static function convertDate2FullYear($value, $empty_string = '-')
+	{
+		$time = strtotime($value);
+		if ($time !== false) {
+			return date(self::FULL_YEAR_FORMAT, $time);
+		}
+
+		return $empty_string;
+	}
 
     public static function convertDate2HTML($value, $empty_string = '-')
     {

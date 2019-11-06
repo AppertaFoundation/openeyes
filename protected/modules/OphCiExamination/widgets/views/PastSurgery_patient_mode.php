@@ -18,6 +18,9 @@
 ?>
 <table>
     <tbody>
+    <colgroup>
+        <col class="cols-8"><col>
+    </colgroup>
     <?php if (!$operations || sizeof($operations)==0) { ?>
       <div class="nil-recorded">Nil recorded.</div>
     <?php } else {
@@ -42,6 +45,11 @@
                      Helper::formatFuzzyDate($operation['date']); ?>
           </span>
           </td>
+            <td>
+                <?php if (array_key_exists('link', $operation)) { ?>
+                    <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                <?php } ?>
+            </td>
         </tr>
         <?php }
     }?>

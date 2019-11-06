@@ -10,7 +10,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
                 'field_type_id' => $field_type_id,
                 'key' => $key,
                 'name' => $name,
-                'default_value' => $default_value,
+                'default_value' => '',
                 'data' => '',
                 'display_order' => 2
             ]
@@ -38,12 +38,12 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         foreach (\EpisodeStatus::model()->findAll('name = :name', [':name' => 'Post-op']) as $status) {
             foreach (['drug_set' => 'Drug Set', 'letter' => 'Letter'] as $type => $name) {
-                $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name}(Episode status) {$name} name", $status->name);
+                $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name} {$name} name", $status->name);
             }
         }
         $this->addSetting(
             $field_type_id,
-            "default_optop_post_op_letter",
+            "default_optom_post_op_letter",
             "Default Optom Post-op Letter name",
             'Community Optom'
         );
@@ -82,16 +82,46 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
             'element_type_id' => null,
             'display_order' => 2,
             'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
-            'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
+            'key' => 'auto_generate_optom_post_op_letter_after_surgery',
             'name' => 'Auto generate Optom letter after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             'default_value' => 'on'
         ));
 
         $this->insert('setting_installation', array(
-            'key' => 'auto_generate_optopm_post_op_letter_after_surgery',
+            'key' => 'auto_generate_optom_post_op_letter_after_surgery',
             'value' => 'on'
         ));
+
+        // disable prescription and optom letter options for every subspecialty except cataract
+        foreach (\Subspecialty::model()->findAll() as $subspecialty) {
+            if ($subspecialty->name !== 'Cataract') {
+                foreach (['auto_generate_prescription_after_surgery', 'auto_generate_optom_post_op_letter_after_surgery'] as $key) {
+                    $this->insert('setting_subspecialty', [
+                        'subspecialty_id' => $subspecialty->id,
+                        'element_type_id' => null,
+                        'key' => $key,
+                        'value' => 'off',
+                        'last_modified_user_id' => '1',
+                        'last_modified_date' => date('Y-m-d H:i:s'),
+                        'created_user_id' => '1',
+                        'created_date' => date('Y-m-d H:i:s')
+                    ]);
+                }
+                foreach (['default_post_op_drug_set', 'default_optom_post_op_letter'] as $key) {
+                    $this->insert('setting_subspecialty', [
+                        'subspecialty_id' => $subspecialty->id,
+                        'element_type_id' => null,
+                        'key' => $key,
+                        'value' => '',
+                        'last_modified_user_id' => '1',
+                        'last_modified_date' => date('Y-m-d H:i:s'),
+                        'created_user_id' => '1',
+                        'created_date' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+        }
     }
 
     public function safeDown()
@@ -105,5 +135,9 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
         $this->dropColumn('episode_status', 'key');
         $this->dropColumn('episode_status_version', 'key');
+
+        foreach (['auto_generate_prescription_after_surgery', 'auto_generate_optom_post_op_letter_after_surgery'] as $key) {
+            $this->delete('setting_subspecialty', '`key` = :key', [':key' => $key]);
+        }
     }
 }

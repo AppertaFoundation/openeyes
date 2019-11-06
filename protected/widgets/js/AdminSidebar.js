@@ -32,8 +32,6 @@ OpenEyes.Admin = OpenEyes.Admin || {};
         this.closeIconClassName = this.options.closeIconClassName;
         this.openIconClassName = this.options.openIconClassName;
 
-        this.groupStates = {};
-
         this.initTriggers();
     }
 
@@ -76,33 +74,14 @@ OpenEyes.Admin = OpenEyes.Admin || {};
                 $group.find(controller.iconSelector).addClass(controller.openIconClassName);
                 $group.find(controller.iconSelector).removeClass(controller.closeIconClassName);
                 $group.data('collapse', 'collapsed');
-                controller.saveGroupStates();
             });
         } else {
             $ul.slideDown(400, function(){
                 $group.find(controller.iconSelector).addClass(controller.closeIconClassName);
                 $group.find(controller.iconSelector).removeClass(controller.openIconClassName);
                 $group.data('collapse', 'expanded');
-                controller.saveGroupStates();
             });
         }
-    };
-
-    Sidebar.prototype.getSavedGroupStates = function(){
-        let statuses = $.cookie("adminSidebarGroupStates");
-        return statuses ? JSON.parse(statuses) : {};
-    };
-
-    Sidebar.prototype.saveGroupStates = function(){
-        let controller = this;
-        let groups = controller.$sidebar.find(controller.groupSelector);
-        let groupStates = {};
-        $.each(groups, function(i, group){
-            groupStates[$(group).find('h3').text()] = $(group).data('collapse');
-        });
-
-        controller.groupStates = groupStates;
-        $.cookie("adminSidebarGroupStates", JSON.stringify(controller.groupStates),{ path: '/' });
     };
 
     exports.Sidebar = Sidebar;

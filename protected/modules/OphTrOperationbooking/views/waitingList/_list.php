@@ -107,7 +107,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
               <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
             <?php } ?>
             <?php if ($eo->sentGPLetter()) { ?>
-              <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= \Yii::app()->params['gp_label']." Removal"></i>
+                <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content= "<?=\Yii::app()->params['gp_label']." Removal"?>"></i>
             <?php } ?>
         </td>
 
@@ -146,9 +146,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
                     || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
                 )) { ?>
               <div>
-                <input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) {
-                    ?> disabled="disabled"<?php
-                      } ?>
+                <input <?php if ($letterStatusClass == '' && !$this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?> disabled="disabled"<?php } ?
                     type="checkbox" id="operation<?php echo $eo->id ?>" value="1"/>
               </div>
             <?php } ?>
