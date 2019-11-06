@@ -425,11 +425,10 @@ class DefaultController extends BaseEventTypeController
 
         // after "Save and Print" button clicked we only print out what the user checked
         if (!$is_view && \Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
-
             if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $document_instance = $letter->document_instance[0];
-                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)', array(
                     ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
 
                 if ($to_recipient_gp) {
@@ -906,6 +905,15 @@ class DefaultController extends BaseEventTypeController
         }
 
     }
+
+		protected function verifyActionAccess(CAction $action)
+		{
+			if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
+				return;
+			} else {
+				parent::verifyActionAccess($action);
+			}
+		}
 
     /**
      * After the event was soft deleted, we need to set the output_status' to DELETED
