@@ -607,6 +607,7 @@ return array(
         'Italian'
       ),
       'oe_version' => '3.4-rc2',
+      // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,
