@@ -42,10 +42,10 @@ if (!empty($subspecialty)) { ?>
   </div>
 </div>
   <div class="oes-right-side" style="width: 50%;">
-  <?php 
-  if (isset($widget)) {
+    <?php
+    if (isset($widget)) {
             $widget->run_right_side();
-      } ?>
+    } ?>
   </div>
 
 <?php } ?>
