@@ -21,7 +21,7 @@ if (!empty($subspecialty)) { ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">
-  <div id="charts-container-leftside" class="highchart-area <?= $subspecialty->short_name; ?>">
+  <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
     <?php $summaryItems = array();
         $summaryItems = OescapeSummaryItem::model()->enabled($subspecialty->id)->findAll();
     if (!$summaryItems) {
@@ -93,7 +93,7 @@ if (!empty($subspecialty)) { ?>
       $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
     });
 
-    if ($("#charts-container-leftside").hasClass('Glaucoma')||$("#charts-container-leftside").hasClass('General')){
+    if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General')){
       $('.right-side-content').show();
 
       let limits = {};
