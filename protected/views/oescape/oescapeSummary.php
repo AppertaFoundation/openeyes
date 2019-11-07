@@ -27,6 +27,22 @@ if (!empty($subspecialty)) { ?>
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
+    <div id='oes-side-indicator' style="width: 100%;">
+      <h2 id='oes-side-indicator-left' style="color:#fe6767; 
+      text-align: center; 
+      font-size: xx-large;
+      font-weight: 500; 
+      display:none;">
+      Left
+      </h2>
+      <h2 id='oes-side-indicator-right' style="color:#9fec6d;
+      text-align: center; 
+      font-size: xx-large;
+      font-weight: 500;
+      display:block;">
+      Right
+      </h2>
+    </div>
     <button class="selected plot-display-label reset-zoom"" >Reset Zoom Level</button>
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems as $summaryItem) {
