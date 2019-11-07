@@ -64,17 +64,17 @@
             </table>
         </div>
     </div>
-    <?= $this->renderPartial('../DrugSet/_usage_rules', ['medication_set' => $set]); ?>
+    <?= $this->renderPartial('/DrugSet/_usage_rules', ['medication_set' => $set]); ?>
     <div class="row divider">
-        <?php $this->renderPartial('edit/edit_attributes', ['set' => $set]); ?>
+        <?php $this->renderPartial('/AutoSetRule/edit/edit_attributes', ['set' => $set]); ?>
     </div>
 
     <div class="row divider">
-        <?php $this->renderPartial('edit/edit_set_membership', ['set' => $set]); ?>
+        <?php $this->renderPartial('/AutoSetRule/edit/edit_set_membership', ['set' => $set]); ?>
     </div>
 
     <div class="row divider">
-        <?php $this->renderPartial('edit/edit_individual_medications', ['set' => $set]); ?>
+        <?php $this->renderPartial('/AutoSetRule/edit/edit_individual_medications', ['set' => $set]); ?>
     </div>
 
     <?= \OEHtml::submitButton() ?>
