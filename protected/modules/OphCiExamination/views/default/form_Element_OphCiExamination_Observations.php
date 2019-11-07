@@ -195,6 +195,7 @@
             else {
                 $bmiContainer.css("background-color", '');
             }
+            $bmiContainer.css({"color":"black", "font-weight":"bold"});
             $bmiContainer.text(result);
             
         }

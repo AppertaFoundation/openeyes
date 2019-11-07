@@ -118,7 +118,7 @@
                             //     $bmi_container_color = "";
                             // }
                             ?>
-                            <div id="bmi-container" class="data-value" style="display:inline-block; text-align: center; background-color: <?= $bmi_container_color ?>;">
+                            <div id="bmi-container" class="data-value" style="display:inline-block; text-align: center; background-color: <?= $bmi_container_color ?>; padding: 0px 5px 0px 5px; color: black; font-weight: bold;">
                                 <?= $bmi ?>
                             </div>
                         </td>
