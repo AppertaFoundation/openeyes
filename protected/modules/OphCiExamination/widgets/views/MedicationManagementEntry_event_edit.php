@@ -129,17 +129,15 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
                         echo 'style="display: none;"';
                                                                      }?>>
-                        <?php if ($locked == 0) : ?>
-                        <a class="textual-display hint" href="javascript:void(0);" onclick="switch_alternative(this);">
-                        <?php else : ?>
-                            <div class="textual-display">
-                        <?php endif; ?>
-                                                <?php $entry_text_display = $entry->getAdministrationDisplay();
-                                                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
+                            <div class="flex-meds-inputs textual-display">
+                                <?php $entry_text_display = $entry->getAdministrationDisplay();
+                                echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                                 <?php if ($locked == 1) : ?>
                             </div>
                                 <?php else : ?>
-                        </a>
+                                    <span class="tabspace"></span>
+                                    <button type='button' onclick="switch_alternative(this);">Change Dose/Freq ...</button>
+                            </div>
                                 <?php endif; ?>
                     </div>
         </td>
@@ -229,7 +227,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
 
                     <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
                                 style="<?= is_null($entry->end_date) ? "display:none" : "" ?>">
-            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => ' js-stop-reason')) ?>
+            <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
         </span>
                     <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
                         <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>

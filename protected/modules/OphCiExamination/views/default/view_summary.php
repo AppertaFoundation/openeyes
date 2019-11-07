@@ -66,7 +66,7 @@ if ($historyElement) {
                                     <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
                                             <i class="oe-i info small pro-theme js-has-tooltip"
-                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                             </i>
                                         <?php } ?>
                                     </td>
@@ -110,7 +110,7 @@ if ($historyElement) {
                                         <td>
                                             <?php if ($entry->getDoseAndFrequency()) { ?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
-                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                 </i>
                                             <?php } ?>
                                         </td>
@@ -122,7 +122,7 @@ if ($historyElement) {
                         </div>
                     </div>
                 </div>
-            	<?php } ?>
+                <?php } ?>
             <?php } ?>
             </div>
     </section>
@@ -204,7 +204,7 @@ if ($historyElement) {
                                             <td>
                                                 <?php if ($entry->getDoseAndFrequency()) { ?>
                                                     <i class="oe-i info small pro-theme js-has-tooltip"
-                                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                     </i>
                                                 <?php } ?>
                                             </td>
@@ -242,7 +242,7 @@ if ($historyElement) {
                                                 <td>
                                                     <?php if ($entry->getDoseAndFrequency()) { ?>
                                                         <i class="oe-i info small pro-theme js-has-tooltip"
-                                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                         </i>
                                                     <?php } ?>
                                                 </td>

@@ -40,7 +40,7 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="medications entries js-entry-table"
+        <table class="medications entries js-entry-table js-current-medications"
                              id="<?= $model_name ?>_entry_table">
                     <colgroup>
                         <col class="cols-2">
@@ -119,6 +119,7 @@ $element_errors = $element->getErrors();
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
+            <button id="mm-add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
             <button class="button hint green js-add-select-search" id="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
@@ -288,6 +289,23 @@ $element_errors = $element->getErrors();
             booleanSearchFilterEnabled: true,
             booleanSearchFilterLabel: 'Include branded',
             booleanSearchFilterURLparam: 'include_branded'
+        });
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#mm-add-standard-set-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($drugSet) {
+                    return [
+                        'label' => $drugSet->name,
+                        'id' => $drugSet->id
+                    ];
+                }, Element_OphDrPrescription_Details::model()->drugSets())
+            ) ?>,{'header': 'Set name',})],
+            onReturn: function (adderDialog, selectedItems) {
+                selectedItems.forEach(function(item) {
+                    window.MMController.processSetEntries(item.id);
+                });
+            }
         });
 
         let $changeEventDate = $('.js-change-event-date');

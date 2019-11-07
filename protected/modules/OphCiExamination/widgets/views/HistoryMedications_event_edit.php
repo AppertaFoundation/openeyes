@@ -46,7 +46,7 @@ foreach ($element->entries as $entry) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
-      <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications">
+      <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications js-current-medications">
           <colgroup>
               <col class="cols-2">
               <col class="cols-6">
@@ -239,9 +239,14 @@ foreach ($element->entries as $entry) {
                         data.locked = 1;
                     }
                     if(data.will_copy) {
-                        $new_row = controller.MMController.addEntry([data], false);
-                        controller.disableRemoveButton($new_row);
-                        controller.bindEntries($row, $new_row);
+                        new_rows = controller.MMController.addEntry([data], false);
+                        // This callback is called once per Medication added
+                        // to HM therefore the returned new_row length must be 1
+                        if (new_rows && new_rows.length === 1) {
+                            $new_row = $(new_rows[0]);
+                            controller.disableRemoveButton($new_row);
+                            controller.bindEntries($row, $new_row);
+                        }
                     }
                 }
             }

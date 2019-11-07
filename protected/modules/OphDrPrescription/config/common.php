@@ -26,9 +26,8 @@ return [
                 'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
                 //'Old Auto set rules' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/medicationSetAutoRulesAdmin/list'),
                 'Auto set rules' => '/OphDrPrescription/admin/AutoSetRule/index',
-                'Local Drugs' => '/OphDrPrescription/admin/localDrugsAdmin/list',
-                'DM+D Drugs' => '/OphDrPrescription/admin/dmdDrugsAdmin/list',
-                'Export' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/RefMedicationAdmin/exportForm'),
+                'Local Drugs' => '/OphDrPrescription/OphDrPrescriptionAdmin/localDrugsAdmin/list',
+                'DM+D Drugs' => '/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/list',
 
 
                 'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),

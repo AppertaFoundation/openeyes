@@ -400,6 +400,13 @@ return array(
                   'position' => 3,
                 ),
                 */
+                'imagenet' => array(
+                    'title' => 'ImageNET',
+                    'uri' => '',
+                    'requires_setting' => array('setting_key'=>'imagenet_url', 'required_value'=>'not-empty'),
+                    'position' => 92,
+                    'options' => ['target' => '_blank'],
+                ),
         ),
         'admin_menu' => array(
         ),
@@ -488,13 +495,13 @@ return array(
          * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
-        'OphCoCorrespondence_event_actions' => array(
-                'create' => array(
-                    'savedraft' => 'Save draft',
-                    'save' => null,
-                    'saveprint' => 'Save and print'
-            )
-        ),
+                'OphCoCorrespondence_event_actions' => array(
+                    'create' => array(
+                        'savedraft' => 'Save draft',
+                        'save' => null,
+                        'saveprint' => 'Save and print'
+                    )
+                ),
 
         /**
          * Enable or disable the draft printouts DRAFT background
