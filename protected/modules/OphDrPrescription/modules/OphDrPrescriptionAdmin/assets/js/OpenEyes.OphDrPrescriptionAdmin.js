@@ -22,8 +22,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
 
     DrugSetController.prototype.initTable = function () {
         let controller = this;
-        $(this.options.tableSelector).on('mouseenter', 'tbody tr', function(){ $(this).css({'background-color':'lightblue'}); });
-        $(this.options.tableSelector).on('mouseleave', 'tbody tr', function(){ $(this).css({'background-color':'unset'}); });
+        $(this.options.tableSelector).on('mouseenter', 'tbody tr', function(){ $(this).css({'cursor':'default'}); });
 
         $(this.options.deleteButtonSelector).on('click', function(event) {
             event.preventDefault();

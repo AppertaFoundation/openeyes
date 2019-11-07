@@ -75,17 +75,17 @@ if (isset(Yii::app()->session['print_prescription'])) {?>
         $(document).ready(function () {
             do_print_prescription();
         });
+    </script>
         <?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
             ?>
+    <script>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');
         });
             <?php
-            unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']);
-        }?>
-
+            unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']); ?>
     </script>
-<?php endif; ?>
+        <?php }?>
 
 <?php $this->renderPartial('//default/delete'); ?>
 <?php $this->endContent(); ?>

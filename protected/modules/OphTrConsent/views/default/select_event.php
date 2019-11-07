@@ -62,7 +62,13 @@ $this->moduleNameCssClass .= ' edit';
                             <?php $has_consent = Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', [$operation->event_id]) ?>
                             <tr>
                                 <td>
-                                    <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
+                                    <?php if ($operation->booking) {
+                                        echo $operation->booking->session->NHSDate('date');
+                                    } else if ($operation->operation_cancellation_date) {
+                                        echo 'CANCELLED';
+                                    } else {
+                                        echo 'UNSCHEDULED';
+                                    } ?>
                                 </td>
                                 <td>
                                     <?php if ($has_consent) : ?>

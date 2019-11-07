@@ -260,6 +260,7 @@ class Patient extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
+	//    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum()
     {
         if (Yii::app()->params['set_auto_increment'] == 'on') {
@@ -2230,31 +2231,72 @@ class Patient extends BaseActiveRecordVersioned
         return Contact::model()->find($criteria);
     }
 
-    /**
-     * Pass through use_pas flag to allow pas supression.
-     *
-     * @see CActiveRecord::instantiate()
-     */
-    protected function instantiate($attributes)
-    {
-        $model = parent::instantiate($attributes);
-        $model->use_pas = $this->use_pas;
+		/**
+		 * Pass through use_pas flag to allow pas supression.
+		 *
+		 * @see CActiveRecord::instantiate()
+		 */
+		protected function instantiate($attributes)
+		{
+			$model = parent::instantiate($attributes);
+			$model->use_pas = $this->use_pas;
 
-        return $model;
-    }
+			return $model;
+		}
 
-    /**
-     * Raise event to allow external data sources to update patient.
-     *
-     * @see CActiveRecord::afterFind()
-     */
-    protected function afterFind()
-    {
+		/**
+		 * Raise event to allow external data sources to update patient.
+		 *
+		 * @see CActiveRecord::afterFind()
+		 */
+		protected function afterFind()
+		{
+			$this->use_pas = $this->is_local ? false : true;
+			Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
+		}
 
-        $this->use_pas = $this->is_local ? false : true;
-        Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
-    }
+		public function removeBiologicalLensDiagnoses($eye)
+		{
+			$biological_lens_disorders = [53889007, 193576003, 315353005, 12195004, 253224008, 253225009, 116669003];
 
+			foreach ($this->episodes as $episode) {
+				if (in_array($episode->disorder_id, $biological_lens_disorders)) {
+					if ($episode->eye_id === $eye->id || intval($episode->eye_id) === Eye::BOTH) {
+						if (intval($eye->id) === Eye::BOTH) {
+							$episode->eye_id = null;
+							$episode->disorder_id = null;
+							$episode->disorder_date = null;
+						} else {
+							if(intval($episode->eye_id) === Eye::BOTH) {
+								$episode->eye_id = intval($eye->id) == Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
+							} else {
+								$episode->eye_id = null;
+								$episode->disorder_id = null;
+								$episode->disorder_date = null;
+							}
+						}
+					}
+					$episode->save();
+				}
+			}
+
+			foreach ($this->secondarydiagnoses as $diagnosis) {
+				if (in_array($diagnosis->disorder_id, $biological_lens_disorders)) {
+					if ($diagnosis->eye_id === $eye->id || intval($diagnosis->eye_id) === Eye::BOTH) {
+						if (intval($eye->id) === Eye::BOTH) {
+							$diagnosis->delete();
+						} else {
+							if (intval($diagnosis->eye_id) === Eye::BOTH) {
+								$diagnosis->eye_id = intval($eye->id) === Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
+								$diagnosis->save();
+							} else {
+								$diagnosis->delete();
+							}
+						}
+					}
+				}
+			}
+		}
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *
