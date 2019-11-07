@@ -35,6 +35,7 @@
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
  * @property Tag[] $tags
+ * @deprecated
  */
 class Drug extends BaseActiveRecordVersioned
 {
