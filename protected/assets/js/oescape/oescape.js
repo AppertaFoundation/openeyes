@@ -27,12 +27,15 @@ $(document).ready(function () {
     $(this).addClass('selected'); //select the current button
     switch(side){
       case 'left':
+          $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')); //show the left eye indicator
+          $('#oes-side-indicator-right').hide().appendTo($('#oes-side-indicator')); //hide the right eye indicator
+        
           $('#plotly-Meds-left').appendTo($('#js-hs-chart-Meds'));
           $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
           $('#plotly-VA-left').appendTo($('#js-hs-chart-VA'));          
-          $('#plotly-MR-left').appendTo($('#charts-container-leftside'));
+          $('#plotly-MR-left').appendTo($('#charts-container'));
           // fix ordering for IOP under general
-          if ($("#charts-container-leftside").hasClass('General')){
+          if ($("#charts-container").hasClass('General')){
             $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
           }
           $('.plotly-left').show(); //show the left eye
@@ -48,6 +51,10 @@ $(document).ready(function () {
           break;
 
       case 'both':
+        
+          $('#oes-side-indicator-left').show().appendTo($('.oes-right-side')); //show the left eye indicator
+          $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the right eye indicator
+
           $('.oes-right-side > div').not('.plotly-left').hide();  //disable previous right side content
           $('<div class="ResetZoomPadRight" style=" padding:' + $('.reset-zoom').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
           $('#plotly-Meds-left , #plotly-IOP-left').appendTo($('.oes-right-side'));   
@@ -59,7 +66,7 @@ $(document).ready(function () {
           $('#plotly-MR-left').appendTo($('.oes-right-side')); //adding content to right side
 
           // fix ordering for IOP under GENERAL OPHTHALMOLOGY
-          if ($("#charts-container-leftside").hasClass('General')){
+          if ($("#charts-container").hasClass('General')){
             $('#plotly-IOP-left').appendTo($('.oes-right-side'));
           }
           $('.plotly-right, .plotly-left').show(); //show both sides
@@ -67,13 +74,16 @@ $(document).ready(function () {
         break;   
         
         case 'right': 
-        default:       
+        default:
+        $('#oes-side-indicator-left').hide().appendTo($('#oes-side-indicator')); //show the left eye indicator
+        $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the left eye indicator
+
         $('#plotly-Meds-right').appendTo($('#js-hs-chart-Meds'));
         $('#plotly-IOP-right').appendTo($('#js-hs-chart-IOP'));
         $('#plotly-VA-right').appendTo($('#js-hs-chart-VA'));
         $('#plotly-MR-right').appendTo($('#js-hs-chart-VA'));
         // fix ordering for IOP under general
-        if ($("#charts-container-leftside").hasClass('General')){
+        if ($("#charts-container").hasClass('General')){
           $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
         }
         $('.plotly-right').show(); //show the right eye
