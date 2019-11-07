@@ -143,23 +143,20 @@ $operation_status_to_css_class = [
                                 ?>
                                 <span class="event-type js-event-a<?= $event_icon_class ?>">
                               <?= $event->getEventIcon() ?>
-                            </span>
-                                <span class="event-extra">
+                            </span><span class="event-extra">
                               <?php
                                                             $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
                                 if (method_exists($api, 'getLaterality')) {
                                     $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
                                 } ?>
-                            </span>
-                                <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
+                            </span><span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
                             <?php echo $event->event_date
                                                             ? $event->NHSDateAsHTML('event_date')
                                                             : $event->NHSDateAsHTML('created_date');
                             ?>
-                          </span>
-                                <span class="tag"><?= $tag ?></span>
-                            </a>
-                        </li>
+                            </span><span class="tag"><?= $tag ?></span>
+                        </a>
+                      </li>
                     <?php }
                 }
             } ?>
