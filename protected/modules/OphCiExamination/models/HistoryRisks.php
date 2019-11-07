@@ -24,6 +24,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisks extends \BaseEventTypeElement
 {
+    use CustomOrdering;
+    protected $default_view_order = 55;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -229,10 +232,5 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
         return null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 55 : parent::getDisplayOrder($action);
     }
 }

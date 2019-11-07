@@ -43,6 +43,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class SocialHistory extends \BaseEventTypeElement
 {
+    use CustomOrdering;
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SocialHistory';
     protected $default_from_previous = true;

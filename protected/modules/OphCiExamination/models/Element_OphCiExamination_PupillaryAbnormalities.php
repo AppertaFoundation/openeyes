@@ -33,6 +33,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeElement
 {
+    use CustomOrdering;
     public $service;
 
     /**

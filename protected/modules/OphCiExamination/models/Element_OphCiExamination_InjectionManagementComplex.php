@@ -58,6 +58,7 @@ use Yii;
  */
 class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTypeElement
 {
+    use CustomOrdering;
     protected $_injection_installed = null;
 
     /**

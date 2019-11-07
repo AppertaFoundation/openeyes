@@ -50,6 +50,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 {
+    use CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *

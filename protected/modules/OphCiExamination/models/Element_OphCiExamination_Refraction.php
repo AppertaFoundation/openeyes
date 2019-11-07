@@ -41,6 +41,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 {
+    use CustomOrdering;
     public $service;
 
     /**

@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Risks extends \BaseEventTypeElement
 {
+    use CustomOrdering;
     public $service;
 
     /**

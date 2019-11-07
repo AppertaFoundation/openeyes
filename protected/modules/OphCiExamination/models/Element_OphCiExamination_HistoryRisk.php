@@ -33,6 +33,7 @@ use services\DateTime;
  */
 class Element_OphCiExamination_HistoryRisk extends \BaseEventTypeElement
 {
+    use CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *

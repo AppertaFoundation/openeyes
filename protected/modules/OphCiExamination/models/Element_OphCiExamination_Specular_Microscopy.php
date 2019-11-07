@@ -36,6 +36,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElement
 {
+    use CustomOrdering;
     public $service;
 
     /**

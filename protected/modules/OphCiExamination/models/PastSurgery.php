@@ -36,6 +36,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class PastSurgery extends \BaseEventTypeElement
 {
+    use CustomOrdering;
+    protected $default_view_order = 10;
 
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
@@ -164,10 +166,5 @@ class PastSurgery extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 }
