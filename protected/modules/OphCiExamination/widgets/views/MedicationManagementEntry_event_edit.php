@@ -96,7 +96,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <td class="dose-frequency-route alternative-display">
                                 <?php
                                 $dfrl_validation_error = array_intersect(
-                                    array("dose", "frequency_id", "route_id", "laterality"),
+                                    array("dose", "dose_unit_term", "frequency_id", "route_id", "laterality"),
                                     array_keys($entry->errors));
                                 ?>
                             <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>"
@@ -107,7 +107,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
                             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
                                                         <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
-                            <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
+                            <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options,
+                                [
+                                    'empty' => '-Unit-',
+                                    'disabled'=> $direct_edit || $dfrl_validation_error ? '' : 'disabled',
+                                    'class' => 'js-unit-dropdown cols-2',
+                                    'style' => $direct_edit || $dfrl_validation_error ? '' : 'display:none'
+                                ]); ?>
                             <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
                             <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
                                                             <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>">
