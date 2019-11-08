@@ -173,32 +173,20 @@
 
         function getAndSetBMI(height, weight) {
             let $bmiContainer = $('#bmi-container');
+            $bmiContainer.removeClass('highlighter good warning');
             let bmi = 0;
-            let red = "100%";
-            let green = "100%";
-            let blue = "100%";
             let result = 'N/A';
             if ((height > 0) && (weight > 0)) {
                 bmi = bmi_calculator(weight, height);
                 result = bmi.toFixed(2) || 'N/A';
-                blue = "0%";
                 let resultFloat = parseFloat(result);
                 if (resultFloat < 18.5 || resultFloat >= 30) {
-                    red = "80%";
-                    green = "0%";
+                    $bmiContainer.addClass('highlighter warning');
                 } else {
-                    red = "0%";
-                    green = "80%";
+                    $bmiContainer.addClass('highlighter good');
                 }
-                $bmiContainer.css("background-color", "rgb("+red+", "+green+", "+blue+")");
             }
-            else {
-                $bmiContainer.css("background-color", '');
-            }
-            $bmiContainer.css({"color":"black", "font-weight":"bold"});
             $bmiContainer.text(result);
-            
         }
     });
 </script>
-
