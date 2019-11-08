@@ -505,7 +505,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (this.isTaper($row)) {
             row_data_key = $row.attr("data-parent-key");
             taper_data_key = "[taper][" + $row.attr("data-taper-key") + "]";
-        } else {
+        } else if (!$row.data('bound_initialised')) {
+            $row.data('bound_initialised', true);
             $row.find(".js-btn-prescribe").click();
             $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
@@ -977,6 +978,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
+      data['bound_initialised'] = false;
 
       newRows.push(Mustache.render(
           template,
