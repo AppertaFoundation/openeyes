@@ -156,15 +156,16 @@ EOD;
         $XMLs = $this->getAllXmlFromDir($XMLdir, 'xml');
         $this->printMsg('Importing data to database...');
         foreach ($XMLs as $type => $path) {
-            $ignore = false;
+            $skip = false;
             foreach ($this->skip_XML_files_containing as $term) {
                 if (strpos($path, $term) !== false) {
-                    $ignore = true;
+                    $skip = true;
                 }
             }
 
-            if ($ignore) {
-                $this->printMsg('Skipping file: ' . $path);
+            if ($skip) {
+                $file_arr = explode('/',$path);
+                $this->printMsg('Skipping file: ' . end($file_arr));
             } else {
                 $this->printMsg('Importing data from: ' . $type . ' type.');
                 $this->importDataFromXMLtoSQL($type, $path, $tablesData);
