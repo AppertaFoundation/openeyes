@@ -61,6 +61,10 @@ class ImportDrugsCommand extends CConsoleCommand
         '16_drug_route' => '46713006',
         '17_drug_route' => '45890007'
     ];
+    private $skip_XML_files_containing = [
+        'f_ampp2',
+        'f_vmpp2'
+    ];
     private $tableData = [];
     private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;';
 
@@ -152,8 +156,19 @@ EOD;
         $XMLs = $this->getAllXmlFromDir($XMLdir, 'xml');
         $this->printMsg('Importing data to database...');
         foreach ($XMLs as $type => $path) {
-            $this->printMsg('Importing data from: ' . $type . ' type.');
-            $this->importDataFromXMLtoSQL($type, $path, $tablesData);
+            $ignore = false;
+            foreach ($this->skip_XML_files_containing as $term) {
+                if (strpos($path, $term) !== false) {
+                    $ignore = true;
+                }
+            }
+
+            if ($ignore) {
+                $this->printMsg('Skipping file: ' . $path);
+            } else {
+                $this->printMsg('Importing data from: ' . $type . ' type.');
+                $this->importDataFromXMLtoSQL($type, $path, $tablesData);
+            }
         }
         $this->printMsg('Data imported.');
     }
