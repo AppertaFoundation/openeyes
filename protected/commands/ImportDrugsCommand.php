@@ -164,7 +164,7 @@ EOD;
             }
 
             if ($skip) {
-                $file_arr = explode('/',$path);
+                $file_arr = explode('/', $path);
                 $this->printMsg('Skipping file: ' . end($file_arr));
             } else {
                 $this->printMsg('Importing data from: ' . $type . ' type.');
@@ -491,7 +491,6 @@ EOD;
                         $multipleValuesCurrentCount = 0;
                     }
                 }
-
             } else {
                 $this->halt('ERROR: Unknown table name: ' . $tableName, false);
             }
