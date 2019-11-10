@@ -5,7 +5,7 @@ $(document).ready(function() {
     function scrollToPage(page) {
         let pageStack = $('.multipage-stack');
         pageStack.animate({
-            scrollTop: pageStack.scrollTop() + $($('.multipage-stack img')[page - 1]).position().top
+            scrollTop: pageStack.scrollTop() + $($('.multipage-stack img')[page]).position().top
         });
     }
 
