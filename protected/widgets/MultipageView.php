@@ -1,7 +1,19 @@
 <?php
-
 /**
- * Class MultipageView
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
  * @property $stack_class string|null Additional HTML class/es to add to the page stack container.
  * @property $full_width bool If true, display the images using the full width of the parent container.
  * @property $inline_nav bool If true, display nav controls as an overlay over the stack. Otherwise, display in a sidebar.
@@ -33,9 +45,9 @@ class MultipageView extends CWidget
      */
     public function run()
     {
-        $assetManager = Yii::app()->getAssetManager();
-        $widgetPath = $assetManager->publish('protected/widgets/js');
-        Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultipageView.js');
+        $asset_manager = Yii::app()->getAssetManager();
+        $widget_path = $asset_manager->publish('protected/widgets/js');
+        Yii::app()->clientScript->registerScriptFile($widget_path . '/MultipageView.js');
         if ($this->element) {
             $this->render('multipage/_container', array(
                 'total_pages' => $this->num_pages
