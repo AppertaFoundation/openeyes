@@ -172,7 +172,7 @@ class DefaultController extends \BaseEventTypeController
         $remove = $this->getElementFilterList(false);
         return array_filter(
             parent::getAllElementTypes(),
-            function($et) use ($remove) {
+            function ($et) use ($remove) {
                 return !in_array($et->class_name, $remove);
             });
     }
@@ -1159,7 +1159,8 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    private function getOtherSide($side1, $side2, $selectedSide) {
+    private function getOtherSide($side1, $side2, $selectedSide)
+    {
         return $selectedSide === $side1 ? $side2 : $side1;
     }
 
@@ -1260,7 +1261,8 @@ class DefaultController extends \BaseEventTypeController
      * @param $errors
      * @return mixed
      */
-    protected function setAndValidateHistoryIopFromData($data, $errors) {
+    protected function setAndValidateHistoryIopFromData($data, $errors)
+    {
         $et_name = models\HistoryIOP::model()->getElementTypeName();
         $historyIOP = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryIOP');
         $entries = $data['OEModule_OphCiExamination_models_HistoryIOP'];
@@ -1301,6 +1303,52 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Custom validation on Pupillary Abnormalities element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
+        $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
+        $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
+        $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+
+        $pupillary_abnormalities->eye_id = $data['eye_id'];
+
+        foreach (['left', 'right'] as $side) {
+            if (isset($data['entries_' . $side])) {
+                $entries = [];
+
+                foreach ($data['entries_' . $side] as $index => $value) {
+                    $entry = new models\PupillaryAbnormalityEntry();
+                    $entry->attributes = $value;
+                    $entries[] = $entry;
+                    if (!$entry->validate()) {
+                        $entryErrors = $entry->getErrors();
+                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                            foreach ($entryErrorMessages as $entryErrorMessage) {
+                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                            }
+                        }
+                    }
+                }
+                $pupillary_abnormalities->{'entries_' . $side} = $entries;
+            } else {
+                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                } else {
+                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * custom validation for virtual clinic referral.
      *
      * this should hand off validation to a faked PatientTicket request via the API.
@@ -1323,7 +1371,8 @@ class DefaultController extends \BaseEventTypeController
 
         $posted_risk = [];
         if (isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])) {
-            $posted_risk = array_map(function($r){ return $r['risk_id'];
+            $posted_risk = array_map(function ($r) {
+                return $r['risk_id'];
             }, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
@@ -1337,8 +1386,12 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
         }
 
-        if(isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])){
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])) {
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
+            $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
         }
 
         return $errors;
@@ -1348,7 +1401,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
         $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'];
+              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
         $duplicate_exists = false;
 
         $concat_occurrences = [];
@@ -1359,6 +1412,8 @@ class DefaultController extends \BaseEventTypeController
                 $eye_id =  \Eye::RIGHT;
             } else if (isset($entry['left_eye'])) {
                 $eye_id =  \Eye::LEFT;
+            } else {
+                            continue;
             }
 
             // create a string with concatenation of  the columns that must be unique
@@ -1401,7 +1456,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if there is any duplicate, add error message
         if ($duplicate_exists) {
-            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combo of diagnosis, eye side and date must be unique.";
+            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combination of diagnosis, eye side and date must be unique.";
         }
 
         return $errors;
@@ -1624,7 +1679,7 @@ class DefaultController extends \BaseEventTypeController
         if (!$element_assignment && $this->event) {
             \OELog::log("Assignment not found for event id: {$this->event->id}");
         }
-      
+
         if ($this->action->id == 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
             $this->step = $this->getCurrentStep();
         }

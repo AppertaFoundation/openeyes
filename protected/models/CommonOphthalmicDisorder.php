@@ -210,22 +210,33 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
      *
      * @throws CException
      */
-    public static function getList(Firm $firm, $include_findings = false)
+    public static function getList(Firm $firm, $include_findings = false , $include_patient_disorders = false , $patient = null)
     {
         if (empty($firm)) {
             throw new CException('Firm is required.');
         }
         $disorders = array();
+        $prefix = '';
+        if ($include_findings) {
+            $prefix = 'disorder-';
+        }
+
+        if($include_patient_disorders && isset($patient)) {
+            $patient_disorders = Disorder::getPatientDisorders($patient->id);
+            foreach($patient_disorders as $disorder) {
+                $disorders[$prefix . $disorder->id] = $disorder->term;
+            }
+        }
+
         if ($firm->serviceSubspecialtyAssignment) {
             $ss_id = $firm->getSubspecialtyID();
             $with = array('disorder');
-            $prefix = '';
             if ($include_findings) {
                 $with = array(
                     'disorder' => array('joinType' => 'LEFT JOIN'),
                     'finding' => array('joinType' => 'LEFT JOIN'),
                 );
-                $prefix = 'disorder-';
+
             }
             $cods = self::model()->with($with)->findAll(array(
                 'condition' => 't.subspecialty_id = :subspecialty_id',
@@ -240,7 +251,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             }
         }
 
-        return $disorders;
+        return array_unique($disorders);
     }
 
     /**

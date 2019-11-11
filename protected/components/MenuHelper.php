@@ -132,7 +132,14 @@ class MenuHelper
                 $element_enabled = Yii::app()->params[$setting_key];
                 if(isset($element_enabled) && $element_enabled != $required_value)
                 {
-                    continue;
+                    switch ($required_value) {
+                        case 'not-empty':
+                            if ($element_enabled) {
+                                break;
+                            }
+                        default:
+                            continue 2;
+                    }
                 }
             }
 
