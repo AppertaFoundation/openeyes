@@ -814,4 +814,9 @@ EOD;
 
         echo "Data imported to OE." . PHP_EOL;
     }
+
+    public function bindImportedMedications() {
+        Yii::app()->db->createCommand("update event_medication_use set bound_key = id where prescription_item_id is null")->execute();
+        Yii::app()->db->createCommand("update event_medication_use e1, event_medication_use e2 set e1.bound_key=e2.bound_key where e1.prescription_item_id=e2.id")->execute();
+    }
 }
