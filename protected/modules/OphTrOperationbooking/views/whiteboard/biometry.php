@@ -28,7 +28,7 @@
     <div class="multipage-stack whiteboard">
         <?php
         foreach ($document->event->previewImages as $id => $page) : ?>
-            <img id="biom-<?= $id + 1?>" src="/eventImage/view/<?= $document->event->id ?>" alt="biom-<?= $id + 1?>"/>
+            <img id="biom-<?= $id + 1?>" src="<?= $page->getImageUrl() ?>" alt="biom-<?= $id + 1?>"/>
         <?php endforeach; ?>
     </div>
     <script type="text/javascript">
