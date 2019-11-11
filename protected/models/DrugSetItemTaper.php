@@ -26,6 +26,7 @@
  * @property string $dose
  * @property DrugDuration $duration
  * @property DrugFrequency $frequency
+ * @deprecated
  */
 class DrugSetItemTaper extends BaseActiveRecordVersioned
 {

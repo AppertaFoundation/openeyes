@@ -1,4 +1,4 @@
-<tr>
+<tr class="clickable">
     <td><?= \CHtml::checkBox("delete-ids[{$set->id}]", false, ['value' => $set->id]); ?></td>
     <td><?=$set->id?></td>
     <td><?=$set->name?></td>

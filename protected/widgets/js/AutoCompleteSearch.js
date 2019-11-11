@@ -43,7 +43,7 @@
   	to the html
 
     To change placeholder
-        <?php $this->widget('application.widgets.AutoCompleteSearch', ['html_options' => ['placeholder' => <PLACEHOLDER TEXT>]]); ?>
+        <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => <PLACEHOLDER TEXT>]]); ?>
 
  */
 var OpenEyes = OpenEyes || {};

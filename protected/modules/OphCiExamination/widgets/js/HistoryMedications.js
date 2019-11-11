@@ -1054,6 +1054,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if(do_callback) {
             this.options.onAddedEntry($lastRow, this);
         }
+        return $lastRow;
     };
 
     HistoryMedicationsController.prototype.addEntry = function (selectedItems, do_callback)
@@ -1089,8 +1090,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         let rows = controller.createRow(medication);
+        let new_rows = [];
         rows.forEach(function (row, index) {
-            controller.addMedicationItemRow($(row), medication[index], do_callback);
+            new_rows[index] = controller.addMedicationItemRow($(row), medication[index], do_callback);
         });
 
         $(controller.options.medicationSelectOptions).find('.selected').removeClass('selected');
@@ -1098,6 +1100,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.medicationSearchResult).empty();
 
         controller.displayTableHeader();
+        return new_rows;
     };
 
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
