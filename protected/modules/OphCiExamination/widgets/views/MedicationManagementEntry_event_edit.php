@@ -197,32 +197,29 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
         <td class="nowrap">
            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
-
-                    <div class="alternative-display inline">
-            <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit || ($entry->hasErrors('end_date'))) {
-                    ?> style="display: none;"<?php
-                                                            }?>>
-                    <?php if (!is_null($entry->end_date)) : ?>
-                                            <i class="oe-i stop small pad"></i>
-                                            <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                    <?php else : ?>
-                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
-                    <?php endif; ?>
-                </a>
-            </div>
-            <fieldset <?php if (!$direct_edit && !($entry->hasErrors('end_date'))) {
-                ?> style="display: none;"<?php
-                      }?> class="js-datepicker-wrapper js-end-date-wrapper">
-                            <i class="oe-i stop small pad"></i>
-                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
-                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
-                                             data-default="<?= date('Y-m-d') ?>"
-                                             style="width:80px" placeholder="yyyy-mm-dd"
-                                             autocomplete="off">
-            </fieldset>
-        </div>
-                </span>
+               <div class="alternative-display inline">
+                   <div class="alternative-display-element textual">
+                       <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);"
+                        <?= ($direct_edit || ($entry->hasErrors('end_date'))) ? 'style="display: none;"' : '' ?>>
+                           <?php if (!is_null($entry->end_date)) : ?>
+                               <i class="oe-i stop small pad"></i>
+                               <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+                           <?php else : ?>
+                               <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                           <?php endif; ?>
+                       </a>
+                   </div>
+                   <fieldset class="js-datepicker-wrapper js-end-date-wrapper"
+                       <?= (!$direct_edit && !($entry->hasErrors('end_date'))) ? 'style="display: none;"' : '' ?>>
+                       <i class="oe-i stop small pad"></i>
+                       <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
+                              name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                              data-default="<?= date('Y-m-d') ?>"
+                              style="width:80px" placeholder="yyyy-mm-dd"
+                              autocomplete="off">
+                   </fieldset>
+               </div>
+           </span>
 
 
                     <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
