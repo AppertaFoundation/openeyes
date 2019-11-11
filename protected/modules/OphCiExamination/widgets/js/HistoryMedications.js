@@ -299,7 +299,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   controller.options.classes_that_dont_break_binding.forEach(function (class_name) {
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
-                          $full_bound_entry.find('.js-meds-stop-btn').click();
+
+                          if (class_name === 'js-end-date') {
+                              $full_bound_entry.find('.js-meds-stop-btn').click();
+                          }
+
                           $full_bound_entry.find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
                       }
                   });
