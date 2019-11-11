@@ -200,7 +200,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                <div class="alternative-display inline">
                    <div class="alternative-display-element textual">
                        <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);"
-                        <?= ($direct_edit || ($entry->hasErrors('end_date'))) ? 'style="display: none;"' : '' ?>>
+                        <?= ($direct_edit || ($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
                            <?php if (!is_null($entry->end_date)) : ?>
                                <i class="oe-i stop small pad"></i>
                                <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -210,7 +210,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                        </a>
                    </div>
                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper"
-                       <?= (!$direct_edit && !($entry->hasErrors('end_date'))) ? 'style="display: none;"' : '' ?>>
+                       <?= (!$direct_edit && !($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
                        <i class="oe-i stop small pad"></i>
                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                               name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
@@ -220,7 +220,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                    </fieldset>
                </div>
            </span>
-
 
                     <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
                                 style="<?= is_null($entry->end_date) ? "display:none" : "" ?>">
