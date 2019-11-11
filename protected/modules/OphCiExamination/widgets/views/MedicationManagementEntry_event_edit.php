@@ -109,7 +109,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                                         <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
                             <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options,
                                 [
-                                    'empty' => '-Unit-',
+                                    'empty' => 'Units',
                                     'disabled'=> $direct_edit || $dfrl_validation_error ? '' : 'disabled',
                                     'class' => 'js-unit-dropdown cols-2',
                                     'style' => $direct_edit || $dfrl_validation_error ? '' : 'display:none'
