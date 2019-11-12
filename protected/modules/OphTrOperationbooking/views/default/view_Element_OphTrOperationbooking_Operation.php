@@ -441,21 +441,6 @@
     <?php } ?>
 <?php } ?>
 
-<?php if ($element->eye_id == \EYE::BOTH) : ?>
-<script>
-    $('#js-display-whiteboard').click(event => {
-        event.preventDefault();
-        // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
-        // has a documentwide eventlistener for clicks on oe-popup buttons which
-        // are used by Dialog.Alert.
-        new OpenEyes.UI.Dialog({
-            title: "Alert",
-            content: "Theatre whiteboard does not currently support bilateral procedures."
-        }).open();
-    });
-</script>
-<?php endif; ?>
-
 <?php
 $this->event_actions[] = EventAction::link(
     'Display Whiteboard',
