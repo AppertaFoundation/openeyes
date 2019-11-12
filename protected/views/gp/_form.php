@@ -58,7 +58,7 @@
             </td>
             <td>
                 <?php echo $form->error($model, 'contact_label_id'); ?>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_contact_label_id']); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_contact_label_id']); ?>
             </td>
         </tr>
         <tr id="selected_contact_label_wrapper" style="display: <?php echo $model->label ? '' : 'none' ?>">
@@ -68,8 +68,8 @@
                     <span class="js-name">
                         <?php echo isset($model->label) ? $model->label->name : ''; ?>
                     </span>
-                    <?php echo CHtml::hiddenField('Contact[contact_label_id]'
-                        , $model->contact_label_id, array('class' => 'hidden_id')); ?>
+                    <?php echo CHtml::hiddenField('Contact[contact_label_id]',
+                         $model->contact_label_id, array('class' => 'hidden_id')); ?>
                 </div>
             </td>
             <td>

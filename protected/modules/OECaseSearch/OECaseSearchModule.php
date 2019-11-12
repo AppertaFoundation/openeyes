@@ -17,7 +17,7 @@ class OECaseSearchModule extends BaseModule
         $this->config = Yii::app()->params['CaseSearch'];
         $dependencies = array();
         if (!isset(Yii::app()->params['patient_identifiers'])) {
-            unset($this->config['parameters']['core'][array_search('PatientIdentifier',$this->config['parameters']['core'])]);
+            unset($this->config['parameters']['core'][array_search('PatientIdentifier', $this->config['parameters']['core'])]);
         }
         foreach ($this->config['parameters'] as $module => $paramList) {
             if ($module !== 'core' && !isset($dependencies[$module])) {

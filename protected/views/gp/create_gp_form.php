@@ -66,7 +66,7 @@
                     <td>
                         <?php echo $form->error($model, 'contact_label_id'); ?>
 
-                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_contact_label_id']); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_contact_label_id']); ?>
 
                     </td>
                 </tr>

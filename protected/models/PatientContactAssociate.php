@@ -88,10 +88,10 @@ class PatientContactAssociate extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('patient_id',$this->patient_id,true);
-        $criteria->compare('gp_id',$this->gp_id,true);
-        $criteria->compare('practice_id',$this->practice_id,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('patient_id', $this->patient_id, true);
+        $criteria->compare('gp_id', $this->gp_id, true);
+        $criteria->compare('practice_id', $this->practice_id, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

@@ -86,7 +86,7 @@
         <?= $form->labelEx($address, 'country_id') ?>
   </td>
   <td>
-        <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
+        <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'], $countries)) ?
           array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
               'placeholder' => 'Country', 'class' => 'cols-10') : array('empty' => '-- select --', 'class' => 'cols-10'))  ?>
         <?= $form->error($address, 'country_id') ?>

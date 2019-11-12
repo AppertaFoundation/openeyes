@@ -104,7 +104,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 </td>
                 <td>
                     <?php echo $form->error($gp, 'id'); ?>
-                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'gp_autocomplete_id']); ?>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'gp_autocomplete_id']); ?>
                     <div id="gp_selected_wrapper">
                         <ul class="oe-multi-select js-selected_gps">
                             <?php if (!empty($gpIdProviderNoList)) : ?>

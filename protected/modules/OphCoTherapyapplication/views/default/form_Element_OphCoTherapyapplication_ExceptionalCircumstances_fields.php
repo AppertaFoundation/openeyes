@@ -131,7 +131,7 @@ if (@$_POST[get_class($element)]) {
       <td class="intervention flex-layout" id="<?php echo get_class($element) . '_' . $side; ?>_intervention">
         <?php echo $form->radioButtons($element, $side . '_intervention_id',
             CHtml::listData($interventions, 'id', 'name'),
-            $element->{$side . '_intervention_id'},  1,false, false, false, $opts, $layoutColumns) ?>
+            $element->{$side . '_intervention_id'}, 1, false, false, false, $opts, $layoutColumns) ?>
       </td>
   </tr>
   <tr style="<?php if (!$intervention_id) {

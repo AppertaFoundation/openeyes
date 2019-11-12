@@ -85,7 +85,7 @@ class PracticeController extends BaseController
                 $count=0;
                 $gpId = $_POST['Gp']['id'][$i];
                 $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
-                $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != ''");
+                $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo), "provider_no IS NOT NULL AND provider_no != ''");
 
                 // If condition is executed when the provider no exists in the db
                 if (count($providerNoDuplicateCheck) >=1 ) {
@@ -210,7 +210,7 @@ class PracticeController extends BaseController
                     Yii::app()->end();
                 }
 
-                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address, '',true);
+                list($contactPractice, $practice, $address) = $this->performPracticeSave($contactPractice, $practice, $address, '', true);
 
                 $practice_contact_associate->practice_id = $practice->id;
 
@@ -254,13 +254,13 @@ class PracticeController extends BaseController
                     }
                 } else {
                     if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                        throw new CHttpException(400, "Unable to save Practitioner contact");
                     }
                     $transaction->rollback();
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                    throw new CHttpException(400, CHtml::errorSummary($contact));
                 }
                 $transaction->rollback();
             }
@@ -268,7 +268,7 @@ class PracticeController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')) {
+                if (strpos($ex->getMessage(), 'errorSummary')) {
                     echo $ex->getMessage();
                 } else {
                     echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
@@ -339,7 +339,7 @@ class PracticeController extends BaseController
                     $address->validate();
                     $address->clearErrors('contact_id');
                     if ($isAjax) {
-                        throw new CHttpException(400,CHtml::errorSummary(array($practice,$address)) );
+                        throw new CHttpException(400, CHtml::errorSummary(array($practice,$address)) );
                     }
                     $transaction->rollback();
                 }
@@ -349,7 +349,7 @@ class PracticeController extends BaseController
                 $address->validate();
                 $address->clearErrors('contact_id');
                 if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary(array($contact,$address)));
+                    throw new CHttpException(400, CHtml::errorSummary(array($contact,$address)));
                 }
                 $transaction->rollback();
             }
@@ -410,7 +410,7 @@ class PracticeController extends BaseController
                     $count=0;
                     $gpId = $_POST['Gp']['id'][$i];
                     $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
-                    $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo),"provider_no IS NOT NULL AND provider_no != '' AND practice_id !=".$id);
+                    $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo), "provider_no IS NOT NULL AND provider_no != '' AND practice_id !=".$id);
                     // If condition is executed when the provider no exists in the db
                     if (count($providerNoDuplicateCheck) >=1 ) {
                         $isDuplicateProviderNo = true;

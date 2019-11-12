@@ -215,7 +215,7 @@ class GpController extends BaseController
             if ($contact->validate() && $valid) {
                 foreach ($cpas as $cpa) {
                     $update = Yii::app()->db->createCommand()
-                        ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null),'id=:id', array(':id'=>$cpa->id));
+                        ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null), 'id=:id', array(':id'=>$cpa->id));
                 }
                 list($contact, $model) = $this->performGpSave($contact, $model);
             }
@@ -344,13 +344,13 @@ class GpController extends BaseController
                     }
                 } else {
                     if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                        throw new CHttpException(400, "Unable to save Practitioner contact");
                     }
                     $transaction->rollback();
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                    throw new CHttpException(400, CHtml::errorSummary($contact));
                 }
                 $transaction->rollback();
             }
@@ -358,7 +358,7 @@ class GpController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')) {
+                if (strpos($ex->getMessage(), 'errorSummary')) {
                     echo $ex->getMessage();
                 } else {
                     echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";

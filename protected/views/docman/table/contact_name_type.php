@@ -24,8 +24,8 @@
     $option_styles = isset($option_styles) ? $option_styles : [];
     $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
 foreach ($address_targets as $key=>$value) {
-    if (strpos($key,'Gp') !== false) {
-        $contact_types['GP'] = substr($value,strpos($value,'(')+1,-1);
+    if (strpos($key, 'Gp') !== false) {
+        $contact_types['GP'] = substr($value, strpos($value, '(')+1, -1);
         break;
     }
 }

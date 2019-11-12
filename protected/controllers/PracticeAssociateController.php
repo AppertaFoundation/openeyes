@@ -69,7 +69,7 @@ class PracticeAssociateController extends BaseController
                     }
                 } else {
                         // New Gp id will be created
-                        list($contact, $gp) = $this->performGpSave($contact, $gp,  true);
+                        list($contact, $gp) = $this->performGpSave($contact, $gp, true);
                         $contact_practice_associate->gp_id = $gp->getPrimaryKey();
                 }
             }
@@ -148,13 +148,13 @@ class PracticeAssociateController extends BaseController
                     }
                 } else {
                     if ($isAjax) {
-                        throw new CHttpException(400,"Unable to save Practitioner contact");
+                        throw new CHttpException(400, "Unable to save Practitioner contact");
                     }
                     $transaction->rollback();
                 }
             } else {
                 if ($isAjax) {
-                    throw new CHttpException(400,CHtml::errorSummary($contact));
+                    throw new CHttpException(400, CHtml::errorSummary($contact));
                 }
                 $transaction->rollback();
             }
@@ -162,7 +162,7 @@ class PracticeAssociateController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')) {
+                if (strpos($ex->getMessage(), 'errorSummary')) {
                     echo $ex->getMessage();
                 } else {
                     echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";

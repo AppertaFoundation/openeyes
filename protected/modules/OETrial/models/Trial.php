@@ -218,7 +218,7 @@ class Trial extends BaseActiveRecordVersioned
         if ($this->getIsNewRecord()) {
 
             // Create a new permission assignment for the user that created the Trial
-            if (array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
+            if (array_key_exists('principal_investigator', $_SESSION) && !empty($_SESSION['principal_investigator'])) {
                 $current_user_id = $_SESSION['principal_investigator'];
             } else {
                 $current_user_id =  Yii::app()->user->id;
@@ -228,8 +228,8 @@ class Trial extends BaseActiveRecordVersioned
             unset($_SESSION['principal_investigator']);
 
             $admin_user_group = User::model()->findAllByRoles(array('admin'));
-            if (!in_array($current_user_id,$admin_user_group)) {
-                array_push($admin_user_group,$current_user_id);
+            if (!in_array($current_user_id, $admin_user_group)) {
+                array_push($admin_user_group, $current_user_id);
             }
             foreach ($admin_user_group as $user_id) {
                 $newPermission = new UserTrialAssignment();
@@ -477,7 +477,7 @@ class Trial extends BaseActiveRecordVersioned
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
         }
 
-        if (in_array($assignment->user_id,$admin_user_group)) {
+        if (in_array($assignment->user_id, $admin_user_group)) {
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
         }
 
@@ -612,7 +612,7 @@ class Trial extends BaseActiveRecordVersioned
             $started_date = new DateTime($this->started_date);
             $closed_date =  new DateTime($this->$attribute);
             if ($closed_date < $started_date) {
-                $this->addError($attribute,'Invalid date. Closed date cannot be earlier than started date.');
+                $this->addError($attribute, 'Invalid date. Closed date cannot be earlier than started date.');
             }
         }
     }

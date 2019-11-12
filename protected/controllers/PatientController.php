@@ -1927,7 +1927,7 @@ class PatientController extends BaseController
             // Don't save if the user just changed the "Patient Source"
             if ($_POST["changePatientSource"] == 0) {
                 list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers,'');
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, '');
             } else {
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.

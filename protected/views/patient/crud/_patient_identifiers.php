@@ -28,7 +28,7 @@
         <td>
             <?php
 
-            echo $form->textField($patient_identifier,'value',array(
+            echo $form->textField($patient_identifier, 'value', array(
                     'placeholder' => $patient_identifier->getPlaceholder(),
                     'maxlength' => 255,
                     'name' => 'PatientIdentifier['.$index.'][value]',

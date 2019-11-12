@@ -360,7 +360,7 @@ class Patient extends BaseActiveRecordVersioned
             } elseif ( !$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
             } elseif ( $patient_dod_date < $patient_dob_date) {
-                $this->addError($attribute,"Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
+                $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
             } elseif ( $patient_dod_date > $current_date) {
                 $this->addError($attribute, 'Date of death cannot be in the future');
             } elseif ($patient_dod_date < $earliest_date) {
@@ -2174,7 +2174,7 @@ class Patient extends BaseActiveRecordVersioned
         $min_date_of_birth = new DateTime("1900-01-01");
 
         if ($date_of_birth > $currentDate || $date_of_birth < $min_date_of_birth) {
-            $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
+            $this->addError($attribute, 'Invalid date. Value does not fall within the expected range.');
         }
 
     }

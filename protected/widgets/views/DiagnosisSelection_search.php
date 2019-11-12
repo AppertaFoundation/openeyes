@@ -37,7 +37,7 @@
                 <?php if ($searchBtn) { ?>
                 <div class="autocomplete-row" style="display: none">
                     <?php
-                    $this->widget('application.widgets.AutoCompleteSearch',['field_name' => "{$class}_{$field}_searchbox"]);
+                    $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => "{$class}_{$field}_searchbox"]);
                     ?>
         </div>
                 <?php }?>

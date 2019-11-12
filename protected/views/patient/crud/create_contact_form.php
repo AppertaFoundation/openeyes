@@ -34,7 +34,7 @@
                         <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'Contact[first_name]', 'hide_no_result_msg' => true]); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[first_name]', 'hide_no_result_msg' => true]); ?>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'first_name'); ?>
                     </td>
                 </tr>
@@ -43,7 +43,7 @@
                         <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'last_name'); ?>
                     </td>
                     <td>
-                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'Contact[last_name]', 'hide_no_result_msg' => true]); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[last_name]', 'hide_no_result_msg' => true]); ?>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'last_name'); ?>
                     </td>
                 </tr>
@@ -72,7 +72,7 @@
                     <td>
                         <?php echo $extra_gp_form->error($extra_gp_contact, 'contact_label_id'); ?>
 
-                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'extra_gp_autocomplete_contact_label_id']); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'extra_gp_autocomplete_contact_label_id']); ?>
 
                     </td>
                 </tr>
