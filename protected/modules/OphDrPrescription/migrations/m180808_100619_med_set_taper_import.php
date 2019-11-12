@@ -49,6 +49,36 @@ class m180808_100619_med_set_taper_import extends CDbMigration
                         ":frequency_id" => $taper["frequency_id"],
                         ":duration_id" => $taper['duration_id']
                     ))->execute();
+
+                    Yii::app()->db->createCommand("INSERT INTO medication_set_auto_rule_medication_taper (
+                                      medication_set_auto_rule_id,
+                                      dose,
+                                      frequency_id,
+                                      duration_id
+                                      ) VALUES
+                                      (
+                                          (
+                                           SELECT id FROM medication_set_auto_rule_medication
+                                           WHERE
+                                            medication_id = ( SELECT id FROM medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
+                                            AND medication_set_id =
+                                              ( SELECT id FROM medication_set WHERE `name` LIKE CONCAT('%', :ref_set_name) AND id IN
+                                                ( SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code_id = $drug_usage_code_id)
+                                              )
+                                          ),
+
+                                          :dose,
+                                          :frequency_id,
+                                          :duration_id
+                                      )
+                                      ")->bindValues(array(
+                                        ":drug_id" => $taper["drug_id"],
+                                        ":ref_set_name" => $taper['drug_set_name'],
+                                        ":subspecialty_id" => $taper['subspecialty_id'],
+                                        ":dose" => (float)$taper['dose'],
+                                        ":frequency_id" => $taper["frequency_id"],
+                                        ":duration_id" => $taper['duration_id']
+                                    ))->execute();
                 }
             }
         } catch (Exception $e) {
