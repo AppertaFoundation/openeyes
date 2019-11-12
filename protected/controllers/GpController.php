@@ -164,6 +164,7 @@ class GpController extends BaseController
 
             $this->render('create', array(
                'model' => $contact,
+               'gp' => $gp,
                'context' => null
             ));
         }
