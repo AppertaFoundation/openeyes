@@ -109,16 +109,13 @@
                             if (ceil($element->weight) > 0 && ceil($element->height) > 0) {
                                 $bmi = $element->bmiCalculator($element->weight, $element->height);
                                 if ($bmi < 18.5 || $bmi >= 30) {
-                                    $bmi_container_color = "rgb(80%, 0%, 0%)";
+                                    $bmi_container_color = 'highlighter warning';
                                 } else {
-                                    $bmi_container_color = "rgb(0%, 80%, 0%)";
+                                    $bmi_container_color = 'highlighter good';
                                 }
                             }
-                            // else  {
-                            //     $bmi_container_color = "";
-                            // }
                             ?>
-                            <div id="bmi-container" class="data-value" style="display:inline-block; text-align: center; background-color: <?= $bmi_container_color ?>;">
+                            <div id="bmi-container" class="data-value <?= $bmi_container_color ?>" style="display:inline-block; text-align: center;">
                                 <?= $bmi ?>
                             </div>
                         </td>
