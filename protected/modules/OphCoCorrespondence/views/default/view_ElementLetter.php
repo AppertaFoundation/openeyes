@@ -78,14 +78,14 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 </td>
                 <td>
                             <?php
-                            if (isset($element->site)){
+                            if (isset($element->site)) {
                                 echo $element->site->getLetterAddress(array(
                                     'include_name' => true,
                                     'delimiter' => '<br />',
                                     'include_telephone' => true,
                                     'include_fax' => true,
                                 ));
-                            }else{
+                            } else {
                                 echo 'No Site Has Been Selected.';
                             }
                             ?>
@@ -120,11 +120,11 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             $ccString = "";
                             $toAddress = "";
 
-                            if($element->document_instance) {
+                            if ($element->document_instance) {
 
                                 foreach ($element->document_instance as $instance) {
                                     foreach ($instance->document_target as $target) {
-                                        if($target->ToCc == 'To'){
+                                        if ($target->ToCc == 'To') {
                                             $toAddress = $target->contact_name . "\n" . $target->address;
                                         } else {
                                             $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
@@ -133,8 +133,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                         }
                                     }
                                 }
-                            }else
-                            {
+                            } else {
                                 $toAddress = $element->address;
                                 foreach (explode("\n", trim($element->cc)) as $line) {
                                     if (trim($line)) {
@@ -158,7 +157,8 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         >
     </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
+         class="wordbreak correspondence-letter<?php if ($element->draft) {
+?> draft<?php }?> cols-full element"
             <?php
          // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
             if ($element->draft) {?>
@@ -174,10 +174,10 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 <?php
                 $ccString = "";
                 $toAddress = "";
-                if($element->document_instance) {
+                if ($element->document_instance) {
                     foreach ($element->document_instance as $instance) {
                         foreach ($instance->document_target as $target) {
-                            if($target->ToCc == 'To'){
+                            if ($target->ToCc == 'To') {
                                  $toAddress = $target->contact_name . "\n" . $target->address;
                             } else {
                                  $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
@@ -185,8 +185,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             }
                         }
                     }
-                }else
-                {
+                } else {
                     $toAddress = $element->address;
                     foreach (explode("\n", trim($element->cc)) as $line) {
                         if (trim($line)) {
@@ -217,10 +216,10 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
             $is_document = isset($element->document_instance);
             ?>
             <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
-            <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
+            <?php if (Yii::app()->user->getState('correspondece_element_letter_saved', true)) : ?>
                 <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
                 <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php echo $is_document ? '1' : '0'; ?>" />
-            <?php else: ?>
+            <?php else : ?>
                 <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
             <?php endif; ?>
         </div>

@@ -222,8 +222,8 @@ class Address extends BaseActiveRecordVersioned
     }
 
     public function cityValidator($attribute, $param){
-        if(isset($this->city)){
-            if(1 === preg_match('~[0-9]~', $this->city)){
+        if (isset($this->city)) {
+            if (1 === preg_match('~[0-9]~', $this->city)) {
                 $this->addError($attribute, "City has Numeric values");
             }
         }

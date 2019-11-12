@@ -1865,12 +1865,12 @@ class PatientController extends BaseController
             }
 
             if (Yii::app()->params['institution_code'] === 'CERA') {
-                if (isset($_POST['ExtraContact'])){
+                if (isset($_POST['ExtraContact'])) {
                         $gp_ids = $_POST['ExtraContact']['gp_id'];
-                    if(isset($_POST['ExtraContact']['practice_id'])) {
+                    if (isset($_POST['ExtraContact']['practice_id'])) {
                                     $practice_ids = $_POST['ExtraContact']['practice_id'];
                                     $pca_models = array();
-                        for($i =0;$i<sizeof($gp_ids);$i++) {
+                        for ($i =0;$i<sizeof($gp_ids);$i++) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_ids[$i];
                             $pca_model->practice_id = $practice_ids[$i];
@@ -1878,13 +1878,13 @@ class PatientController extends BaseController
                         }
                     } else {
                                         $pca_models = array();
-                        foreach ($gp_ids as $gp_id){
+                        foreach ($gp_ids as $gp_id) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_id;
                             $pca_models[] = $pca_model;
                         }
                     }
-                    if (!empty($pca_models)){
+                    if (!empty($pca_models)) {
                             $patient->patientContactAssociates = $pca_models;
                     }
                 }
@@ -1935,7 +1935,7 @@ class PatientController extends BaseController
             }
         }
         // Only auto increment hos no. when the set_auto_increment is on
-        if($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on'){
+        if ($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on') {
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
 
@@ -2018,11 +2018,9 @@ class PatientController extends BaseController
                     && $patient->isNewRecord
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
-                } else if ($prevUrl !== ''){
+                } else if ($prevUrl !== '') {
                     $redirect = array($prevUrl);
-                }
-
-                else {
+                } else {
                     $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
@@ -2072,7 +2070,7 @@ class PatientController extends BaseController
         &$patient_identifiers)
     {
 
-        if(!$this->checkForReferralFiles($referral, $patient)) {
+        if (!$this->checkForReferralFiles($referral, $patient)) {
             return false;
         }
 
@@ -2121,11 +2119,11 @@ class PatientController extends BaseController
 
     private function performPatientContactAssociatesSave($patient){
         // Check if any contact selected for this patient.
-        if (isset($_POST['ExtraContact'])){
+        if (isset($_POST['ExtraContact'])) {
             // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
             $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-            if (isset($existing_pca_models)){
-                foreach ($existing_pca_models as $existing_pca_model){
+            if (isset($existing_pca_models)) {
+                foreach ($existing_pca_models as $existing_pca_model) {
 
                     $existing_pca_model->delete();
                 }
@@ -2133,9 +2131,9 @@ class PatientController extends BaseController
 
             $gp_ids = $_POST['ExtraContact']['gp_id'];
             $practice_ids = $_POST['ExtraContact']['practice_id'];
-            for($i =0; $i<sizeof($gp_ids); $i++) {
+            for ($i =0; $i<sizeof($gp_ids); $i++) {
                 $existing_pca_model = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id, 'gp_id'=>$gp_ids[$i], 'practice_id'=>$practice_ids[$i]));
-                if(empty($existing_pca_model)) {
+                if (empty($existing_pca_model)) {
                     $pca_model = new PatientContactAssociate();
                     $pca_model->patient_id = $patient->id;
                     $pca_model->gp_id = $gp_ids[$i];
@@ -2143,11 +2141,11 @@ class PatientController extends BaseController
                     $pca_model->save();
                 }
             }
-        } else{
+        } else {
             // If not delete all the data related to this patient from the patient_contact_associate table.
             $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-            if (isset($existing_pca_models)){
-                foreach ($existing_pca_models as $existing_pca_model){
+            if (isset($existing_pca_models)) {
+                foreach ($existing_pca_models as $existing_pca_model) {
                     $existing_pca_model->delete();
                 }
             }
@@ -2527,7 +2525,7 @@ class PatientController extends BaseController
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
-        if (isset($patients['error'])){
+        if (isset($patients['error'])) {
             $this->renderPartial('crud/_conflicts_error', array(
                 'errors' => $patients['error'],
             ));
@@ -2651,7 +2649,7 @@ class PatientController extends BaseController
             $patient_source = $_POST['Patient']['patient_source'];
             if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
                 //If there is no existing referral letter document, add an error
-                if ($this->checkExistingReferralLetter($patient)){
+                if ($this->checkExistingReferralLetter($patient)) {
                     $referral->addError('uploadedFile', 'Referral requires a letter file');
                 }
             }
@@ -2698,7 +2696,7 @@ class PatientController extends BaseController
                 }
             }
             // The file field is empty. It should throw error for referral scenario
-            else if($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+            else if ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
                 $referral->addError('uploadedFile', 'Referral requires a letter file');
                 return false;
             }
@@ -2736,7 +2734,7 @@ class PatientController extends BaseController
      * @return bool any existing referral letter for this patient will return false
      */
     protected function checkExistingReferralLetter($patient){
-        if (!isset($patient->id)){
+        if (!isset($patient->id)) {
             return true;
         }
         $command = Yii::app()->db->createCommand()->setText("

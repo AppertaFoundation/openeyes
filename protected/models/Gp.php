@@ -226,7 +226,7 @@ class Gp extends BaseActiveRecordVersioned
 
         $practice_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$this->id));
 
-        if (isset($practice_associate)){
+        if (isset($practice_associate)) {
             $return_value = $practice_associate->practice;
         }
 

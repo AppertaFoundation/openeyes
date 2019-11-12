@@ -32,7 +32,7 @@
             </tr>
             </thead>
             <tbody>
-            <?php if (isset($model_list)){
+            <?php if (isset($model_list)) {
                 foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphTrLaser/admin/editLaser/<?php echo $model->id ?>">

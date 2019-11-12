@@ -622,7 +622,7 @@ class DefaultController extends OphTrOperationbookingEventController
         $operation = $this->operation;
         if ($operation->status->name == 'Cancelled') {
             parent::actionDelete($id);
-        }else{
+        } else {
             Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
             return $this->redirect(array('default/view/'.$this->event->id));
         }

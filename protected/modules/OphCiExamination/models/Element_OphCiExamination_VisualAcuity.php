@@ -144,7 +144,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
 
-        if(array_key_exists($model, $_POST) || Yii::app()->params['institution_code'] !== 'CERA') {
+        if (array_key_exists($model, $_POST) || Yii::app()->params['institution_code'] !== 'CERA') {
                     $va = $_POST[$model];
             foreach (array('left', 'right') as $side) {
                 if (!$this->eyeHasSide($side, $va['eye_id'])) {
@@ -176,7 +176,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                     }
                 }
             }
-        }else {
+        } else {
             \OELog::log("Visual acuity element not found in POST data. Assuming submission without view and skipping POST validation.");
         }
 

@@ -198,7 +198,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                 throw new CHttpException(400, 'Invalid operator specified.');
         }
 
-        if ($this->bothEyesIndicator){
+        if ($this->bothEyesIndicator) {
             $second_operation = 'AND';
         }
 

@@ -184,7 +184,7 @@ class Practice extends BaseActiveRecordVersioned
 
     public function getAddressLines()
     {
-        if( isset($this->contact->address) ){
+        if ( isset($this->contact->address) ) {
             $address1 = $this->contact->address->address1 ? $this->contact->address->address1.", " : '';
             $address2 = $this->contact->address->address2 ? $this->contact->address->address2.", " : '';
             $city = $this->contact->address->city ? $this->contact->address->city.", " : '';

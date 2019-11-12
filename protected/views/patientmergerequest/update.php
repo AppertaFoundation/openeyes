@@ -69,7 +69,7 @@
                 Comment: <?= \CHtml::activeTextArea($model, 'comment', array('class' => 'cols-9')); ?>
                 <br>
                 <?php $this->renderPartial('//base/_messages') ?>
-                <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')): ?>
+                <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')) : ?>
                     <div id="patientDataConflictConfirmation" class="data-group">
                         <div class="cols-10 large-offset-1 column alert-box with-icon warning">
                             <h2> Personal details are conflicting. </h2>

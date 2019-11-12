@@ -117,10 +117,10 @@ class CaseSearchController extends BaseModuleController
             $pagination['currentPage'] = 0;
         }
 
-        if (isset($_SESSION['last_search_params'])){
+        if (isset($_SESSION['last_search_params'])) {
             foreach ($_SESSION['last_search_params'] as $key => $param) {
-                if ($param->name == "patient_name"){
-                    if (!empty($this->resultOrder)){
+                if ($param->name == "patient_name") {
+                    if (!empty($this->resultOrder)) {
                         $this->resultOrder .= ',';
                     }
                     $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\'))';
@@ -131,7 +131,7 @@ class CaseSearchController extends BaseModuleController
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
         $criteria->with = 'contact';
-        if ($this->resultOrder == ''){
+        if ($this->resultOrder == '') {
             $this->resultOrder = 'last_name, first_name';
         }
         $criteria->order = $this->resultOrder.' DESC';
@@ -147,10 +147,10 @@ class CaseSearchController extends BaseModuleController
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
-        if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])){
-            foreach ($_SESSION['last_search_params'] as $key => $last_search_param){
+        if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
+            foreach ($_SESSION['last_search_params'] as $key => $last_search_param) {
                 $last_search_param_name = get_class($last_search_param);
-                if (!in_array($last_search_param_name,$parameterList)){
+                if (!in_array($last_search_param_name,$parameterList)) {
                     unset($_SESSION['last_search_params'][$key]);
                 }
             }

@@ -22,8 +22,8 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     )); ?>
 
     <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
-    <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
-        <?php if(isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1): ?>
+    <?php foreach ($gpIdProviderNoList as $gpIdProviderNo) { ?>
+        <?php if (isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1) : ?>
             <div id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
                 <div class="row field-row">
                     <p>Duplicate provider number detected.</p>
@@ -35,7 +35,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
     <?php echo $form->errorSummary(array($contact,$model,$address)); ?>
     <table class="standard">
         <tbody>
-        <?php if(isset($duplicateCheckOutput) && count($duplicateCheckOutput) > 0): ?>
+        <?php if (isset($duplicateCheckOutput) && count($duplicateCheckOutput) > 0) : ?>
             <tr id="conflicts" class="cols-full alert-box error" style="font-style: italic; font-size: small;">
                 <td class="row field-row">
                     <p>Duplicate practice detected.</p>
@@ -51,7 +51,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         </tr>
                         </thead>
                         <tbody>
-                            <?php for($i=0; $i<sizeof($duplicateCheckOutput); $i++): ?>
+                            <?php for ($i=0; $i<sizeof($duplicateCheckOutput); $i++) : ?>
                                 <tr>
                                     <td><?php echo $duplicateCheckOutput[$i]['first_name']; ?></td>
                                     <td><?php echo $duplicateCheckOutput[$i]['phone'].''?></td>
@@ -97,7 +97,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         <tr>
             <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
         </tr>
-        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+        <?php if (Yii::app()->params['institution_code']=='CERA') : ?>
             <tr>
                 <td>
                     <label><?php echo $gp->getAttributeLabel('Practitioner'); ?></label>
@@ -107,8 +107,8 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'gp_autocomplete_id']); ?>
                     <div id="gp_selected_wrapper">
                         <ul class="oe-multi-select js-selected_gps">
-                            <?php if(!empty($gpIdProviderNoList)): ?>
-                                <?php foreach ($gpIdProviderNoList as $gpIdProviderNo){ ?>
+                            <?php if (!empty($gpIdProviderNoList)) : ?>
+                                <?php foreach ($gpIdProviderNoList as $gpIdProviderNo) { ?>
                                     <li style="<?php echo isset($gpIdProviderNo[2]) && $gpIdProviderNo[2] >= 1 ? 'background-color: #cd0000; color: #fff': '' ?>">
                                         <div style="width: 100%">
                                             <span class="js-name" style="text-align:justify; float: left; padding: 5px"><?php echo $gp->findByPk($gpIdProviderNo[0])->getCorrespondenceName().' - '.$gp->findByPk($gpIdProviderNo[0])->getGPROle() ?></span>

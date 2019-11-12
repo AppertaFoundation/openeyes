@@ -214,9 +214,9 @@ class AdminController extends ModuleAdminController
     public function actionPostOpInstructions()
     {
         $this->group = 'Operation note';
-        if(Yii::app()->request->isAjaxRequest){
+        if (Yii::app()->request->isAjaxRequest) {
 
-            if( isset($_POST['action']) && $_POST['action'] == 'save'){
+            if ( isset($_POST['action']) && $_POST['action'] == 'save') {
                 $instruction = new OphTrOperationnote_PostopInstruction;
                 $instruction->content = $_POST['content'];
                 $instruction->site_id = $_POST['site_id'];

@@ -81,7 +81,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </div>
         <?php endif; ?>
     </div>
-    <?php if($dataProvided): ?>
+    <?php if ($dataProvided) : ?>
         <div class="oe-full-content oe-new-patient">
             <h3 class="box-title">Associated Practices</h3>
             <br />
@@ -98,7 +98,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($dataProvided as $cpa): ?>
+                    <?php foreach ($dataProvided as $cpa) : ?>
                         <tr id="r<?php echo $cpa->id; ?>" class="clickable">
                             <td><?php echo CHtml::encode($cpa->provider_no); ?></td>
                             <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>

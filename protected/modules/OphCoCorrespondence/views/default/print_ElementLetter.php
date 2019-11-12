@@ -48,7 +48,8 @@ if (!@$no_header) {?>
 <p class="accessible">
     <?php echo $element->renderIntroduction()?>
 </p>
-<p class="accessible"><strong><?php if ($element->re) {?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
+<p class="accessible"><strong><?php if ($element->re) {
+?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
 <?php } else {
                                   if (Yii::app()->params['nhs_num_private'] == true) {
                                         ?><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $element->event->episode->patient->hos_num?><?php

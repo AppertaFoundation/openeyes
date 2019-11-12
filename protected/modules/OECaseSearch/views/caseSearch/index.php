@@ -37,9 +37,9 @@ $this->pageTitle = 'Case Search';
                         <table id="param-list" class="cols-full">
                             <tbody>
                             <?php
-                            if (isset($params)):
+                            if (isset($params)) :
                                 ksort($params);
-                                foreach ($params as $id => $param):?>
+                                foreach ($params as $id => $param) :?>
                                     <?php $this->renderPartial('parameter_form', array(
                                         'model' => $param,
                                         'id' => $id,

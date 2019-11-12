@@ -116,7 +116,7 @@ class GpController extends BaseController
                 if ($contact->validate()) {
 
                     // checking for the duplicate provider no.
-                    if(!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
+                    if (!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
 
                         $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
 
@@ -129,7 +129,7 @@ class GpController extends BaseController
 
                         $isDuplicate = count($query);
 
-                        if($isDuplicate !== 0) {
+                        if ($isDuplicate !== 0) {
                             echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
                             Yii::app()->end();
                         }
@@ -160,7 +160,7 @@ class GpController extends BaseController
                 $this->performAjaxValidation($contact);
                 list($contact, $gp) = $this->performGpSave($contact, $gp);
 
-                if($gp->id) {
+                if ($gp->id) {
                     $this->redirect(array('view', 'id' => $gp->id));
                 }
             }
@@ -197,13 +197,13 @@ class GpController extends BaseController
             $this->performAjaxValidation($contact);
             $this->performAjaxValidation($model);
 
-            if(isset($_POST['ContactPracticeAssociate'])) {
+            if (isset($_POST['ContactPracticeAssociate'])) {
                 $index = 0;
-                foreach($_POST['ContactPracticeAssociate'] as $cpa) {
+                foreach ($_POST['ContactPracticeAssociate'] as $cpa) {
                     $cpas[$index]->provider_no = $cpa['provider_no'];
                     $valid=$cpas[$index]->validate() && $valid;
-                    for($i=0;$i<$index;$i++) {
-                        if($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
+                    for ($i=0;$i<$index;$i++) {
+                        if ($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
                             $valid = false;
                             $cpas[$index]->addError('provider_no', 'Duplicate provider number.');
                         }
@@ -212,8 +212,8 @@ class GpController extends BaseController
                 }
             }
 
-            if($contact->validate() && $valid) {
-                foreach($cpas as $cpa) {
+            if ($contact->validate() && $valid) {
+                foreach ($cpas as $cpa) {
                     $update = Yii::app()->db->createCommand()
                         ->update('contact_practice_associate', array('provider_no' => !empty($cpa->provider_no) ? $cpa->provider_no : null),'id=:id', array(':id'=>$cpa->id));
                 }
@@ -268,8 +268,8 @@ class GpController extends BaseController
             ->queryAll();
 
         $output = array();
-        foreach($labels as $label){
-            if($this->loadModel($label['id'])->is_active){
+        foreach ($labels as $label) {
+            if ($this->loadModel($label['id'])->is_active) {
                 $output[] = array(
                   'id' => $label['id'],
                   'label' => $label['first_name'].' '. $label['last_name'].' - '.$label['role'],
@@ -358,9 +358,9 @@ class GpController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')){
+                if (strpos($ex->getMessage(),'errorSummary')) {
                     echo $ex->getMessage();
-                }else{
+                } else {
                     echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
                 }
             }

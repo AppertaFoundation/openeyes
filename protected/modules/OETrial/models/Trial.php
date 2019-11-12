@@ -196,9 +196,9 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         foreach (array('started_date', 'closed_date') as $date_column) {
-            if (isset($this->$date_column) && !empty($this->$date_column)){
+            if (isset($this->$date_column) && !empty($this->$date_column)) {
                 $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);
-            }else{
+            } else {
                 $this->$date_column = null;
             }
         }
@@ -218,7 +218,7 @@ class Trial extends BaseActiveRecordVersioned
         if ($this->getIsNewRecord()) {
 
             // Create a new permission assignment for the user that created the Trial
-            if(array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
+            if (array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
                 $current_user_id = $_SESSION['principal_investigator'];
             } else {
                 $current_user_id =  Yii::app()->user->id;
@@ -228,15 +228,15 @@ class Trial extends BaseActiveRecordVersioned
             unset($_SESSION['principal_investigator']);
 
             $admin_user_group = User::model()->findAllByRoles(array('admin'));
-            if (!in_array($current_user_id,$admin_user_group)){
+            if (!in_array($current_user_id,$admin_user_group)) {
                 array_push($admin_user_group,$current_user_id);
             }
-            foreach ($admin_user_group as $user_id){
+            foreach ($admin_user_group as $user_id) {
                 $newPermission = new UserTrialAssignment();
                 $newPermission->user_id = $user_id;
                 $newPermission->trial_id = $this->id;
                 $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
-                if ($user_id == $current_user_id){
+                if ($user_id == $current_user_id) {
                     // Always make the current user as the owner of the trial.
                     if (Yii::app()->user->id == $user_id) {
                         $newPermission->role = 'Trial Owner';
@@ -473,11 +473,11 @@ class Trial extends BaseActiveRecordVersioned
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
         }
 
-        if ($assignment->user_id === $assignment->created_user_id){
+        if ($assignment->user_id === $assignment->created_user_id) {
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
         }
 
-        if (in_array($assignment->user_id,$admin_user_group)){
+        if (in_array($assignment->user_id,$admin_user_group)) {
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
         }
 
@@ -608,10 +608,10 @@ class Trial extends BaseActiveRecordVersioned
         if ($this->hasErrors('closed_date')) {
             return;
         }
-        if (isset($this->started_date) && isset($this->$attribute)){
+        if (isset($this->started_date) && isset($this->$attribute)) {
             $started_date = new DateTime($this->started_date);
             $closed_date =  new DateTime($this->$attribute);
-            if ($closed_date < $started_date){
+            if ($closed_date < $started_date) {
                 $this->addError($attribute,'Invalid date. Closed date cannot be earlier than started date.');
             }
         }

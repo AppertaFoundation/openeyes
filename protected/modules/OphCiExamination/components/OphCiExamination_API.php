@@ -1544,7 +1544,7 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
-                if(!class_exists($class)){
+                if (!class_exists($class)) {
                     continue;
                 }
 

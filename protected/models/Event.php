@@ -702,12 +702,12 @@ class Event extends BaseActiveRecordVersioned
      */
     public function eventDateValidator($attribute,$param){
         $event_date = Helper::mysqlDate2JsTimestamp($this->event_date);
-        if (isset($this->episode)){
+        if (isset($this->episode)) {
             $episode = $this->episode;
-            if (isset($episode->patient)){
+            if (isset($episode->patient)) {
                 $patient = $episode->patient;
                 $event_date_limitation = Helper::mysqlDate2JsTimestamp($patient->dob) - (Helper::EPOCHMONTH*9);
-                if ($event_date < $event_date_limitation){
+                if ($event_date < $event_date_limitation) {
                     $this->addError($attribute, 'The event date cannot be earlier than '.date('Y-m-d', ($event_date_limitation/1000)).'.');
                 }
             }

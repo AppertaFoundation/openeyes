@@ -225,9 +225,9 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
-        if(Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['institution_code'] === 'CERA') {
             $cera_id = $this->hos_num;
-            if(strlen($cera_id)>0) {
+            if (strlen($cera_id)>0) {
                 // removing the leading 0's
                 $cera_id = ltrim($cera_id, '0');
                 $item_count = Patient::model()->count('hos_num = ? AND id != ?',
@@ -245,7 +245,7 @@ class Patient extends BaseActiveRecordVersioned
         if (Yii::app()->params['institution_code'] == 'CERA') {
 
             // Throw validation warning message if user has entered non-numeric character
-            if(!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
+            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
                 $this->addError($attribute, 'Please enter only numbers.');
             }
 
@@ -253,7 +253,7 @@ class Patient extends BaseActiveRecordVersioned
 
             // Check for 11 digits
             $length = strlen($medicareNo);
-            if($length>0) {
+            if ($length>0) {
                 if ($length==11) {
 
                     // Unique check
@@ -264,7 +264,7 @@ class Patient extends BaseActiveRecordVersioned
                             array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
                         ->queryAll();
 
-                    if(count($query) !== 0) {
+                    if (count($query) !== 0) {
                         $this->addError($attribute, 'Duplicate Medicare Number entered.');
                     }
 
@@ -278,8 +278,7 @@ class Patient extends BaseActiveRecordVersioned
                             $sum += $base[$position] * $weight;
                         }
                         return ($sum % 10) == intval($checkDigit);
-                    }
-                    else {
+                    } else {
                         $this->addError($attribute, 'Not a valid Medicare Number');
                     }
                 } else {
@@ -327,17 +326,16 @@ class Patient extends BaseActiveRecordVersioned
         $earliest_date =  new DateTime('01-01-1900');
         $current_date->format('d-m-Y');
 
-        if(!$patient_dob_date)
-        {
+        if (!$patient_dob_date) {
             $patient_dob_date = DateTime::createFromFormat('Y-m-d', $this->$attribute);
             $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
         }
-        if(!$patient_dob_date || !$format_check){
+        if (!$patient_dob_date || !$format_check) {
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
         }
-        if( $patient_dob_date > $current_date){
+        if ( $patient_dob_date > $current_date) {
             $this->addError($attribute, 'Date of birth should be before current date.');
-        }elseif ($patient_dob_date < $earliest_date){
+        } elseif ($patient_dob_date < $earliest_date) {
             $this->addError($attribute, "Patient's Date of birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
         }
     }
@@ -353,20 +351,19 @@ class Patient extends BaseActiveRecordVersioned
             $current_date->format('d-m-Y');
             $earliest_date =  new DateTime('01-01-1900');
 
-            if(!$patient_dod_date)
-            {
+            if (!$patient_dod_date) {
                 $patient_dod_date = DateTime::createFromFormat('Y-m-d', $this->$attribute);
                 $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
             }
             if (!$this->date_of_death) {
                 $this->addError($attribute, 'Date of death cannot be blank.');
-            } elseif( !$format_check) {
+            } elseif ( !$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
-            }elseif( $patient_dod_date < $patient_dob_date){
+            } elseif ( $patient_dod_date < $patient_dob_date) {
                 $this->addError($attribute,"Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
-            }elseif( $patient_dod_date > $current_date){
+            } elseif ( $patient_dod_date > $current_date) {
                 $this->addError($attribute, 'Date of death cannot be in the future');
-            }elseif($patient_dod_date < $earliest_date){
+            } elseif ($patient_dod_date < $earliest_date) {
                 $this->addError($attribute, "Patient's date of death cannot be earlier than ".$earliest_date->format('d/m/Y'));
             }
         }
@@ -377,7 +374,7 @@ class Patient extends BaseActiveRecordVersioned
      **/
     public function gpPracticeValidator($attribute)
     {
-        if(Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)){
+        if (Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)) {
             $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
         }
     }
@@ -2403,7 +2400,7 @@ class Patient extends BaseActiveRecordVersioned
                         $episode->disorder_id = null;
                         $episode->disorder_date = null;
                     } else {
-                        if(intval($episode->eye_id) === Eye::BOTH) {
+                        if (intval($episode->eye_id) === Eye::BOTH) {
                             $episode->eye_id = intval($eye->id) == Eye::LEFT ? Eye::RIGHT : Eye::LEFT;
                         } else {
                             $episode->eye_id = null;

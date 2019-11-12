@@ -41,7 +41,7 @@ $deceased = $this->patient->isDeceased();
     <div class="patient-name">
         <?php if (!$this->patient->isDeleted()) : ?>
             <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
-            <?php else: ?>
+            <?php else : ?>
             <a>
         <?php endif; ?>
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
@@ -127,7 +127,7 @@ $deceased = $this->patient->isDeceased();
             </div>
             <?php }?>
 
-            <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()): ?>
+            <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
                 <div class="patient-local-edit js-patient-local-edit-btn"
                 <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
                 >

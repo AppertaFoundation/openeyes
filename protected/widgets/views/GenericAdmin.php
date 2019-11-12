@@ -41,7 +41,7 @@
         <table class="standard generic-admin">
             <thead>
                 <tr>
-                    <?php if($display_order) { ?>
+                    <?php if ($display_order) { ?>
                         <th>Order</th>
                         <?php
                     }
@@ -56,7 +56,7 @@
                     <?php }?>
                     <?php if ($model::model()->hasAttribute('active')) {?>
                         <th>Active</th>
-                    <?php } else{?>
+                    <?php } else {?>
                         <th>Actions</th>
                     <?php }
                     if ($model::model()->hasAttribute('default')) {?>

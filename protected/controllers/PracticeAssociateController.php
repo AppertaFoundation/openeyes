@@ -61,7 +61,7 @@ class PracticeAssociateController extends BaseController
 
                     $isDuplicate = count($query);
 
-                    if($isDuplicate === 0) {
+                    if ($isDuplicate === 0) {
                         $contact_practice_associate->gp_id = $gpDetails->gpId;
                     } else {
                         echo CJSON::encode(array('error' => 'This practitioner is already associated with the selected practice.'));
@@ -79,8 +79,7 @@ class PracticeAssociateController extends BaseController
                     'gp_id' => $contact_practice_associate->gp_id,
                     'practice_id' => $contact_practice_associate->practice_id,
                 ));
-            }
-            else {
+            } else {
                 echo CJSON::encode(array('error' => $contact_practice_associate->getError('practice_id')));
             }
         }
@@ -89,7 +88,7 @@ class PracticeAssociateController extends BaseController
     public function actionGetGpWithPractice($id, $gp_id, $practice_id){
         $return_array = array('gp_id'=>$gp_id,'practice_id'=>$practice_id,'content'=>'');
         $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id,'practice_id'=>$practice_id));
-        if (isset($practice_contact_associate)){
+        if (isset($practice_contact_associate)) {
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
             $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
@@ -97,16 +96,16 @@ class PracticeAssociateController extends BaseController
             $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
             $inputGpElement = '';
             $inputPracticeElement = '';
-            if($id !== 'js-selected_gp') {
+            if ($id !== 'js-selected_gp') {
                 $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
                 $inputPracticeElement = '<input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="'.$practice_id.'">';
             }
             $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'-'.$practice->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.$inputPracticeElement.'</li>';
             $return_array['label'] = $gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
-        }else{
+        } else {
             $gp = Gp::model()->findByPk($gp_id);
             $inputGpElement = '';
-            if($id !== 'js-selected_gp') {
+            if ($id !== 'js-selected_gp') {
                 $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
             }
             $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.'</li>';
@@ -163,9 +162,9 @@ class PracticeAssociateController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
             if ($isAjax) {
-                if (strpos($ex->getMessage(),'errorSummary')){
+                if (strpos($ex->getMessage(),'errorSummary')) {
                     echo $ex->getMessage();
-                }else{
+                } else {
                     echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
                 }
             }

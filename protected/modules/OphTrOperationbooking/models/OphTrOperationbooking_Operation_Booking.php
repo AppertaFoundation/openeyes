@@ -343,7 +343,7 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
         }
     }
     public function notNullValidator($attribute,$param){
-        if (!isset($this->$attribute) || empty($this->$attribute)){
+        if (!isset($this->$attribute) || empty($this->$attribute)) {
             $this->addError($attribute,$this->getAttribute($attribute).' can not be blank.');
         }
     }

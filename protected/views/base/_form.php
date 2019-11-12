@@ -63,7 +63,7 @@ if (!Yii::app()->user->isGuest) {
                 </a>
             </li>
             <?= $menuHelper->render($navIconUrl) ?>
-            <?php if(Yii::app()->params['institution_code'] !== 'CERA'):?>
+            <?php if (Yii::app()->params['institution_code'] !== 'CERA') :?>
             <li class="oe-nav-btn">
                 <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
                     <svg viewBox="0 0 80 40" class="icon clinic ">

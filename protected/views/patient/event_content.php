@@ -14,7 +14,7 @@
         <div class="event-title-extra-info flex-layout">
 
     <?php if ($this->title != 'Please select booking') { ?>
-            <?php if (isset($this->event->firm)): ?>
+            <?php if (isset($this->event->firm)) : ?>
                 <div class="extra-info">
                     <span class="fade">Subspecialty: </span>
                     <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
@@ -25,7 +25,7 @@
                 </div>
             <?php endif; ?>
 
-                        <?php if ($extra_info && $extra_info !== ""): ?>
+                        <?php if ($extra_info && $extra_info !== "") : ?>
                             <?= $extra_info ?>
                         <?php endif; ?>
 

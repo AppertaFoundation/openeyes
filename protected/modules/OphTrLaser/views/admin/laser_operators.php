@@ -30,7 +30,7 @@
 
             <tbody>
             <?php
-            if (isset($operators['items'])){
+            if (isset($operators['items'])) {
                 foreach ($operators['items'] as $i => $operator) { ?>
                 <tr class="clickable" data-id="<?php echo $operator->id ?>"
                     data-uri="OphTrLaser/admin/editLaserOperator/<?php echo $operator->id ?>">

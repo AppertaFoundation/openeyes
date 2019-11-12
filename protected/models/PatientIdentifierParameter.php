@@ -128,7 +128,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
         $command = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier');
         $all_codes = $command->queryAll();
         $codes = array();
-        foreach ($all_codes as $code){
+        foreach ($all_codes as $code) {
             $codes[$code['code']] = $code['code'];
         }
         return $codes;

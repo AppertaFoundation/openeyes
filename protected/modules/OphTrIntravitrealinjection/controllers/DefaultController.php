@@ -38,7 +38,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function editInit()
     {
-        if (empty(OphTrIntravitrealinjection_InjectionUser::model()->getUsers())){
+        if (empty(OphTrIntravitrealinjection_InjectionUser::model()->getUsers())) {
             Yii::app()->user->setFlash('error.no_injection_user', "No injection user has been added, please contact your administrator to add injection users.");
         }
         $this->showAllergyWarning();

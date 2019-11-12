@@ -58,9 +58,9 @@ class DefaultController extends BaseEventTypeController
     }
 
     public function siteLaserOperatorCheck(){
-        if (empty(OphTrLaser_Site_Laser::model()->findAll())){
+        if (empty(OphTrLaser_Site_Laser::model()->findAll())) {
             Yii::app()->user->setFlash('error.no_laser_site', "No laser site has been added, please contact your administrator to add laser sites.");
-        }elseif (empty(OphTrLaser_Laser_Operator::model()->findAll())){
+        } elseif (empty(OphTrLaser_Laser_Operator::model()->findAll())) {
             Yii::app()->user->setFlash('error.no_laser_operator', "No laser operator has been added, please contact your administrator to add laser operators.");
         }
     }

@@ -29,7 +29,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
-    <?php if ($this->patient->nhsNumberStatus): ?>
+    <?php if ($this->patient->nhsNumberStatus) : ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
                 <?php echo Yii::app()->params['nhs_num_label'] . ((Yii::app()->params['institution_code']==='CERA')? '' : ' Number') ?>: <?= $this->patient->nhsNumberStatus->description; ?></b>
@@ -80,7 +80,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Telephone</td>
             <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
           </tr>
-            <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+            <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
               <tr>
                 <td>Mobile</td>
                 <td>Unknown</td>
@@ -90,7 +90,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Email</td>
             <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
-            <?php if (Yii::app()->params['institution_code'] !== 'CERA'): ?>
+            <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
               <tr>
                 <td>Next of kin</td>
                 <td>Unknown</td>
@@ -131,7 +131,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                             <td>Referring Practice Telephone</td>
                                             <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
                                     </tr>
-                                    <?php if (isset($this->referredTo)){ ?>
+                                    <?php if (isset($this->referredTo)) { ?>
                                         <tr>
                                                 <td><?php echo 'Referred to '?></td>
                                                 <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
