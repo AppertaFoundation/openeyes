@@ -57,7 +57,7 @@ class UserController extends BaseController
                 $res[] = array(
                     'id' => $user->id,
                     'label' => $user->getFullNameAndTitle(),
-                    'value' => (Yii::app()->params['institution_code'] === 'CERA' ? $user->id : $user->getFullName()),
+                    'value' => $user->id,
                     'username' => $user->username,
                 );
             }
