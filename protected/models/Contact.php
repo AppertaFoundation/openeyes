@@ -75,7 +75,7 @@ class Contact extends BaseActiveRecordVersioned
             array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
-            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp', 'manage_practice')),
+            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
             array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
