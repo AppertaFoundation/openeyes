@@ -262,92 +262,92 @@ $creating = isset($creating) ? $creating : false;
       <div class="cols-9">
         <div class="cols-full">
           <div id="docman_block" class="cols-12">
-              <?php
-              if (!$creating) {
-                  $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+                <?php
+                if (!$creating) {
+                    $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
 
-                  if ($document_set) {
-                      $this->renderPartial('//docman/_update', array(
+                    if ($document_set) {
+                        $this->renderPartial('//docman/_update', array(
                           'row_index' => (isset($row_index) ? $row_index : 0),
                           'document_set' => $document_set,
                           'macro_id' => $macro_id,
                           'element' => $element,
                           'can_send_electronically' => true,
-                      ));
-                  }
-              } else {
-                  $macro_data = array();
-                  if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
-                      $macro_data = $api->getMacroTargets($patient_id, $macro_id);
-                  }
-                  // set back posted data on error
-                  if (isset($_POST['DocumentTarget'])) {
+                        ));
+                    }
+                } else {
+                    $macro_data = array();
+                    if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
+                        $macro_data = $api->getMacroTargets($patient_id, $macro_id);
+                    }
+                    // set back posted data on error
+                    if (isset($_POST['DocumentTarget'])) {
 
-                      foreach ($_POST['DocumentTarget'] as $document_target) {
+                        foreach ($_POST['DocumentTarget'] as $document_target) {
 
-                          if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
-                              $macro_data['to'] = array(
+                            if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
+                                $macro_data['to'] = array(
                                   'contact_type' => $document_target['attributes']['contact_type'],
                                   'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                   'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                   'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                              );
-                          } else {
+                                );
+                            } else {
 
-                              if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+                                if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
 
-                                  $macro_data['cc'][] = array(
+                                    $macro_data['cc'][] = array(
                                       'contact_type' => $document_target['attributes']['contact_type'],
                                       'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                       'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                       'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                                       'is_mandatory' => false,
-                                  );
-                              }
-                          }
-                      }
-                  }
-                  $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : (isset($patient->gp->contact->address) ? $patient->gp->contact->address : null);
-                  if (!$gp_address) {
-                      $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : (isset($patient->practice->contact->address) ? $patient->practice->contact->address : null);
-                  }
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : (isset($patient->gp->contact->address) ? $patient->gp->contact->address : null);
+                    if (!$gp_address) {
+                        $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : (isset($patient->practice->contact->address) ? $patient->practice->contact->address : null);
+                    }
 
-                  if (!$gp_address) {
-                      $gp_address = "The contact does not have a valid address.";
-                  } else {
-                      $gp_address = implode("\n", $gp_address->getLetterArray());
-                  }
+                    if (!$gp_address) {
+                        $gp_address = "The contact does not have a valid address.";
+                    } else {
+                        $gp_address = implode("\n", $gp_address->getLetterArray());
+                    }
 
-                  $contact_string = '';
-                  if ($patient->gp) {
-                      $contact_string = 'Gp' . $patient->gp->id;
-                  } else {
-                      if ($patient->practice) {
-                          $contact_string = 'Practice' . $patient->practice->id;
-                      }
-                  }
+                    $contact_string = '';
+                    if ($patient->gp) {
+                        $contact_string = 'Gp' . $patient->gp->id;
+                    } else {
+                        if ($patient->practice) {
+                            $contact_string = 'Practice' . $patient->practice->id;
+                        }
+                    }
 
-                  $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
+                    $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
-                  if (!$patient_address) {
-                      $patient_address = "The contact does not have a valid address.";
-                  } else {
-                      $patient_address = implode("\n", $patient_address->getLetterArray());
-                  }
+                    if (!$patient_address) {
+                        $patient_address = "The contact does not have a valid address.";
+                    } else {
+                        $patient_address = implode("\n", $patient_address->getLetterArray());
+                    }
 
-                  $address_data = array();
-                  if ($contact_string) {
-                      $address_data = $api->getAddress($patient_id, $contact_string);
-                  }
+                    $address_data = array();
+                    if ($contact_string) {
+                        $address_data = $api->getAddress($patient_id, $contact_string);
+                    }
 
-                  $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
-                  $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
-                  $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
-                  $address = isset($address_data['address']) ? $address_data['address'] : null;
+                    $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
+                    $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+                    $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
+                    $address = isset($address_data['address']) ? $address_data['address'] : null;
 
-                  $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+                    $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
-                  $this->renderPartial('//docman/_create', array(
+                    $this->renderPartial('//docman/_create', array(
                       'row_index' => (isset($row_index) ? $row_index : 0),
                       'macro_data' => $macro_data,
                       'macro_id' => $macro_id,
@@ -368,8 +368,8 @@ $creating = isset($creating) ? $creating : false;
                               'address' => $patient_address,
                           ),
                       ),
-                  ));
-              } ?>
+                    ));
+                } ?>
           </div>
         </div>
     </div>

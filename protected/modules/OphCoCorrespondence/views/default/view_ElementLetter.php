@@ -71,24 +71,24 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         ?>
                 </td>
             </tr>
-                      <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
+                        <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
             <tr>
                 <td class="data-label">
                     From
                 </td>
                 <td>
-                    <?php
-                    if (isset($element->site)){
-                        echo $element->site->getLetterAddress(array(
-                            'include_name' => true,
-                            'delimiter' => '<br />',
-                            'include_telephone' => true,
-                            'include_fax' => true,
-                        ));
-                    }else{
-                        echo 'No Site Has Been Selected.';
-                    }
-                    ?>
+                            <?php
+                            if (isset($element->site)){
+                                echo $element->site->getLetterAddress(array(
+                                    'include_name' => true,
+                                    'delimiter' => '<br />',
+                                    'include_telephone' => true,
+                                    'include_fax' => true,
+                                ));
+                            }else{
+                                echo 'No Site Has Been Selected.';
+                            }
+                            ?>
                 </td>
             </tr>
             <tr>
@@ -96,9 +96,9 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     Direct Line
                 </td>
                 <td>
-                    <?php
-                    echo $element->direct_line
-                    ?>
+                            <?php
+                            echo $element->direct_line
+                            ?>
                 </td>
             </tr>
             <tr>
@@ -106,9 +106,9 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     Direct Fax
                 </td>
                 <td >
-                    <?php
-                    echo $element->fax
-                    ?>
+                            <?php
+                            echo $element->fax
+                            ?>
                 </td>
             </tr>
             <tr>
@@ -116,36 +116,36 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     Cc
                 </td>
                 <td>
-                    <?php
-                    $ccString = "";
-                    $toAddress = "";
+                            <?php
+                            $ccString = "";
+                            $toAddress = "";
 
-                    if($element->document_instance) {
+                            if($element->document_instance) {
 
-                        foreach ($element->document_instance as $instance) {
-                            foreach ($instance->document_target as $target) {
-                                if($target->ToCc == 'To'){
-                                    $toAddress = $target->contact_name . "\n" . $target->address;
-                                } else {
-                                    $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                foreach ($element->document_instance as $instance) {
+                                    foreach ($instance->document_target as $target) {
+                                        if($target->ToCc == 'To'){
+                                            $toAddress = $target->contact_name . "\n" . $target->address;
+                                        } else {
+                                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
 
-                                    $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                            $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                        }
+                                    }
+                                }
+                            }else
+                            {
+                                $toAddress = $element->address;
+                                foreach (explode("\n", trim($element->cc)) as $line) {
+                                    if (trim($line)) {
+                                        $ccString .= "" . str_replace(';', ',', $line)."<br/>";
+                                    }
                                 }
                             }
-                        }
-                    }else
-                    {
-                        $toAddress = $element->address;
-                        foreach (explode("\n", trim($element->cc)) as $line) {
-                            if (trim($line)) {
-                                $ccString .= "" . str_replace(';', ',', $line)."<br/>";
-                            }
-                        }
-                    }
-                    ?>
-                    <?php
-                    echo $ccString
-                    ?>
+                            ?>
+                            <?php
+                            echo $ccString
+                            ?>
                 </td>
             </tr>
                     <?php } ?>
@@ -159,9 +159,9 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
     </div>
     <div id="correspondence_out"
          class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
-         <?php
+            <?php
          // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
-         if ($element->draft) {?>
+            if ($element->draft) {?>
          style="background-color: white; color: black; display:none;
                  background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
                  background-position-x: center;
@@ -169,39 +169,39 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                  background-size: initial;
                  background-repeat-x: no-repeat;
                  background-repeat-y: no-repeat;">
-            <?php }?>
+                <?php }?>
             <header>
                 <?php
-            $ccString = "";
-            $toAddress = "";
-             if($element->document_instance) {
-                 foreach ($element->document_instance as $instance) {
-                    foreach ($instance->document_target as $target) {
-                        if($target->ToCc == 'To'){
-                            $toAddress = $target->contact_name . "\n" . $target->address;
-                        } else {
-                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                             $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                $ccString = "";
+                $toAddress = "";
+                if($element->document_instance) {
+                    foreach ($element->document_instance as $instance) {
+                        foreach ($instance->document_target as $target) {
+                            if($target->ToCc == 'To'){
+                                 $toAddress = $target->contact_name . "\n" . $target->address;
+                            } else {
+                                 $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                 $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                            }
+                        }
+                    }
+                }else
+                {
+                    $toAddress = $element->address;
+                    foreach (explode("\n", trim($element->cc)) as $line) {
+                        if (trim($line)) {
+                            $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
                         }
                     }
                 }
-            }else
-            {
-                $toAddress = $element->address;
-                foreach (explode("\n", trim($element->cc)) as $line) {
-                    if (trim($line)) {
-                        $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                    }
-                }
-            }
-            $this->renderPartial('letter_start', array(
+                $this->renderPartial('letter_start', array(
                 'toAddress' => $toAddress,
                 'patient' => $this->patient,
                 'date' => $element->date,
                 'clinicDate' => $element->clinic_date,
                 'element' => $element,
-            ));
-                    ?>
+                ));
+                ?>
             </header>
             <?php
             $this->renderPartial('reply_address', array(

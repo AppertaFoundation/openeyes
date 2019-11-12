@@ -31,16 +31,16 @@ class PatientUserReferral extends BaseActiveRecord
   /**
    * @return array validation rules for model attributes.
    */
-  public function rules()
-  {
-    // NOTE: you should only define rules for those attributes that
-    // will receive user inputs.
-    return array(
-      array('patient_id', 'required'),
-      array('patient_id, user_id, last_modified_user_id, created_user_id', 'length', 'max' => 50),
-      array('last_modified_date, created_date', 'safe'),
-      // The following rule is used by search().
-      array(
+    public function rules()
+    {
+      // NOTE: you should only define rules for those attributes that
+      // will receive user inputs.
+        return array(
+        array('patient_id', 'required'),
+        array('patient_id, user_id, last_modified_user_id, created_user_id', 'length', 'max' => 50),
+        array('last_modified_date, created_date', 'safe'),
+        // The following rule is used by search().
+        array(
         'id, patient_id, user_id',
         'safe',
         'on' => 'search',

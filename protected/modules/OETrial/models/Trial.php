@@ -53,7 +53,7 @@ class Trial extends BaseActiveRecordVersioned
   /**
    * The return code for actionRemovePermission() if the user tried to remove themselves from the Trial
    */
-  const REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF = 'remove_self_fail';
+    const REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF = 'remove_self_fail';
     /**
      * The return code for actionRemovePermission() if the user tried to remove admin from the Trial
      */
@@ -90,12 +90,12 @@ class Trial extends BaseActiveRecordVersioned
         'trial_type_id, owner_user_id, last_modified_user_id, created_user_id',
         'length',
         'max' => 10,
-      ),
-      array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
-      array('closed_date','closedDateValidator','on'=>'manual'),
-      array('description, last_modified_date, created_date, ethics_number', 'safe'),
-    );
-  }
+        ),
+        array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
+        array('closed_date','closedDateValidator','on'=>'manual'),
+        array('description, last_modified_date, created_date, ethics_number', 'safe'),
+        );
+    }
 
   /**
    * Returns the date this trial was started as a string
@@ -195,13 +195,13 @@ class Trial extends BaseActiveRecordVersioned
             return false;
         }
 
-    foreach (array('started_date', 'closed_date') as $date_column) {
-        if (isset($this->$date_column) && !empty($this->$date_column)){
-            $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);
-        }else{
-            $this->$date_column = null;
+        foreach (array('started_date', 'closed_date') as $date_column) {
+            if (isset($this->$date_column) && !empty($this->$date_column)){
+                $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);
+            }else{
+                $this->$date_column = null;
+            }
         }
-    }
 
         return true;
     }
@@ -211,45 +211,45 @@ class Trial extends BaseActiveRecordVersioned
    *
    * @throws Exception Thrown if a new permission cannot be created
    */
-  protected function afterSave()
-  {
-      parent::afterSave();
+    protected function afterSave()
+    {
+        parent::afterSave();
 
-      if ($this->getIsNewRecord()) {
+        if ($this->getIsNewRecord()) {
 
-          // Create a new permission assignment for the user that created the Trial
-          if(array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
-              $current_user_id = $_SESSION['principal_investigator'];
-          } else {
-              $current_user_id =  Yii::app()->user->id;
-          }
+            // Create a new permission assignment for the user that created the Trial
+            if(array_key_exists('principal_investigator',$_SESSION) && !empty($_SESSION['principal_investigator'])) {
+                $current_user_id = $_SESSION['principal_investigator'];
+            } else {
+                $current_user_id =  Yii::app()->user->id;
+            }
 
-          // unsetting the session, so that if it is empty for the next row it won't insert the principal investigator that was entered for the previous row for the trial import.
-          unset($_SESSION['principal_investigator']);
+            // unsetting the session, so that if it is empty for the next row it won't insert the principal investigator that was entered for the previous row for the trial import.
+            unset($_SESSION['principal_investigator']);
 
-          $admin_user_group = User::model()->findAllByRoles(array('admin'));
-          if (!in_array($current_user_id,$admin_user_group)){
-              array_push($admin_user_group,$current_user_id);
-          }
-          foreach ($admin_user_group as $user_id){
-              $newPermission = new UserTrialAssignment();
-              $newPermission->user_id = $user_id;
-              $newPermission->trial_id = $this->id;
-              $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
-              if ($user_id == $current_user_id){
-                  // Always make the current user as the owner of the trial.
-                  if (Yii::app()->user->id == $user_id) {
-                      $newPermission->role = 'Trial Owner';
-                  }
-                  $newPermission->is_principal_investigator = 1;
-              }
-              if (!$newPermission->save()) {
-                  throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+            $admin_user_group = User::model()->findAllByRoles(array('admin'));
+            if (!in_array($current_user_id,$admin_user_group)){
+                array_push($admin_user_group,$current_user_id);
+            }
+            foreach ($admin_user_group as $user_id){
+                $newPermission = new UserTrialAssignment();
+                $newPermission->user_id = $user_id;
+                $newPermission->trial_id = $this->id;
+                $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+                if ($user_id == $current_user_id){
+                    // Always make the current user as the owner of the trial.
+                    if (Yii::app()->user->id == $user_id) {
+                        $newPermission->role = 'Trial Owner';
+                    }
+                    $newPermission->is_principal_investigator = 1;
+                }
+                if (!$newPermission->save()) {
+                    throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
                       . print_r($newPermission->getErrors(), true));
-              }
-          }
-      }
-  }
+                }
+            }
+        }
+    }
 
   /**
    * Returns whether or not this trial has any shortlisted patients
@@ -463,23 +463,23 @@ class Trial extends BaseActiveRecordVersioned
     {
         $logMessage = null;
       /* @var UserTrialAssignment $permission */
-      $assignment = UserTrialAssignment::model()->findByPk($permission_id);
-      $admin_user_group = User::model()->findAllByRoles(array('admin'));
-      if ($assignment->trial->id !== $this->id) {
-        throw new Exception('Cannot remove permission from another trial');
-      }
+        $assignment = UserTrialAssignment::model()->findByPk($permission_id);
+        $admin_user_group = User::model()->findAllByRoles(array('admin'));
+        if ($assignment->trial->id !== $this->id) {
+            throw new Exception('Cannot remove permission from another trial');
+        }
 
-      if ($assignment->user_id === Yii::app()->user->id) {
-          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
-      }
+        if ($assignment->user_id === Yii::app()->user->id) {
+            return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
+        }
 
-      if ($assignment->user_id === $assignment->created_user_id){
-          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
-      }
+        if ($assignment->user_id === $assignment->created_user_id){
+            return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
+        }
 
-      if (in_array($assignment->user_id,$admin_user_group)){
-          return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
-      }
+        if (in_array($assignment->user_id,$admin_user_group)){
+            return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
+        }
 
       // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
         if ($assignment->trialPermission->can_manage) {

@@ -23,73 +23,73 @@
 ?>
 <tr>
   <td>
-      <?= $form->label($address, 'address_type_id') ?>
+        <?= $form->label($address, 'address_type_id') ?>
     <br/>
-      <?= $form->error($address, 'address_type_id') ?>
+        <?= $form->error($address, 'address_type_id') ?>
   </td>
   <td>
-      <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
+        <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
           array('empty' => '-- select --', 'class' => 'cols-10')); ?>
   </td>
 <tr>
 <tr>
   <td>
-      <?= $form->labelEx($address, 'address1') ?>
+        <?= $form->labelEx($address, 'address1') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'class' => 'cols-10')) ?>
-      <?= $form->error($address, 'address1') ?>
-  </td>
-</tr>
-
-<tr>
-  <td>
-      <?= $form->labelEx($address, 'address2') ?>
-  </td>
-  <td>
-      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'class' => 'cols-10')) ?>
-      <?= $form->error($address, 'address2') ?>
-  </td>
-</tr>
-<tr>
-  <td>
-      <?= $form->labelEx($address, 'city') ?>
-  </td>
-  <td>
-      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'class' => 'cols-10')) ?>
-      <?= $form->error($address, 'city') ?>
+        <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'class' => 'cols-10')) ?>
+        <?= $form->error($address, 'address1') ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'postcode') ?>
+        <?= $form->labelEx($address, 'address2') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'class' => 'cols-10')) ?>
-      <?= $form->error($address, 'postcode') ?>
+        <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'class' => 'cols-10')) ?>
+        <?= $form->error($address, 'address2') ?>
+  </td>
+</tr>
+<tr>
+  <td>
+        <?= $form->labelEx($address, 'city') ?>
+  </td>
+  <td>
+        <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'class' => 'cols-10')) ?>
+        <?= $form->error($address, 'city') ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
+        <?= $form->labelEx($address, 'postcode') ?>
   </td>
   <td>
-      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'class' => 'cols-10')) ?>
-      <?= $form->error($address, Yii::app()->params['county_label']) ?>
+        <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'class' => 'cols-10')) ?>
+        <?= $form->error($address, 'postcode') ?>
   </td>
 </tr>
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'country_id') ?>
+        <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
-      <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
+        <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'class' => 'cols-10')) ?>
+        <?= $form->error($address, Yii::app()->params['county_label']) ?>
+  </td>
+</tr>
+
+<tr>
+  <td>
+        <?= $form->labelEx($address, 'country_id') ?>
+  </td>
+  <td>
+        <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'],$countries)) ?
           array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
               'placeholder' => 'Country', 'class' => 'cols-10') : array('empty' => '-- select --', 'class' => 'cols-10'))  ?>
-      <?= $form->error($address, 'country_id') ?>
+        <?= $form->error($address, 'country_id') ?>
   </td>
 </tr>
 

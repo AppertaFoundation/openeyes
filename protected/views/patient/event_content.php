@@ -7,7 +7,7 @@
         } ?>
         <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
-      <?php } ?>
+        <?php } ?>
 
   </h2>
     <?php $extra_info = $this->getExtraTitleInfo(); ?>

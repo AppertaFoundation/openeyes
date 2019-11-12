@@ -20,7 +20,7 @@
   <div id="patientMergeWrapper" class="element-fields full-width col-gap element ">
     <form id="patientMergeList">
       <div class="cols-8 ">
-          <?php $this->renderPartial('//base/_messages') ?>
+            <?php $this->renderPartial('//base/_messages') ?>
           <h2 class="event-title">Merge Requests</h2>
           <div class="filter panel">
             <div class="data-group">
@@ -43,7 +43,7 @@
             </div>
           </div>
           <div class="grid-view" id="inbox-table">
-              <?php $this->renderPartial('//patientmergerequest/_list',
+                <?php $this->renderPartial('//patientmergerequest/_list',
                   array('data_provider' => $data_provider, 'filters' => $filters)) ?>
           </div>
       </div>

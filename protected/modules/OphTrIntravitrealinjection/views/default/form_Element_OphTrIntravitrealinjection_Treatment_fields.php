@@ -219,21 +219,21 @@ foreach ($skin_drugs as $drug) {
       <td class="cols-<?php echo $form->columns('field'); ?>">
         <div class="collapse in">
           <div class="flex-layout">
-              <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
+                <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
             <span id="<?php echo $side; ?>_number_history_icon"
                   class="postfix number-history-icon<?php if (!$selected_drug) {
-                      echo ' hidden';
-                  } ?>">
-              <?php $tooltip_info = "";
-              foreach ($drugs as $drug) {
-                  if (count($drug_history[$drug->id])) {
-                      $tooltip_info = $tooltip_info.'<b>Previous ' . $drug->name . ' treatments</b><br />';
-                      foreach ($drug_history[$drug->id] as $previous) {
-                          $tooltip_info = $tooltip_info . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')<br />';
-                      }
-                  }
-              }
-              if ($tooltip_info == "")
+                        echo ' hidden';
+                                                    } ?>">
+                <?php $tooltip_info = "";
+                foreach ($drugs as $drug) {
+                    if (count($drug_history[$drug->id])) {
+                        $tooltip_info = $tooltip_info.'<b>Previous ' . $drug->name . ' treatments</b><br />';
+                        foreach ($drug_history[$drug->id] as $previous) {
+                            $tooltip_info = $tooltip_info . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')<br />';
+                        }
+                    }
+                }
+                if ($tooltip_info == "")
                 $tooltip_info = "The patient has no drug history";?>
                 <i class="oe-i info small-icon js-has-tooltip"
                    data-tooltip-content="<?php echo $tooltip_info; ?>">

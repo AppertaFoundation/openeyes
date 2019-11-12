@@ -39,7 +39,7 @@ if (@$htmlOptions['id']) {
     <input class="<?= @$htmlOptions['class'] ?>"
            style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
-           <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
+            <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
            placeholder=<?= (Yii::app()->params['institution_code'] === 'CERA' ? "dd-MMM-yyyy" : "yyyy-mm-dd" ) ?>
            name="<?= $name ?>"
            value="<?= $value ?>"

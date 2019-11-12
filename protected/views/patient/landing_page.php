@@ -285,7 +285,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
                                                          data-tooltip-content="<?= $summary->user ?>"></i></td>
                                         </tr>
                                     <?php }
-                                } ?>
+                        } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -309,7 +309,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
                 </div>
             </div>
             <?php
-        $this->endContent();
+            $this->endContent();
 } else { ?>
     <main class="oe-home">
         <div class="oe-error-message">

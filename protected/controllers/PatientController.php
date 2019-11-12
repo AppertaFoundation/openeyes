@@ -332,9 +332,9 @@ class PatientController extends BaseController
             $api = new CoreAPI();
 
             //in case the PASAPI returns 1 new patient we perform a new search
-                            if ($patient->isNewRecord && $patient->hos_num) {
-                                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
-                            }
+            if ($patient->isNewRecord && $patient->hos_num) {
+                $this->redirect(['/patient/search', 'term' => $patient->hos_num]);
+            }
 
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
         } else {
@@ -1865,29 +1865,29 @@ class PatientController extends BaseController
             }
 
             if (Yii::app()->params['institution_code'] === 'CERA') {
-                            if (isset($_POST['ExtraContact'])){
-                                    $gp_ids = $_POST['ExtraContact']['gp_id'];
-                                    if(isset($_POST['ExtraContact']['practice_id'])) {
-                                            $practice_ids = $_POST['ExtraContact']['practice_id'];
-                                            $pca_models = array();
-                                            for($i =0;$i<sizeof($gp_ids);$i++) {
-                                                    $pca_model = new PatientContactAssociate();
-                                                    $pca_model->gp_id = $gp_ids[$i];
-                                                    $pca_model->practice_id = $practice_ids[$i];
-                                                    $pca_models[] = $pca_model;
-                                            }
-                                    } else {
-                                            $pca_models = array();
-                                            foreach ($gp_ids as $gp_id){
-                                                    $pca_model = new PatientContactAssociate();
-                                                    $pca_model->gp_id = $gp_id;
-                                                    $pca_models[] = $pca_model;
-                                            }
-                                    }
-                                    if (!empty($pca_models)){
-                                            $patient->patientContactAssociates = $pca_models;
-                                    }
-                            }
+                if (isset($_POST['ExtraContact'])){
+                        $gp_ids = $_POST['ExtraContact']['gp_id'];
+                    if(isset($_POST['ExtraContact']['practice_id'])) {
+                                    $practice_ids = $_POST['ExtraContact']['practice_id'];
+                                    $pca_models = array();
+                        for($i =0;$i<sizeof($gp_ids);$i++) {
+                            $pca_model = new PatientContactAssociate();
+                            $pca_model->gp_id = $gp_ids[$i];
+                            $pca_model->practice_id = $practice_ids[$i];
+                            $pca_models[] = $pca_model;
+                        }
+                    } else {
+                                        $pca_models = array();
+                        foreach ($gp_ids as $gp_id){
+                            $pca_model = new PatientContactAssociate();
+                            $pca_model->gp_id = $gp_id;
+                            $pca_models[] = $pca_model;
+                        }
+                    }
+                    if (!empty($pca_models)){
+                            $patient->patientContactAssociates = $pca_models;
+                    }
+                }
             }
 
 
@@ -2354,51 +2354,51 @@ class PatientController extends BaseController
         $output = array();
 
         if (Yii::app()->params['institution_code'] === 'CERA') {
-                    foreach ($gps as $gp) {
-                        $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
-                        $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
-                        // CERA-513 the autocomplete search result should not show the inactivated gp
-                        if ($gp->is_active) {
-                            if (count($practice_contact_associates) == 0) {
+            foreach ($gps as $gp) {
+                $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
+                $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+                // CERA-513 the autocomplete search result should not show the inactivated gp
+                if ($gp->is_active) {
+                    if (count($practice_contact_associates) == 0) {
+                        $output[] = array(
+                            'gpTitle' => $gp->contact->title,
+                            'gpFirstName' => $gp->contact->first_name,
+                            'gpLastName' => $gp->contact->last_name,
+                            'gpPhoneno' => $gp->contact->primary_phone,
+                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                            'label' => $gp->correspondenceName . $role,
+                            'value' => $gp->id,
+                            'practiceId' => '',
+                        );
+                    } else {
+                        foreach ($practice_contact_associates as $practice_contact_associate) {
+                            if (isset($practice_contact_associate->practice)) {
+                                $practice = $practice_contact_associate->practice;
+                                $practiceId = $practice->id;
+                                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                                $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
                                 $output[] = array(
                                     'gpTitle' => $gp->contact->title,
                                     'gpFirstName' => $gp->contact->first_name,
                                     'gpLastName' => $gp->contact->last_name,
                                     'gpPhoneno' => $gp->contact->primary_phone,
                                     'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                                    'label' => $gp->correspondenceName . $role,
+                                    'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
                                     'value' => $gp->id,
-                                    'practiceId' => '',
+                                    'practiceId' => $practiceId,
                                 );
-                            } else {
-                                foreach ($practice_contact_associates as $practice_contact_associate) {
-                                    if (isset($practice_contact_associate->practice)) {
-                                        $practice = $practice_contact_associate->practice;
-                                        $practiceId = $practice->id;
-                                        $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
-                                        $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
-                                        $output[] = array(
-                                            'gpTitle' => $gp->contact->title,
-                                            'gpFirstName' => $gp->contact->first_name,
-                                            'gpLastName' => $gp->contact->last_name,
-                                            'gpPhoneno' => $gp->contact->primary_phone,
-                                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
-                                            'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
-                                            'value' => $gp->id,
-                                            'practiceId' => $practiceId,
-                                        );
-                                    }
-                                }
                             }
                         }
                     }
-                } else {
-                        foreach ($gps as $gp) {
-                            $output[] = array(
-                                'label' => $gp->correspondenceName,
-                                'value' => $gp->id
-                            );
-                        }
+                }
+            }
+        } else {
+            foreach ($gps as $gp) {
+                    $output[] = array(
+                        'label' => $gp->correspondenceName,
+                        'value' => $gp->id
+                    );
+            }
         }
 
         echo CJSON::encode($output);

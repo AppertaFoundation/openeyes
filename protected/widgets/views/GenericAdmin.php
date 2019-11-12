@@ -43,11 +43,11 @@
                 <tr>
                     <?php if($display_order) { ?>
                         <th>Order</th>
-                    <?php
-}
-        if (!$label_extra_field) : ?>
+                        <?php
+                    }
+                    if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
-                    <?php endif;?>
+                                <?php endif;?>
                     <?php foreach ($extra_fields as $field) {?>
                         <th>
                             <?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>

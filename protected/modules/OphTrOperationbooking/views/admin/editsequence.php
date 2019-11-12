@@ -208,7 +208,7 @@
                     Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
                     array('level' => 'cancel')
                 )->toHtml();
-            ?>
+?>
             <?php if ($sequence->id) {?>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php echo EventAction::button('View sessions', 'view_sessions', array(), array('class' => 'button small'))->toHtml()?>

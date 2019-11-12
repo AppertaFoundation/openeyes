@@ -56,7 +56,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
 
     public function renderParameter($id)
     {
-      ?>
+        ?>
       <div class="flex-layout flex-left js-case-search-param">
         <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
@@ -66,7 +66,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
             <?php echo CHtml::error($this, "[$id]patient_name"); ?>
         </div>
       </div>
-      <?php
+        <?php
     }
 
     /**

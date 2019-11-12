@@ -26,9 +26,9 @@
     <?php }?>
     <div class="cols-<?php if ($label) {
             echo $layoutColumns['field'];
-                                             } else {
-                                                            ?>12<?php
-                                             }?> column end">
+                     } else {
+                            ?>12<?php
+                     }?> column end">
         <div class="data-group collapse in flex-layout flex-top">
             <div class="cols-10 column">
                 <div class="dropdown-row">
@@ -36,9 +36,9 @@
                 </div>
                 <?php if($searchBtn){ ?>
                 <div class="autocomplete-row" style="display: none">
-            <?php
-            $this->widget('application.widgets.AutoCompleteSearch',['field_name' => "{$class}_{$field}_searchbox"]);
-            ?>
+                    <?php
+                    $this->widget('application.widgets.AutoCompleteSearch',['field_name' => "{$class}_{$field}_searchbox"]);
+                    ?>
         </div>
                 <?php }?>
             </div>

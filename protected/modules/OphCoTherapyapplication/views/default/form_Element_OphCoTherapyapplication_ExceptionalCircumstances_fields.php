@@ -80,9 +80,9 @@ if (@$_POST[get_class($element)]) {
     </td>
   </tr>
   <tr id="<?php echo get_class($element) . '_' . $side ?>_standard_intervention_details"
-      <?php if (!$exists) {
-          echo 'style="display: none;"';
-      } ?> class="flex-layout">
+        <?php if (!$exists) {
+            echo 'style="display: none;"';
+        } ?> class="flex-layout">
       <td>
         <?php echo $form->dropDownList(
             $element,
@@ -101,7 +101,7 @@ if (@$_POST[get_class($element)]) {
   <tr class="flex-layout">
       <td>
           <label for="<?php echo get_class($element) . '_' . $side . '_standard_previous'; ?>">
-              <?php echo $element->getAttributeLabel($side . '_standard_previous'); ?>
+                <?php echo $element->getAttributeLabel($side . '_standard_previous'); ?>
           </label>
       </td>
       <td class="standard_previous" id="<?php echo get_class($element) . '_' . $side; ?>_standard_previous">
@@ -113,19 +113,19 @@ if (@$_POST[get_class($element)]) {
         $opts = array(
           'options' => array(),
           'nowrapper'=>true,
-      );
-      $interventions = OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findAll();
+        );
+        $interventions = OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findAll();
 
         foreach ($interventions as $intervention) {
             $opts['options'][$intervention->id] = array(
               'data-description-label' => $intervention->description_label,
               'data-is-deviation' => $intervention->is_deviation,
-          );
-      }
-      ?>
+            );
+        }
+        ?>
       <td class="flex-layout">
           <label for="<?php echo get_class($element) . '_' . $side . '_intervention_id'; ?>">
-              <?php echo $element->getAttributeLabel($side . '_intervention_id'); ?>
+                <?php echo $element->getAttributeLabel($side . '_intervention_id'); ?>
           </label>
       </td>
       <td class="intervention flex-layout" id="<?php echo get_class($element) . '_' . $side; ?>_intervention">
@@ -210,7 +210,7 @@ if (@$_POST[get_class($element)]) {
   <tr>
       <td class="flex-layout" style="height: auto;">
           <label class="cols-6" for="<?php echo get_class($element) . '_' . $side . '_patient_different'; ?>" style="white-space: normal;">
-              <?php echo $element->getAttributeLabel($side . '_patient_different'); ?>
+                <?php echo $element->getAttributeLabel($side . '_patient_different'); ?>
           </label>
         <?php echo $form->textArea($element, $side . '_patient_different', array('nowrapper' => true), false, array('style' => 'width : 50%;'), $layoutColumns); ?>
     </td>
@@ -218,7 +218,7 @@ if (@$_POST[get_class($element)]) {
   <tr>
       <td class="flex-layout" style="height: auto;">
           <label class="cols-6" for="<?php echo get_class($element) . '_' . $side . '_patient_gain'; ?>" style="white-space: normal;">
-              <?php echo $element->getAttributeLabel($side . '_patient_gain'); ?>
+                <?php echo $element->getAttributeLabel($side . '_patient_gain'); ?>
           </label>
         <?php echo $form->textArea($element, $side . '_patient_gain', array('nowrapper' => true), false, array('style' => 'width : 50%;'), $layoutColumns); ?>
     </td>

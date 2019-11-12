@@ -22,16 +22,16 @@
   <div class="element-fields full-width flex-layout flex-top col-gap element">
       <div class="cols-3">
           <section class="box dashboard">
-              <?php
-              echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
+                <?php
+                echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
                       array('class' => 'button small')) . ' ';
-              echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id),
+                echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id),
                   array('class' => 'button small secondary'));
-              if (Yii::app()->user->checkAccess('Patient Merge')) {
-                  echo ' ' . CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id),
+                if (Yii::app()->user->checkAccess('Patient Merge')) {
+                    echo ' ' . CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id),
                           array('class' => 'button small warning '));
-              }
-              ?>
+                }
+                ?>
           </section>
       </div>
   </div>
@@ -41,7 +41,7 @@
         action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id)) ?>"
         method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-      <?=\CHtml::activeHiddenField($model, 'id') ?>
+        <?=\CHtml::activeHiddenField($model, 'id') ?>
     <div class="cols-12 flex-layout">
       <div class="cols-5">
         <h2 class="secondaryPatient">Secondary</h2>

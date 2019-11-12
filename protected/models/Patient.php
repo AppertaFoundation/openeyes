@@ -299,13 +299,13 @@ class Patient extends BaseActiveRecordVersioned
                     $result = $command->queryColumn();
                     $default_hos_num = $result;
 //            Checks the admin setting for the starting number for auto increment
-                    if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-                        $default_hos_num[0] = Yii::app()->params['hos_num_start'];
-                        return $default_hos_num[0];
-                    } else {
-                        return ($default_hos_num[0] + 1);
-                    }
-                }
+            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
+                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+                return $default_hos_num[0];
+            } else {
+                return ($default_hos_num[0] + 1);
+            }
+        }
     }
 
     /**
@@ -2172,13 +2172,13 @@ class Patient extends BaseActiveRecordVersioned
             return;
         }
 
-    $currentDate = new DateTime(date('j M Y'));
-    $date_of_birth = new DateTime($this->dob);
-    $min_date_of_birth = new DateTime("1900-01-01");
+        $currentDate = new DateTime(date('j M Y'));
+        $date_of_birth = new DateTime($this->dob);
+        $min_date_of_birth = new DateTime("1900-01-01");
 
-    if ($date_of_birth > $currentDate || $date_of_birth < $min_date_of_birth) {
-      $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
-    }
+        if ($date_of_birth > $currentDate || $date_of_birth < $min_date_of_birth) {
+            $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
+        }
 
     }
 
@@ -2208,7 +2208,7 @@ class Patient extends BaseActiveRecordVersioned
     //Note: The dates processed by this function will always be assumed to be in full ascending/descending order
         //Ex: dd/mm/yyyy and yyyy/mm/dd will work, but mm/dd/yyyy or yyyy/dd/mm will not
         //This is normally handled by php: '/' delimited dates are american, '-' delimited dates are european
-    $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
+        $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
 
         $validPatient = new Patient('manual');
         $validContact = new Contact('manual');
@@ -2223,8 +2223,8 @@ class Patient extends BaseActiveRecordVersioned
         return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
     }
 
-  public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
-      $sql = '
+    public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+        $sql = '
             SELECT p.*
             FROM patient p 
             JOIN patient_identifier pid
@@ -2235,9 +2235,9 @@ class Patient extends BaseActiveRecordVersioned
               AND p.deleted = 0
               ';
 
-      return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
+        return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
 
-  }
+    }
 
     /**
      * Returns an array of summarised patient Systemic diagnoses

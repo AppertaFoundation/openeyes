@@ -9,19 +9,19 @@
         <li>
             <?=\CHtml::link('Go Back to Trials', Yii::app()-> baseURL.'/OETrial/trial') ?>
         </li>
-      <?php if ($trial->is_open && $permission->can_edit): ?>
+        <?php if ($trial->is_open && $permission->can_edit): ?>
         <li>
             <?php echo CHtml::link('Add Participants',
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
         </li>
-      <?php if (CsvController::uploadAccess()): ?>
+            <?php if (CsvController::uploadAccess()): ?>
         <li>
           <a href = <?=  Yii::app()->createURL('csv/upload',
               array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
-          ) ?> >Upload trial patients</a>
+                    ) ?> >Upload trial patients</a>
         </li>
-      <?php endif; ?>
-      <?php endif; ?>
+        <?php endif; ?>
+        <?php endif; ?>
     <li>
         <?php echo CHtml::link('Trial Permissions',
             $this->createUrl('permissions', array('id' => $trial->id))); ?>

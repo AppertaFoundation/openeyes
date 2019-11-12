@@ -14,8 +14,8 @@
            style='margin-right: 8px;'>AND</p>
       </div>
       <div class="cols-10">
-          <?php $model->renderParameter($id); ?>
-          <?php echo CHtml::activeHiddenField($model, "[$id]id"); ?>
+            <?php $model->renderParameter($id); ?>
+            <?php echo CHtml::activeHiddenField($model, "[$id]id"); ?>
       </div>
 
       <div class="js-case-search-placeholder">

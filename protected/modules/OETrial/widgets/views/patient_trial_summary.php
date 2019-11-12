@@ -31,7 +31,7 @@
                 <tr>
                   <td>
                       <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
-                          echo CHtml::link(CHtml::encode($trialPatient->trial->name),
+                            echo CHtml::link(CHtml::encode($trialPatient->trial->name),
                               Yii::app()->controller->createUrl('/OETrial/trial/view',
                                   array('id' => $trialPatient->trial_id)));
                       } else {
@@ -53,9 +53,9 @@
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
                   <td><?php
-                      if (isset($trialPatient->status_update_date)) {
-                          echo Helper::formatFuzzyDate($trialPatient->status_update_date);
-                      } ?></td>
+                    if (isset($trialPatient->status_update_date)) {
+                        echo Helper::formatFuzzyDate($trialPatient->status_update_date);
+                    } ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>

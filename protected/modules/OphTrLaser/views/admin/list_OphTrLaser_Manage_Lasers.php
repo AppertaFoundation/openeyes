@@ -33,7 +33,7 @@
             </thead>
             <tbody>
             <?php if (isset($model_list)){
-            foreach ($model_list as $i => $model) { ?>
+                foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphTrLaser/admin/editLaser/<?php echo $model->id ?>">
                     <td><?php echo $model->name ?></td>
@@ -42,14 +42,14 @@
                     <td><?php echo $model->site->name ?></td>
                     <td><i class="oe-i <?=($model->active ? 'tick' : 'remove');?> small"></i></td>
                     <td>
-                        <?=\CHtml::link(
+                            <?=\CHtml::link(
                             'Edit',
                             '/OphTrLaser/admin/editLaser/' . $model->id,
                             ['class' => 'small event-action']
-                        ) ?>
+                            ) ?>
                     </td>
                 </tr>
-            <?php } } ?>
+                <?php } } ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>

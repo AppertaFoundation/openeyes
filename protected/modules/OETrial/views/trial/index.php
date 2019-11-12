@@ -55,22 +55,22 @@
   </nav>
 
   <main class="oe-full-main">
-      <?php
-      $this->renderPartial('_trial_list', array(
+        <?php
+        $this->renderPartial('_trial_list', array(
           'dataProvider' => $trialDataProvider,
           'title' => 'Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
-      <?php
-      $this->renderPartial('_trial_list_searched', array(
+        ));
+        ?>
+        <?php
+        $this->renderPartial('_trial_list_searched', array(
           'dataProvider' => $trialSearchDataProvider,
           'title' => 'Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
+        ));
+        ?>
   </main>
 </div>
 

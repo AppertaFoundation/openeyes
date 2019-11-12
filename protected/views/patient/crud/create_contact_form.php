@@ -140,7 +140,7 @@
                                 ),
                                 array('class' => 'button hint green')
                             );
-                        ?>
+                            ?>
                     </td>
                 </tr>
                 </tbody>
@@ -252,7 +252,7 @@
                             ],
                             array('class' => 'button hint green')
                         );
-                        ?>
+?>
                     </td>
                     </tr>
                 </tbody>
@@ -378,7 +378,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                             ],
                             array('class' => 'button hint green')
                         );
-                        ?>
+?>
                     </td>
                 </tr>
                 </tbody>

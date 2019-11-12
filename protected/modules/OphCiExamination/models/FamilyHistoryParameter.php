@@ -139,7 +139,7 @@ FROM patient p
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
 WHERE (".$query_side.$query_relative.$query_condition;
-          switch ($this->operation) {
+        switch ($this->operation) {
             case '=':
                 // Do nothing.
                 break;
@@ -153,7 +153,7 @@ WHERE id NOT IN (
                 break;
             default:
                 throw new CHttpException(400, 'Invalid operator specified.');
-                break;
+              break;
         }
 
         return $queryStr;

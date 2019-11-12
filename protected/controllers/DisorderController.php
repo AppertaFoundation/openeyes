@@ -152,7 +152,7 @@ class DisorderController extends BaseController
         $items = array();
         $errors = array();
         if ($key !== null) {
-           $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
+            $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
         } else {
             if ($options['filters_ready']) {
                 if (Yii::app()->request->isPostRequest) {
@@ -161,7 +161,7 @@ class DisorderController extends BaseController
                     list($options, $items) = $this->optionsFiltersNotAvailable($model, $options);
                 }
             }
-        $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
+            $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
         }
     }
 

@@ -15,14 +15,14 @@
                 <tbody>
                 <tr>
                     <?php foreach ($patients as $patient):
-                            foreach ($patient->identifiers as $pid):
-                                if($pid->code == $identifier_code): ?>
+                        foreach ($patient->identifiers as $pid):
+                            if($pid->code == $identifier_code): ?>
                 <tr>
                     <td><?php echo CHtml::link($pid->value,
-                            Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?></td>
+                        Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?></td>
                     <td>
-                        <?php echo CHtml::link($patient->getFullName(),
-                            Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
+                                <?php echo CHtml::link($patient->getFullName(),
+                                Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
                     </td>
                     <td></td>
                 </tr>

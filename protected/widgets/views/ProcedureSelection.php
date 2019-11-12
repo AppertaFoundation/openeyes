@@ -55,7 +55,7 @@
                     <?php if ($durations) { ?>
                         <td class="duration">
                     <span data-default-duration="<?= $procedure->default_duration ?>">
-                    <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
+                        <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
                     </span> mins
                         </td>
                     <?php } ?>
