@@ -511,7 +511,7 @@ foreach ($ethnic_list as $key => $item) {
 <script>
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#autocomplete_extra_gps_id'),
-        url: '/patient/gpList',
+        url: '/patient/gpListRp',
         maxHeight: '200px',
         onSelect: function(){
             let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
