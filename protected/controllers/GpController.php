@@ -153,9 +153,10 @@ class GpController extends BaseController
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
             if (isset($_POST['Contact'])) {
-                $contact->attributes = $_POST['Contact'];
-                $this->performAjaxValidation($contact);
-                list($contact, $gp) = $this->performGpSave($contact, $gp);
+               $contact->attributes = $_POST['Contact'];
+               $gp->is_active = $_POST['Gp']['is_active'];
+               $this->performAjaxValidation($contact);
+               list($contact, $gp) = $this->performGpSave($contact, $gp);
 
                 if ($gp->id) {
                     $this->redirect(array('view', 'id' => $gp->id));
