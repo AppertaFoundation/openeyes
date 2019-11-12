@@ -104,7 +104,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         <div class="cols-right">
             <div class="popup-overflow">
                 <div class="subtitle">&nbsp;</div>
-                    <?php if (Yii::app()->params['institution_code'] !== 'CERA') { ?>
+                    <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
                 <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
                             <tbody>
                                     <tr>
