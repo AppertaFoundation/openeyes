@@ -110,6 +110,20 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
         return $element_types;
     }
 
+    /**
+     * Returns the given elements set specific display order if it exists.
+     *
+     * @return int
+     */
+    public function getSetElementOrder($element) {
+        foreach ($this->visibleItems as $item) {
+          if ($element->getElementType() == $item->element_type && $item->display_order) {
+              return $item->display_order;
+          }
+        }
+        return null; 
+    }
+
     public function getWorkFlowMaximumDisplayOrder()
     {
         $maximum_display_order = 0;

@@ -34,4 +34,12 @@ trait CustomOrdering {
         return $set_id == 'view' && isset($this->default_view_order) ? $this->default_view_order :
             $this->getCustomOrder($set_id);
     }
+
+    /**
+     * Added to satisfy condition where the display_order is attempted
+     * to be retrieved as attribute `display_order`.
+     */
+    public function getdisplay_order($set_id = null) {
+        return $this->getDisplayOrder($set_id);
+    }
 }

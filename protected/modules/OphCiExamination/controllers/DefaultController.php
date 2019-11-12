@@ -93,13 +93,35 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->event || $this->event->isNewRecord) {
             $elements = $this->getElementsByWorkflow(null, $this->episode);
         } else {
-            $elements = $this->event->getElements();
+            $elements = $this->getSortedElements();
             if ($this->step) {
                 $elements = $this->mergeNextStep($elements);
             }
         }
 
         return $this->filterElements($elements);
+    }
+
+    /**
+     * Returns the current events elements ordered by workflow set
+     * where applicable.
+     * @return \BaseEventTypeElement[]
+     */
+    protected function getSortedElements() {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $sortable_elements = [];
+
+        foreach($this->event->getElements() as $element) {
+            $flow_order = $set->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_elements[$flow_order] = $element;
+            } else {
+                $sortable_elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+            }
+        }
+
+        ksort($sortable_elements);
+        return $sortable_elements;
     }
 
     /**
@@ -592,6 +614,13 @@ class DefaultController extends \BaseEventTypeController
         return $merged_elements;
     }
 
+    protected function getSetFromEpisode($episode) {
+        $firm_id = $this->firm->id;
+        $status_id = ($episode) ? $episode->episode_status_id : 1;
+        $workflow = new models\OphCiExamination_Workflow_Rule();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
     /**
      * Get the array of elements for the current site, subspecialty, episode status and workflow position
      *
@@ -604,10 +633,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $elements = array();
         if (!$set) {
-            $firm_id = $this->firm->id;
-            $status_id = ($episode) ? $episode->episode_status_id : 1;
-            $workflow = new models\OphCiExamination_Workflow_Rule();
-            $set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $set = $this->getSetFromEpisode($episode);
         }
 
         if ($set) {
