@@ -27,7 +27,7 @@ $(document).ready(function () {
     $(this).addClass('selected'); //select the current button
     switch(side){
       case 'left':
-          $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')); //show the left eye indicator
+          $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')).css("display", "inline-block"); //show the left eye indicator
           $('#oes-side-indicator-right').hide().appendTo($('#oes-side-indicator')); //hide the right eye indicator
         
           $('#plotly-Meds-left').appendTo($('#js-hs-chart-Meds'));
@@ -52,11 +52,15 @@ $(document).ready(function () {
 
       case 'both':
         
-          $('#oes-side-indicator-left').show().appendTo($('.oes-right-side')); //show the left eye indicator
-          $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the right eye indicator
-
+          $('.ResetZoomPadRight').remove(); //reset zoom button space
+          $('.SelectorPadRight').remove();//reset dropdown space
+          
           $('.oes-right-side > div').not('.plotly-left').hide();  //disable previous right side content
-          $('<div class="ResetZoomPadRight" style=" padding:' + $('.reset-zoom').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
+          $('<div class="ResetZoomPadRight cols-2" style="height:' + $('.reset-zoom').height() + '; display:inline-block";><div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
+
+          $('#oes-side-indicator-left').show().appendTo($('.oes-right-side')).css("display", "inline-block"); //show the left eye indicator
+          $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')).css("display", "inline-block"); //show the right eye indicator
+
           $('#plotly-Meds-left , #plotly-IOP-left').appendTo($('.oes-right-side'));   
           //add padding for selectors on right
           $('<div class="SelectorPadRight" style=" padding:' + $('#va_history_unit_id').height() + 'px 100% 0 0"><div>').clone().appendTo($('.oes-right-side')); 
@@ -204,18 +208,25 @@ function setOEScapeSize(size_str){
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
   left.css({"min_width":sizes[size_str].min_width, "width":sizes[size_str].percent+'%'});
 
-  var current_width = $(document).width()*sizes[size_str].percent/100;
-  var left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
-  var right_width = $(document).width()-left_width;
+  right.css({"width": (100-sizes[size_str].percent)+'%'});
+
+  let doc_width = $(document).width();
+
+  let rounding = (doc_width/100)*.5;
+
+  let current_width = ((doc_width*sizes[size_str].percent)/100) - rounding;
+  let left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
+  let right_width =((doc_width*(100-sizes[size_str].percent))/100) - rounding;
+  
   right.css({"width": right_width});
   right.toggle(size_str !== 'full');
-  var left_update = {
-    width: left_width,
+
+  let left_update = {
+    width: left_width>0?left_width:1,
   };
-  var right_update = {
+  let right_update = {
     width: right_width>0?right_width:1,
   };
-  // console.log(right_update);
   if (eye_side != 'both'){
     var plotly_list_l = $('.plotly-'+eye_side);
   }
@@ -226,13 +237,11 @@ function setOEScapeSize(size_str){
     for (let i = 0; i < plotly_list_r.length; i++){
       let plotly_id = plotly_list_r[i].id;
       Plotly.relayout(plotly_id, right_update);
-      // console.log(plotly_id+" ding");
     }    
   }
   for (let i = 0; i < plotly_list_l.length; i++){
     let plotly_id = plotly_list_l[i].id;
     Plotly.relayout(plotly_id, left_update);
-    // console.log(plotly_id+" ding");
   }
 }
 
