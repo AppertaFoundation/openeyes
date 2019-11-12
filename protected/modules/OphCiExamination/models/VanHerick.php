@@ -34,7 +34,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class VanHerick extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 

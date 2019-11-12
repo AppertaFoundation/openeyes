@@ -24,7 +24,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisks extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 55;
 
     protected $auto_update_relations = true;

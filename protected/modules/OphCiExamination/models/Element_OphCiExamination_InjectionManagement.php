@@ -34,7 +34,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

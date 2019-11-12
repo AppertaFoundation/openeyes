@@ -39,7 +39,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

@@ -33,7 +33,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_AdnexalComorbidity extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

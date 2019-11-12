@@ -36,7 +36,7 @@ use OEModule\PASAPI\resources\Patient;
  */
 class SystemicDiagnoses extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
 
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;

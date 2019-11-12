@@ -48,7 +48,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_LaserManagement extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

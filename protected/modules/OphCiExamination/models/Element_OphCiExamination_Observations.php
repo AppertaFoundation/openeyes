@@ -29,7 +29,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     /**
      * @return string the associated database table name
      */

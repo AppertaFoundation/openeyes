@@ -31,7 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_GlaucomaRisk extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *

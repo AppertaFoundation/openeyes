@@ -37,7 +37,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryIOP extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;

@@ -34,7 +34,7 @@ use Yii;
  */
 class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *

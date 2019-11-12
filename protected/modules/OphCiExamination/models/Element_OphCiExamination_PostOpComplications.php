@@ -39,7 +39,7 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
     public $firm;
     public $subspecialty_id;

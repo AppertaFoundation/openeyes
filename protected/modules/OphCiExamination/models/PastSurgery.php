@@ -36,7 +36,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class PastSurgery extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 10;
 
     protected $auto_update_relations = true;

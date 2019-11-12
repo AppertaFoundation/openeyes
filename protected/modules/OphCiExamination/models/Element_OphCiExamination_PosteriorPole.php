@@ -42,7 +42,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

@@ -33,7 +33,7 @@ use Yii;
  */
 class Element_OphCiExamination_History extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     public $service;
 
     /**

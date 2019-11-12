@@ -34,7 +34,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Allergies extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 50;
 
     protected $auto_update_relations = true;

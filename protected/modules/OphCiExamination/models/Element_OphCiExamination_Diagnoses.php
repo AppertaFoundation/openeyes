@@ -35,7 +35,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 10;
 
     protected $errorExceptions = [

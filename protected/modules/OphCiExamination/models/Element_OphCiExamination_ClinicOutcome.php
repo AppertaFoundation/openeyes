@@ -35,7 +35,7 @@ use Yii;
  */
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     const FOLLOWUP_Q_MIN = 1;
     const FOLLOWUP_Q_MAX = 18;
 

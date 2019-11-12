@@ -47,7 +47,7 @@ use Yii;
  */
 class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
 
     public $service;
     protected $auto_update_relations = true;

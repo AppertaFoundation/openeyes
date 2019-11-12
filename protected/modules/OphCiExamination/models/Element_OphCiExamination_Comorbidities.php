@@ -30,7 +30,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Comorbidities extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 45;
 
     protected $auto_update_relations = true;

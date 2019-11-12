@@ -31,7 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryMedications extends \BaseEventTypeElement
 {
-    use CustomOrdering;
+    use traits\CustomOrdering;
     protected $default_view_order = 25;
 
     protected $auto_update_relations = true;
