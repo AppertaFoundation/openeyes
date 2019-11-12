@@ -416,7 +416,8 @@ class AdminController extends \ModuleAdminController
 
         $default_types = \ElementType::model()->findAll();
         foreach ($default_types as $type) {
-            $items_to_edit = models\OphCiExamination_ElementSet::model()->findByPk($element_set_id)->items;
+            $element_set = models\OphCiExamination_ElementSet::model()->findByPk($element_set_id);
+            $items_to_edit = $element_set ? $element_set->items : [];
             $items_to_edit = array_filter($items_to_edit, function ($item) use($type) { return $item->element_type_id == $type->id; });
 
             if (count($items_to_edit) == 1) {
