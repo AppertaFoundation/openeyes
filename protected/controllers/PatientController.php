@@ -2124,7 +2124,6 @@ class PatientController extends BaseController
             $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
             if (isset($existing_pca_models)) {
                 foreach ($existing_pca_models as $existing_pca_model) {
-
                     $existing_pca_model->delete();
                 }
             }
@@ -2238,7 +2237,6 @@ class PatientController extends BaseController
             $this->redirect(array('view', 'id' => $patient->id));
         }
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
@@ -2267,7 +2265,6 @@ class PatientController extends BaseController
         }
 
         switch ($patient->patient_source) {
-
             case Patient::PATIENT_SOURCE_OTHER:
                 $contact->setScenario('other_register');
                 $patient->setScenario('other_register');
@@ -2679,7 +2676,6 @@ class PatientController extends BaseController
 
             //Check only if document has been added
             if ($name != '') {
-
                 // PHP automatically discards the files that exceed the maximum file upload limit.
                 // So when the size parameter is 0 and the name is not null, it means the file size is large
                 if ($size == 0) {

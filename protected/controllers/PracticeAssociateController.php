@@ -40,7 +40,6 @@ class PracticeAssociateController extends BaseController
             $contact_practice_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
             if ($contact_practice_associate->validate(array('practice_id'))) {
-
                 $contactFormData = $_POST['Contact'];
                 $gp = new Gp();
                 $contact = new Contact('manage_gp');

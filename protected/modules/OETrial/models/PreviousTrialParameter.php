@@ -206,7 +206,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 // specific trial
                 $condition = "t_p.trial_id = :p_t_trial_$this->id";
             }
-
         } else {
             // Any trial
             $condition = 't_p.trial_id IS NOT NULL';

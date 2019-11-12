@@ -43,7 +43,6 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
 <?php } else if ($allow_clinical) { ?>
-
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
         <?php $this->renderPartial('//patient/event_actions'); ?>

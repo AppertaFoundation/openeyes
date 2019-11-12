@@ -108,7 +108,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
         <?php if ($permission->can_edit && $data->trial->is_open) : ?>
 <!--          disable the button if the patient is deleted so that it cannot be accepted into the trial.-->
             <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE && !$data->patient->isDeleted()) : ?>
-
             <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
                class="accept-patient-button button hint green"
@@ -128,7 +127,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
             <?php endif; ?>
 
             <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE) : ?>
-
                 <?php if (!$data->patient->isDeleted()) : ?>
                 <span>
                     <button href="javascript:void(0)"

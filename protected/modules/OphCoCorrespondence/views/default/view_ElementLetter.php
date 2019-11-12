@@ -121,7 +121,6 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             $toAddress = "";
 
                             if ($element->document_instance) {
-
                                 foreach ($element->document_instance as $instance) {
                                     foreach ($instance->document_target as $target) {
                                         if ($target->ToCc == 'To') {

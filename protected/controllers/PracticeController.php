@@ -116,7 +116,6 @@ class PracticeController extends BaseController
             $practice->attributes = $_POST['Practice'];
 
             if ( $contact->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
-
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
@@ -159,7 +158,6 @@ class PracticeController extends BaseController
      */
     public function actionCreateAssociate(){
         if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
-
             $contactPractice = new Contact('manage_practice');
             $address = new Address('manage_practice');
             $practice = new Practice('manage_practice');
@@ -169,7 +167,6 @@ class PracticeController extends BaseController
             $practice->attributes = $_POST['Practice'];
 
             if ($contactPractice->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
-
                 $practice_contact_associate = new ContactPracticeAssociate();
                 $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
@@ -394,7 +391,6 @@ class PracticeController extends BaseController
         $this->performAjaxValidation(array($model, $contact, $address, $gp));
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
-
             $isDuplicateProviderNo = false;
 
             $contact->attributes = $_POST['Contact'];
@@ -434,7 +430,6 @@ class PracticeController extends BaseController
             }
 
             if ( $contact->validate(array('first_name')) and $model->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
-
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
@@ -461,7 +456,6 @@ class PracticeController extends BaseController
                 $model->validate(array('phone'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
-
         }
 
         $this->render('update', array(

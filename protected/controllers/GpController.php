@@ -105,7 +105,6 @@ class GpController extends BaseController
         // if context is AJAX then it means that this action is called from add patient screen, or it will go
         // to the else condition if it is called from the practitioners screen.
         if ($context === 'AJAX') {
-
             // manage_gp_role_req is used for CERA for validating roles as well.
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
@@ -114,10 +113,8 @@ class GpController extends BaseController
             if (isset($_POST['Contact'])) {
                 $contact->attributes = $_POST['Contact'];
                 if ($contact->validate()) {
-
                     // checking for the duplicate provider no.
                     if (!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
-
                         $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
 
                         $query = Yii::app()->db->createCommand()
@@ -191,7 +188,6 @@ class GpController extends BaseController
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Contact']) && isset($_POST['Gp']['is_active'])) {
-
             $contact->attributes = $_POST['Contact'];
             $model->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);

@@ -216,7 +216,6 @@ class Trial extends BaseActiveRecordVersioned
         parent::afterSave();
 
         if ($this->getIsNewRecord()) {
-
             // Create a new permission assignment for the user that created the Trial
             if (array_key_exists('principal_investigator', $_SESSION) && !empty($_SESSION['principal_investigator'])) {
                 $current_user_id = $_SESSION['principal_investigator'];

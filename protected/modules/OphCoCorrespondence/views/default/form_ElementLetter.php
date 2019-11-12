@@ -282,9 +282,7 @@ $creating = isset($creating) ? $creating : false;
                     }
                     // set back posted data on error
                     if (isset($_POST['DocumentTarget'])) {
-
                         foreach ($_POST['DocumentTarget'] as $document_target) {
-
                             if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
                                 $macro_data['to'] = array(
                                   'contact_type' => $document_target['attributes']['contact_type'],
@@ -293,9 +291,7 @@ $creating = isset($creating) ? $creating : false;
                                   'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                                 );
                             } else {
-
                                 if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
-
                                     $macro_data['cc'][] = array(
                                       'contact_type' => $document_target['attributes']['contact_type'],
                                       'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
