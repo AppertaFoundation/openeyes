@@ -107,11 +107,12 @@ class DefaultController extends \BaseEventTypeController
      * where applicable.
      * @return \BaseEventTypeElement[]
      */
-    protected function getSortedElements() {
+    protected function getSortedElements()
+    {
         $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
         $sortable_elements = [];
 
-        foreach($this->event->getElements() as $element) {
+        foreach ($this->event->getElements() as $element) {
             $flow_order = $set->getSetElementOrder($element);
             if ($flow_order) {
                 $sortable_elements[$flow_order] = $element;
@@ -614,7 +615,8 @@ class DefaultController extends \BaseEventTypeController
         return $merged_elements;
     }
 
-    protected function getSetFromEpisode($episode) {
+    protected function getSetFromEpisode($episode)
+    {
         $firm_id = $this->firm->id;
         $status_id = ($episode) ? $episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
