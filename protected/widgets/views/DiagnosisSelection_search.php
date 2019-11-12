@@ -17,22 +17,22 @@
  */
 ?>
 <div class="data-group diagnosis-selection<?php echo !$nowrapper ? ' flex-layout flex-left' : '';?> ">
-	<?php if (!$nowrapper && $label) {?>
-		<div class="cols-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo "{$class}_{$field}";?>">
-				<?php echo $element->getAttributeLabel($field)?>:
-			</label>
-		</div>
-	<?php }?>
-	<div class="cols-<?php if ($label) {
-			echo $layoutColumns['field'];
-											 } else {
-															?>12<?php
-											 }?> column end">
-		<div class="data-group collapse in flex-layout flex-top">
-			<div class="cols-10 column">
-				<div class="dropdown-row">
-					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : array_merge($dropdownOptions, array('style' => 'width : 100%'))) : ''?>
+    <?php if (!$nowrapper && $label) {?>
+        <div class="cols-<?php echo $layoutColumns['label'];?> column">
+            <label for="<?php echo "{$class}_{$field}";?>">
+                <?php echo $element->getAttributeLabel($field)?>:
+            </label>
+        </div>
+    <?php }?>
+    <div class="cols-<?php if ($label) {
+            echo $layoutColumns['field'];
+                                             } else {
+                                                            ?>12<?php
+                                             }?> column end">
+        <div class="data-group collapse in flex-layout flex-top">
+            <div class="cols-10 column">
+                <div class="dropdown-row">
+                    <?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : array_merge($dropdownOptions, array('style' => 'width : 100%'))) : ''?>
                 </div>
                 <?php if($searchBtn){ ?>
                 <div class="autocomplete-row" style="display: none">
@@ -41,19 +41,19 @@
             ?>
         </div>
                 <?php }?>
-			</div>
-			<div class="cols-2 column">
-				<div class="postfix">
+            </div>
+            <div class="cols-2 column">
+                <div class="postfix">
                     <?php if($searchBtn){ ?>
-					<button class="oe-i search pad-left" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
-						<span class="icon-button-small-search" ></span>
-						<span style="display: none">Search</span>
-					</button>
+                    <button class="oe-i search pad-left" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
+                        <span class="icon-button-small-search" ></span>
+                        <span style="display: none">Search</span>
+                    </button>
                     <?php }?>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <?php if($searchBtn){ ?>
 <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
@@ -77,16 +77,16 @@
             $('<?= "#".$class."_".$field."_searchbox";?>').parent().addClass('hide');
         }
     });
-	$(document).ready(function() {
-		var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
-		var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
-		searchButton.on('click', function(e) {
-			e.preventDefault();
-			(searchBox.parent()).parent().toggle();
+    $(document).ready(function() {
+        var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
+        var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
+        searchButton.on('click', function(e) {
+            e.preventDefault();
+            (searchBox.parent()).parent().toggle();
             searchBox.closest('.patient-activity').show();
             searchBox.focus();
-		});
-	});
+        });
+    });
 
 </script>
 <?php }?>

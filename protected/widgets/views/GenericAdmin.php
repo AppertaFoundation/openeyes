@@ -38,34 +38,34 @@
     if ($filters_ready) { ?>
         <?= CHtml::beginForm() ?>
 
-		<table class="standard generic-admin">
-			<thead>
-				<tr>
-					<?php if($display_order) { ?>
-						<th>Order</th>
-					<?php
+        <table class="standard generic-admin">
+            <thead>
+                <tr>
+                    <?php if($display_order) { ?>
+                        <th>Order</th>
+                    <?php
 }
         if (!$label_extra_field) : ?>
-						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
-					<?php endif;?>
-					<?php foreach ($extra_fields as $field) {?>
-						<th>
-							<?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
-							<?php echo $model::model()->getAttributeLabel($field['field'])?>
-						</th>
-					<?php }?>
-					<?php if ($model::model()->hasAttribute('active')) {?>
-						<th>Active</th>
-					<?php } else{?>
-						<th>Actions</th>
-					<?php }
+                        <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+                    <?php endif;?>
+                    <?php foreach ($extra_fields as $field) {?>
+                        <th>
+                            <?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
+                            <?php echo $model::model()->getAttributeLabel($field['field'])?>
+                        </th>
+                    <?php }?>
+                    <?php if ($model::model()->hasAttribute('active')) {?>
+                        <th>Active</th>
+                    <?php } else{?>
+                        <th>Actions</th>
+                    <?php }
                     if ($model::model()->hasAttribute('default')) {?>
-						<th>Default</th>
-					<?php }?>
-				</tr>
-			</thead>
-			<tbody class="<?= ($display_order) ? 'sortable' : ''?>">
-	<?php }
+                        <th>Default</th>
+                    <?php }?>
+                </tr>
+            </thead>
+            <tbody class="<?= ($display_order) ? 'sortable' : ''?>">
+    <?php }
 }
 ?>
 

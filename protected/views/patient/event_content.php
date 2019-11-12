@@ -10,8 +10,8 @@
       <?php } ?>
 
   </h2>
-	<?php $extra_info = $this->getExtraTitleInfo(); ?>
-		<div class="event-title-extra-info flex-layout">
+    <?php $extra_info = $this->getExtraTitleInfo(); ?>
+        <div class="event-title-extra-info flex-layout">
 
     <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)): ?>
@@ -25,9 +25,9 @@
                 </div>
             <?php endif; ?>
 
-						<?php if ($extra_info && $extra_info !== ""): ?>
-							<?= $extra_info ?>
-						<?php endif; ?>
+                        <?php if ($extra_info && $extra_info !== ""): ?>
+                            <?= $extra_info ?>
+                        <?php endif; ?>
 
             <?php $errors = $this->event->getErrors();
             $error_class = isset($errors['event_date']) ? 'error' : '';
@@ -85,9 +85,9 @@
              data-tooltip-content="Change Event date"
              style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
 <?php } ?>
-		</div>
+        </div>
 
-	<?php $this->renderPartial('//patient/_patient_alerts') ?>
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 
     <?php echo $content; ?>

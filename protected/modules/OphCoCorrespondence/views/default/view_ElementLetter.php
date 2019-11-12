@@ -71,7 +71,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         ?>
                 </td>
             </tr>
-					  <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
+                      <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
             <tr>
                 <td class="data-label">
                     From
@@ -148,7 +148,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     ?>
                 </td>
             </tr>
-					<?php } ?>
+                    <?php } ?>
     <div class="spinner-overlay">
         <i class="spinner"></i>
         <img src="#"
@@ -223,7 +223,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
             <?php else: ?>
                 <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
             <?php endif; ?>
-		</div>
+        </div>
             </tbody>
         </table>
     </div>

@@ -69,7 +69,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function initActionCreate()
     {
-				$this->siteLaserOperatorCheck();
+                $this->siteLaserOperatorCheck();
         if (isset($_POST['Element_OphTrLaser_Site']['site_id'])) {
             $site_id = $_POST['Element_OphTrLaser_Site']['site_id'];
         } else {

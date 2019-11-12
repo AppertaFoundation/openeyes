@@ -270,12 +270,12 @@ class Contact extends BaseActiveRecordVersioned
     }
 
     protected function performAjaxValidation($model)
-		{
-			if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
-				echo CActiveForm::validate($model);
-				Yii::app()->end();
-			}
-		}
+        {
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
+                echo CActiveForm::validate($model);
+                Yii::app()->end();
+            }
+        }
 
     public function getActiveContacts($patient_id)
     {

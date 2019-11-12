@@ -132,9 +132,9 @@ class DefaultController extends BaseEventTypeController
             case UPLOAD_ERR_FORM_SIZE:
                 $message = 'The document\'s size is too large!';
                 return $message;
-			break;
-			default:
-				$message = 'Unknown error! Please try again!';
+            break;
+            default:
+                $message = 'Unknown error! Please try again!';
                 return $message;
         }
 

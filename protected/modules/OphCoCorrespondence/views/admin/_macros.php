@@ -31,7 +31,7 @@ if (!empty($macros)) {
                 } else if ($macro->firm) {
                     echo Firm::contextLabel() . ': '.$macro->firm->getNameAndSubspecialty();
                 } else{
-				    echo 'No owner was specified for this macro.';
+                    echo 'No owner was specified for this macro.';
                 }?>
             </td>
             <td><?php echo $macro->name?></td>

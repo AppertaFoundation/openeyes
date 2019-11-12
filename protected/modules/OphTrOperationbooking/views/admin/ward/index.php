@@ -51,10 +51,10 @@
                         <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
                     </tr>
                 <?php } }?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="5">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
                         <?=\CHtml::htmlButton('Add', [
                             'class' => 'button large',
                             'id' => 'et_add_ward'

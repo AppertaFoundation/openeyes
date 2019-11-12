@@ -21,5 +21,5 @@
     data-element-type-name="<?php echo $element->elementType->name ?>"
     data-element-display-order="<?php echo $element->elementType->display_order ?>"
     class="cols-1">
-	<a href="#"><?php echo $element->elementType->name?></a>
+    <a href="#"><?php echo $element->elementType->name?></a>
 </li>

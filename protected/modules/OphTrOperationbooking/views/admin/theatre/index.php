@@ -51,10 +51,10 @@
                     </tr>
                 <?php }
             } ?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="5">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
                         <?=\CHtml::submitButton('Add', ['id' => 'et_add_theatre', 'class' => 'button large']);?>
                         <?=\CHtml::submitButton('Delete', ['id' => 'et_delete_theatre', 'class' => 'button large']);?>
                     </td>

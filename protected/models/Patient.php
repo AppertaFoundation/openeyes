@@ -293,19 +293,19 @@ class Patient extends BaseActiveRecordVersioned
     public function autoCompleteHosNum()
     {
         if (Yii::app()->params['set_auto_increment'] == 'on') {
-					$query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
-					$command = Yii::app()->db->createCommand($query);
-					$command->prepare();
-					$result = $command->queryColumn();
-					$default_hos_num = $result;
+                    $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
+                    $command = Yii::app()->db->createCommand($query);
+                    $command->prepare();
+                    $result = $command->queryColumn();
+                    $default_hos_num = $result;
 //            Checks the admin setting for the starting number for auto increment
-					if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-						$default_hos_num[0] = Yii::app()->params['hos_num_start'];
-						return $default_hos_num[0];
-					} else {
-						return ($default_hos_num[0] + 1);
-					}
-				}
+                    if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
+                        $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+                        return $default_hos_num[0];
+                    } else {
+                        return ($default_hos_num[0] + 1);
+                    }
+                }
     }
 
     /**
@@ -2206,21 +2206,21 @@ class Patient extends BaseActiveRecordVersioned
         ';
 
     //Note: The dates processed by this function will always be assumed to be in full ascending/descending order
-		//Ex: dd/mm/yyyy and yyyy/mm/dd will work, but mm/dd/yyyy or yyyy/dd/mm will not
-		//This is normally handled by php: '/' delimited dates are american, '-' delimited dates are european
+        //Ex: dd/mm/yyyy and yyyy/mm/dd will work, but mm/dd/yyyy or yyyy/dd/mm will not
+        //This is normally handled by php: '/' delimited dates are american, '-' delimited dates are european
     $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
 
-		$validPatient = new Patient('manual');
-		$validContact = new Contact('manual');
-		$validContact->first_name = $firstName;
-		$validContact->last_name = $last_name;
-		$validPatient->dob = $dob;
+        $validPatient = new Patient('manual');
+        $validContact = new Contact('manual');
+        $validContact->first_name = $firstName;
+        $validContact->last_name = $last_name;
+        $validPatient->dob = $dob;
 
-		if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
-				return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
-		}
+        if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
+                return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
+        }
 
-		return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
+        return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
     }
 
   public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){

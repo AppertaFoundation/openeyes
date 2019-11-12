@@ -280,47 +280,47 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()
                                             <span class="month"><?= $summary->date[1] ?></span>
                                             <span class="year"><?= $summary->date[2] ?></span>
                                         </span>
-											</td>
-											<td><i class="oe-i info small pro-left js-has-tooltip"
-														 data-tooltip-content="<?= $summary->user ?>"></i></td>
-										</tr>
-									<?php }
-								} ?>
-								</tbody>
-							</table>
-						</div>
-					</section>
-					<section class="element view full view-xxx" id="idg-ele-view-appointments">
-						<header class="element-header"><h3 class="element-title">Appointments</h3></header>
-						<div class="element-data full-width">
-							<div class="data-value">
-								<?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
-							</div>
-						</div>
-					</section>
-					<section class="element view full ">
-						<header class="element-header">
-							<h3 class="element-title">Problems &amp; Plans</h3>
-						</header>
-						<div class="element-data full-width">
-							<?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
-						</div>
-					</section>
-				</div>
-			</div>
-			<?php
-	    $this->endContent();
+                                            </td>
+                                            <td><i class="oe-i info small pro-left js-has-tooltip"
+                                                         data-tooltip-content="<?= $summary->user ?>"></i></td>
+                                        </tr>
+                                    <?php }
+                                } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="element view full view-xxx" id="idg-ele-view-appointments">
+                        <header class="element-header"><h3 class="element-title">Appointments</h3></header>
+                        <div class="element-data full-width">
+                            <div class="data-value">
+                                <?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="element view full ">
+                        <header class="element-header">
+                            <h3 class="element-title">Problems &amp; Plans</h3>
+                        </header>
+                        <div class="element-data full-width">
+                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <?php
+        $this->endContent();
 } else { ?>
-	<main class="oe-home">
-		<div class="oe-error-message">
-			<div class="message">
-				<h1>OpenEyes</h1>
-				<h2>Forbidden</h2>
-				<div class="alert-box error">
-					<strong>You do not have permission to access this page</strong>
-				</div>			</div>
-		</div>
-	</main>
+    <main class="oe-home">
+        <div class="oe-error-message">
+            <div class="message">
+                <h1>OpenEyes</h1>
+                <h2>Forbidden</h2>
+                <div class="alert-box error">
+                    <strong>You do not have permission to access this page</strong>
+                </div>          </div>
+        </div>
+    </main>
 <?php }?>
 
 
