@@ -153,10 +153,10 @@ class GpController extends BaseController
             $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
 
             if (isset($_POST['Contact'])) {
-               $contact->attributes = $_POST['Contact'];
-               $gp->is_active = $_POST['Gp']['is_active'];
-               $this->performAjaxValidation($contact);
-               list($contact, $gp) = $this->performGpSave($contact, $gp);
+                $contact->attributes = $_POST['Contact'];
+                $gp->is_active = $_POST['Gp']['is_active'];
+                $this->performAjaxValidation($contact);
+                list($contact, $gp) = $this->performGpSave($contact, $gp);
 
                 if ($gp->id) {
                     $this->redirect(array('view', 'id' => $gp->id));
@@ -200,7 +200,7 @@ class GpController extends BaseController
                 foreach ($_POST['ContactPracticeAssociate'] as $cpa) {
                     $cpas[$index]->provider_no = $cpa['provider_no'];
                     $valid=$cpas[$index]->validate() && $valid;
-                    for ($i=0;$i<$index;$i++) {
+                    for ($i=0; $i<$index; $i++) {
                         if ($cpas[$index]->provider_no == $cpas[$i]->provider_no && $cpas[$index]->provider_no != '') {
                             $valid = false;
                             $cpas[$index]->addError('provider_no', 'Duplicate provider number.');
