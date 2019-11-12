@@ -42,10 +42,10 @@ $genders = CHtml::listData($gender_models, function ($gender_model) {
 $ethnic_list =  CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 $ethnic_groups = array();
 $ethnic_filters = Yii::app()->params['ethnic_group_filters'];
-foreach ($ethnic_list as $key=>$item){
-	if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
-		$ethnic_groups[$key] = $item;
-	}
+foreach ($ethnic_list as $key => $item) {
+    if (!$ethnic_filters || !in_array($item, $ethnic_filters)) {
+        $ethnic_groups[$key] = $item;
+    }
 }
 ?>
 
@@ -224,15 +224,14 @@ foreach ($ethnic_list as $key=>$item){
         <tbody>
         <tr>
           <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
-              <?= $form->label($patient, 'hos_num') ?>
+                <?= $form->label($patient, 'hos_num') ?>
             <br/>
                 <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
-            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
-            {
+            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId()))) {
                 echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
-            } else{
+            } else {
                 echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num'), 'autocomplete' => Yii::app()->params['html_autocomplete']));
             }
             ?>
@@ -256,7 +255,7 @@ foreach ($ethnic_list as $key=>$item){
         </tr>
 <!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
         <?php
-        if (Yii::app()->params['institution_code']!=='CERA'){?>
+        if (Yii::app()->params['institution_code']!=='CERA') {?>
              <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
               <td>
                   <?= $form->label($patient, 'nhs_num_status_id') ?>
@@ -268,7 +267,7 @@ foreach ($ethnic_list as $key=>$item){
                       array('empty' => '-- select --')); ?>
               </td>
             </tr>
-        <?php
+            <?php
         }
         ?>
         <?= $this->renderPartial('crud/_patient_identifiers', array(
@@ -348,20 +347,20 @@ foreach ($ethnic_list as $key=>$item){
                 ?>
             </td>
             <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_gp_id']); ?>
                 <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                     <ul class="oe-multi-select js-selected_gp">
                         <li>
                             <span class="js-name" style="text-align:justify; max-width: 90%;">
-                              <?php
-                                if(Yii::app()->params['institution_code'] === 'CERA') {
+                                <?php
+                                if (Yii::app()->params['institution_code'] === 'CERA') {
                                     if ($patient->gp_id && $patient->practice_id) {
-                                      $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
-                                      $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
-                                      $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
-                                      $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
+                                        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
+                                        $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
+                                        $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
+                                        $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
 
-                                      echo $practice_contact_associate->gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
+                                        echo $practice_contact_associate->gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
                                     }
                                 } else {
                                     echo $patient->gp_id ? $patient->gp->CorrespondenceName : '';
@@ -383,7 +382,7 @@ foreach ($ethnic_list as $key=>$item){
                 <ul class="oe-multi-select js-selected_practice" style="display: none;">
                     <li>
                   <span id="prac_id" class="js-name">
-                      <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
+                        <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
                   </span>
                     </li>
                 </ul>
@@ -434,18 +433,18 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
 
-        <?php if (Yii::app()->params['institution_code']=='CERA'): ?>
+        <?php if (Yii::app()->params['institution_code']=='CERA') : ?>
             <tr>
                 <td>
                     <label for="contact">Other Practitioner Contacts</label>
                 </td>
                 <td>
-                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_extra_gps_id']); ?>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_extra_gps_id']); ?>
                     <div id="selected_extra_gps_wrapper">
                         <ul class="oe-multi-select js-selected_extra_gps">
                             <?php $i=0;
-                            if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)){
-                                foreach ($patient->patientContactAssociates as $patientContactAssociate){
+                            if (isset($patient->patientContactAssociates) && !empty($patient->patientContactAssociates)) {
+                                foreach ($patient->patientContactAssociates as $patientContactAssociate) {
                                     $gp = $patientContactAssociate->gp;
                                     $practice  = $gp ? $patientContactAssociate->practice: '';
                                     $practiceNameAddress = $practice ? ($practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():''): '';
@@ -453,7 +452,7 @@ foreach ($ethnic_list as $key=>$item){
                                     $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id, 'practice_id'=>$practice->id));
                                     $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
                                     //The line below is to ensure a newly added referring practitioner does not show up in the list of contacts also
-                                    if($gp && ($gp->id != $patient->gp_id || $practice->id != $patient->practice_id)){
+                                    if ($gp && ($gp->id != $patient->gp_id || $practice->id != $patient->practice_id)) {
                                         ?>
                                         <li>
                                             <span class="js-name" style="text-align:justify; max-width: 90%;">
@@ -480,7 +479,7 @@ foreach ($ethnic_list as $key=>$item){
         <?php endif; ?>
 
         <?php
-        if(Yii::app()->controller->action->id == 'update'){?>
+        if (Yii::app()->controller->action->id == 'update') {?>
             <tr>
                 <td>
                     <?= $form->label($patient, 'created_date') ?>
