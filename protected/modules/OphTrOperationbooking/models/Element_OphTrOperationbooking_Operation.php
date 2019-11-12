@@ -1744,4 +1744,19 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         return $risks;
     }
+
+    public function getAllProcedureOpnotes()
+    {
+        $opnotes = array();
+        foreach ($this->procedures as $procedure) {
+            if (isset($procedure->operationNotes)) {
+                $opnotes = array_merge(
+                    $opnotes,
+                    $procedure->operationNotes
+                );
+            }
+
+        }
+        return $opnotes;
+    }
 }

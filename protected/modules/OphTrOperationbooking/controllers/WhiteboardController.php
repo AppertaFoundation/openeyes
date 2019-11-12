@@ -160,7 +160,16 @@ class WhiteboardController extends BaseDashboardController
 
         $this->pageTitle = $whiteboard->patient_name;
 
-        $this->render('view', array('data' => $whiteboard, 'booking_id' => $id));
+        $criteria = new CDbCriteria();
+        $criteria->compare('class_name', Element_OphTrOperationnote_Cataract::class);
+
+        $cataract_op_note = ElementType::model()->find($criteria);
+
+        $this->render('view', array(
+            'data' => $whiteboard,
+            'booking_id' => $id,
+            'cataract_opnote' => $cataract_op_note,
+        ));
     }
 
     public function actionBiometryReport($id)

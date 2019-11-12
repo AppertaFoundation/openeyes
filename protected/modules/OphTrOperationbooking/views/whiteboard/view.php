@@ -1,6 +1,7 @@
 <?php
     /**
      * @var $booking_id int
+     * @var $cataract_opnote ElementType
      */
     $complexity_colour = 'green';
 
@@ -182,7 +183,7 @@ $other_card_list = array(
 <main class="oe-whiteboard">
     <div class="wb3">
         <?php
-        if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') {
+        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             foreach ($cataract_card_list as $title => $card) {
                 $this->widget('WBCard', array(
                     'title' => $title,
@@ -203,7 +204,7 @@ $other_card_list = array(
                 ));
             }
         }
-        if ($data->event->episode->firm->getSubspecialty()->name === 'Cataract') {
+        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             $this->widget('EDCard', array(
                 'title' => 'Axis',
                 'eye' => $data->eye,
