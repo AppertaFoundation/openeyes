@@ -137,7 +137,7 @@
                             ],],
                         'template' => "<td class='js-multiselect-dropdown-wrapper'>{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div></td>"
                     ]);
-                ?>
+                    ?>
             </tr>
             <tr>
                 <td>Operation Note Element</td>
