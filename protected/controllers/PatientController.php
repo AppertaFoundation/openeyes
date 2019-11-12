@@ -47,7 +47,7 @@ class PatientController extends BaseController
                 'roles' => array('Edit'),
             ),
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -2399,6 +2399,64 @@ class PatientController extends BaseController
 								'value' => $gp->id
 							);
 						}
+        }
+
+        echo CJSON::encode($output);
+        Yii::app()->end();
+    }
+
+    /**
+     * This function is only called from the Gp or Referring Practitioner field on Add Patient Screen.
+     * @param $term - Search term
+     */
+    public function actionGpListRp($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('first_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
+        $criteria->addSearchCondition('last_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
+
+        $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', strtolower($term), true, 'OR');
+
+        $gps = Gp::model()->with('contact')->findAll($criteria);
+
+        $output = array();
+
+        if (Yii::app()->params['institution_code'] === 'CERA') {
+            foreach ($gps as $gp) {
+                $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
+                $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+                // CERA-513 the autocomplete search result should not show the inactivated gp
+                if ($gp->is_active && count($practice_contact_associates) > 0) {
+                    foreach ($practice_contact_associates as $practice_contact_associate) {
+                        if (isset($practice_contact_associate->practice)) {
+                            $practice = $practice_contact_associate->practice;
+                            $practiceId = $practice->id;
+                            $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                            $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
+                            $output[] = array(
+                                'gpTitle' => $gp->contact->title,
+                                'gpFirstName' => $gp->contact->first_name,
+                                'gpLastName' => $gp->contact->last_name,
+                                'gpPhoneno' => $gp->contact->primary_phone,
+                                'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                                'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
+                                'value' => $gp->id,
+                                'practiceId' => $practiceId,
+                            );
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($gps as $gp) {
+                $output[] = array(
+                    'label' => $gp->correspondenceName,
+                    'value' => $gp->id
+                );
+            }
         }
 
         echo CJSON::encode($output);

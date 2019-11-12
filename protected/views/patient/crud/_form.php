@@ -354,14 +354,19 @@ foreach ($ethnic_list as $key=>$item){
                         <li>
                             <span class="js-name" style="text-align:justify; max-width: 90%;">
                               <?php
-                                  if ($patient->gp_id && $patient->practice_id) {
+                                if(Yii::app()->params['institution_code'] === 'CERA') {
+                                    if ($patient->gp_id && $patient->practice_id) {
                                       $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
                                       $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
                                       $role = $practice_contact_associate->gp->getGPROle()?' - '.$practice_contact_associate->gp->getGPROle():'';
                                       $practiceNameAddress = $practice_contact_associate->practice ? ($practice_contact_associate->practice->getPracticeNames() ? ' - '.$practice_contact_associate->practice->getPracticeNames():''): '';
-                                  ?>
-                                <?php echo $practice_contact_associate->gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress?>
-                                <?php } ?>
+
+                                      echo $practice_contact_associate->gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
+                                    }
+                                } else {
+                                    echo $patient->gp_id ? $patient->gp->CorrespondenceName : '';
+                                }
+                                ?>
                             </span>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
                         </li>
@@ -531,7 +536,7 @@ foreach ($ethnic_list as $key=>$item){
     });
   OpenEyes.UI.AutoCompleteSearch.init({
     input: $('#autocomplete_gp_id'),
-    url: '/patient/gpList',
+    url: '/patient/gpListRp',
       maxHeight: '200px',
       onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
