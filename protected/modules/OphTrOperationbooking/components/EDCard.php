@@ -19,10 +19,11 @@ class EDCard extends WBCard
             'onReadyCommandArray' => array(
                 array('addDoodle', $this->doodles),
                 array('deselectDoodles', array()),
+                array('replaceWithBGImage', array('wb-data image-fill', true)),
             ),
             'side' => $this->eye->shortName,
             'mode' => 'view',
-            'width' => 333.25,
+            'width' => 333,
             'height' => 183,
             'attribute' => 'eyedraw',
         );
