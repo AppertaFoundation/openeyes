@@ -444,10 +444,18 @@
 <?php
 $this->event_actions[] = EventAction::link(
     'Display Whiteboard',
-    Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
+    '#',
     null,
-    array('class' => 'small button', 'target' => '_blank')
+    array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->event_id)
 );
+
+$this->event_actions[] = EventAction::link(
+    'Close Whiteboard',
+    '#',
+    null,
+    array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->event_id)
+);
+
 if ($element->isEditable()) {
     $td_disabled = $this->module->isTheatreDiaryDisabled();
 

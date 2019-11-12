@@ -18,9 +18,15 @@
 if ($element->booking_event_id) {
     array_unshift($this->event_actions, EventAction::link(
         'Display Whiteboard',
-        $this->createUrl('default/whiteboard/' . $element->booking_event_id),
+        '#',
         null,
-        array('class' => 'small button', 'target' => '_blank')
+        array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
+    ),
+    EventAction::link(
+        'Close Whiteboard',
+        '#',
+        null,
+        array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
     ));
 }
 ?>
