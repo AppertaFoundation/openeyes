@@ -342,7 +342,7 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
             $this->addError('admission_time', 'Admission time cannot be later or equal than Session End Time');
         }
     }
-    public function notNullValidator($attribute,$param){
+    public function notNullValidator($attribute, $param){
         if (!isset($this->$attribute) || empty($this->$attribute)) {
             $this->addError($attribute, $this->getAttribute($attribute).' can not be blank.');
         }
