@@ -35,6 +35,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
 
     public $auto_update_relations = true;
     public $auto_validate_relations = true;
+    private $delete_with_tapers = false;
 
     /**
      * @return string the associated database table name
@@ -85,6 +86,21 @@ class MedicationSetItem extends BaseActiveRecordVersioned
             'defaultDispenseCondition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'default_dispense_condition_id'),
             'defaultDispenseLocation' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'default_dispense_location_id')
         );
+    }
+
+    public function deleteWithTapers()
+    {
+        $this->delete_with_tapers = true;
+        return $this;
+    }
+
+    public function beforeDelete()
+    {
+        if ($this->delete_with_tapers === true) {
+            MedicationSetItemTaper::model()->deleteAllByAttributes(['medication_set_item_id' => $this->id]);
+        }
+
+        return parent::beforeDelete();
     }
 
     /**

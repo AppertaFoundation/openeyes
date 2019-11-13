@@ -518,48 +518,78 @@ class MedicationSet extends BaseActiveRecordVersioned
             $no_condition = false;
         }
 
-        $ids = $cmd->queryColumn();
+        $medication_ids = $cmd->queryColumn();
         // empty the set
-        Yii::app()->db->createCommand("DELETE FROM ".MedicationSetItem::model()->tableName()." WHERE medication_set_id = ".$this->id)->execute();
-        if (!$no_condition && !empty($ids)) {
+        $items = MedicationSetItem::model()->findAllByAttributes(['medication_set_id' => $this->id]);
+
+        // delete MedicationSetItem with tapers
+        foreach ($items as $item) {
+            $item->deleteWithTapers()->delete();
+        }
+
+        if (!$no_condition && !empty($medication_ids)) {
             // repopulate
             $values = array();
-            foreach ($ids as $id) {
+            foreach ($medication_ids as $id) {
                 $values[] = "({$this->id},$id)";
+                $auto_set = MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_set_id' => $this->id, 'medication_id' => $id]);
+
+                $new_set = new MedicationSetItem();
+                $new_set->medication_set_id = $this->id;
+                $new_set->medication_id = $id;
+
+                foreach ($auto_set->attributes as $attribute) {
+                    if (strpos($attribute, 'default') === 0) {
+                        $new_set->$attribute = $auto_set->$attribute;
+                    }
+                }
+
+                if ($new_set->save() && $auto_set->tapers) {
+                    // save tapers
+                    foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
+                        $new_taper = new MedicationSetItemTaper();
+                        $new_taper->medication_set_item_id = $new_set->id;
+                        $new_taper->dose = $taper->dose;
+                        $new_taper->frequency_id = $taper->frequency_id;
+                        $new_taper->duration_id = $taper->duration_id;
+
+                        $new_taper->save();
+                    }
+                }
             }
-            Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
-									VALUES ".implode(",", $values))->execute();
         }
 
         Yii::log("Processed non-auto rules in ".$this->name);
 
-        // process auto sub sets recursively
-        if (!empty($auto_set_ids)) {
-            foreach ($auto_set_ids as $auto_id) {
-                if (!in_array($auto_id, self::$_processed)) {
-                    // Sub set is not already processed
-                    $included_set = self::model()->findByPk($auto_id);
-                    /** @var self $included_set */
-                    $included_set->populateAuto();
-                }
+// @TODO: To be refactored:
 
-                // Include items from sub set
-                $table = MedicationSetItem::model()->tableName();
-                Yii::log("Adding sub set items into ".$this->name);
-                $items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id
-														AND medication_id NOT IN (SELECT medication_id FROM $table WHERE medication_set_id = {$this->id})")->queryColumn();
-                $values = array();
-                foreach ($items as $id) {
-                    $values[] = "({$this->id},$id)";
-                }
-                Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
-									VALUES ".implode(",", $values))->execute();
-            }
-        }
+        // process auto sub sets recursively
+//        if (!empty($auto_set_ids)) {
+//            foreach ($auto_set_ids as $auto_id) {
+//                if (!in_array($auto_id, self::$_processed)) {
+//                    // Sub set is not already processed
+//                    $included_set = self::model()->findByPk($auto_id);
+//                    /** @var self $included_set */
+//                    $included_set->populateAuto();
+//                }
+//
+//                // Include items from sub set
+//                $table = MedicationSetItem::model()->tableName();
+//                Yii::log("Adding sub set items into ".$this->name);
+//                $items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id
+//														AND medication_id NOT IN (SELECT medication_id FROM $table WHERE medication_set_id = {$this->id})")->queryColumn();
+//                $values = array();
+//                foreach ($items as $id) {
+//                    $values[] = "({$this->id},$id)";
+//                }
+//                Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
+//									VALUES ".implode(",", $values))->execute();
+//            }
+//        }
 
         Yii::log("Done processing ".$this->name);
 
-        return count($ids);
+        return count($medication_ids);
     }
 
     /**
