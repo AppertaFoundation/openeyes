@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    /*var confirm_exit = function(e){
+    /*let confirm_exit = function(e){
         e = e || window.event;
-        var message = "You have unsaved changes. Are you sure you want to leave this page?";
+        let message = "You have unsaved changes. Are you sure you want to leave this page?";
         if (e)
         {
             e.returnValue = message;
@@ -38,15 +38,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   $('.edit-widget-btn').on('click', function() {
-      var card = $(this).parent().parent();
+      let card = $(this).parent().parent();
       if ($('.oe-i',this).hasClass('tick')) {
-          var icon = this;
-          var cardTitle = $(this).parent().text().trim();
-          var $cardContent = $(this).parent().parent().find('.wb-data');
-          var whiteboardEventId = icon.dataset.whiteboardEventId;
-          var data = {};
-          var contentId;
-          var text;
+          let cardTitle = $(this).parent().text().trim();
+          let $cardContent = $(this).parent().parent().find('.wb-data');
+          let whiteboardEventId = this.dataset.whiteboardEventId;
+          let data = {};
+          let contentId;
+          let text;
 
           contentId = (cardTitle === 'Equipment') ? 'predicted_additional_equipment' : cardTitle.toLowerCase();
           text = $cardContent.find('textarea').val();
@@ -75,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
   });
 
-    var toolTip = new OpenEyes.UI.Tooltip({
+    let toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',
         offset: {
             x: 10,
@@ -89,10 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
     $(this).on('mouseover', '.has-tooltip', function() {
         if ($(this).data('tooltip-content') && $(this).data('tooltip-content').length) {
             toolTip.setContent($(this).data('tooltip-content'));
-            var offsets = $(this).offset();
+            let offsets = $(this).offset();
             toolTip.show(offsets.left, offsets.top);
         }
-    }).mouseout(function (e) {
+    }).mouseout(function () {
         toolTip.hide();
     });
 
