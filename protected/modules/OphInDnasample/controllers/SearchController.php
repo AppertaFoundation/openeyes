@@ -107,8 +107,7 @@ class SearchController extends BaseController
 
             $results = $search_command->queryAll();
 
-            foreach($results as $key=>$row)
-            {
+            foreach ($results as $key=>$row) {
                 $subquery = Yii::app()->db->createCommand()
                     ->select('term')
                     ->from('disorder')
@@ -117,7 +116,6 @@ class SearchController extends BaseController
 
                 $results[$key]['diagnosis'] = implode(', ', $subquery);
             }
-
         }
 
         $pagination = new CPagination($total_items);
@@ -159,12 +157,10 @@ class SearchController extends BaseController
             ->leftJoin('genetics_patient_pedigree', 'genetics_patient.id = genetics_patient_pedigree.patient_id');
             //->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
-        if($sample_id)
-        {
+        if ($sample_id) {
             $command->andWhere('et_ophindnasample_sample.id = :sample_id', array(':sample_id'=>$sample_id));
         }
-        if($pedigree_id)
-        {
+        if ($pedigree_id) {
             $command->andWhere('genetics_patient_pedigree.pedigree_id = :pedigree_id', array(':pedigree_id'=>$pedigree_id));
         }
         if ($date_from) {
@@ -186,27 +182,27 @@ class SearchController extends BaseController
             $command->andWhere('genetics_patient.id IN (SELECT patient_id FROM genetics_patient_diagnosis WHERE genetics_patient_diagnosis.disorder_id = :disorder_id)', array(':disorder_id' => $disorder_id));
         }
 
-        if($first_name){
+        if ($first_name) {
             $command->andWhere((array('like', 'LOWER(first_name)', '%'. strtolower($first_name) .'%')));
         }
 
-        if($last_name){
+        if ($last_name) {
             $command->andWhere((array('like', 'LOWER(last_name)', '%'. strtolower($last_name) .'%')));
         }
 
-        if($maiden_name){
+        if ($maiden_name) {
             $command->andWhere((array('like', 'LOWER(maiden_name)', '%'. strtolower($maiden_name) .'%')));
         }
 
-        if($maiden_name){
+        if ($maiden_name) {
             $command->andWhere((array('like', 'LOWER(maiden_name)', '%'. strtolower($maiden_name) .'%')));
         }
 
-        if($hos_num){
+        if ($hos_num) {
             $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
         }
 
-        if($genetics_patient_id){
+        if ($genetics_patient_id) {
             $command->andWhere('genetics_patient.id = :genetics_patient_id', array(':genetics_patient_id' => $genetics_patient_id));
         }
 

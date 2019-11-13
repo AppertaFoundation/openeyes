@@ -22,22 +22,22 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-      <?php if ($element->membrane_blue) { ?>
+        <?php if ($element->membrane_blue) { ?>
         <div class="cols-2 column">
             <div class="data-value">
                 <?=\CHtml::encode($element->getAttributeLabel('membrane_blue')) ?>
             </div>
           </div>
-      <?php } ?>
-      <?php if ($element->brilliant_blue) { ?>
+        <?php } ?>
+        <?php if ($element->brilliant_blue) { ?>
         <div class="cols-2 column">
             <div class="data-value">
                 <?=\CHtml::encode($element->getAttributeLabel('brilliant_blue')) ?>
             </div>
           </div>
-      <?php } ?>
+        <?php } ?>
 
-      <?php if ($element->other_dye) { ?>
+        <?php if ($element->other_dye) { ?>
         <div class="data-group">
           <div class="cols-2 column">
             <div class="data-label">
@@ -50,9 +50,9 @@
             </div>
           </div>
         </div>
-      <?php } ?>
+        <?php } ?>
 
-      <?php if ($element->comments) { ?>
+        <?php if ($element->comments) { ?>
         <div class="data-group">
           <div class="cols-2 column">
             <div class="data-label">
@@ -65,6 +65,6 @@
             </div>
           </div>
         </div>
-      <?php } ?>
+        <?php } ?>
   </section>
 </section>

@@ -2,8 +2,8 @@
 
 class m180414_125301_add_system_setting_FORUM extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('setting_metadata', array(
             'display_order' => 0,
             'field_type_id' => 3,
@@ -22,11 +22,11 @@ class m180414_125301_add_system_setting_FORUM extends CDbMigration
         );
         $this->insert('setting_installation', array('key' => 'enable_forum_integration', 'value' => 'off'));
         $this->insert('setting_installation', array('key' => 'forum_force_refresh', 'value' => 'off'));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('setting_installation', "`key` = 'enable_forum_integration'");
         $this->delete('setting_metadata', "`key` = 'forum_force_refresh'");
-	}
+    }
 }

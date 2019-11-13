@@ -2,24 +2,24 @@
 
 class m170421_114400_none_invoice_status extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->insert('ophciexamination_invoice_status', array('name' => 'No status'));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
 
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

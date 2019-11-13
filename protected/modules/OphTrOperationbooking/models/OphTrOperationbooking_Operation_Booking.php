@@ -327,7 +327,7 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
      */
     public function isComplex()
     {
-      return $this->operation->isComplex();
+        return $this->operation->isComplex();
     }
 
     /**

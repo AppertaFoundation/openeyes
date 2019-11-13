@@ -253,8 +253,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($this->_handlers as $handler) {
             if (in_array(strtolower($method),
                 array_map('strtolower', (array) $handler->exposeMixinMethods())
-                ))
-            {
+                )) {
                 $return = call_user_func_array(array($handler, $method), $args);
                 //Allow fluid method calls
                 if (is_null($return) && substr($method, 0, 3) == 'set') {

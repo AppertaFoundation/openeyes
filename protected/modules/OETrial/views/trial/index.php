@@ -11,7 +11,7 @@
 </div>
 <div class="oe-full-content subgrid oe-worklists">
 
-    <?php if (Yii::app()->user->hasFlash('success')): ?>
+    <?php if (Yii::app()->user->hasFlash('success')) : ?>
       <div class="alert-box with-icon success">
           <?php echo Yii::app()->user->getFlash('success'); ?>
       </div>
@@ -30,12 +30,12 @@
     </div>
 
     <h3>Actions</h3>
-      <?php if (Yii::app()->user->checkAccess('TaskCreateTrial')): ?>
+        <?php if (Yii::app()->user->checkAccess('TaskCreateTrial')) : ?>
         <ul>
           <li>
               <?= CHtml::link('Create a New Trial', array('create')) ?>
           </li>
-            <?php if (\CsvController::uploadAccess()): ?>
+            <?php if (\CsvController::uploadAccess()) : ?>
               <li>
                   <?= CHtml::link('Upload trials', Yii::app()->createURL('csv/upload', array('context' => 'trials'))) ?>
               </li>
@@ -45,42 +45,42 @@
               </li>
             <?php endif ?>
         </ul>
-      <?php endif; ?>
+        <?php endif; ?>
   </nav>
 
   <main class="oe-full-main">
-      <?php
-      $this->renderPartial('_trial_list', array(
+        <?php
+        $this->renderPartial('_trial_list', array(
           'dataProvider' => $interventionTrialDataProvider,
           'title' => 'Intervention Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
-      <?php
-      $this->renderPartial('_trial_list', array(
+        ));
+        ?>
+        <?php
+        $this->renderPartial('_trial_list', array(
           'dataProvider' => $nonInterventionTrialDataProvider,
           'title' => 'Non-Intervention Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
-      <?php
-      $this->renderPartial('_trial_list_searched', array(
+        ));
+        ?>
+        <?php
+        $this->renderPartial('_trial_list_searched', array(
           'dataProvider' => $interventionTrialSearchDataProvider,
           'title' => 'Intervention Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
-      <?php
-      $this->renderPartial('_trial_list_searched', array(
+        ));
+        ?>
+        <?php
+        $this->renderPartial('_trial_list_searched', array(
           'dataProvider' => $nonInterventionTrialSearchDataProvider,
           'title' => 'Non-Intervention Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
-      ));
-      ?>
+        ));
+        ?>
   </main>
 </div>
 

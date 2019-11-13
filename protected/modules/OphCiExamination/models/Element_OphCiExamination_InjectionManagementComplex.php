@@ -392,25 +392,25 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
         // create assignment and store for saving
         // if there is, remove from the current risk array
         // anything left in $current_risks at the end is ripe for deleting
-        if(is_array($risk_ids)){
-        foreach ($risk_ids as $risk_id) {
-            if (!array_key_exists($risk_id, $current_risks)) {
-                $s = new OphCiExamination_InjectionManagementComplex_RiskAssignment();
-                $s->attributes = array('element_id' => $this->id, 'eye_id' => $side, 'risk_id' => $risk_id);
-                $save_risks[] = $s;
-            } else {
-                // don't want to delete later
-                unset($current_risks[$risk_id]);
+        if (is_array($risk_ids)) {
+            foreach ($risk_ids as $risk_id) {
+                if (!array_key_exists($risk_id, $current_risks)) {
+                    $s = new OphCiExamination_InjectionManagementComplex_RiskAssignment();
+                    $s->attributes = array('element_id' => $this->id, 'eye_id' => $side, 'risk_id' => $risk_id);
+                    $save_risks[] = $s;
+                } else {
+                    // don't want to delete later
+                    unset($current_risks[$risk_id]);
+                }
             }
-        }
         // save what needs saving
-        foreach ($save_risks as $save) {
-            $save->save();
-        }
+            foreach ($save_risks as $save) {
+                $save->save();
+            }
         // delete the rest
-        foreach ($current_risks as $curr) {
-            $curr->delete();
-        }
+            foreach ($current_risks as $curr) {
+                $curr->delete();
+            }
         }
     }
 

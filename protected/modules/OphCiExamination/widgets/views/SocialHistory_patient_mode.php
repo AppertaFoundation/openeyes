@@ -9,7 +9,7 @@
                 <td><?=\CHtml::encode($element->getDisplayOccupation())?></td>
             </tr>
         <?php }
-         if ($element->driving_statuses) { ?>
+        if ($element->driving_statuses) { ?>
             <tr>
                 <td class="driving_statuses"><?= CHtml::encode($element->getAttributeLabel('driving_statuses')) ?></td>
                 <td>

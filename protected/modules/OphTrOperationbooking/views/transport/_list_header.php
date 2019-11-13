@@ -17,45 +17,45 @@
  */
 ?>
 <div id="no_gp_warning" class="alert-box alert with-icon hide">
-	One or more patients has no <?php echo \Yii::app()->params['gp_label'] ?> practice, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
+    One or more patients has no <?php echo \Yii::app()->params['gp_label'] ?> practice, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
 </div>
 <div id="transportList">
-	<table class="standard transport">
-		<thead>
-			<tr>
-				<th>Hospital number</th>
-				<th>Patient</th>
-				<th>TCI date</th>
-				<th>Admission time</th>
-				<th>Site</th>
-				<th>Ward</th>
-				<th>Method</th>
-				<th>Firm</th>
-				<th>Subspecialty</th>
-				<th>DTA</th>
-				<th>Priority</th>
-				<th><input type="checkbox" id="transport_checkall" value="" /></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td colspan="12">
+    <table class="standard transport">
+        <thead>
+            <tr>
+                <th>Hospital number</th>
+                <th>Patient</th>
+                <th>TCI date</th>
+                <th>Admission time</th>
+                <th>Site</th>
+                <th>Ward</th>
+                <th>Method</th>
+                <th>Firm</th>
+                <th>Subspecialty</th>
+                <th>DTA</th>
+                <th>Priority</th>
+                <th><input type="checkbox" id="transport_checkall" value="" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="12">
           <i class="spinner" title="Loading...">loading data ...</i>
-				</td>
-			</tr>
-		</tbody>
-		<tfoot class="pagination-container">
-			<tr>
-				<td colspan="12">
-					<ul class="pagination right" id="yw0">
-						<li class="previous unavailable"><a href="/admin/users">&lt; Previous</a></li>
-						<li class="next unavailable"><a href="/admin/users?page=2">Next &gt;</a></li>
-					</ul>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot class="pagination-container">
+            <tr>
+                <td colspan="12">
+                    <ul class="pagination right" id="yw0">
+                        <li class="previous unavailable"><a href="/admin/users">&lt; Previous</a></li>
+                        <li class="next unavailable"><a href="/admin/users?page=2">Next &gt;</a></li>
+                    </ul>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() { transport_load_tcis(); });
+    $(document).ready(function() { transport_load_tcis(); });
 </script>

@@ -103,14 +103,20 @@
                             <span class="data-label">BMI:</span>&emsp;&nbsp;&nbsp;
                         </td>
                         <td>
-                            <div id="bmi-container" class="data-value" style="display:inline-block;">
-                                <?php
-                                if (ceil($element->weight) > 0 && ceil($element->height) > 0) {
-                                    echo $element->bmiCalculator($element->weight, $element->height);
+                            <?php
+                                $bmi = 'N/A';
+                                $bmi_container_color = "";
+                            if (ceil($element->weight) > 0 && ceil($element->height) > 0) {
+                                $bmi = $element->bmiCalculator($element->weight, $element->height);
+                                if ($bmi < 18.5 || $bmi >= 30) {
+                                    $bmi_container_color = 'highlighter warning';
                                 } else {
-                                    echo 'N/A';
+                                    $bmi_container_color = 'highlighter good';
                                 }
-                                ?>
+                            }
+                            ?>
+                            <div id="bmi-container" class="data-value <?= $bmi_container_color ?>" style="display:inline-block; text-align: center;">
+                                <?= $bmi ?>
                             </div>
                         </td>
                     </tr>

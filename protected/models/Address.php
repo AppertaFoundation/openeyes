@@ -155,7 +155,7 @@ class Address extends BaseActiveRecordVersioned
         }
 
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-            if (!empty($this->$field) && trim($this->$field) != ',') {
+            if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
                 if ($field == 'address1') {
                     $line = str_replace(',', '', $line);
@@ -170,7 +170,12 @@ class Address extends BaseActiveRecordVersioned
 
         if ($include_country) {
             if (!empty($this->country->name)) {
-                $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                $site = null;
+                // CConsoleApplication can't access the session
+                if (\Yii::app() instanceof \CWebApplication) {
+                    $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                }
+
                 if (!$site || ($site->institution->contact->address->country_id != $this->country_id)) {
                     $address[] = $this->country->name;
                 }
@@ -222,16 +227,16 @@ class Address extends BaseActiveRecordVersioned
 
     public function getDefaultCountryId(){
         $default_country_setting = SettingMetadata::model()->getSetting('default_country');
-        return Country::model()->find('name = ?' , [$default_country_setting])->id;
+        return Country::model()->find('name = ?', [$default_country_setting])->id;
     }
 
     public function beforeValidate()
     {
-        if($this->date_start == ""){
+        if ($this->date_start == "") {
             $this->date_start = null;
         }
 
-        if($this->date_end == ""){
+        if ($this->date_end == "") {
             $this->date_end = null;
         }
         $this->date_start = Helper::convertNHS2MySQL($this->date_start);

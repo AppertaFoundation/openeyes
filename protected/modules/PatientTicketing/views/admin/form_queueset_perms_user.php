@@ -18,9 +18,9 @@
 ?>
 
 <li>
-	<span class="user-description"><?= $fullname.' ('.$username.')' ?></span>
-	<span class="actions queueset-admin">
-		<span class="admin-action remove js-has-tooltip" data-tooltip="remove">x</span>
-	</span>
-	<input type="hidden" name="user_ids[]" value="<?=$id?>" />
+    <span class="user-description"><?= $fullname.' ('.$username.')' ?></span>
+    <span class="actions queueset-admin">
+        <span class="admin-action remove js-has-tooltip" data-tooltip="remove">x</span>
+    </span>
+    <input type="hidden" name="user_ids[]" value="<?=$id?>" />
 </li>

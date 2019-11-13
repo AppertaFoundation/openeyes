@@ -1,7 +1,7 @@
 <?php
 
 /**
- 
+
  */
 class m140624_144310_oe4282_change_types extends OEMigration
 {

@@ -2,15 +2,15 @@
 
 class m180321_132657_systemic_diagnoses_set extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable('ophciexamination_systemic_diagnoses_set',
             array(
                 'id' => 'pk',
                 'name' => 'varchar(255) NULL',
                 'firm_id' => 'int(10) unsigned',
                 'subspecialty_id' =>  'int(10) unsigned',
-            ),true
+            ), true
         );
 
         $this->createOETable('ophciexamination_systemic_diagnoses_set_assignment',
@@ -18,7 +18,7 @@ class m180321_132657_systemic_diagnoses_set extends OEMigration
                 'id' => 'pk',
                 'systemic_diagnoses_set_entry_id' => 'int(11)',
                 'systemic_diagnoses_set_id' => 'int(11)',
-            ),true
+            ), true
         );
 
         $this->createOETable('ophciexamination_systemic_diagnoses_set_entry',
@@ -29,7 +29,7 @@ class m180321_132657_systemic_diagnoses_set extends OEMigration
                 'age_min' => 'int(3) unsigned',
                 'age_max' => 'int(3) unsigned',
 
-            ),true);
+            ), true);
 
         $this->addForeignKey('exam_systemic_diagnoses_set_subspecialty', 'ophciexamination_systemic_diagnoses_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('exam_systemic_diagnoses_set_firm', 'ophciexamination_systemic_diagnoses_set', 'firm_id', 'firm', 'id');
@@ -42,7 +42,7 @@ class m180321_132657_systemic_diagnoses_set extends OEMigration
     }
 
 
-	public function down()
-	{
-	}
+    public function down()
+    {
+    }
 }

@@ -17,12 +17,12 @@
  */
 ?>
 <section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<fieldset class="element-fields">
-		<?php 
+    data-element-type-id="<?php echo $element->elementType->id?>"
+    data-element-type-class="<?php echo $element->elementType->class_name?>"
+    data-element-type-name="<?php echo $element->elementType->name?>"
+    data-element-display-order="<?php echo $element->elementType->display_order?>">
+    <fieldset class="element-fields">
+        <?php
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
         echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
         
@@ -31,10 +31,10 @@
                 <label></label>
             </div>
             <div class="cols-2 column end">
-                 <?=\CHtml::button('Add new storage',
+                    <?=\CHtml::button('Add new storage',
                     array(
                         'id'        => 'addNewStoragePopup',
-                        'class'     => 'button small secondary', 
+                        'class'     => 'button small secondary',
                         'type'      => 'button',
                     )
                 ); ?>
@@ -42,11 +42,12 @@
         </div>
         
         <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
-		<?php
-            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;}), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
-        ?>
-		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
-		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
+        <?php
+            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;
+            }), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
+            ?>
+        <?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
+        <?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
         <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>
         <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
@@ -58,6 +59,6 @@
                 ));
         }
         ?>
-		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
-	</fieldset>
+        <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
+    </fieldset>
 </section>

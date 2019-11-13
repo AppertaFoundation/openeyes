@@ -108,7 +108,6 @@ class DashboardController extends BaseDashboardController
         $outfile = "$highchartsDir/$tempName.$ext";
 
         if (isset($typeString)) {
-
             // size
             $width = '';
             if ($_POST['width']) {

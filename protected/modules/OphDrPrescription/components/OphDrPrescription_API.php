@@ -28,15 +28,14 @@ class OphDrPrescription_API extends BaseAPI
      */
     public function getLetterPrescription($patient, $use_context = false)
     {
-        if($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)){
+        if ($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)) {
             $result = '';
             $latest = $this->getElementFromLatestEvent('Element_OphDrPrescription_Details', $patient, $use_context);
 
-            foreach($details as $detail)
-            {
+            foreach ($details as $detail) {
                 $detailDate = substr($detail->event->event_date, 0, 10);
                 $latestDate = substr($latest->event->event_date, 0, 10);
-                if(strtotime($detailDate) === strtotime($latestDate)){
+                if (strtotime($detailDate) === strtotime($latestDate)) {
                     $result .= $detail->getLetterText()."<br>";
                 }
             }

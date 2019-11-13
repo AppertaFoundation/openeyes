@@ -274,7 +274,7 @@
                     'data': {'subsection': subsection, 'dialog': true, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
                     'success': function (data) {
                         $('.add-options[data-id="select"]').each(function () {
-                            $(this).html(data);
+                            $(this).html(data).find('li').find('span').removeClass('auto-width').addClass('restrict-width extended');
                             $(this).show();
                         });
                     }
@@ -346,7 +346,7 @@
             return false;
         });
 
-        <?php if ($durations): ?>
+        <?php if ($durations) : ?>
         $(document).ready(function () {
             if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
                 $('#projected_duration_<?php echo $identifier?> span').html(parseInt($('#projected_duration_<?php echo $identifier?> span').html()));
@@ -415,9 +415,10 @@
                         array_map(function ($key, $item) {
                             return ['label' => $item, 'id' => $key];
                         }, array_keys($procedures), $procedures)
-                    ) ?>, {'id': 'select', 'multiSelect': true})
+                    ) ?>, {'id': 'select', 'multiSelect': true, 'liClass': ' restrict-width extended'})
                 ],
-
+                liClass: 'restrict-width extended',
+                popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
                     var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
                     for (i in selectedItems) {

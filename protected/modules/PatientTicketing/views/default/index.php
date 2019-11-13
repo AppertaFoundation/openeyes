@@ -38,7 +38,7 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 
 <div class="oe-full-content oe-virtual-clinic">
     <?php
-    if($queueset) {
+    if ($queueset) {
         $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId());
         if ($flash_message) {
             ?>
