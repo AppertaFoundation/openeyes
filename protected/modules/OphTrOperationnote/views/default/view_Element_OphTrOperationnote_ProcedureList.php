@@ -16,18 +16,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if ($element->booking_event_id) {
-    array_unshift($this->event_actions, EventAction::link(
-        'Display Whiteboard',
-        '#',
-        null,
-        array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
-    ),
-    EventAction::link(
-        'Close Whiteboard',
-        '#',
-        null,
-        array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
-    ));
+    $whiteboard_display_mode = OphTrOperationbooking_Whiteboard_Settings_Data::model()->find('`key` = "opnote_whiteboard_display_mode"');
+
+    if ($whiteboard_display_mode->value === 'CURRENT') {
+        array_unshift(
+            $this->event_actions,
+            EventAction::link(
+                'Display Whiteboard',
+                '#',
+                null,
+                array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
+            ),
+            $this->event_actions[] = EventAction::link(
+                'Close Whiteboard',
+                '#',
+                null,
+                array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
+            )
+        );
+    } else {
+        array_unshift(
+            $this->event_actions,
+            EventAction::link(
+                'Display Whiteboard',
+                $this->createUrl('default/whiteboard/' . $element->booking_event_id),
+                null,
+                array('class' => 'small button', 'target' => '_blank')
+            )
+        );
+    }
 }
 ?>
 
