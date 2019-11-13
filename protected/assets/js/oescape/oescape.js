@@ -33,7 +33,7 @@ $(document).ready(function () {
           $('#plotly-Meds-left').appendTo($('#js-hs-chart-Meds'));
           $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
           $('#plotly-VA-left').appendTo($('#js-hs-chart-VA'));          
-          $('#plotly-MR-left').appendTo($('#charts-container'));
+          $('#plotly-MR-left').appendTo($('#js-hs-chart-MR'));
           // fix ordering for IOP under general
           if ($("#charts-container").hasClass('General')){
             $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
@@ -50,8 +50,7 @@ $(document).ready(function () {
           }
           break;
 
-      case 'both':
-        
+        case 'both':
           $('.ResetZoomPadRight').remove(); //reset zoom button space
           $('.SelectorPadRight').remove();//reset dropdown space
           
@@ -85,7 +84,7 @@ $(document).ready(function () {
         $('#plotly-Meds-right').appendTo($('#js-hs-chart-Meds'));
         $('#plotly-IOP-right').appendTo($('#js-hs-chart-IOP'));
         $('#plotly-VA-right').appendTo($('#js-hs-chart-VA'));
-        $('#plotly-MR-right').appendTo($('#js-hs-chart-VA'));
+        $('#plotly-MR-right').appendTo($('#js-hs-chart-MR'));
         // fix ordering for IOP under general
         if ($("#charts-container").hasClass('General')){
           $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
@@ -212,11 +211,11 @@ function setOEScapeSize(size_str){
 
   let doc_width = $(document).width();
 
-  let rounding = (doc_width/100)*.5;
+  let width_reduction = (doc_width/100); // dont use this 1 percent of the screen width, as this gets rid of most of the bottom scroll bar caused by rounding errors
 
-  let current_width = ((doc_width*sizes[size_str].percent)/100) - rounding;
+  let current_width = ((doc_width*sizes[size_str].percent)/100) - width_reduction;
   let left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
-  let right_width =((doc_width*(100-sizes[size_str].percent))/100) - rounding;
+  let right_width =((doc_width*(100-sizes[size_str].percent))/100) - width_reduction;
   
   right.css({"width": right_width});
   right.toggle(size_str !== 'full');
