@@ -37,7 +37,6 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
 ?>
 
 <tr data-key="<?=$row_count?>"
-    style="display: <?= $entry->originallyStopped ? 'none' : ''?>"
     <?php if (!is_null($entry->medication_id)) :
         ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
             return $e->id;
