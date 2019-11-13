@@ -17,7 +17,7 @@
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
 $tech_support_provider = Yii::app()->params['tech_support_provider'] ?: 'ABEHRdigital';
-$tech_support_url = Yii::app()->params['tech_support_url'] ?: 'www.abehr.com';
+$tech_support_url = Yii::app()->params['tech_support_url'] ?: 'https://www.abehr.com';
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
