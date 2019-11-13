@@ -36,14 +36,12 @@ if (!empty($subspecialty)) { ?>
       <button class="selected plot-display-label reset-zoom cols-2">Reset Zoom Level</button>
       <h4 id='oes-side-indicator-left' class='cols-7' style="color:#fe6767; 
       text-align: center; 
-      /* font-size: x-large; */
       font-weight: 500; 
       display:none;">
       Left
       </h4>
       <h4 id='oes-side-indicator-right' class='cols-7' style="color:#9fec6d;
       text-align: center; 
-      /* font-size: x-large; */
       font-weight: 500;
       display:inline-block;">
     
