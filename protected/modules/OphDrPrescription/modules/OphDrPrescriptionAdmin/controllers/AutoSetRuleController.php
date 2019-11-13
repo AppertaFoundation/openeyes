@@ -252,7 +252,7 @@ class AutoSetRuleController extends BaseAdminController
             //validate here so if tmp_rules are empty we can return these errors as well
             $set->validate();
 
-            if (!$set->tmp_rules) {
+            if (!$set->tmp_rules && $set->name !== "medication_management") {
                 $set->addError('medicationSetRules', 'Usage rules must be set.');
             }
 
@@ -328,7 +328,7 @@ class AutoSetRuleController extends BaseAdminController
             \Yii::app()->user->setFlash('error', 'Set not found.');
             $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
         }
-        
+
         $medication_set_name = \MedicationSet::model()->findByPk($set_id)->name;
 
         $criteria = new \CDbCriteria();
