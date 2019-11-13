@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
+$tech_support_provider = Yii::app()->params['tech_support_provider'] ?: 'ABEHRdigital';
+$tech_support_url = Yii::app()->params['tech_support_url'] ?: 'www.abehr.com';
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -46,7 +48,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
     <p>OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.</p>
-    <p>Technical support is provided by <a href="https://www.abehr.com/" target="_blank">ABEHRdigital</a>.</p>
+    <p>Technical support is provided by <a href="<?= $tech_support_url?>" target="_blank"><?= $tech_support_provider ?>.</p>
   </div>
 
   <div class="group">
