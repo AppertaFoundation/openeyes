@@ -46,8 +46,8 @@ class MultipageView extends CWidget
     public function run()
     {
         $asset_manager = Yii::app()->getAssetManager();
-        $widget_path = $asset_manager->publish('protected/widgets/js');
-        Yii::app()->clientScript->registerScriptFile($widget_path . '/MultipageView.js');
+        $widget_path = $asset_manager->publish('protected/widgets/js/MultipageView.js');
+        Yii::app()->clientScript->registerScriptFile($widget_path);
         if ($this->element) {
             $this->render('multipage/_container', array(
                 'total_pages' => $this->num_pages
