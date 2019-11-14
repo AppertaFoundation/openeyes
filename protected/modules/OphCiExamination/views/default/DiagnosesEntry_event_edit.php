@@ -66,7 +66,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
     ]); ?>
 
     <td>
-        <?=\CHtml::radioButton("principal_diagnosis_row_key", $values['is_principal'] == 1, ['value' => $row_count]); ?>
+        <?=\CHtml::radioButton("principal_diagnosis_row_key", $values['is_principal'] == 1, ['value' => $values['is_principal']]); ?>
     </td>
     <td>
           <input id="diagnoses-datepicker-<?= $row_count; ?>"

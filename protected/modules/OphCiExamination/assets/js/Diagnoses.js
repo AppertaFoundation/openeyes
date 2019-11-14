@@ -135,18 +135,29 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
                 row, $tr, item;
+            $tr = $(this).closest('tr');
+
+            let row_count = OpenEyes.Util.getNextDataKey(controller.$element.find('table tbody tr'), 'key') - 1;
+
+            let selectedItems = [{
+                id: $option.data('id'),
+                label: $option.data('label'),
+                eye_id: controller.getEyeId($tr),
+                is_principal: $tr.find('#principal_diagnosis_row_key').is(':checked') ? 1 : 0,
+                date: controller.getDisplayDate(row_count)
+            }];
 
             if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
-                $tr = $(this).closest('tr');
                 item = $option.data('id');
 
                 if (item) {
-                    row = controller.createRow([{id: $option.data('id'), label: $option.data('label')}]);
                     $tr.remove();
+                    row = controller.createRow(selectedItems);
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
+                    controller.setGeneratedRowValues($tr, selectedItems.shift());
                     controller.setDatepicker();
                 }
             } else if(type && type === 'disorder') {
@@ -164,6 +175,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$element.closest('section')
         });
+    };
+
+    DiagnosesController.prototype.setGeneratedRowValues = function ($row, selectedItems) {
+        let left_eye = [1, 3];
+        let right_eye = [2, 3];
+
+        $row.find('#principal_diagnosis_row_key').prop('checked', selectedItems.is_principal);
+        $row.find('.js-left-eye').prop('checked', left_eye.includes(selectedItems.eye_id));
+        $row.find('.js-right-eye').prop('checked', right_eye.includes(selectedItems.eye_id));
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -239,6 +259,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
+    DiagnosesController.prototype.getEyeId = function($row) {
+        let eye_id;
+        let left_eye_input_checked = $row.find('.js-left-eye').is(':checked');
+        let right_eye_input_checked = $row.find('.js-right-eye').is(':checked');
+        if (left_eye_input_checked) {
+            eye_id = 1;
+            if (right_eye_input_checked) {
+                eye_id = 3;
+            }
+        } else if (right_eye_input_checked) {
+            eye_id = 2;
+        }
+        return eye_id;
+    };
+
+    DiagnosesController.prototype.getDisplayDate = function(row_count) {
+        if (row_count >= 0){
+            return $('#diagnoses-datepicker-' + row_count).val();
+        } else {
+            return OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
+        }
+    };
 
     DiagnosesController.prototype.createRow = function(selectedItems)
     {
@@ -249,15 +291,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       for (var i in selectedItems) {
 
-        if (typeof selectedItems.eye_id === 'undefined') {
-            selectedItems.eye_id = null;
+        if (typeof selectedItems[i].eye_id === 'undefined') {
+            selectedItems[i].eye_id = null;
         }
-        data = {};
+        let data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-        data.date = OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
+        data.date = selectedItems[i].date;
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
-        data.eye_id = selectedItems.eye_id;
+        data.eye_id = selectedItems[i].eye_id;
+        data.is_principal = selectedItems[i].is_principal;
         data.is_glaucoma = selectedItems[i].is_glaucoma;
         row = Mustache.render(template, data);
         newRows.push(row);
