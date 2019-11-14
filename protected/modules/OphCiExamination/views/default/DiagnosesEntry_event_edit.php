@@ -78,7 +78,12 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
     ?>
 
     <td>
-        <input value="{{row_count}}" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key_{{row_count}}" />
+        <?php if (isset($is_template) && $is_template) {  ?>
+            <input value="<?= $row_count ?>" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key_<?= $row_count ?>" />
+        <?php } else {
+            echo \CHtml::radioButton("principal_diagnosis_row_key_". $row_count, $values['is_principal'] == 1, ['value' => $row_count]);
+        }
+        ?>
     </td>
     <td>
           <input id="diagnoses-datepicker-<?= $row_count; ?>"
