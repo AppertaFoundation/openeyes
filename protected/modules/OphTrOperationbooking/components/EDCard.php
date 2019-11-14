@@ -23,8 +23,8 @@ class EDCard extends WBCard
             ),
             'side' => $this->eye->shortName,
             'mode' => 'view',
-            'width' => 333,
-            'height' => 183,
+            'width' => 2008,
+            'height' => 1102,
             'attribute' => 'eyedraw',
         );
     }
