@@ -68,14 +68,14 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
                 <input class="js-left-eye" data-eye-side="left" type="checkbox" value="1" {{#left_eye_checked}} checked="checked"{{/left_eye_checked}} name="<?= $field_prefix ?>[left_eye]" id="<?= $model_name ?>_entries_{{row_count}}_left_eye" /> L</label >
             </span>
         </td>
-   <?php } else {
+    <?php } else {
         $this->widget('application.widgets.EyeSelector', [
             'inputNamePrefix' => $field_prefix,
             'selectedEyeId' => $values['eye_id'],
             'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
         ]);
     }
-     ?>
+    ?>
 
     <td>
         <input value="{{row_count}}" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key" />
