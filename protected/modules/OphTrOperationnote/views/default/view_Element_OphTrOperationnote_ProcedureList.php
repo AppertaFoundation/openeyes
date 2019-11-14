@@ -16,9 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if ($element->booking_event_id) {
-    $whiteboard_display_mode = OphTrOperationbooking_Whiteboard_Settings_Data::model()->find('`key` = "opnote_whiteboard_display_mode"');
+    $whiteboard_display_mode = SettingMetadata::model()->getSetting('opnote_whiteboard_display_mode');
 
-    if ($whiteboard_display_mode->value === 'CURRENT') {
+    if ($whiteboard_display_mode === 'CURRENT') {
         array_unshift(
             $this->event_actions,
             EventAction::link(
@@ -27,7 +27,7 @@ if ($element->booking_event_id) {
                 null,
                 array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
             ),
-            $this->event_actions[] = EventAction::link(
+            EventAction::link(
                 'Close Whiteboard',
                 '#',
                 null,

@@ -448,9 +448,9 @@
 <?php } ?>
 
 <?php
-$whiteboard_display_mode = OphTrOperationbooking_Whiteboard_Settings_Data::model()->find('`key` = "opbooking_whiteboard_display_mode"');
+$whiteboard_display_mode = SettingMetadata::model()->getSetting('opbooking_whiteboard_display_mode');
 
-if ($whiteboard_display_mode->value === 'CURRENT') {
+if ($whiteboard_display_mode === 'CURRENT') {
     $this->event_actions[] = EventAction::link(
         'Display Whiteboard',
         '#',
