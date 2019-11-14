@@ -16,8 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
-$tech_support_provider = Yii::app()->params['tech_support_provider'] ?: 'ABEHRdigital';
-$tech_support_url = Yii::app()->params['tech_support_url'] ?: 'https://www.abehr.com';
+$settings = new SettingMetadata();
+$tech_support_provider = $settings->getSetting('tech_support_provider');
+$tech_support_url = $settings->getSetting('tech_support_url')
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
