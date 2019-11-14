@@ -39,7 +39,7 @@ class AdminSidebar extends BaseCWidget
         $menu_items = [];
         foreach ($items as $box_title => $box_data) {
             // check the current title in the exclude_admin_structure_param_list array, if found then skip that element.
-            if(Yii::app()->params['exclude_admin_structure_param_list'] !== null && in_array( $box_title , Yii::app()->params['exclude_admin_structure_param_list'])) {
+            if (Yii::app()->params['exclude_admin_structure_param_list'] !== null && in_array( $box_title, Yii::app()->params['exclude_admin_structure_param_list'])) {
                 continue;
             }
             foreach ($box_data as $item_title => $item) {
