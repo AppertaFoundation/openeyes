@@ -144,7 +144,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 label: $option.data('label'),
                 eye_id: controller.getEyeIdFromRow($tr),
                 is_principal: $tr.find('#principal_diagnosis_row_key').is(':checked') ? 1 : 0,
-                date: controller.getDisplayDate(row_count)
+                date: $('#diagnoses-datepicker-' + row_count).val()
             }];
 
             if (type && type === 'alternate') {
@@ -253,14 +253,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let eye_id = $row.find('.js-left-eye').is(':checked') ? 1 : 0;
         eye_id += $row.find('.js-right-eye').is(':checked') ? 2 : 0;
         return eye_id;
-    };
-
-    DiagnosesController.prototype.getDisplayDate = function(row_count) {
-        if (row_count >= 0){
-            return $('#diagnoses-datepicker-' + row_count).val();
-        } else {
-            return OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
-        }
     };
 
     DiagnosesController.prototype.createRow = function(selectedItems)
