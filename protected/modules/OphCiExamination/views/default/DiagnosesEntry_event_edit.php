@@ -78,7 +78,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
     ?>
 
     <td>
-        <input value="{{row_count}}" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key" />
+        <input value="{{row_count}}" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key_{{row_count}}" />
     </td>
     <td>
           <input id="diagnoses-datepicker-<?= $row_count; ?>"
