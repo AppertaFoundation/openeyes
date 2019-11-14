@@ -250,10 +250,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     DiagnosesController.prototype.getEyeIdFromRow = function($row) {
-        return this.resolveEyeCode([
-            $row.find('.js-left-eye').is(':checked') ? 1 : undefined,
-            $row.find('.js-right-eye').is(':checked') ? 0 : undefined
-        ]);
+        let eye_id = $row.find('.js-left-eye').is(':checked') ? 1 : 0;
+        eye_id += $row.find('.js-right-eye').is(':checked') ? 2 : 0;
+        return eye_id;
     };
 
     DiagnosesController.prototype.getDisplayDate = function(row_count) {
