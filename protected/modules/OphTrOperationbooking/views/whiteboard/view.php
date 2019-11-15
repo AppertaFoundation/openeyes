@@ -38,7 +38,7 @@ $cataract_card_list = array(
     ),
     'Lens' => array(
         'data' => array(
-            'content' => ((float) $data->iol_power >= 0.0 ? '+' : null) . $data->iol_power,
+            'content' => ((float) $data->iol_power >= 0.0 && $data->iol_power !== 'Unknown' ? '+' : null) . $data->iol_power,
             'extra_data' => $data->iol_model
                 . ' '
                 . ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst),
