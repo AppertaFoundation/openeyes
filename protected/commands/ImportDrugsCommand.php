@@ -184,7 +184,6 @@ EOD;
             $sqlCommand->execute();
             $this->printMsg('OK.', true, false);
         }
-
     }
 
     public function createTableData()
@@ -484,8 +483,12 @@ EOD;
                     $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;
                     $multipleValuesCurrentCount++;
                     if ($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
-                        $insertMultipleCommand = sprintf($this->insertMultipleTemplate,
-                            $fullTableName, $fields, $multipleValues);
+                            $insertMultipleCommand = sprintf(
+                                $this->insertMultipleTemplate,
+                                $fullTableName,
+                                $fields,
+                                $multipleValues
+                            );
                         $sqlCommands[] = $insertMultipleCommand;
                         $multipleValues = '';
                         $multipleValuesCurrentCount = 0;
@@ -521,7 +524,6 @@ EOD;
                 $this->printMsg('Table is not exists. Skipped.', true, false);
             }
         }
-
     }
 
     public function copyToOE()
@@ -787,7 +789,9 @@ EOD;
 
         $cmd = "UPDATE medication AS amp
 				LEFT JOIN medication vmp ON amp.vmp_code = vmp.preferred_code
-				SET amp.default_route_id = vmp.default_route_id, amp.default_form_id = vmp.default_form_id, amp.default_dose_unit_term = vmp.default_dose_unit_term
+				SET amp.default_route_id = vmp.default_route_id, 
+                    amp.default_form_id = vmp.default_form_id, 
+                    amp.default_dose_unit_term = vmp.default_dose_unit_term
 				WHERE amp.source_type = 'DM+D' AND amp.source_subtype = 'AMP'
 				AND vmp.source_type = 'DM+D' AND vmp.source_subtype = 'VMP'
 				";
@@ -828,5 +832,11 @@ EOD;
         @unlink('/tmp/ref_medication_set.csv');
 
         echo "Data imported to OE." . PHP_EOL;
+    }
+
+    public function bindImportedMedications()
+    {
+        Yii::app()->db->createCommand("update event_medication_use set bound_key = id where prescription_item_id is null and usage_type = 'OphDrPrescription'")->execute();
+        Yii::app()->db->createCommand("update event_medication_use e1, event_medication_use e2 set e1.bound_key=e2.bound_key where e1.prescription_item_id=e2.id and e1.usage_subtype = 'History'")->execute();
     }
 }
