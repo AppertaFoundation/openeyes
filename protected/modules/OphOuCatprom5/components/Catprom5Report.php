@@ -165,19 +165,15 @@ class Catprom5Report extends \Report implements \ReportInterface
             break;
         }
 
-        // if ($dateFrom) {
-        //     Yii::log(var_dump($dateFrom).  'from' );
-        //     $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        //     $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        //     // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        // }
+        if ($dateFrom) {
+            $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+        }
   
-        // if ($dateTo) {
-        //     Yii::log(var_dump($dateFrom).  'to' );
-        //     $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
-        //     $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
-        //     // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
-        // }
+        if ($dateTo) {
+            $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
+        }
         return $this->command->queryAll();
     }
 
