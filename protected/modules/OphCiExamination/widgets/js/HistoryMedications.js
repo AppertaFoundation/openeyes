@@ -646,8 +646,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             for (let row_index in rows) {
                 let $row = $(rows[row_index]);
                 controller.addMedicationItemRow($row, response[row_index]);
-                $row.find(".js-btn-prescribe").click();
-                $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
+                if (controller.isTaper($row)) {
+                    $row.find(".js-duration").show();
+                } else if (controller.isTaper($(rows[parseInt(row_index) + 1]))){
+                    $row.find(".js-btn-prescribe").click();
+                    $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
+                }
             }
 
             controller.displayTableHeader();
