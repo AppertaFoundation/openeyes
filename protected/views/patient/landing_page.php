@@ -17,7 +17,7 @@
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-$allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical')&& Yii::app()->params['canViewSummary'];
+$allow_clinical = Yii::app()->params['institution_code'] === 'CERA'? Yii::app()->user->checkAccess('OprnViewClinical') && Yii::app()->params['canViewSummary'] : Yii::app()->user->checkAccess('OprnViewClinical') ;
 
 ?>
 
