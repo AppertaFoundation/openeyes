@@ -35,8 +35,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
         "uploadModeSelector": "input[name='upload_mode']",
-        "uploadFormSelector":"#document-create",
-        "uploadFormButton":"#et_save",
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -52,36 +50,10 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 ev.preventDefault();
 
                 let data = ev.originalEvent.dataTransfer.files;
-                controller.documentUpload($(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data));
-            },
+                $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
+                $(controller.options.fileInputSelector).trigger('change');
+                },
         });
-
-        //Check at a given id if the file has been uploaded or not. If not, return false and show an error.
-        $(controller.options.uploadFormButton).on('click',function (e) {
-            e.preventDefault();
-            let valid = true;
-            //Check whether the document upload event is single or double-sided
-            let mode = ($(controller.options.singleUploadSelector).is(':visible'))? controller.options.singleUploadSelector: controller.options.doubleUploadSelector;
-            $(mode + " " +controller.options.fileInputSelector).each(function () {
-                let input_selector  = $(this).attr('id');
-                let file = document.getElementById(input_selector).files[0];
-                if (file === undefined){
-                    //No file was uploaded
-                		valid = false;
-                		return false;
-                }
-            });
-
-            //Submit the document only if it is valid. Else display a dialogue box
-            if(valid) {
-                $('#document-create').submit();
-            }else{
-                new OpenEyes.UI.Dialog.Alert({
-                    content: 'Select file(s) to upload first'
-                }).open();
-            }
-        });
-
 
         $(controller.options.uploadModeSelector).on('change', function () {
 
@@ -247,9 +219,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 complete: function () {
                 }
             });
-        } else {
-            //Chrome will not trigger the 'change' event next time unless the input has been cleared
-            $('.js-document-file-input').val(null);
         }
     };
 
@@ -336,8 +305,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                         content: 'Only the following file types can be uploaded: ' + window.allowed_file_types.join(', ') +
                             '\n\nFor reference, the type of the file you tried to upload is: ' + file.type
                     }).open();
-
-
                 }
             }
 
