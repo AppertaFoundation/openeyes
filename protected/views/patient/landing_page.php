@@ -17,6 +17,7 @@
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+//Added a check for CERA for the line below as it was affecting the UK, the line below was added as part of CERA-399 originally
 $allow_clinical = Yii::app()->params['institution_code'] === 'CERA'? Yii::app()->user->checkAccess('OprnViewClinical') && Yii::app()->params['canViewSummary'] : Yii::app()->user->checkAccess('OprnViewClinical') ;
 
 ?>
