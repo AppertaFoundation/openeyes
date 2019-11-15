@@ -122,10 +122,10 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                         ?>
                                     {{/has_dose_unit_term}}
                                 <?php } else {
-                                        if ($entry->dose_unit_term !== "") { ?>
+                                    if ($entry->dose_unit_term !== "") { ?>
                                     <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
-                                <?php } else {
-                                    echo CHtml::dropDownList($field_prefix . '[dose_unit_term]', null, $unit_options,
+                                    <?php } else {
+                                        echo CHtml::dropDownList($field_prefix . '[dose_unit_term]', null, $unit_options,
                                         [
                                             'empty' => 'Units',
                                             'disabled' => $direct_edit || $dfrl_validation_error ? '' : 'disabled',
