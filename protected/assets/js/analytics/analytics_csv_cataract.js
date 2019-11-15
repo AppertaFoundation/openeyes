@@ -61,7 +61,6 @@ var analytics_csv_cataract = (function () {
 		}
 	}
 	var init = function () {
-		console.log('downloading')
 		switch ($('.js-cataract-report-type.selected').data('report')) {
 			case 'PCR':
 				pcr_risk_to_csv();
@@ -78,20 +77,11 @@ var analytics_csv_cataract = (function () {
 			case 'NOD':
 				NOD_Audit_to_csv();
 				break;
-			case 'C5A':
-				console.log('C5A');
-				CATPROM5_to_csv();
-				break;
-			case 'C5B':
-				console.log('C5B');
-				CATPROM5_to_csv();
-				break;
-			case 'C5C':
-			console.log('C5C');
+			case 'CP5':
 				CATPROM5_to_csv();
 			break;
 			default:
-				console.log('not found anything');
+				console.log('Could not find CSV for graph');
 				break;
 		}
 	}

@@ -120,7 +120,6 @@
                         $('#js-analytics-spinner').hide();
                         $("#"+chartId).show();
                     }
-
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
                     }
@@ -424,6 +423,53 @@
             chart.data[1]['customdata'] = incompletedData.map(function (item) {
                 return item;
             });
+            Plotly.redraw(chart);
+        },
+
+        
+        'OEModule_OphOuCatprom5_components_Catprom5Report': function(data){
+            
+            var chart = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0];
+            var newTitle = '';
+
+            switch($('#catprom5-mode').val()){
+            case '0':
+                newTitle = 'Catprom5: Pre-op vs Post-op difference';                
+                chart.layout['xaxis']['autorange'] = true;
+            break;
+            case '1':
+                newTitle = 'Catprom5: Pre-op';
+                
+                chart.layout['xaxis']['autorange'] = false;
+                chart.layout['xaxis']['range'] = [-10,8];
+
+            break;
+            case '2':
+                newTitle = 'Catprom5: Post-op';
+                chart.layout['xaxis']['autorange'] = false;
+                chart.layout['xaxis']['range'] = [-10,8];
+            break;
+            }
+            
+            console.log( chart.layout['xaxis']['range']);
+
+            chart.layout['title'] = newTitle;
+
+            var keys = Object.keys(data);
+            var vals =  Object.values(data);
+            chart.data[0]['x'] = keys.map(function (item) {
+                return item;
+              });
+
+              chart.data[0]['y'] = vals.map(function (item) {
+                return item['count'];
+              });
+              chart.data[0]['customdata'] = vals.map(function (item) {
+                return item['ids'];
+              });
+              chart.data[0]['hovertext'] = keys.map(function(item) { 
+                return '<b>Catprom5</b><br><i>Diff Post: </i>' + item +'<br><i>Num results:</i> ' + data[item].count;
+                })
             Plotly.redraw(chart);
         }
 

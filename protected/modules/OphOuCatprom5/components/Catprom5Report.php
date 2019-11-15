@@ -23,6 +23,32 @@ use Yii;
 class Catprom5Report extends \Report implements \ReportInterface
 {
     /**
+     * @var string
+     */
+    protected $searchTemplate = 'application.modules.OphOuCatprom5.views.report.catprom5_search';
+
+    /**
+     * @var int
+     */
+    protected $mode;
+
+    /**
+     * @var int
+     */
+    protected $eye;
+
+/**
+     * @param $app
+     */
+    public function __construct($app)
+    {
+        $this->mode = $app->getRequest()->getQuery('mode', 0);
+        $this->eye = $app->getRequest()->getQuery('eye', 0);
+
+        parent::__construct($app);
+    }
+
+    /**
      * @var array
      */
     protected $plotlyConfig = array(
@@ -65,9 +91,17 @@ class Catprom5Report extends \Report implements \ReportInterface
 
         $this->command->reset();
 
-        $test= Yii::app()->request->getParam('catprom5');
-        switch ($test) {
-            case 'pre':
+        $this->mode = $this->app->getRequest()->getQuery('mode', 0);
+      
+        // Yii::log(print_r($this->mode,true));
+
+        if (empty($this->mode)){
+          $this->mode =0;
+        }
+        
+        // Yii::log(print_r($this->mode,true));
+        switch ($this->mode) {
+            case 1:
             //catprom 5 events that are before operations
                 $this->command->select(' 
                   eoc.event_id as cataract_element_id,
@@ -83,7 +117,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                   ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date <= e1.event_date')
                   ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
           break;
-            case 'post':
+            case 2:
               //catprom 5 events that are after operations
                 $this->command->select(' 
                     eoc.event_id as cataract_element_id,
@@ -99,7 +133,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                     ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date >= e1.event_date')
                     ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
             break;
-            case 'dif':
+            case 0:
             default:
             //the diff between catprom 5 events before and after operations
                 $this->command->select(' 
@@ -131,19 +165,19 @@ class Catprom5Report extends \Report implements \ReportInterface
             break;
         }
 
-        if ($dateFrom) {
-            Yii::log(var_dump($dateFrom).  'from' );
-            $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-            $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-            // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        }
+        // if ($dateFrom) {
+        //     Yii::log(var_dump($dateFrom).  'from' );
+        //     $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+        //     $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+        //     // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
+        // }
   
-        if ($dateTo) {
-            Yii::log(var_dump($dateFrom).  'to' );
-            $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
-            $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
-            // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
-        }
+        // if ($dateTo) {
+        //     Yii::log(var_dump($dateFrom).  'to' );
+        //     $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
+        //     $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
+        //     // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
+        // }
         return $this->command->queryAll();
     }
 
@@ -229,22 +263,25 @@ class Catprom5Report extends \Report implements \ReportInterface
      */
     public function plotlyConfig()
     {
-      
-        $test= Yii::app()->request->getParam('catprom5');
-        switch ($test) {
-            case 'pre':
-                $this->plotlyConfig['title'] = 'Catprom5: Pre-op';
-                $this->plotlyConfig['xaxis']['range'] = [-10,8];
-          break;
-            case 'post':
-                $this->plotlyConfig['title'] = 'Catprom5: Post-op';
-                $this->plotlyConfig['xaxis']['range'] = [-10,8];
-          break;
-            case 'diff':
-            default:
-                $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
-          break;
+      $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
+      return json_encode($this->plotlyConfig);
+    }
+
+    
+    /**
+     * @return mixed|string
+     */
+    public function renderSearch($analytics = false)
+    {
+        if ($analytics) {
+            $this->searchTemplate = 'application.modules.OphOuCatprom5.views.report.catprom5_search_analytics';
         }
-        return json_encode($this->plotlyConfig);
+
+        $displayModes = array(array('id' => '0', 'name' => 'Pre-op vs Post-op difference'), array('id' => '1', 'name' => 'Pre-op'), array('id' => '2', 'name' => 'Post-op'));
+
+        $displayEyes = array(array('id' => '0', 'name' => 'Both Eyes'), array('id' => '1', 'name' => 'Eye 1'), array('id' => '2', 'name' => 'Eye 2'));
+
+
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes,'eyes'=>$displayEyes));
     }
 }
