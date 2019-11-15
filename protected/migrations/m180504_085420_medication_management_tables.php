@@ -46,6 +46,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'antecedent_medication_set_id' => 'INT NULL',
             'deleted_date'          => 'DATE NULL',
             'display_order'         => 'INT NULL',
+            'hidden'                => 'BOOLEAN NOT NULL DEFAULT 0'
         ), true);
 
         $this->createIndex('fk_ref_set_idx', 'medication_set', 'antecedent_medication_set_id');
@@ -186,8 +187,8 @@ class m180504_085420_medication_management_tables extends OEMigration
             ['usage_code' => 'COMMON_OPH', 'name' => 'Common Ophthalmic', 'active' => 1],
             ['usage_code' => 'COMMON_SYSTEMIC', 'name' => 'Common Systemic', 'active' => 1],
             ['usage_code' => 'PRESCRIPTION_SET', 'name' => 'Prescription', 'active' => 1],
-            ['usage_code' => 'DrugTag', 'name' => 'Drug Tags', 'hidden' => 1, 'active' => 0],
             ['usage_code' => 'Formulary', 'name' => 'Formulary', 'active' => 1],
+            ['usage_code' => 'OEScape', 'name' => 'OEScape', 'active' => 1],
         ]);
     }
 

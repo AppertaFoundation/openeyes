@@ -828,7 +828,10 @@ class BaseActiveRecord extends CActiveRecord
             $record_relations = $this->getMetaData()->relations;
             foreach ($record_relations as $rel_name => $rel) {
                 $rel_type = get_class($rel);
-                if ($rel_type == self::HAS_MANY) {
+                // !is_array because we can define HAS_MANY relations with 'through' key
+                // https://www.yiiframework.com/doc/guide/1.1/en/database.arr#relational-query-with-through
+                // and the foreignKey will be an array
+                if ($rel_type == self::HAS_MANY && !is_array($rel->foreignKey)) {
                     $this->validateRelation($rel_name, $rel->foreignKey);
                 }
             }

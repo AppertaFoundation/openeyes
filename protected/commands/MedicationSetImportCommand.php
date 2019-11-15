@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 /**
  * Class MedicationSetImportCommand
  */
@@ -52,51 +54,34 @@ EOH;
 
     /**
      * @param $setName
-     * @param $setRecords
+     * @param $set_records
      */
-    private function createAutomaticSet($set_name, $setRecords)
+    private function createAutomaticSet($set_name, $set_records)
     {
         // search for existing set in this name, create if not exists
-            $current_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+        $current_set = MedicationSet::model()->find('name = :set_name', [':set_name' => $set_name]);
+        $risk_tags = [];
 
-            $risk_tags = null;
-
-        //delete any existing sets with the same name as the new sets
         if ($current_set) {
-            try {
-                \MedicationSetAutoRuleAttribute::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
-                \MedicationSetAutoRuleMedication::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
-                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['source_medication_set_id' => $current_set->id]);
-                \MedicationSetAutoRuleSetMembership::model()->deleteAllByAttributes(['target_medication_set_id' => $current_set->id]);
-                \MedicationSetItem::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
-                \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $current_set->id]);
-                OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => null], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
-
-                          $risk_tags = \OphCiExaminationRiskTag::model()->findAllByAttributes(['medication_set_id' => $current_set->id]);
-
-                foreach ($risk_tags as $risk_tag) {
-                    $risk_tag->medication_set_id = null;
-                    $risk_tag->update();
-                }
-
-                            $current_set->delete();
-            } catch (\Exception $exception) {
-                \OELog::log($exception->getMessage());
-            }
+            $risk_tags = \OphCiExaminationRiskTag::model()->findAllByAttributes(['medication_set_id' => $current_set->id]);
         }
 
-        $current_set = new MedicationSet();
+        $new_set = new MedicationSet();
 
-        $current_set->name = $set_name;
+        // the 'name' attribute has a isUnique validation rule on insert and update, so we set the scenario null to
+        // allow duplicate names for this command
+        $new_set->scenario = null;
 
-        foreach ($setRecords as $key => $row) {
+        $new_set->name = $set_name;
+
+        foreach ($set_records as $key => $row) {
             switch ($row["type"]) {
                 case "VTM":
                 case "VMP":
                     $medication = Medication::model()->find('source_subtype = :source_subtype and ' . strtolower($row["type"]) . '_code = :code', array('source_subtype' => $row["type"], 'code' => $row["snomed"]));
 
                     if ($medication) {
-                        $current_set->tmp_meds[] = array(
+                        $new_set->tmp_meds[] = array(
                             'id' => '-1',
                             'medication_id' => $medication->id,
                             'include_parent' => 1,
@@ -109,7 +94,7 @@ EOH;
                 case "SET":
                     $set = MedicationSet::model()->find('name = :set_name', array(':set_name' => $row["name"]));
                     if ($set) {
-                        $current_set->tmp_sets[] = array(
+                        $new_set->tmp_sets[] = array(
                             'id' => '-1',
                             'medication_set_id' => $set->id
                         );
@@ -120,7 +105,7 @@ EOH;
                 case "ROUTE":
                     $route_option = MedicationAttributeOption::model()->find('description = :description', array('description' => $row["name"]));
                     if ($route_option) {
-                        $current_set->tmp_attrs[] = array(
+                        $new_set->tmp_attrs[] = array(
                             'id' => '-1',
                             'medication_attribute_option_id' => $route_option->id
                         );
@@ -130,27 +115,41 @@ EOH;
                     break;
             }
         }
-        $current_set->automatic = 1;
-        $current_set->hidden = 1;
+        $new_set->automatic = 1;
+        $new_set->hidden = 1;
 
         $trans = Yii::app()->db->beginTransaction();
 
-        if (!$current_set->validate() || !$current_set->save(false)) {
-            $trans->rollback();
-            echo "ERROR: unable to save set " . $set_name . "!\n";
-        } else {
-            $trans->commit();
+        try {
+            if ($new_set->save()) {
+                if ($current_set) {
+                    \MedicationSetAutoRuleSetMembership::model()->updateAll(['source_medication_set_id' => $new_set->id], 'source_medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    \MedicationSetAutoRuleSetMembership::model()->updateAll(['target_medication_set_id' => $new_set->id], 'target_medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    \MedicationSetAutoRuleAttribute::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    \MedicationSetAutoRuleMedication::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    \MedicationSetItem::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    \MedicationSetRule::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
-            try {
-                if (isset($risk_tags)) {
                     foreach ($risk_tags as $risk_tag) {
-                        $risk_tag->medication_set_id = $current_set->id;
-                                $risk_tag->update();
+                        $risk_tag->medication_set_id = $new_set->id;
+                        $risk_tag->update(['medication_set_id']);
                     }
+
+                    $current_set->delete();
                 }
-            } catch (\Exception $exception) {
-                \OELog::log($exception->getMessage());
+
+                $trans->commit();
+            } else {
+                echo '<pre>' . print_r($new_set->getErrors(), true) . '</pre>';
+                $trans->rollback();
+                $msg = "ERROR: unable to save set " . $set_name . "!";
+                echo $msg . "\n";
+                \OELog::log($msg);
             }
+        } catch (\Exception $exception) {
+            $trans->rollback();
+            echo $exception->getMessage();
         }
     }
 
