@@ -96,7 +96,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <td class="dose-frequency-route alternative-display">
                                 <?php
                                 $dfrl_validation_error = array_intersect(
-                                    array("dose", "frequency_id", "route_id", "laterality"),
+                                    array("dose", "dose_unit_term", "frequency_id", "route_id", "laterality"),
                                     array_keys($entry->errors));
                                 ?>
                             <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>"
@@ -107,7 +107,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
                             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
                                                         <span class="js-dose-unit-term"><?php echo $entry->dose_unit_term; ?></span>
-                            <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled'=>'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:none')); ?>
+                            <?php echo CHtml::dropDownList($field_prefix.'[dose_unit_term]', null, $unit_options,
+                                [
+                                    'empty' => 'Units',
+                                    'disabled'=> $direct_edit || $dfrl_validation_error ? '' : 'disabled',
+                                    'class' => 'js-unit-dropdown cols-2',
+                                    'style' => $direct_edit || $dfrl_validation_error ? '' : 'display:none'
+                                ]); ?>
                             <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
                             <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class'=>'js-route cols-3')) ?>
                                                             <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>">
@@ -197,33 +203,29 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
         <td class="nowrap">
            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
-
-                    <div class="alternative-display inline">
-            <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" <?php if ($direct_edit || ($entry->hasErrors('end_date'))) {
-                    ?> style="display: none;"<?php
-                                                            }?>>
-                    <?php if (!is_null($entry->end_date)) : ?>
-                                            <i class="oe-i stop small pad"></i>
-                                            <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
-                    <?php else : ?>
-                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
-                    <?php endif; ?>
-                </a>
-            </div>
-            <fieldset <?php if (!$direct_edit && !($entry->hasErrors('end_date'))) {
-                ?> style="display: none;"<?php
-                      }?> class="js-datepicker-wrapper js-end-date-wrapper">
-                            <i class="oe-i stop small pad"></i>
-                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
-                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
-                                             data-default="<?= date('Y-m-d') ?>"
-                                             style="width:80px" placeholder="yyyy-mm-dd"
-                                             autocomplete="off">
-            </fieldset>
-        </div>
-                </span>
-
+               <div class="alternative-display inline">
+                   <div class="alternative-display-element textual">
+                       <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);"
+                        <?= ($direct_edit || ($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
+                            <?php if (!is_null($entry->end_date)) : ?>
+                               <i class="oe-i stop small pad"></i>
+                                <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
+                            <?php else : ?>
+                               <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                            <?php endif; ?>
+                       </a>
+                   </div>
+                   <fieldset class="js-datepicker-wrapper js-end-date-wrapper"
+                        <?= (!$direct_edit && !($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
+                       <i class="oe-i stop small pad"></i>
+                       <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
+                              name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                              data-default="<?= date('Y-m-d') ?>"
+                              style="width:80px" placeholder="yyyy-mm-dd"
+                              autocomplete="off">
+                   </fieldset>
+               </div>
+           </span>
 
                     <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>" class="js-stop-reason-select cols-5"
                                 style="<?= is_null($entry->end_date) ? "display:none" : "" ?>">

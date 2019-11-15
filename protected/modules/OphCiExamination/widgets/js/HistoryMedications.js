@@ -299,8 +299,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   controller.options.classes_that_dont_break_binding.forEach(function (class_name) {
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
-
-												$full_bound_entry.find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
+                          $full_bound_entry.find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
                       }
                   });
 
@@ -505,9 +504,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (this.isTaper($row)) {
             row_data_key = $row.attr("data-parent-key");
             taper_data_key = "[taper][" + $row.attr("data-taper-key") + "]";
-        } else {
-            $row.find(".js-btn-prescribe").click();
-            $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
         }
         $.each(this.fields, function(i, field){
             if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
@@ -648,7 +644,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             });
 
             for (let row_index in rows) {
-                controller.addMedicationItemRow($(rows[row_index]), response[row_index]);
+                let $row = $(rows[row_index]);
+                controller.addMedicationItemRow($row, response[row_index]);
+                $row.find(".js-btn-prescribe").click();
+                $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
             }
 
             controller.displayTableHeader();

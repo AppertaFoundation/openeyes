@@ -65,15 +65,15 @@ class MedicationSet extends BaseActiveRecordVersioned
 
             // 'on'=>'insert, update' because of the protected/commands/MedicationSetImportCommand.php
             // it needs to handle duplicate names during the import
-            array('name', 'isUnique', 'on'=>'insert, update'),
-            array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly'=>true),
-            array('name', 'length', 'max'=>255),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('name', 'isUnique', 'on' => 'insert, update'),
+            array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 255),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('name, deleted_date, last_modified_date, created_date, automatic, hidden', 'safe'),
 
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, hidden, automatic, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, name, hidden, automatic, antecedent_medication_set_id, deleted_date, display_order, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
         );
     }
 
@@ -171,7 +171,7 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
@@ -184,7 +184,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -202,8 +202,8 @@ class MedicationSet extends BaseActiveRecordVersioned
     /**
      * Returns RefSets that belong to site and subspecialty
      *
-     * @param null $site_id             defaults to currently selected
-     * @param null $subspecialty_id     defaults to currently selected
+     * @param null $site_id defaults to currently selected
+     * @param null $subspecialty_id defaults to currently selected
      * @return CActiveRecord[]
      */
 
@@ -250,7 +250,7 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $ret_val = [];
         foreach ($this->medicationSetRules as $rule) {
-            $ret_val[]= "Site: " . ($rule->site ? $rule->site->name : '-') .
+            $ret_val[] = "Site: " . ($rule->site ? $rule->site->name : '-') .
                 ", SS: " . ($rule->subspecialty ? $rule->subspecialty->name : "-") .
                 ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
         }
@@ -261,7 +261,7 @@ class MedicationSet extends BaseActiveRecordVersioned
     public function scopes()
     {
         return array(
-            'byName' =>  array('order' => 'name ASC'),
+            'byName' => array('order' => 'name ASC'),
         );
     }
 
@@ -404,7 +404,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         $updated_ids = [];
 
         foreach ($this->tmp_rules as $rule) {
-            if ( isset($rule['id']) && !$rule['id']) {
+            if (isset($rule['id']) && !$rule['id']) {
                 $rule_model = new MedicationSetRule();
             } else {
                 $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
@@ -434,13 +434,13 @@ class MedicationSet extends BaseActiveRecordVersioned
     public function populateAuto()
     {
         if (!$this->automatic || in_array($this->id, self::$_processed)) {
-            Yii::log("Skipping ".$this->name." because it's already processed.");
+            Yii::log("Skipping " . $this->name . " because it's already processed.");
             return false;
         }
 
         self::$_processed[] = $this->id;
 
-        Yii::log("Started processing ".$this->name);
+        Yii::log("Started processing " . $this->name);
 
         $cmd = Yii::app()->db->createCommand();
         $cmd->select('id', 'DISTINCT')->from('medication');
@@ -450,7 +450,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         }, $this->autoRuleAttributes);
 
         $auto_set_ids = array_map(function ($e) {
-                return $e->id;
+            return $e->id;
         },
             array_filter($this->autoRuleSets, function ($e) {
                 return $e->automatic == 1;
@@ -458,7 +458,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         );
 
         $nonauto_set_ids = array_map(function ($e) {
-                return $e->id;
+            return $e->id;
         },
             array_filter($this->autoRuleSets, function ($e) {
                 return $e->automatic == 0;
@@ -468,15 +468,15 @@ class MedicationSet extends BaseActiveRecordVersioned
         $no_condition = true;
 
         if (!empty($attribute_option_ids)) {
-            $cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationAttributeAssignment::model()->tableName()."
-												WHERE medication_attribute_option_id IN (".implode(",", $attribute_option_ids).")
+            $cmd->orWhere("id IN (SELECT medication_id FROM " . MedicationAttributeAssignment::model()->tableName() . "
+												WHERE medication_attribute_option_id IN (" . implode(",", $attribute_option_ids) . ")
 												)");
             $no_condition = false;
         }
 
         if (!empty($nonauto_set_ids)) {
-            $cmd->orWhere("id IN (SELECT medication_id FROM ".MedicationSetItem::model()->tableName()."
-												WHERE medication_set_id IN (".implode(",", $nonauto_set_ids).")
+            $cmd->orWhere("id IN (SELECT medication_id FROM " . MedicationSetItem::model()->tableName() . "
+												WHERE medication_set_id IN (" . implode(",", $nonauto_set_ids) . ")
 												)");
             $no_condition = false;
         }
@@ -502,24 +502,24 @@ class MedicationSet extends BaseActiveRecordVersioned
                     $cmd->orWhere("vmp_code = '{$medication->preferred_code}'");
                 }
             }
-            $cmd->orWhere("id = ".$medicationSetAutoRuleMedication->medication_id);
+            $cmd->orWhere("id = " . $medicationSetAutoRuleMedication->medication_id);
             $no_condition = false;
         }
 
         $ids = $cmd->queryColumn();
         // empty the set
-        Yii::app()->db->createCommand("DELETE FROM ".MedicationSetItem::model()->tableName()." WHERE medication_set_id = ".$this->id)->execute();
+        Yii::app()->db->createCommand("DELETE FROM " . MedicationSetItem::model()->tableName() . " WHERE medication_set_id = " . $this->id)->execute();
         if (!$no_condition && !empty($ids)) {
             // repopulate
             $values = array();
             foreach ($ids as $id) {
                 $values[] = "({$this->id},$id)";
             }
-            Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
-									VALUES ".implode(",", $values))->execute();
+            Yii::app()->db->createCommand("INSERT INTO " . MedicationSetItem::model()->tableName() . " (medication_set_id, medication_id)
+									VALUES " . implode(",", $values))->execute();
         }
 
-        Yii::log("Processed non-auto rules in ".$this->name);
+        Yii::log("Processed non-auto rules in " . $this->name);
 
         // process auto sub sets recursively
         if (!empty($auto_set_ids)) {
@@ -533,13 +533,14 @@ class MedicationSet extends BaseActiveRecordVersioned
 
                 // Include items from sub set
                 $table = MedicationSetItem::model()->tableName();
-                Yii::log("Adding sub set items into ".$this->name);
+                Yii::log("Adding sub set items into " . $this->name);
                 $items = Yii::app()->db->createCommand("SELECT medication_id FROM $table WHERE medication_set_id = $auto_id
 														AND medication_id NOT IN (SELECT medication_id FROM $table WHERE medication_set_id = {$this->id})")->queryColumn();
                 $values = array();
                 foreach ($items as $id) {
                     $values[] = "({$this->id},$id)";
                 }
+
                 if ($values) {
                     Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
 									VALUES ".implode(",", $values))->execute();
@@ -547,7 +548,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             }
         }
 
-        Yii::log("Done processing ".$this->name);
+        Yii::log("Done processing " . $this->name);
 
         return count($ids);
     }
@@ -620,9 +621,12 @@ class MedicationSet extends BaseActiveRecordVersioned
             $set = self::model()->findAll('name = :name', [':name' => $this->{$attribute}]);
 
             if ($set) {
-                $set_ids = array_column($set, 'id');
+                $set_ids = array_map(function ($medication_set) {
+                    return $medication_set['id'];
+                }, $set);
+
                 if (!in_array($this->id, $set_ids) && !MedicationSetRule::model()->count('medication_set_id = :medication_set_id', [':medication_set_id' => implode(",", array_column($set, 'id'))])) {
-                    $this->addError($attribute, 'A medication set with the name '.$this->{$attribute}.' already exists with no rules');
+                    $this->addError($attribute, 'A medication set with the name ' . $this->{$attribute} . ' already exists with no rules');
                 }
             }
         }
