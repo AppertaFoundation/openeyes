@@ -330,7 +330,9 @@
                         </div>
                     </td>
                 </tr>
-                <?php if ($warnings = $session->getWarnings()) { ?>
+                <?php
+                $warnings = $session->getWarnings();
+                if ($warnings) { ?>
                     <div class="alert-box alert with-icon">Please note:
                         <ul>
                             <?php foreach ($warnings as $warning) {

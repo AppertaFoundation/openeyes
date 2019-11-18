@@ -336,7 +336,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getAvailableProcedureCount()
     {
-        if (!is_null($this->getMaxProcedureCount())) {
+        if ($this->isProcedureCountLimited()) {
             return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
         } else {
             return 0;
