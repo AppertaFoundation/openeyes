@@ -372,7 +372,7 @@ return array(
                 'forum' => array(
                     'title' => 'Track patients in FORUM',
                     'alt_title' => 'Stop tracking in FORUM',
-                    'uri' => "forum/index",
+                    'uri' => "forum/toggleForumTracking",
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),

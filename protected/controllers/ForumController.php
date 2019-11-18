@@ -22,7 +22,7 @@ class ForumController extends BaseController
         );
     }
 
-    public function actionIndex()
+    public function actionToggleForumTracking()
     {
         $user = Yii::app()->user;
 
