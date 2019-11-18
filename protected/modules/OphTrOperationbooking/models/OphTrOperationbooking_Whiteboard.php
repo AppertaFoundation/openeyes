@@ -377,7 +377,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         }
 
         if (!$patient->no_risks_date && !$risks) {
-            $total_risks = 1;
+            $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }
 

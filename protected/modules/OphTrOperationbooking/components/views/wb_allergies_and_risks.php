@@ -13,7 +13,7 @@ if ($this->data->anticoagulant_name !== 'No Anticoagulants' && $this->data->anti
 }
 ?>
 <div class="oe-wb-special risks">
-    <h3>Allergies (<?= $this->data->allergies === 'None' ? 0 : count(explode(', ', $this->data->allergies))?>)</h3>
+    <h3>Allergies (<?= in_array($this->data->allergies, ['None', 'Unknown']) ? 0 : count(explode(', ', $this->data->allergies))?>)</h3>
     <?php if ($this->data->allergies === 'None') :?>
         <div class="alert-box success">No Allergies</div>
     <?php else :?>
