@@ -4,33 +4,39 @@
  */
 $total_risks = 0;
 $risks = $this->data->getPatientRisksDisplay($total_risks);
-if ($this->data->alpha_blocker_name !== 'No Alpha Blockers') {
+if ($this->data->alpha_blocker_name !== 'No Alpha Blockers' && $this->data->alpha_blocker_name !== 'Not checked') {
     $total_risks++;
 }
 
-if ($this->data->anticoagulant_name !== 'No Anticoagulants') {
+if ($this->data->anticoagulant_name !== 'No Anticoagulants' && $this->data->anticoagulant_name !== 'Not checked') {
     $total_risks++;
 }
 ?>
 <div class="oe-wb-special risks">
-    <h3>Allergies (<?= count(explode(', ', $this->data->allergies))?>)</h3>
+    <h3>Allergies (<?= $this->data->allergies === 'None' ? 0 : count(explode(', ', $this->data->allergies))?>)</h3>
     <?php if ($this->data->allergies === 'None') :?>
         <div class="alert-box success">No Allergies</div>
     <?php else :?>
         <?php foreach (explode(', ', $this->data->allergies) as $allergy) :?>
-            <div class="alert-box warning">
-                <?= $allergy ?>
-            </div>
+            <?php if ($allergy === 'Unknown') :?>
+                <div class="alert-box info">
+                    Status unknown
+                </div>
+            <?php else :?>
+                <div class="alert-box warning">
+                    <?= $allergy ?>
+                </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     <?php endif; ?>
     <hr class="divider"/>
     <h3>Risks (<?= $total_risks ?>)</h3>
-    <?php if ($this->data->alpha_blocker_name !== 'No Alpha Blockers') : ?>
+    <?php if ($this->data->alpha_blocker_name !== 'No Alpha Blockers' && $this->data->alpha_blocker_name !== 'Not checked') : ?>
         <div class="alert-box warning">
             Alphablocker - <?=$this->data->alpha_blocker_name?>
         </div>
     <?php endif; ?>
-    <?php if ($this->data->anticoagulant_name !== 'No Anticoagulants') : ?>
+    <?php if ($this->data->anticoagulant_name !== 'No Anticoagulants' && $this->data->anticoagulant_name !== 'Not checked') : ?>
         <div class="alert-box warning">
             Anticoagulants - <?=$this->data->anticoagulant_name?>
         </div>

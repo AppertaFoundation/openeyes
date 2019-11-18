@@ -85,8 +85,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
-        $allergyString = $this->allergyString($episode);
         $operation = $this->operation($id);
+        $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
         $this->booking = $booking;
@@ -208,6 +208,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             return $allergyString;
         }
 
+        if (!$episode->patient->no_allergies_date) {
+            $allergyString = 'Unknown';
+        }
+
         return $allergyString;
     }
 
@@ -241,10 +245,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if ($risk['status'] === true) {
             $status = 'Present';
-        };
+        }
         if ($risk['status'] === false) {
             $status = 'Not present';
-        };
+        }
 
         return $status;
     }
@@ -262,6 +266,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
                 return $this->getDisplayHasRisk($alpha)
                     . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
+            }
+            if (!$alpha) {
+                return 'Not checked';
             }
             return 'No Alpha Blockers';
         }
@@ -303,6 +310,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 return $this->getDisplayHasRisk($anticoag)
                     . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
                     . Helper::convertMySQL2NHS($anticoag['date']) . ')';
+            }
+            if (!$anticoag) {
+                return 'Not checked';
             }
             return 'No Anticoagulants';
         }
@@ -362,18 +372,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $display = '';
 
         foreach ($lines as $line) {
+            $total_risks++;
             $display .= '<div class="alert-box warning">' . $line . '</div>';
         }
 
-        if ($display === '') {
-            $total_risks = 0;
-        } else {
-            $total_risks = count($lines);
+        if (!$patient->no_risks_date && !$risks) {
+            $total_risks = 1;
+            $display .= '<div class="alert-box info">Status unknown</div>';
         }
 
         // Add positive risk labels for significant risks that are not present.
+        // Anticoagulants and alpha blockers are excluded from this list as they are handled independently.
         foreach ($this->booking->getAllBookingRisks() as $risk) {
-            if (!in_array($risk, $risks, true)) {
+            if (!in_array($risk, $risks, true) && !in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
                 $display .= '<div class="alert-box success">' . "No {$risk->name}" . '</div>';
             }
         }

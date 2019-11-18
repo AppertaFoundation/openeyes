@@ -40,21 +40,23 @@
                 let pageStack = $('.multipage-stack');
                 pageStack.animate({
                     scrollTop: pageStack.scrollTop() + $('#biom-' + (page + 1)).position().top
-                });
+                }, 200, 'swing');
+            }
+
+            function scroll(change) {
+                let pageStack = $('.multipage-stack');
+                let newPos = pageStack.scrollTop() + change;
+                pageStack.animate({
+                    scrollTop: newPos+'px'
+                }, 200, 'swing')
             }
 
             $('#js-scroll-btn-down').click(function() {
-                if (id + 1 < maxPages) {
-                    id++;
-                    scrollToPage(id);
-                }
+                scroll(200);
             });
 
             $('#js-scroll-btn-up').click(function() {
-                if (id > 0) {
-                    id--;
-                    scrollToPage(id);
-                }
+                scroll(-200);
             });
 
             $('.page-num-btn').click(function() {
