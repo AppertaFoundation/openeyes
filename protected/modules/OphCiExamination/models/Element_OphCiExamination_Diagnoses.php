@@ -219,7 +219,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             if (!array_key_exists($cd->id, $disorder_to_update)) {
                 $secondary_diagnosis = \SecondaryDiagnosis::model()->find('disorder_id = :disorder_id', [':disorder_id' => $cd->disorder_id]);
                 if (!$secondary_diagnosis) {
-                    throw new \Exception("Unable to find secondary disorder linked to disorder $cs->disorder_id");
+                    throw new \Exception("Unable to find secondary disorder linked to disorder $cd->disorder_id");
                 }
                 $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
                 if (!$cd->delete()) {
