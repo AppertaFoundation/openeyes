@@ -327,18 +327,18 @@
                         <div class="data-value">
                             <?php $session = $element->booking->session ?>
                             <?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', ' . $session->FirmName; ?>
-                            <?php if ($warnings = $session->getWarnings()) { ?>
-                                <div class="alert-box alert with-icon">Please note:
-                                    <ul>
-                                        <?php foreach ($warnings as $warning) {
-                                            echo '<li>' . $warning . '</li>';
-                                        } ?>
-                                    </ul>
-                                </div>
-                            <?php } ?>
                         </div>
                     </td>
                 </tr>
+                <?php if ($warnings = $session->getWarnings()) { ?>
+                    <div class="alert-box alert with-icon">Please note:
+                        <ul>
+                            <?php foreach ($warnings as $warning) {
+                                echo '<li>' . $warning . '</li>';
+                            } ?>
+                        </ul>
+                    </div>
+                <?php } ?>
                 <tr>
                     <td>
                         <h3 class="data-title">Theatre</h3>
