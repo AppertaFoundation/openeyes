@@ -25,7 +25,7 @@
                             case 'imagenet_url':
                                 $link = isset($this->patient) ? $base_url . 'IMAGEnet/?patientID=' . $this->patient->hos_num . '&lastName=' . $this->patient->last_name . '&firstName=' . $this->patient->first_name : $base_url;
                                 break;
-                            }
+                        }
                     } elseif ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {
                         $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
                     }

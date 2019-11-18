@@ -2,14 +2,14 @@
 
 class m191115_205527_remove_forum_force_refresh_setting extends CDbMigration
 {
-	public function up()
-	{
-	    $this->delete('setting_installation', '`key` = "forum_force_refresh"');
+    public function up()
+    {
+        $this->delete('setting_installation', '`key` = "forum_force_refresh"');
         $this->delete('setting_metadata', "`key` = 'forum_force_refresh'");
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->insert('setting_installation', [
             'key' => 'forum_force_refresh',
             'value' => 'off',
@@ -22,5 +22,5 @@ class m191115_205527_remove_forum_force_refresh_setting extends CDbMigration
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             'default_value' => 'off',
         ]);
-	}
+    }
 }
