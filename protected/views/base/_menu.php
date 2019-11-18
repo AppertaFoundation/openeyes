@@ -25,7 +25,7 @@
                             case 'imagenet_url':
                                 $link = isset($this->patient) ? $base_url . 'IMAGEnet/?patientID=' . $this->patient->hos_num . '&lastName=' . $this->patient->last_name . '&firstName=' . $this->patient->first_name : $base_url;
                                 break;
-                        }
+                            }
                     } elseif ($item['uri'] !== '#' && strpos($item['uri'], ':') === false) {
                         $link = Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/');
                     }
@@ -34,6 +34,11 @@
                     if (array_key_exists('options', $item)) {
                         $options = $item['options'];
                     }
+
+                    if ($item['title'] === 'Track patients in FORUM' && Yii::app()->user->getState('forum_enabled') === 'on') {
+                        $item['title'] = $item['alt_title'];
+                    }
+
                     echo CHtml::link($item['title'], $link, $options)
                     ?>
                     <?php if ($has_sub) : ?>
