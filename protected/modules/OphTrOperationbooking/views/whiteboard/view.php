@@ -4,6 +4,7 @@
      * @var $cataract_opnote ElementType
      */
     $complexity_colour = 'green';
+    $aconst = ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst);
 
 switch ($data->complexity) {
     case Element_OphTrOperationbooking_Operation::COMPLEXITY_LOW:
@@ -41,7 +42,7 @@ $cataract_card_list = array(
             'content' => ((float) $data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power,
             'extra_data' => $data->iol_model
                 . ' '
-                . ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst),
+                . ($data->iol_model !== 'Unknown' ? $aconst : null),
         )
     ),
     'Anaesthesia' => array(
