@@ -237,7 +237,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //delete SecondaryDiagnosis entries that are removed in a new examination.
-        foreach($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
+        foreach ($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
             if (!array_key_exists($secondary_diagnosis->disorder_id, $disorder_to_update)) {
                 $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
             }
