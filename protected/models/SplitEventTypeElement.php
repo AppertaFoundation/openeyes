@@ -105,6 +105,8 @@ class SplitEventTypeElement extends BaseEventTypeElement
      */
     public function setDefaultOptions(Patient $patient = null)
     {
+        parent::setDefaultOptions($patient);
+
         $this->setSideDefaultOptions('left');
         $this->setSideDefaultOptions('right');
     }
