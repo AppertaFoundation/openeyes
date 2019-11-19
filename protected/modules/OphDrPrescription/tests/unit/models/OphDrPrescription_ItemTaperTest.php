@@ -48,5 +48,13 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
         $actual = $this->instance->fpTenFrequency();
 
         $this->assertEquals($expected, $actual);
+
+        $this->instance = $this->ophdrprescription_item_tapers('prescription_item_taper8');
+        $duration = strtolower($this->instance->duration->name);
+        $expected = "Frequency: {$this->instance->frequency->long_name} {$duration}";
+        $actual = $this->instance->fpTenFrequency();
+
+        $this->assertEquals($expected, $actual);
+
     }
 }
