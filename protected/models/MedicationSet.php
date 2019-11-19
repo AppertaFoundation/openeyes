@@ -62,7 +62,10 @@ class MedicationSet extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('name', 'isUnique'),
+
+            // 'on'=>'insert, update' because of the protected/commands/MedicationSetImportCommand.php
+            // it needs to handle duplicate names during the import
+            array('name', 'isUnique', 'on' => 'insert, update'),
             array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly' => true),
             array('name', 'length', 'max' => 255),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
@@ -537,8 +540,11 @@ class MedicationSet extends BaseActiveRecordVersioned
                 foreach ($items as $id) {
                     $values[] = "({$this->id},$id)";
                 }
-                Yii::app()->db->createCommand("INSERT INTO " . MedicationSetItem::model()->tableName() . " (medication_set_id, medication_id)
-									VALUES " . implode(",", $values))->execute();
+
+                if ($values) {
+                    Yii::app()->db->createCommand("INSERT INTO ".MedicationSetItem::model()->tableName()." (medication_set_id, medication_id)
+									VALUES ".implode(",", $values))->execute();
+                }
             }
         }
 
