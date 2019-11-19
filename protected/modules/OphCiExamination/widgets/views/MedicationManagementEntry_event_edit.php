@@ -215,7 +215,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                        </a>
                    </div>
                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper"
-                        <?= (!$direct_edit && !($entry->hasErrors())) ? 'style="display:none;"' : '' ?>>
+                        <?= $entry->hasErrors() ? '' : 'style="display:none;"'?>>
                        <i class="oe-i stop small pad"></i>
                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                               name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
