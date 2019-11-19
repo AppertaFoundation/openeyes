@@ -423,7 +423,7 @@ class BaseController extends Controller
                     $input[$key] = $this->sanitizeInput($value);
                     continue;
                 }
-                $value = CHtml::encode(strip_tags($value, $allowable_tags));
+                $value = strip_tags($value, $allowable_tags);
                 $input[$key] = $value;
             }
         }
