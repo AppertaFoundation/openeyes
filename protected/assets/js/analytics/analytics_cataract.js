@@ -263,7 +263,7 @@ var analytics_cataract = (function () {
 		$('#search-form').submit();
 	}
 
-	function clearDate() {
+	function clearDate(event_date) {
 		var date_from = analytics_toolbox.processDate(new Date(event_date['date_from']))
 		var date_to = analytics_toolbox.processDate(new Date(event_date['date_to']))
 		$('#analytics_datepicker_from').val(date_from);
@@ -284,7 +284,7 @@ var analytics_cataract = (function () {
 		}
 		$('.js-cataract-report-type').off('click').on('click', _.throttle(cataractPlotType, ajaxThrottleTime));
 
-		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTIme));
+		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate.bind(this, event_date), throttleTIme));
 
 		$('#js-all-surgeons').off('click').on('click', _.throttle(toggleAllSurgeonOpt, ajaxThrottleTime));
 
@@ -292,7 +292,7 @@ var analytics_cataract = (function () {
 
 		var pdfDownloadBTN = document.getElementById('js-download-pdf');
 
-		pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), 2000, {
+		pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), ajaxThrottleTime, {
 			'trailing': false
 		}));
 
