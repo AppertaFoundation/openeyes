@@ -211,8 +211,8 @@
             var chart = $('#PcrRiskReport')[0];
             var surgon_data = [[],[]];
             var totaleyes = 0;
-            for (var i =0; i<(chart.data[0]['x']).length; i++){
-                totaleyes += chart.data[0]['x'][i];
+            for (var i =0; i < data.length; i++){
+                totaleyes += data[i]['x'];
             }
             data.forEach(function (item) {
                 if (item['color'] == 'red'){
