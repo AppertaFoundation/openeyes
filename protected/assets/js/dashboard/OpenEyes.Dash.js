@@ -58,7 +58,7 @@
      */
     function loadBespokeHtml(report, wrapper) {
         $.ajax({
-                url: report,
+                url: report + '&' + $('#search-form').serialize(),
                 dataType: 'html',
                 success: function (data, textStatus, jqXHR) {
                     $(wrapper).html(data);

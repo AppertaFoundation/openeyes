@@ -227,10 +227,6 @@ var analytics_cataract = (function () {
 		e.stopPropagation();
 		e.preventDefault();
 
-		// reset all surgeons filter
-		$('#analytics_allsurgeons').val('');
-		$('#js-all-surgeons').removeClass('green hint');
-
 		analytics_toolbox.hideDrillDownShowChart();
 
 		var selected_item = getSelectedReportURL(this);
