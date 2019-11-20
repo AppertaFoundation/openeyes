@@ -30,6 +30,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'RPEAtrophy',
             'Geographic',
             'CNV',
+            'Fovea',
             'RPEDetachment',
             'EpiretinalMembrane',
             'MacularHole',
