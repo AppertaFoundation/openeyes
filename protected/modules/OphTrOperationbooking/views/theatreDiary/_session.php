@@ -15,6 +15,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+    /**
+     * @var $session OphTrOperationbooking_Operation_Session
+     * @var $theatre OphTrOperationbooking_Operation_Theatre
+     * @var $ward_id int
+     */
 ?>
 <div style="display: none;" id="infoBox_<?php echo $session->id ?>">
   <div class="cols-12 column">
@@ -104,16 +110,23 @@
                    data-operation-id="<?php echo $booking->element_id ?>"
                    value="<?php echo substr($booking->admission_time, 0, 5) ?>" size="4">
             <span class="admitTime_ro diaryViewMode" data-id="<?php echo $session->id ?>"
-                  data-operation-id="<?php echo $booking->element_id ?>"><?php echo substr($booking->admission_time,
-                    0, 5) ?></span>
+                  data-operation-id="<?php echo $booking->element_id ?>">
+                <?php echo substr(
+                    $booking->admission_time,
+                    0,
+                    5
+                ) ?>
+            </span>
           </td>
           <td class="td_sort diaryEditMode" data-id="<?php echo $session->id ?>"
               style="display: none;">
             <i class="oe-i menu medium pad"></i>
           </td>
           <td class="hospital">
-              <?=\CHtml::link($booking->operation->event->episode->patient->hos_num,
-                  Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $booking->operation->event_id));
+              <?= CHtml::link(
+                  $booking->operation->event->episode->patient->hos_num,
+                  Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $booking->operation->event_id)
+              )
                 ?></td>
           <td class="confirm">
             <input type="hidden" name="confirm_<?php echo $booking->element_id ?>" value="0"/>
@@ -132,15 +145,17 @@
                 if ($warnings) {
                     $msgs = [];
                     foreach ($warnings as $warn) {
-                        $msgs[] = $warn['long_msg'] . " - " . $warn['details'];
+                        $msgs[] = $warn['long_msg'] . ' - ' . $warn['details'];
                     } ?>
                     <i class="oe-i warning medium pad js-has-tooltip"
                        data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
                 <?php } ?>
           </td>
           <td class="operation">
-              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
-              <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] ' . $booking->operation->getProceduresCommaSeparated('short_format') : 'No procedures' ?>
+              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip"
+                 data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
+              <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] '
+                  . $booking->operation->getProceduresCommaSeparated('short_format') : 'No procedures' ?>
           </td>
           <td class="">
               <?php echo $booking->operation->priority->name ?>
@@ -152,37 +167,40 @@
               <?php echo $booking->ward ? $booking->ward->name : 'None' ?>
           </td>
           <td class="alerts">
-              <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
+                <?php if ($booking->operation->event->episode->patient->gender === 'M') { ?>
                 <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
                 <?php } else { ?>
                 <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
                 <?php } ?>
 
 
-              <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)) : ?>
+                <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)) : ?>
                 <i class="oe-i info medium pad js-has-tooltip"
-                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments, ENT_COMPAT,
-                       'UTF-8') ?>"></i>
+                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments, ENT_COMPAT, 'UTF-8') ?>"></i>
                 <?php endif; ?>
 
               <?php
                 if ($booking->operation->comments_rtt && preg_match('/\w/', $booking->operation->comments_rtt)) : ?>
                 <i class="oe-i comments medium pad js-has-tooltip"
-                   data-tooltip-content="<?=\CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT,
-                       'UTF-8') ?>"></i>
+                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT, 'UTF-8') ?>">
+                </i>
                 <?php endif; ?>
 
-              <?php if ($booking->operation->overnight_stay) : ?>
+                <?php if ($booking->operation->overnight_stay) : ?>
                 <i class="oe-i overnight medium pad js-has-tooltip"
                    data-tooltip-content="Overnight stay required"></i>
                 <?php endif; ?>
-              <?php if ($booking->operation->consultant_required) { ?>
+              <i class="oe-i duplicate medium pad js-has-tooltip"
+                 data-tooltip-content="Click to display Whiteboard" data-id="<?= $booking->operation->event_id ?>"
+                 id="<?= $whiteboard_display_mode === 'NEW' ? 'js-display-whiteboard-window' : 'js-display-whiteboard'?>"></i>
+
+                <?php if ($booking->operation->consultant_required) { ?>
                 <i class="oe-i asterisk medium pad js-has-tooltip"
                    data-tooltip-content="Consultant required"></i>
                 <?php } ?>
             <i class="oe-i audit-trail medium pad js-has-tooltip"
                data-tooltip-content="Created by: <?= $booking->user->fullName . "\n" ?>Last modified by: <?= $booking->usermodified->fullName ?>"></i>
-              <?php if ($booking->operation->is_golden_patient) { ?>
+                <?php if ($booking->operation->is_golden_patient) { ?>
                   <i class="oe-i star medium pad js-has-tooltip" data-tooltip-content="Golden Patient"></i>
                 <?php  }?>
           </td>
@@ -219,19 +237,19 @@
                             ?> style="display: none;"<?php
                                           } ?>>
                     (Overbooked by <span
-                          class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()); ?></span>)</span>
+                          class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()) ?></span>)</span>
                   </span>
             <span data-current-complex-booking-count="<?= $session->getComplexBookingCount() ?>"
                 class="complex-booking-count" id="complex_booking_count_<?= $session->id ?>"
-                <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>>
+                <?= $session->isComplexBookingCountLimited() ? '' : 'style="display: none;"' ?>>
                 <br/>
                 <span class="available-complex-booking-count">
                     <?= $there_is_place_for_complex_booking ? $session->getAvailableComplexBookingCount() : '0' ?>
                 </span> complex booking(s) available
-                <span class="overbooked" <?= $session->getAvailableComplexBookingCount() >= 0 ? "style = 'display: none;'" : "" ?>>
+                <span class="overbooked" <?= $session->getAvailableComplexBookingCount() >= 0 ? 'style="display: none;"' : '' ?>>
                     (Overbooked by
                     <span
-                            class="overbooked-complex-booking-count"><?= abs($session->getAvailableComplexBookingCount()); ?></span>)
+                            class="overbooked-complex-booking-count"><?= abs($session->getAvailableComplexBookingCount()) ?></span>)
                 </span>
             </span>
             <span class="session-unavailable" id="session_unavailable_<?php echo $session->id ?>"
@@ -279,7 +297,7 @@
                     class="max-procedures-val"><?= $session->getMaxProcedureCount() ?></span>
                 Procedures
               </div>
-              <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
+              <div <?= $session->isComplexBookingCountLimited() ? '' : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
                   title="Max Complex <?= $session->getMaxComplexBookingCount() ?>">Max <span
                     class="max-complex-bookings-value"><?= $session->getMaxComplexBookingCount() ?></span>
@@ -389,7 +407,7 @@
                   style="display: none;"
                   data-id="<?php echo $session->id ?>"><?=\CHtml::encode($session['comments']) ?></textarea>
             <?php $title = 'Modified on ' . Helper::convertMySQL2NHS($session->last_modified_date) .
-            ' at ' . date("H:i:s", strtotime($session->last_modified_date)) .
+            ' at ' . date('H:i:s', strtotime($session->last_modified_date)) .
             ' by ' . $session->session_usermodified->fullName;
             ?>
 
