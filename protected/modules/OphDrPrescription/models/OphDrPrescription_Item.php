@@ -299,7 +299,11 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     public function fpTenFrequency()
     {
-        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+        if (preg_match("/^\d+/", $this->duration->name)) {
+            return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+        }
+
+        return 'Frequency: ' . $this->frequency->long_name . ' ' . strtolower($this->duration->name);
     }
 
     public function fpTenDose()

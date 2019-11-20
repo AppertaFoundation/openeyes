@@ -24,6 +24,8 @@ class PrescriptionFormPrinter extends CWidget
     private $total_items;
     private $default_cost_code;
     private $print_mode;
+    private $department_name;
+    private $institution_name;
     private $page_count = 1;
 
     const MAX_FPTEN_LINES = 22;
@@ -40,6 +42,8 @@ class PrescriptionFormPrinter extends CWidget
         $this->total_items = count($this->items);
         $this->print_mode = $settings->getSetting('prescription_form_format');
         $this->default_cost_code = $settings->getSetting('default_prescription_code_code');
+        $this->department_name = $settings->getSetting('fp10_department_name');
+        $this->institution_name = $settings->getSetting('fp10_institution_name');
 
         $total_lines_used = 0;
         $this->total_pages = 0;
@@ -96,6 +100,16 @@ class PrescriptionFormPrinter extends CWidget
     public function getDefaultCostCode()
     {
         return $this->default_cost_code;
+    }
+
+    public function getDepartmentName()
+    {
+        return $this->department_name;
+    }
+
+    public function getInstitutionName()
+    {
+        return $this->institution_name;
     }
 
     /**
