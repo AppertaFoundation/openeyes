@@ -68,6 +68,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'MacularGrid',
             'SectorPRPPostPole',
             'PRPPostPole',
+            'Freehand'
         ),
     ),
     'onReadyCommandArray' => array(
