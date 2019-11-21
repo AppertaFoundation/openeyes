@@ -29,7 +29,6 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Drusen',
             'RPEAtrophy',
             'Geographic',
-            'CNV',
             'Fovea',
             'RPEDetachment',
             'EpiretinalMembrane',
