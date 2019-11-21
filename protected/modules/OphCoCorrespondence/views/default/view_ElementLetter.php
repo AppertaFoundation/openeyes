@@ -42,6 +42,23 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                     </td>
                 </tr>
                 <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id);
+                ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value" style="text-align: right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            }
+                            ?>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <small class="fade">To</small><br>
