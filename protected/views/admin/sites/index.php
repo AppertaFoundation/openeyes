@@ -37,7 +37,7 @@
         <input type="text"
            autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
            name="search" id="search" placeholder="Enter search query..."
-           value="<?php echo strip_tags(@$_POST['search'])?>" />
+           value="<?php echo strip_tags(Yii::app()->request->getParam('search', ''))?>" />
         <?php $this->endWidget()?>
     </div>
 
