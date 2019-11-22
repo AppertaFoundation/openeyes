@@ -36,15 +36,13 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'Yes';
                             } else {
                                 echo 'No';
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
                 <?php } ?>
                 <?php
-                $letter_type = LetterType::model()->findByPk($element->letter_type_id);
-                ?>
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
                 <tr>
                     <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
                     <td>
@@ -54,8 +52,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'N/A';
                             } else {
                                 echo $letter_type->name;
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
