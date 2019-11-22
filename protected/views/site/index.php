@@ -32,3 +32,4 @@ echo $dashboardHelper->render();
 <script type="text/javascript">
     handleButton($('#search-form button'));
 </script>
+protected/modules/OphDrPrescription/controllers/DefaultController.php
