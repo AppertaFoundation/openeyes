@@ -327,18 +327,20 @@
                         <div class="data-value">
                             <?php $session = $element->booking->session ?>
                             <?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', ' . $session->FirmName; ?>
-                            <?php if ($warnings = $session->getWarnings()) { ?>
-                                <div class="alert-box alert with-icon">Please note:
-                                    <ul>
-                                        <?php foreach ($warnings as $warning) {
-                                            echo '<li>' . $warning . '</li>';
-                                        } ?>
-                                    </ul>
-                                </div>
-                            <?php } ?>
                         </div>
                     </td>
                 </tr>
+                <?php
+                $warnings = $session->getWarnings();
+                if ($warnings) { ?>
+                    <div class="alert-box alert with-icon">Please note:
+                        <ul>
+                            <?php foreach ($warnings as $warning) {
+                                echo '<li>' . $warning . '</li>';
+                            } ?>
+                        </ul>
+                    </div>
+                <?php } ?>
                 <tr>
                     <td>
                         <h3 class="data-title">Theatre</h3>
@@ -441,12 +443,27 @@
     <?php } ?>
 <?php } ?>
 
+<?php if ($element->eye_id == \EYE::BOTH) : ?>
+<script>
+    $('#js-display-whiteboard').click(event => {
+        event.preventDefault();
+        // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
+        // has a documentwide eventlistener for clicks on oe-popup buttons which
+        // are used by Dialog.Alert.
+        new OpenEyes.UI.Dialog({
+            title: "Alert",
+            content: "Theatre whiteboard does not currently support bilateral procedures."
+        }).open();
+    });
+</script>
+<?php endif; ?>
+
 <?php
 $this->event_actions[] = EventAction::link(
     'Display Whiteboard',
     Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
     null,
-    array('class' => 'small button', 'target' => '_blank')
+    array('class' => 'small button', 'target' => '_blank', 'id' => 'js-display-whiteboard')
 );
 if ($element->isEditable()) {
     $td_disabled = $this->module->isTheatreDiaryDisabled();

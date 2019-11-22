@@ -39,7 +39,6 @@ class VanHerick extends \SplitEventTypeElement
     protected $auto_validate_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\VanHerick';
-    protected $default_from_previous = true;
 
     public function tableName()
     {
