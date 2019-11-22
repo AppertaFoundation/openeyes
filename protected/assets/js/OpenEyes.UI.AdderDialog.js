@@ -587,7 +587,7 @@
             filterValue = selectedFilter.data('id');
         }
         // reset results lists if there is no text searched
-        if (!text.length) {
+        if (!text.length && !filterValue) {
             dialog.searchResultList.empty();
             dialog.noSearchResultsWrapper.text('No results found');
             dialog.noSearchResultsWrapper.toggle(true);
