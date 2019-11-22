@@ -505,7 +505,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
         $iopTable = $this->api->getIOPValuesAsTable($this->patient('patient1'));
         $expected = '<table class="borders"><colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><td>RE [50]</td><td>LE [50]</td></tr>'.
-            '<tr><td>2:Gold</td><td>2:Gold</td></tr></table>';
+            '<tr><td>2:</td><td>2:</td></tr></table>';
         $this->assertEquals($expected, $iopTable);
     }
 
