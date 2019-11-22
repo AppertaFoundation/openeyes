@@ -5,7 +5,7 @@
  * Date: 22/03/2014
  * Time: 10:50.
  */
-class OphTrOperationbookingEventControllerTest    extends CDbTestCase
+class OphTrOperationbookingEventControllerTest extends CDbTestCase
 {
     public static function setupBeforeClass()
     {
