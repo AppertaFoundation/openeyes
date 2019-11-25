@@ -93,12 +93,12 @@ EOH;
                                     'medication_id' => $current_medication->id,
                                     'medication_set_id' => $set_item->medication_set_id
                                     ]);
-                            if (isset($current_medication_auto_set_items)) {
-                                    $set_item->delete();
-                                } else {
-                                    $set_item->medication_id = $current_medication->id;
-                                    $set_item->save();
-                                }
+                        if (isset($current_medication_auto_set_items)) {
+                                $set_item->delete();
+                        } else {
+                            $set_item->medication_id = $current_medication->id;
+                            $set_item->save();
+                        }
                     }
 
                     if ($current_medication->save() && $target_medication->save()) {

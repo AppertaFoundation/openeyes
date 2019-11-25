@@ -154,7 +154,6 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set) {
-
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
             $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
@@ -214,7 +213,6 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set_item) {
-
             $item = $set_item->attributes;
             $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
             $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
@@ -387,16 +385,16 @@ class AutoSetRuleController extends BaseAdminController
 
                         if ($result['success'] === true) {
                                 $transaction->commit();
-                            } else {
-                                $transaction->rollback();
-                            }
+                        } else {
+                            $transaction->rollback();
+                        }
                     }
                 }
             }
         } catch (Exception $e) {
                 $transaction->rollback();
-            } finally {
-                echo \CJSON::encode($result);
+        } finally {
+            echo \CJSON::encode($result);
             \Yii::app()->end();
         }
     }
@@ -410,7 +408,6 @@ class AutoSetRuleController extends BaseAdminController
             $medication_data = \Yii::app()->request->getParam('Medication', []);
 
             if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
-
                 $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
                 if ($item) {

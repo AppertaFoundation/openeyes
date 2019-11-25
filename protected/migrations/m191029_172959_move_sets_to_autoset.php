@@ -2,8 +2,8 @@
 
 class m191029_172959_move_sets_to_autoset extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $data_provider = new CActiveDataProvider('MedicationSet', [
             'criteria' => [
                 'condition' => 'automatic = 0'
@@ -12,7 +12,6 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
         $iterator = new CDataProviderIterator($data_provider);
 
         foreach ($iterator as $set) {
-
             // create new automatic set based on the non-automatic
             $new_set = new MedicationSet();
             $new_set->attributes = $set->attributes;
@@ -65,10 +64,10 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 }
             }
         }
-	}
+    }
 
-	public function safeDown()
-	{
-			echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
-	}
+    public function safeDown()
+    {
+            echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
+    }
 }

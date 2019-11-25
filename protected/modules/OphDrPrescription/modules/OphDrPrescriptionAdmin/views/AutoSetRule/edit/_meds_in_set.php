@@ -92,7 +92,7 @@ if ($is_prescription_set) {
             ?>
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                 <?php $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
-                <?php if ($set_item): ?>
+                <?php if ($set_item) : ?>
                 <tr data-med_id="<?=$med->id?>">
                     <td>
                         <button class="js-add-taper" type="button" title="Add taper">
@@ -142,7 +142,7 @@ if ($is_prescription_set) {
                                     ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
                             </td>
                         <?php endif; ?>
-                    <?php endif; ?>
+                <?php endif; ?>
 
                     <td class="actions" style="text-align:center">
                         <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil"></i></a>
