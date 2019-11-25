@@ -398,7 +398,7 @@ class AutoSetRuleController extends BaseAdminController
         }
     }
 
-    public function actionUpdateMedicationDefaultsOLD()protected/commands/LocalMedicationToDmdMedicationCommand.php
+    public function actionUpdateMedicationDefaultsOLD()protected /commands/LocalMedicationToDmdMedicationCommand.php
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
