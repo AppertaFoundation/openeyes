@@ -358,6 +358,8 @@ class AutoSetRuleController extends BaseAdminController
                         $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
                         $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
                         $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                        $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_dispense_condition_id;
+                        $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
 
                         $item->tapers = array();
 

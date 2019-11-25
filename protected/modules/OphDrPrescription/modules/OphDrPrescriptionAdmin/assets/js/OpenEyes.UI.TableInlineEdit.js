@@ -11,8 +11,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit._defaultOptions = {
         tableSelector: '.js-inline-edit',
-        updateUrl: '/OphDrPrescription/admin/DrugSet/updateMedicationDefaults',
-        deleteUrl: '/OphDrPrescription/admin/DrugSet/removeMedicationFromSet',
+        updateUrl: '/OphDrPrescription/admin/autoSetRule/updateMedicationDefaults',
+        deleteUrl: '/OphDrPrescription/admin/autoSetRule/removeMedicationFromSet',
         onAjaxError: function() {},
         onAjaxComplete: function() {}
     };

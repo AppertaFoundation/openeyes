@@ -93,6 +93,7 @@
         let tableInlineEditController = new OpenEyes.PrescriptionAdminMedicationSet({
             tableSelector: '#meds-list',
             templateSelector: '#medication_template',
+            updateUrl: '/OphDrPrescription/admin/autoSetRule/updateMedicationDefaults',
             onAjaxError: function() {
                 drugSetController.refreshResult();
             }
