@@ -74,7 +74,6 @@ class AutoSetRuleController extends BaseAdminController
 
         if (!$filters) {
             $filters = \Yii::app()->session->get('sets_filters');
-          //  $filters = $filters ? $filters : $default;
         } else {
             \Yii::app()->session['sets_filters'] = $filters;
         }
@@ -284,7 +283,6 @@ class AutoSetRuleController extends BaseAdminController
         }
 
         $criteria = new \CDbCriteria();
-        $criteria->with = ['medicationSetItems', 'medicationSetItems.medicationSet'];
         $criteria->with = ['medicationSetAutoRuleMedication'];
         $criteria->together = true;
         $criteria->addCondition('medicationSetAutoRuleMedication.medication_set_id = :set_id');
@@ -395,8 +393,9 @@ class AutoSetRuleController extends BaseAdminController
             }
         } catch (Exception $e) {
                 $transaction->rollback();
-            } finally {
-                echo \CJSON::encode($result);
+                $result['errors'] = $e->getMessage();
+        } finally {
+            echo \CJSON::encode($result);
             \Yii::app()->end();
         }
     }

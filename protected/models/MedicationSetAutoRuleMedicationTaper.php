@@ -16,9 +16,9 @@
  */
 
 /**
- * This is the model class for table "medication_set_item_taper".
+ * This is the model class for table "medication_set_auto_rule_medication_taper".
  *
- * The followings are the available columns in table 'medication_set_item_taper':
+ * The followings are the available columns in table 'medication_set_auto_rule_medication_taper':
  * @property integer $id
  * @property integer $medication_set_id
  * @property double $dose

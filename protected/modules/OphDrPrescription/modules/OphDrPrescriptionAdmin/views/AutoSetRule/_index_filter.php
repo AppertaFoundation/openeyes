@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $isSelected = function ($usage_code_id) use ($search) {
+<?php $is_selected = function ($usage_code_id) use ($search) {
     if (isset($search['usage_code_ids']) && in_array($usage_code_id, $search['usage_code_ids'])) {
         return 'green hint';
     }
@@ -36,7 +36,7 @@
                                 data-usage_code_id='<?= AutoSetRuleController::FILTER_USAGE_CODE_ID_FOR_ALL ?>'
                                 id="usage_code_button_all"
                                 type="button"
-                                class="large js-set-select <?=$isSelected(AutoSetRuleController::FILTER_USAGE_CODE_ID_FOR_ALL);?>"
+                                class="large js-set-select <?=$is_selected(AutoSetRuleController::FILTER_USAGE_CODE_ID_FOR_ALL);?>"
                                 style="margin-right:15px"
                         >All
                         </button>
@@ -45,7 +45,7 @@
                                 data-usage_code_id="<?=$usage_code->id;?>"
                                 id="usage_code_button_<?= strtolower($usage_code->usage_code); ?>"
                                 type="button"
-                                class="large js-set-select <?=$isSelected($usage_code->id);?>"
+                                class="large js-set-select <?=$is_selected($usage_code->id);?>"
                                 style="margin-right:15px"
                         ><?=$usage_code->name;?>
                         </button>
@@ -54,8 +54,6 @@
                 </tr>
             </tbody>
         </table>
-
-
     </div>
 
     <hr class="">

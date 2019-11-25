@@ -89,11 +89,11 @@ EOH;
                     $target_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
 
                     foreach ($target_medication_auto_set_items as $set_item) {
-                            $current_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findByAttributes([
+                            $current_medication_auto_set_item = MedicationSetAutoRuleMedication::model()->findByAttributes([
                                     'medication_id' => $current_medication->id,
                                     'medication_set_id' => $set_item->medication_set_id
                                     ]);
-                            if (isset($current_medication_auto_set_items)) {
+                            if (isset($current_medication_auto_set_item)) {
                                     $set_item->delete();
                                 } else {
                                     $set_item->medication_id = $current_medication->id;
