@@ -47,8 +47,7 @@ body {
 /*Site box appears at the bottom toward the center.*/
 .fpten-site, .wpten-site {
     text-align: left;
-    height: 31mm;
-    width: 42mm;
+    width: 50mm;
     margin-left: 14mm;
     padding-top: 2mm;
     padding-left: 3mm;
@@ -60,15 +59,18 @@ body {
 }
 
 .fpten-site {
-    font-weight: bold;
-    height: 29mm;
-    width: 45mm;
+    width: 60mm;
 }
 
 .fpten-site-code, .wpten-site-code {
     text-align: left;
-    height: 30mm;
-    padding-top: 1mm;
+    padding-top: 2mm;
+    width: 20mm;
+    font-weight: initial;
+}
+
+.fpten-site-code {
+    width: 13mm;
 }
 
 .right .fpten-site-code, .right .wpten-site-code {

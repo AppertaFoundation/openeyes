@@ -1,6 +1,8 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2014
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,25 +11,19 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $total_pages int
  */
-//use OEModule\OphCiExamination\controllers;
-
-class DefaultControllerTest extends CDbTestCase
-{
-    public function getDefaultController($methods = null)
-    {
-        return $this->getMockBuilder('OEModule\OphCiExamination\controllers\DefaultController')
-                    ->setConstructorArgs(array('OEModule\OphCiExamination\controllers\DefaultController', new BaseEventTypeModule('OphCiExamination', null)))
-                    ->setMethods($methods)
-                    ->getMock();
-    }
-
-    //Checking the POST value is same as the specific given string.
-    public function testPostData()
-    {
-        $this->markTestIncomplete();
-        return true;
-    }
-}
+?>
+<<?= $this->element?>
+<?= $this->container_class ? "id=\"{$this->container_class}\"" : null ?>
+<?= $this->container_id ? "id='{$this->container_id}'" : null ?>>
+    <?php
+        $this->render('multipage/_nav', array(
+            'total_pages' => $total_pages
+        ));
+        $this->render('multipage/_stack');
+        ?>
+</<?= $this->element?>>
