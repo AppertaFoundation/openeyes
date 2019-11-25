@@ -39,7 +39,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         </div>
                     </td>
                 </tr>
-                <?php } ?>
+            <?php } ?>
                 <?php
                 $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
                 <tr>
@@ -73,16 +73,16 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 }
                             }
                         }
-                    } else {
-                        $toAddress = $element->address;
-                        foreach (explode("\n", trim($element->cc)) as $line) {
-                            if (trim($line)) {
-                                $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                        } else {
+                            $toAddress = $element->address;
+                            foreach (explode("\n", trim($element->cc)) as $line) {
+                                if (trim($line)) {
+                                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                                }
                             }
                         }
-                    }
-                    echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
-                    ?>
+                        echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
+                        ?>
                 </td>
             </tr>
 
