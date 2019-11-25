@@ -27,7 +27,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
     {
         $medication_list = array('right' => array(), 'left' => array());
         $events = $this->event_type->api->getEvents($this->patient, false);
-        $earlist_date = time() * 1000;
+        $earliest_date = time() * 1000;
         $latest_date = time() * 1000;
         $criteria = new CDbCriteria();
         $criteria->condition = "has_laterality = '1'";
@@ -37,7 +37,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         }, $routes);
 
         foreach ($events as $event) {
-            if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')) {
+            $meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications');
+            if ($meds) {
                 $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
                     'patient' => $this->patient,
                 ));
@@ -50,21 +51,23 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $meds_tag = array();
+                    $is_glaucoma = false;
                     if ($entry->medication_id) {
-                        foreach ($entry->medication->getTypes() as $item) {
-                            $meds_tag[] = $item->name;
+                        foreach ($entry->medication->getSetsByUsageCode('OEScape') as $set) {
+                            foreach ($set->medicationSetRules as $rule) {
+                                if ($rule->subspecialty && $rule->subspecialty->ref_spec === 'GL') {
+                                    $is_glaucoma = true;
+                                }
+                            }
                         }
                     }
 
-                    if ( !in_array($entry['route_id'], $lateral_routes) || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
+                    if ( !in_array($entry['route_id'], $lateral_routes) || !$is_glaucoma) {
                         continue;
                     }
 
                     $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
-                    $drug_name = $entry->medication->preferred_term.$drug_aliases;
-                    /*$drug_aliases = $entry->drug_id&&$entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
-                    $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;*/
+                    $drug_name = $entry->medication->preferred_term . $drug_aliases;
 
                     if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
                         continue;
@@ -74,8 +77,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
 
-                    if ($start_date < $earlist_date) {
-                        $earlist_date = $start_date;
+                    if ($start_date < $earliest_date) {
+                        $earliest_date = $start_date;
                     }
 
                      // Construct data to store medication records for left and right eye based on drug name.

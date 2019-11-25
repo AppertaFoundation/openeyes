@@ -261,16 +261,17 @@ class Medication extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return MedicationSet[]
+     * @param string $usage_code
+     * @return array|null MedicationSet
+     * @throws CException
      */
-
-    public function getTypes()
+    public function getSetsByUsageCode($usage_code)
     {
-        $drug_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'DrugTag'])->queryScalar();
+        $usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => $usage_code])->queryScalar();
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
                                             AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id))";
-        $criteria->params = [":medication_id" => $this->id, ':usage_code_id' => $drug_code_id];
+        $criteria->params = [":medication_id" => $this->id, ':usage_code_id' => $usage_code_id];
         $criteria->order = 'name';
         return MedicationSet::model()->findAll($criteria);
     }
