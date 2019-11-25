@@ -108,7 +108,10 @@ $medicationSetItems = $medication->medicationSetItems;
                 <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
             </td>
             <td>
-                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+                <?php echo CHtml::dropDownList('Medication[medicationSetItems][default_dose_unit_term][]',
+									$assignment->default_dose_unit_term,
+									CHtml::listData(MedicationAttributeOption::model()->with('medicationAttribute')->findAll("medicationAttribute.name = 'UNIT_OF_MEASURE'"), "description", "description"),
+									array('empty' => '-- None --' )) ?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][default_route_id][]"

@@ -127,14 +127,20 @@ class RefMedicationAdminController extends BaseAdminController
                 'hidden' => false,
                 'layoutColumns' => array()
             ),
-            'default_dose_unit_term' => 'Default dose unit',
-            'attributes' => array(
-                'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
-                'viewArguments' => array(
-                    'medication' => $model
-                )
-            ),
+            'default_dose_unit_term' => array(
+							'widget' => 'DropDownList',
+							'options' => CHtml::listData(MedicationAttributeOption::model()->with('medicationAttribute')->findAll("medicationAttribute.name = 'UNIT_OF_MEASURE'"), "id", "description"),
+							'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
+							'hidden' => false,
+							'layoutColumns' => array()
+						),
+					'attributes' => array(
+						'widget' => 'CustomView',
+						'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_attributes',
+						'viewArguments' => array(
+							'medication' => $model
+						)
+					),
             'sets' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.OphDrPrescription.views.admin.medication.edit_sets',
@@ -278,7 +284,7 @@ class RefMedicationAdminController extends BaseAdminController
                 }
             }
         }
-      
+
         $model->medicationSetItems = $medicationSetItems;
     }
 
