@@ -40,7 +40,7 @@ if (@$htmlOptions['id']) {
            style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
             <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
-           placeholder=<?= (Yii::app()->params['institution_code'] === 'CERA' ? "dd-MMM-yyyy" : "yyyy-mm-dd" ) ?>
+           placeholder="dd MMM yyyy"
            name="<?= $name ?>"
            value="<?= $value ?>"
            autocomplete="off"/>
