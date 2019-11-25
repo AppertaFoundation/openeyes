@@ -27,7 +27,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 <tr>
                     <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                     <td>
-                        <div class="data-value" style="text-align: right">
+                        <div class="data-value text-right">
                             <?php
                             if ($element->is_signed_off == null) {
                                 echo 'N/A';
@@ -35,26 +35,41 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'Yes';
                             } else {
                                 echo 'No';
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
-            <?php } ?>
-            <tr>
-                <td colspan="2">
-                    <small class="fade">To</small><br>
-                    <?php
-                    $ccString = "";
-                    $toAddress = "";
-                    if ($element->document_instance) {
-                        foreach ($element->document_instance as $instance) {
-                            foreach ($instance->document_target as $target) {
-                                if ($target->ToCc == 'To') {
-                                    $toAddress = $target->contact_name . "\n" . $target->address;
-                                } else {
-                                    $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                                    $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <small class="fade">To</small><br>
+                        <?php
+                            $ccString = "";
+                            $toAddress = "";
+                        if ($element->document_instance) {
+                            foreach ($element->document_instance as $instance) {
+                                foreach ($instance->document_target as $target) {
+                                    if ($target->ToCc == 'To') {
+                                           $toAddress = $target->contact_name . "\n" . $target->address;
+                                    } else {
+                                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                    }
                                 }
                             }
                         }
