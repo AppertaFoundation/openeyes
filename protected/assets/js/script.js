@@ -331,6 +331,24 @@ $(document).ready(function () {
 
 	});
 
+	$('#js-header-print-dropdown').mouseover(function () {
+		$('#js-header-print-dropdown-btn').addClass('active');
+		$('#js-header-print-subnav').show();
+	});
+
+	$('#js-header-print-dropdown').mouseout(function () {
+		$('#js-header-print-dropdown-btn').removeClass('active');
+		$('#js-header-print-subnav').hide();
+	});
+
+	$('#js-header-print-subnav').mouseover(function () {
+		$(this).show();
+	});
+
+	$('#js-header-print-subnav').mouseout(function () {
+		$(this).hide();
+	});
+
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');

@@ -28,7 +28,24 @@ if (isset($this->event_actions)) {
 ?>
 <div class="buttons-right">
   <i class="spinner" title="Loading..." style="display: none;"></i>
-    <?php foreach ($this->event_actions as $action) {
-        ?><?php echo $action->toHtml(); ?><?php
+    <?php
+    $print_actions = array();
+    $last_element_rendered = false;
+    foreach ($this->event_actions as $key => $action) {
+        if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
+            $print_actions[] = $action;
+        } else {
+            if ($key === count($this->event_actions)) {
+                $last_element_rendered = true;
+                echo EventAction::printDropDownButtonAsHtml($print_actions);
+                echo $action->toHtml();
+            } else {
+                echo $action->toHtml();
+            }
+        }
+    }
+
+    if (!empty($print_actions) && !$last_element_rendered) {
+        echo EventAction::printDropDownButtonAsHtml($print_actions);
     } ?>
 </div>

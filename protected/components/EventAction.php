@@ -43,7 +43,7 @@ class EventAction
         return $action;
     }
 
-    public static function printButton($label = 'Print', $name = 'print', $options = array(), $htmlOptions = array())
+    public static function printButton($label = 'Print this event', $name = 'print', $options = array(), $htmlOptions = array())
     {
         $options = array_merge(array('level' => 'print'), $options);
         $htmlOptions = array_merge(array('class' => 'button small'), $htmlOptions);
@@ -83,18 +83,12 @@ class EventAction
             $this->htmlOptions['class'] .= ' green';
         }
         if ($this->options['level'] === 'delete') {
-            $content = '<i class="oe-i trash"></i>';
-            $label = $content;
-            $this->htmlOptions['class'] .= ' header-tab icon red';
+            $label = '';
+            $this->htmlOptions['class'] = 'button trash header-icon-btn icon';
             $this->htmlOptions['id'] = 'js-delete-event-btn';
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' red';
-
-        }
-        if ($this->options['level'] === 'print') {
-            $label = '<i class="oe-i print"></i>';
-            $this->htmlOptions['class'] .= ' icon';
 
         }
 
@@ -108,6 +102,28 @@ class EventAction
         } elseif ($this->type === 'link') {
             return CHtml::link($label, $this->href, $this->htmlOptions);
         }
+    }
+
+    public static function printDropDownButtonAsHtml($print_actions)
+    {
+        $printButtonHtml = '';
+        foreach ($print_actions as $action) {
+           $action->htmlOptions['class'] .= ' header-tab';
+           $action->label = CHtml::encode($action->label);
+           if ($action->options['disabled']) {
+                $action->htmlOptions['class'] .= ' disabled';
+                $action->htmlOptions['disabled'] = 'disabled';
+           }
+
+            $printButtonHtml .= '<li>'. CHtml::htmlButton($action->label, $action->htmlOptions) .'</li>';
+        }
+
+        return '<div class="header-dropdown" id="js-header-print-dropdown">
+                    <div class="header-icon-btn print dropdown" id="js-header-print-dropdown-btn"></div>
+                    <div class="dropdown-btns" id="js-header-print-subnav" style="display: none">
+                        <ul>'.$printButtonHtml.'</ul>
+                    </div>
+                </div>';
     }
 }
 

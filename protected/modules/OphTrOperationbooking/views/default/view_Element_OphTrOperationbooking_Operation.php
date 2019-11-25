@@ -445,10 +445,10 @@
 
 <?php
 $this->event_actions[] = EventAction::link(
-    'Display Whiteboard',
+    'Whiteboard',
     Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
     null,
-    array('class' => 'small button', 'target' => '_blank')
+    array('class' => 'small button icon-bg goto', 'target' => '_blank')
 );
 if ($element->isEditable()) {
     $td_disabled = $this->module->isTheatreDiaryDisabled();
