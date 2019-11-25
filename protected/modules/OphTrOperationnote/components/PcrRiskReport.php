@@ -109,7 +109,8 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return $this->command->queryAll();
     }
-    protected function querySurgeonData(){
+    protected function querySurgeonData()
+    {
         $this->command->reset();
         $this->command->select('user.id as id')
             ->from('user')
@@ -188,13 +189,13 @@ class PcrRiskReport extends Report implements ReportInterface
             $surgeon_count += 1;
         }
         // different mode display different title
-        switch($this->mode){
+        switch ($this->mode) {
             case 0:
                 $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
                 $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
                 $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
                 break;
-            case 1: 
+            case 1:
                 $this->plotlyConfig['title'] = 'PCR Rate (risk unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
                 break;
             case 2:
@@ -206,7 +207,8 @@ class PcrRiskReport extends Report implements ReportInterface
      * @return string
      */
 
-    public function tracesJson(){
+    public function tracesJson()
+    {
         $dataset =$this->dataSet();
         $current_surgeon_data = array();
         $other_surgeons_data = array();
@@ -223,17 +225,17 @@ class PcrRiskReport extends Report implements ReportInterface
         'mode'=>'markers',
         'type' => 'scatter',
         'marker' => array(
-            'color' => array_map(function ($item){
+            'color' => array_map(function ($item) {
                 return $item['color'];
             }, $current_surgeon_data),
         ),
-        'x' => array_map(function($item){
+        'x' => array_map(function ($item) {
             return $item['x'];
         }, $current_surgeon_data),
-        'y' => array_map(function($item){
+        'y' => array_map(function ($item) {
             return $item['y'];
         }, $current_surgeon_data),
-        'hovertext' => array_map(function($item){
+        'hovertext' => array_map(function ($item) {
             return '<b>PCR Risk ' . $item['name'] . '</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
             . number_format($item['y'], 2).$item['surgeon'];
@@ -252,10 +254,10 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'color' => 'red',
         ),
-        'x'=> array_map(function ($item){
+        'x'=> array_map(function ($item) {
             return $item[0];
         }, $this->upper98()),
-        'y' => array_map(function ($item){
+        'y' => array_map(function ($item) {
             return $item[1];
         }, $this->upper98()),
         'hoverinfo' => 'skip',
@@ -265,10 +267,10 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'color' => 'green',
         ),
-        'x'=> array_map(function ($item){
+        'x'=> array_map(function ($item) {
                     return $item[0];
         }, $this->upper95()),
-        'y' => array_map(function ($item){
+        'y' => array_map(function ($item) {
             return $item[1];
         }, $this->upper95()),
         'hoverinfo' => 'skip',
@@ -278,17 +280,17 @@ class PcrRiskReport extends Report implements ReportInterface
           'mode'=>'markers',
           'type' => 'scatter',
           'marker' => array(
-              'color' => array_map(function ($item){
+              'color' => array_map(function ($item) {
                   return $item['color'];
               }, $other_surgeons_data),
           ),
-          'x' => array_map(function($item){
+          'x' => array_map(function ($item) {
               return $item['x'];
           }, $other_surgeons_data),
-          'y' => array_map(function($item){
+          'y' => array_map(function ($item) {
               return $item['y'];
           }, $other_surgeons_data),
-          'hovertext' => array_map(function($item){
+          'hovertext' => array_map(function ($item) {
               return '<b>PCR Risk ' . $item['name'] . '</b><br><i>Operations:</i>'
                   . $item['x'] . '<br><i>PCR Avg:</i>'
                   . number_format($item['y'], 2).$item['surgeon'];
@@ -340,7 +342,8 @@ class PcrRiskReport extends Report implements ReportInterface
      * @return string
      */
 
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         // closest allows hovering on any spots, not based on any axis
         $this->plotlyConfig['hovermode'] = 'closest';
         return json_encode($this->plotlyConfig);
