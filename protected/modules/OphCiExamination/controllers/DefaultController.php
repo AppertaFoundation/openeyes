@@ -604,20 +604,20 @@ class DefaultController extends \BaseEventTypeController
 
             $merged_elements[] = $extra_element;
         }
-			$sortable_merged_elements = [];
+            $sortable_merged_elements = [];
 
-			foreach ($merged_elements as $element) {
-				$flow_order = $this->step->getSetElementOrder($element);
-				if ($flow_order) {
-					$sortable_merged_elements[$flow_order] = $element;
-				} else {
-					$sortable_merged_elements[$this->step->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
-				}
-			}
+        foreach ($merged_elements as $element) {
+            $flow_order = $this->step->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_merged_elements[$flow_order] = $element;
+            } else {
+                $sortable_merged_elements[$this->step->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+            }
+        }
 
-			ksort($sortable_merged_elements);
+            ksort($sortable_merged_elements);
 
-			return $sortable_merged_elements;
+            return $sortable_merged_elements;
     }
 
     protected function getSetFromEpisode($episode)
@@ -1342,7 +1342,8 @@ class DefaultController extends \BaseEventTypeController
      * @param $errors
      * @return mixed
      */
-    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors)
+    {
         $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
         $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
         $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
