@@ -12,7 +12,7 @@
     <td><?=$set->itemsCount()?></td>
     <td><?= $set->hidden ? \OEHtml::iconTick() : \OEHtml::iconRemove(['class' => 'medium']); ?></td>
     <td>
-			<a href="/OphDrPrescription/admin/autoSetRule/edit/<?=$set->id?>" class="button">Edit</a>
+            <a href="/OphDrPrescription/admin/autoSetRule/edit/<?=$set->id?>" class="button">Edit</a>
       <a href="/OphDrPrescription/admin/autoSetRule/listMedications?set_id=<?=$set->id?>" class="button">List medications</a>
     </td>
 </tr>
