@@ -604,15 +604,20 @@ class DefaultController extends \BaseEventTypeController
 
             $merged_elements[] = $extra_element;
         }
-        usort($merged_elements, function ($a, $b) {
-            if ($a->getElementType()->display_order == $b->getElementType()->display_order) {
-                return 0;
-            }
+			$sortable_merged_elements = [];
 
-            return ($a->getElementType()->display_order > $b->getElementType()->display_order) ? 1 : -1;
-        });
+			foreach ($merged_elements as $element) {
+				$flow_order = $this->step->getSetElementOrder($element);
+				if ($flow_order) {
+					$sortable_merged_elements[$flow_order] = $element;
+				} else {
+					$sortable_merged_elements[$this->step->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+				}
+			}
 
-        return $merged_elements;
+			ksort($sortable_merged_elements);
+
+			return $sortable_merged_elements;
     }
 
     protected function getSetFromEpisode($episode)
