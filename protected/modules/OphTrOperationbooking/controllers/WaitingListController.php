@@ -523,7 +523,7 @@ class WaitingListController extends BaseModuleController
 
         foreach ($_POST['operations'] as $operation_id) {
             if ($operation = Element_OphTrOperationbooking_Operation::Model()->findByPk($operation_id)) {
-                if (Yii::app()->user->checkAccess('admin') and (isset($_POST['adminconfirmto'])) and ($_POST['adminconfirmto'] != 'OFF') and ($_POST['adminconfirmto'] != '')) {
+                if (Yii::app()->user->checkAccess('OprnConfirmBookingLetterPrinted') and (isset($_POST['adminconfirmto'])) and ($_POST['adminconfirmto'] != 'OFF') and ($_POST['adminconfirmto'] != '')) {
                     $operation->confirmLetterPrinted($_POST['adminconfirmto'], $_POST['adminconfirmdate']);
                 } else {
                     $operation->confirmLetterPrinted();
