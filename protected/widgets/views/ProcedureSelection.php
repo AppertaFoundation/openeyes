@@ -43,8 +43,8 @@
         <tbody class="body">
         <?php
         if (isset($selected_procedures)) {
-            foreach ($selected_procedures as $procedure) : ?>
-                <?php $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+            foreach ($selected_procedures as $procedure) :
+                $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
 
                 <tr class="item">
                     <td class="procedure">
@@ -264,7 +264,7 @@
             if ($('.add-options[data-id="select"] > li').length === 0) {
                 $('.add-options[data-id="select"]').hide();
             }
-            
+
             // Set select dialog to show defaults when first loading
             updateProcedureDialog('');
         }
