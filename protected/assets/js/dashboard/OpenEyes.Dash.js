@@ -57,13 +57,45 @@
      * @param wrapper
      */
     function loadBespokeHtml(report, wrapper) {
+        // when the plot gets initialized, it will always include the search criteria
+        // to preserve the updated result
+        var search_criteria = ''
+        var common_plot_criteria = $('#search-form .common_criteria').find('input').serialize()
+        search_criteria = common_plot_criteria ? common_plot_criteria : search_criteria;
+        // if there is any other plot owned criteria, add them up
+        var current_plot_criteria =  analytics_dataCenter.cataract.getCataractSearchForm()[wrapper]
+        if(current_plot_criteria){
+            search_criteria += '&' + current_plot_criteria.find('select, input').serialize()
+        }
         $.ajax({
-                url: report + '&' + $('#search-form').serialize(),
+                url: report + '&' + search_criteria,
                 dataType: 'html',
                 success: function (data, textStatus, jqXHR) {
                     $(wrapper).html(data);
                     Dash.upgradeMaterial();
                     Dash.selectCheckList(wrapper);
+                    // when the plot gets initialized, bind the following
+                    // events to put attribute checked/selected on the dom,
+                    // then changed criteria can be accessed afterwards
+                    $('#search-form select').off('change').on('change', function(){
+                        var selected = $(this).children('option:selected')
+                        $(this).children('option').not(selected).attr('selected', false)
+                        selected.attr('selected', true);
+                        selected.prop('selected', true);
+                    })
+                    $('#search-form input[type="checkbox"]').off('click').on('click', function(){
+                        if($(this).attr('checked')){
+                            $(this).attr('checked', true)
+                            $(this).prop('checked', true)
+                        } else {
+                            $(this).removeAttr('checked')
+                        }
+                    })
+                    $('#search-form input[type="radio"][name="type"]').off('click').on('click', function(){
+                        $('#search-form input[type="radio"][name="type"]').not(this).attr('checked', false)
+                        $(this).attr('checked', true);
+                        $(this).prop('checked', true);
+                    })
                 }
             }
         );
@@ -209,34 +241,36 @@
             newTitle = 'PCR Rate (risk adjusted & unadjusted)';
           }
             var chart = $('#PcrRiskReport')[0];
-            var surgon_data = [[],[]];
-            var totaleyes = 0;
+            var surgeon_data = [[],[]];
+            var totalOperations = 0;
+            // total operation numbers are the same for adjusted and unadjusted
             for (var i =0; i < data.length; i++){
-                totaleyes += data[i]['x'];
+                if(data[i]['name'] === "adjusted"){
+                    totalOperations += data[i]['x'];
+                }
             }
             data.forEach(function (item) {
                 if (item['color'] == 'red'){
-                    surgon_data[1].push(item);
+                    surgeon_data[1].push(item);
                 }else{
-                    surgon_data[0].push(item);
+                    surgeon_data[0].push(item);
                 }
             });
-            for (var i = 0; i < surgon_data.length; i++) {
-                chart.data[i]['x'] = surgon_data[i].map(function (item) {
+            for (var i = 0; i < surgeon_data.length; i++) {
+                chart.data[i]['x'] = surgeon_data[i].map(function (item) {
                     return item['x'];
                 });
-                chart.data[i]['y'] = surgon_data[i].map(function (item) {
+                chart.data[i]['y'] = surgeon_data[i].map(function (item) {
                     return item['y'];
                 });
-                chart.data[i]['hovertext'] = surgon_data[i].map(function (item){
-                    return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
+                chart.data[i]['hovertext'] = surgeon_data[i].map(function (item){
+                    return '<b>PCR Risk '+ item['name'] +'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
                 });
-                chart.data[i]['marker']['color'] = surgon_data[i].map(function (item) {
+                chart.data[i]['marker']['color'] = surgeon_data[i].map(function (item) {
                     return item['color'];
                 });
             }
-            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totaleyes+'</sub>';
-
+            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totalOperations+'</sub>';
             Plotly.redraw(chart);
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){

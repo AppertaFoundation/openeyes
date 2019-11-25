@@ -157,11 +157,22 @@ var analytics_cataract = (function () {
 		$(document).ajaxSuccess(function (event, request, settings) {
 			// flag for if the pdf is saved
 			var saved = false;
+			// due to the post url changes, need to use loop to match with equest url
+			var dict_key = '';
+
+			Object.keys(dict).forEach(function(key){
+				if(settings.url.includes(key)){
+					dict_key = key;
+				}
+			})
+			// prevent getting wrong things
+			if(!dict_key){
+				return
+			}
 			// only the events triggered by js-download-pdf will be captured
-			if (event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf' &&
-				dict[settings.url]) {
+			if (event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
 				// get plot
-				var plot = document.getElementById(dict[settings.url][0]);
+				var plot = document.getElementById(dict[dict_key][0]);
 				// set plot color
 				configPlotPDF(plot, config);
 
@@ -185,8 +196,8 @@ var analytics_cataract = (function () {
 						// once the plot is added into pdf, it will be cleared out
 						// and show it (it is hidden before) to avoid crashing other
 						// functions
-						$(dict[settings.url][1]).html("");
-						$(dict[settings.url][1]).show();
+						$(dict[dict_key][1]).html("");
+						$(dict[dict_key][1]).show();
 
 						// the search form will be affected by initializing all the plots
 						// bring it back at this stage
@@ -246,6 +257,12 @@ var analytics_cataract = (function () {
 
 	function updateChart(e) {
 		e.preventDefault();
+		// get current selected container
+		var selected_container = getSelectedReportURL()['selected_container'];
+		// to match the variable in Openeyes.Dash which is the second top level of the plot (under div#xxx-xxx-grid)
+		var wrapper = $(selected_container).children().closest('div').attr('id');
+		// deep copy the search elements for current plot (the part above "Filter by Date") in the search form 
+		analytics_dataCenter.cataract.setCataractSearchForm('#' + wrapper, $('#search-form #search-form-report-search-section').clone());
 		$('.report-search-form').trigger('submit');
 	}
 

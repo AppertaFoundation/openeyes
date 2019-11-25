@@ -44,7 +44,7 @@
     <form id="search-form" autocomplete="off">
         <div id="search-form-report-search-section"></div>
         <h3>Filter by Date</h3>
-        <div class="flex-layout">
+        <div class="flex-layout common_criteria">
             <div id="js-common-filters-service-clinical">
                 <input name="from" type="text" class="pro-theme cols-5"
                         id="analytics_datepicker_from"
