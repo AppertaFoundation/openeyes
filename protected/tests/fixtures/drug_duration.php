@@ -73,4 +73,9 @@ return array(
                                                   'name' => '6 weeks',
                                                   'display_order' => 10,
                          ),
+    'drugduration12' => array(
+        'id' => 12,
+        'name' => 'Until review',
+        'display_order' => 11,
+    ),
 );
