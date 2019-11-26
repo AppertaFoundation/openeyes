@@ -61,7 +61,7 @@
 					eventTypeString = 'Phasing';
         }
 
-		
+
 		const unique = (value, index, self) => {
 			return self.indexOf(value) === index
 		}
@@ -87,7 +87,7 @@
 
 		let i = 0;
 		for(key in graph_data) {
-          x[i] = graph_data[key]['timestamp'];
+          x[i] = new Date(+graph_data[key]['timestamp']);
           y[i] = graph_data[key]['average'];
           event_ids[i] = graph_data[key]['parent_ids'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['average'];
@@ -99,9 +99,9 @@
               + 'Average: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg <br>'
               + 'Minimum: ' + Math.round(graph_data[key]['minimum']).toString() + ' mmHg <br>'
 			  + 'Readings: ' + graph_data[key]['reading_count'].toString();
-			  
+
 			  display_data[i] += '<br>Comment: ' + graph_data[key]['comment'];
-			  
+
           }else if(graph_data[key]['reading_count'] === 1){
 						display_data[i] += '<br>Reading: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg';
 						display_data[i] += '<br>Comment: ' + graph_data[key]['comment'];
@@ -109,7 +109,10 @@
           i++;
       }
 
-			let data = [{
+        console.log("Exam IOP graph data is: ");
+        console.log(x);
+
+        let data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
 				y: y,
@@ -117,9 +120,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-				 	let d = new Date(parseInt(item));
-          return OEScape.epochToDateStr(d)
-							+ '<br>' + display_data[index];
+          return item.toLocaleDateString("en-GB", "short")	+ '<br>' + display_data[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
