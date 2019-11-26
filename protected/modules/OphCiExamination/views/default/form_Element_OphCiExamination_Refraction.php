@@ -45,14 +45,14 @@
               <tbody>
               <tr>
                 <td class="cols-2">
-                    <?= CHtml::activeTextField($element, $eye_side . '_sphere', array('class' => 'cols-11', 'readonly'=>true)) ?>
+                    <?= CHtml::activeTextField($element, $eye_side . '_sphere', array('class' => 'cols-11')) ?>
                 </td>
                 <td class="cols-2">
-                    <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11','readonly'=>true)) ?>
+                    <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11')) ?>
                 </td>
                 <td class="cols-2">
                     <?=\CHtml::activeTextField($element, $eye_side . '_axis',
-                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11', 'readonly'=>true)) ?>
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11')) ?>
                 </td>
                 <td class="cols-4">
                     <?=\CHtml::activeDropDownList($element, $eye_side . '_type_id',
