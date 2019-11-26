@@ -1198,7 +1198,15 @@ class DefaultController extends BaseEventTypeController
         $success = false;
 
         if ($macro) {
-            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
+            $criteria = new CDbCriteria( array(
+                'condition' => "name LIKE :name",
+                'params'    => array(':name' => "$name%")
+            ) );
+
+            $letter_type = \LetterType::model()->find($criteria);
+            $letter_type_id = $letter_type ? $letter_type->id : null;
+
             $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
             $correspondence_creator->save();
 

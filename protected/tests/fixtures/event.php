@@ -91,7 +91,7 @@ return array(
         'id' => 6,
         'episode_id' => 4,
         'created_user_id' => 1,
-        'event_type_id' => 1007,
+        'event_type_id' => 1001,
         'last_modified_user_id' => 1,
         'last_modified_date' => date('Y-m-d 00:00:01'),
         'created_date' => date('Y-m-d 00:00:01', strtotime('-3 months')),
