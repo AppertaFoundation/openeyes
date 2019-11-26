@@ -79,7 +79,7 @@ $key = 0;
           </table>
         </div>
       </fieldset>
-        <?php echo $form->textArea($element, 'right_comments', array(), false, array('class' => 'autosize', 'placeholder' => 'Enter comments ...', 'style' => 'max-height:200px'), array('label' => 2, 'field' => 10)) ?>
+        <?php echo $form->textArea($element, 'right_comments', array(), false, array('class' => 'autosize', 'placeholder' => 'Enter comments ...'), array('label' => 2, 'field' => 10)) ?>
     </div>
     <div class="inactive-form" <?= $element->hasRight() ? 'style="display: none;"' : '';?>>
       <div class="add-side">
