@@ -331,24 +331,25 @@ $(document).ready(function () {
 
 	});
 
-	$('#js-header-print-dropdown').mouseover(function () {
-		$('#js-header-print-dropdown-btn').addClass('active');
-		$('#js-header-print-subnav').show();
+	let $headerPrintDropdown = $('#js-header-print-dropdown');
+	let $headerPrintDropdownButton = $('#js-header-print-dropdown-btn');
+	let $headerPrintSubnav = $('#js-header-print-subnav');
+
+	$headerPrintDropdown.on({
+		mouseover: function() {
+			$headerPrintDropdownButton.addClass('active');
+			$headerPrintSubnav.show();
+			},
+		mouseout: function() {
+			$headerPrintDropdownButton.removeClass('active');
+			$headerPrintSubnav.hide();
+		}
 	});
 
-	$('#js-header-print-dropdown').mouseout(function () {
-		$('#js-header-print-dropdown-btn').removeClass('active');
-		$('#js-header-print-subnav').hide();
+	$headerPrintSubnav.on({
+		mouseover: function() { $(this).show(); },
+		mouseout: function() { $(this).hide();}
 	});
-
-	$('#js-header-print-subnav').mouseover(function () {
-		$(this).show();
-	});
-
-	$('#js-header-print-subnav').mouseout(function () {
-		$(this).hide();
-	});
-
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');

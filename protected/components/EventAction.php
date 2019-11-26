@@ -106,7 +106,7 @@ class EventAction
 
     public static function printDropDownButtonAsHtml($print_actions)
     {
-        $printButtonHtml = '';
+        $print_button_html = '';
         foreach ($print_actions as $action) {
            $action->htmlOptions['class'] .= ' header-tab';
            $action->label = CHtml::encode($action->label);
@@ -115,13 +115,13 @@ class EventAction
                 $action->htmlOptions['disabled'] = 'disabled';
            }
 
-            $printButtonHtml .= '<li>'. CHtml::htmlButton($action->label, $action->htmlOptions) .'</li>';
+            $print_button_html .= '<li>'. CHtml::htmlButton($action->label, $action->htmlOptions) .'</li>';
         }
 
         return '<div class="header-dropdown" id="js-header-print-dropdown">
                     <div class="header-icon-btn print dropdown" id="js-header-print-dropdown-btn"></div>
                     <div class="dropdown-btns" id="js-header-print-subnav" style="display: none">
-                        <ul>'.$printButtonHtml.'</ul>
+                        <ul>'.$print_button_html.'</ul>
                     </div>
                 </div>';
     }
