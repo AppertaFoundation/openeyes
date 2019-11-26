@@ -188,19 +188,6 @@ class PcrRiskReport extends Report implements ReportInterface
             }
             $surgeon_count += 1;
         }
-        // different mode display different title
-        switch ($this->mode) {
-            case 0:
-                $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
-                $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
-                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
-                break;
-            case 1:
-                $this->plotlyConfig['title'] = 'PCR Rate (risk unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
-                break;
-            case 2:
-                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted & unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
-        }
         return $return_data;
     }
     /**
@@ -344,8 +331,28 @@ class PcrRiskReport extends Report implements ReportInterface
 
     public function plotlyConfig()
     {
+        $totalOperations = 0;
+        if ($this->allSurgeons) {
+            $totalOperations = $this->getTotalOperations('all');
+        } else {
+            $totalOperations = $this->getTotalOperations($this->surgeon);
+        }
         // closest allows hovering on any spots, not based on any axis
         $this->plotlyConfig['hovermode'] = 'closest';
+        // different mode display different title
+        switch ($this->mode) {
+            case 0:
+                $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
+                $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
+                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+            case 1:
+                $this->plotlyConfig['title'] = 'PCR Rate (risk unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+            case 2:
+                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted & unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+        }
         return json_encode($this->plotlyConfig);
     }
 

@@ -60,7 +60,7 @@
         // when the plot gets initialized, it will always include the search criteria
         // to preserve the updated result
         var search_criteria = ''
-        var common_plot_criteria = $('#search-form .common_criteria').find('input').serialize()
+        var common_plot_criteria = $('#search-form .common-criteria').find('input').serialize()
         search_criteria = common_plot_criteria ? common_plot_criteria : search_criteria;
         // if there is any other plot owned criteria, add them up
         var current_plot_criteria =  analytics_dataCenter.cataract.getCataractSearchForm()[wrapper]
@@ -232,23 +232,24 @@
 
     Dash.postUpdate = {
         'PcrRiskReport': function(data){
+          var totalOperations = 0;
+          // total operation numbers are the same for adjusted and unadjusted
+          for (var i =0; i < data.length; i++){
+            totalOperations += data[i]['x'];
+          }
           var newTitle = '';
           if($('#pcr-risk-mode').val() == 0){
             newTitle = 'PCR Rate (risk adjusted)';
           }else if($('#pcr-risk-mode').val() == 1){
             newTitle = 'PCR Rate (risk unadjusted)';
           }else if($('#pcr-risk-mode').val() == 2){
+            // this is 'Both' mode which will include both adjusted and unadjusted data
+            totalOperations = totalOperations / 2;
             newTitle = 'PCR Rate (risk adjusted & unadjusted)';
           }
             var chart = $('#PcrRiskReport')[0];
             var surgeon_data = [[],[]];
-            var totalOperations = 0;
-            // total operation numbers are the same for adjusted and unadjusted
-            for (var i =0; i < data.length; i++){
-                if(data[i]['name'] === "adjusted"){
-                    totalOperations += data[i]['x'];
-                }
-            }
+
             data.forEach(function (item) {
                 if (item['color'] == 'red'){
                     surgeon_data[1].push(item);
