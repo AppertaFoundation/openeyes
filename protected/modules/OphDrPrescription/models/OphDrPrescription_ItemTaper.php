@@ -58,7 +58,7 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         return array(
                 array('frequency_id, duration_id', 'required'),
                 array('dose, item_id, id', 'safe'),
-								array('dose', 'numerical'),
+                                array('dose', 'numerical'),
                 //array('', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
@@ -132,18 +132,18 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
     }
 
 
-	public function fpTenFrequency()
-	{
-		if (preg_match("/^\d+/", $this->duration->name)) {
-			return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
-		}
+    public function fpTenFrequency()
+    {
+        if (preg_match("/^\d+/", $this->duration->name)) {
+            return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+        }
 
-		return 'Frequency: ' . $this->frequency->long_name . ' ' . strtolower($this->duration->name);
-	}
+        return 'Frequency: ' . $this->frequency->long_name . ' ' . strtolower($this->duration->name);
+    }
 
     public function fpTenDose()
-	{
-		return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->item->drug->dose_unit}" : $this->dose)
-			. ', ' . $this->item->route->name . ($this->item->route_option ? ' (' . $this->item->route_option->name . ')' : null);
-	}
+    {
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->item->drug->dose_unit}" : $this->dose)
+            . ', ' . $this->item->route->name . ($this->item->route_option ? ' (' . $this->item->route_option->name . ')' : null);
+    }
 }
