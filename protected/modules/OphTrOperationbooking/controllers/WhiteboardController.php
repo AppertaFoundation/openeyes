@@ -99,17 +99,27 @@ class WhiteboardController extends BaseDashboardController
         return $before;
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function isRefreshable()
     {
         $whiteboard = $this->getWhiteboard();
 
-        if ( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
-            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
-        ) {
-            return true;
+        if (!$whiteboard) {
+            return false;
         }
+
+        return ( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
+            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
+        );
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function extendedEditablePeriod()
     {
         $whiteboard = $this->getWhiteboard();
@@ -140,7 +150,7 @@ class WhiteboardController extends BaseDashboardController
      *
      * View the whiteboard data, if there is no data for this event we will collate and persist it in the model.
      *
-     * @param $id
+     * @param $id int Booking event ID
      *
      * @throws CException
      * @throws CHttpException
@@ -154,7 +164,7 @@ class WhiteboardController extends BaseDashboardController
         }
         $this->setWhiteboard($whiteboard);
 
-        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) {
+        if (!$whiteboard->is_confirmed && is_object($whiteboard->booking) && $whiteboard->booking->isEditable()) {
             $whiteboard->loadData($id);
         }
 
@@ -172,6 +182,10 @@ class WhiteboardController extends BaseDashboardController
         ));
     }
 
+    /**
+     * @param $id int Booking event ID
+     * @throws CHttpException
+     */
     public function actionBiometryReport($id)
     {
         $whiteboard = $this->getWhiteboard();
@@ -181,7 +195,7 @@ class WhiteboardController extends BaseDashboardController
         }
         $this->setWhiteboard($whiteboard);
 
-        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) {
+        if (!$whiteboard->is_confirmed && is_object($whiteboard->booking) && $whiteboard->booking->isEditable()) {
             $whiteboard->loadData($id);
         }
 
@@ -199,7 +213,7 @@ class WhiteboardController extends BaseDashboardController
      *
      * If the data is wrong we can reload it and update the database.
      *
-     * @param $id
+     * @param $id int Booking event ID
      *
      * @throws CException
      * @throws CHttpException
