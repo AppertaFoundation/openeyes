@@ -26,6 +26,8 @@
  * @property string $enddatetime
  * @property string $status
  * @property integer $import_user_id
+ *
+ * This class is being used for the import of Trials, TrialPatients and Patients into the OpenEyes.
  */
 class ImportLog extends BaseActiveRecord
 {
