@@ -1934,8 +1934,8 @@ class PatientController extends BaseController
                 $patient->beforeValidate();
             }
         }
-        // Only auto increment hos no. when the set_auto_increment is on
-        if ($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment'] == 'on') {
+        // Only auto increment hos no. when the set_auto_increment_hospital_no is on
+        if ($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
 
