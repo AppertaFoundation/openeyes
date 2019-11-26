@@ -30,20 +30,27 @@ if (isset($this->event_actions)) {
   <i class="spinner" title="Loading..." style="display: none;"></i>
     <?php
     $print_actions = array();
-    $last_element_rendered = false;
+    $delete_action = null;
     foreach ($this->event_actions as $key => $action) {
         if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
             $print_actions[] = $action;
         } else {
-            if ($key === count($this->event_actions)) {
-                $last_element_rendered = true;
-                echo EventAction::printDropDownButtonAsHtml($print_actions);
+            if ($action->options['level'] === 'delete') {
+                $delete_action = $action;
+                unset($this->event_actions[$key]);
+                array_push($this->event_actions, $delete_action);
+                break;
             }
             echo $action->toHtml();
         }
     }
 
-    if (!empty($print_actions) && !$last_element_rendered) {
+    if (!empty($print_actions)) {
         echo EventAction::printDropDownButtonAsHtml($print_actions);
-    } ?>
+    }
+
+    if(isset($delete_action)) {
+        echo $delete_action->toHtml();
+    }
+    ?>
 </div>
