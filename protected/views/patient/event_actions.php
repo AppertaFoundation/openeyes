@@ -38,10 +38,8 @@ if (isset($this->event_actions)) {
             if ($key === count($this->event_actions)) {
                 $last_element_rendered = true;
                 echo EventAction::printDropDownButtonAsHtml($print_actions);
-                echo $action->toHtml();
-            } else {
-                echo $action->toHtml();
             }
+            echo $action->toHtml();
         }
     }
 
