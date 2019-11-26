@@ -99,7 +99,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-fields flex-layout full-width">
-        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false, array('style' => 'max-height:350px')) ?>
+        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
     </div>
   </section>
 <?php } ?>
