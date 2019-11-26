@@ -1,25 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    /*let confirm_exit = function(e){
-        e = e || window.event;
-        let message = "You have unsaved changes. Are you sure you want to leave this page?";
-        if (e)
-        {
-            e.returnValue = message;
-        }
-
-        return message;
-    };
-
-    window.onbeforeunload = null;
-
-  OpenEyes.Dialog.init(
-    document.getElementById('dialog-container'),
-    document.getElementById('refresh-button'),
-    'Are you sure?',
-    'This will update the record to match the current status of the patient. If you are unsure do not continue.'
-  );*/
-
   $('#js-wb3-openclose-actions').click(function() {
       $(this).toggleClass('up close');
       $('.wb3-actions').toggleClass('down up');
@@ -32,24 +12,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function toggleEdit(card) {
       $(card).find('.edit-widget-btn i').toggleClass('pencil tick');
-      let wbData = $(card).children('.wb-data');
-      wbData.find('ul').toggle();
-      wbData.find('.edit-widget').toggle();
+      let $wbData = $(card).children('.wb-data');
+      $wbData.find('ul').toggle();
+      $wbData.find('.edit-widget').toggle();
   }
 
   $('.edit-widget-btn').on('click', function() {
-      let card = $(this).parent().parent();
+      let $card = $(this).parent().parent();
       if ($('.oe-i',this).hasClass('tick')) {
           let cardTitle = $(this).parent().text().trim();
-          let $cardContent = $(this).parent().parent().find('.wb-data');
+          let $cardContent = $($card).find('.wb-data');
           let whiteboardEventId = this.dataset.whiteboardEventId;
           let data = {};
           let contentId;
-          let text;
+          let whiteboardComment;
 
           contentId = (cardTitle === 'Equipment') ? 'predicted_additional_equipment' : cardTitle.toLowerCase();
-          text = $cardContent.find('textarea').val();
-          data[contentId] = text;
+          whiteboardComment = $cardContent.find('textarea').val();
+          data[contentId] = whiteboardComment;
           data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
           // Save the changes made.
           $.ajax({
@@ -57,12 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
               'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
               'data': data,
               'success': function () {
-                  let newContent = text.split("\n");
+                  let newContent = whiteboardComment.split("\n");
                   $cardContent.find('ul').empty();
                   newContent.forEach(function(item) {
                       $cardContent.find('ul').append('<li>' + item + '</li>');
                   });
-                  toggleEdit(card);
+                  toggleEdit($card);
                   window.onbeforeunload = null;
               },
               'error': function () {
@@ -70,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
               }
           });
       } else {
-          toggleEdit(card);
+          toggleEdit($card);
       }
   });
 

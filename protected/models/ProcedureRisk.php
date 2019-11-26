@@ -5,7 +5,8 @@
  * The followings are the available columns in table 'procedure_risk':
  *
  * @property int $id
- * @property string $name
+ * @property int $risk_id
+ * @property int $proc_id
  */
 class ProcedureRisk extends BaseActiveRecordVersioned
 {
@@ -35,6 +36,7 @@ class ProcedureRisk extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('id, proc_id, risk_id', 'safe'),
         );
     }
 
