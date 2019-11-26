@@ -331,22 +331,22 @@ $(document).ready(function () {
 
 	});
 
-	let $headerPrintDropdown = $('#js-header-print-dropdown');
-	let $headerPrintDropdownButton = $('#js-header-print-dropdown-btn');
-	let $headerPrintSubnav = $('#js-header-print-subnav');
+	let $header_print_dropdown = $('#js-header-print-dropdown');
+	let $header_print_dropdown_button = $('#js-header-print-dropdown-btn');
+	let $header_print_subnav = $('#js-header-print-subnav');
 
-	$headerPrintDropdown.on({
+	$header_print_dropdown.on({
 		mouseover: function() {
-			$headerPrintDropdownButton.addClass('active');
-			$headerPrintSubnav.show();
+			$header_print_dropdown_button.addClass('active');
+			$header_print_subnav.show();
 			},
 		mouseout: function() {
-			$headerPrintDropdownButton.removeClass('active');
-			$headerPrintSubnav.hide();
+			$header_print_dropdown_button.removeClass('active');
+			$header_print_subnav.hide();
 		}
 	});
 
-	$headerPrintSubnav.on({
+	$header_print_subnav.on({
 		mouseover: function() { $(this).show(); },
 		mouseout: function() { $(this).hide();}
 	});
