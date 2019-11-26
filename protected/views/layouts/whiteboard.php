@@ -19,7 +19,6 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>OpenEyes - Whiteboard</title>
         <?php $this->renderPartial('//base/head/_meta', array(
             'whiteboard' => true,
         )); ?>
