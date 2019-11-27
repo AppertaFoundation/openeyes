@@ -139,6 +139,17 @@
             $(this).parent().html('None');
         });
 
+        $('#js-display-whiteboard').click(function(e) {
+            e.preventDefault();
+            oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
+        });
+
+        $('#js-close-whiteboard').click(function(e) {
+            e.preventDefault();
+            let oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
+            oeWindow.close();
+        });
+
         autosize($('.autosize'));
 
         $(this).on('click', '#et_print_admission_form', function () {

@@ -23,6 +23,8 @@ use Yii;
 use Audit;
 use CDbCriteria;
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 class AdminController extends \ModuleAdminController
 {
@@ -885,8 +887,9 @@ class AdminController extends \ModuleAdminController
     }
 
 
-    /*
+    /**
      * Delete invoice
+     * @throws \Exception
      */
     public function actionDeleteInvoiceStatus()
     {
@@ -911,7 +914,7 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAllergies()
     {
-        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', ['div_wrapper_class' => 'cols-5']);
+        $this->genericAdmin('Edit Allergies', OphCiExaminationAllergy::class, ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionRisks()
@@ -926,16 +929,21 @@ class AdminController extends \ModuleAdminController
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
-            )
+            ),
+            array(
+                'field' => 'display_on_whiteboard',
+                'type' => 'boolean',
+            ),
         );
 
         $this->genericAdmin(
             'Edit Risks',
-            'OEModule\OphCiExamination\models\OphCiExaminationRisk',
+            OphCiExaminationRisk::class,
             array(
                 'extra_fields' => $extra_fields,
                 'div_wrapper_class' => 'cols-6',
-            ));
+            )
+        );
     }
 
     public function actionSocialHistory()
