@@ -15,11 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+$delete_action = null;
 if (isset($this->event_actions)) {
     foreach ($this->event_actions as $i => $event_action) {
         if ($event_action->label == "Delete") {
+            $delete_action = $event_action;
             unset($this->event_actions[$i]);
-            array_push($this->event_actions, $event_action);
             break;
         }
     }
@@ -30,17 +31,10 @@ if (isset($this->event_actions)) {
   <i class="spinner" title="Loading..." style="display: none;"></i>
     <?php
     $print_actions = array();
-    $delete_action = null;
     foreach ($this->event_actions as $key => $action) {
         if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
             $print_actions[] = $action;
         } else {
-            if ($action->options['level'] === 'delete') {
-                $delete_action = $action;
-                unset($this->event_actions[$key]);
-                array_push($this->event_actions, $delete_action);
-                break;
-            }
             echo $action->toHtml();
         }
     }
