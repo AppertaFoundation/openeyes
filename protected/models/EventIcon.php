@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2019
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -47,7 +47,7 @@ class EventIcon extends BaseActiveRecord
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return ['order' => $this->getTableAlias(true, false).'.display_order'];
     }
 
     /**
@@ -57,10 +57,10 @@ class EventIcon extends BaseActiveRecord
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('id, name', 'safe'),
-            array('id, name', 'safe', 'on' => 'search')
-        );
+        return [
+            ['id, name', 'safe'],
+            ['id, name', 'safe', 'on' => 'search']
+        ];
     }
 
     /**
@@ -68,10 +68,10 @@ class EventIcon extends BaseActiveRecord
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'name' => 'Icon Name',
-        );
+        ];
     }
 
     public function search()
@@ -80,9 +80,9 @@ class EventIcon extends BaseActiveRecord
 
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
 }

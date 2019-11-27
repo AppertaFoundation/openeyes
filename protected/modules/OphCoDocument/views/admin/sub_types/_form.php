@@ -71,16 +71,15 @@
                     <div class="cols-11">
                         <?php
                         $event_icons = EventIcon::model()->findAll();
-                        $icon_images = array();
+                        $icon_images = [];
                         foreach ($event_icons as $key => $icon){
                             $icon_images[$key + 1] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
-                        }
-                        ?>
+                        } ?>
                         <?=\CHtml::activeRadioButtonList(
                             $model,
                             'event_icon_id',
                             $icon_images,
-                            ['separator' => ' ', 'selected' => '1']
+                            ['separator' => ' ']
                         ); ?>
                     </div>
                 </fieldset>

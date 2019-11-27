@@ -5,9 +5,7 @@ class m191125_091623_create_event_icon_table extends CDbMigration
 
 	public function up()
 	{
-//        $this->dropColumn('ophcodocument_sub_types','event_icon_id');
-//        $this->dropTable('event_icon');
-        $icon_names = array('i-CiAnaestheticExam', 'i-CiCommunityData', 'i-CiDilation', ' i-CiExamination',
+        $icon_names = ['i-CiAnaestheticExam', 'i-CiCommunityData', 'i-CiDilation', ' i-CiExamination',
             'i-CiOrthoptics', 'i-CiPatientAdmission', 'i-CiPhasing', 'i-CiRefraction', 'i-CiVisualAcuity',
             'i-CoCatPROM5', 'i-CoCertificate', 'i-CoCorrespondence', 'i-CoDocument', 'i-CoIVTApplication',
             'i-CoInternalReferral', 'i-CoLetterIn', 'i-CoLetterOut', 'i-CoMedia', 'i-CoPatientConsent',
@@ -18,16 +16,35 @@ class m191125_091623_create_event_icon_table extends CDbMigration
             'i-Message', 'i-MiPatientEducation', 'i-MiSafetyChecklist', 'i-NuEducation', 'i-NuPreOpCheck',
             'i-OuAnaestheticSatisfaction', 'i-OuInfectedEye', 'i-OuPatientSatisfaction', 'i-Patient',
             'i-PatientDNA', 'i-TrIntravitrealInjection', 'i-TrLaser', 'i-TrNeedling', 'i-TrOperation',
-            'i-TrOperationNotes', 'i-TrOperationProcedure');
+            'i-TrOperationNotes', 'i-TrOperationProcedure'];
 
-	    $this->createTable('event_icon', array(
+        $sub_types = [
+            'General' => 'i-CoDocument',
+            'Biometry Report' => 'i-InBiometry',
+            'Referral Letter' => 'i-CoReferral',
+            'OCT' => 'i-ImOCT',
+            'Electrocardiogram' => 'i-CoDocument',
+            'Photograph' => 'i-ImPhoto',
+            'Consent Form' => 'i-CoPatientConsent',
+            'Visual Field Report' => 'i-InVisualField',
+            'Lids Photo' => 'i-CoDocument',
+            'Orbit Photo' => 'i-CoDocument',
+            'Video' => 'i-CoMedia',
+            'Refraction' => 'i-CiRefraction',
+            'Retcam' => 'i-CoDocument',
+            'Toric IOL Calculation' => 'i-ImToricIOL',
+            'Ultrasound' => 'i-ImUltraSound',
+        ];
+
+	    $this->createTable('event_icon', [
 	        'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
             'name' => 'varchar(64) not null',
             'display_order' => 'int unsigned not null'
-        ));
+        ]);
 
 	    foreach ($icon_names as $key => $event_icon) {
-	        $this->insert('event_icon', array('name' => $event_icon, 'display_order' => $key + 1));
+	        $key *= 10;
+	        $this->insert('event_icon', ['name' => $event_icon, 'display_order' => $key + 1]);
         }
 
 	    $this->addColumn('ophcodocument_sub_types', 'event_icon_id', 'int(10) unsigned');
@@ -35,13 +52,18 @@ class m191125_091623_create_event_icon_table extends CDbMigration
 
         $this->addColumn('ophcodocument_sub_types_version', 'event_icon_id', 'int(10) unsigned');
         $this->addForeignKey('document_event_icon_id_version_fk', 'ophcodocument_sub_types_version', 'event_icon_id', 'event_icon', 'id');
+
+        foreach ($sub_types as $sub_type => $icon) {  //set default values for document sub types
+            $this->update('ophcodocument_sub_types', ['event_icon_id' => EventIcon::model()->find('name = ?', [$icon])->id], 'name="'.$sub_type .'"');
+        }
+
 	}
 
 	public function down()
 	{
 	    $this->dropForeignKey('document_event_icon_id_fk', 'ophcodocument_sub_types');
 	    $this->dropColumn('ophcodocument_sub_types','event_icon_id');
-        $this->dropForeignKey('document_event_icon_id_version_fk', 'ophcodocument_sub_types');
+        $this->dropForeignKey('document_event_icon_id_version_fk', 'ophcodocument_sub_types_version');
         $this->dropColumn('ophcodocument_sub_types_version','event_icon_id');
         $this->dropTable('event_icon');
 	}
