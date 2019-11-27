@@ -72,7 +72,7 @@
                         <?php
                         $event_icons = EventIcon::model()->findAll();
                         $icon_images = array();
-                        foreach ($event_icons as $key => $icon){
+                        foreach ($event_icons as $key => $icon) {
                             $icon_images[$key + 1] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
                         }
                         ?>
