@@ -25,22 +25,14 @@ class OphCoDocument_API extends BaseAPI
      */
     public function getEventIcon($type, Event $event)
     {
-        $asset_manager = Yii::app()->getAssetManager();
-        $module_path = Yii::getPathOfAlias('application.modules.OphCoDocument.assets.img');
-
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
-        if (!$element || $element->sub_type->name === 'General') {
-            return '<i class="oe-i-e ' . ($type === 'small' ? 'small' : 'large') . ' i-CoDocument"></i>';
+        $event_icon = 'i-CoDocument';
+
+        if ($element && isset($element->sub_type->event_icon_id)) {
+            $event_icon = EventIcon::model()->findByPk($element->sub_type->event_icon_id)->name;
         }
 
-        $file = $module_path . '/' . $type . str_replace(' ', '_', $element->sub_type->name) . '.png';
-        if (file_exists($file)) {
-            $path = $asset_manager->publish($file);
-        } else {
-            $path = $asset_manager->publish($module_path . '/' . $type . '.png');
-        }
-
-        return "<img src=\"$path\"/>";
+        return '<i class="oe-i-e ' . ($type === 'small' ? 'small ' : 'large ') . $event_icon.'"></i>';
     }
 
     public function getEventName($event)

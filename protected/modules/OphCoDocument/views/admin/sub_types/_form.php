@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-5">
+<div class="cols-11">
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
@@ -62,6 +62,28 @@
                     [1 => 'Yes', 0 => 'No'],
                     ['separator' => ' ', 'selected' => '1']
                 ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Sub type icon</td>
+            <td>
+                <fieldset>
+                    <div class="cols-11">
+                        <?php
+                        $event_icons = EventIcon::model()->findAll();
+                        $icon_images = array();
+                        foreach ($event_icons as $key => $icon){
+                            $icon_images[$key + 1] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
+                        }
+                        ?>
+                        <?=\CHtml::activeRadioButtonList(
+                            $model,
+                            'event_icon_id',
+                            $icon_images,
+                            ['separator' => ' ', 'selected' => '1']
+                        ); ?>
+                    </div>
+                </fieldset>
             </td>
         </tr>
         </tbody>
