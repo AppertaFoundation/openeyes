@@ -29,8 +29,8 @@ class OphCiExamination_APITest extends CDbTestCase
     {
         parent::setUp();
 
-        $this->api = Yii::app()->moduleAPI->get('OphCiExamination');
         Yii::app()->session['selected_firm_id'] = 2;
+        $this->api = Yii::app()->moduleAPI->get('OphCiExamination');
     }
 
     public $fixtures = array(
@@ -51,157 +51,39 @@ class OphCiExamination_APITest extends CDbTestCase
         'instrument' => '\OEModule\OphCiExamination\models\OphCiExamination_Instrument',
         'targetiop' => '\OEModule\OphCiExamination\models\OphCiExamination_TargetIop',
         'overallmanagementplan' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
+        'va' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+        'va_readings' => '\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading',
+        'va_unit_values' => '\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue',
     );
 
     public function testgetLetterVisualAcuityForEpisode_Side_hasReading()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         foreach (array('Left', 'Right') as $side) {
-            $reading = $this->getMockBuilder('\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading')
-                    ->disableOriginalConstructor()
-                    ->setMethods(array('convertTo'))
-                    ->getMock();
-
-            $reading->expects($this->once())
-                ->method('convertTo')
-                ->will($this->returnValue('Expected result'));
-
-            $va = $this->getMockBuilder('\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-                    ->disableOriginalConstructor()
-                    ->setMethods(array('has'.$side, 'getBestReading'))
-                    ->getMock();
-
-            $va->expects($this->once())
-                ->method('has'.$side)
-                ->will($this->returnValue(true));
-
-
-            $va->expects($this->once())
-                ->method('getBestReading')
-                ->will($this->returnValue($reading));
-
-            $api = $this->getMockBuilder('OEModule\OphCiExamination\components\OphCiExamination_API')
-                    ->disableOriginalConstructor()
-                    ->setMethods(array('getElementForLatestEventInEpisode'))
-                    ->getMock();
-
-            $patient = new Patient();
-            $episode = new Episode();
-            $episode->patient = $patient;
-
-            $api->expects($this->once())
-                ->method('getElementForLatestEventInEpisode')
-                ->with($this->equalTo($episode), 'models\Element_OphCiExamination_VisualAcuity')
-                ->will($this->returnValue($va));
-
             $method = 'getLetterVisualAcuityForEpisode'.$side;
-            $this->assertEquals('6/9', $api->$method($episode));
+            $this->assertEquals('6/9', $this->api->$method($this->patient('patient1')));
         }
     }
 
     public function testgetLetterVisualAcuityForEpisode_Side_hasNoReading()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         foreach (array('Left', 'Right') as $side) {
-            $va = $this->getMockBuilder('\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-                    ->disableOriginalConstructor()
-                    ->setMethods(array('has'.$side, 'getBestReading', 'getTextForSide'))
-                    ->getMock();
-
-            $va->expects($this->exactly(2))
-                    ->method('has'.$side)
-                    ->will($this->returnValue(true));
-
-            $va->expects($this->exactly(2))
-                    ->method('getBestReading')
-                    ->with(strtolower($side))
-                    ->will($this->returnValue(null));
-
-            $va->expects($this->once())
-                    ->method('getTextForSide')
-                    ->with(strtolower($side))
-                    ->will($this->returnValue('Expected Result'));
-
-            $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-                    ->disableOriginalConstructor()
-                    ->setMethods(array('getElementForLatestEventInEpisode'))
-                    ->getMock();
-
-            $patient = new Patient();
-            $episode = new Episode();
-            $episode->patient = $patient;
-
-            $api->expects($this->exactly(2))
-                    ->method('getElementForLatestEventInEpisode')
-                    ->with($this->equalTo($episode), 'models\Element_OphCiExamination_VisualAcuity')
-                    ->will($this->returnValue($va));
             $method = 'getLetterVisualAcuityForEpisode'.$side;
-            $this->assertEquals('Expected Result', $api->$method($episode, true));
-            $this->assertNull($api->$method($episode, false));
+            $this->assertNull($this->api->$method($this->patient('patient2')));
         }
     }
 
-    public function testgetLetterVisualAcuityForEpisodeBoth_recorded()
+    public function testgetLetterVisualAcuityForEpisodeBoth_hasReading()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-                ->disableOriginalConstructor()
-                ->setMethods(array('getLetterVisualAcuityForEpisodeLeft', 'getLetterVisualAcuityForEpisodeRight'))
-                ->getMock();
-
-        $episode = new Episode();
-
-        $api->expects($this->at(0))
-            ->method('getLetterVisualAcuityForEpisodeLeft')
-            ->with($this->equalTo($episode), true)
-            ->will($this->returnValue('Left VA'));
-
-        $api->expects($this->at(1))
-                ->method('getLetterVisualAcuityForEpisodeRight')
-                ->with($this->equalTo($episode), true)
-                ->will($this->returnValue('Right VA'));
-
-        $this->assertEquals('Right VA on the right and Left VA on the left', $api->getLetterVisualAcuityForEpisodeBoth($episode, true));
-
-        $api->expects($this->at(0))
-                ->method('getLetterVisualAcuityForEpisodeLeft')
-                ->with($this->equalTo($episode), false)
-                ->will($this->returnValue('Left VA'));
-        $api->expects($this->at(1))
-                ->method('getLetterVisualAcuityForEpisodeRight')
-                ->with($this->equalTo($episode), false)
-                ->will($this->returnValue(null));
-
-        $this->assertEquals('not recorded on the right and Left VA on the left', $api->getLetterVisualAcuityForEpisodeBoth($episode, false));
+        $this->assertEquals('6/9 on the right and 6/9 on the left', $this->api->getLetterVisualAcuityForEpisodeBoth($this->episode('episode1'), true));
     }
 
-    public function testGetPrincipalCCTBoth()
+    public function testgetLetterVisualAcuityForEpisodeBoth_hasNoReading()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals('not recorded on the right and not recorded on the left', $this->api->getLetterVisualAcuityForEpisodeBoth($this->episode('episode3'), false));
+    }
 
+    public function testGetPrincipalCCT()
+    {
         $event = $this->createEvent();
         $element = $this->createCctElement($event, Eye::BOTH);
 
@@ -226,13 +108,6 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCTRight()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         $episode = $this->episode('episode2');
         $episode->eye_id = Eye::RIGHT;
         if (!$episode->save()) {
@@ -249,13 +124,6 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCTLeft()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         $episode = $this->episode('episode2');
         $episode->eye_id = Eye::LEFT;
         if (!$episode->save()) {
@@ -273,8 +141,8 @@ class OphCiExamination_APITest extends CDbTestCase
     public function testGetPrincipalCCT_NotLatestEvent()
     {
         /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
+         * This test has been marked incomplete - it needs updating to work with latest models
+         */
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
@@ -336,399 +204,183 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->assertEquals($expected, $this->api->getCCTAbbr($this->patient('patient1')));
     }
 
-    public function testGetPricipalVanHerick()
+    public function testGetPrincipalVanHerick()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $event = $this->createEvent();
+        $element = $this->createVanHerickElement($event, Eye::BOTH);
 
-        $gonio = $this->gonioscopy('gonioscopy1');
-
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode2');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\VanHerick')
-            ->will($this->returnValue($gonio));
-
-        $principalVH = $api->getPrincipalVanHerick($patient);
-        $expected = 'Left Eye: Van Herick grade is 30%. Right Eye: Van Herick grade is 5%. ';
+        $principalVH = $this->api->getPrincipalVanHerick($this->patient('patient1'));
+        $expected = 'Left Eye: Van Herick grade is Grade 3 (41-75%). Right Eye: Van Herick grade is Grade 3 (41-75%). ';
         $this->assertEquals($expected, $principalVH);
     }
 
-    public function testGetPricipalVanHerickNoPrincipalEye()
+    public function testGetPrincipalVanHerickNoPrincipalEye()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $episode = $this->episode('episode2');
 
-        $gonio = $this->gonioscopy('gonioscopy2');
+        $episode->eye_id = null;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
+        $event = $this->createEvent();
+        $element = $this->createVanHerickElement($event, Eye::BOTH);
 
-        $episode = $this->episode('episode1');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->any())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_Gonioscopy')
-            ->will($this->returnValue($gonio));
-
-        $principalVH = $api->getPrincipalVanHerick($patient);
+        $principalVH = $this->api->getPrincipalVanHerick($this->patient('patient1'));
         $expected = '';
         $this->assertEquals($expected, $principalVH);
     }
 
-    public function testGetPricipalVanHerickRight()
+    public function testGetPrincipalVanHerickRight()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
-        $gonio = $this->gonioscopy('gonioscopy1');
-
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode3');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_Gonioscopy')
-            ->will($this->returnValue($gonio));
-
-        $principalVH = $api->getPrincipalVanHerick($patient);
-        $expected = 'Right Eye: Van Herick grade is 5%. ';
-        $this->assertEquals($expected, $principalVH);
-    }
-
-    public function testGetPricipalVanHerickLeft()
-    {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
-        $gonio = $this->gonioscopy('gonioscopy1');
-
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode4');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_Gonioscopy')
-            ->will($this->returnValue($gonio));
-
-        $principalVH = $api->getPrincipalVanHerick($patient);
-        $expected = 'Left Eye: Van Herick grade is 30%. ';
-        $this->assertEquals($expected, $principalVH);
-    }
-
-    public function testGetPricipalOpticDiscDescription()
-    {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
-        $opticdisc = $this->optic_disc('opticdisc1');
-
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
         $episode = $this->episode('episode2');
-        $episode->patient = $patient;
 
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
+        $episode->eye_id = Eye::RIGHT;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
 
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
+        $event = $this->createEvent();
+        $element = $this->createVanHerickElement($event, Eye::RIGHT);
 
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OpticDisc')
-            ->will($this->returnValue($opticdisc));
+        $principalVH = $this->api->getPrincipalVanHerick($this->patient('patient1'));
+        $expected = 'Right Eye: Van Herick grade is Grade 3 (41-75%). ';
+        $this->assertEquals($expected, $principalVH);
+    }
 
-        $principalODD = $api->getPrincipalOpticDiscDescription($patient);
-        $expected = 'Left Eye: Not Checked Well. Right Eye: Some Description. ';
+    public function testGetPrincipalVanHerickLeft()
+    {
+        $episode = $this->episode('episode2');
+
+        $episode->eye_id = Eye::LEFT;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
+
+        $event = $this->createEvent();
+        $element = $this->createVanHerickElement($event, Eye::LEFT);
+
+        $principalVH = $this->api->getPrincipalVanHerick($this->patient('patient1'));
+        $expected = 'Left Eye: Van Herick grade is Grade 3 (41-75%). ';
+        $this->assertEquals($expected, $principalVH);
+    }
+
+    public function testGetPrincipalOpticDiscDescription()
+    {
+        $event = $this->createEvent();
+        $element = $this->createOpticDiscElement($event, Eye::BOTH);
+
+        $principalODD = $this->api->getPrincipalOpticDiscDescription($this->patient('patient1'));
+        $expected = "Left Eye:\nr2\nld\nRight Eye:\nr1\nrd";
         $this->assertEquals($expected, $principalODD);
     }
 
-    public function testGetPricipalOpticDiscDescriptionNoPrincipalEye()
+    public function testGetPrincipalOpticDiscDescriptionNoPrincipalEye()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $episode = $this->episode('episode2');
 
-        $opticdisc = false;
+        $episode->eye_id = null;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
+        $event = $this->createEvent();
+        $element = $this->createOpticDiscElement($event, Eye::BOTH);
 
-        $episode = $this->episode('episode1');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->any())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OpticDisc')
-            ->will($this->returnValue($opticdisc));
-
-        $principalODD = $api->getPrincipalOpticDiscDescription($patient);
+        $principalODD = $this->api->getPrincipalOpticDiscDescription($this->patient('patient1'));
         $expected = '';
         $this->assertEquals($expected, $principalODD);
     }
 
-    public function testGetPricipalOpticDiscDescriptionRight()
+    public function testGetPrincipalOpticDiscDescriptionRight()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $episode = $this->episode('episode2');
 
-        $opticdisc = $this->optic_disc('opticdisc1');
+        $episode->eye_id = Eye::RIGHT;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
+        $event = $this->createEvent();
+        $element = $this->createOpticDiscElement($event, Eye::BOTH);
 
-        $episode = $this->episode('episode3');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OpticDisc')
-            ->will($this->returnValue($opticdisc));
-
-        $principalODD = $api->getPrincipalOpticDiscDescription($patient);
-        $expected = 'Right Eye: Some Description. ';
+        $principalODD = $this->api->getPrincipalOpticDiscDescription($this->patient('patient1'));
+        $expected = "Right Eye:\nr1\nrd";
         $this->assertEquals($expected, $principalODD);
     }
 
-    public function testGetPricipalOpticDiscDescriptionLeft()
+    public function testGetPrincipalOpticDiscDescriptionLeft()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $episode = $this->episode('episode2');
 
-        $opticdisc = $this->optic_disc('opticdisc1');
+        $episode->eye_id = Eye::LEFT;
+        if (!$episode->save()) {
+            throw new Exception('Failed to save episode: '.print_r($episode->getErrors(), true));
+        }
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
+        $event = $this->createEvent();
+        $element = $this->createOpticDiscElement($event, Eye::BOTH);
 
-        $episode = $this->episode('episode4');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OpticDisc')
-            ->will($this->returnValue($opticdisc));
-
-        $principalODD = $api->getPrincipalOpticDiscDescription($patient);
-        $expected = 'Left Eye: Not Checked Well. ';
+        $principalODD = $this->api->getPrincipalOpticDiscDescription($this->patient('patient1'));
+        $expected = "Left Eye:\nr2\nld";
         $this->assertEquals($expected, $principalODD);
     }
 
-    public function testGetLetterIOPReadingAbbr_Right()
+    public function testGetLetterIOPReadingAbbr()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::RIGHT);
         $this->addIopReading($element, Eye::RIGHT, 1);
 
-        $expected = 'r:1';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'r:1 (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
     public function testGetLetterIOPReadingAbbr_Right_Avg()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::RIGHT);
         $this->addIopReading($element, Eye::RIGHT, 1);
         $this->addIopReading($element, Eye::RIGHT, 3);
 
-        $expected = 'r:2 (avg)';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'r:2 (avg) (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
     public function testGetLetterIOPReadingAbbr_Left()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::LEFT);
         $this->addIopReading($element, Eye::LEFT, 2);
 
-        $expected = 'l:2';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'l:2 (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
     public function testGetLetterIOPReadingAbbr_Left_Avg()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::LEFT);
         $this->addIopReading($element, Eye::LEFT, 2);
         $this->addIopReading($element, Eye::LEFT, 3);
 
-        $expected = 'l:3 (avg)';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'l:3 (avg) (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
     public function testGetLetterIOPReadingAbbr_Both()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::BOTH);
         $this->addIopReading($element, Eye::RIGHT, 1);
         $this->addIopReading($element, Eye::LEFT, 2);
 
-        $expected = 'r:1, l:2';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'r:1, l:2 (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
     public function testGetLetterIOPReadingAbbr_Both_Avg()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::BOTH);
         $this->addIopReading($element, Eye::RIGHT, 1);
@@ -736,78 +388,50 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->addIopReading($element, Eye::LEFT, 2);
         $this->addIopReading($element, Eye::LEFT, 3);
 
-        $expected = 'r:2 (avg), l:3 (avg)';
-        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbr($this->patient('patient1')));
+        $expected = 'r:2 (avg), l:3 (avg) (recorded on ' . date("d M Y") . ')';
+        $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
-    public function testIOPReadingRightNoUnits()
+    public function testGetLetterIOPReadingRightNoUnits()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::BOTH);
         $this->addIopReading($element, Eye::RIGHT, 1);
         $this->addIopReading($element, Eye::RIGHT, 3);
 
         $expected = '2';
-        $this->assertEquals($expected, trim($this->api->getIOPReadingRightNoUnits($this->patient('patient1'))));
+        $this->assertEquals($expected, trim($this->api->getLetterIOPReadingRightNoUnitsLast6weeks($this->patient('patient1'))));
     }
 
-    public function testIOPReadingLeftNoUnits()
+    public function testGetLetterIOPReadingLeftNoUnits()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::BOTH);
         $this->addIopReading($element, Eye::LEFT, 3);
         $this->addIopReading($element, Eye::LEFT, 3);
 
         $expected = '3';
-        $this->assertEquals($expected, trim($this->api->getIOPReadingLeftNoUnits($this->patient('patient1'))));
+        $this->assertEquals($expected, trim($this->api->getLetterIOPReadingLeftNoUnitsLast6weeks($this->patient('patient1'))));
     }
 
-    public function testIOPReadingLeftNoUnitsNotRecorded()
+    public function testGetLetterIOPReadingLeftNoUnitsNotRecorded()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::BOTH);
         $this->addIopReading($element, Eye::RIGHT, 3);
 
         $expected = 'NR';
-        $this->assertEquals($expected, trim($this->api->getIOPReadingLeftNoUnits($this->patient('patient1'))));
+        $this->assertEquals($expected, trim($this->api->getLetterIOPReadingLeftNoUnitsLast6weeks($this->patient('patient1'))));
     }
 
-    public function testIOPReadingRightNoUnitsNotRecorded()
+    public function testGetLetterIOPReadingRightNoUnitsNotRecorded()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
         $event = $this->createEvent();
         $element = $this->createIopElement($event, Eye::LEFT);
         $this->addIopReading($element, Eye::LEFT, 3);
 
         $expected = 'NR';
-        $this->assertEquals($expected, trim($this->api->getIOPReadingRightNoUnits($this->patient('patient1'))));
+        $this->assertEquals($expected, trim($this->api->getLetterIOPReadingRightNoUnitsLast6weeks($this->patient('patient1'))));
     }
 
     public function testGetCCTRight_NoUnits()
@@ -848,154 +472,46 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetTargetIOP()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
-        $overall_management = $this->overallmanagementplan('overallmanagementplan1');
+        $event = $this->createEvent(date('Y-m-d 23:59:58'));
+        $element = $this->createOverallManagementPlanElement($event, 10, 20);
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode4');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OverallManagementPlan')
-            ->will($this->returnValue($overall_management));
-
-        $targetIop = $api->getTargetIOP($patient);
+        $targetIop = $this->api->getTargetIOP($this->patient('patient1'));
         $expected = array('left' => 10, 'right' => 20);
         $this->assertEquals($expected, $targetIop);
     }
 
     public function testGetTargetIOPOneSideNull()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
-        $overall_management = $this->overallmanagementplan('overallmanagementplan2');
+        $event = $this->createEvent(date('Y-m-d 23:59:58'));
+        $element = $this->createOverallManagementPlanElement($event, null, 15);
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode4');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_OverallManagementPlan')
-            ->will($this->returnValue($overall_management));
-
-        $targetIop = $api->getTargetIOP($patient);
+        $targetIop = $this->api->getTargetIOP($this->patient('patient1'));
         $expected = array('left' => null, 'right' => 15);
         $this->assertEquals($expected, $targetIop);
     }
 
     public function testGetTargetIOPReturnsNull()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
-        $overall_management = $this->overallmanagementplan('overallmanagementplan3');
-
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode4');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue(null));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode'))
-            ->getMock();
-
-        $targetIop = $api->getTargetIOP($patient);
-        $this->assertNull($targetIop);
+        $this->assertNull($this->api->getTargetIOP($this->patient('patient1')));
     }
 
     public function testGetIOPValuesAsTable()
     {
-        /**
-        * This test has been marked incomplete - it needs updating to work with latest models
-        */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        
-        $iopEl = $this->et_iop('et_iop1');
+        $event = $this->createEvent(date('Y-m-d 23:59:58'));
+        $iop = $this->createIopElement($event, Eye::BOTH);
+        $this->addIopReading($iop, Eye::LEFT, 2);
+        $this->addIopReading($iop, Eye::RIGHT, 2);
+        $this->createCctElement($event, Eye::BOTH);
 
-        $patient = $this->getMockBuilder('Patient')->disableOriginalConstructor()
-            ->setMethods(array('getEpisodeForCurrentSubspecialty'))
-            ->getMock();
-
-        $episode = $this->episode('episode1');
-        $episode->patient = $patient;
-
-        $patient->expects($this->any())
-            ->method('getEpisodeForCurrentSubspecialty')
-            ->will($this->returnValue($episode));
-
-        $api = $this->getMockBuilder('\OEModule\OphCiExamination\components\OphCiExamination_API')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElementForLatestEventInEpisode', 'getModuleClass'))
-            ->getMock();
-
-        $api->expects($this->once())
-            ->method('getElementForLatestEventInEpisode')
-            ->with($this->equalTo($episode), 'models\Element_OphCiExamination_IntraocularPressure')
-            ->will($this->returnValue($iopEl));
-
-        $api->expects($this->any())
-            ->method('getModuleClass')
-            ->will($this->returnValue('OphCiExamination'));
-
-        $api->expects($this->any())
-            ->method('getEventType')
-            ->will($this->returnValue($this->event_type('event_type3')));
-
-        $iopTable = $api->getIOPValuesAsTable($patient);
-        $expected = '<table><colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [20]</th><th>LE [NR]</th></tr><tr><td>6:Gold</td>'.
-            '<td>7:Gold</td></tr><tr><td>27:DCT</td><td>2:IOPcc</td></tr>'.
-            '<tr><td>&nbsp;</td><td>4:I-care</td></tr></table>';
+        $iopTable = $this->api->getIOPValuesAsTable($this->patient('patient1'));
+        $expected = '<table class="borders"><colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><td>RE [50]</td><td>LE [50]</td></tr>'.
+            '<tr><td>2:</td><td>2:</td></tr></table>';
         $this->assertEquals($expected, $iopTable);
+    }
+
+    public function testGetIOPValuesAsTableNotRecorded()
+    {
+        $this->assertEquals('', $this->api->getIOPValuesAsTable($this->patient('patient1')));
     }
 
     private function createEvent($event_date = null)
@@ -1003,6 +519,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $event = new Event();
         $event->episode_id = $this->episode['episode2']['id'];
         $event->event_type_id = Yii::app()->db->createCommand('select id from event_type where class_name = "OphCiExamination"')->queryScalar();
+        $event->firm_id = 2;
         if ($event_date) {
             $event->event_date = $event_date;
         }
@@ -1052,4 +569,54 @@ class OphCiExamination_APITest extends CDbTestCase
 
         return $reading;
     }
+
+    private function createOverallManagementPlanElement(Event $event, $left_target, $right_target)
+    {
+        $element = new models\Element_OphCiExamination_OverallManagementPlan();
+        $element->event_id = $event->id;
+        $element->left_target_iop_id = $left_target;
+        $element->right_target_iop_id = $right_target;
+        $element->gonio_id = 2;
+        $element->clinic_interval_id = 1;
+        $element->photo_id = 1;
+        $element->oct_id = 4;
+        $element->hfa_id = 1;
+        $element->eye_id = 3;
+
+        $element->save(false);
+
+        return $element;
+    }
+
+    private function createVanHerickElement(Event $event, $eye_id)
+    {
+        $element = new models\VanHerick();
+        $element->event_id = $event->id;
+        $element->eye_id = $eye_id;
+        $element->left_van_herick_id = 5;
+        $element->right_van_herick_id = 5;
+        $element->save(false);
+
+        return $element;
+    }
+
+    private function createOpticDiscElement(Event $event, $eye_id)
+    {
+        $element = new models\Element_OphCiExamination_OpticDisc();
+        $element->event_id = $event->id;
+        $element->eye_id = $eye_id;
+        $element->left_description = "ld";
+        $element->right_description = "rd";
+        $element->left_cd_ratio_id = 3;
+        $element->right_cd_ratio_id = 4;
+        $element->left_lens_id = 1;
+        $element->right_lens_id = 1;
+        $element->right_ed_report = "r1";
+        $element->left_ed_report = "r2";
+        $element->save(false);
+
+        return $element;
+    }
+
+
 }
