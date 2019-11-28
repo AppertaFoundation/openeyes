@@ -135,11 +135,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $data->leftJoin("document_output", "document_target.id = document_output.document_target_id");
 
         if ($this->statuses) {
-            if (in_array('DRAFT', $this->statuses) ) {
-                $data->andWhere(['and', 'l.draft = 1', ['in', 'document_output.output_status', $this->statuses] ]);
-            } else {
-                $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
-            }
+            $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
         }
 
         $data->select(implode(',', $select));
