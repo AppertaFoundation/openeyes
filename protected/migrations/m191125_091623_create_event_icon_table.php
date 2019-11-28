@@ -44,7 +44,7 @@ class m191125_091623_create_event_icon_table extends CDbMigration
 
         foreach ($icon_names as $key => $event_icon) {
             $key *= 10;
-            $this->insert('event_icon', ['name' => $event_icon, 'display_order' => $key + 1]);
+            $this->insert('event_icon', ['name' => $event_icon, 'display_order' => $key]);
         }
 
         $this->addColumn('ophcodocument_sub_types', 'event_icon_id', 'int(10) unsigned');
