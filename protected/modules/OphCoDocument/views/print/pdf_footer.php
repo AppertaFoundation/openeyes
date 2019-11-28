@@ -40,12 +40,12 @@
 
 		var y = document.getElementsByClassName('patient_hosnum');
 		for (var j=0; j<y.length; j++) {
-			y[j].innerHTML = "Hosp No: " + patient_hosnums[document_no];
+            y[j].innerHTML = "{{Hos No}}: " + patient_hosnums[document_no];
 		}
 
 		var y = document.getElementsByClassName('patient_nhsnum');
 		for (var j=0; j<y.length; j++) {
-			y[j].innerHTML = ", " + <?= Yii::app()->params['nhs_num_label']?> + " No: " + patient_nhsnums[document_no];
+            y[j].innerHTML = ", {{NHS No}}: " + patient_nhsnums[document_no];
 		}
 
 		var y = document.getElementsByClassName('patient_dob');
