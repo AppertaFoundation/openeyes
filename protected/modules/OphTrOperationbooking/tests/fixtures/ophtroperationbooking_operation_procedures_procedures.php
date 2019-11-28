@@ -35,4 +35,10 @@ return array(
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
     ),
+    'opp4' => array(
+        'element_id' => 1,
+        'proc_id' => 2,
+        'created_date' => date('Y-m-d 00:00:00'),
+        'last_modified_date' => date('Y-m-d 00:00:00'),
+    ),
 );
