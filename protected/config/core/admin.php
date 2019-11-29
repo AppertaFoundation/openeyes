@@ -65,6 +65,8 @@ return array(
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
                 'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
+                'Dispense conditions' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/oeadmin/DispenseCondition'),
+                'Dispense locations' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/oeadmin/DispenseLocation'),
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
