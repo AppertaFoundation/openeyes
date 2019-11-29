@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (($tabs = Yii::app()->params['search_tabs'])): ?>
+<?php if (($tabs = Yii::app()->params['search_tabs'])) : ?>
   <div class="cols-8 large-centered column panel">
     <ul class="inline-list tabs search">
         <?php
@@ -27,7 +27,7 @@
             return ($a['position'] < $b['position']) ? -1 : 1;
         });
         ?>
-        <?php foreach ($tabs as $tab): ?>
+        <?php foreach ($tabs as $tab) : ?>
           <li<?php if ($tab['url'] == Yii::app()->request->requestUri) echo ' class="selected"' ?> >
             <a href="<?= $tab['url'] ?>"><?= CHtml::encode($tab['title']) ?></a>
           </li>

@@ -25,7 +25,7 @@
     <div class="cols-10">
       <table class="priority-text last-left">
         <tbody>
-        <?php foreach ($element->procedures as $procedure): ?>
+        <?php foreach ($element->procedures as $procedure) : ?>
           <tr>
             <td><span class="priority-text">
               <?php echo $element->eye->adjective ?>

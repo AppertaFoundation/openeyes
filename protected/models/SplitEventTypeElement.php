@@ -53,11 +53,11 @@ class SplitEventTypeElement extends BaseEventTypeElement
 
     public static function eyeHasSide($side, $eye_id)
     {
-        if ($side === 'left'){
+        if ($side === 'left') {
             return $eye_id != Eye::RIGHT;
         } elseif ($side === 'right') {
             return $eye_id != Eye::LEFT;
-        }  else {
+        } else {
             return false;
         }
     }
@@ -105,6 +105,8 @@ class SplitEventTypeElement extends BaseEventTypeElement
      */
     public function setDefaultOptions(Patient $patient = null)
     {
+        parent::setDefaultOptions($patient);
+
         $this->setSideDefaultOptions('left');
         $this->setSideDefaultOptions('right');
     }

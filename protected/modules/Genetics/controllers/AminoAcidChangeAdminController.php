@@ -73,11 +73,11 @@ class AminoAcidChangeAdminController extends BaseAdminController
             'referer' => 'referer',
             'change' => 'text',
         ));
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Amino Acid Change Type Saved");
                 $url = '/Genetics/aminoAcidChangeAdmin/view/'.$admin->getModel()->id;

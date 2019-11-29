@@ -20,22 +20,22 @@
 <div class="element-fields flex-layout full-width">
   <div>
     <label><?php echo $element->getAttributeLabel('specular_microscope_id') ?>:</label>
-      <?php
-      $allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
-      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
+        <?php
+        $allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
+        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
           $element->specular_microscope_id,
           CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
     <label><?php echo $element->getAttributeLabel('scan_quality_id') ?>:</label>
-      <?php
-      $allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
+        <?php
+        $allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
+        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
           $element->scan_quality_id,
           CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
   </div>
 </div>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>

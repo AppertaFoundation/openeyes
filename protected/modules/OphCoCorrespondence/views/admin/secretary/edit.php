@@ -51,7 +51,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
+        <?php foreach ($siteSecretaries as $id => $siteSecretary) : ?>
             <tr class="secretaryFormRow">
                 <td>
                     <?=\CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>

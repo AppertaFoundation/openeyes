@@ -23,7 +23,7 @@ $gp_cb = ($patient->gp && $patient->practice) ? $patient->practice->getCommissio
 
 This email was generated from the OpenEyes Therapy Application event
 
-<?php 
+<?php
 if ($site = $service_info->site) {
     echo 'Intended Site: '.$site->name;
 }
@@ -34,7 +34,7 @@ The Eye to inject is: <?php echo $side."\n" ?>
 Drug to use is: <?php echo $treatment->drug->name."\n" ?>
 VA: Right eye: <?php echo $exam_api->getLetterVisualAcuityRight($patient)?>, left eye: <?php echo $exam_api->getLetterVisualAcuityLeft($patient)."\n" ?>
 <?php foreach ($suitability->getDecisionTreeAnswersForDisplay($side) as $question => $answer) {?>
-<?php echo "$question: $answer\n" ?>
+    <?php echo "$question: $answer\n" ?>
 <?php }?>
 NICE Status: <?php echo($suitability->{$side.'_nice_compliance'} ? 'COMPLIANT' : 'NON-COMPLIANT')."\n" ?>
 Diagnosis: <?php echo $diagnosis->getDiagnosisStringForSide($side)."\n" ?>

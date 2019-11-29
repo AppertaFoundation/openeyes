@@ -188,7 +188,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         foreach ($attributeIdsArray as $key => $attributeId) {
             $element = $newOCEAE::model()->findByAttributes(array('attribute_id' => $attributeId));
 
-            if(Yii::app()->request->getPost('DELETE_SUBS_ALSO')){
+            if (Yii::app()->request->getPost('DELETE_SUBS_ALSO')) {
                 $this->deleteAttributeElements($element);
             }
 

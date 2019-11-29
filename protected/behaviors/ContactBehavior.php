@@ -17,7 +17,7 @@
  */
 class ContactBehavior extends CActiveRecordBehavior
 {
-    public function getLetterAddress($params = array() , $contact = null)
+    public function getLetterAddress($params = array(), $contact = null)
     {
         if (@$params['contact']) {
             $contactRelation = @$params['contact'];

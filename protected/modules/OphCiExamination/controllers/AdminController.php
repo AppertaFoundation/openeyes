@@ -863,12 +863,11 @@ class AdminController extends \ModuleAdminController
     /*
      * Edit exist invoice
      */
-    public function actionEditInvoiceStatus( $id )
+    public function actionEditInvoiceStatus($id)
     {
         $model = models\InvoiceStatus::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-
             $model->attributes = $_POST[\CHtml::modelName($model)];
             if ($model->save()) {
                // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));

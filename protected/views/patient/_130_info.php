@@ -53,9 +53,9 @@
                     </button>
                 </div>
                 <?php $this->renderPartial('cvi_status_form', array('info' => $info)); ?>
-        <?php } ?>
+            <?php } ?>
 
-    <?php }?>
+        <?php }?>
     </div>
 
 </section>

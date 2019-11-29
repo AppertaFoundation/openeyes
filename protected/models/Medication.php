@@ -50,8 +50,7 @@ class Medication extends BaseActiveRecordVersioned
     public function rules()
     {
         $required_fields = 'start_date';
-        if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history'])
-        {
+        if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history']) {
             $required_fields .= ', frequency_id, route_id';
         }
         return array(

@@ -21,6 +21,8 @@ $config = [
             'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
             'Allergies' => '/OphCiExamination/admin/Allergies',
             'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
+            'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
+            'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',
             'Risks' => '/OphCiExamination/admin/Risks',
             'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',
             'Required Systemic Diagnoses Assignment' => '/OphCiExamination/admin/systemicDiagAssignment/index',
@@ -45,6 +47,7 @@ $config = [
             'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
             'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
             'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
+            'Manage Drops' => '/OphCiExamination/admin/Drug/dilationDrugs',
         ],
         'menu_bar_items' => [
             'ofm' => [

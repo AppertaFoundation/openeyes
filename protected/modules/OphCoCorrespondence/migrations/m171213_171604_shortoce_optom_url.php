@@ -2,8 +2,8 @@
 
 class m171213_171604_shortoce_optom_url extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $event_type_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('event_type')
@@ -18,10 +18,10 @@ class m171213_171604_shortoce_optom_url extends CDbMigration
             'description' => 'Portal Url',
             'last_modified_user_id' => '1',
         ));
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->delete('patient_shortcode', '`default_code`="pul"');
-	}
+    }
 }

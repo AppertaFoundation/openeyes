@@ -39,7 +39,6 @@ class WorklistBehavior extends CBehavior
         $action = isset($event->params['action']) ? $event->params['action'] : null;
 
         if ($action && ($action->id === 'create') && $this->owner->event) {
-
             $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
             $worklist_patient_id = null;
 
@@ -108,7 +107,6 @@ class WorklistBehavior extends CBehavior
          */
 
         if (isset(\Yii::app()->session['patientticket_ticket_ids']) && \Yii::app()->session['patientticket_ticket_ids']) {
-
             $patientticket_ticket_id = Yii::app()->session['patientticket_ticket_ids'];
             $ticket = Ticket::model()->findByPk($patientticket_ticket_id);
             $ticket_patient_id = null;
@@ -129,7 +127,6 @@ class WorklistBehavior extends CBehavior
         // if there is an event->worklist_patient_id we check if the worklist is EyeCasualty and is for today
         $worklist_patient_today_AE = null;
         if ($this->owner->event->worklist_patient_id) {
-
             $criteria = new \CDbCriteria();
 
             $criteria->with = ['worklist.displayContext.subspecialty'];
@@ -150,13 +147,13 @@ class WorklistBehavior extends CBehavior
         }
 
         // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
-        if($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
+        if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE)) ) {
             $unbooked_worklist_manager = new \UnbookedWorklist();
             $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
 
             if ($unbooked_worklist) {
                 $worklist_patient = $this->worklist_manager->addPatientToWorklist($this->owner->patient, $unbooked_worklist, new \DateTime());
-                if($worklist_patient) {
+                if ($worklist_patient) {
                     //event already saved here we need to set this indicidually
                     $this->owner->event->saveAttributes(['worklist_patient_id' => $worklist_patient->id]);
                 } else {

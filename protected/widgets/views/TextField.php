@@ -19,7 +19,9 @@
 <?php if (@$htmlOptions['nowrapper']) { ?>
     <div id="div_<?=\CHtml::modelName($element) ?>_<?= $field ?>"
          class="flex-layout"
-        <?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;" <?php } ?> >
+        <?php if (@$htmlOptions['hide'] == true) {
+            ?> style="display: none;" <?php
+        } ?> >
         <?=\CHtml::textField($name, $value, $htmlOptions) ?>
         <?php if (!empty($htmlOptions['append-text'])) { ?>
             <span class="field-info"><?php echo $htmlOptions['append-text']; ?></span>
@@ -31,7 +33,9 @@
     </div>
 <?php } else { ?>
   <div id="div_<?=\CHtml::modelName($element) ?>_<?= $field ?>"
-       class="data-group flex-layout cols-full"<?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;"<?php } ?> >
+       class="data-group flex-layout cols-full"<?php if (@$htmlOptions['hide'] == true) {
+            ?> style="display: none;"<?php
+                                               } ?> >
     <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <?php
         $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
@@ -67,10 +71,10 @@
         <div class="cols-<?php echo $layoutColumns['append-text']; ?> collapse">
           <span class="field-info"><?php echo $htmlOptions['append-text']; ?></span>
         </div>
-      <?php } ?>
+        <?php } ?>
       <?php if (!empty($htmlOptions['tooltip-text'])) { ?>
         <i class="oe-i info small-icon js-has-tooltip"
            data-tooltip-content="<?php echo $htmlOptions['tooltip-text']; ?>"></i>
-      <?php } ?>
+        <?php } ?>
   </div>
 <?php } ?>

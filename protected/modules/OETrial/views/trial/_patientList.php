@@ -43,7 +43,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 $sortableColumns[] = 'Treatment Type';
             }
 
-            foreach ($columns as $field): ?>
+            foreach ($columns as $field) : ?>
                 <?php
                 $new_sort_dir = ($field === $sort_by) ? 1 - $sort_dir : 0;
                 $sort_symbol = '';

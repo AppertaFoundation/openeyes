@@ -66,17 +66,17 @@ class ExaminationCreator
 
             $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
-                if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
-                    $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
-                    $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
-                    $visualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $unit);
-                }
+            if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
+                $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
+                $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
+                $visualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $unit);
+            }
 
-                if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
-                    $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
-                    $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
-                    $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $nearUnit, true);
-                }
+            if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
+                $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
+                $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
+                $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $nearUnit, true);
+            }
 
             foreach ($examination['patient']['eyes'] as $eye) {
                 $eyeLabel = strtolower($eye['label']);
@@ -201,7 +201,7 @@ class ExaminationCreator
         $baseValue = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->getBaseValue($unit->id, $vaData['reading']);
         $vaReading->value = $baseValue;
         $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('LOWER(name) = :name', array('name' => strtolower($vaData['method'])))->id;
-        if($eyeLabel === 'left'){
+        if ($eyeLabel === 'left') {
             $vaReading->side = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT;
         } else {
             $vaReading->side = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::RIGHT;
@@ -265,7 +265,7 @@ class ExaminationCreator
             $episode = \Episode::model()->findByPk($episodeId);
             //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
             $recipient = NULL;
-            if($opNoteEventId !== NULL){
+            if ($opNoteEventId !== NULL) {
                 $surgeon = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
                 $recipient = $surgeon->surgeon;
             }
@@ -292,7 +292,7 @@ class ExaminationCreator
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
                 $emailSetting = \SettingInstallation::model()->find('`key` = "optom_comment_alert"');
-                if($emailSetting && $emailSetting->value){
+                if ($emailSetting && $emailSetting->value) {
                     $recipients = explode(',', $emailSetting->value);
                     $messageCreator->emailAlert($recipients, 'New Optom Comment', $message->message_text);
                 }
@@ -375,7 +375,7 @@ class ExaminationCreator
             array($iopReading['mm_hg']));
         $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find('LOWER(name) = ?',
             array(strtolower($iopReading['instrument'])));
-        if ($instrument['scale_id']){
+        if ($instrument['scale_id']) {
             $iopValue->qualitative_reading_id = $instrument['scale_id'];
         }
         $iopValue->reading_id = $iopReadingValue['id'];
@@ -410,7 +410,7 @@ class ExaminationCreator
 
     protected function examinationEye(Array $eyes, Array $eyeIds)
     {
-        if(count($eyes) === 2){
+        if (count($eyes) === 2) {
             $this->examinationEyeId = $eyeIds['both'];
         } else {
             $this->examinationEyeId = $eyeIds[strtolower($eyes[0]['label'])];

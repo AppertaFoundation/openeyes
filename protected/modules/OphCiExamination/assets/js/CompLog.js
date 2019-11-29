@@ -18,7 +18,7 @@ CompLogConnection.prototype.run = function(){
 	this.initialiseCompLogDialog();
 	this.checkConnectionToWS()
 		.fail(() => {
-			this.openInIframe("oeLauncher:complog");
+			this.openInIframe("complog:");
 			sleep(100);
 		})
 		.always(() => {

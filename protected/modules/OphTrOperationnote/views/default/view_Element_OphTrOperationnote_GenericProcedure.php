@@ -24,7 +24,9 @@
 
   <div class="-element-data">
       <div class="cols-12 column">
-        <div class="data-value<?php if (!$element->procedure) { ?> none<?php } ?>">
+        <div class="data-value<?php if (!$element->procedure) {
+            ?> none<?php
+                              } ?>">
             <?php echo Yii::app()->format->Ntext($element->comments) ?>
         </div>
       </div>

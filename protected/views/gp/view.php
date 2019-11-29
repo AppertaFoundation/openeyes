@@ -50,7 +50,7 @@ $this->pageTitle = 'View Practitioner';
                 </table>
             </div>
         </div>
-        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')): ?>
+        <?php if (Yii::app()->user->checkAccess('TaskCreateGp')) : ?>
             <div class="large-4 column end">
                 <div class="box generic">
                     <div class="row">

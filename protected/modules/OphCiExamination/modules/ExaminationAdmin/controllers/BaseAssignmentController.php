@@ -64,7 +64,6 @@ class BaseAssignmentController extends \ModuleAdminController
 
                 $transaction->commit();
                 $this->redirect(['index']);
-
             } else {
                 $transaction->rollback();
                 $errors = true;

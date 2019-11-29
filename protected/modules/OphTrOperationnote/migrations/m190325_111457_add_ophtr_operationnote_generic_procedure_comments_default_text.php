@@ -18,7 +18,7 @@ class m190325_111457_add_ophtr_operationnote_generic_procedure_comments_default_
                              FROM proc prc
                              WHERE id NOT IN
                                 (SELECT procedure_id FROM ophtroperationnote_procedure_element)");
-	}
+    }
 
     public function down()
     {

@@ -24,7 +24,9 @@
   <div class="element-data full-width">
 
     <div class="data-group">
-      <div class="data-value <?php if (!$element->drugs) { ?> none<?php } ?>">
+      <div class="data-value <?php if (!$element->drugs) {
+            ?> none<?php
+                             } ?>">
         <div class="tile-data-overflow">
             <?php if (!$element->drugs) { ?>
               None
@@ -47,7 +49,7 @@
 </section>
 
 <?php
-if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)): ?>
+if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)) : ?>
     <section class="element view tile">
         <header class="element-header">
             <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
@@ -55,7 +57,9 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
         <div class="element-data full-width">
             <div class="data-value">
                 <div class="tile-data-overflow">
-                    <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
+                    <div class="data-value<?php if (!$instructions->postop_instructions) {
+                        ?> none<?php
+                                          } ?>">
                         <?=\CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
                     </div>
                 </div>
@@ -71,7 +75,9 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
     </header>
     <div class="element-data full-width">
         <div class="data-group">
-            <div class="data-value <?php if (!$element->comments) { ?> none<?php } ?>">
+            <div class="data-value <?php if (!$element->comments) {
+                ?> none<?php
+                                   } ?>">
                 <div class="tile-data-overflow">
                     <?php if (!$element->comments) { ?>
                         None

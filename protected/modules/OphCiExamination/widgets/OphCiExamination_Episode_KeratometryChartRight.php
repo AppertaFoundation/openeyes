@@ -74,9 +74,9 @@ class OphCiExamination_Episode_KeratometryChartRight extends \EpisodeSummaryWidg
     public function addData(\FlotChart $chart)
     {
         foreach ($this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode) as $event) {
-                if (($reading = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id))) {
-                    $this->addKeraReading($event, $chart, $reading);
-                }
+            if (($reading = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id))) {
+                $this->addKeraReading($event, $chart, $reading);
+            }
         }
         if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
             $interventionDate = $api->getLastOperationDate($this->episode->patient);

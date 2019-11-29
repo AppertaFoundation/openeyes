@@ -18,12 +18,12 @@
 ?>
 
 <section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<div class="element-fields">
-		<?php echo $form->dropDownList($element, 'user1_id', CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id', 'fullName'), array('empty' => 'Select'), false, array('label' => 2, 'field' => 3))?>
-		<?php echo $form->dropDownList($element, 'user2_id', CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id', 'fullName'), array('empty' => 'Select'), false, array('label' => 2, 'field' => 3))?>
-	</div>
+    data-element-type-id="<?php echo $element->elementType->id?>"
+    data-element-type-class="<?php echo $element->elementType->class_name?>"
+    data-element-type-name="<?php echo $element->elementType->name?>"
+    data-element-display-order="<?php echo $element->elementType->display_order?>">
+    <div class="element-fields">
+        <?php echo $form->dropDownList($element, 'user1_id', CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id', 'fullName'), array('empty' => 'Select'), false, array('label' => 2, 'field' => 3))?>
+        <?php echo $form->dropDownList($element, 'user2_id', CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id', 'fullName'), array('empty' => 'Select'), false, array('label' => 2, 'field' => 3))?>
+    </div>
 </section>

@@ -205,7 +205,7 @@ class Zend_Gdata_App
      *                                    by passing false to the
      *                                    useObjectMapping() function.
      */
-    public function getFeed($uri, $className='Zend_Gdata_App_Feed')
+    public function getFeed($uri, $className = 'Zend_Gdata_App_Feed')
     {
         return $this->importUrl($uri, $className, null);
     }
@@ -220,7 +220,7 @@ class Zend_Gdata_App
      *                                     by passing false to the
      *                                     useObjectMapping() function.
      */
-    public function getEntry($uri, $className='Zend_Gdata_App_Entry')
+    public function getEntry($uri, $className = 'Zend_Gdata_App_Entry')
     {
         return $this->importUrl($uri, $className, null);
     }
@@ -340,7 +340,6 @@ class Zend_Gdata_App
             throw new Zend_Gdata_App_InvalidArgumentException(
                     'You cannot enable gzipped responses if the zlib module ' .
                     'is not enabled in your PHP installation.');
-
         }
         self::$_gzipEnabled = $enabled;
     }
@@ -731,7 +730,7 @@ class Zend_Gdata_App
      *                                    useObjectMapping() function.
      */
     public static function import($uri, $client = null,
-        $className='Zend_Gdata_App_Feed')
+        $className = 'Zend_Gdata_App_Feed')
     {
         $app = new Zend_Gdata_App($client);
         $requestData = $app->prepareRequest('GET', $uri);
@@ -762,7 +761,7 @@ class Zend_Gdata_App
      *                                    by passing false to the
      *                                    useObjectMapping() function.
      */
-    public function importUrl($url, $className='Zend_Gdata_App_Feed',
+    public function importUrl($url, $className = 'Zend_Gdata_App_Feed',
         $extraHeaders = array())
     {
         $response = $this->get($url, $extraHeaders);
@@ -811,12 +810,12 @@ class Zend_Gdata_App
      * @return Zend_Gdata_App_Feed
      */
     public static function importString($string,
-        $className='Zend_Gdata_App_Feed', $majorProtocolVersion = null,
+        $className = 'Zend_Gdata_App_Feed', $majorProtocolVersion = null,
         $minorProtocolVersion = null)
     {
         if (!class_exists($className, false)) {
-          require_once 'Zend/Loader.php';
-          @Zend_Loader::loadClass($className);
+            require_once 'Zend/Loader.php';
+            @Zend_Loader::loadClass($className);
         }
 
         // Load the feed as an XML DOMDocument object
@@ -850,7 +849,7 @@ class Zend_Gdata_App
      * @return Zend_Gdata_App_Feed
      */
     public static function importFile($filename,
-            $className='Zend_Gdata_App_Feed', $useIncludePath = false)
+            $className = 'Zend_Gdata_App_Feed', $useIncludePath = false)
     {
         @ini_set('track_errors', 1);
         $feed = @file_get_contents($filename, $useIncludePath);
@@ -969,12 +968,12 @@ class Zend_Gdata_App
      * @return Zend_Gdata_App_Entry The entry returned by the service after
      *         insertion.
      */
-    public function insertEntry($data, $uri, $className='Zend_Gdata_App_Entry',
+    public function insertEntry($data, $uri, $className = 'Zend_Gdata_App_Entry',
         $extraHeaders = array())
     {
         if (!class_exists($className, false)) {
-          require_once 'Zend/Loader.php';
-          @Zend_Loader::loadClass($className);
+            require_once 'Zend/Loader.php';
+            @Zend_Loader::loadClass($className);
         }
 
         $response = $this->post($data, $uri, null, null, $extraHeaders);
@@ -1014,8 +1013,8 @@ class Zend_Gdata_App
         }
 
         if (!class_exists($className, false)) {
-          require_once 'Zend/Loader.php';
-          @Zend_Loader::loadClass($className);
+            require_once 'Zend/Loader.php';
+            @Zend_Loader::loadClass($className);
         }
 
         $response = $this->put($data, $uri, null, null, $extraHeaders);
@@ -1049,18 +1048,18 @@ class Zend_Gdata_App
             $class = $matches[1];
             $foundClassName = null;
             foreach ($this->_registeredPackages as $name) {
-                 try {
-                     // Autoloading disabled on next line for compatibility
-                     // with magic factories. See ZF-6660.
-                     if (!class_exists($name . '_' . $class, false)) {
+                try {
+                    // Autoloading disabled on next line for compatibility
+                    // with magic factories. See ZF-6660.
+                    if (!class_exists($name . '_' . $class, false)) {
                         require_once 'Zend/Loader.php';
                         @Zend_Loader::loadClass($name . '_' . $class);
-                     }
-                     $foundClassName = $name . '_' . $class;
-                     break;
-                 } catch (Zend_Exception $e) {
-                     // package wasn't here- continue searching
-                 }
+                    }
+                    $foundClassName = $name . '_' . $class;
+                    break;
+                } catch (Zend_Exception $e) {
+                    // package wasn't here- continue searching
+                }
             }
             if ($foundClassName != null) {
                 $reflectionObj = new ReflectionClass($foundClassName);
@@ -1111,8 +1110,7 @@ class Zend_Gdata_App
             } else {
                 $feed = null;
             }
-        }
-        while ($feed != null);
+        } while ($feed != null);
         return $result;
     }
 

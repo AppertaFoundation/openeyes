@@ -2,8 +2,8 @@
 
 class m170512_122616_Kera_mitomycin_creation extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createOETable('ophtroperationnote_cxl_mitomycin', array(
             'id' => 'pk',
             'name' => 'string NOT NULL',
@@ -16,22 +16,22 @@ class m170512_122616_Kera_mitomycin_creation extends OEMigration
         $this->insert('ophtroperationnote_cxl_mitomycin',
             array('name' => 'No', 'display_order' => 2));
 
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropOETable('ophtroperationnote_cxl_mitomycin', true);
 
-	}
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

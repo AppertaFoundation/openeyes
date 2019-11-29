@@ -65,17 +65,17 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
 
 ?>
 <div class="element-fields element-eyes">
-	<script type="text/javascript">
-		var previous_iop = <?= json_encode($iop)?>;
-	</script>
-	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-    $hasEyeFunc = "has".ucfirst($eye);
-	?>
-	<div class="js-element-eye <?=$eye?>-eye column <?=$side?> <?= !$element->$hasEyeFunc()? "inactive" : ""?>"
+    <script type="text/javascript">
+        var previous_iop = <?= json_encode($iop)?>;
+    </script>
+    <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+        $hasEyeFunc = "has".ucfirst($eye);
+        ?>
+    <div class="js-element-eye <?=$eye?>-eye column <?=$side?> <?= !$element->$hasEyeFunc()? "inactive" : ""?>"
        data-side="<?=$eye?>"
   >
-		<div class="active-form" style="<?=$element->$hasEyeFunc() ? "" : "display: none;"?>">
+        <div class="active-form" style="<?=$element->$hasEyeFunc() ? "" : "display: none;"?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
       <table class="cols-full">
         <tbody>
@@ -119,15 +119,15 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
 
 
 
-		</div>
-		<div class="inactive-form" style="<?=!$element->$hasEyeFunc() ? "" : "display: none;"?>">
-			<div class="add-side">
-				<a href="#">
-					Add <?=$eye?> side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-  <?php endforeach;?>
+        </div>
+        <div class="inactive-form" style="<?=!$element->$hasEyeFunc() ? "" : "display: none;"?>">
+            <div class="add-side">
+                <a href="#">
+                    Add <?=$eye?> side <span class="icon-add-side"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php endforeach;?>
 </div>
 
