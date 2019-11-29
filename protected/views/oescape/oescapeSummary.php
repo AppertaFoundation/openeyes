@@ -267,57 +267,88 @@ if (!empty($subspecialty)) { ?>
             let max_data_points_read = [];
 
             limits[eye_side] = {};
-            limits[eye_side].min = Object.keys(charts).reduce(function(min, chart_key) {
+            // limits[eye_side].min = Object.keys(charts).reduce(function(min, chart_key) {
+						// 		console.log("Initial min: " + min);
+						//
+            //     let chart = charts[chart_key];
+            //     let chart_data_list = chart[eye_side]['data'];
+            //     let has_data = false;
+            //     for (let i in chart_data_list){
+            //         if(chart_data_list[i]['x'].length!==0){
+            //             has_data = true;
+            //             min_data_points_read.push(chart_data_list[i]['x']);
+            //         }
+            //     }
+            //     let chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
+            //     console.log("Accumulator min value: " + min);
+            //     console.log("Chart min for chart: " + chart_min);
+						//
+            //     return has_data && new Date(chart_min) < min ? new Date(chart_min) : min;
+            // }, new Date());
+						//
+            // console.log("Got minimum ");
+            // console.log(limits[eye_side].min);
+						//
+            // limits[eye_side].max = Object.keys(charts).reduce(function(max, chart_key) {
+            //     console.log("Initial max: " + max);
+						//
+            //     let chart = charts[chart_key];
+            //     let chart_data_list = chart[eye_side]['data'];
+            //     let has_data = false;
+            //     for (let i in chart_data_list){
+            //         if(chart_data_list[i]['x'].length !== 0){
+            //             has_data = true;
+            //             max_data_points_read.push(chart_data_list[i]['x']);
+            //         }
+            //     }
+            //     let chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
+            //     console.log("Accumulator max value: " + max);
+            //     console.log("Chart max for chart: " + chart_max);
+						//
+            //     return has_data && new Date(chart_max) > max ? new Date(chart_max) : max;
+            // }, limits[eye_side].min );
+						//
+            // console.log("Got maximum ");
+            // console.log(limits[eye_side].max);
 
-								console.log("Initial min: " + min);
+            let min = null;
+            let max = null;
 
-                let chart = charts[chart_key];
-                let chart_data_list = chart[eye_side]['data'];
-                let has_data = false;
-                for (let i in chart_data_list){
-                    if(chart_data_list[i]['x'].length!==0){
-                        has_data = true;
-                        min_data_points_read.push(chart_data_list[i]['x']);
-                    }
+            console.log("Wait, who?");
+
+            Object.keys(charts).forEach(function(chart_key) {
+						    console.log(chart_key);
+						    console.log("Chart data:");
+						    let chartData = charts[chart_key][eye_side]['data'];
+						    console.log(chartData);
+
+						    for(let i in chartData)
+								{
+								    for(let x in chartData[i]['x'])
+										{
+												console.log("Attempting value check");
+                        let value = chartData[i]['x'][x];
+												console.log(value);
+												if (min === null || value < min) {
+														min = value;
+														min_data_points_read.push(min);
+												} else if (max === null || value > max) {
+														max = value;
+														max_data_points_read.push(max);
+												}
+										}
                 }
-                let chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
-                console.log("Accumulator min value: " + min);
-                console.log("Chart min for chart: " + chart_min);
+						});
 
-                return has_data && new Date(chart_min) < min ? new Date(chart_min) : min;
-            }, new Date());
-
-            console.log("Got minimum ");
-            console.log(limits[eye_side].min);
-
-            limits[eye_side].max = Object.keys(charts).reduce(function(max, chart_key) {
-                console.log("Initial max: " + max);
-
-                let chart = charts[chart_key];
-                let chart_data_list = chart[eye_side]['data'];
-                let has_data = false;
-                for (let i in chart_data_list){
-                    if(chart_data_list[i]['x'].length !== 0){
-                        has_data = true;
-                        max_data_points_read.push(chart_data_list[i]['x']);
-                    }
-                }
-                let chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
-                console.log("Accumulator max value: " + max);
-                console.log("Chart max for chart: " + chart_max);
-
-                return has_data && new Date(chart_max) > max ? new Date(chart_max) : max;
-            }, limits[eye_side].min );
-
-            console.log("Got maximum ");
-            console.log(limits[eye_side].max);
+        		limits[eye_side].min = min;
+        		limits[eye_side].max = max;
 
             console.log('Min data points read: ');
             console.log(min_data_points_read);
             console.log('Max data points read: ');
             console.log(max_data_points_read);
 
-            if (limits[eye_side].min !== limits[eye_side].max){
+            if (min !== max){
                 for(let key in charts){
                     console.log("Attempting to relayout the range to [" + limits[eye_side].min + ", " + limits[eye_side].max + "]")
 
@@ -328,18 +359,18 @@ if (!empty($subspecialty)) { ?>
                     console.log("Update parameters are: ");
 										console.log(updateParams);
 
-										Plotly.relayout(charts[key][eye_side], updateParams);
+										//Plotly.relayout(charts[key][eye_side], updateParams);
 
 										//Commenting out conflating factor - this is temporary
-                    // if (key==='IOP'){
-                    //     //set the iop target line
-                    //     let index = charts[key][eye_side].layout.shapes.length-1;
-                    //     if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
-                    //         Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-                    //         Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-                    //         Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
-                    //     }
-                    // }
+                    if (key==='IOP'){
+                        //set the iop target line
+                        let index = charts[key][eye_side].layout.shapes.length-1;
+                        if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+                        }
+                    }
                     Plotly.relayout(charts[key][eye_side], updateParams);
 
                 }
