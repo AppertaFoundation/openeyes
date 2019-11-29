@@ -126,6 +126,7 @@ class ElementLetter extends BaseEventTypeElement
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
             'site_id' => 'Site',
+            'letter_type_id' => 'Letter Type',
         );
     }
 
