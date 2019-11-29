@@ -73,7 +73,7 @@ $episodes = $this->episode->patient->episodes
                 <?php }
             }
             $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->findAll(["condition" => "element_diagnoses_id=$element->id and principal=0", "order" => "date desc"]);
+            ->findAll(["condition" => "element_diagnoses_id=:id and principal=0", "order" => "date desc", "params" => [":id"=>$element->id] ]);
             foreach ($diagnoses as $diagnosis) { ?>
           <tr>
             <td>
