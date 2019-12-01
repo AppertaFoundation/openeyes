@@ -28,7 +28,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 <tr>
                     <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                     <td>
-                        <div class="data-value" style="text-align: right">
+                        <div class="data-value text-right">
                             <?php
                             if ($element->is_signed_off == null) {
                                 echo 'N/A';
@@ -36,12 +36,26 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'Yes';
                             } else {
                                 echo 'No';
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
                 <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <small class="fade">To</small><br>
