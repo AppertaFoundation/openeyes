@@ -224,31 +224,31 @@ if (!empty($subspecialty)) { ?>
             console.log("Wait, who?");
 
             Object.keys(charts).forEach(function(chart_key) {
-						    console.log(chart_key);
-						    console.log("Chart data:");
-						    let chartData = charts[chart_key][eye_side]['data'];
-						    console.log(chartData);
+                            console.log(chart_key);
+                            console.log("Chart data:");
+                            let chartData = charts[chart_key][eye_side]['data'];
+                            console.log(chartData);
 
-						    for(let i in chartData)
-								{
-								    for(let x in chartData[i]['x'])
-										{
-												console.log("Attempting value check");
+                            for(let i in chartData)
+                                {
+                                    for(let x in chartData[i]['x'])
+                                        {
+                                                console.log("Attempting value check");
                         let value = chartData[i]['x'][x];
-												console.log(value);
-												if (min === null || value < min) {
-														min = value;
-														min_data_points_read.push(min);
-												} else if (max === null || value > max) {
-														max = value;
-														max_data_points_read.push(max);
-												}
-										}
+                                                console.log(value);
+                                                if (min === null || value < min) {
+                                                        min = value;
+                                                        min_data_points_read.push(min);
+                                                } else if (max === null || value > max) {
+                                                        max = value;
+                                                        max_data_points_read.push(max);
+                                                }
+                                        }
                 }
-						});
+                        });
 
-        		limits[eye_side].min = min;
-        		limits[eye_side].max = max;
+                limits[eye_side].min = min;
+                limits[eye_side].max = max;
 
             console.log('Min data points read: ');
             console.log(min_data_points_read);
