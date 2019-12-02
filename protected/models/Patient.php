@@ -81,43 +81,6 @@ class Patient extends BaseActiveRecordVersioned
      */
     private $_pas_errors = array();
 
-    /**
-     * Find all patients with the same date of birth and similar-sounding names.
-     * @param $firstName string First name.
-     * @param $last_name string Last name.
-     * @param $dob string Date of Birth (DD/MM/YYYY).
-     * @param $id int ID of the current patient record.
-     * @return array The list of patients who have similar names and the same date of birth, or the invalid patient model.
-     */
-    public static function findDuplicates($firstName, $last_name, $dob, $id)
-    {
-        $sql = '
-        SELECT p.*
-        FROM patient p
-        JOIN contact c
-          ON c.id = p.contact_id
-        WHERE p.dob = :dob
-          AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 60)
-          AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 60)
-          AND (:id IS NULL OR p.id != :id)
-        ORDER BY c.first_name, c.last_name
-        ';
-
-        $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
-
-        $validPatient = new Patient('manual');
-        $validContact = new Contact('manual');
-        $validContact->first_name = $firstName;
-        $validContact->last_name = $last_name;
-        $validPatient->dob = $dob;
-
-        if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
-            return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
-        }
-
-        return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
-    }
-
     public function behaviors()
     {
         return array(
@@ -725,16 +688,6 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Get the patient's age.
-     *
-     * @return string
-     */
-    public function getAge()
-    {
-        return Helper::getAge($this->dob, $this->date_of_death);
-    }
-
-    /**
      * Calculate the patient's age.
      *
      * @param string $check_date Date to check age on (default is today)
@@ -1000,33 +953,6 @@ class Patient extends BaseActiveRecordVersioned
         } else {
             return $this->getFullName();
         }
-    }
-
-    /**
-     * @param string $check_date Optional date to check age on (default is today)
-     *
-     * @return bool Is patient a child?
-     */
-    public function isChild($check_date = null)
-    {
-        $age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
-        if (!$check_date) {
-            $check_date = date('Y-m-d');
-        }
-
-        return $this->ageOn($check_date) < $age_limit;
-    }
-
-    /**
-     * Calculate the patient's age.
-     *
-     * @param string $check_date Date to check age on (default is today)
-     *
-     * @return string
-     */
-    public function ageOn($check_date)
-    {
-        return Helper::getAge($this->dob, $this->date_of_death, $check_date);
     }
 
     /**
@@ -2264,13 +2190,25 @@ class Patient extends BaseActiveRecordVersioned
 
     }
 
-    /**
-     * Get the patient's age.
-     *
-     * @return string
-     */
-    public function getAge()
-    {
+	/**
+	 * Get the patient's age.
+	 *
+	 * @return string
+	 */
+	public function getAge()
+	{
+		return Helper::getAge($this->dob, $this->date_of_death);
+	}
+	/**
+	 * Find all patients with the same date of birth and similar-sounding names.
+	 * @param $firstName string First name.
+	 * @param $last_name string Last name.
+	 * @param $dob string Date of Birth (DD/MM/YYYY).
+	 * @param $id int ID of the current patient record.
+	 * @return array The list of patients who have similar names and the same date of birth, or the invalid patient model.
+	 */
+	public static function findDuplicates($firstName, $last_name, $dob, $id)
+	{
         $sql = '
         SELECT p.*
         FROM patient p
