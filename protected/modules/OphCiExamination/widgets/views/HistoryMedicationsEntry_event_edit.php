@@ -56,7 +56,7 @@ $allergy_ids = !is_null($entry->medication_id) ?
 
     <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
-    <td class="drug-details" rowspan="2">
+    <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
         <div class="medication-display">
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
             <span class="js-prepended_markup">

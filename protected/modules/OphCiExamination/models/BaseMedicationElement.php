@@ -242,16 +242,51 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             return parent::getDisplayOrder($action);
         }
     }
+
+    /**
+     * Return true if the two medication have the same attributes
+     *
+     * @return bool
+     */
+    public function compareMedication($medication1, $medication2) {
+        return $medication1->usage_type === $medication2->usage_type
+            && $medication1->usage_subtype === $medication2->usage_subtype
+            && $medication1->medication->isPreservativeFree() === $medication2->medication->isPreservativeFree()
+            && $medication1->dose === $medication2->dose
+            && $medication1->dose_unit_term === $medication2->dose_unit_term
+            && $medication1->route_id === $medication2->route_id
+            && $medication1->frequency_id === $medication2->frequency_id
+            && $medication1->start_date === $medication2->start_date;
+    }
+
     public function afterValidate()
     {
+        $validated_entries = array();
         // Validate entries
         foreach ($this->entries as $key => $entry) {
-            if (!$entry->validate()) {
-                foreach ($entry->getErrors() as $field => $error) {
-									$attr = "entries_{$key}_{$field}";
-									$this->addError($attr, ($key+1).' - '.implode(', ', $error));
+            if (in_array($entry->medication_id, $validated_entries)) {
+                $processed_entries = array_slice($this->entries, 0, count($validated_entries) + 1, true);
+                foreach ($processed_entries as $index => $processed_entry) {
+                    if ($this->compareMedication($processed_entry, $entry)){
+                        if (!$this->getError("entries_{$index}_duplicate_error")) {
+                            $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
+
+                        }
+                        if (!$this->getError("entries_{$key}_duplicate_error")) {
+                            $this->addError("entries_{$key}_duplicate_error", ($key + 1) . '- The entry is duplicate');
+
+                        }
+                    }
                 }
             }
+
+            if (!$entry->validate()) {
+                foreach ($entry->getErrors() as $field => $error) {
+                    $attr = "entries_{$key}_{$field}";
+                    $this->addError($attr, ($key+1).' - '.implode(', ', $error));
+                }
+            }
+            $validated_entries[] = $entry->medication_id;
         }
 
         parent::afterValidate();
