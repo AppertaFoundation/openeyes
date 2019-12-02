@@ -48,7 +48,7 @@ class PatientController extends BaseController
                 'roles' => array('Edit'),
             ),
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'gpListRp', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -93,8 +93,12 @@ class PatientController extends BaseController
                 'roles' => array('OprnEditSocialHistory'),
             ),
             array('allow',
-                'actions' => array('create', 'update', 'findDuplicates'),
+                'actions' => array('create', 'update', 'findDuplicates', 'findDuplicatesByIdentifier'),
                 'roles' => array('TaskAddPatient'),
+            ),
+            array('allow',
+                'actions'=>array('summary'),
+                'roles'=>array('User'),
             )
         );
     }
@@ -297,7 +301,7 @@ class PatientController extends BaseController
 
             $message = 'Sorry, no results ';
             if ($search_terms['hos_num']) {
-                $message .= 'for Hospital Number <strong>"' . $search_terms['hos_num'] . '"</strong>';
+                $message .= 'for '.Yii::app()->params['hos_num_label']. ((Yii::app()->params['institution_code']=='CERA')?' ':' Number').'<strong>"'.$search_terms['hos_num'].'"</strong>';
 
                 // check if the record was merged into another record
                 $criteria = new CDbCriteria();
@@ -310,7 +314,7 @@ class PatientController extends BaseController
                     $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
                 }
             } elseif ($search_terms['nhs_num']) {
-                $message .= 'for ' . Yii::app()->params['nhs_num_label'] . ' Number <strong>"' . $search_terms['nhs_num'] . '"</strong>';
+                $message .= 'for '. Yii::app()->params['nhs_num_label'].((Yii::app()->params['institution_code']==='CERA')? '' : ' Number').' <strong>"'.$search_terms['nhs_num'].'"</strong>';
             } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                 $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
             } else {
@@ -1783,6 +1787,12 @@ class PatientController extends BaseController
     public function actionCreate()
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function (without passing the id param as it will be null on create patient screen)
+        // to find duplicate patients on entering create patient screen each time so that the warning message
+        // does not disappear after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates();', CClientScript::POS_READY);
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
@@ -1813,6 +1823,33 @@ class PatientController extends BaseController
             if (isset($_POST['PatientReferral'])) {
                 $referral->attributes = $_POST['PatientReferral'];
             }
+
+            if (Yii::app()->params['institution_code'] === 'CERA') {
+                if (isset($_POST['ExtraContact'])) {
+                        $gp_ids = $_POST['ExtraContact']['gp_id'];
+                    if (isset($_POST['ExtraContact']['practice_id'])) {
+                                    $practice_ids = $_POST['ExtraContact']['practice_id'];
+                                    $pca_models = array();
+                        for ($i =0;$i<sizeof($gp_ids);$i++) {
+                            $pca_model = new PatientContactAssociate();
+                            $pca_model->gp_id = $gp_ids[$i];
+                            $pca_model->practice_id = $practice_ids[$i];
+                            $pca_models[] = $pca_model;
+                        }
+                    } else {
+                                        $pca_models = array();
+                        foreach ($gp_ids as $gp_id) {
+                            $pca_model = new PatientContactAssociate();
+                            $pca_model->gp_id = $gp_id;
+                            $pca_models[] = $pca_model;
+                        }
+                    }
+                    if (!empty($pca_models)) {
+                            $patient->patientContactAssociates = $pca_models;
+                    }
+                }
+            }
+
 
             if (isset($_POST['PatientUserReferral'])) {
                 $patient_user_referral = new PatientUserReferral();
@@ -1850,17 +1887,18 @@ class PatientController extends BaseController
             // Don't save if the user just changed the "Patient Source"
             if ($_POST["changePatientSource"] == 0) {
                 list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, '');
             } else {
                 // Return the same page to the user without saving
                 // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
                 $patient->beforeValidate();
-                $patient->beforeSave();
             }
         }
-        if ($patient->getIsNewRecord()) {
+        // Only auto increment hos no. when the set_auto_increment_hospital_no is on
+        if ($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
             $patient->hos_num = $patient->autoCompleteHosNum();
         }
+
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -1891,6 +1929,7 @@ class PatientController extends BaseController
         foreach ($_POST['PatientIdentifier'] as $post_info) {
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
+            $patient_identifier->id = $post_info['id'];
             $patient_identifier->code = $post_info['code'];
             $patient_identifier->value = @$post_info['value'];
             $patient_identifiers[] = $patient_identifier;
@@ -1921,6 +1960,7 @@ class PatientController extends BaseController
      * @param PatientIdentifier[] $patient_identifiers
      * @param PatientReferral $referral
      * @param PatientUserReferral $patient_user_referral
+     * @param  $prevUrl
      * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
      *
      * @throws
@@ -1931,8 +1971,8 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers
-    )
+        $patient_identifiers, $prevUrl)
+
     {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
@@ -1952,6 +1992,8 @@ class PatientController extends BaseController
                     && $patient->isNewRecord
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
+                } else if ($prevUrl !== '') {
+                    $redirect = array($prevUrl);
                 } else {
                     $redirect = array('/patient/summary/' . $patient->id);
                 }
@@ -1999,9 +2041,11 @@ class PatientController extends BaseController
         Address &$address,
         PatientReferral &$referral,
         PatientUserReferral &$patient_user_referral,
-        &$patient_identifiers
-    )
-    {
+        &$patient_identifiers)
+
+    {if (!$this->checkForReferralFiles($referral, $patient)) {
+            return false;
+        }
         if (!$contact->save()) {
             return false;
         }
@@ -2034,6 +2078,7 @@ class PatientController extends BaseController
             Audit::add('Referred to', 'saved', $patient_user_referral->id);
         }
 
+        $this->performPatientContactAssociatesSave($patient);
 
         $action = $patient->isNewRecord ? 'add' : 'edit';
         Audit::add(
@@ -2043,6 +2088,41 @@ class PatientController extends BaseController
         );
         return true;
     }
+
+    private function performPatientContactAssociatesSave($patient){
+        // Check if any contact selected for this patient.
+        if (isset($_POST['ExtraContact'])) {
+            // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            if (isset($existing_pca_models)) {
+                foreach ($existing_pca_models as $existing_pca_model) {
+                    $existing_pca_model->delete();
+                }
+            }
+
+            $gp_ids = $_POST['ExtraContact']['gp_id'];
+            $practice_ids = $_POST['ExtraContact']['practice_id'];
+            for ($i =0; $i<sizeof($gp_ids); $i++) {
+                $existing_pca_model = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id, 'gp_id'=>$gp_ids[$i], 'practice_id'=>$practice_ids[$i]));
+                if (empty($existing_pca_model)) {
+                    $pca_model = new PatientContactAssociate();
+                    $pca_model->patient_id = $patient->id;
+                    $pca_model->gp_id = $gp_ids[$i];
+                    $pca_model->practice_id = $practice_ids[$i];
+                    $pca_model->save();
+                }
+            }
+        } else {
+            // If not delete all the data related to this patient from the patient_contact_associate table.
+            $existing_pca_models = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+            if (isset($existing_pca_models)) {
+                foreach ($existing_pca_models as $existing_pca_model) {
+                    $existing_pca_model->delete();
+                }
+            }
+        }
+    }
+
 
     /**
      * Saves the input $Patient_identiiers according to the config params
@@ -2058,6 +2138,9 @@ class PatientController extends BaseController
         $success = true;
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
+
+            if (empty($post_info->code))
+                continue;
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
@@ -2091,88 +2174,80 @@ class PatientController extends BaseController
      * @return bool false for failure to save a file
      * @throws Exception
      */
-    public function actionPerformReferralDoc($patient, $referral)
-    {
-        // To get allowed file types from the model
-        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+	public function actionPerformReferralDoc($patient, $referral)
+	{
+		// To get allowed file types from the model
+		$allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
 
-        $firm_id = Yii::app()->session['selected_firm_id'];
-        //Get or Create an episode
-        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
-
-
-        $event = new Event();
-        $event->episode_id = $episode->id;
-        $event->firm_id = $firm_id;
-        $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
-        $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
-
-        if (!$event->save()) {
-            throw new Exception('Could not save event');
-        }
-
-        $document_saved = false;
-        foreach ($_FILES as $file) {
-            $tmp_name = $file["tmp_name"]["uploadedFile"];
+		$firm_id = Yii::app()->session['selected_firm_id'];
+		//Get or Create an episode
+		list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
 
 
-            //If no document is selected this can throw errors
-            if ($tmp_name == '') {
-                continue;
-            }
-            $p_file = ProtectedFile::createFromFile($tmp_name);
-            $p_file->name = $file["name"]["uploadedFile"];
+		$event = new Event();
+		$event->episode_id = $episode->id;
+		$event->firm_id = $firm_id;
+		$event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+		$event->event_date = date('Y-m-d');
+		$referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
-            if (!in_array($p_file->mimetype, $allowed_file_types)) {
-                $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
-                $referral->addError('uploadedFile', $message);
-            }
+		if (!$event->save()) {
+			throw new Exception('Could not save event');
+		}
 
-            if ($p_file->save()) {
-                unlink($tmp_name);
-                $document = new Element_OphCoDocument_Document();
-                $document->patientId = $patient->id;
-                $document->event_id = $event->id;
-                $document->event = $event;
-                $document->single_document_id = $p_file->id;
-                $document->event_sub_type = $referral_letter_type_id;
-                $document->single_document = $p_file;
-                if (!$document->save()) {
-                    throw new Exception('Could not save Document');
-                } else {
-                    $document_saved = true;
-                }
-            } else {
-                unlink($tmp_name);
-            }
-        }
+		$document_saved = false;
+		foreach ($_FILES as $file) {
+			$tmp_name = $file["tmp_name"]["uploadedFile"];
 
-        if (!$document_saved) {
-            $patient_source = $_POST['Patient']['patient_source'];
-            if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
-                //If there is no existing referral letter document, add an error
-                $command = Yii::app()->db->createCommand()->setText("
-                    select count(*) 'referral letters'
-                    from patient p
-                    join episode e on p.id = e.patient_id
-                    join event e2 on e.id = e2.episode_id
-                    join et_ophcodocument_document d on d.event_id = e2.id
-                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where p.id = $patient->id;"
-                );
-                if ($command->queryScalar() == 0) {
-                    $referral->addError('uploadedFile', 'Referral requires a letter file');
-                }
-            }
 
-            //Removed any extraneous models if we couldn't save a document
-            $event->delete();
-            if ($episode_is_new) {
-                $episode->delete();
-            }
-        }
-        return !$referral->hasErrors();
-    }
+			//If no document is selected this can throw errors
+			if ($tmp_name == '') {
+				continue;
+			}
+			$p_file = ProtectedFile::createFromFile($tmp_name);
+			$p_file->name = $file["name"]["uploadedFile"];
+
+			if (!in_array($p_file->mimetype, $allowed_file_types) ) {
+				$message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
+				$referral->addError('uploadedFile', $message);
+			}
+
+			if ($p_file->save()) {
+				unlink($tmp_name);
+				$document = new Element_OphCoDocument_Document();
+				$document->patientId = $patient->id;
+				$document->event_id = $event->id;
+				$document->event = $event;
+				$document->single_document_id = $p_file->id;
+				$document->event_sub_type = $referral_letter_type_id;
+				$document->single_document = $p_file;
+				if (!$document->save()) {
+					throw new Exception('Could not save Document');
+				} else {
+					$document_saved = true;
+				}
+			} else {
+				unlink($tmp_name);
+			}
+		}
+
+		if (!$document_saved) {
+			$patient_source = $_POST['Patient']['patient_source'];
+			if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
+				//If there is no existing referral letter document, add an error
+				if ($this->checkExistingReferralLetter($patient)) {
+					$referral->addError('uploadedFile', 'Referral requires a letter file');
+				}
+			}
+
+			//Removed any extraneous models if we couldn't save a document
+			$event->delete();
+			if ($episode_is_new) {
+				$episode->delete();
+			}
+		}
+		return !$referral->hasErrors();
+	}
 
     /**
      * @param Patient $patient
@@ -2203,9 +2278,13 @@ class PatientController extends BaseController
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $prevUrl)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
+
+        // Executing the js function to find duplicate patients on entering update patient screen each time to
+        // retain the warning message on screen after refreshing.
+        Yii::app()->clientScript->registerScript('findduplicatepatients', 'findDuplicates('.$id.');', CClientScript::POS_READY);
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
@@ -2298,7 +2377,7 @@ class PatientController extends BaseController
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             if ($_POST['changePatientSource'] == 0) {
                 list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $prevUrl);
             }
         }
 
@@ -2314,6 +2393,7 @@ class PatientController extends BaseController
             'referral' => $referral,
             'patientuserreferral' => $patient_user_referral,
             'patient_identifiers' => $patient_identifiers,
+            'prevUrl'=>$prevUrl,
         ));
     }
 
@@ -2343,20 +2423,119 @@ class PatientController extends BaseController
         $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
 
         $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
-        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', strtolower($term), true, 'OR');
 
         $gps = Gp::model()->with('contact')->findAll($criteria);
 
         $output = array();
-        foreach ($gps as $gp) {
-            $output[] = array(
-                'label' => $gp->correspondenceName,
-                'value' => $gp->id
-            );
+
+        if (Yii::app()->params['institution_code'] === 'CERA') {
+            foreach ($gps as $gp) {
+                $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
+                $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+                // CERA-513 the autocomplete search result should not show the inactivated gp
+                if ($gp->is_active) {
+                    if (count($practice_contact_associates) == 0) {
+                        $output[] = array(
+                            'gpTitle' => $gp->contact->title,
+                            'gpFirstName' => $gp->contact->first_name,
+                            'gpLastName' => $gp->contact->last_name,
+                            'gpPhoneno' => $gp->contact->primary_phone,
+                            'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                            'label' => $gp->correspondenceName . $role,
+                            'value' => $gp->id,
+                            'practiceId' => '',
+                        );
+                    } else {
+                        foreach ($practice_contact_associates as $practice_contact_associate) {
+                            if (isset($practice_contact_associate->practice)) {
+                                $practice = $practice_contact_associate->practice;
+                                $practiceId = $practice->id;
+                                $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                                $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
+                                $output[] = array(
+                                    'gpTitle' => $gp->contact->title,
+                                    'gpFirstName' => $gp->contact->first_name,
+                                    'gpLastName' => $gp->contact->last_name,
+                                    'gpPhoneno' => $gp->contact->primary_phone,
+                                    'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                                    'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
+                                    'value' => $gp->id,
+                                    'practiceId' => $practiceId,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($gps as $gp) {
+                    $output[] = array(
+                        'label' => $gp->correspondenceName,
+                        'value' => $gp->id
+                    );
+            }
         }
 
         echo CJSON::encode($output);
+        Yii::app()->end();
+    }
 
+    /**
+     * This function is only called from the Gp or Referring Practitioner field on Add Patient Screen.
+     * @param $term - Search term
+     */
+    public function actionGpListRp($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('first_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
+        $criteria->addSearchCondition('last_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
+
+        $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', strtolower($term), true, 'OR');
+
+        $gps = Gp::model()->with('contact')->findAll($criteria);
+
+        $output = array();
+
+        if (Yii::app()->params['institution_code'] === 'CERA') {
+            foreach ($gps as $gp) {
+                $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
+                $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+                // CERA-513 the autocomplete search result should not show the inactivated gp
+                if ($gp->is_active && count($practice_contact_associates) > 0) {
+                    foreach ($practice_contact_associates as $practice_contact_associate) {
+                        if (isset($practice_contact_associate->practice)) {
+                            $practice = $practice_contact_associate->practice;
+                            $practiceId = $practice->id;
+                            $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
+                            $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
+                            $output[] = array(
+                                'gpTitle' => $gp->contact->title,
+                                'gpFirstName' => $gp->contact->first_name,
+                                'gpLastName' => $gp->contact->last_name,
+                                'gpPhoneno' => $gp->contact->primary_phone,
+                                'gpRole' => CJSON::encode(array('label' => $gp->contact->label->name, 'value' => $gp->contact->label->name, 'id' => $gp->contact->label->id)),
+                                'label' => $gp->correspondenceName . $providerNo . $role . $practiceNameAddress,
+                                'value' => $gp->id,
+                                'practiceId' => $practiceId,
+                            );
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($gps as $gp) {
+                $output[] = array(
+                    'label' => $gp->correspondenceName,
+                    'value' => $gp->id
+                );
+            }
+        }
+
+        echo CJSON::encode($output);
         Yii::app()->end();
     }
 
@@ -2369,14 +2548,14 @@ class PatientController extends BaseController
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
 
-        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", first_name ,address1, address2, city, county, postcode))', $term);
 
         $practices = Practice::model()->findAll($criteria);
 
         $output = array();
         foreach ($practices as $practice) {
             $output[] = array(
-                'label' => $practice->getAddressLines(),
+                'label' => $practice->getPracticeNames(),
                 'value' => $practice->id
             );
         }
@@ -2420,6 +2599,23 @@ class PatientController extends BaseController
         }
     }
 
+    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
+
+        $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
+
+        if (isset($patients['error'])) {
+            $this->renderPartial('crud/_conflicts_error', array(
+                'errors' => $patients['error'],
+            ));
+        } else {
+            if (count($patients) !== 0 && !empty($null_check)) {
+                $this->renderPartial('crud/_conflicts_identifier', array(
+                    'patients' => $patients,
+                    'identifier_code' => $identifier_code,
+                ));
+            }
+        }
+    }
 
     /**
      * Ajax method for viewing previous elements.
@@ -2471,6 +2667,47 @@ class PatientController extends BaseController
         );
     }
 
+    public function checkForReferralFiles($referral, $patient){
+
+        // To get allowed file types from the model
+        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+
+        // To get maximum file size that can be uploaded from the model
+        $max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
+
+        foreach ($_FILES as $file) {
+            $name = $file["name"]["uploadedFile"];
+            $size = $file["size"]["uploadedFile"];
+            $type = $file["type"]["uploadedFile"];
+
+
+            //Check only if document has been added
+            if ($name != '') {
+                // PHP automatically discards the files that exceed the maximum file upload limit.
+                // So when the size parameter is 0 and the name is not null, it means the file size is large
+                if ($size == 0) {
+                    $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+
+                // Check for compatible file types
+                else if (!in_array($type, $allowed_file_types)) {
+                    $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
+                    $referral->addError('uploadedFile', $message);
+                    return false;
+                }
+            }
+            // The file field is empty. It should throw error for referral scenario
+            else if ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+                $referral->addError('uploadedFile', 'Referral requires a letter file');
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     /**
      * Check for new imported biometry event.
      */
@@ -2487,5 +2724,26 @@ class PatientController extends BaseController
             }
         }
     }
+
+    /**
+     * @param $patient
+     * @return bool any existing referral letter for this patient will return false
+     */
+    protected function checkExistingReferralLetter($patient){
+        if (!isset($patient->id)) {
+            return true;
+        }
+        $command = Yii::app()->db->createCommand()->setText("
+                    select count(*) 'referral letters'
+                    from patient p
+                    join episode e on p.id = e.patient_id
+                    join event e2 on e.id = e2.episode_id
+                    join et_ophcodocument_document d on d.event_id = e2.id
+                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
+                    where e2.deleted = 0 and p.id = $patient->id;"
+        );
+        return ($command->queryScalar() == 0);
+    }
+
 
 }
