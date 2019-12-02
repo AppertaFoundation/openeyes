@@ -1,4 +1,4 @@
-<div class="oe-popup-wrap" id="js-add-practitioner-event" style="display: none; z-index:100">
+<div class="oe-popup-wrap js-add-practitioner-event" id= "<?= $id; ?>" style="display: none; z-index:100">
     <div class="oe-popup">
         <div class="form">
             <?php
@@ -15,12 +15,12 @@
             ?>
             <?php echo $form->errorSummary($model); ?>
             <div class="title">
-                Add Referring Practitioner
+                <div id="gp_adding_title" data-type=""></div>
                 <div class="close-icon-btn">
-                    <i id="js-cancel-add-practitioner" class="oe-i remove-circle pro-theme"></i>
+                    <i id="" class="oe-i remove-circle pro-theme js-cancel-add-practitioner"></i>
                 </div>
             </div>
-            <div class="alert-box warning" style="display:none;">
+            <div class="alert-box warning" id="practitioner-alert-box" style="display:none;">
                 <p id="errors"></p>
             </div>
             <table class="standard row">
@@ -37,7 +37,7 @@
                         <?php echo $form->labelEx($model, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $form->textField($model, 'first_name', array('size' => 30, 'maxlength' => 100)); ?>
+                        <?php echo $form->textField($model, 'first_name', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
                         <?php echo $form->error($model, 'first_name'); ?>
                     </td>
                 </tr>
@@ -46,7 +46,7 @@
                         <?php echo $form->labelEx($model, 'last_name'); ?>
                     </td>
                     <td>
-                        <?php echo $form->textField($model, 'last_name', array('size' => 30, 'maxlength' => 100)); ?>
+                        <?php echo $form->textField($model, 'last_name', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
                         <?php echo $form->error($model, 'last_name'); ?>
                     </td>
                 </tr>
@@ -55,7 +55,7 @@
                         <?php echo $form->labelEx($model, 'primary_phone'); ?>
                     </td>
                     <td>
-                        <?php echo $form->textField($model, 'primary_phone', array('size' => 30, 'maxlength' => 20)); ?>
+                        <?php echo $form->textField($model, 'primary_phone', array('size' => 30, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
                         <?php echo $form->error($model, 'primary_phone'); ?>
                     </td>
                 </tr>
@@ -65,35 +65,9 @@
                     </td>
                     <td>
                         <?php echo $form->error($model, 'contact_label_id'); ?>
-                        <?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'contact_label_id',
-                            'id' => 'autocomplete_contact_label_id',
-                            'source' => "js:function(request, response) {
-                                $.getJSON('/gp/contactLabelList', {
-                                   term : request.term
-                                }, response);
-                        }",
-                            'options' => array(
-                                'select' => "js:function(event, ui) {
-                                removeSelectedContactLabel();
-                                addItem('selected_contact_label_wrapper', ui);   
-                                $('#autocomplete_contact_label_id').val('');
-                                return false;
-                                }",
-                                'response' => 'js:function(event, ui){
-                          if (ui.content.length === 0){
-                            $("#no_contact_label_result").show();
-                          } else {
-                            $("#no_contact_label_result").hide();
-                          }
-                        }',
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'Search Roles',
-                            ),
-                        ));
-                        ?>
+
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'autocomplete_contact_label_id']); ?>
+
                     </td>
                 </tr>
                 <tr id="selected_contact_label_wrapper" style="display: <?php echo $model->label ? '' : 'none' ?>">
@@ -127,25 +101,17 @@
                                 Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                                 array(
                                     'type' => 'POST',
-                                    'error' => 'js:function(error){
-                                event.preventDefault();
-                                let $alertBox = $(".alert-box"); 
-                                $alertBox.find("#errors").text("First name and Last name cannot be blank.");
-                                $(".alert-box").css("display","");
-                              }',
                                     'success' => 'js:function(event){
-                                     removeSelectedGP();
-                                     addGpItem("selected_gp_wrapper",event);
-                                     $("#js-add-practitioner-event").css("display","none");
+                                    if (event.includes("error")){
+                                        $alertBox = $("#practitioner-alert-box"); 
+                                        $alertBox.find("#errors").html(event);
+                                        $("#practitioner-alert-box").css("display","");
+                                    }else{
+                                         gpAdder(event);
+                                    }
                                   }',
-                                    'complete' => 'js:function(){
-                                            $("#gp-form")[0].reset();
-                                            $("#selected_contact_label_wrapper").css("display","none");
-                                            $("#selected_contact_label_wrapper").find(".js-name").text(" ");
-                                            $("#selected_contact_label_wrapper").find(".js-name").val(" ");
-                                            $("#selected_contact_label_wrapper").find(".hidden_id").val(" ");
-                                }',
-                                )
+                                ),
+                                array('class' => 'button hint green')
                             );
                         }
                         ?>
@@ -157,3 +123,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    function gpAdder(event){
+        let type = $('#gp_adding_title').data('type');
+        removeSelectedGP(type);
+        addGpItem(type,event);
+        $(".js-add-practitioner-event").css("display","none");
+        $("#practitioner-alert-box").css("display","none");
+        $("#gp-form")[0].reset();
+        $("#selected_contact_label_wrapper").css("display","none");
+        $("#selected_contact_label_wrapper").find(".js-name").text("");
+        $("#selected_contact_label_wrapper").find(".js-name").val("");
+        $("#selected_contact_label_wrapper").find(".hidden_id").val("");
+    }
+
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#autocomplete_contact_label_id'),
+        url: '/gp/contactLabelList',
+        maxHeight: '200px',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            removeSelectedContactLabel();
+            addItem('selected_contact_label_wrapper', {item: AutoCompleteResponse});
+            $('#autocomplete_contact_label_id').val('');
+        }
+    });
+</script>

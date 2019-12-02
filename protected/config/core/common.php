@@ -43,6 +43,7 @@ return array(
         'application.gii.*',
         'system.gii.generators.module.*',
         'application.modules.OphTrOperationnote.components.*',
+        'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(

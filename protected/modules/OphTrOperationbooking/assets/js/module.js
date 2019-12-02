@@ -139,6 +139,17 @@
             $(this).parent().html('None');
         });
 
+        $('#js-display-whiteboard').click(function(e) {
+            e.preventDefault();
+            oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
+        });
+
+        $('#js-close-whiteboard').click(function(e) {
+            e.preventDefault();
+            let oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
+            oeWindow.close();
+        });
+
         autosize($('.autosize'));
 
         $(this).on('click', '#et_print_admission_form', function () {
@@ -174,7 +185,7 @@
                 onSelect: function(){
                     let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     $('#Element_OphTrOperationbooking_Operation_organising_admission_user_id').val(AutoCompleteResponse.id);
-                    $('.organising_admission_user').html(AutoCompleteResponse.value + ' (<a href=\"#\" class=\"remove_organising_admission_user\">remove</a>)');
+                    $('.organising_admission_user').html(AutoCompleteResponse.label + '<i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>');
                 }
             });
         }
