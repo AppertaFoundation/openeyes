@@ -83,6 +83,8 @@ $element_errors = $element->getErrors();
                                                         'patient' => $this->patient,
                                                         'locked' => $entry->locked,
                                                         'unit_options' => $unit_options,
+                                                        'has_dose_unit_term' => '{{has_dose_unit_term}}',
+                                                        'is_template' => false
                                                     )
                                                 );
                         } else {
@@ -149,8 +151,10 @@ $element_errors = $element->getErrors();
                 'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
-                                'source_subtype' => '{{source_subtype}}',
+                'source_subtype' => '{{source_subtype}}',
                 'unit_options' => $unit_options,
+                'has_dose_unit_term' => '{{has_dose_unit_term}}',
+                'is_template' => true
             )
         );
         ?>

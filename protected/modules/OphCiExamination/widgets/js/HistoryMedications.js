@@ -963,6 +963,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if(typeof medications === "undefined") {
           // just create an empty row
           data.row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+          data.has_dose_unit_term = false;
           return Mustache.render(
               this.templateText,
               data
@@ -976,10 +977,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
+      data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined';
 
       newRows.push(Mustache.render(
           template,
-          data ));
+          data));
 
       if (data['tapers'] !== undefined) {
           data['tapers'].forEach(function(taper, taper_key) {
