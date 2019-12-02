@@ -14,7 +14,7 @@ $this->pageTitle = 'Create Practitioner';
 
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
         <div class="patient-content">
-            <?php $this->renderPartial('_form', array('model' => $model, 'context' => $context)); ?>
+            <?php $this->renderPartial('_form', array('model' => $model, 'gp' => $gp, 'context' => $context)); ?>
         </div>
     </div>
 

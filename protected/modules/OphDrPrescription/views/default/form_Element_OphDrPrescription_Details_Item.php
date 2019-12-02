@@ -13,7 +13,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
 $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+
+$dispense_condition_options = array(
+    $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+);
 ?>
 
 <?php
@@ -122,11 +127,11 @@ $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findBy
     <td>
         <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dispense_condition_id]',
             $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
-                'condition' => "active or id='" . $item->dispense_condition_id . "'",
+              'condition' => '(active'
+                  . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
+                  . ") or id='" . $item->dispense_condition_id . "'",
                 'order' => 'display_order',
-          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => array(
-                $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
-            ))) ?>
+          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)) ?>
 
     </td>
     <td>
