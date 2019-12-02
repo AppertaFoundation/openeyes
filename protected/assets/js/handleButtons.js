@@ -105,7 +105,12 @@ $(document).ready(function(){
 
     $.when(et_delete_ajax_call(uri, serializedForm)).done(function(html){
       if (html === '1') {
-        $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+        // CERA-573 inactivate user should not delete that user from the front-end. It should update the active status.
+        if(object==='users'){
+          updateActiveIcon($form);
+        } else {
+          $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+        }
         enableButtons();
       } else {
         if(html.indexOf('Attribute Element is in use') !== -1){

@@ -32,8 +32,9 @@
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('q', $query, [
-                            'placeholder' => 'Search Term , Fully Specified Name , Aliases - (all are case sensitive)',
+                    <td><?= CHtml::textField('search[query]', $query, [
+//                            Removed case sensitive warning after search was made case insensitive- CERA-527
+                            'placeholder' => 'Search Term , Fully Specified Name , Aliases',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
@@ -58,6 +59,7 @@
             </table>
         </form>
     </div>
+    <form id="admin_list_disorders">
         <table class="standard cols-full">
             <colgroup>
                 <col>
@@ -119,4 +121,5 @@
             </tr>
             </tfoot>
         </table>
+    </form>
 </div>
