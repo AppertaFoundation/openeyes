@@ -333,7 +333,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $element = $this->createIopElement($event, Eye::RIGHT);
         $this->addIopReading($element, Eye::RIGHT, 1);
 
-        $expected = 'r:1 (recorded on ' . \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'r:1 (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
@@ -344,7 +344,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->addIopReading($element, Eye::RIGHT, 1);
         $this->addIopReading($element, Eye::RIGHT, 3);
 
-        $expected = 'r:2 (avg) (recorded on ' . \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'r:2 (avg) (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
@@ -354,7 +354,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $element = $this->createIopElement($event, Eye::LEFT);
         $this->addIopReading($element, Eye::LEFT, 2);
 
-        $expected = 'l:2 (recorded on ' . \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'l:2 (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
@@ -365,7 +365,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->addIopReading($element, Eye::LEFT, 2);
         $this->addIopReading($element, Eye::LEFT, 3);
 
-        $expected = 'l:3 (avg) (recorded on ' . \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'l:3 (avg) (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
@@ -376,7 +376,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->addIopReading($element, Eye::RIGHT, 1);
         $this->addIopReading($element, Eye::LEFT, 2);
 
-        $expected = 'r:1, l:2 (recorded on ' . \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'r:1, l:2 (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
@@ -389,7 +389,7 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->addIopReading($element, Eye::LEFT, 2);
         $this->addIopReading($element, Eye::LEFT, 3);
 
-        $expected = 'r:2 (avg), l:3 (avg) (recorded on ' .  \Helper::convertMySQL2NHS(date("d M Y")) . ')';
+        $expected = 'r:2 (avg), l:3 (avg) (recorded on ' . date("j M Y") . ')';
         $this->assertEquals($expected, $this->api->getLetterIOPReadingAbbrLast6weeks($this->patient('patient1')));
     }
 
