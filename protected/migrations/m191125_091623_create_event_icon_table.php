@@ -51,7 +51,6 @@ class m191125_091623_create_event_icon_table extends CDbMigration
         $this->addForeignKey('document_event_icon_id_fk', 'ophcodocument_sub_types', 'event_icon_id', 'event_icon', 'id');
 
         $this->addColumn('ophcodocument_sub_types_version', 'event_icon_id', 'int(10) unsigned');
-        $this->addForeignKey('document_event_icon_id_version_fk', 'ophcodocument_sub_types_version', 'event_icon_id', 'event_icon', 'id');
 
         foreach ($sub_types as $sub_type => $icon) {  //set default values for document sub types
             $event_icon = EventIcon::model()->find('name = ?', [$icon])->id;
@@ -64,7 +63,6 @@ class m191125_091623_create_event_icon_table extends CDbMigration
     {
         $this->dropForeignKey('document_event_icon_id_fk', 'ophcodocument_sub_types');
         $this->dropColumn('ophcodocument_sub_types', 'event_icon_id');
-        $this->dropForeignKey('document_event_icon_id_version_fk', 'ophcodocument_sub_types_version');
         $this->dropColumn('ophcodocument_sub_types_version', 'event_icon_id');
         $this->dropTable('event_icon');
     }

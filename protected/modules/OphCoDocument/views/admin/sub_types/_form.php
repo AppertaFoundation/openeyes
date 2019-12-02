@@ -72,8 +72,8 @@
                         <?php
                         $event_icons = EventIcon::model()->findAll();
                         $icon_images = [];
-                        foreach ($event_icons as $key => $icon){
-                            $icon_images[$key + 1] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
+                        foreach ($event_icons as $icon){
+                            $icon_images[$icon->id] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
                         } ?>
                         <?=\CHtml::activeRadioButtonList(
                             $model,
