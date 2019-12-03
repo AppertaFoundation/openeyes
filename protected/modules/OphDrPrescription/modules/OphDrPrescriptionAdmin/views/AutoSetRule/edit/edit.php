@@ -36,11 +36,13 @@
                 <tr>
                     <td>Name</td>
                     <td>
-                        <?= \CHtml::activeTextField($set, 'name', [
-                            'class' => 'cols-full',
+                        <?= \CHtml::activeTextField(
+                            $set,
+                            'name',
+                            ['class' => 'cols-full',
                             'autocomplete' => \Yii::app()->params['html_autocomplete']
-                        ])
-                        ?>
+                            ]
+                        ) ?>
                     </td>
                 </tr>
                 </tbody>
@@ -74,7 +76,7 @@
     </div>
 
     <div class="row divider">
-        <?php $this->renderPartial('edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
+        <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
 
     <?= \OEHtml::submitButton() ?>
