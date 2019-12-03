@@ -22,14 +22,10 @@
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr class="hidden">
+        <tr style="display: none">
             <td>Id</td>
             <td>
-                <?=\CHtml::activeTextField(
-                    $model,
-                    'id',
-                    ['hidden' => true]
-                ); ?>
+                <?=\CHtml::activeHiddenField($model, 'id'); ?>
             </td>
         </tr>
         <tr>
@@ -59,7 +55,7 @@
                     $model,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ', 'selected' => '1']
+                    ['separator' => ' ']
                 ); ?>
             </td>
         </tr>
@@ -92,7 +88,7 @@
                 <?=\CHtml::submitButton(
                     'Cancel',
                     [
-                        'data-uri' => '/OphDrPrescription/oeadmin/DispenseCondition',
+                        'data-uri' => '/OphDrPrescription/admin/DispenseCondition/index',
                         'class' => 'warning button large primary event-action',
                         'name' => 'cancel',
                         'id' => 'et_cancel',

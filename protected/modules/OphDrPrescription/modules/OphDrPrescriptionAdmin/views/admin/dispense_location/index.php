@@ -19,7 +19,7 @@
 <div class="cols-5">
     <form id="admin_<?= get_class(OphDrPrescription_DispenseLocation::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="standard generic-admin sortable" id="finding-table">
+        <table class="standard generic-admin sortable">
             <thead>
             <tr>
                 <th>Name</th>
@@ -35,7 +35,12 @@
                 <col class="cols-1">
             </colgroup>
             <tbody>
-            <?php $this->renderPartial('/admin/dispense_location/_dispense_location', array('dispense_locations' => $dispense_locations)) ?>
+            <?php foreach ($dispense_locations as $row_count => $dispense_location) {
+                $this->renderPartial('/admin/dispense_location/_dispense_location', array(
+                    'dispense_location' => $dispense_location,
+                    'row_count' => $row_count
+                ));
+            } ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
@@ -43,7 +48,7 @@
                     <?=\CHtml::button(
                         'Add',
                         [
-                            'data-uri' => '/OphDrPrescription/oeadmin/DispenseLocation/edit',
+                            'data-uri' => '/OphDrPrescription/admin/DispenseLocation/create',
                             'class' => 'button large',
                             'id' => 'et_add',
                             'formmethod' => 'get',

@@ -15,19 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-if (!empty($dispense_conditions)) {
-    foreach ($dispense_conditions as $i => $dispense_condition) {?>
-        <tr class="clickable"
-            data-id="<?php echo $dispense_condition->id?>"
-            data-uri="OphDrPrescription/oeadmin/DispenseCondition/edit/<?php echo $dispense_condition->id?>"
-        >
-            <td class="reorder">
-                <span>↑↓</span>
-                <?=\CHtml::activeHiddenField($dispense_condition, "[$i]display_order");?>
-                <?=\CHtml::activeHiddenField($dispense_condition, "[$i]id");?>
-            <td><?php echo $dispense_condition->name?></td>
-            <td><?php echo $dispense_condition->display_order?></td>
-            <td><i class="oe-i <?=($dispense_condition->active ? 'tick' : 'remove');?> small"></i></td>
-        </tr>
-    <?php }
-}
+$this->renderPartial('/admin/dispense_condition/_dispense_condition_entry', array(
+     'model' => $dispense_condition,
+     'data_id' => $dispense_condition->id,
+     'data_uri' => 'OphDrPrescription/admin/DispenseCondition/edit/'. $dispense_condition->id,
+     'name' => $dispense_condition->name,
+     'display_order' => $dispense_condition->display_order,
+     'is_active' => $dispense_condition->active,
+     'row_count' => $row_count
+    ));

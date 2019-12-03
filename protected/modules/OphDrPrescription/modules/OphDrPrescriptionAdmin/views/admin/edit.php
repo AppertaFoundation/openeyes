@@ -15,15 +15,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h2><?php echo $model->id ? 'Edit' : 'Add'?> dispense location</h2>
+<h2><?= $title ?></h2>
 
-<?php echo $this->renderPartial('/admin/dispense_location/_form_errors', array('errors' => $errors)) ?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
 
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',
     'enableAjaxValidation' => false,
-    'focus' => '#username',
     'layoutColumns' => array(
         'label' => 2,
         'field' => 5,
@@ -31,10 +30,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 )) ?>
 
 <?php $this->renderPartial(
-    '/admin/dispense_location/_form',
+    '/admin/form_' . get_class($model),
     [
         'model' => $model,
-        'form' => $form,
+        'form' => $form
     ]
 ); ?>
 

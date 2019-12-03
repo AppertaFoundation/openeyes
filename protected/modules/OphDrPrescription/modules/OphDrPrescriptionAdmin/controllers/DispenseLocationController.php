@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DispenseLocationController extends \ModuleAdminController
+class DispenseLocationController extends \BaseAdminController
 {
     public $group = 'Prescription';
 
@@ -47,11 +47,9 @@ class DispenseLocationController extends \ModuleAdminController
         );
     }
 
-    public function actionEdit($id = null)
+    public function actionEdit($id)
     {
-        if (!isset($id)) {
-            $model = new OphDrPrescription_DispenseLocation();
-        } else if (!$model = OphDrPrescription_DispenseLocation::model()->find('`id`=?', array($_GET['id']))) {
+        if (!$model = OphDrPrescription_DispenseLocation::model()->find('`id`=?', array($id))) {
             $this->redirect(array('/OphDrPrescription/oeadmin/DispenseLocation'));
         }
 
@@ -66,9 +64,32 @@ class DispenseLocationController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/dispense_location/edit', array(
+        $this->render('/admin/edit', array(
             'model' => $model,
-            'errors' => $errors
+            'errors' => $errors,
+            'title' => 'Edit dispense location'
+        ));
+    }
+
+    public function actionCreate()
+    {
+        $model = new OphDrPrescription_DispenseLocation();
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
+            if ($model->save()) {
+                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseLocation'));
+            } else {
+                $errors = $model->errors;
+            }
+        }
+
+        $this->render('/admin/edit', array(
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Create dispense location'
         ));
     }
 

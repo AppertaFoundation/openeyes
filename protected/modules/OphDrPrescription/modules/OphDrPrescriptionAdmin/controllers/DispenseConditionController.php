@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DispenseConditionController extends \ModuleAdminController
+class DispenseConditionController extends \BaseAdminController
 {
     public $group = 'Prescription';
 
@@ -47,11 +47,9 @@ class DispenseConditionController extends \ModuleAdminController
         );
     }
 
-    public function actionEdit($id = null)
+    public function actionEdit($id)
     {
-        if (!isset($id)) {
-            $model = new OphDrPrescription_DispenseCondition();
-        } else if (!$model = OphDrPrescription_DispenseCondition::model()->find('`id`=?', array($_GET['id']))) {
+        if (!$model = OphDrPrescription_DispenseCondition::model()->find('`id`=?', array($id))) {
             $this->redirect(array('/OphDrPrescription/oeadmin/DispenseCondition'));
         }
 
@@ -67,9 +65,33 @@ class DispenseConditionController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/dispense_condition/edit', array(
+        $this->render('/admin/edit', array(
             'model' => $model,
-            'errors' => $errors
+            'errors' => $errors,
+            'title' => 'Edit dispense condition'
+        ));
+    }
+
+    public function actionCreate()
+    {
+        $model = new OphDrPrescription_DispenseCondition();
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
+            $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
+            if ($model->save()) {
+                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseCondition'));
+            } else {
+                $errors = $model->errors;
+            }
+        }
+
+        $this->render('/admin/edit', array(
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Create dispense condition'
         ));
     }
 
