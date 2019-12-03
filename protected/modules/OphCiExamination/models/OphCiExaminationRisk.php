@@ -96,7 +96,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'medicationSets' => 'Drug sets',
-					  'display_on_whiteboard' => 'Display on Whiteboard',
+                      'display_on_whiteboard' => 'Display on Whiteboard',
         );
     }
 
