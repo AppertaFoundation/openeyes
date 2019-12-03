@@ -244,7 +244,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $class = self::$entry_class;
 
         foreach ($this->entries as $entry) {
-            /* ensure corrent usage type and subtype */
+            /* ensure current usage type and subtype */
             $entry->usage_type = $class::getUsagetype();
             $entry->usage_subtype = $class::getUsageSubtype();
         }
