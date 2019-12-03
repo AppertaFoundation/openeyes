@@ -22,7 +22,7 @@
 <?php endif; ?>
 
 <div class="row divider">
-    <h2>Automatic medication sets</h2>
+    <h2>Drug Sets Admin</h2>
 </div>
 
 <div class="row divider">

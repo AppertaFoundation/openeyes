@@ -17,7 +17,7 @@
  */
 ?>
 
-<h2>Add Automatic Set Rules</h2>
+<h2>Add/Edit Drug Set</h2>
 
 <form id="medication-autoset-form" method="post">
 
