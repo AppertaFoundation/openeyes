@@ -20,12 +20,14 @@ $(document).ready(function () {
   //switch between right and left eye
   $('.js-oes-eyeside').click(function (e) {
     e.preventDefault();
-    var side = $(e.target).attr('data-side');
+		var side = $(e.target).attr('data-side');
     var other_side = side === 'left' ? 'right' : 'left';
 
-    $('.js-oes-eyeside').removeClass('selected'); //deselect the other buttons
+		$('.js-oes-eyeside').removeClass('selected'); //deselect the other buttons
     $(this).addClass('selected'); //select the current button
-    switch(side){
+		console.log(side);
+
+		switch(side){
       case 'left':
           $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')).css("display", "inline-block"); //show the left eye indicator
           $('#oes-side-indicator-right').hide().appendTo($('#oes-side-indicator')); //hide the right eye indicator

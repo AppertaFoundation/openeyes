@@ -108,10 +108,6 @@
           }
           i++;
       }
-
-        console.log("Exam IOP graph data is: ");
-        console.log(x);
-
         let data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
