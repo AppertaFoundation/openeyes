@@ -77,8 +77,10 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             'name');
 
         ?>
-        <div class="flex-layout flex-left flex-top">
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
+        </div>
             <span class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]side", $sides, array('empty' => 'Any side')); ?>
             </span>
@@ -108,14 +110,35 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function query($searchProvider)
     {
+//        Changed query conditions because family history search in Advanced serch was working correctly for ANY values - CERA-538
+        $query_side = "";
+        $query_relative = "";
+        $query_condition = "";
+
+        if ($this->side !='') {
+            $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
+        }
+        if ($this->relative != '') {
+            if ($query_side == "") {
+                $query_relative = ":f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
+            } else {
+                $query_relative = " AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
+            }
+        }
+        if ( $this->condition != '') {
+            if ($query_side =="" && $query_relative=="") {
+                $query_condition = ":f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
+            } else {
+                $query_condition = " AND (:f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
+            }
+        }
+
         $queryStr = "
 SELECT DISTINCT p.id 
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (:f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)
-  AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)
-  AND (:f_h_condition_$this->id = :f_h_condition_$this->id)";
+WHERE (".$query_side.$query_relative.$query_condition;
         switch ($this->operation) {
             case '=':
                 // Do nothing.
@@ -130,7 +153,7 @@ WHERE id NOT IN (
                 break;
             default:
                 throw new CHttpException(400, 'Invalid operator specified.');
-                break;
+              break;
         }
 
         return $queryStr;
@@ -143,11 +166,18 @@ WHERE id NOT IN (
     public function bindValues()
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
-        return array(
-            "f_h_relative_$this->id" => $this->relative,
-            "f_h_side_$this->id" => $this->side,
-            "f_h_condition_$this->id" => $this->condition,
-        );
+//        Matched bind parameter numbers to those on the query - CERA-538
+        $binds = array();
+        if ($this->relative !='' || $this->relative != null) {
+            $binds["f_h_relative_$this->id"] = $this->relative;
+        }
+        if ($this->side !='' || $this->side != null) {
+            $binds["f_h_side_$this->id"] = $this->side;
+        }
+        if ($this->condition !='' || $this->condition != null) {
+            $binds["f_h_condition_$this->id"] = $this->condition;
+        }
+        return $binds;
     }
 
     /**

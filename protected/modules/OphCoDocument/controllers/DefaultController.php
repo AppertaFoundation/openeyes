@@ -41,9 +41,9 @@ class DefaultController extends BaseEventTypeController
     public function init()
     {
         $this->allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
-        $this->max_document_size = $this->return_bytes(ini_get('upload_max_filesize'));
+        $this->max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
         $this->jsVars['max_document_name_length'] = $this->max_document_name_length;
-        $this->max_content_length = $this->return_bytes(ini_get('upload_max_filesize'));
+        $this->max_content_length = Helper::return_bytes(ini_get('upload_max_filesize'));
 
         $this->jsVars['max_document_size'] = $this->max_document_size;
         $this->jsVars['max_content_length'] = $this->max_content_length;
@@ -134,7 +134,7 @@ class DefaultController extends BaseEventTypeController
                 return $message;
             break;
             default:
-                $message = 'Unknow error! Please try again!';
+                $message = 'Unknown error! Please try again!';
                 return $message;
         }
 

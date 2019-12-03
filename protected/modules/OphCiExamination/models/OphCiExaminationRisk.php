@@ -72,7 +72,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, medicationSets, gender, age_min, age_max', 'safe'),
+            array('name, medicationSets, gender, age_min, age_max, display_on_whiteboard', 'safe'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -95,7 +95,8 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'medicationSets' => 'Drug sets'
+            'medicationSets' => 'Drug sets',
+					  'display_on_whiteboard' => 'Display on Whiteboard',
         );
     }
 

@@ -52,8 +52,8 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' || :p_m_value_0 || '$wildcard'
-  OR md.name $operator '$wildcard' || :p_m_value_0 || '$wildcard'
+WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
+  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'
   OR m.id IS NULL";
 
             if ($operator === 'LIKE') {
@@ -66,8 +66,8 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' || :p_m_value_0 || '$wildcard'
-  OR md.name $operator '$wildcard' || :p_m_value_0 || '$wildcard'";
+WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
+  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'";
             }
 
             $this->assertEquals(

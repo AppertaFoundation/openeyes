@@ -1,12 +1,10 @@
 <?php
 
 /**
- * Class PatientNameParameter
+ * Class PatientDeceasedParameter
  */
-class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
+class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $patient_name;
-
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -14,14 +12,14 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = 'patient_name';
-        $this->operation = 'LIKE'; // Remove if more operations are added.
+        $this->name = 'patient_deceased';
+        $this->operation = false;
     }
 
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Patient Name';
+        return 'Patient Deceased';
     }
 
     /**
@@ -30,17 +28,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
-                'patient_name',
-            )
-        );
-    }
-
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(), array(
-            'patient_name' => 'Patient Name',
-        ));
+        return parent::attributeNames();
     }
 
     /**
@@ -50,17 +38,21 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('patient_name', 'required'),
+            array('operation', 'boolean'),
         ));
     }
 
     public function renderParameter($id)
     {
+        // Initialise any rendering variables here.
         ?>
+      <!-- Place screen-rendering code here. -->
+
         <div class="flex-layout flex-left">
             <?= $this->getDisplayTitle() ?>
-            <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
-            <?php echo CHtml::error($this, "[$id]patient_name"); ?>
+            <div>
+                <?php echo CHtml::activeCheckBox($this, "[$id]operation"); ?>
+            </div>
         </div>
         <?php
     }
@@ -73,23 +65,18 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      */
     public function query($searchProvider)
     {
-        $op = 'LIKE';
-        /*
-         // Reimplement this code if other operations are added to this parameter type.
-         switch ($this->operation) {
-            case 'LIKE':
-                $op = 'LIKE';
+        $op = '=';
+        switch ($this->operation) {
+            case '0':
+                return 'SELECT id FROM patient WHERE NOT(is_deceased)';
+                break;
+            case '1':
+                return 'SELECT id FROM patient WHERE is_deceased'. $op .$this->operation;
                 break;
             default:
-                throw new CHttpException(400, 'Invalid operator specified.');
+                throw new CHttpException(400, "Invalid value specified: $this->operation");
                 break;
-        }*/
-
-        return "SELECT DISTINCT p.id 
-FROM patient p 
-JOIN contact c 
-  ON c.id = p.contact_id
-WHERE LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->id)";
+        }
     }
 
     /**
@@ -99,9 +86,8 @@ WHERE LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->i
     public function bindValues()
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
-        return array(
-            "p_n_name_$this->id" => '%' . $this->patient_name . '%',
-        );
+        // No binds are used in this query, so return an empty array.
+        return array();
     }
 
     /**
@@ -109,6 +95,7 @@ WHERE LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_$this->i
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation \"$this->patient_name\"";
+        $value = $this->operation === false ? 'False' : 'True';
+        return "$this->name: $value";
     }
 }

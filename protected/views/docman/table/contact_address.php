@@ -19,6 +19,6 @@
     $is_editable_address = isset($is_editable_address) ? $is_editable_address : true;
     echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id); ?>
 <div>
-    <textarea class="increase-text cols-full autosize" placeholder="Address" rows="1" cols="10" style="width: 100%" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
+    <textarea class="increase-text cols-full autosize" placeholder="Address" rows="1" cols="10" style="width: 100%; max-height: 100%;" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
 </div>
 <br><br>

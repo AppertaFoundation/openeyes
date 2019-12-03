@@ -236,8 +236,21 @@
             applyRefractionSettings<?= $eye_side ?>,
             $('#add-to-refraction-btn-<?= $eye_side ?>'),
             $('#add-to-refraction-<?= $eye_side ?>').find('.add-icon-btn'),
-            $('#add-to-refraction-<?= $eye_side ?>').find('.close-icon-btn, .add-icon-btn'),
+            $('#add-to-refraction-<?= $eye_side ?>').find('.close-icon-btn'),
           );
+        });
+
+        $(document).click(function(e) {
+          var target = e.target;
+          var dialog= "#add-to-refraction-<?=$eye_side?>";
+          var dialog_style = $(dialog).attr('style');
+          if (typeof dialog_style !== typeof undefined && dialog_style !== false){
+            if (!$(dialog).attr('style').includes("display: none")){
+              if (!$(target).is(dialog) && !$(target).parents().is(dialog) && $(target).attr('type')!=="button") {
+                $(dialog).hide();
+              }
+            }
+          }
         });
       </script>
     <?php endforeach; ?>
