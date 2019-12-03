@@ -20,7 +20,7 @@ $sets = array_map(function ($e) {
 }, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
 $units = [];
 $medication_attribute_options = MedicationAttributeOption::model()->with('medicationAttribute')->findAll(
-	["condition" => "medicationAttribute.name = 'UNIT_OF_MEASURE'", 'order' => 'description asc']);
+    ["condition" => "medicationAttribute.name = 'UNIT_OF_MEASURE'", 'order' => 'description asc']);
 if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
     $units = array_map(function ($e) {
         return ['id' => $e->id, 'label' => $e->description];
@@ -52,8 +52,8 @@ $medicationSetItems = $medication->medicationSetItems;
         </td>
         <td>
                 <?php echo CHtml::dropDownList('Medication[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}',
-			CHtml::listData($medication_attribute_options, "description", "description"),
-		array('empty' => '-- None --', 'class' => 'js-dose-unit')) ?>
+                CHtml::listData($medication_attribute_options, "description", "description"),
+                array('empty' => '-- None --', 'class' => 'js-dose-unit')) ?>
         </td>
         <td>
             <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="{{route.id}}" />
