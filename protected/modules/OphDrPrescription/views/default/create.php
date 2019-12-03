@@ -52,7 +52,13 @@ $this->event_actions[] = EventAction::button(
     "Save and print $form_format",
     'saveprintform',
     array('level' => 'secondary'),
-    array('id' => 'et_save_print_form', 'class' => 'button small','style' => 'display: none;', 'form' => $form_id)
+    array(
+        'id' => 'et_save_print_form',
+        'class' => 'button small',
+        'style' => 'display: none;',
+        'form' => $form_id,
+        'data-enabled' => $settings->getSetting('enable_prescription_overprint')
+    )
 );
 
 $this->displayErrors($errors) ?>

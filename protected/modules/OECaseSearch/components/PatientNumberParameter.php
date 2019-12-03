@@ -1,10 +1,12 @@
 <?php
 
 /**
- * Class PatientDeceasedParameter
+ * Class PatientNumberParameter
  */
-class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
+class PatientNumberParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    public $number;
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -12,14 +14,14 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = 'patient_deceased';
-        $this->operation = false;
+        $this->name = 'patient_number';
+        $this->operation = '='; // Remove if more operations are added.
     }
 
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Patient Deceased';
+        return Yii::app()->params['hos_num_label'] . ' Number';
     }
 
     /**
@@ -28,7 +30,17 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      */
     public function attributeNames()
     {
-        return parent::attributeNames();
+        return array_merge(parent::attributeNames(), array(
+                'number',
+            )
+        );
+    }
+
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), array(
+            'number' => 'Value',
+        ));
     }
 
     /**
@@ -38,44 +50,46 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('operation', 'boolean'),
+            array('number', 'required'),
+            array('number', 'numerical'),
         ));
     }
 
     public function renderParameter($id)
     {
-        // Initialise any rendering variables here.
         ?>
-      <!-- Place screen-rendering code here. -->
-
-        <div class="flex-layout flex-left">
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
-            <div>
-                <?php echo CHtml::activeCheckBox($this, "[$id]operation"); ?>
-            </div>
         </div>
+        <div class="parameter-option">
+          <?php echo CHtml::activeTextField($this, "[$id]number"); ?>
+          <?php echo CHtml::error($this, "[$id]number"); ?>
+        </div>
+      </div>
         <?php
     }
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
+     * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
      * @throws CHttpException
      */
     public function query($searchProvider)
     {
-        switch ($this->operation) {
-            case '0':
-                return 'SELECT id FROM patient WHERE NOT(is_deceased)';
-                break;
-            case '1':
-                return 'SELECT id FROM patient';
-                break;
-            default:
-                throw new CHttpException(400, "Invalid value specified: $this->operation");
-                break;
-        }
+        $op = '=';
+        /*
+        // Reimplement this code if more operation choices are added to this parameter type.
+         if ($this->operation === '=') {
+            $op = '=';
+        } else {
+            throw new CHttpException(400, 'Invalid operator specified.');
+        }*/
+
+        return "SELECT DISTINCT p.id 
+FROM patient p
+WHERE p.hos_num $op :p_num_number_$this->id";
     }
 
     /**
@@ -85,8 +99,9 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     public function bindValues()
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
-        // No binds are used in this query, so return an empty array.
-        return array();
+        return array(
+            "p_num_number_$this->id" => $this->number,
+        );
     }
 
     /**
@@ -94,7 +109,6 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      */
     public function getAuditData()
     {
-        $value = $this->operation === false ? 'False' : 'True';
-        return "$this->name: $value";
+        return "$this->name: $this->operation $this->number";
     }
 }
