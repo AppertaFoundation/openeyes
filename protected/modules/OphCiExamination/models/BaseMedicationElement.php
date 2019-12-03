@@ -104,10 +104,6 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->setIsNewRecord(false);
             }
 
-            /* ensure corrent usage type and subtype */
-            $entry->usage_type = $class::getUsagetype();
-            $entry->usage_subtype = $class::getUsageSubtype();
-
             if (!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
@@ -243,32 +239,28 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         }
     }
 
-    /**
-     * Return true if the two medication have the same attributes
-     *
-     * @return bool
-     */
-    public function compareMedication($medication1, $medication2)
+    public function beforeValidate()
     {
-        return $medication1->usage_type === $medication2->usage_type
-            && $medication1->usage_subtype === $medication2->usage_subtype
-            && $medication1->medication->isPreservativeFree() === $medication2->medication->isPreservativeFree()
-            && $medication1->dose === $medication2->dose
-            && $medication1->dose_unit_term === $medication2->dose_unit_term
-            && $medication1->route_id === $medication2->route_id
-            && $medication1->frequency_id === $medication2->frequency_id
-            && $medication1->start_date === $medication2->start_date;
+        $class = self::$entry_class;
+
+        foreach ($this->entries as $entry) {
+            /* ensure corrent usage type and subtype */
+            $entry->usage_type = $class::getUsagetype();
+            $entry->usage_subtype = $class::getUsageSubtype();
+        }
+        return parent::beforeValidate();
     }
 
     public function afterValidate()
     {
-        $validated_entries = array();
+        $unique_medication_ids = array();
         // Validate entries
         foreach ($this->entries as $key => $entry) {
-            if (in_array($entry->medication_id, $validated_entries)) {
-                $processed_entries = array_slice($this->entries, 0, count($validated_entries) + 1, true);
+            if (in_array($entry->medication_id, $unique_medication_ids)) {
+                $processed_entries = array_slice($this->entries, 0, $key, true);
+
                 foreach ($processed_entries as $index => $processed_entry) {
-                    if ($this->compareMedication($processed_entry, $entry)) {
+                    if ($entry->isEqualsAttributes($processed_entry)) {
                         if (!$this->getError("entries_{$index}_duplicate_error")) {
                             $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
                         }
@@ -285,7 +277,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                     $this->addError($attr, ($key+1).' - '.implode(', ', $error));
                 }
             }
-            $validated_entries[] = $entry->medication_id;
+
+            if (!in_array($entry->medication_id, $unique_medication_ids)) {
+                $unique_medication_ids[] = $entry->medication_id;
+            }
         }
 
         parent::afterValidate();

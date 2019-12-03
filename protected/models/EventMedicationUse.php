@@ -88,6 +88,10 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
+    public $equalsAttributes = [
+        'medication_id', 'usage_type', 'usage_subtype', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
+    ];
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -293,6 +297,32 @@ class EventMedicationUse extends BaseElement
             $this->addError('end_date', 'Stop date must be on or after start date');
         }
         parent::afterValidate();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEqualsAttributes($medication)
+    {
+        $result = true;
+
+        foreach ($this->equalsAttributes as $attribute) {
+            //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
+            if ($attribute === "start_date") {
+                $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
+                $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
+
+                $result &= $date1 === $date2;
+            } else {
+                $result &= $this->$attribute === $medication->$attribute;
+            }
+
+            if (!$result) {
+                return $result;
+            }
+        }
+
+        return $result && ($this->medication->isPreservativeFree() === $medication->medication->isPreservativeFree());
     }
 
     /**
