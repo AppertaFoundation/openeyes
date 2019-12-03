@@ -336,7 +336,11 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getAvailableProcedureCount()
     {
-        return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
+        if ($this->isProcedureCountLimited()) {
+            return $this->getMaxProcedureCount() - $this->getBookedProcedureCount();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -377,7 +381,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      *
      * @return bool
      */
-    public function isTherePlaceForComplexBooking($operation) {
+    public function isTherePlaceForComplexBooking($operation)
+    {
         if ($this->isComplexBookingCountLimited() &&
           $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
           $operation->isComplex()) {

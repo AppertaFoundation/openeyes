@@ -37,7 +37,8 @@
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->order = 'display_order asc';
-                foreach ($wards as $i => $ward) {?>
+                if (isset($wards)) {
+                    foreach ($wards as $i => $ward) {?>
                     <tr class="clickable <?php if ($i % 2 == 0) {
                         ?>even<?php
                                          } else {
@@ -49,7 +50,7 @@
                         <td><?php echo $ward->restrictionText?></td>
                         <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
                     </tr>
-                <?php }?>
+                    <?php } }?>
             </tbody>
             <tfoot>
                 <tr>

@@ -21,6 +21,29 @@ class OphDrPrescription_ItemTest extends CDbTestCase
         $this->items[] = $this->ophdrprescription_items('prescription_item1');
         $this->items[] = $this->ophdrprescription_items('prescription_item2');
         $this->items[] = $this->ophdrprescription_items('prescription_item4');
+        $this->items[] = $this->ophdrprescription_items('prescription_item6');
+    }
+
+    public function getLineUsage()
+    {
+        return array(
+            'Single taper' => array(
+                'lines' => 7,
+                'index' => 0,
+            ),
+            'No taper' => array(
+                'lines' => 5,
+                'index' => 1,
+            ),
+            'Multiple tapers' => array(
+                'lines' => 27,
+                'index' => 2,
+            ),
+            'Simple duration' => array(
+                'lines' => 5,
+                'index' => 3,
+            )
+        );
     }
 
     public function tearDown()
@@ -74,14 +97,14 @@ class OphDrPrescription_ItemTest extends CDbTestCase
 
     /**
      * @covers OphDrPrescription_Item::fpTenLinesUsed()
+     * @dataProvider getLineUsage
+     * @param $lines
+     * @param $index
      */
-    public function testFpTenLinesUsed()
+    public function testFpTenLinesUsed($lines, $index)
     {
-        $length_list = array(7, 5, 22);
-        foreach ($this->items as $index => $item) {
-            $actual = $item->fpTenLinesUsed();
-            $this->assertEquals($length_list[$index], $actual, "Item has $actual lines, expected {$length_list[$index]}.");
-        }
+        $actual = $this->items[$index]->fpTenLinesUsed();
+        $this->assertEquals($lines, $actual, "Item has $actual lines, expected {$lines}.");
     }
 
     /**
@@ -104,8 +127,13 @@ class OphDrPrescription_ItemTest extends CDbTestCase
      */
     public function testFpTenFrequency()
     {
-        foreach ($this->items as $item) {
-            $expected = "Frequency: {$item->frequency->long_name} for {$item->duration->name}";
+        foreach ($this->items as $index => $item) {
+            if ($index === 3) {
+                $duration = strtolower($item->duration->name);
+                $expected = "Frequency: {$item->frequency->long_name} {$duration}";
+            } else {
+                $expected = "Frequency: {$item->frequency->long_name} for {$item->duration->name}";
+            }
             $actual = $item->fpTenFrequency();
 
             $this->assertEquals($expected, $actual);

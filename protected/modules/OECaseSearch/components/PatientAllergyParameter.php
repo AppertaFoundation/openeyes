@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class PatientMedicationParameter
+ * Class PatientAllergyParameter
  */
-class PatientMedicationParameter extends CaseSearchParameter implements DBProviderInterface
+class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
      * @var string $textValue
@@ -17,13 +17,13 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = 'medication';
-        $this->operation = 'LIKE';
+        $this->name = 'allergy';
+        $this->operation = '=';
     }
 
     public function getLabel()
     {
-        return 'Medication';
+        return 'Patient Allergy';
     }
 
     /**
@@ -53,29 +53,36 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
     public function renderParameter($id)
     {
         $ops = array(
-            'LIKE' => 'Has taken ',
-            'NOT LIKE' => 'Has not taken',
+            '=' => 'Is allergic to',
+            '!=' => 'Is not allergic to',
         );
         ?>
 
-        <div class="flex-layout flex-left">
-          <?= $this->getDisplayTitle()?>
-            <div style="padding-right: 15px;">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]operation"); ?>
-            </div>
+        <div class="flex-layout flex-left js-case-search-param">
+          <div class="parameter-option">
 
-            <div>
+              <?= $this->getDisplayTitle() ?>
+          </div>
+          <div style="padding-right: 15px;">
+              <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
+              <?php echo CHtml::error($this, "[$id]operation"); ?>
+          </div>
+
+            <div class="">
                 <?php
-                $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => $this->name . $this->id,
-                    'model' => $this,
-                    'attribute' => "[$id]textValue",
-                    'source' => Yii::app()->controller->createUrl('AutoComplete/commonMedicines'),
-                    'options' => array(
-                        'minLength' => 2,
+                $html = Yii::app()->controller->widget(
+                    'zii.widgets.jui.CJuiAutoComplete',
+                    array(
+                        'name' => $this->name . $this->id,
+                        'model' => $this,
+                        'attribute' => "[$id]textValue",
+                        'source' => Yii::app()->controller->createUrl('AutoComplete/commonAllergies'),
+                        'options' => array(
+                            'minLength' => 2,
+                        ),
                     ),
-                ), true);
+                    true
+                );
                 Yii::app()->clientScript->render($html);
                 echo $html;
                 ?>
@@ -93,39 +100,23 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
      */
     public function query($searchProvider)
     {
+        $query = "SELECT DISTINCT p.id 
+FROM patient p 
+LEFT JOIN patient_allergy_assignment paa
+  ON paa.patient_id = p.id
+LEFT JOIN allergy a
+  ON a.id = paa.allergy_id
+WHERE a.name = :p_al_textValue_$this->id";
         switch ($this->operation) {
-            case 'LIKE':
-                $op = 'LIKE';
-                $wildcard = '%';
-
-                return "
-SELECT p.id
-FROM patient p
-JOIN patient_medication_assignment m
-  ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard' || :p_m_value_$this->id || '$wildcard'
-  OR md.name $op '$wildcard' || :p_m_value_$this->id || '$wildcard'";
+            case '=':
+                return $query;
                 break;
-            case 'NOT LIKE':
-                $op = 'NOT LIKE';
-                $wildcard = '%';
-
-                return "
-SELECT p.id
-FROM patient p
-LEFT JOIN patient_medication_assignment m
-  ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard' || :p_m_value_$this->id || '$wildcard'
-  OR md.name $op '$wildcard' || :p_m_value_$this->id || '$wildcard'
-  OR m.id IS NULL";
+            case '!=':
+                return "SELECT DISTINCT p1.id
+FROM patient p1
+WHERE p1.id NOT IN (
+  $query
+)";
                 break;
             default:
                 throw new CHttpException(400, 'Invalid operator specified.');
@@ -141,7 +132,7 @@ WHERE d.name $op '$wildcard' || :p_m_value_$this->id || '$wildcard'
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_m_value_$this->id" => $this->textValue,
+            "p_al_textValue_$this->id" => $this->textValue,
         );
     }
 
