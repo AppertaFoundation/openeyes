@@ -129,7 +129,10 @@ class RefMedicationAdminController extends BaseAdminController
             ),
             'default_dose_unit_term' => array(
                             'widget' => 'DropDownList',
-                            'options' => CHtml::listData(MedicationAttributeOption::model()->with('medicationAttribute')->findAll("medicationAttribute.name = 'UNIT_OF_MEASURE'"), "id", "description"),
+                            'options' => CHtml::listData(MedicationAttributeOption::model()->with('medicationAttribute')->findAll(
+                            	["condition" => "medicationAttribute.name = 'UNIT_OF_MEASURE'",
+																'order' => 'description asc']
+														), "id", "description"),
                             'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
                             'hidden' => false,
                             'layoutColumns' => array()
