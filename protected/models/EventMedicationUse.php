@@ -88,7 +88,7 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
-    public $equalsAttributes = [
+    public $equals_attributes = [
         'medication_id', 'usage_type', 'usage_subtype', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
     ];
 
@@ -306,7 +306,7 @@ class EventMedicationUse extends BaseElement
     {
         $result = true;
 
-        foreach ($this->equalsAttributes as $attribute) {
+        foreach ($this->equals_attributes as $attribute) {
             //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
             if ($attribute === "start_date") {
                 $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
