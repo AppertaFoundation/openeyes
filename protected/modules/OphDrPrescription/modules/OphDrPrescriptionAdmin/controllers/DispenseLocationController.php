@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DispenseLocationController extends \BaseAdminController
+class DispenseLocationController extends BaseAdminController
 {
     public $group = 'Prescription';
 
@@ -23,7 +23,10 @@ class DispenseLocationController extends \BaseAdminController
     {
         $dispense_locations_model = OphDrPrescription_DispenseLocation::model();
         $path = Yii::getPathOfAlias('application.widgets.js');
-        $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js');
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('//js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('//js/oeadmin/list.js');
+        $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         if (Yii::app()->request->isPostRequest) {
@@ -41,8 +44,7 @@ class DispenseLocationController extends \BaseAdminController
         $this->render(
             '/admin/dispense_location/index',
             [
-                'dispense_locations' => $dispense_locations,
-                'pagination' => $this->initPagination($dispense_locations_model),
+                'dispense_locations' => $dispense_locations
             ]
         );
     }
@@ -50,7 +52,7 @@ class DispenseLocationController extends \BaseAdminController
     public function actionEdit($id)
     {
         if (!$model = OphDrPrescription_DispenseLocation::model()->find('`id`=?', array($id))) {
-            $this->redirect(array('/OphDrPrescription/oeadmin/DispenseLocation'));
+            $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
         }
 
         $errors = array();
@@ -58,7 +60,7 @@ class DispenseLocationController extends \BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseLocation'));
+                $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
             } else {
                 $errors = $model->errors;
             }
@@ -79,8 +81,9 @@ class DispenseLocationController extends \BaseAdminController
 
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
+            $model->display_order = $this->getNextHighestDisplayOrder();
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseLocation'));
+                $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
             } else {
                 $errors = $model->errors;
             }
@@ -91,6 +94,24 @@ class DispenseLocationController extends \BaseAdminController
             'errors' => $errors,
             'title' => 'Create dispense location'
         ));
+    }
+
+    public function actions() {
+        return [
+            'sortLocations' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => OphDrPrescription_DispenseLocation::model(),
+                'modelName' => 'OphDrPrescription_DispenseLocation',
+            ],
+        ];
+    }
+
+    private function getNextHighestDisplayOrder()
+    {
+        $query = 'SELECT MAX(display_order) AS maxdisplay FROM '.OphDrPrescription_DispenseLocation::model()->tableName();
+        $val = Yii::app()->db->createCommand($query)->queryRow();
+
+        return $val['maxdisplay'] + 1;
     }
 
 }

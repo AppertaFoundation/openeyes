@@ -16,10 +16,10 @@
  */
 ?>
 
-<div class="cols-5">
+<div class="cols-5" id="generic-admin-list">
     <form id="admin_<?= get_class(OphDrPrescription_DispenseLocation::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="standard generic-admin sortable">
+        <table class="standard" id="et_sort" data-uri="/OphDrPrescription/admin/DispenseLocation/sortLocations">
             <thead>
             <tr>
                 <th>Name</th>
@@ -34,17 +34,16 @@
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
-            <tbody>
-            <?php foreach ($dispense_locations as $row_count => $dispense_location) {
+            <tbody class="sortable">
+            <?php foreach ($dispense_locations as $dispense_location) {
                 $this->renderPartial('/admin/dispense_location/_dispense_location', array(
-                    'dispense_location' => $dispense_location,
-                    'row_count' => $row_count
+                    'dispense_location' => $dispense_location
                 ));
             } ?>
             </tbody>
-            <tfoot class="pagination-container">
+            <tfoot>
             <tr>
-                <td colspan="2">
+                <td colspan="4">
                     <?=\CHtml::button(
                         'Add',
                         [
@@ -53,22 +52,6 @@
                             'id' => 'et_add',
                             'formmethod' => 'get',
                         ]
-                    ); ?>
-
-                    <?=\CHtml::submitButton(
-                        'Save',
-                        [
-                            'class' => 'button large primary event-action',
-                            'name' => 'save',
-                            'id' => 'et_admin-save',
-                            'formmethod' => 'post',
-                        ]
-                    ); ?>
-                </td>
-                <td colspan="2">
-                    <?php $this->widget(
-                        'LinkPager',
-                        ['pages' => $pagination]
                     ); ?>
                 </td>
             </tr>

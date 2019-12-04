@@ -21,6 +21,5 @@ $this->renderPartial('/admin/dispense_condition/_dispense_condition_entry', arra
      'data_uri' => 'OphDrPrescription/admin/DispenseCondition/edit/'. $dispense_condition->id,
      'name' => $dispense_condition->name,
      'display_order' => $dispense_condition->display_order,
-     'is_active' => $dispense_condition->active,
-     'row_count' => $row_count
+     'is_active' => $dispense_condition->active
     ));

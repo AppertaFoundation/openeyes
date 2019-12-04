@@ -16,10 +16,10 @@
  */
 ?>
 
-<div class="cols-5">
+<div class="cols-5" id="generic-admin-list">
     <form id="admin_<?= get_class(OphDrPrescription_DispenseCondition::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="standard generic-admin sortable">
+        <table class="standard" id="et_sort" data-uri="/OphDrPrescription/admin/DispenseCondition/sortConditions">
             <thead>
             <tr>
                 <th>Name</th>
@@ -34,44 +34,27 @@
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
-            <tbody>
-            <?php foreach ($dispense_conditions as $row_count => $dispense_condition) {
+            <tbody class="sortable">
+            <?php foreach ($dispense_conditions as $dispense_condition) {
                 $this->renderPartial('/admin/dispense_condition/_dispense_condition', array(
-                        'dispense_condition' => $dispense_condition,
-                        'row_count' => $row_count
+                        'dispense_condition' => $dispense_condition
                 ));
             } ?>
             </tbody>
-            <tfoot class="pagination-container">
-            <tr>
-                <td colspan="2">
-                    <?=\CHtml::button(
-                        'Add',
-                        [
-                            'data-uri' => '/OphDrPrescription/admin/DispenseCondition/create',
-                            'class' => 'button large',
-                            'id' => 'et_add',
-                            'formmethod' => 'get',
-                        ]
-                    ); ?>
-
-                    <?=\CHtml::submitButton(
-                        'Save',
-                        [
-                            'class' => 'button large primary event-action',
-                            'name' => 'save',
-                            'id' => 'et_admin-save',
-                            'formmethod' => 'post',
-                        ]
-                    ); ?>
-                </td>
-                <td colspan="2">
-                    <?php $this->widget(
-                        'LinkPager',
-                        ['pages' => $pagination]
-                    ); ?>
-                </td>
-            </tr>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <?=\CHtml::button(
+                            'Add',
+                            [
+                                'data-uri' => '/OphDrPrescription/admin/DispenseCondition/create',
+                                'class' => 'button large',
+                                'id' => 'et_add',
+                                'formmethod' => 'get',
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
             </tfoot>
         </table>
 </div>

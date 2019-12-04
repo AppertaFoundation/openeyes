@@ -21,6 +21,5 @@ $this->renderPartial('/admin/dispense_location/_dispense_location_entry', array(
     'data_uri' => 'OphDrPrescription/admin/DispenseLocation/edit/'. $dispense_location->id,
     'name' => $dispense_location->name,
     'display_order' => $dispense_location->display_order,
-    'is_active' => $dispense_location->active,
-    'row_count' => $row_count
+    'is_active' => $dispense_location->active
 ));

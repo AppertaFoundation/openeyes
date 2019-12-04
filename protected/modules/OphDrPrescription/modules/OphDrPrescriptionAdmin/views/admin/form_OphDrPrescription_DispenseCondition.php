@@ -39,16 +39,6 @@
             </td>
         </tr>
         <tr>
-            <td>Display Order</td>
-            <td>
-                <?=\CHtml::activeTextField(
-                    $model,
-                    'display_order',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
             <td>Is Active</td>
             <td>
                 <?=\CHtml::activeRadioButtonList(
@@ -74,7 +64,7 @@
             </td>
         </tr>
         </tbody>
-        <tfoot class="pagination-container">
+        <tfoot>
         <tr>
             <td colspan="2">
                 <?=\CHtml::submitButton(

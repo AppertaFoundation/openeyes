@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DispenseConditionController extends \BaseAdminController
+class DispenseConditionController extends BaseAdminController
 {
     public $group = 'Prescription';
 
@@ -23,7 +23,10 @@ class DispenseConditionController extends \BaseAdminController
     {
         $dispense_conditions_model = OphDrPrescription_DispenseCondition::model();
         $path = Yii::getPathOfAlias('application.widgets.js');
-        $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js');
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('/js/oeadmin/list.js');
+        $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         if (Yii::app()->request->isPostRequest) {
@@ -41,8 +44,7 @@ class DispenseConditionController extends \BaseAdminController
         $this->render(
             '/admin/dispense_condition/index',
             [
-                'dispense_conditions' => $dispense_conditions,
-                'pagination' => $this->initPagination($dispense_conditions_model),
+                'dispense_conditions' => $dispense_conditions
             ]
         );
     }
@@ -50,7 +52,7 @@ class DispenseConditionController extends \BaseAdminController
     public function actionEdit($id)
     {
         if (!$model = OphDrPrescription_DispenseCondition::model()->find('`id`=?', array($id))) {
-            $this->redirect(array('/OphDrPrescription/oeadmin/DispenseCondition'));
+            $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
         }
 
         $errors = array();
@@ -59,7 +61,7 @@ class DispenseConditionController extends \BaseAdminController
             $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
             $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseCondition'));
+                $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
             } else {
                 $errors = $model->errors;
             }
@@ -80,9 +82,10 @@ class DispenseConditionController extends \BaseAdminController
 
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
+            $model->display_order = $this->getNextHighestDisplayOrder();
             $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/oeadmin/DispenseCondition'));
+                $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
             } else {
                 $errors = $model->errors;
             }
@@ -93,6 +96,24 @@ class DispenseConditionController extends \BaseAdminController
             'errors' => $errors,
             'title' => 'Create dispense condition'
         ));
+    }
+
+    public function actions() {
+        return [
+            'sortConditions' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => OphDrPrescription_DispenseCondition::model(),
+                'modelName' => 'OphDrPrescription_DispenseCondition',
+            ],
+        ];
+    }
+
+    private function getNextHighestDisplayOrder()
+    {
+        $query = 'SELECT MAX(display_order) AS maxdisplay FROM '.OphDrPrescription_DispenseCondition::model()->tableName();
+        $val = Yii::app()->db->createCommand($query)->queryRow();
+
+        return $val['maxdisplay'] + 1;
     }
 
 }
