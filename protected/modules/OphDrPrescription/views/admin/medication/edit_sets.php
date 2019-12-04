@@ -19,10 +19,12 @@ $sets = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->name];
 }, MedicationSet::model()->findAllByAttributes(['hidden' => 0, 'deleted_date' => null]));
 $units = [];
+$medication_attribute_options = MedicationAttributeOption::model()->with('medicationAttribute')->findAll(
+    ["condition" => "medicationAttribute.name = 'UNIT_OF_MEASURE'", 'order' => 'description asc']);
 if ($unit_attr = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")) {
     $units = array_map(function ($e) {
         return ['id' => $e->id, 'label' => $e->description];
-    }, $unit_attr->medicationAttributeOptions);
+    }, $medication_attribute_options);
 } else {
     $units = array();
 }
@@ -49,7 +51,9 @@ $medicationSetItems = $medication->medicationSetItems;
             <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', "1"); ?>
         </td>
         <td>
-            <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}'); ?>
+                <?php echo CHtml::dropDownList('Medication[medicationSetItems][default_dose_unit_term][]', '{{unit.label}}',
+                CHtml::listData($medication_attribute_options, "description", "description"),
+                array('empty' => '-- None --', 'class' => 'js-dose-unit')) ?>
         </td>
         <td>
             <input type="hidden" name="Medication[medicationSetItems][default_route_id][]" value="{{route.id}}" />
@@ -108,7 +112,10 @@ $medicationSetItems = $medication->medicationSetItems;
                 <?php echo CHtml::textField('Medication[medicationSetItems][default_dose][]', $assignment->default_dose); ?>
             </td>
             <td>
-                <?php echo CHtml::textField('Medication[medicationSetItems][default_dose_unit_term][]', $assignment->default_dose_unit_term); ?>
+                <?php echo CHtml::dropDownList('Medication[medicationSetItems][default_dose_unit_term][]',
+                                    $assignment->default_dose_unit_term,
+                                    CHtml::listData($medication_attribute_options, "description", "description"),
+                                    array('empty' => '-- None --' )) ?>
             </td>
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][default_route_id][]"
@@ -187,7 +194,12 @@ $medicationSetItems = $medication->medicationSetItems;
                             selObj.key = key;
 
                             var rendered = Mustache.render(template, selObj);
+
                             $("#medication_set_assignment_tbl > tbody").append(rendered);
+                            var newRow = $("#medication_set_assignment_tbl > tbody").find('tr:last');
+                            if (typeof selObj.unit !== "undefined") {
+                                newRow.find('.js-dose-unit').val(selObj.unit.label).change();
+                            }
                             return true;
                         },
                         enableCustomSearchEntries: true,

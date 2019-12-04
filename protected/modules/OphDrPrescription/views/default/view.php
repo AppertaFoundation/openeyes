@@ -59,6 +59,10 @@ if ($this->checkPrintAccess()) {
     <div class="alert-box alert with-icon">
         This event is pending deletion and has been locked.
     </div>
+<?php } elseif (($Element->draft) && (!$elementEditable)) { ?>
+    <div class="alert-box alert with-icon">
+        This prescription was created from Medication Management in an Examination event. To make changes, please edit the original Examination
+    </div>
 <?php } elseif ($Element->draft) { ?>
     <div class="alert-box alert with-icon">
         This prescription is a draft and can still be edited
