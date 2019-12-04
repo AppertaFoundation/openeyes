@@ -149,20 +149,20 @@ $creating = isset($creating) ? $creating : false;
         </div>
     </div>
 
-    <div class="cols-9">
+      <div class="cols-9">
         <div class="cols-full">
-            <div id="docman_block" class="cols-12">
+          <div id="docman_block" class="cols-12">
                 <?php
                 if (!$creating) {
                     $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
 
                     if ($document_set) {
                         $this->renderPartial('//docman/_update', array(
-                            'row_index' => (isset($row_index) ? $row_index : 0),
-                            'document_set' => $document_set,
-                            'macro_id' => $macro_id,
-                            'element' => $element,
-                            'can_send_electronically' => true,
+                          'row_index' => (isset($row_index) ? $row_index : 0),
+                          'document_set' => $document_set,
+                          'macro_id' => $macro_id,
+                          'element' => $element,
+                          'can_send_electronically' => true,
                         ));
                     }
                 } else {
@@ -175,19 +175,19 @@ $creating = isset($creating) ? $creating : false;
                         foreach ($_POST['DocumentTarget'] as $document_target) {
                             if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
                                 $macro_data['to'] = array(
-                                    'contact_type' => $document_target['attributes']['contact_type'],
-                                    'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
-                                    'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
-                                    'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                                  'contact_type' => $document_target['attributes']['contact_type'],
+                                  'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                                  'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
+                                  'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                                 );
                             } else {
                                 if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
                                     $macro_data['cc'][] = array(
-                                        'contact_type' => $document_target['attributes']['contact_type'],
-                                        'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
-                                        'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
-                                        'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                        'is_mandatory' => false,
+                                      'contact_type' => $document_target['attributes']['contact_type'],
+                                      'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
+                                      'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
+                                      'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                                      'is_mandatory' => false,
                                     );
                                 }
                             }
@@ -234,32 +234,29 @@ $creating = isset($creating) ? $creating : false;
                     $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
                     $this->renderPartial('//docman/_create', array(
-                        'row_index' => (isset($row_index) ? $row_index : 0),
-                        'macro_data' => $macro_data,
-                        'macro_id' => $macro_id,
-                        'element' => $element,
-                        'can_send_electronically' => true,
-                        'defaults' => array(
-                            'To' => array(
-                                'contact_id' => $contact_id,
-                                'contact_type' => \Yii::app()->params['gp_label'],
-                                'contact_name' => $contact_name,
-                                'address' => $address,
-                                'contact_nickname' => $contact_nickname,
-                            ),
-                            'Cc' => array(
-                                'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
-                                'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
-                                'contact_type' => 'PATIENT',
-                                'address' => $patient_address,
-                            ),
-                        ),
+                      'row_index' => (isset($row_index) ? $row_index : 0),
+                      'macro_data' => $macro_data,
+                      'macro_id' => $macro_id,
+                      'element' => $element,
+                      'can_send_electronically' => true,
+                      'defaults' => array(
+                          'To' => array(
+                              'contact_id' => $contact_id,
+                              'contact_type' => 'GP',
+                              'contact_name' => $contact_name,
+                              'address' => $address,
+                              'contact_nickname' => $contact_nickname,
+                          ),
+                          'Cc' => array(
+                              'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
+                              'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
+                              'contact_type' => 'PATIENT',
+                              'address' => $patient_address,
+                          ),
+                      ),
                     ));
                 } ?>
-            </div>
-        </div>
-        <div class="data-group">
-
+          </div>
         </div>
     </div>
 </div>
