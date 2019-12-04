@@ -76,25 +76,25 @@ if (!empty($subspecialty)) { ?>
   let max_value = new Date();
 
   $(document).ready(function () {
-		$('.js-oes-eyeside').data("data-side", "both").click();
+        $('.js-oes-eyeside').data("data-side", "both").click();
 
     //Set chart zooms to initial value
     resetChartZoom();
 
-		let charts = [];
-		charts['VA'] = [];
-		charts['VA']['right'] = $('.plotly-VA')[0];
-		charts['VA']['left'] = $('.plotly-VA')[1];
+        let charts = [];
+        charts['VA'] = [];
+        charts['VA']['right'] = $('.plotly-VA')[0];
+        charts['VA']['left'] = $('.plotly-VA')[1];
 
-		charts['Med'] = [];
-		charts['Med']['right'] = $('.plotly-Meds')[0];
-		charts['Med']['left'] = $('.plotly-Meds')[1];
+        charts['Med'] = [];
+        charts['Med']['right'] = $('.plotly-Meds')[0];
+        charts['Med']['left'] = $('.plotly-Meds')[1];
 
-		charts['IOP'] = [];
-		charts['IOP']['right'] = $('.plotly-IOP')[0];
-		charts['IOP']['left'] = $('.plotly-IOP')[1];
+        charts['IOP'] = [];
+        charts['IOP']['right'] = $('.plotly-IOP')[0];
+        charts['IOP']['left'] = $('.plotly-IOP')[1];
 
-		//hide cursors in plot
+        //hide cursors in plot
     ['right', 'left'].forEach(function (eye_side) {
       for(let key in charts){
         $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
@@ -220,13 +220,14 @@ if (!empty($subspecialty)) { ?>
 
 		});
 	}
+
   //get all reset buttons
   var els = document.getElementsByClassName('reset-zoom');
 
   Array.prototype.forEach.call(els, function(el) {
     // for each reset button
     el.addEventListener('click', function () {
-			resetChartZoom();
+            resetChartZoom();
     })
   });
 </script>
