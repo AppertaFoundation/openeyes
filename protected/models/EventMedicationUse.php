@@ -135,6 +135,7 @@ class EventMedicationUse extends BaseElement
             array('last_modified_date, created_date, event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('stop_reason_id', 'validateStopReason'),
             array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
@@ -171,6 +172,13 @@ class EventMedicationUse extends BaseElement
     {
         if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
+        }
+    }
+
+    public function validateStopReason()
+    {
+        if ($this->end_date && !$this->stop_reason_id) {
+            $this->addError("stop_reason_id", "You must select a stop reason if the medication is stopped.");
         }
     }
 
