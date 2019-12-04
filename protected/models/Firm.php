@@ -65,7 +65,7 @@ class Firm extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
+            array('name, subspecialty_id', 'required'),
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
@@ -193,7 +193,7 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $can_own_an_episode
      * @return array
      */
-    public function getList($subspecialty_id = null, $include_id = null , $runtime_selectable = null , $can_own_an_episode = null)
+    public function getList($subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
     {
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')

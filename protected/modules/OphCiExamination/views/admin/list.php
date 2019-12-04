@@ -60,12 +60,12 @@
                     </td>
                     <td>
                         <input type="checkbox" class="model_enabled" <?php if ($model->active) {
-    echo 'checked';
-}
-                ?> />
+                            echo 'checked';
+                                                                     }
+                                                                        ?> />
                     </td>
                 </tr>
-            <?php 
+                <?php
             }?>
         </tbody>
     </table>

@@ -17,7 +17,9 @@
  */
 ?>
 <div class="diagnosis-selection">
-    <div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {?> style="display: none;" <?php }?>>
+    <div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {
+        ?> style="display: none;" <?php
+             }?>>
         <h4>
             <?php echo $label?>
         </h4>
@@ -57,7 +59,7 @@
             'htmlOptions' => array(
                 'placeholder' => 'or type the first few characters of a diagnosis',
             ),
-    ));
+        ));
         ?>
     </div>
 </div>

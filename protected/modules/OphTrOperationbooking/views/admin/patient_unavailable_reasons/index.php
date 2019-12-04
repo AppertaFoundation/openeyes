@@ -31,7 +31,9 @@
             $criteria->order = 'display_order asc';
             foreach (OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason::model()->findAll() as $i => $patientunavailablereason) {?>
                 <tr class="clickable" data-attr-id="<?php echo $patientunavailablereason->id?>" data-uri="OphTrOperationbooking/admin/editpatientunavailablereason/<?php echo $patientunavailablereason->id?>">
-                    <td><input type="checkbox" name="patientunavailablereason[]" value="<?php echo $patientunavailablereason->id?>" class="patientunavailablereasons-enabled" <?php if ($patientunavailablereason->enabled) { echo 'checked'; } ?> /></td>
+                    <td><input type="checkbox" name="patientunavailablereason[]" value="<?php echo $patientunavailablereason->id?>" class="patientunavailablereasons-enabled" <?php if ($patientunavailablereason->enabled) {
+                        echo 'checked';
+                                                                                        } ?> /></td>
                     <td><?php echo $patientunavailablereason->name?></td>
                 </tr>
             <?php }?>

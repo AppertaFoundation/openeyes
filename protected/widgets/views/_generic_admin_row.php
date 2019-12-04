@@ -22,7 +22,7 @@ if (@$disabled) {
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
     <?php
     echo CHtml::hiddenField("id[{$i}]", $row->id, $html_options);
-    if($display_order){?>
+    if ($display_order) {?>
     <td class="reorder">
         <span>&uarr;&darr;</span>
         <?php
@@ -30,23 +30,23 @@ if (@$disabled) {
         ?>
     </td>
     <?php } ?>
-    <?php if (!$label_extra_field):?>
+    <?php if (!$label_extra_field) :?>
     <td>
         <?php
-            if ($label_field_type) {
-                $this->render('application.widgets.views._generic_admin_'.$label_field_type, array(
-                    'row' => $row,
-                    'params' => array(
-                        'relation' => $label_relation,
-                        'field' => $label_field,
-                        'model' => $label_field_model,
-                        'allow_null' => false,
-                    ),
-                    'i' => $i,
-                ));
-            } else {
-                echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
-            }?>
+        if ($label_field_type) {
+            $this->render('application.widgets.views._generic_admin_'.$label_field_type, array(
+                'row' => $row,
+                'params' => array(
+                    'relation' => $label_relation,
+                    'field' => $label_field,
+                    'model' => $label_field_model,
+                    'allow_null' => false,
+                ),
+                'i' => $i,
+            ));
+        } else {
+            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
+        }?>
             <?php if (isset($errors[$i])) { ?>
                 <span class="error">
                 <?php echo $errors[$i] ?>
@@ -61,9 +61,8 @@ if (@$disabled) {
     <?php }?>
     <td>
         <?php if (isset($row->active)) {
-    echo CHtml::checkBox('active['.$i.']', $row->active);
+            echo CHtml::checkBox('active['.$i.']', $row->active);
         } elseif (!$this->cannot_delete) {?>
-
             <a href="#" class="deleteRow">delete</a>
         <?php }?>
     </td>

@@ -17,7 +17,7 @@
  */
 $this->beginContent('//patient/event_container', array('no_face'=>true));
 
-$this->event_actions[] = EventAction::printButton('Print', 'print', array(), array('onclick'=>'window.open("/OphCoDocument/default/pdfprint/'.$this->event->id.'");'));
+$this->event_actions[] = EventAction::printButton('Print', 'print', array());
 
 $this->moduleNameCssClass .= ' highlight-fields';
 
@@ -25,7 +25,7 @@ if ($this->event->delete_pending) { ?>
     <div class="alert-box alert with-icon">
     This event is pending deletion and has been locked.
 </div>
-<?php } 
+<?php }
 
 $this->renderOpenElements($this->action->id);
 $this->renderPartial('//default/delete');

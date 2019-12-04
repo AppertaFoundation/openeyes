@@ -95,15 +95,14 @@
                     </div>
 
                     <h3>Created By:</h3>
-                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'createdby_auto_complete']); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'createdby_auto_complete']); ?>
                     <div>
                         <ul id="createdby_list" class="multi-select-search scroll">
                             <?php $createdby_ids = array_key_exists('createdby_ids', $list_filter) ? $list_filter['createdby_ids'] : '';
                             if ($createdby_ids) {
                                 foreach (explode(',', $createdby_ids) as $id) {
                                     if ($user = User::model()->findByPk($id)) { ?>
-                                        <li data-id="<?= $id ?>"><?= $user->getReversedFullname() ?><a href="#"
-                                                                                                       class="remove">X</a>
+                                        <li data-id="<?= $id ?>"><?= $user->getFullName() ?><a href="#" class="remove oe-i remove-circle small-icon pad-left"></a>
                                         </li>
                                     <?php }
                                 }
@@ -113,15 +112,14 @@
                     <?= CHtml::hiddenField('createdby_ids', $this->request->getPost('createdby_ids', ''), array('class' => 'filter-field')); ?>
 
                     <h3>Consultant(s):</h3>
-                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'consultant_auto_complete']); ?>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'consultant_auto_complete']); ?>
                     <div>
                         <ul id="consultant_list" class="multi-select-search scroll">
                             <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';
                             if ($consultant_ids) {
                                 foreach (explode(',', $consultant_ids) as $id) {
                                     if ($user = User::model()->findByPk($id)) { ?>
-                                        <li data-id="<?= $id ?>"><?= $user->getReversedFullname() ?><a href="#"
-                                                                                                       class="remove">X</a>
+                                        <li data-id="<?= $id ?>"><?= $user->getFullname() ?><a href="#" class="remove oe-i remove-circle small-icon pad-left"></a>
                                         </li>
                                     <?php }
                                 }
@@ -176,7 +174,7 @@
         currentIds.push(consultant.id);
         $('#consultant_ids').val(currentIds.join());
 
-        $('#consultant_list').append('<li data-id="' + consultant.id + '">' + consultant.value + '<a href="#" class="remove">X</a></li>');
+        $('#consultant_list').append('<li data-id="' + consultant.id + '">' + consultant.label + '<a href="#" class="remove oe-i remove-circle small-icon pad-left"></a></li>');
         $('#consultant_list').scrollTop($('#consultant_list')[0].scrollHeight);
         $('#consultant_ids').trigger('change');
     }
@@ -201,7 +199,7 @@
         currentIds.push(user.id);
         $('#createdby_ids').val(currentIds.join());
 
-        $('#createdby_list').append('<li data-id="' + user.id + '">' + user.value + '<a href="#" class="remove">X</a></li>');
+        $('#createdby_list').append('<li data-id="' + user.id + '">' + user.label + '<a href="#" class="remove oe-i remove-circle small-icon pad-left"></a></li>');
         $('#createdby_list').scrollTop($('#createdby_list')[0].scrollHeight);
         $('#createdby_ids').trigger('change');
         $('#search_button').removeAttr('disabled');

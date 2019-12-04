@@ -109,14 +109,14 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'name':
-            $this->_name = $attribute->nodeValue;
+            case 'name':
+                $this->_name = $attribute->nodeValue;
             break;
-        case 'value':
-            $this->_value = $attribute->nodeValue;
+            case 'value':
+                $this->_value = $attribute->nodeValue;
             break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 

@@ -106,15 +106,15 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
 
     public function beforeSave()
     {
-        if(!$this->age_min || $this->age_min === 0){
+        if (!$this->age_min || $this->age_min === 0) {
             $this->age_min = null;
         }
 
-        if(!$this->age_max || $this->age_max === 0){
+        if (!$this->age_max || $this->age_max === 0) {
             $this->age_max = null;
         }
 
-        if(!$this->gender){
+        if (!$this->gender) {
             $this->gender = null;
         }
 
@@ -139,15 +139,15 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('disorder_id',$this->disorder_id,true);
-        $criteria->compare('gender',$this->gender,true);
-        $criteria->compare('age_min',$this->age_min,true);
-        $criteria->compare('age_max',$this->age_max,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('disorder_id', $this->disorder_id, true);
+        $criteria->compare('gender', $this->gender, true);
+        $criteria->compare('age_min', $this->age_min, true);
+        $criteria->compare('age_max', $this->age_max, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -160,7 +160,7 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
      * @param string $className active record class name.
      * @return OphCiExaminationSystemicDiagnosesSetEntry the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

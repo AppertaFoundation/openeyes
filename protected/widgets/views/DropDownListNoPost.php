@@ -26,15 +26,26 @@
 
         <div class="cols-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
-        <select style="cols-full" id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
+        <select style="cols-full" id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {
+            ?> class="<?php echo $htmlOptions['class']?>"<?php
+                                      }?><?php if (@$htmlOptions['disabled']) {
+    ?> disabled="disabled"<?php
+                                      }?><?php if (@$htmlOptions['title']) {
+    ?> title="<?php echo $htmlOptions['title']?>"<?php
+                                      }?>>
             <?php if (isset($htmlOptions['empty'])) {?>
                 <option value="" data-order="0"><?php echo $htmlOptions['empty']?></option>
             <?php }?>
             <?php $order = 1; foreach ($data as $id => $option) {?>
-                <option value="<?php echo $id?>"<?php if(@$htmlOptions['display_order']){echo ' data-order="'.$htmlOptions['display_order'][$id].'" ';}?><?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?=\CHtml::encode($option)?></option>
-            <?php ++$order;}?>
+                <option value="<?php echo $id?>"<?php if (@$htmlOptions['display_order']) {
+                    echo ' data-order="'.$htmlOptions['display_order'][$id].'" ';
+                               }?><?php if ($id == $selected_value) {
+    ?> selected="selected"<?php
+                               }?>><?=\CHtml::encode($option)?></option>
+                <?php ++$order;
+            }?>
         </select>
         <?php if (!@$htmlOptions['nowrapper']) {?>
         </div>
     </div>
-<?php }?>
+        <?php }?>

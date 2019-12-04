@@ -31,19 +31,28 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?=\CHtml::activeTelField(
+                <?=\CHtml::activeTextField(
                   $model,
                   'name',
                   ['class' => 'cols-full']
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Active</td>
+            <td class="cols-full">
+                <?=\CHtml::activeCheckbox(
+                  $model,
+                  'is_active'
+                ); ?>
+            </td>
+        </tr>
     </tbody>
   </table>
 
-  <?= \OEHtml::submitButton() ?>
+    <?= \OEHtml::submitButton() ?>
 
-  <?= \OEHtml::cancelButton("Cancel", [
+    <?= \OEHtml::cancelButton("Cancel", [
     'data-uri' => '/OphCiExamination/admin/Drug/dilationDrugs',
   ]) ?>
 

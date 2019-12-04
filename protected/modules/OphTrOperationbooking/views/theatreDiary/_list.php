@@ -27,8 +27,8 @@ if (empty($diary)) {?>
         <?php echo $theatre->name?> (<?php echo $theatre->site->name?>)
     </h2>
         <?php foreach ($theatre->sessions as $session) {
-    $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
-}
+            $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
+        }
     }
 }
 ?>

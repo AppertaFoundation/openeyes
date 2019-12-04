@@ -19,7 +19,9 @@
 
 
 <?php if (!@$htmlOptions['nowrapper']) {?>
-    <div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group flex-layout "<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+    <div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group flex-layout "<?php if (@$htmlOptions['hide']) {
+        ?> style="display: none;"<?php
+                 }?>>
         <div class="cols-<?php echo $layoutColumns['label'];?> column">
             <?php if (!@$htmlOptions['no-label']) {?>
                 <label for="<?=\CHtml::modelName($element).'_'.$field;?>">

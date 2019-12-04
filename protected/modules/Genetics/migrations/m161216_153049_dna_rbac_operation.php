@@ -13,7 +13,7 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
         $this->update('authitem', array('name' => 'OprnCreateDnaSample', 'type' => 0), "name = 'OprnCreateBloodSample'");
         
         $this->insert('authitemchild', array('parent' => 'Genetics User' ,'child' => 'TaskCreateDnaSample'));
-        $this->insert('authitemchild', array('parent' => 'TaskCreateDnaSample','child' => 'OprnCreateDnaSample')); 
+        $this->insert('authitemchild', array('parent' => 'TaskCreateDnaSample','child' => 'OprnCreateDnaSample'));
     }
 
     public function down()
@@ -27,7 +27,7 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
         $this->update('authitem', array('name' => 'OprnCreateBloodSample', 'type' => 0), "name = 'OprnCreateDnaSample'");
         
         $this->insert('authitemchild', array('parent' => 'Genetics User' ,'child' => 'TaskCreateBloodSample'));
-        $this->insert('authitemchild', array('parent' => 'TaskCreateBloodSample','child' => 'OprnCreateBloodSample')); 
+        $this->insert('authitemchild', array('parent' => 'TaskCreateBloodSample','child' => 'OprnCreateBloodSample'));
     }
 
     /*

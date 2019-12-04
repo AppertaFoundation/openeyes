@@ -33,7 +33,9 @@
     ))?>
 
     <p class="accessible">
-        I have been asked to arrange your <?php	if ($patient->isChild()) {?>child's <?php }?> admission for surgery under the care of
+        I have been asked to arrange your <?php	if ($patient->isChild()) {
+            ?>child's <?php
+                                          }?> admission for surgery under the care of
         <?=\CHtml::encode($consultantName) ?>. This is currently anticipated to be
         <?php
         if ($overnightStay) {
@@ -50,7 +52,9 @@
     </p>
 
     <p class="accessible">
-        Should you<?php if ($patient->isChild()) {?>r child<?php }?> no longer require treatment please let me know as soon as possible.
+        Should you<?php if ($patient->isChild()) {
+            ?>r child<?php
+                  }?> no longer require treatment please let me know as soon as possible.
     </p>
 
     <?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true))?>

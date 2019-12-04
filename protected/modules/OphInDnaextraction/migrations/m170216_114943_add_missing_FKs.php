@@ -4,7 +4,7 @@ class m170216_114943_add_missing_FKs extends CDbMigration
 {
     public function up()
     {
-            $this->addForeignKey('ophindnaextraction_storage_address_ibfk_1', 'ophindnaextraction_storage_address', 'box_id', 'ophindnaextraction_dnaextraction_box', 'id');                    
+            $this->addForeignKey('ophindnaextraction_storage_address_ibfk_1', 'ophindnaextraction_storage_address', 'box_id', 'ophindnaextraction_dnaextraction_box', 'id');
             $this->addForeignKey('et_ophindnaextraction_dnaextraction_ibfk_1', 'et_ophindnaextraction_dnaextraction', 'storage_id', 'ophindnaextraction_storage_address', 'id');
             
             $this->dropTable('ophindnaextraction_dnaextraction_letter');

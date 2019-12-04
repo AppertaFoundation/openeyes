@@ -82,13 +82,15 @@ if (!isset($values)) {
                 array('value' => AllergyEntry::$NOT_PRESENT)); ?>
           no
         </label>
-      <?php } ?>
+        <?php } ?>
   </td>
     <td>
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
                     id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-                    style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+                    style="<?php if (!$values['comments']) :
+                        ?>display: none;<?php
+                           endif; ?>"
                     data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                     <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
                         'class' => 'js-comment-field autosize cols-full',
@@ -103,7 +105,9 @@ if (!isset($values)) {
                         data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                         type="button"
               data-hide-method = "display"
-                        style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
+                        style="<?php if ($values['comments']) :
+                            ?>display: none;<?php
+                               endif; ?>"
         >
             <i class="oe-i comments small-icon"></i>
         </button>

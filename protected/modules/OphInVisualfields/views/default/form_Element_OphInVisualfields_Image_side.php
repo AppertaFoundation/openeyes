@@ -40,7 +40,7 @@ Yii::app()->clientScript->registerScript(
 
 ?>
 <div class="js-element-eye <?= $side ?>-eye column">
-    <?php if ($current_field): ?>
+    <?php if ($current_field) : ?>
       <div class="data-group">
         <div class="cols-5 column">
             <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
@@ -79,7 +79,7 @@ Yii::app()->clientScript->registerScript(
           </tbody>
         </table>
       </div>
-    <?php else: ?>
+    <?php else : ?>
       <p>There are no fields to view for the <?= $side ?> eye.</p>
     <?php endif; ?>
 </div>

@@ -19,7 +19,9 @@
 <select name="<?php echo $name ?>" id="<?php echo $id ?>">
     <option>Select</option>
     <?php foreach (OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->getChoices('va') as $id => $label) { ?>
-        <option value="<?php echo $id; ?>" <?php if ($val == $id) { echo 'selected'; }?>>
+        <option value="<?php echo $id; ?>" <?php if ($val == $id) {
+            echo 'selected';
+                       }?>>
             <?php echo $label; ?>
         </option>
     <?php } ?>

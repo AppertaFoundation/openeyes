@@ -31,7 +31,7 @@
         ));
         ?>
     </div>
-    <?php if($element->{$side.'_lens_status'}): ?>
+    <?php if ($element->{$side.'_lens_status'}) : ?>
         <div class="eyedraw-data stack">
           <div class="data-label">
             <?php echo $element->getAttributeLabel($side.'_lens_status_id') ?>:

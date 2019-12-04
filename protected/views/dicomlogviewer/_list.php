@@ -27,7 +27,7 @@
                 <div class="alert-box">
                     No Dicom logs match the search criteria.
                 </div>
-            <?php
+                <?php
             } else {?>
                 <div class="pagination"></div>
                 <table class="standard audit-logs">
@@ -48,7 +48,7 @@
                     </thead>
                     <tbody id="auditListData">
                         <?php foreach ($data['files_data'] as $i => $log) {
-                          $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
+                            $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
                         }?>
                     </tbody>
                 </table>

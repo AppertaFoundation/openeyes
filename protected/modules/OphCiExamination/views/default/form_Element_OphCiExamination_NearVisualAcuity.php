@@ -27,21 +27,22 @@ $key = 0;
 
 <div class="element-both-eyes">
   <div>
-      <?php if ($element->isNewRecord) { ?>
+        <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?=\CHtml::dropDownList(
+            <?=\CHtml::dropDownList(
               'nearvisualacuity_unit_change',
               @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
               array('class' => 'inline'));
-          if ($element->unit->information) { ?>
+            if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
             </div>
-              <?php
-          } } ?>
+                  <?php
+            }
+        } ?>
   </div>
 </div>
 
@@ -50,8 +51,10 @@ $key = 0;
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) {
+        ?> inactive <?php
+                               } ?>"
           data-side="<?= $eye_side ?>"
     >
       <div class="active-form data-group flex-layout"
@@ -123,12 +126,12 @@ $key = 0;
         openButton: $("#add-NearVisualAcuity-reading-btn-<?= $eye_side?>"),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
-              return ['label' => $value, 'id' => $key];
-              }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
-                }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
+              }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');

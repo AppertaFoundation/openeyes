@@ -20,26 +20,25 @@
 
     <?php
         // Event actions
-        if ($this->checkPrintAccess()) {
-            // TODO: need to check if the event is draft!
-            $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
+    if ($this->checkPrintAccess()) {
+        // TODO: need to check if the event is draft!
+        $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
 
-            if($elementLetter->draft){
-                $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
-            } else {
-                $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
-                $this->event_actions[] = EventAction::button(
-                    'Print all',
-                    'printall',
-                    null,
-                    array(
-                        'id' => 'et_print_all',
-                        'class' => 'small',
-                    )
-                );
-            }
-            
+        if ($elementLetter->draft) {
+            $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
+        } else {
+            $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
+            $this->event_actions[] = EventAction::button(
+                'Print all',
+                'printall',
+                null,
+                array(
+                    'id' => 'et_print_all',
+                    'class' => 'small',
+                )
+            );
         }
+    }
     ?>
 
     <?php if ($this->event->delete_pending) {?>

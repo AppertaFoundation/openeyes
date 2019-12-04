@@ -224,7 +224,7 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
         foreach ($this->complication_assignments as $ca) {
             $curr_by_id[$ca->complication_id] = $ca;
         }
-        if(!empty($ids)){
+        if (!empty($ids)) {
             foreach ($ids as $id) {
                 if (!array_key_exists($id, $curr_by_id)) {
                     $ass = new OphTrOperationnote_Trabectome_ComplicationAssignment();

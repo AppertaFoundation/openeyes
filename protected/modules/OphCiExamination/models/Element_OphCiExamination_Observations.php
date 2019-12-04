@@ -119,20 +119,20 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('event_id',$this->event_id,true);
-        $criteria->compare('blood_pressure_systolic',$this->blood_pressure_systolic,true);
-        $criteria->compare('blood_pressure_diastolic',$this->blood_pressure_diastolic,true);
-        $criteria->compare('o2_sat',$this->o2_sat,true);
-        $criteria->compare('blood_glucose',$this->blood_glucose,true);
-        $criteria->compare('hba1c',$this->hba1c,true);
-        $criteria->compare('height',$this->height,true);
-        $criteria->compare('weight',$this->weight,true);
-        $criteria->compare('pulse',$this->pulse,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('blood_pressure_systolic', $this->blood_pressure_systolic, true);
+        $criteria->compare('blood_pressure_diastolic', $this->blood_pressure_diastolic, true);
+        $criteria->compare('o2_sat', $this->o2_sat, true);
+        $criteria->compare('blood_glucose', $this->blood_glucose, true);
+        $criteria->compare('hba1c', $this->hba1c, true);
+        $criteria->compare('height', $this->height, true);
+        $criteria->compare('weight', $this->weight, true);
+        $criteria->compare('pulse', $this->pulse, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -145,7 +145,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
      * @param string $className active record class name.
      * @return Element_OphCiExamination_Observations the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -156,7 +156,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
      * @params $height height in centimeters
      * @return float
      */
-    public function bmiCalculator( $weight , $height)
+    public function bmiCalculator($weight, $height)
     {
         $height_meter = $height / 100;
         $result = $weight / ($height_meter * $height_meter);

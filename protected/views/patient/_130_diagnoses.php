@@ -108,7 +108,9 @@
                             <div class="<?= $form->columns('field');?>">
                                 <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
                                     <label class="inline">
-                                        <input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?= $eye->id?>"<?php if ($i == 0) {?> checked="checked"<?php }?> /> <?= $eye->name?>
+                                        <input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?= $eye->id?>"<?php if ($i == 0) {
+                                            ?> checked="checked"<?php
+                                                                                                              }?> /> <?= $eye->name?>
                                     </label>
                                 <?php }?>
                             </div>

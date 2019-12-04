@@ -132,13 +132,14 @@ do
     shift # move to next parameter
 done
 
-# If we are checking out new branch,then pass all unprocessed commands to checkout command
+# If we are checking out new branch,then pass all unprocessed commands to checkout command and set single-branch and depth for speed
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
+		checkoutparams="$chekoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
-            $checkoutparams="$checkoutparams $i"
+            checkoutparams="$checkoutparams $i"
         done
     else
         echo "Unknown Parameter(s):"
@@ -242,7 +243,7 @@ fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
-[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
+[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
 
 	echo "

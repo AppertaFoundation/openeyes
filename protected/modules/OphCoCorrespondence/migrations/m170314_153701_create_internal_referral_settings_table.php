@@ -4,7 +4,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 {
     public function up()
     {
-        $this->createOETable('ophcocorrespondence_internal_referral_settings',array(
+        $this->createOETable('ophcocorrespondence_internal_referral_settings', array(
             'id' => 'pk',
             'display_order' => "tinyint(3) unsigned DEFAULT '0'",
             'field_type_id' => 'int(10) unsigned NOT NULL',
@@ -25,7 +25,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
             'value' => 'varchar(255) COLLATE utf8_bin NOT NULL',
         ), $versioned = true);
 
-        $this->insert('ophcocorrespondence_internal_referral_settings',array(
+        $this->insert('ophcocorrespondence_internal_referral_settings', array(
             'field_type_id' => 3,
             'key' => 'is_enabled',
             'name' => 'Enable Internal referral',
@@ -39,7 +39,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 
         $textarea = SettingFieldType::model()->find('name = "Textarea"');
 
-        $this->insert('ophcocorrespondence_internal_referral_settings',array(
+        $this->insert('ophcocorrespondence_internal_referral_settings', array(
             'field_type_id' => $textarea->id,
             'key' => 'internal_referral_booking_address',
             'name' => 'Booking Address'
@@ -50,7 +50,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 
         $internal_referral_booking_address = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_booking_address'));
 
-        if(!$internal_referral_booking_address){
+        if (!$internal_referral_booking_address) {
             $internal_referral_booking_address = new SettingInternalReferral();
             $internal_referral_booking_address->key = 'internal_referral_booking_address';
         }
@@ -58,7 +58,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
         $internal_referral_booking_address->value = Institution::model()->getCurrent()->name . "\r" . (implode("\r", Institution::model()->getCurrent()->getLetterAddress()));
         $internal_referral_booking_address->save();
 
-        $this->insert('ophcocorrespondence_internal_referral_settings',array(
+        $this->insert('ophcocorrespondence_internal_referral_settings', array(
             'field_type_id' => 4,
             'key' => 'internal_referral_method_label',
             'name' => 'Delivery Method Label'
@@ -66,7 +66,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 
         $delivery_method_label = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_method_label'));
 
-        if(!$delivery_method_label){
+        if (!$delivery_method_label) {
             $delivery_method_label = new SettingInternalReferral();
             $delivery_method_label->key = 'internal_referral_method_label';
         }

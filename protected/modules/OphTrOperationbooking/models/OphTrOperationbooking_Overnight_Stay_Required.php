@@ -87,8 +87,8 @@ class OphTrOperationbooking_Overnight_Stay_Required extends BaseActiveRecord
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('name',$this->name,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -101,7 +101,7 @@ class OphTrOperationbooking_Overnight_Stay_Required extends BaseActiveRecord
      * @param string $className active record class name.
      * @return OphTrOperationbooking_Overnight_Stay_Required the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

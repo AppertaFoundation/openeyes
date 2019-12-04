@@ -30,7 +30,7 @@ if (!$nowrapper) {?>
     </div>
 </div>
 <?php } else {
-  echo CHtml::dropDownList("{$class}[$field]", '', array(), array_merge($list_options, array('class' => 'diagnosis-selection')));
+    echo CHtml::dropDownList("{$class}[$field]", '', array(), array_merge($list_options, array('class' => 'diagnosis-selection')));
 }?>
 
 <?php if (!$nowrapper) {?>
@@ -43,9 +43,9 @@ if (!$nowrapper) {?>
       <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
         </div>
   </div>
-<?php }else{?>
+<?php } else {?>
 <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="hidden">
-  <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array('style' => 'display: none;'));?>
+    <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array('style' => 'display: none;'));?>
 </div>
 <?php }?>
 
@@ -53,16 +53,18 @@ if (!$nowrapper) {?>
 
 <?php if (!$nowrapper) {?>
 <div class="data-group">
-        <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$showLabel) {?> hidden<?php }?>">
+        <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$showLabel) {
+            ?> hidden<?php
+                         }?>">
             <label></label>
         </div>
     <div class="cols-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
         <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
             <?php
-      $this->widget(
-          'zii.widgets.jui.CJuiAutoComplete',
-          array(
+            $this->widget(
+            'zii.widgets.jui.CJuiAutoComplete',
+            array(
               'name' => "{$class}[$field]",
               'id' => "{$class_field}_0",
               'value' => '',
@@ -110,9 +112,9 @@ if (!$nowrapper) {?>
               'htmlOptions' => array(
                   'placeholder' => $placeholder,
               ),
-          )
-      );
-      ?>
+            )
+            );
+            ?>
         </div>
 <?php if (!$nowrapper) {?>
     </div>
@@ -319,10 +321,10 @@ if (!$nowrapper) {?>
     {
         if (condition.id) {
             <?php if (@$callback) {
-        echo $callback.'(condition.type, condition.id, condition.label);';
-      } else {
-        echo "console.log('NO CALLBACK SPECIFIED');";
-      }?>
+                echo $callback.'(condition.type, condition.id, condition.label);';
+            } else {
+                echo "console.log('NO CALLBACK SPECIFIED');";
+            }?>
         }
     }
 

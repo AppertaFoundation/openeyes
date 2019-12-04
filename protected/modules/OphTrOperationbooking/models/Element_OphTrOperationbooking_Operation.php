@@ -338,7 +338,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public function beforeValidate()
     {
-        if(!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
+        if (!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
             $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
         }
         return parent::beforeValidate();
@@ -442,7 +442,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if( !count($this->anaesthetic_type_assignments)){
+        if ( !count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -695,7 +695,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $rtt_date = $this->getRTTBreach();
 
         $criteria = new CDbCriteria();
-        if($firm->id) {
+        if ($firm->id) {
             $criteria->compare('firm_id', $firm->id);
         } else {
             $criteria->addCondition('firm_id is null');
@@ -717,7 +717,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $sessions = array();
 
         foreach ($days as $day => $dates) {
-            for ($i = 1;$i <= date('t', mktime(0, 0, 0, $month, 1, $year));++$i) {
+            for ($i = 1; $i <= date('t', mktime(0, 0, 0, $month, 1, $year)); ++$i) {
                 if (date('D', mktime(0, 0, 0, $month, $i, $year)) == $day) {
                     $date = "$year-$month-".str_pad($i, 2, '0', STR_PAD_LEFT);
                     if (in_array($date, $dates) && (Yii::app()->user->checkAccess('Super schedule operation') || !Yii::app()->params['future_scheduling_limit'] || $date <= date('Y-m-d', strtotime('+'.Yii::app()->params['future_scheduling_limit'])))) {
@@ -728,7 +728,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                         } else {
                             $hasFreeProcedures = false;
                             foreach ($sessiondata[$date] as $session) {
-
                                 // Check if at least one session has enough allocated max_procedures to allow the booking
                                 if (!$session->operationBookable($this)) {
                                     continue;
@@ -912,7 +911,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function hasAnaestheticTypeByCode($code)
     {
         return count(array_filter($this->anaesthetic_type,
-                function($a_type) use ($code) { return $a_type == $code;})
+                function ($a_type) use ($code) {
+                    return $a_type == $code;
+                })
             ) > 0;
     }
 
@@ -1017,8 +1018,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                                  ->with(array(
                                 'firm' => array(
                                         'joinType' => 'JOIN',
-                                ),
-                        ))
+                                 ),
+                                 ))
                          ->findAll($criteria) as $session) {
             $available_time = $session->availableMinutes;
             if ($available_time < $this->total_duration) {
@@ -1157,9 +1158,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      *
      * @return array|bool
      */
-    public function schedule($booking, $operation_comments, $session_comments, $operation_comments_rtt,
-            $_reschedule = false, $cancellation_data = null, $schedule_op = null)
-    {
+    public function schedule(
+        $booking,
+        $operation_comments,
+        $session_comments,
+        $operation_comments_rtt,
+        $_reschedule = false,
+        $cancellation_data = null,
+        $schedule_op = null
+    ) {
         $this->reschedule = $_reschedule;
         if ($schedule_op == null) {
             throw new Exception('schedule_op argument required for scheduling');
@@ -1723,13 +1730,54 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return array_key_exists($this->complexity, self::$complexity_colors) ? self::$complexity_colors[$this->complexity] : '';
     }
 
-    public function getAnaesthetist_required(){
+    public function getAnaesthetist_required()
+    {
         $anaesthetist_required = false;
-        foreach($this->anaesthetic_type as $anaesthetic_type){
-            if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
+        foreach ($this->anaesthetic_type as $anaesthetic_type) {
+            if ( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ) {
                 $anaesthetist_required = true;
             }
         }
         return $anaesthetist_required;
+    }
+
+    public function getAllBookingRisks()
+    {
+        $risks = array();
+        foreach ($this->procedures as $procedure) {
+            $risks = array_merge(
+                $risks,
+                $procedure->risks
+            );
+        }
+        return $risks;
+    }
+
+    public function getAllBookingRiskIds()
+    {
+        $risks = array();
+        foreach ($this->procedures as $procedure) {
+            $risks = array_merge(
+                $risks,
+                array_map(static function ($risk) {
+                    return $risk->id;
+                }, $procedure->risks)
+            );
+        }
+        return $risks;
+    }
+
+    public function getAllProcedureOpnotes()
+    {
+        $opnotes = array();
+        foreach ($this->procedures as $procedure) {
+            if (isset($procedure->operationNotes)) {
+                $opnotes = array_merge(
+                    $opnotes,
+                    $procedure->operationNotes
+                );
+            }
+        }
+        return $opnotes;
     }
 }

@@ -13,9 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($emails): ?>
-    <?php foreach ($emails as $email): ?>
-        <?php if (($files = $email->attachments)): ?>
+<?php if ($emails) : ?>
+    <?php foreach ($emails as $email) : ?>
+        <?php if (($files = $email->attachments)) : ?>
             <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Application files:</div>
@@ -23,7 +23,7 @@
                 <div class="cols-8 column">
                     <div class="data-value">
                         <ul class="application-files">
-                            <?php foreach ($files as $file): ?>
+                            <?php foreach ($files as $file) : ?>
                                 <li><a href="<?= $file->getDownloadURL() ?>"><?php echo $file->name; ?></a></li>
                             <?php endforeach ?>
                         </ul>
@@ -37,6 +37,6 @@
             </span>
         </div>
     <?php endforeach ?>
-<?php else: ?>
+<?php else : ?>
     <div class="data-value">N/A</div>
 <?php endif ?>

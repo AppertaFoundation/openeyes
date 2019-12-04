@@ -217,14 +217,12 @@ class BaseAdminController extends BaseController
                             if (!$item->delete()) {
                                 $tx->rollback();
                                 $error = $item->getErrors();
-                                foreach ($error as $e)
-                                {
+                                foreach ($error as $e) {
                                     $errors[$i]=$e[0];
                                 }
 
                                 Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
                                 $this->redirect(Yii::app()->request->url);
-
                             }
                             Audit::add('admin', 'delete', $item->primaryKey, null, array(
                                 'module' => (is_object($this->module)) ? $this->module->id : 'core',
@@ -236,12 +234,11 @@ class BaseAdminController extends BaseController
 
                         Yii::app()->user->setFlash('success', 'List updated.');
 
-                        if($options['return_url']) {
+                        if ($options['return_url']) {
                             $this->redirect($options['return_url']);
                         } else {
                             $this->redirect(Yii::app()->request->url);
                         }
-
                     } else {
                         $tx->rollback();
                     }

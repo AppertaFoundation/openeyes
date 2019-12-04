@@ -31,7 +31,7 @@
                                                                data-tooltip-content="Cannot be changed after message creation."></span></label>
           </td>
           <td style="text-align: right;">
-              <?php if ($element->isNewRecord) { ?>
+                <?php if ($element->isNewRecord) { ?>
                 <div class="autocomplete-row">
                   <span id="fao-field">
                     <span
@@ -39,12 +39,12 @@
                       <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                     </span>
                 </div>
-              <?php } else { ?>
+                <?php } else { ?>
                 <div class="cols-4">
                   <div class="data-value"><?= $element->for_the_attention_of_user->getFullnameAndTitle(); ?></div>
                 </div>
-              <?php } ?>
-              <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
+                <?php } ?>
+                <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
           </td>
         </tr>
         <tr>
@@ -52,7 +52,7 @@
             Type:
           </td>
           <td>
-              <?php echo $form->dropDownList($element, 'message_type_id',
+                <?php echo $form->dropDownList($element, 'message_type_id',
                   CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
                       'id', 'name'), array('empty' => 'Select', 'nolabel' => true), false,
                   array('label' => 0, 'field' => 12)) ?>
@@ -64,7 +64,7 @@
             Urgent:
           </td>
           <td style="text-align: right;">
-              <?php echo $form->checkbox($element, 'urgent', array('nowrapper' => true, 'no-label' => true),
+                <?php echo $form->checkbox($element, 'urgent', array('nowrapper' => true, 'no-label' => true),
                   array('field' => 11)) ?>
           </td>
         </tr>
@@ -83,7 +83,7 @@
             Message
           </td>
           <td>
-              <?php echo $form->textArea($element, 'message_text',
+                <?php echo $form->textArea($element, 'message_text',
                   array('rows' => 4, 'cols' => 500, 'no_label' => true), false,
                   array('placeholder' => 'Your Message...', 'class' => 'autosize'), array('label' => 2, 'field' => 12)) ?>
           </td>

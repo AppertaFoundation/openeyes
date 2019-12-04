@@ -33,7 +33,9 @@
 
         <p>
             <?php if ($operation->status->name == 'Rescheduled') {?>
-                I am writing to inform you that the date for your <?php echo $operation->textOperationName?> has been changed<?php if (isset($operation->cancelledBookings[0])) {?> from <?php echo date('jS F Y', strtotime($operation->cancelledBookings[0]->session_date));}?>, the new details are:
+                I am writing to inform you that the date for your <?php echo $operation->textOperationName?> has been changed<?php if (isset($operation->cancelledBookings[0])) {
+                    ?> from <?php echo date('jS F Y', strtotime($operation->cancelledBookings[0]->session_date));
+                                                                  }?>, the new details are:
             <?php } else {?>
                 I am pleased to confirm the date of your <?php echo $operation->textOperationName?> under care of <?php echo $firm->consultantName?>. The details are:
             <?php }?>

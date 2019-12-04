@@ -18,11 +18,11 @@ class m170328_095257_optom_feedback_role extends OEMigration
         $this->insert('ophciexamination_invoice_status', array('name' => 'Paid'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Rejected'));
 
-        $this->addColumn('automatic_examination_event_log', 'invoice_status_id','integer unsigned not null DEFAULT 0');
-        $this->addColumn('automatic_examination_event_log', 'comment','text');
+        $this->addColumn('automatic_examination_event_log', 'invoice_status_id', 'integer unsigned not null DEFAULT 0');
+        $this->addColumn('automatic_examination_event_log', 'comment', 'text');
 
-        $this->addColumn('automatic_examination_event_log_version', 'invoice_status_id','integer unsigned not null');
-        $this->addColumn('automatic_examination_event_log_version', 'comment','text');
+        $this->addColumn('automatic_examination_event_log_version', 'invoice_status_id', 'integer unsigned not null');
+        $this->addColumn('automatic_examination_event_log_version', 'comment', 'text');
     }
 
     public function down()

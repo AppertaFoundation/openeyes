@@ -19,7 +19,7 @@
 
 <?php
 $form_id = 'examination-update';
-$this->beginContent('//patient/event_container',array('no_face'=>false , 'form_id' => $form_id)); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id)); ?>
     <?php
         $this->breadcrumbs = array($this->module->id);
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
@@ -32,11 +32,11 @@ $this->beginContent('//patient/event_container',array('no_face'=>false , 'form_i
             'field' => 8,
         ),
     ));
-    ?>
+?>
     <?php
-        if (!empty($errors)) {
-            ;
-        }  ?>
+    if (!empty($errors)) {
+        ;
+    }  ?>
         <script type='text/javascript'>
             $(document).ready( function(){
                 window.formHasChanged = true;

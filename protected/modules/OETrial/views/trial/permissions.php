@@ -33,13 +33,13 @@
             <th>Permission</th>
             <th>Principal Investigator</th>
             <th>Study Coordinator</th>
-              <?php if ($permission && $permission->can_manage): ?>
+                <?php if ($permission && $permission->can_manage) : ?>
                 <th></th>
-              <?php endif; ?>
+                <?php endif; ?>
           </tr>
           </thead>
           <tbody>
-          <?php $this->widget('zii.widgets.CListView', array(
+            <?php $this->widget('zii.widgets.CListView', array(
               'id' => 'permissionList',
               'dataProvider' => $permissionDataProvider,
               'itemView' => '/userTrialPermission/_view',
@@ -51,8 +51,8 @@
           <tr>
             <td colspan="6">
               <div class="pagination">
-                  <?php
-                  $this->widget('LinkPager', array(
+                    <?php
+                    $this->widget('LinkPager', array(
                       'pages' => $permissionDataProvider->getPagination(),
                       'maxButtonCount' => 15,
                       'cssFile' => false,
@@ -61,15 +61,15 @@
                       'htmlOptions' => array(
                           'class' => 'pagination',
                       ),
-                  ))
-                  ?>
+                    ))
+                    ?>
               </div>
             </td>
           </tr>
           </tfoot>
         </table>
 
-          <?php if ($permission && $permission->can_manage): ?>
+            <?php if ($permission && $permission->can_manage) : ?>
             <div class="cols-6">
               <h3 class="element-title">Share with another user:</h3>
               <table class="standard">
@@ -108,7 +108,7 @@
                         }',
                           ),
                           'htmlOptions' => array(
-                              'placeholder' => 'search Users',
+                              'placeholder' => 'Search Users',
                           ),
                       )); ?>
                   </td>
@@ -138,7 +138,7 @@
               </table>
 
               <div id="selected_user_wrapper" style="<?= !$newPermission->user_id ? 'display: none;' : '' ?>">
-                <button class="secondary small js-save-permission">Share with
+                <button class="secondary small js-save-permission">Share with &nbsp;
                   <span id="user_name">
                       <?= CHtml::encode($newPermission->user_id ? $newPermission->user->getFullName() : ''); ?>
                       </span>
@@ -156,13 +156,13 @@
                 Please contact an administrator and ask them to give that user the "Create Trial" or "Trial User" role.
               </div>
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
     </section>
   </main>
 </div>
 
-<?php if ($permission && $permission->can_manage): ?>
+<?php if ($permission && $permission->can_manage) : ?>
   <script type="text/javascript">
     function addItem(wrapper_id, ui) {
       var $wrapper = $('#' + wrapper_id);

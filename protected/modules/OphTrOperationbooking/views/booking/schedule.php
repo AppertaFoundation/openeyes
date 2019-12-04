@@ -29,7 +29,9 @@
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
 
-        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
+        <?php if (isset($errors) && !empty($errors)) {
+            $this->displayErrors($errors);
+        } ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">
@@ -141,7 +143,7 @@
                                     ?>
                                     <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
                                                 id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
-                                <? } else { ?>
+                                <?php } else { ?>
                                     <?php
                                     if ($operation->referral) {
                                         echo $operation->referral->getDescription();

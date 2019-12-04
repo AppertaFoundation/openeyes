@@ -17,7 +17,7 @@
  */
 ?>
 <div class="booking-admission-form">
-<?php 
+<?php
 $logoHelper = new LogoHelper();
 
 ?>

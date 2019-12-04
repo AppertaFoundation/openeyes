@@ -105,18 +105,18 @@ class EventAssociatedContent extends BaseActiveRecord
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id,true);
-        $criteria->compare('parent_event_id',$this->parent_event_id,true);
-        $criteria->compare('init_associated_content_id',$this->init_associated_content_id);
-        $criteria->compare('is_system_hidden',$this->is_system_hidden);
-        $criteria->compare('is_print_appended',$this->is_print_appended);
-        $criteria->compare('short_code',$this->short_code,true);
-        $criteria->compare('association_storage',$this->association_storage,true);
-        $criteria->compare('associated_event_id',$this->associated_event_id,true);
-        $criteria->compare('associated_protected_file_id',$this->associated_protected_file_id,true);
-        $criteria->compare('associated_url',$this->associated_url,true);
-        $criteria->compare('display_order',$this->display_order);
-        $criteria->compare('display_title',$this->display_title,true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('parent_event_id', $this->parent_event_id, true);
+        $criteria->compare('init_associated_content_id', $this->init_associated_content_id);
+        $criteria->compare('is_system_hidden', $this->is_system_hidden);
+        $criteria->compare('is_print_appended', $this->is_print_appended);
+        $criteria->compare('short_code', $this->short_code, true);
+        $criteria->compare('association_storage', $this->association_storage, true);
+        $criteria->compare('associated_event_id', $this->associated_event_id, true);
+        $criteria->compare('associated_protected_file_id', $this->associated_protected_file_id, true);
+        $criteria->compare('associated_url', $this->associated_url, true);
+        $criteria->compare('display_order', $this->display_order);
+        $criteria->compare('display_title', $this->display_title, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

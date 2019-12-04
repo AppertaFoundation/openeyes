@@ -7,7 +7,7 @@
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
       $('input[id=savedDiagnosis]').val('');
       $(this).parent().hide();
-      <?= (isset($callback) && strlen($callback)) ? $callback . '();' : '' ?>
+        <?= (isset($callback) && strlen($callback)) ? $callback . '();' : '' ?>
     });
   });
   var source = function(request, response) {
@@ -22,11 +22,11 @@
     });
   };
 
-  <?php
-if(is_array($value)):
-?>
+    <?php
+    if (is_array($value)) :
+        ?>
   var select = function(event, ui) {
-    <?= (isset($callback) && strlen($callback)) ? $callback . '(event, ui);' : ''?>
+        <?= (isset($callback) && strlen($callback)) ? $callback . '(event, ui);' : ''?>
     var $clear = $('<?=$clear_diagnosis?>'),
       $new= $('<span></span>');
 
@@ -42,9 +42,9 @@ if(is_array($value)):
     $('#<?php echo $class?>_<?php echo $name?> option:first').attr('selected', 'selected');
     return false;
   };
-<?php else: ?>
+    <?php else : ?>
   var select = function(event, ui) {
-    <?= isset($callback) ? $callback . '(event, ui);' : ''?>
+        <?= isset($callback) ? $callback . '(event, ui);' : ''?>
     $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $('#enteredDiagnosisText').html(ui.item.value + ' <?=$clear_diagnosis?> ');
     $('#enteredDiagnosisText').show();
@@ -54,7 +54,7 @@ if(is_array($value)):
     $('#<?php echo $class?>_<?php echo $name?> option:first').attr('selected', 'selected');
     return false;
   };
-<?php endif;?>
+    <?php endif;?>
 </script>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -70,13 +70,13 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
         'placeholder' => $placeholder,
     ),
 ));
-if(is_array($value)):
-  foreach($value as $disorder):
-?>
+if (is_array($value)) :
+    foreach ($value as $disorder) :
+        ?>
   <input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="<?=$disorder->id?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
-<?php
-  endforeach;
-else:
-?>
+        <?php
+    endforeach;
+    else :
+        ?>
   <input type="hidden" name="<?=$class ?>[<?=$name ?>]" id="savedDiagnosis" value="<?=$value?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
-<?php endif; ?>
+    <?php endif; ?>

@@ -26,13 +26,13 @@ if (empty($episodes)) {
                 echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name); ?></div>
             <ul class="events">
         <?php
-                foreach ($episode->events as $event) { ?>
+        foreach ($episode->events as $event) { ?>
                 <li><?php
                 $text = '<span class="type">'.ucfirst($event->eventType->name).
-                    '</span><span class="date"> '.$event->NHSDate('created_date').
-                    '</span>';
-                    echo CHtml::link($text, array('clinical/view', 'id' => $event->id));
-                } ?>
+                '</span><span class="date"> '.$event->NHSDate('created_date').
+                '</span>';
+                echo CHtml::link($text, array('clinical/view', 'id' => $event->id));
+        } ?>
             </ul>
             <div class="footer"></div>
         </div>

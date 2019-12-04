@@ -31,7 +31,7 @@ class AttributesAdminController extends BaseAdminController
             'getItemsAdminLink'
         ));
         $admin->searchAll();
-        $admin->setModelDisplayName('Operation note attributes');
+        $admin->setModelDisplayName('Generic Operation Quick Text Options');
         $admin->div_wrapper_class = 'cols-12';
         //$admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
@@ -79,12 +79,11 @@ class AttributesAdminController extends BaseAdminController
         $attributeIdsArray = $post['id'];
 
         foreach ($attributeIdsArray as $key => $id) {
-            if($model = OphTrOperationnote_Attribute::model()->find($id)) {
+            if ($model = OphTrOperationnote_Attribute::model()->find($id)) {
                 try {
                     $model->delete();
                     echo "1";
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     echo "The record could not be deleted";
                 }
             }

@@ -19,7 +19,7 @@
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('FamilyHistory.js') ?>"></script>
 <div class="element-fields flex-layout full-width">
-  <?php $model_name = CHtml::modelName($element); ?>
+    <?php $model_name = CHtml::modelName($element); ?>
     <div class="row"
          style="display: <?= count($element->entries) ? ' none' : ''?>"
          id="<?=$model_name?>_no_family_history_wrapper">
@@ -51,10 +51,10 @@
       </tr>
       </thead>
       <tbody>
-          <?php
-          $row_count = 0;
-          foreach ($element->entries as $entry) {
-              $this->render(
+            <?php
+            $row_count = 0;
+            foreach ($element->entries as $entry) {
+                $this->render(
                   'FamilyHistory_Entry_event_edit',
                   array(
                       'entry' => $entry,
@@ -67,10 +67,10 @@
                       'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
                       'row_count' => $row_count,
                   )
-              );
-              $row_count++;
-          }
-          ?>
+                );
+                $row_count++;
+            }
+            ?>
       </tbody>
   </table>
 
@@ -117,7 +117,7 @@
     $(document).ready(function() {
        var FamilyHistoryController = new OpenEyes.OphCiExamination.FamilyHistoryController();
        var templateText = $('#'+<?= CJSON::encode(CHtml::modelName($element).'_entry_template') ?>).text();
-      <?php
+        <?php
         $relative_options = $element->getRelativeOptions();
         $side_options = $element->getSideOptions();
         $condition_options = $element->getConditionOptions();

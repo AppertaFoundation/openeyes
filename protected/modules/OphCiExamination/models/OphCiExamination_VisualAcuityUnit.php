@@ -99,7 +99,7 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
      * @param $val float|int value of Visual Acuity to be adjusted
      * @return float|int adjusted value
      */
-    public function getAdjustedVA( $val )
+    public function getAdjustedVA($val)
     {
         return $val > 4 ? $val : ($val-2) * 10;
     }
@@ -116,7 +116,7 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
             $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
         }
         
-        if($va_ticks[0][1] !== 'NPL'){
+        if ($va_ticks[0][1] !== 'NPL') {
             array_unshift($va_ticks, [$this->getAdjustedVA(4), 'CF']);
             array_unshift($va_ticks, [$this->getAdjustedVA(3), 'HM']);
             array_unshift($va_ticks, [$this->getAdjustedVA(2), 'PL']);
@@ -134,13 +134,13 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
         
         $new_ticks = array_slice($va_ticks, 0, $no_numeric_val_count);
         
-        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step){
+        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step) {
             array_push($new_ticks, $va_ticks[$i]);
         }
         
         $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
-        foreach ($new_ticks as $tick){
-            array_push($tick_data['tick_position'],(float)$tick[0]);
+        foreach ($new_ticks as $tick) {
+            array_push($tick_data['tick_position'], (float)$tick[0]);
             array_push($tick_data['tick_labels'], $tick[1]);
         }
         return $tick_data;

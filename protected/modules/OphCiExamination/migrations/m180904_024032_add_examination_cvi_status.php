@@ -44,6 +44,6 @@ class m180904_024032_add_examination_cvi_status extends OEMigration
         $this->dropTable('et_ophciexamination_cvi_status_version');
 
         $this->delete('element_type', 'class_name = ?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status'));
-        }
+    }
 
 }

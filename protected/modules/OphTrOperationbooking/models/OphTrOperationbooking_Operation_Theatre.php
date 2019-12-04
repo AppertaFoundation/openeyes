@@ -147,7 +147,8 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
             ->where('active = 1')
             ->from($model->tableName());
 
-        $ids = array_map(function($r) { return $r['site_id'];}, $cmd->queryAll());
+        $ids = array_map(function($r) { return $r['site_id'];
+        }, $cmd->queryAll());
 
         $criteria = new CDbCriteria();
         $criteria->addCondition("active = 1 and short_name != ''");

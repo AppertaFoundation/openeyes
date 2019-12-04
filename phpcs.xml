@@ -55,6 +55,7 @@
     <exclude-pattern>/.git</exclude-pattern>
     <exclude-pattern>/exclude.txt</exclude-pattern>
     <exclude-pattern>/protected/files/*</exclude-pattern>
+    <exclude-pattern>/protected/vendors/*</exclude-pattern>
 
     <!--
        You can hard-code command line values into your custom standard.
@@ -95,6 +96,6 @@
     </rule>
 
     <rule ref="Generic.Commenting.Fixme" />
-    <rule ref="Generic.CodeAnalysis.EmptyStatement">
+    <rule ref="Generic.CodeAnalysis.EmptyStatement" />
 
 </ruleset>

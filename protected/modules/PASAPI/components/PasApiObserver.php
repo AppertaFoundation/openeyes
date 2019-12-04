@@ -58,7 +58,7 @@ class PasApiObserver
     public function search($data)
     {
 
-        if( !$this->isAvailable() ){
+        if ( !$this->isAvailable() ) {
             // log ?
             return false;
         }
@@ -111,11 +111,10 @@ class PasApiObserver
 
         $transaction = \Yii::app()->db->beginTransaction();
         try {
-
             $xml_handler = $this->_xml_helper->getHandler();
 
             // move to the first <patient /> node
-            while ($xml_handler->read() && $xml_handler->name !== 'Patient') ;
+            while ($xml_handler->read() && $xml_handler->name !== 'Patient');
 
             // now that we're at the right depth, hop to the next <patient/> until the end of the tree
             while ($xml_handler->name === 'Patient') {
@@ -142,7 +141,6 @@ class PasApiObserver
                 if ($patient_count == 1) {
                     $save_resource();
                 } else if ($patient_count > 1) {
-
                     //XML contains more patients, some of them may exist in the local DB, we save those
                     //but not add to the $results array because Patient model's search function will retrieve them
                     if (!$_patient->isNewRecord) {
@@ -159,7 +157,6 @@ class PasApiObserver
             }
 
             $transaction->commit();
-
         } catch (Exception $e) {
             $transaction->rollback();
             \OELog::log("PASAPI : " . $e->getMessage());
@@ -264,11 +261,9 @@ class PasApiObserver
                 if ($param != null && $param != "" && !in_array($key, $pasapi_allowed_search_params)) {
                     return false;
                 }
-
             }
         }
         if (!empty($params['hos_num']) || !empty($params['nhs_num'])) {
-
             // validate the hos_num and hns_num
             $patient_search = new \PatientSearch();
             $hos_num = $patient_search->getHospitalNumber($params['hos_num']);
@@ -303,7 +298,7 @@ class PasApiObserver
 
     public function getPasApiAllowedSearchParams()
     {
-        if( array_key_exists('allowed_params', \Yii::app()->params['pasapi'])) {
+        if ( array_key_exists('allowed_params', \Yii::app()->params['pasapi'])) {
             $pas_api_allowed_params = \Yii::app()->params['pasapi']['allowed_params'];
         }
         return isset($pas_api_allowed_params) && is_array($pas_api_allowed_params)? $pas_api_allowed_params : [];

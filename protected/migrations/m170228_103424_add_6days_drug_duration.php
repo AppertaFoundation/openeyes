@@ -8,15 +8,14 @@ class m170228_103424_add_6days_drug_duration extends CDbMigration
         $sixdays_id = $this->dbConnection->createCommand('SELECT id FROM drug_duration WHERE name = "6 days"')->queryScalar();
 
 //      If so then terminate as success
-        if($sixdays_id){
+        if ($sixdays_id) {
             echo "6 days already exists";
             return true;
-        }else{
-
+        } else {
 //      If not then continue
 //      Get display_order for '5 days'
             $fivedays_display = $this->dbConnection->createCommand('SELECT display_order FROM drug_duration WHERE name = "5 days"')->queryScalar();
-            if(!$fivedays_display){
+            if (!$fivedays_display) {
                 // There is no row for '5 days' so treat it as if the new row should go at the end of the list.
                 $fivedays_display = $this->dbConnection->createCommand('SELECT max(display_order) FROM drug_duration')->queryScalar();
             }
@@ -33,7 +32,6 @@ class m170228_103424_add_6days_drug_duration extends CDbMigration
 //      Insert row for 6 days with display_order of value of 5 days + 1
             $sixdays_display = $fivedays_display + 1;
             $this->insert('drug_duration', array('name' => '6 days', 'display_order' => $sixdays_display));
-
         }
     }
 

@@ -40,8 +40,8 @@ foreach ($l1_disorders as $disorder) {
     if ($td_l2 = $element->getLevel2Disorders($disorder)) {
         $jsn_arry = array();
         foreach ($td_l2 as $l2) {
-            if(isset($l2->id) && isset($l2->term)){
-              $jsn_arry[] = array('id' => $l2->id, 'term' => $l2->term);
+            if (isset($l2->id) && isset($l2->term)) {
+                $jsn_arry[] = array('id' => $l2->id, 'term' => $l2->term);
             }
         }
         $l1_options[$disorder->id] = array('data-level2' => CJSON::encode($jsn_arry));
@@ -51,7 +51,7 @@ foreach ($l1_disorders as $disorder) {
 ?>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
     <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>
                 <?=(!$element->hasEye($eye_side))? "inactive":""?>"
          data-side="<?=$eye_side?>"
@@ -77,5 +77,5 @@ foreach ($l1_disorders as $disorder) {
         </div>
       </div>
     </div>
-  <?php endforeach;?>
+    <?php endforeach;?>
 </div>

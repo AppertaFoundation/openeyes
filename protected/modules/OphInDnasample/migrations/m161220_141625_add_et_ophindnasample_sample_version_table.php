@@ -21,7 +21,7 @@ class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigra
           '`is_local` tinyint(1) DEFAULT NULL',
           '`destination` text COLLATE utf8_unicode_ci',
           'version_date' => 'datetime NOT NULL',
-          'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',          
+          'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
           
           'KEY `et_ophinbloodsample_sample_version_lmui_fk` (`last_modified_user_id`)',
           'KEY `et_ophinbloodsample_sample_version_cui_fk` (`created_user_id`)',
@@ -29,7 +29,7 @@ class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigra
           'KEY `et_ophindnasample_sample_version_vi_fk` (`version_id`)',
           
            
-        ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin' );  
+        ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin' );
     }
 
     public function down()

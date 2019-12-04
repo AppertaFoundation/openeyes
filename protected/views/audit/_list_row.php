@@ -18,10 +18,12 @@
 
 $core_api = new CoreAPI();
 ?>
-<tr class="<?php 
+<tr class="<?php
     echo (($i % 2 == 0) ? 'even' : 'edd');
     echo ' '.strtolower($log->colour);?>" 
-    id="audit<?php echo $log->id?>" <?php if (@$hidden) {?> style="display: none;"<?php }?>>
+    id="audit<?php echo $log->id?>" <?php if (@$hidden) {
+        ?> style="display: none;"<?php
+             }?>>
     <td>
         <a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
             <?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
@@ -86,11 +88,11 @@ $core_api = new CoreAPI();
                             <div class="data" id="dataspan<?php echo $log->id?>">
                                 <?php
 
-                                    if( is_array($data) ){
-                                        echo "<pre>" . print_r($data, true) . "</pre>";
-                                    } else {
-                                        echo $data;
-                                    }
+                                if ( is_array($data) ) {
+                                    echo "<pre>" . print_r($data, true) . "</pre>";
+                                } else {
+                                    echo $data;
+                                }
                                 ?>
                             </div>
                         <?php } else {?>

@@ -41,37 +41,67 @@ class DrugController extends \ModuleAdminController
     }
 
     /**
+     * Updates the selected Model
+     */
+    public function actionUpdate()
+    {
+        $request = Yii::app()->getRequest();
+        $id = $request->getParam('id');
+        $model = OphCiExamination_Dilation_Drugs::model()->findByPk($id);
+
+        if (!$model) {
+            $this->redirect(['dilationDrugs']);
+        }
+
+        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        if ($new_attributes) {
+            $model->setAttributes($new_attributes);
+
+            if ($model->save()) {
+                Audit::add('admin', 'edit', serialize($model->attributes), false,
+                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+                Yii::app()->user->setFlash('success', 'Drop edited');
+                $this->redirect(['dilationDrugs']);
+            }
+        }
+        $this->render('/Drug/edit', [
+          'model' => $model,
+          'errors' => $model->getErrors(),
+        ]);
+    }
+
+    /**
     * Deletes the selected models
     */
     public function actionDelete()
     {
 
-        $delete_ids = Yii::app()->request->getPost('select',[]);
+        $delete_ids = Yii::app()->request->getPost('select', []);
         $transaction = Yii::app()->db->beginTransaction();
         $success = true;
         try {
-          foreach ($delete_ids as $drug_id) {
-            $drug = OphCiExamination_Dilation_Drugs::model()->findByPk($drug_id);
-            if ($drug) {
-              if (!$drug->delete()) {
-                $success = false;
-                break;
-              } else {
-                Audit::add('admin-dilation-drugs', 'delete', serialize($drug));
-              }
+            foreach ($delete_ids as $drug_id) {
+                $drug = OphCiExamination_Dilation_Drugs::model()->findByPk($drug_id);
+                if ($drug) {
+                    if (!$drug->delete()) {
+                        $success = false;
+                        break;
+                    } else {
+                        Audit::add('admin-dilation-drugs', 'delete', serialize($drug));
+                    }
+                }
             }
-          }
         } catch (Exception $e) {
-          \OELog::log($e->getMessage());
-          $success = false;
+            \OELog::log($e->getMessage());
+            $success = false;
         }
 
-        if($success) {
-          $transaction->commit();
-          echo '1';
+        if ($success) {
+            $transaction->commit();
+            echo '1';
         } else {
-          $transaction->rollback();
-          echo '0';
+            $transaction->rollback();
+            echo '0';
         }
     }
 
@@ -83,21 +113,20 @@ class DrugController extends \ModuleAdminController
     {
         $model = new OphCiExamination_Dilation_Drugs();
         $request = Yii::app()->getRequest();
-        if ($request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs')) {
-          $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        $new_attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs');
+        if ($new_attributes) {
+            $model->setAttributes($new_attributes);
 
-          if ($model->save()) {
-            Audit::add('admin', 'create', serialize($model->attributes), false,
-              ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
-            Yii::app()->user->setFlash('success', 'Dilation drops created');
-            $this->redirect(['dilationDrugs']);
-          } else {
-            $errors = $model->getErrors();
-          }
+            if ($model->save()) {
+                Audit::add('admin', 'create', serialize($model->attributes), false,
+                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+                Yii::app()->user->setFlash('success', 'Drop created');
+                $this->redirect(['dilationDrugs']);
+            }
         }
         $this->render('/Drug/edit', [
           'model' => $model,
-          'errors' => isset($errors) ? $errors : null,
+          'errors' => $model->getErrors(),
         ]);
     }
 }

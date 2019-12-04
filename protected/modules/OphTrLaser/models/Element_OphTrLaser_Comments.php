@@ -94,7 +94,7 @@ class Element_OphTrLaser_Comments extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-'comments' => 'Comments',
+        'comments' => 'Comments',
         );
     }
 

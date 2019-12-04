@@ -60,8 +60,8 @@ class m190214_111213_fixing_issue_where_insert_and_update_queries_are_done_befor
     public function safeUp()
     {
         $group_id = $this->dbConnection->createCommand()->select('id')->from('element_group')->where('name = "Visual Function"')->queryScalar();
-        if($group_id){
-            $this->update('element_type',['element_group_id' => $group_id], "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
+        if ($group_id) {
+            $this->update('element_type', ['element_group_id' => $group_id], "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
         }
 
         $this->insert('element_group', array(
@@ -84,14 +84,14 @@ class m190214_111213_fixing_issue_where_insert_and_update_queries_are_done_befor
 
         $group_id = $this->dbConnection->createCommand()->select('id')->from('element_group')->where('name = "Visual Function"')->queryScalar();
 
-        if($group_id){
+        if ($group_id) {
             $this->update('element_type', array('element_group_id' => $group_id), 'id = :id', array(':id' => $this->getElementId('Element_OphCiExamination_Refraction')));
         }
     }
 
     public function safeDown()
     {
-        $this->update('element_type', ['element_group_id' => null],"class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
+        $this->update('element_type', ['element_group_id' => null], "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
 
         $this->delete('element_group', array(
             'name' => 'Retina',

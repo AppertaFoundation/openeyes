@@ -17,13 +17,13 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye cols-6 <?= $eye_side ?>-eye ">
         <div class="data-group">
-            <?php if ($element->hasEye($eye_side)): ?>
+            <?php if ($element->hasEye($eye_side)) : ?>
                 <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
                     array('side' => $eye_side, 'element' => $element)); ?>
-            <?php else: ?>
+            <?php else : ?>
               <div class="data-value not-recorded">Not recorded</div>
             <?php endif; ?>
         </div>

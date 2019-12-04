@@ -18,7 +18,7 @@ class m180409_113833_create_table_sysdiag_check extends OEMigration
         $this->createIndex('idx_ophciexamination_sysdiag_check_did', 'ophciexamination_systemic_diagnoses_req_diag_check', 'disorder_id');
 
         $this->addForeignKey('fk_ophciexamination_sysdiag_check_eid', 'ophciexamination_systemic_diagnoses_req_diag_check', 'element_id', 'et_ophciexamination_systemic_diagnoses', 'id');
-        $this->addForeignKey('fk_ophciexamination_sysdiag_check_did', 'ophciexamination_systemic_diagnoses_req_diag_check', 'disorder_id',  'disorder', 'id');
+        $this->addForeignKey('fk_ophciexamination_sysdiag_check_did', 'ophciexamination_systemic_diagnoses_req_diag_check', 'disorder_id', 'disorder', 'id');
 
     }
 

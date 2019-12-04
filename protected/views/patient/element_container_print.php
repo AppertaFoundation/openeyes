@@ -23,7 +23,7 @@
 } else {
     echo 'full priority';
 } ?>
-          <?= CHtml::modelName($element->elementType->class_name) ?>"
+            <?= CHtml::modelName($element->elementType->class_name) ?>"
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="<?php echo $element->elementType->name ?>"

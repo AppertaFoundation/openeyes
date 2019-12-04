@@ -10,7 +10,7 @@ class m181228_044926_add_ethics_number_to_trial extends OEMigration
 
     public function safeDown()
     {
-        $this->dropColumn('trial','ethics_number');
-        $this->dropColumn('trial_version','ethics_number');
+        $this->dropColumn('trial', 'ethics_number');
+        $this->dropColumn('trial_version', 'ethics_number');
     }
 }

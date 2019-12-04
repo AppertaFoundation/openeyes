@@ -166,7 +166,7 @@ class m160224_140614_post_op_complications extends OEMigration
         );
 
         $this->addForeignKey('et_ophciexamination_postop_c_eye_id_fk', 'et_ophciexamination_postop_complications', 'eye_id', 'eye', 'id');
-        $this->addForeignKey('et_ophciexamination_postop_c_ev_fk',  'et_ophciexamination_postop_complications', 'event_id', 'event', 'id');
+        $this->addForeignKey('et_ophciexamination_postop_c_ev_fk', 'et_ophciexamination_postop_complications', 'event_id', 'event', 'id');
 
         $this->createOETable(
             'ophciexamination_postop_et_complications',
@@ -180,8 +180,8 @@ class m160224_140614_post_op_complications extends OEMigration
             true
         );
         $this->addForeignKey('ophciexamination_postop_et_complications_eye_id_fk', 'ophciexamination_postop_et_complications', 'eye_id', 'eye', 'id');
-        $this->addForeignKey('ophciexamination_postop_et_complications_et_fk',  'ophciexamination_postop_et_complications', 'element_id', 'et_ophciexamination_postop_complications', 'id');
-        $this->addForeignKey('ophciexamination_postop_et_complications_co_fk',  'ophciexamination_postop_et_complications', 'complication_id', 'ophciexamination_postop_complications', 'id');
+        $this->addForeignKey('ophciexamination_postop_et_complications_et_fk', 'ophciexamination_postop_et_complications', 'element_id', 'et_ophciexamination_postop_complications', 'id');
+        $this->addForeignKey('ophciexamination_postop_et_complications_co_fk', 'ophciexamination_postop_et_complications', 'complication_id', 'ophciexamination_postop_complications', 'id');
 
         $this->createOETable(
             'ophciexamination_postop_complications_subspecialty',

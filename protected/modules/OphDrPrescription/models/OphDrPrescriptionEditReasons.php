@@ -82,8 +82,8 @@ class OphDrPrescriptionEditReasons extends BaseActiveRecord
     {
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('caption',$this->caption,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('caption', $this->caption, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -96,7 +96,7 @@ class OphDrPrescriptionEditReasons extends BaseActiveRecord
      * @param string $className active record class name.
      * @return OphdrprescriptionEditReasons the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

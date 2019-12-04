@@ -16,10 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
+$settings = new SettingMetadata();
+$tech_support_provider = $settings->getSetting('tech_support_provider');
+$tech_support_url = $settings->getSetting('tech_support_url')
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
-    <use xlink:href="<?= $logoUrl . '#openeyes-logo'; ?>"></use>
+    <use xlink:href="<?= $logoUrl . '#openeyes-logo' ?>"></use>
   </svg>
 </div>
 
@@ -38,7 +41,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 
   <div class="group">
     <h4>Feedback</h4>
-        <p>Send us <a href="<?php echo Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
+        <p>Send us <a href="<?= Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
   </div>
 
   <div class="group">
@@ -46,20 +49,16 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
     <p>OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.</p>
-    <p>Technical support is provided by <a href="https://www.abehr.com/" target="_blank">ABEHRdigital</a>.</p>
+    <p>Technical support is provided by <a href="<?= $tech_support_url?>" target="_blank"><?= $tech_support_provider ?></a>.</p>
   </div>
 
   <div class="group">
     <h4>Support</h4>
     <p>
-        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']): ?>
+        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
           <span class="large-text"> Need Help?
-              <?php if (Yii::app()->params['helpdesk_phone']): ?>
-                                <?php echo Yii::app()->params['helpdesk_phone'] ?>
-              <?php endif; ?>
-              <?php if (Yii::app()->params['helpdesk_email']): ?>
-                  <?php echo Yii::app()->params['helpdesk_email'] ?>
-              <?php endif; ?>
+              <?= Yii::app()->params['helpdesk_phone'] ?: null ?>
+              <?= Yii::app()->params['helpdesk_email'] ?: null ?>
           </span>
         <?php endif; ?>
     </p>
@@ -67,8 +66,8 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
   <div class="group">
     <h4>&copy; OpenEyes <?= date('Y') ?></h4>
     <p>
-      <a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">
-        Served by <?php echo trim(gethostname()) ?>
+      <a href="<?= Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">
+        Served by <?= trim(gethostname()) ?>
       </a>
     </p>
   </div>
@@ -93,7 +92,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
       // show all elements
       setTimeout(function () {$('.open-eyes').show();}, 100);
 
-        <?php if (!Yii::app()->user->isGuest): ?>
+        <?php if (!Yii::app()->user->isGuest) : ?>
       // Change the user's theme setting if they are logged in
       $.ajax({
         'type': 'GET',

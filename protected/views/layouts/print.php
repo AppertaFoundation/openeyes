@@ -18,7 +18,9 @@
 ?>
 <?php
     $printHelperClass = '';
-    switch(Yii::app()->controller->module->id){
+    $controller = Yii::app()->controller;
+if (!is_null($controller->module)) {
+    switch ($controller->module->id) {
         case 'OphCoCorrespondence':
             $printHelperClass = 'OphCoCorrespondence large-font';
             $printHelperStyles = 'margin: 0 80px';
@@ -27,6 +29,8 @@
             $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
     }
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,7 +46,7 @@
 
             // function for printing
             printFn = function() {
-                <?php if(Yii::app()->request->getParam('auto_print', true)){?>
+                <?php if (Yii::app()->request->getParam('auto_print', true)) {?>
                 window.print();
                 <?php } ?>
             };

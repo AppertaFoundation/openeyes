@@ -45,7 +45,9 @@
                         <td colspan="6"><?= $specialty_episodes['specialty'] ?></td>
                     </tr>
                     <?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
-                        <tr id="<?= $episode->id ?>"class="clickable all-episode <?php if ($episode->end_date !== null) { ?> closed<?php } ?>">
+                        <tr id="<?= $episode->id ?>"class="clickable all-episode <?php if ($episode->end_date !== null) {
+                            ?> closed<?php
+                                } ?>">
                             <td><?= $episode->NHSDate('start_date'); ?></td>
                             <td><?= $episode->NHSDate('end_date'); ?></td>
                             <td><?= $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>

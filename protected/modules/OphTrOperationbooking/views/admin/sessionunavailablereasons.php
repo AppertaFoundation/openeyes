@@ -35,7 +35,9 @@
                     <td>
                         <input type="checkbox" name="sessionunavailablereason[]" value="<?php echo $sessionunavailablereason->id?>" 
                                class="sessionunavailablereasons-enabled" 
-                                <?php if ($sessionunavailablereason->enabled) { echo 'checked'; } ?> />
+                                <?php if ($sessionunavailablereason->enabled) {
+                                    echo 'checked';
+                                } ?> />
                     </td>
                     <td><?php echo $sessionunavailablereason->name?></td>
                 </tr>

@@ -69,9 +69,9 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
         var previous_iop = <?= json_encode($iop)?>;
     </script>
     <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-    $hasEyeFunc = "has".ucfirst($eye);
-    ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+        $hasEyeFunc = "has".ucfirst($eye);
+        ?>
     <div class="js-element-eye <?=$eye?>-eye column <?=$side?> <?= !$element->$hasEyeFunc()? "inactive" : ""?>"
        data-side="<?=$eye?>"
   >
@@ -128,6 +128,6 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
             </div>
         </div>
     </div>
-  <?php endforeach;?>
+    <?php endforeach;?>
 </div>
 

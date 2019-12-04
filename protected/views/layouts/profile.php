@@ -44,10 +44,10 @@
 </div>
     <div class="oe-full-content oe-user-profile flex-layout flex-top">
       <nav class="oe-full-side-panel">
-          <?php $this->renderPartial('//profile/sidebar'); ?>
+            <?php $this->renderPartial('//profile/sidebar'); ?>
       </nav>
       <main class="oe-full-main">
-          <?php echo $content; ?>
+            <?php echo $content; ?>
       </main>
   </div><!-- /.content -->
 </body>

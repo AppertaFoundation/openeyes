@@ -4,7 +4,7 @@ class m170303_111742_rbac_to_edit_pedigree extends OEMigration
 {
     public function up()
     {
-        $this->addTaskToRole("TaskEditPedigreeData","Genetics Admin");
+        $this->addTaskToRole("TaskEditPedigreeData", "Genetics Admin");
     }
 
     public function down()

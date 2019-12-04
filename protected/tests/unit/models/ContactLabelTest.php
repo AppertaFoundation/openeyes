@@ -114,7 +114,7 @@ class ContactLabelTest extends CDbTestCase
         Yii::app()->session['selected_site_id'] = 1;
 
         $result = $this->model->staffType();
-        $expected = 'Moorfields staff';
+        $expected = 'Default staff';
 
         $this->assertEquals($expected, $result);
     }

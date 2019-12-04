@@ -27,7 +27,11 @@
     <?php }?>
     <div class="data">
         <?php foreach ($options as $name => $data) {?>
-            <select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" id="dropDownTextSelection_<?=\CHtml::modelName($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {?> data-remove-selections="false"<?php }?>>
+            <select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {
+                ?> <?php echo $htmlOptions['class']?><?php
+                                                }?>" id="dropDownTextSelection_<?=\CHtml::modelName($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {
+    ?> data-remove-selections="false"<?php
+                                                }?>>
                 <?php if (isset($data['empty'])) {?>
                     <option value=""><?=\CHtml::encode($data['empty'])?></option>
                 <?php } else {?>

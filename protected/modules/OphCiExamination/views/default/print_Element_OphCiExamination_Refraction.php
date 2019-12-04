@@ -16,12 +16,12 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="cols-6 js-element-eye <?= $eye_side ?>-eye">
             <table>
                 <tbody>
                     <tr>
-                        <?php if ($element->hasEye($eye_side)): ?>
+                        <?php if ($element->hasEye($eye_side)) : ?>
                             <td>
                                 <?= Yii::app()->format->text($element->getCombined($eye_side)) ?>
                             </td>
@@ -31,12 +31,12 @@
                                 ?>
                             </td>
                             <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
-                            <?php if ($element->{$eye_side . '_notes'}): ?>
+                            <?php if ($element->{$eye_side . '_notes'}) : ?>
                                 <td>
                                     <?php echo $element->textWithLineBreaks($eye_side . '_notes') ?>
                                 </td>
                             <?php endif; ?>
-                        <?php else: ?>
+                        <?php else : ?>
                             <td>
                                 Not recorded
                             </td>

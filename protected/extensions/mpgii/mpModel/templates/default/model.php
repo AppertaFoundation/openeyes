@@ -16,13 +16,13 @@
  * This is the model class for table "<?php echo $tableName; ?>".
  *
  * The followings are the available columns in table '<?php echo $tableName; ?>':
-<?php foreach ($columns as $column): ?>
+<?php foreach ($columns as $column) : ?>
  * @property <?php echo $column->type.' $'.$column->name."\n"; ?>
 <?php endforeach; ?>
-<?php if (!empty($relations)): ?>
+<?php if (!empty($relations)) : ?>
  *
  * The followings are the available model relations:
-<?php foreach ($relations as $name => $relation): ?>
+    <?php foreach ($relations as $name => $relation) : ?>
  * @property <?php
     if (preg_match("~^array\(self::([^,]+), '([^']+)', '([^']+)'\)$~", $relation, $matches)) {
         $relationType = $matches[1];
@@ -46,7 +46,7 @@
         }
     }
     ?>
-<?php endforeach; ?>
+    <?php endforeach; ?>
 <?php endif; ?>
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
@@ -76,7 +76,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-<?php foreach ($rules as $rule): ?>
+<?php foreach ($rules as $rule) : ?>
             <?php echo $rule.",\n"; ?>
 <?php endforeach; ?>
             // The following rule is used by search().
@@ -93,7 +93,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-<?php foreach ($relations as $name => $relation): ?>
+<?php foreach ($relations as $name => $relation) : ?>
             <?php echo "'$name' => $relation,\n"; ?>
 <?php endforeach; ?>
         );
@@ -105,7 +105,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
     public function attributeLabels()
     {
         return array(
-<?php foreach ($labels as $name => $label): ?>
+<?php foreach ($labels as $name => $label) : ?>
             <?php echo "'$name' => '$label',\n"; ?>
 <?php endforeach; ?>
         );

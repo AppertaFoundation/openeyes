@@ -335,7 +335,7 @@ $sequences = $sequences['data'];
             </div>
         </div>
   <div class="cols-10 large-offset-2 column">
-      <?php echo EventAction::button('Update', 'update_inline', array('colour' => 'green'))->toHtml()?>
+        <?php echo EventAction::button('Update', 'update_inline', array('colour' => 'green'))->toHtml()?>
     <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
   </div>
     <?php $this->endWidget()?>

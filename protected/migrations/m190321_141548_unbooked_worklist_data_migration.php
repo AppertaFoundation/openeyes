@@ -32,7 +32,7 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         Yii::app()->db->schema->getTable('event', true);
         Yii::app()->db->schema->getTable('event_version', true);
 
-        $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient','id');
+        $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient', 'id');
 
         $this->insert('setting_metadata', array('element_type_id' => null,
                 'field_type_id' => 4,

@@ -673,7 +673,6 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
 
             if ($urlElement && $urlElement->hasChildNodes() &&
                 $tokenElement && $tokenElement->hasChildNodes()) {
-
                 $urlText = $urlElement->firstChild->nodeValue;
                 $tokenText = $tokenElement->firstChild->nodeValue;
             }
@@ -697,7 +696,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
      * @return array An array containing a token and URL
      */
     public function getFormUploadToken($videoEntry,
-        $url='https://gdata.youtube.com/action/GetUploadToken')
+        $url = 'https://gdata.youtube.com/action/GetUploadToken')
     {
         if ($url != null && is_string($url)) {
             // $response is a Zend_Http_response object
@@ -811,7 +810,6 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
 
         if ($this->getMajorProtocolVersion() == null ||
             $this->getMajorProtocolVersion() == 1) {
-
             if (!$videoId) {
                 $videoId = $videoEntry->getVideoId();
             } elseif (strlen($videoId) < 12) {
@@ -824,7 +822,6 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
             // retain their description...
             $messageEntry->setDescription(
                 new Zend_Gdata_YouTube_Extension_Description($body));
-
         } else {
             if (!$videoId) {
                 $videoId = $videoEntry->getVideoId();
@@ -861,7 +858,7 @@ class Zend_Gdata_YouTube extends Zend_Gdata_Media
         $inReplyToLinkHref = self::VIDEO_URI . '/' . $commentIdArray[3] .
             '/comments/' . $commentIdArray[5];
         $inReplyToLink = $this->newLink($inReplyToLinkHref,
-            self::IN_REPLY_TO_SCHEME, $type="application/atom+xml");
+            self::IN_REPLY_TO_SCHEME, $type = "application/atom+xml");
         $links = $newComment->getLink();
         $links[] = $inReplyToLink;
         $newComment->setLink($links);

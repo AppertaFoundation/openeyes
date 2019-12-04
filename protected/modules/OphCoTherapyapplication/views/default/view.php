@@ -77,13 +77,13 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
     <?php }?>
 
     <?php
-        if (count($warnings)) {
-            echo '<div class="alert-box alert with-icon validation-errors top"><p>Application cannot be submitted for the following reasons:</p><ul>';
-            foreach ($warnings as $warning) {
-                echo '<li>'.$warning.'</li>';
-            }
-            echo '</ul></div>';
+    if (count($warnings)) {
+        echo '<div class="alert-box alert with-icon validation-errors top"><p>Application cannot be submitted for the following reasons:</p><ul>';
+        foreach ($warnings as $warning) {
+            echo '<li>'.$warning.'</li>';
         }
+        echo '</ul></div>';
+    }
     ?>
 
     <?php $this->renderOpenElements($this->action->id, false, array('status' => $status))?>

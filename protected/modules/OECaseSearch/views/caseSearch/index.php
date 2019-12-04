@@ -17,11 +17,11 @@ $this->pageTitle = 'Case Search';
         ?>
     </div>
 </div>
-<div class="oe-grid oe-full-content pro-theme" style="height: 100%; width: 100%">
+<div class="oe-grid oe-full-content oe-worklists" style="height: 100%; width: 100%">
     <nav class="oe-full-side-panel">
         <h3>Actions</h3>
         <ul>
-            <?php if ($this->trialContext):?>
+            <?php if ($this->trialContext) :?>
             <li>
                 <a href="/OETrial/trial/view/<?=$this->trialContext->id?>">Back to Trial</a>
             </li>
@@ -37,8 +37,9 @@ $this->pageTitle = 'Case Search';
                         <table id="param-list" class="cols-full">
                             <tbody>
                             <?php
-                            if (isset($params)):
-                                foreach ($params as $id => $param):?>
+                            if (isset($params)) :
+                                ksort($params);
+                                foreach ($params as $id => $param) :?>
                                     <?php $this->renderPartial('parameter_form', array(
                                         'model' => $param,
                                         'id' => $id,
@@ -47,7 +48,7 @@ $this->pageTitle = 'Case Search';
                             endif; ?>
                             </tbody>
                         </table>
-                        <?php foreach ($fixedParams as $id => $param):
+                        <?php foreach ($fixedParams as $id => $param) :
                             $this->renderPartial('fixed_parameter_form', array(
                                 'model' => $param,
                                 'id' => $id
@@ -63,7 +64,7 @@ $this->pageTitle = 'Case Search';
                                 null,
                                 $paramList,
                                 array('empty' => '- Add a parameter -', 'id' => 'js-add-param'));
-                            ?>
+?>
                         </div>
                     </div>
                     <div class="search-actions flex-layout flex-left">
@@ -80,7 +81,7 @@ $this->pageTitle = 'Case Search';
             </div>
             <div class="element">
                 <?php
-                if ($patients->itemCount > 0):
+                if ($patients->itemCount > 0) :
                     //Just create the widget here so we can render it's parts separately
                     /** @var $searchResults CListView */
                     $searchResults =
@@ -185,10 +186,20 @@ $this->pageTitle = 'Case Search';
         }
     }
 
+    function getMaxId(){
+      var id_max = -1;
+      $('.parameter').each(function () {
+        if ($(this)[0].id > id_max){
+          id_max = $(this)[0].id;
+        }
+      });
+      return id_max;
+    }
+
 
     $(document).ready(function () {
         //null coallese the id of the last parameter
-        var parameter_id_counter = $('.parameter').last().attr('id') || -1;
+        var parameter_id_counter = getMaxId();
         $('#js-add-param').on('change', function () {
             var dropDown = this;
             if (!dropDown.value) {
@@ -225,6 +236,8 @@ $this->pageTitle = 'Case Search';
     $(document).on('click', '.js-add-to-trial', function () {
       var addLink = this;
       var $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
+      var trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function() {return this.nodeType == Node.TEXT_NODE;}).text());
+      var trialShortListElement = $(this).closest('.js-oe-patient').find('.trial-shortlist');
       var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
       $.ajax({
@@ -235,7 +248,11 @@ $this->pageTitle = 'Case Search';
         },
         success: function (response) {
           $(addLink).hide();
-          $removeLink.show();
+          trialShortlist += 1;
+          trialShortListElement.text(' ' + trialShortlist);
+          trialShortListElement.prepend('<em>Shortlisted</em>');
+          trialShortListElement.show();
+
         },
         error: function (response) {
           new OpenEyes.UI.Dialog.Alert({
@@ -245,29 +262,7 @@ $this->pageTitle = 'Case Search';
       });
     });
 
-    $(document).on('click', '.js-remove-from-trial', function addPatientToTrial() {
-        var removeLink = this;
-        var $addLink = $(this).closest('.js-add-remove-participant').find('.js-add-to-trial');
-        var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
-        $.ajax({
-          url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
-          data: {
-            id: <?= $this->trialContext->id?>,
-            patient_id: patientId,
-          },
-          success: function (response) {
-            $(removeLink).hide();
-            $addLink.show();
-          },
-          error: function (response) {
-            new OpenEyes.UI.Dialog.Alert({
-              content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial.\n\nPlease contact support for assistance."
-            }).open();
-          }
-        });
-      }
-    );
   </script>
 <?php } ?>
 

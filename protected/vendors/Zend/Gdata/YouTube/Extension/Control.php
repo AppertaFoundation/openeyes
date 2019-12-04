@@ -87,13 +87,13 @@ class Zend_Gdata_YouTube_Extension_Control extends Zend_Gdata_App_Extension_Cont
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('yt') . ':' . 'state':
-            $state = new Zend_Gdata_YouTube_Extension_State();
-            $state->transferFromDOM($child);
-            $this->_state = $state;
+            case $this->lookupNamespace('yt') . ':' . 'state':
+                $state = new Zend_Gdata_YouTube_Extension_State();
+                $state->transferFromDOM($child);
+                $this->_state = $state;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }
@@ -127,7 +127,7 @@ class Zend_Gdata_YouTube_Extension_Control extends Zend_Gdata_App_Extension_Cont
     */
     public function getStateValue()
     {
-      return $this->getState()->getText();
+        return $this->getState()->getText();
     }
 
 }

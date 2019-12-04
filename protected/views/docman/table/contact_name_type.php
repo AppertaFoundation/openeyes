@@ -23,6 +23,12 @@
         $is_editable_contact_targets = isset($is_editable_contact_targets) ? $is_editable_contact_targets : true;
     $option_styles = isset($option_styles) ? $option_styles : [];
     $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
+foreach ($address_targets as $key=>$value) {
+    if (strpos($key, 'Gp') !== false) {
+        $contact_types['GP'] = substr($value, strpos($value, '(')+1, -1);
+        break;
+    }
+}
     echo \CHtml::dropDownList(
         '',
             null,
@@ -51,7 +57,7 @@
         ]
     );
 
-    if(!$is_editable){
+    if (!$is_editable) {
         echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
             'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
         );

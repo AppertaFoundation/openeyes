@@ -43,20 +43,20 @@ echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' =
     </div>
     <div class="cols-<?php echo $form->layoutColumns['field'];?> column end">
         <?php
-            if ($model->response_type && $model->response_type->datatype == 'bool') {
-                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
-                        array('name' => get_class($model).'[default_value]',
-                                'id' => get_class($model).'_default_value',
-                                'val' => $model->default_value,
+        if ($model->response_type && $model->response_type->datatype == 'bool') {
+            $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
+                    array('name' => get_class($model).'[default_value]',
+                            'id' => get_class($model).'_default_value',
+                            'val' => $model->default_value,
 
-                        ));
-            } else {
-                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
-                        array('name' => get_class($model).'[default_value]',
-                        'id' => get_class($model).'_default_value',
-                        'val' => $model->default_value,
-                ));
-            }
+                    ));
+        } else {
+            $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
+                    array('name' => get_class($model).'[default_value]',
+                    'id' => get_class($model).'_default_value',
+                    'val' => $model->default_value,
+            ));
+        }
         ?>
     </div>
 </div>
@@ -80,7 +80,7 @@ echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherap
                 'val' => null,
             )
         );
-    ?>
+        ?>
 </script>
 <script id="template_default_value_bool" type="text/html">
     <?php
@@ -91,5 +91,5 @@ echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherap
                 'val' => null,
             )
         );
-    ?>
+        ?>
 </script>

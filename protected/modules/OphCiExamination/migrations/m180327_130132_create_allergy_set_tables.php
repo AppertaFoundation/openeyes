@@ -12,14 +12,14 @@ class m180327_130132_create_allergy_set_tables extends \OEMigration
                 'age_min' => 'int(3) unsigned',
                 'age_max' => 'int(3) unsigned',
 
-            ),true);
+            ), true);
 
         $this->createOETable('ophciexamination_allergy_set_assignment',
             array(
                 'id' => 'pk',
                 'ophciexamination_allergy_entry_id' => 'int(11)',
                 'allergy_set_id' => 'int(11)',
-            ),true
+            ), true
         );
         $this->createOETable('ophciexamination_allergy_set',
             array(
@@ -27,7 +27,7 @@ class m180327_130132_create_allergy_set_tables extends \OEMigration
                 'name' => 'varchar(255) NULL',
                 'firm_id' => 'int(10) unsigned',
                 'subspecialty_id' =>  'int(10) unsigned',
-            ),true
+            ), true
         );
 
         $this->addColumn('ophciexamination_allergy_entry', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT 1 AFTER allergy_id');

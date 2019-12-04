@@ -234,7 +234,6 @@ class OphCoCorrespondence_API extends BaseAPI
             $events = $api->getEvents($patient, $use_context, $op_event->event_date);
 
             foreach ($events as $event) {
-
                 // take account of event date not containing time so we ensure we get the
                 // exam from BEFORE the op note, not on the same day but after.
 
@@ -274,7 +273,6 @@ class OphCoCorrespondence_API extends BaseAPI
             $events = $api->getEvents($patient, $use_context, $op_event->event_date);
 
             foreach ($events as $event) {
-
                 // take account of event date not containing time so we ensure we get the
                 // exam from BEFORE the op note, not on the same day but after.
                 if ($event->event_date == $op_event->event_date) {
@@ -448,7 +446,6 @@ class OphCoCorrespondence_API extends BaseAPI
             if ($commissioningbodytype && $commissioningbody) {
                 foreach ($commissioningbody->services as $service) {
                     if ($service->type->shortname == 'DRSS') {
-
                         $correspondence_name = $service->fullName;
                         if (method_exists($service, 'getCorrespondenceName')) {
                             $correspondence_name = $service->correspondenceName;
@@ -665,7 +662,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         } else if ($m[1] == 'Optometrist') {
             $contact = Contact::model()->findByPk($m[2]);
-        } else if($m[1] === 'GP') {
+        } else if ($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
@@ -690,6 +687,12 @@ class OphCoCorrespondence_API extends BaseAPI
             'include_label' => false,
             'delimiter' => "\n",
         ));
+
+        if (Yii::app()->params['institution_code'] === 'CERA') {
+            if ($m[1] == 'ContactPracticeAssociate') {
+                    $contact = $contact->gp;
+            }
+        }
 
         if (!$address) {
             $address = '';
@@ -717,8 +720,8 @@ class OphCoCorrespondence_API extends BaseAPI
         } else if ($m[1] == 'Optometrist') {
             $contact_type = 'Optometrist';
         }
-        
-        if( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ){
+
+        if ( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ) {
             $contact_type = 'Other';
         }
 
@@ -772,9 +775,9 @@ class OphCoCorrespondence_API extends BaseAPI
 
             $count = $meta_data ? $meta_data->value : 0;
             if (is_numeric($count))
-                for ($x = 0; $x < $count; $x++) {
-                    $empty_lines .= "\n";
-                }
+            for ($x = 0; $x < $count; $x++) {
+                $empty_lines .= "\n";
+            }
             return "Yours sincerely" . $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
 
@@ -805,7 +808,6 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($letter) {
             foreach (array_keys($letter->address_targets) as $contact_string) {
-
                 $address = $this->getAddress($patient->id, $contact_string);
 
                 if ($address['contact_type'] == $type) {
@@ -833,7 +835,6 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
             'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
         ) {
-
             $result .= 'Clinic Interval: ' . $el->clinic_internal->name . "\n";
             $result .= 'Photo: ' . $el->photo->name . "\n";
             $result .= 'OCT: ' . $el->oct->name . "\n";
@@ -852,8 +853,6 @@ class OphCoCorrespondence_API extends BaseAPI
             if (isset($el->left_target_iop->name)) {
                 $result .= 'Target IOP Left Eye: ' . $el->left_target_iop->name . " mmHg\n";
             }
-
-
         }
         return $result;
     }
@@ -869,7 +868,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 'event_date' => Helper::convertDate2NHS($event->event_date),
                 'event_name' => $event->eventType->name
             ));
-
         }
         return '';
     }
@@ -885,7 +883,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 'event_date' => Helper::convertDate2NHS($event->event_date),
                 'event_name' => $event->eventType->name
             ));
-
         }
         return '';
     }
@@ -906,7 +903,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 'event_date' => Helper::convertDate2NHS($event->event_date),
                 'event_name' => $event->eventType->name
             ));
-
         }
         return '';
     }
@@ -922,7 +918,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 'event_date' => Helper::convertDate2NHS($event->event_date),
                 'event_name' => $event->eventType->name
             ));
-
         }
         return '';
     }
@@ -938,7 +933,6 @@ class OphCoCorrespondence_API extends BaseAPI
                 'event_date' => Helper::convertDate2NHS($event->event_date),
                 'event_name' => $event->eventType->name
             ));
-
         }
         return '';
     }
@@ -959,9 +953,11 @@ class OphCoCorrespondence_API extends BaseAPI
         return;
     }
 
-    public function getDefaultMacroByEpisodeStatus(\Episode $episode, $firm = null, $site_id = null)
+    public function getDefaultMacroByEpisodeStatus(\Episode $episode, $firm = null, $site_id = null, $macro_name = null)
     {
-        $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
+        if (empty($macro_name)) {
+            $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
+        }
         $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$macro_name, $firm->id]);
 
         if (!$macro) {

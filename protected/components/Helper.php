@@ -27,6 +27,11 @@ class Helper
     const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
     const NHS_DATE_EXAMPLE = '5 Dec 2011';
     const SHORT_DATE_FORMAT = 'd/m/y';
+    const EPOCHDAY = 86400000;
+    const EPOCHWEEK = 604800000;
+    const EPOCHMONTH = 2629743000;
+    const FULL_YEAR_FORMAT = 'd/m/Y';
+
 
     /**
      * Convert NHS dates to MySQL format.
@@ -119,6 +124,16 @@ class Helper
         }
     }
 
+	public static function convertDate2FullYear($value, $empty_string = '-')
+	{
+		$time = strtotime($value);
+		if ($time !== false) {
+			return date(self::FULL_YEAR_FORMAT, $time);
+		}
+
+		return $empty_string;
+	}
+
     public static function convertDate2HTML($value, $empty_string = '-')
     {
         $time = strtotime($value);
@@ -138,7 +153,7 @@ class Helper
      */
     public static function convertFuzzyDate2HTML($value)
     {
-        $year = (integer)substr($value, 0, 4);
+        $year = (integer)substr($value, 0, 4) ?: '';
         $monthIndex = (integer)substr($value, 5, 2);
         $mon = $monthIndex !== 0 ? DateTime::createFromFormat('!m', $monthIndex)->format('M') : '';
         $day = (integer)substr($value, 8, 2) ?: '';
@@ -499,5 +514,40 @@ class Helper
         }
 
         return $eye_id;
+    }
+
+    public static function array_dump_html(array $data){
+        $return_info = "";
+        foreach ($data as $key => $value){
+            if (is_array($value)){
+                $value = Helper::array_dump_html($value);
+            }
+            $return_info .= $value.'<br>';
+        }
+        return $return_info;
+		}
+
+    /**
+     * Return bites based on the ini_get returns value e.g. 2M
+     * @param $val
+     * @return int|string
+     */
+    public static function return_bytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+        switch($last) {
+            case 'g':
+                $val *= (1024 * 1024 * 1024); //1073741824
+                break;
+            case 'm':
+                $val *= (1024 * 1024); //1048576
+                break;
+            case 'k':
+                $val *= 1024;
+                break;
+        }
+
+        return $val;
+
     }
 }

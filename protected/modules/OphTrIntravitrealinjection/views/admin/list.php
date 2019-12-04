@@ -41,7 +41,7 @@
                     $this->renderPartial('list_'.get_class($model), array(
                         'model' => $model,
                         ));
-                ?>
+                    ?>
                 </tr>
             <?php }?>
         </tbody>

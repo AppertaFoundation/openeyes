@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 function getLevelColour($risk_level){
-    switch ($risk_level){
+    switch ($risk_level) {
         case '':
         case 'none':
             return 'green';
@@ -44,13 +44,13 @@ function getLevelColour($risk_level){
 <?php $this->beginClip('element-title-additional');?>
 <div class="info">
     <?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets').'/img/drgrading.jpg')) {
-    ?>
+        ?>
             <a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
             <div class="drgrading_images_dialog" title="DR Grading Images">
                 <img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
             </div>
-    <?php 
-} ?>
+        <?php
+    } ?>
 </div>
 <?php $this->endClip('element-title-additional');?>
 
@@ -59,17 +59,18 @@ function getLevelColour($risk_level){
     <fieldset class="data-group">
                 <?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
             <?php
-      if ($diabetes = $this->patient->getDiabetesType()) {
-        echo '<span class="data-value">'.$diabetes->term.'</span>';
-        } else {
-        $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
-        } ?>
+            if ($diabetes = $this->patient->getDiabetesType()) {
+                echo '<span class="data-value">'.$diabetes->term.'</span>';
+            } else {
+                $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
+            } ?>
     </fieldset>
 </div>
 <div class="element-fields element-eyes">
-  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
   <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if ($element->id || !empty($_POST)) {
-      ?> uninitialised<?php }?>" data-side="<?= $eye_side ?>">
+        ?> uninitialised<?php
+                             }?>" data-side="<?= $eye_side ?>">
     <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <?php $this->renderPartial($element->form_view.'_fields', array('side' =>$eye_side, 'element' => $element, 'form' => $form))?>
@@ -83,7 +84,7 @@ function getLevelColour($risk_level){
       </div>
     </div>
   </div>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
 </div>
 
 <script type="text/javascript">

@@ -37,15 +37,20 @@
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->order = 'display_order asc';
-                foreach ($wards as $i => $ward) {?>
-                    <tr class="clickable <?php if ($i % 2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
+                if (isset($wards)) {
+                    foreach ($wards as $i => $ward) {?>
+                    <tr class="clickable <?php if ($i % 2 == 0) {
+                        ?>even<?php
+                                         } else {
+                                                ?>odd<?php
+                                         }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
                         <td><?php echo $ward->site->name?></td>
                         <td><?php echo $ward->name?></td>
                         <td><?php echo $ward->code?>&nbsp;</td>
                         <td><?php echo $ward->restrictionText?></td>
                         <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
                     </tr>
-                <?php }?>
+                    <?php } }?>
             </tbody>
             <tfoot>
                 <tr>

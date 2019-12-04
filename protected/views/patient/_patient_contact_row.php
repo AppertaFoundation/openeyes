@@ -17,7 +17,11 @@
  */
 $contact = $pca->location ? $pca->location->contact : $pca->contact;
 ?>
-<tr data-attr-pca-id="<?php echo $pca->id?>"<?php if ($pca->location) {?> data-attr-location-id="<?php echo $pca->location_id?>"<?php } if ($pca->contact) {?> data-attr-contact-id="<?php echo $pca->contact_id?>"<?php }?>>
+<tr data-attr-pca-id="<?php echo $pca->id?>"<?php if ($pca->location) {
+    ?> data-attr-location-id="<?php echo $pca->location_id?>"<?php
+                      } if ($pca->contact) {
+                            ?> data-attr-contact-id="<?php echo $pca->contact_id?>"<?php
+                      }?>>
     <td>
         <?=\CHtml::encode($contact->fullName)?> <br />
         <?=\CHtml::encode($contact->qualifications)?>

@@ -34,7 +34,7 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
                                 'id' => 'pk',
                                 'dispense_condition_id' => 'int(11)',
                                 'dispense_location_id' => 'int(11)'
-                                ),true);
+                                ), true);
 
         $this->addForeignKey(   'fk_ophdrprescription_dispense_condition_assignment_condition_id',
                                 'ophdrprescription_dispense_condition_assignment',
@@ -49,34 +49,29 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
                                 'id');
 
         $do_cond = 1;
-        foreach($conditions as $condition)
-        {
+        foreach ($conditions as $condition) {
             $this->insert('ophdrprescription_dispense_condition', array('name'=>$condition, 'display_order'=>$do_cond));
             $do_cond++;
         }
 
         $do_loc = 1;
-        foreach($locations as $location)
-        {
+        foreach ($locations as $location) {
             $this->insert('ophdrprescription_dispense_location', array('name'=>$location, 'display_order'=>$do_loc));
             $do_loc++;
         }
 
-        foreach($conditions_setup as $cond=>$loc)
-        {
+        foreach ($conditions_setup as $cond=>$loc) {
             $condition_id = $this->dbConnection->createCommand()
                 ->select('id')
                 ->from('ophdrprescription_dispense_condition')
                 ->where("name='".$cond."'")->queryScalar();
             if ($condition_id) {
-                foreach($loc as $l)
-                {
+                foreach ($loc as $l) {
                     $location_id = $this->dbConnection->createCommand()
                         ->select('id')
                         ->from('ophdrprescription_dispense_location')
                         ->where("name='".$l."'")->queryScalar();
-                    if($location_id)
-                    {
+                    if ($location_id) {
                         $this->insert('ophdrprescription_dispense_condition_assignment',
                             array(
                                 'dispense_condition_id' => $condition_id,
@@ -88,10 +83,10 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
             }
         }
 
-        $this->addColumn('ophdrprescription_item','dispense_condition_id','int(11)');
-        $this->addColumn('ophdrprescription_item_version','dispense_condition_id','int(11)');
-        $this->addColumn('ophdrprescription_item','dispense_location_id','int(11)');
-        $this->addColumn('ophdrprescription_item_version','dispense_location_id','int(11)');
+        $this->addColumn('ophdrprescription_item', 'dispense_condition_id', 'int(11)');
+        $this->addColumn('ophdrprescription_item_version', 'dispense_condition_id', 'int(11)');
+        $this->addColumn('ophdrprescription_item', 'dispense_location_id', 'int(11)');
+        $this->addColumn('ophdrprescription_item_version', 'dispense_location_id', 'int(11)');
 
         $this->addForeignKey(   'fk_ophdrprescription_item_dispense_condition_id',
                                 'ophdrprescription_item',
@@ -134,19 +129,19 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
                         array('dispense_condition_id'=>$hospital_supply_id, 'dispense_location_id'=>$location_id),
                         'continue_by_gp = 0');
 
-        $this->dropColumn('ophdrprescription_item','continue_by_gp');
-        $this->dropColumn('ophdrprescription_item_version','continue_by_gp');
+        $this->dropColumn('ophdrprescription_item', 'continue_by_gp');
+        $this->dropColumn('ophdrprescription_item_version', 'continue_by_gp');
     }
 
     public function down()
     {
         $this->dropForeignKey('fk_ophdrprescription_dispense_condition_assignment_condition_id', 'ophdrprescription_dispense_condition_assignment');
         $this->dropForeignKey('fk_ophdrprescription_dispense_condition_assignment_location_id', 'ophdrprescription_dispense_condition_assignment');
-        $this->dropForeignKey('fk_ophdrprescription_item_dispense_condition_id','ophdrprescription_item');
-        $this->dropForeignKey('fk_ophdrprescription_item_dispense_location_id','ophdrprescription_item');
+        $this->dropForeignKey('fk_ophdrprescription_item_dispense_condition_id', 'ophdrprescription_item');
+        $this->dropForeignKey('fk_ophdrprescription_item_dispense_location_id', 'ophdrprescription_item');
 
-        $this->addColumn('ophdrprescription_item','continue_by_gp','boolean not null default 0');
-        $this->addColumn('ophdrprescription_item_version','continue_by_gp','boolean not null default 0');
+        $this->addColumn('ophdrprescription_item', 'continue_by_gp', 'boolean not null default 0');
+        $this->addColumn('ophdrprescription_item_version', 'continue_by_gp', 'boolean not null default 0');
 
         $condition_id = $this->dbConnection->createCommand()
             ->select('id')
@@ -155,14 +150,14 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
 
         $this->update('ophdrprescription_item', array('continue_by_gp'=>1), "dispense_condition_id = '".$condition_id."'");
 
-        $this->dropColumn('ophdrprescription_item','dispense_condition_id');
-        $this->dropColumn('ophdrprescription_item_version','dispense_condition_id');
-        $this->dropColumn('ophdrprescription_item','dispense_location_id');
-        $this->dropColumn('ophdrprescription_item_version','dispense_location_id');
+        $this->dropColumn('ophdrprescription_item', 'dispense_condition_id');
+        $this->dropColumn('ophdrprescription_item_version', 'dispense_condition_id');
+        $this->dropColumn('ophdrprescription_item', 'dispense_location_id');
+        $this->dropColumn('ophdrprescription_item_version', 'dispense_location_id');
 
-        $this->dropOETable('ophdrprescription_dispense_condition_assignment',true);
-        $this->dropOETable('ophdrprescription_dispense_location',true);
-        $this->dropOETable('ophdrprescription_dispense_condition',true);
+        $this->dropOETable('ophdrprescription_dispense_condition_assignment', true);
+        $this->dropOETable('ophdrprescription_dispense_location', true);
+        $this->dropOETable('ophdrprescription_dispense_condition', true);
 
 
     }

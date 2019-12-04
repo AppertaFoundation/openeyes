@@ -48,8 +48,8 @@ $widget = $this;
                                                     </span>
                         </td>
                     </tr>
-                <?php }
-                } ?>
+                        <?php }
+            } ?>
                 </tbody>
             </table>
             <?= CHtml::encode($element->comments) ?>

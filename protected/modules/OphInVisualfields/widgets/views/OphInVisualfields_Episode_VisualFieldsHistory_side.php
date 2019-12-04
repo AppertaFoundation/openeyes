@@ -15,7 +15,7 @@
 $field = $element->{"{$side}_field"};
 ?>
 <div class="js-element-eye <?= $side ?>-eye column">
-    <?php if ($field): ?>
+    <?php if ($field) : ?>
     <div class="cols-12 column"><?= ucfirst($side) ?> Eye</div>
             <div class="cols-12 column"><a class="OphInVisualfields_field_image" data-image-id="<?= $field->image_id ?>" href="#"><img
                         src="/file/view/<?= $field->cropped_image_id ?>/400/img.gif"></a></div>
@@ -31,7 +31,7 @@ $field = $element->{"{$side}_field"};
             <div class="cols-6 column"><p>Test Name</p></div>
             <div class="cols-6 column"><p><?= CHtml::encode($field->pattern->name) ?></p></div>
         </div>
-    <?php else: ?>
+    <?php else : ?>
         <p>No image for <?= $side ?> eye.</p>
     <?php endif ?>
 </div>

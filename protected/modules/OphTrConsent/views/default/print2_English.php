@@ -40,7 +40,7 @@
             <td><?php echo $this->patient->NHSDate('dob') ?></td>
         </tr>
         <tr>
-            <th>Hospital no</th>
+            <th><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ')?></th>
             <td><?php echo $this->patient->hos_num ?></td>
         </tr>
         <tr>
@@ -142,7 +142,7 @@
     </p>
     <p>
         Parent has withdrawn consent (ask parent to sign /date here)
-    <div class="dotted-write"></div>
+    <div class="dotted-write" style="display: block"></div>
     </p>
     <div class="break"></div>
     <h3>Name of proposed procedure or course of treatment</h3>

@@ -17,7 +17,9 @@
  */
 ?>
 <div class="data-group diagnosis-selection">
-    <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+    <div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {
+        ?> hide<?php
+                     }?>">
         <label for="<?php echo "{$class}_{$field}";?>">
             <?php echo $label?>:
         </label>
