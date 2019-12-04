@@ -312,9 +312,9 @@ class EventMedicationUse extends BaseElement
                 $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
                 $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
 
-                $result &= $date1 === $date2;
+                $result = $date1 === $date2;
             } else {
-                $result &= $this->$attribute === $medication->$attribute;
+                $result = $this->$attribute === $medication->$attribute;
             }
 
             if (!$result) {
