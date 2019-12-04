@@ -64,7 +64,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     var timeout_id = null;
     var max_height = null;
 
-    function initAutocomplete(input, autocomplete_url, autocomplete_max_height) {
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, extra_params, search_data_prefix) {
     	input.on('input',function(){
     		inputbox = input;
     		inputbox.parent().find('.alert-box').addClass('hidden');
@@ -93,17 +93,17 @@ OpenEyes.UI = OpenEyes.UI || {};
 				let data = {
 					term: search_term
 				};
-				data = $.extend(true, {}, data, (options.extra_params || {}));
+				data = $.extend(true, {}, data, (extra_params || {}));
 
 				let params = {};
-				if (options.search_data_prefix) {
-					params[options.search_data_prefix] = data;
+				if (search_data_prefix) {
+					params[search_data_prefix] = data;
 				}
 
 				params.ajax = 'ajax';
         params.term = search_term;
 
-				xhr = $.getJSON(options.url, params, function(data, status) {
+				xhr = $.getJSON(autocomplete_url, params, function(data, status) {
 					if (status === 'success') {
 						response = data;
 						if(response.length > 0){
@@ -213,7 +213,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	init: function (options) {
     		if(options.input){
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null);
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.extra_params, options.search_data_prefix);
 	    		return exports.AutoCompleteSearch;
     		}
     	},
