@@ -147,79 +147,79 @@ if (!empty($subspecialty)) { ?>
   });
 
   function resetChartZoom() {
-		let charts = [];
+        let charts = [];
 
-		//Check if charts exist to avoid operating on undefined elements
-		if($('.plotly-VA').length) {
-			charts['VA'] = [];
-			charts['VA']['right'] = $('.plotly-VA')[0];
-			charts['VA']['left'] = $('.plotly-VA')[1];
-		}
-		if($('.plotly-Meds').length) {
-			charts['Med'] = [];
-			charts['Med']['right'] = $('.plotly-Meds')[0];
-			charts['Med']['left'] = $('.plotly-Meds')[1];
-		}
-		if($('.plotly-MR').length) {
-			charts['MR'] = [];
-			charts['MR']['right'] = $('.plotly-MR')[0];
-			charts['MR']['left'] = $('.plotly-MR')[1];
-		}
-		if($('.plotly-IOP').length) {
-			charts['IOP'] = [];
-			charts['IOP']['right'] = $('.plotly-IOP')[0];
-			charts['IOP']['left'] = $('.plotly-IOP')[1];
-		}
+        //Check if charts exist to avoid operating on undefined elements
+        if($('.plotly-VA').length) {
+            charts['VA'] = [];
+            charts['VA']['right'] = $('.plotly-VA')[0];
+            charts['VA']['left'] = $('.plotly-VA')[1];
+        }
+        if($('.plotly-Meds').length) {
+            charts['Med'] = [];
+            charts['Med']['right'] = $('.plotly-Meds')[0];
+            charts['Med']['left'] = $('.plotly-Meds')[1];
+        }
+        if($('.plotly-MR').length) {
+            charts['MR'] = [];
+            charts['MR']['right'] = $('.plotly-MR')[0];
+            charts['MR']['left'] = $('.plotly-MR')[1];
+        }
+        if($('.plotly-IOP').length) {
+            charts['IOP'] = [];
+            charts['IOP']['right'] = $('.plotly-IOP')[0];
+            charts['IOP']['left'] = $('.plotly-IOP')[1];
+        }
 
-		let limits = {};
-		['right', 'left'].forEach(function(eye_side)  {
+        let limits = {};
+        ['right', 'left'].forEach(function(eye_side)  {
 
-			limits[eye_side] = {};
-			let min = null;
-			let max = null;
+            limits[eye_side] = {};
+            let min = null;
+            let max = null;
 
-			//Find the minimum and maximum x values across all charts to determine new chart range
-			Object.keys(charts).forEach(function(chart_key) {
-				let chartData = charts[chart_key][eye_side]['data'];
+            //Find the minimum and maximum x values across all charts to determine new chart range
+            Object.keys(charts).forEach(function(chart_key) {
+                let chartData = charts[chart_key][eye_side]['data'];
 
-				for (let i in chartData) {
-					for (let x in chartData[i]['x']) {
-						let value = chartData[i]['x'][x];
-						if (min === null || value < min) {
-							min = value;
-						} else if (max === null || value > max) {
-							max = value;
-						}
-					}
-				}
-			});
+                for (let i in chartData) {
+                    for (let x in chartData[i]['x']) {
+                        let value = chartData[i]['x'][x];
+                        if (min === null || value < min) {
+                            min = value;
+                        } else if (max === null || value > max) {
+                            max = value;
+                        }
+                    }
+                }
+            });
 
-			limits[eye_side].min = min;
-			limits[eye_side].max = max;
+            limits[eye_side].min = min;
+            limits[eye_side].max = max;
 
-			//For each chart, resize to fit aforementioned range
-			if (min !== max){
-				for(let key in charts){
+            //For each chart, resize to fit aforementioned range
+            if (min !== max){
+                for(let key in charts){
 
-					let updateParams = {
-						'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
-					};
+                    let updateParams = {
+                        'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
+                    };
 
-					if (key==='IOP'){
-						//set the iop target line
-						let index = charts[key][eye_side].layout.shapes.length-1;
-						if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
-							Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-							Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-							Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
-						}
-					}
-					Plotly.relayout(charts[key][eye_side], updateParams);
-				}
-			}
+                    if (key==='IOP'){
+                        //set the iop target line
+                        let index = charts[key][eye_side].layout.shapes.length-1;
+                        if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+                        }
+                    }
+                    Plotly.relayout(charts[key][eye_side], updateParams);
+                }
+            }
 
-		});
-	}
+        });
+    }
 
   //get all reset buttons
   var els = document.getElementsByClassName('reset-zoom');
