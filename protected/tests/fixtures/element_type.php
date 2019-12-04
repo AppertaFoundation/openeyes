@@ -26,6 +26,12 @@ return array(
         'id' => 1,
         'default' => 1,
      ),
+     'risks' => array(
+         'name' => 'Risks',
+         'class_name' => 'OEModule\OphCiExamination\models\HistoryRisks',
+         'event_type_id' => 1002,
+         'display_order' => 5,
+     ),
      'pasthistory' => array(
           'name' => 'Past History',
           'class_name' => 'BaseEventTypeElement',

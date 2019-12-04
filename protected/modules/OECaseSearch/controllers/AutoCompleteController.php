@@ -32,7 +32,8 @@ class AutoCompleteController extends BaseModuleController
      */
     public function actionCommonDiagnoses($term)
     {
-        $disorders = Disorder::model()->findAllBySql('SELECT * FROM disorder WHERE LOWER(term) LIKE LOWER(:term) ORDER BY term LIMIT  ' . _AUTOCOMPLETE_LIMIT,
+//        Made disorder lookups include fully specified name and aliases - CERA-527
+        $disorders = Disorder::model()->findAllBySql('SELECT * FROM disorder WHERE LOWER(term) LIKE LOWER(:term) OR LOWER(aliases) LIKE LOWER(:term) OR LOWER(fully_specified_name) LIKE LOWER(:term) ORDER BY term LIMIT  ' . _AUTOCOMPLETE_LIMIT,
             array('term' => "%$term%"));
         $values = array();
         foreach ($disorders as $disorder) {

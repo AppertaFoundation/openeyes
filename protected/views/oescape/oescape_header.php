@@ -28,6 +28,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
         <?php endforeach; ?>
         <button class="js-oes-eyeside selected" data-side="right">Right</button>
         <button class="js-oes-eyeside" data-side="left">Left</button>
+        <button class="js-oes-eyeside" data-side="both">Both</button>
 
         <?php if ($subspecialty->ref_spec == 'GL') : ?>
         <div class="data-awareness">

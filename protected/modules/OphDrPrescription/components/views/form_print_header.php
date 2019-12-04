@@ -26,7 +26,7 @@
                 <?= $this->patient->contact->address->city ?>
                 <?= $this->patient->contact->address->county ? '<br/>' : null ?>
                 <?= $this->patient->contact->address->county ?>
-                <span class="fpten-postcode"><?= str_replace(' ', '', $this->patient->contact->address->postcode) ?></span>
+                <span class="fpten-postcode"><?= $this->patient->contact->address->postcode ?></span>
             </div>
         </div>
         <div class="fpten-form-row">

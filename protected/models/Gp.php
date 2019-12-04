@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Contact $contact
+ * @property ContactPracticeAssociate $contactPracticeAssociate
  */
 class Gp extends BaseActiveRecordVersioned
 {
@@ -84,6 +85,7 @@ class Gp extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('id', 'required', 'on' => array('manage_practice'), 'message'=>'Please select at least one practitioner.'),
             array('obj_prof, nat_id', 'required'),
             array('obj_prof, nat_id', 'length', 'max' => 20),
             // The following rule is used by search().
@@ -101,6 +103,7 @@ class Gp extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+            'contactPracticeAssociate'=>array(self::HAS_MANY,'ContactPracticeAssociate','gp_id'),
         );
     }
 
@@ -216,5 +219,44 @@ class Gp extends BaseActiveRecordVersioned
         $query = $this->getDbConnection()->createCommand($sql);
 
         return $query->queryAll();
+    }
+
+    public function getAssociatePractice(){
+        $return_value = null;
+
+        $practice_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$this->id));
+
+        if (isset($practice_associate)) {
+            $return_value = $practice_associate->practice;
+        }
+
+        return $return_value;
+    }
+
+    public function getGPROle(){
+        return ($this->contact->label != null?$this->contact->label->name:'');
+    }
+
+    public function GetActiveStatus($id){
+        if (isset($id)) {
+            $gp = Gp::model()->findByPk(array('id' => $id));
+            return $gp->is_active;
+        } else {
+            return null;
+        }
+    }
+
+    public function getAssociatedPractice($id){
+        $query = "SELECT first_name, P.id FROM contact_practice_associate CPA
+                        JOIN practice P ON CPA.practice_id = P.id
+                        JOIN contact C ON P.contact_id = C.id
+                        JOIN address A ON C.id = A.contact_id
+                        WHERE gp_id=$id";
+        $command = $this->getDbConnection()->createCommand($query);
+        $practiceDetails = $command->queryRow();
+        if ($practiceDetails != null) {
+            return $practiceDetails;
+        }
+        return '';
     }
 }

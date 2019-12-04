@@ -1544,6 +1544,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements
@@ -2589,6 +2593,52 @@ class OphCiExamination_API extends \BaseAPI
                     $allergy = $allergy_entry->ophciexaminationAllergy;
                     if (isset($allergy) && isset($allergy->id)) {
                         $required[$allergy->id] = $allergy;
+                    }
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
+     * Get required pupillary abnormalities
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAbnormalities(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationPupillaryAbnormalitySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $abnormality_entry) {
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
+                    if ($abnormality && $abnormality->id) {
+                        $required[$abnormality->id] = $abnormality;
                     }
                 }
             }

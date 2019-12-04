@@ -39,6 +39,7 @@ class PatientIdentifier extends BaseActiveRecordVersioned
             array('patient_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('code', 'length', 'max' => 50),
             array('value', 'length', 'max' => 255),
+            array('value','numerical'),
             array('last_modified_date, created_date', 'safe'),
         );
 
@@ -105,6 +106,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function isRequired()
     {
         return $this->getConfigOption('required') === true;
+    }
+//Currently used for RVEEh UR number  - to check if validation is to be performed on null or empty values from patient identifier in common.php
+    public function nullCheck()
+    {
+        return $this->getConfigOption('allow_null_check');
     }
 
     public function isEditable()
