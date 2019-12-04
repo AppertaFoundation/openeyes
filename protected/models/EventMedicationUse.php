@@ -322,7 +322,7 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        return $result && ($this->medication->isPreservativeFree() === $medication->medication->isPreservativeFree());
+        return $result;
     }
 
     /**
