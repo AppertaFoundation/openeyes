@@ -769,8 +769,8 @@ class DefaultController extends BaseEventTypeController
             ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
         if (!$model->isEditableByMedication()) {
-            throw new CHttpException(403,'You are not authorised to update the Prescription from this page.');
-        }elseif ($reason === null && !$model->draft) {
+            throw new CHttpException(403, 'You are not authorised to update the Prescription from this page.');
+        } elseif ($reason === null && !$model->draft) {
             $this->render('ask_reason', array(
                 'id'        =>  $id,
                 'draft'     => $model->draft,
