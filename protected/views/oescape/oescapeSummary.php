@@ -102,33 +102,48 @@ if (!empty($subspecialty)) { ?>
       $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
     });
 
-      $('.plotly-right, .plotly-left').on('mouseenter mouseover', function (e) {
-        let chart = $(this)[0];
-        if($(this).hasClass('plotly-right')||$(this).hasClass('plotly-left')){
-          let eye_side = $(chart).attr('data-eye-side');
-          let chart_list = $('.plotly-'+eye_side);
+		$('.plotly-right, .plotly-left').on('mouseenter mouseover', function (e) {
+			if($(this).hasClass('plotly-right')||$(this).hasClass('plotly-left')){
+				let eye_side = $('.js-oes-eyeside.selected').data('side');
+				let chart_list= [];
+				if(eye_side=='both') {
+					chart_list = $('.plotly-left, .plotly-right');
+				}
+				else {
+					chart_list = $('.plotly-' + eye_side);
+				}
+				// init locals
+				let my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
+				let my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
+				//set min max
+				for (let i=0; i < chart_list.length; i++){
+					//test min
+					if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
+					my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
+					//test max
+					if(my_min_value>chart_list[i]['layout']['xaxis']['range'][1])
+					my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
+				}
+				// set these ranges to the min and max values
+				let current_range = [my_min_value, my_max_value];
+				// end
+				for (let i=0; i < chart_list.length; i++){
+					Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+				}
+			}
+		});
 
-          // init locals
-          let my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
-          let my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
-          //set min max
-          for (let i=0; i < chart_list.length; i++){
-          //test min
-          if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
-          my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
-          //test max
-          if(my_min_value>chart_list[i]['layout']['xaxis']['range'][1])
-          my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
-          }
-          // set these ranges to the min and max values
-          let current_range = [my_min_value, my_max_value];
-          // end
-          for (let i=0; i < chart_list.length; i++){
-            Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
-          }
-        }
-      });
-    //}
+		$('.rangeslider-container').on('mouseenter mouseover', function (slider) {
+			let parent_chart = $(this).parents('.js-plotly-plot')[0];
+			let eye_side = $(parent_chart).attr('data-eye-side');
+			let current_range = parent_chart['layout']['xaxis']['range'];
+
+			let chart_list = $('.plotly-'+eye_side);
+			for(let i = 0; i < chart_list.length; i++) {
+				Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+			}
+		});
+
   });
 
   function resetChartZoom() {
@@ -205,7 +220,6 @@ if (!empty($subspecialty)) { ?>
 
 		});
 	}
-
   //get all reset buttons
   var els = document.getElementsByClassName('reset-zoom');
 
