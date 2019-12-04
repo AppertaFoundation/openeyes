@@ -37,8 +37,8 @@
 
         <div class="box content admin-content">
           <div class="cols-12 column content admin">
-              <?php $this->renderPartial('//base/_messages'); ?>
-              <?php echo $content; ?>
+                <?php $this->renderPartial('//base/_messages'); ?>
+                <?php echo $content; ?>
           </div>
         </div>
 

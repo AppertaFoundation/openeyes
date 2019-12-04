@@ -19,13 +19,13 @@
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 3<br/>
-        <?php echo $this->patient->fullName ?>, Hospital no: <?php echo $this->patient->hos_num ?>
+        <?php echo $this->patient->fullName.', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $this->patient->hos_num ?>
     </h1>
     <h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
     <p>
         <strong>Procedure(s):</strong>
         <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
-		<?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+        <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
             if ($i > 0) {
                 echo ', ';
             }

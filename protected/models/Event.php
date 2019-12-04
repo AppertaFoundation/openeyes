@@ -106,6 +106,7 @@ class Event extends BaseActiveRecordVersioned
             // Please remove those attributes that should not be searched.
             array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
+            array('event_date','eventDateValidator'),
         );
     }
 
@@ -122,6 +123,7 @@ class Event extends BaseActiveRecordVersioned
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
+            'previewImages' => array(self::HAS_MANY, 'EventImage', 'event_id'),
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
@@ -377,7 +379,6 @@ class Event extends BaseActiveRecordVersioned
             }
 
             $this->onAfterSoftDelete(new CEvent($this));
-
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
@@ -628,9 +629,8 @@ class Event extends BaseActiveRecordVersioned
             // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
                 $result .= 'Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
-
             }
-            if(property_exists($this->automated_source, 'address')){
+            if (property_exists($this->automated_source, 'address')) {
                 $result .= 'Optometrist Address: '.$this->automated_source->address;
             }
 
@@ -698,4 +698,21 @@ class Event extends BaseActiveRecordVersioned
             return $this->episode->patient;
         }
     }
+    /**
+     * Validate the event date.
+     */
+    public function eventDateValidator($attribute, $param){
+        $event_date = Helper::mysqlDate2JsTimestamp($this->event_date);
+        if (isset($this->episode)) {
+            $episode = $this->episode;
+            if (isset($episode->patient)) {
+                $patient = $episode->patient;
+                $event_date_limitation = Helper::mysqlDate2JsTimestamp($patient->dob) - (Helper::EPOCHMONTH*9);
+                if ($event_date < $event_date_limitation) {
+                    $this->addError($attribute, 'The event date cannot be earlier than '.date('Y-m-d', ($event_date_limitation/1000)).'.');
+                }
+            }
+        }
+    }
+
 }

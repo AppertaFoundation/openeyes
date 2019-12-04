@@ -19,12 +19,12 @@
 $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 ?>
 <tr class="patient-unavailable" data-key="<?php echo $key ?>">
-	<td>
-		<?php if (isset($unavailable) && $unavailable->id) { ?>
-			<input type="hidden" name="<?php echo $element_name; ?>[patient_unavailables][<?php echo $key ?>][id]" value="<?php echo $unavailable->id?>" />
-		<?php } ?>
-		<?php $form->widget("application.widgets.{$dateFieldWidget}", array(
-		    'element' => $unavailable,
+    <td>
+        <?php if (isset($unavailable) && $unavailable->id) { ?>
+            <input type="hidden" name="<?php echo $element_name; ?>[patient_unavailables][<?php echo $key ?>][id]" value="<?php echo $unavailable->id?>" />
+        <?php } ?>
+        <?php $form->widget("application.widgets.{$dateFieldWidget}", array(
+            'element' => $unavailable,
         'name' => $element_name.'[patient_unavailables]['.$key.'][start_date]',
         'field' => 'start_date',
         'htmlOptions' => array(
@@ -35,11 +35,11 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'options' => array(
             'minDate' => 'today',
         ) ));
-		?>
-	</td>
-	<td>
-		<?php $form->widget("application.widgets.{$dateFieldWidget}", array(
-		    'element' => $unavailable,
+?>
+    </td>
+    <td>
+        <?php $form->widget("application.widgets.{$dateFieldWidget}", array(
+            'element' => $unavailable,
         'name' => $element_name.'[patient_unavailables]['.$key.'][end_date]',
         'field' => 'end_date',
         'htmlOptions' => array(
@@ -50,17 +50,17 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'options' => array(
             'minDate' => 'today',
         )));
-		?>
-	</td>
-	<td>
-		<?=\CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
+?>
+    </td>
+    <td>
+        <?=\CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
         $unavailable->reason_id,
         CHtml::listData($unavailable->getPatientUnavailbleReasons(), 'id', 'name'),
         array('class' => 'small', 'empty' => 'Select'))?>
-	</td>
-	<td class="patient-unavailable-actions">
-			<a class="remove-unavailable" href="#">
+    </td>
+    <td class="patient-unavailable-actions">
+            <a class="remove-unavailable" href="#">
         <i class="oe-i trash"></i>
       </a>
-	</td>
+    </td>
 </tr>

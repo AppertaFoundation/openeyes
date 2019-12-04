@@ -78,8 +78,8 @@ class SnippetGroupController extends ModuleAdminController
                     'display_order',
                     'name',
                     'body',
-                    'element_type.name',
-                    'eventTypeName',
+                    'elementType.name',
+                    'eventType.name',
                 ),
             ),
         ));

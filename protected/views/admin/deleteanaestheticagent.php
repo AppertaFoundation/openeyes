@@ -17,7 +17,7 @@
   <div class="cols-8 column">
     <h2>Anaesthetic Agents</h2>
   </div>
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -26,7 +26,7 @@
             'field' => 5,
         ),
     ))?>
-	<div>Are you sure you want to delete '<?= $agent->name ?>' anaesthetic agent?</div>
-	<?php echo $form->formActions(array('submit' => 'delete', 'cancel-uri' => '/admin/viewAnaestheticAgent'))?>
-	<?php $this->endWidget()?>
+    <div>Are you sure you want to delete '<?= $agent->name ?>' anaesthetic agent?</div>
+    <?php echo $form->formActions(array('submit' => 'delete', 'cancel-uri' => '/admin/viewAnaestheticAgent'))?>
+    <?php $this->endWidget()?>
 </div>

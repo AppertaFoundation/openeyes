@@ -10,15 +10,15 @@ class IndexSearch extends BaseCWidget
 
     public function init()
     {
-      parent::init();
+        parent::init();
     }
 
     public function run()
     {
-      try {
-        return $this->render('IndexSearch_'.$this->event_type);
-      } catch (Exception $e) {
-        //view does not exist
-      }
+        try {
+            return $this->render('IndexSearch_'.$this->event_type);
+        } catch (Exception $e) {
+          //view does not exist
+        }
     }
 }

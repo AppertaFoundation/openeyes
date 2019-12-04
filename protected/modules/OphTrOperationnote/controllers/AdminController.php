@@ -18,7 +18,7 @@
  */
 class AdminController extends ModuleAdminController
 {
-    public $group = 'Drugs';
+    public $group = 'Operation note';
 
     /**
      * Renders list of post op drugs.
@@ -27,6 +27,7 @@ class AdminController extends ModuleAdminController
      */
     public function actionViewPostOpDrugs()
     {
+        $this->group = "Drugs";
         Audit::add('admin', 'list', null, null,
             array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug'));
 
@@ -38,7 +39,7 @@ class AdminController extends ModuleAdminController
      */
     public function actionViewIncisionLengthDefaults()
     {
-        $this->group = 'Operation Note';
+        $this->group = 'Operation note';
         $this->render('incisionlengthdefaults');
     }
 
@@ -212,10 +213,9 @@ class AdminController extends ModuleAdminController
      */
     public function actionPostOpInstructions()
     {
-        $this->group = 'Operation Note';
-        if(Yii::app()->request->isAjaxRequest){
-
-            if( isset($_POST['action']) && $_POST['action'] == 'save'){
+        $this->group = 'Operation note';
+        if (Yii::app()->request->isAjaxRequest) {
+            if ( isset($_POST['action']) && $_POST['action'] == 'save') {
                 $instruction = new OphTrOperationnote_PostopInstruction;
                 $instruction->content = $_POST['content'];
                 $instruction->site_id = $_POST['site_id'];
@@ -224,7 +224,7 @@ class AdminController extends ModuleAdminController
                 echo json_encode(array(
                     'success' => (int)$instruction->save()
                 ));
-            } elseif (isset($_POST['action']) && $_POST['action'] == 'delete'){
+            } elseif (isset($_POST['action']) && $_POST['action'] == 'delete') {
                 $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
 
                 echo json_encode(array(

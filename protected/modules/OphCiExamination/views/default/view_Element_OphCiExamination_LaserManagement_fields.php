@@ -21,16 +21,16 @@
   <tr>
     <td>
       <div class="data-label">
-          <?= CHtml::encode($element->getAttributeLabel($eye . '_laser_status_id')) ?>
+            <?= CHtml::encode($element->getAttributeLabel($eye . '_laser_status_id')) ?>
       </div>
     </td>
     <td>
       <div class="data-value">
-          <?= $element->{$eye . '_laser_status'} ?>
+            <?= $element->{$eye . '_laser_status'} ?>
       </div>
     </td>
   </tr>
-  <?php if ($element->{$eye . '_laser_status'}->deferred): ?>
+    <?php if ($element->{$eye . '_laser_status'}->deferred) : ?>
     <tr>
       <td>
         <div class="data-label">
@@ -43,7 +43,7 @@
         </div>
       </td>
     </tr>
-  <?php elseif ($element->{$eye . '_laser_status'}->book || $element->{$eye . '_laser_status'}->event): ?>
+    <?php elseif ($element->{$eye . '_laser_status'}->book || $element->{$eye . '_laser_status'}->event) : ?>
   <tr>
     <td>
       <div class="data-label">
@@ -71,6 +71,6 @@
       </div>
     </td>
   </tr>
-  <?php endif; ?>
+    <?php endif; ?>
   </tbody>
 </table>

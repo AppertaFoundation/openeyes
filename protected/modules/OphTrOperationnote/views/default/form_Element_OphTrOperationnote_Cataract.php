@@ -24,9 +24,13 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
 
 <section
     class="edit element full on-demand sub-element
-      <?php echo $element->elementType->class_name ?>
-      <?php if (@$ondemand) { ?>hidden<?php } ?>
-      <?php if ($this->action->id == 'update' && !$element->event_id) { ?>missing<?php } ?>"
+        <?php echo $element->elementType->class_name ?>
+        <?php if (@$ondemand) {
+            ?>hidden<?php
+        } ?>
+        <?php if ($this->action->id == 'update' && !$element->event_id) {
+            ?>missing<?php
+        } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -44,13 +48,13 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
     <div class="eyedraw-row cataract cols-11 flex-layout col-gap"
          data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
       <div class="cols-6">
-          <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
+            <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
               'element' => $element,
               'form' => $form,
           )); ?>
       </div>
       <div class="cols-6">
-          <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
+            <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
               'form' => $form,
               'element' => $element,
           )); ?>
@@ -66,16 +70,16 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
 
 <section id="ophTrOperationnotePCRRiskDiv">
   <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote js-pcr-left">
-      <?php
-      $this->renderPartial('application.views.default._pcr_risk_form',
+        <?php
+        $this->renderPartial('application.views.default._pcr_risk_form',
           array('form' => $form, 'element' => $element, 'side' => 'left'));
-      ?>
+        ?>
   </div>
   <div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote js-pcr-right">
-      <?php
-      $this->renderPartial('application.views.default._pcr_risk_form',
+        <?php
+        $this->renderPartial('application.views.default._pcr_risk_form',
           array('form' => $form, 'element' => $element, 'side' => 'right'));
-      ?>
+        ?>
   </div>
 </section>
 

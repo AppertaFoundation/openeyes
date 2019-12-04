@@ -130,7 +130,7 @@ $element_errors = $element->getErrors();
       element: $('#<?=$model_name?>_element')
     });
 
-      <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);?>
+        <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);?>
       new OpenEyes.UI.AdderDialog({
           openButton: $('#add-medication-btn'),
           itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(

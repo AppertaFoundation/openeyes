@@ -19,10 +19,10 @@
 return array(
     'moorfields' => array(
         'id' => 1,
-        'name' => 'Moorfields Eye Hospital',
-        'short_name' => 'Moorfields',
+        'name' => 'The Monachs Trust',
+        'short_name' => 'Default',
         'source_id' => 1,
-        'remote_id' => 'foo',
+        'remote_id' => getenv('OE_INSTITUTION_CODE') ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'contact_id' => 1,
     ),
 );

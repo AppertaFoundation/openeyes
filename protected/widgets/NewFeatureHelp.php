@@ -35,7 +35,7 @@ class NewFeatureHelp extends BaseCWidget
         }
 
         $disable_auto_feature_tours = isset(\Yii::app()->params['disable_auto_feature_tours']) ? \Yii::app()->params['disable_auto_feature_tours'] : "off";
-        if( $disable_auto_feature_tours === "on" || $disable_auto_feature_tours === true){
+        if ( $disable_auto_feature_tours === "on" || $disable_auto_feature_tours === true) {
             $this->auto_start = false;
         }
 
@@ -66,7 +66,7 @@ class NewFeatureHelp extends BaseCWidget
     protected function sortTours()
     {
         usort($this->tours, function ($a, $b) {
-            if($a['position'] === $b['position']){
+            if ($a['position'] === $b['position']) {
                 return strcasecmp($a['name'], $b['name']);
             }
             return $a['position'] - $b['position'];

@@ -80,12 +80,16 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'telephone, gp_telephone, la_telephone', 'length', 'max' => 20
             ),
             array(
+                'telephone, gp_telephone, la_telephone', 'OEPhoneNumberValidator'
+            ),
+            array(
                 'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
                 . 'nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
                 'required',
                 'on' => 'finalise'
             ),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
+            array('email','email'),
         );
     }
 
@@ -170,7 +174,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $this->nhs_number = $patient->getNhsnum();
         $this->address = $patient->getSummaryAddress(",\n");
         if ($patient->contact && $patient->contact->address) {
-            $this->postcode = substr($patient->contact->address->postcode,0,4);
+            $this->postcode = substr($patient->contact->address->postcode, 0, 4);
         }
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
@@ -185,7 +189,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             if ($practice = $patient->practice) {
                 $this->gp_telephone = $practice->phone;
             }
-
         }
     }
 
@@ -205,8 +208,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         if ($parts = explode(' ', $this->title_surname, 2)) {
             if (count($parts) == 1) {
                 $name[] = $parts[0];
-            }
-            else {
+            } else {
                 array_unshift($name, $parts[0]);
                 $name[] = $parts[1];
             }
@@ -220,7 +222,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredGenderHeader()
     {
-        $gender_data = array_fill(0,4, '');
+        $gender_data = array_fill(0, 4, '');
 
         if ($gender = $this->gender) {
             if (strtolower($gender->name) == 'male') {
@@ -252,7 +254,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     protected function generateStructuredPostcodeHeader()
     {
-        $postcode_header = array_fill(0,4,'');
+        $postcode_header = array_fill(0, 4, '');
 
         if ($this->postcode) {
             $parts = explode(' ', $this->postcode, 2);
@@ -297,14 +299,14 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             'patientDateOfBirth' => $this->date_of_birth,
             'nhsNumber' => $this->nhs_number,
             'gender' => $this->gender->name,
-            'patientAddress' => \Helper::lineLimit($this->address,1, 0, "\n", ''),
+            'patientAddress' => \Helper::lineLimit($this->address, 1, 0, "\n", ''),
             'patientEmail' => $this->email,
             'patientTel' => $this->telephone,
             'gpName' => $this->gp_name,
-            'gpAddress' => \Helper::lineLimit($this->gp_address,1, 0, "\n", ''),
+            'gpAddress' => \Helper::lineLimit($this->gp_address, 1, 0, "\n", ''),
             'gpTel' => $this->gp_telephone,
             'localAuthorityName' => $this->la_name,
-            'localAuthorityAddress' => \Helper::lineLimit($this->la_address,1, 0, "\n", ''),
+            'localAuthorityAddress' => \Helper::lineLimit($this->la_address, 1, 0, "\n", ''),
             'localAuthorityTel' => $this->la_telephone,
         );
 

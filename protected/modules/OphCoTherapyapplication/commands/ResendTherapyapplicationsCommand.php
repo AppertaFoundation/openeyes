@@ -25,7 +25,7 @@ class ResendTherapyapplicationsCommand extends CConsoleCommand
 
     public function getHelp()
     {
-        return $this->getName().":\n\n". implode(' ',$this->getOptionHelp())."\n\n".<<<EOH
+        return $this->getName().":\n\n". implode(' ', $this->getOptionHelp())."\n\n".<<<EOH
 Will archive therapy application emails that have been sent since the given date, and generate 
 URLs for a logged in user to visit to trigger the re-sending of the email.
 
@@ -82,7 +82,7 @@ EOH;
         return $since . ' 00:00:00';
     }
 
-    public function actionResend($since, $baseurl='http://openeyes.dev', $dryrun=false)
+    public function actionResend($since, $baseurl = 'http://openeyes.dev', $dryrun = false)
     {
 
         $events = $this->getSubmittedApplications($this->formatDate($since));

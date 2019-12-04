@@ -24,7 +24,7 @@
       <div class="cols-6 column hidden end" id="external-referral-popup-blocked">
         Unable to automatically open WinDip. Please click the button below.
       </div>
-        <?php if( !$is_new_referral ): ?>
+        <?php if ( !$is_new_referral ) : ?>
           <div class="cols-6 column" id="external-referral-button">
             <a href="<?=$external_link?>" class="button primary small">click to view</a>
           </div>
@@ -34,11 +34,11 @@
       </div>
     </div>
 </div>
-<?php if( $is_new_referral ): ?>
+<?php if ( $is_new_referral ) : ?>
   <script type="text/javascript">
     $(document).on('ready', function() {
       createNewWindow('<?= $external_link?>');
     });
   </script>
-<?php $this->getApp()->user->setState("new_referral", false); ?>
+    <?php $this->getApp()->user->setState("new_referral", false); ?>
 <?php endif; ?>

@@ -73,7 +73,7 @@ while (true) {
         unset($arr);
     }
     $mysqli->close();
-    sleep(5);
+    sleep(300);  // 5 minutes to match DICOM queue processor, and avoid thrashing a CPU.
 }
 
 function processDir($dirResource, $root, $logger)
@@ -88,7 +88,7 @@ function processDir($dirResource, $root, $logger)
                 processDir($dirToProcess, $root.'/'.$entry, $logger);
             } elseif (is_file($root.'/'.$entry)) {
                 $filedata = stat($root.'/'.$entry);
-                if (!fileEntryExists($root.'/'.$entry,  $filedata, $mysqli)) {
+                if (!fileEntryExists($root.'/'.$entry, $filedata, $mysqli)) {
                     echo 'New file arrived: '.$entry."\n";
                     $newfile = true;
                     createFileEntry($root.'/'.$entry, $filedata, $mysqli);

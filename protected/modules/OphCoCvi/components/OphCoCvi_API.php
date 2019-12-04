@@ -113,8 +113,7 @@ class OphCoCvi_API extends \BaseAPI
             $mgr = $this->getManager();
             return $mgr->getDisplayStatusForEvent($latest) .
                 ' (' . \Helper::convertMySQL2NHS($mgr->getDisplayStatusDateForEvent($latest)) . ')';
-        }
-        else {
+        } else {
             return $patient->getOphInfo()->cvi_status->name .
                 ' (' . \Helper::formatFuzzyDate($patient->getOphInfo()->cvi_status_date) . ')';
         }
@@ -203,7 +202,7 @@ class OphCoCvi_API extends \BaseAPI
      */
     public function hasCVI(\Patient $patient)
     {
-        if (count($this->getEvents($patient))) {
+        if (count($this->getEvents($patient)) || $patient->getCviSummary()[0] !== 'Unknown') {
             return true;
         }
         $oph_info = $patient->getOphInfo();
@@ -250,8 +249,7 @@ class OphCoCvi_API extends \BaseAPI
     {
         $show_alert = false;
         $base_values = array();
-        if($element) {
-
+        if ($element) {
             $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
                 $base_values[] = $reading->value;
@@ -261,6 +259,7 @@ class OphCoCvi_API extends \BaseAPI
             'element' => $element,
             'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
             'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
+            'has_cvi' => $this->hasCVI($patient),
             'show_create' => $show_create,
         ));
     }
@@ -273,6 +272,7 @@ class OphCoCvi_API extends \BaseAPI
     public function renderAlertForCVI(Patient $patient, $element, $show_create = false)
     {
         if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
+            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
             $base_values = array();
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
                 $base_values[] = $reading->value;
@@ -280,7 +280,8 @@ class OphCoCvi_API extends \BaseAPI
 
             return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
                 'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
-                'visible' => $this->isVaBelowThreshold($base_values),
+                'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
+                'has_cvi' => $this->hasCVI($patient),
                 'show_create' => $show_create,
             ));
         }
@@ -294,13 +295,12 @@ class OphCoCvi_API extends \BaseAPI
      * @return string
      */
     public function getCviSummaryDate($patient){
-            if ($events = $this->getEvents($patient)) {
-                $latest = array_pop($events);
-                $mgr = $this->getManager();
-                return $mgr->getDisplayStatusDateForEvent($latest);
-            }
-            else {
-                return $patient->getOphInfo()->cvi_status_date;
+        if ($events = $this->getEvents($patient)) {
+            $latest = array_pop($events);
+            $mgr = $this->getManager();
+            return $mgr->getDisplayStatusDateForEvent($latest);
+        } else {
+            return $patient->getOphInfo()->cvi_status_date;
         }
     }
 

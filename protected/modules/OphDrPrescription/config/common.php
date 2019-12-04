@@ -25,4 +25,6 @@ return [
         'OphDrPrescriptionAdmin' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionAdmin',
     ],
     'modules' => ['OphDrPrescriptionAdmin'],
+
+    'import' => ['application.modules.OphDrPrescription.components.*'],
 ];

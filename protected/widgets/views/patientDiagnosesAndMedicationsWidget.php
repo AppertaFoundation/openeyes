@@ -1,4 +1,4 @@
-<?php if ($this->patient->diagnoses || $this->patient->systemic_diagnoses): ?>
+<?php if ($this->patient->diagnoses || $this->patient->systemic_diagnoses) : ?>
     <div class="row data-row">
         <div class="large-12 column">
             <div>Diagnoses:
@@ -19,9 +19,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($this->patient->diagnoses as $diagnosis):
+                            <?php foreach ($this->patient->diagnoses as $diagnosis) :
                                 // If the event doesn't exist, it means the event has been deleted.
-                                if ($diagnosis->element_diagnoses->event):?>
+                                if ($diagnosis->element_diagnoses->event) :?>
                                 <tr>
                                     <td><?php echo CHtml::encode($diagnosis) . ' (' . ($diagnosis->principal == 1 ? 'Principal' : 'Secondary') . ')'; ?></td>
                                     <td><?php echo CHtml::encode($diagnosis->element_diagnoses->event->episode->firm->getNameAndSubspecialty()); ?></td>
@@ -29,9 +29,9 @@
                                 </tr>
                                 <?php endif;
                             endforeach; ?>
-                            <?php foreach ($this->patient->systemic_diagnoses as $diagnosis):
+                            <?php foreach ($this->patient->systemic_diagnoses as $diagnosis) :
                                 // If the event doesn't exist, it means the event has been deleted.
-                                if ($diagnosis->element->event):?>
+                                if ($diagnosis->element->event) :?>
                                 <tr>
                                     <td><?php echo CHtml::encode($diagnosis->getDisplayDisorder()) . ' (Secondary)'; ?></td>
                                     <td><?php echo CHtml::encode($diagnosis->element->event->episode->firm->getNameAndSubspecialty()); ?></td>
@@ -48,7 +48,7 @@
     </div>
 <?php endif; ?>
 
-<?php if ($this->patient->medications): ?>
+<?php if ($this->patient->medications) : ?>
     <div class="row data-row">
         <div class="large-12 column">
             <div>Medications:
@@ -71,7 +71,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($this->patient->medications as $medication): ?>
+                            <?php foreach ($this->patient->medications as $medication) : ?>
                                 <tr>
                                     <td><?php echo $medication->getMedicationDisplay(); ?></td>
                                     <td><?php echo $medication->getAdministrationDisplay(); ?></td>

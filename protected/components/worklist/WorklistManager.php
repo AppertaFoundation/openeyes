@@ -284,7 +284,7 @@ class WorklistManager extends CComponent
      */
     public function getWorklistDefinitions($exclude_unbooked = false)
     {
-        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->findAll();
+        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->displayOrder()->findAll();
     }
 
     /**
@@ -480,6 +480,7 @@ class WorklistManager extends CComponent
             }
 
             foreach ($model->findAll($criteria) as $definition) {
+                $definition->scenario = 'sortDisplayOrder';
                 if (!array_key_exists($definition->id, $display_lookup)) {
                     throw new Exception('Missing definition id for re-ordering request.');
                 }
@@ -631,7 +632,7 @@ class WorklistManager extends CComponent
         foreach ($days as $when) {
 
 
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
                     $worklists[] = $worklist;
@@ -639,7 +640,16 @@ class WorklistManager extends CComponent
             }
         }
 
-        return $worklists;
+        $unique_ids = array();
+        $unique_worklists = array();
+        foreach ($worklists as $wl) {
+            if(!in_array($wl->id, $unique_ids)) {
+                $unique_worklists[] = $wl;
+                $unique_ids[] = $wl->id;
+            }
+        }
+
+        return $unique_worklists;
     }
 
     public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
@@ -670,7 +680,7 @@ class WorklistManager extends CComponent
      *
      * @return array
      */
-    public function getCurrentAutomaticWorklistsForUserContext($user, Site $site, Firm $firm, DateTime $when)
+    public function getCurrentAutomaticWorklistsForUserContext(Site $site, Firm $firm, DateTime $when)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
@@ -953,7 +963,7 @@ class WorklistManager extends CComponent
         $content = '';
         $days = $this->getDashboardRenderDates(new DateTime());
         foreach ($days as $when) {
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($site, $firm, $when) as $worklist) {
                 $content .= $this->renderWorklistForDashboard($worklist);
             }
         }
@@ -1538,3 +1548,4 @@ class WorklistManager extends CComponent
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
 }
+

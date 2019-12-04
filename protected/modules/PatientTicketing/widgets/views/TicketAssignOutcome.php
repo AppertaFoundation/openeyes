@@ -20,8 +20,8 @@
 <tr>
   <td>Outcome:</td>
   <td>
-      <?php $outcomes = $this->getOutcomeOptions();
-      echo CHtml::dropDownList($this->form_name . '[outcome]', @$this->form_data[$this->form_name]['outcome'],
+        <?php $outcomes = $this->getOutcomeOptions();
+        echo CHtml::dropDownList($this->form_name . '[outcome]', @$this->form_data[$this->form_name]['outcome'],
           $outcomes['list_data'],
           array('empty' => 'Select', 'options' => $outcomes['options'], 'class' => 'outcome-select cols-full')); ?>
   </td>
@@ -29,26 +29,28 @@
 </tbody>
 <tbody
     id="<?= $this->form_name ?>-followup"
-    style="<?php if ($this->hideFollowUp && !@$this->form_data[$this->form_name]['followup_quantity']) { ?>display: none;<?php } ?>"
+    style="<?php if ($this->hideFollowUp && !@$this->form_data[$this->form_name]['followup_quantity']) {
+        ?>display: none;<?php
+           } ?>"
 >
 <tr>
   <td>Follow up:</td>
   <td>
-      <?php
-      $html_options = array('empty' => 'Select', 'options' => array(), 'class' => 'inline');
-      echo CHtml::dropDownList($this->form_name . '[followup_quantity]',
+        <?php
+        $html_options = array('empty' => 'Select', 'options' => array(), 'class' => 'inline');
+        echo CHtml::dropDownList($this->form_name . '[followup_quantity]',
           @$this->form_data[$this->form_name]['followup_quantity'], Yii::app()->params['follow_up_months'],
           $html_options);
-      echo CHtml::dropDownList($this->form_name . '[followup_period]',
+        echo CHtml::dropDownList($this->form_name . '[followup_period]',
           @$this->form_data[$this->form_name]['followup_period'],
           CHtml::listData(\Period::model()->findAll(array('order' => 'display_order')), 'name', 'name'), $html_options);
-      ?>
+        ?>
   </td>
 </tr>
 <tr>
   <td>Clinic location:</td>
   <td>
-      <?=\CHtml::dropDownList($this->form_name . '[clinic_location]',
+        <?=\CHtml::dropDownList($this->form_name . '[clinic_location]',
           @$this->form_data[$this->form_name]['clinic_location'],
           \CHtml::listData(OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')),
               'name', 'name'), ['empty' => 'Select', 'options' => array(), 'class' => 'cols-full']); ?>

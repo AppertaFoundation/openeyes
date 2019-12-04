@@ -63,12 +63,11 @@ class GeneController extends BaseModuleController
         
         $valid = $admin->editModel(false);
         
-        if (Yii::app()->request->isPostRequest) {        
-            if($valid) {
+        if (Yii::app()->request->isPostRequest) {
+            if ($valid) {
                 Yii::app()->user->setFlash('success', "Gene Saved");
-                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
                 $this->redirect($url);
-                
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -137,7 +136,7 @@ class GeneController extends BaseModuleController
     {
         // $variant = 12;
         $api = Yii::app()->moduleAPI->get('Genetics');
-        if($api){
+        if ($api) {
             echo $api->validateGene($variant);
         }
     }

@@ -88,7 +88,9 @@
                 serviceName: self.options.currentSubspecialties[i].service,
                 serviceId: self.options.currentSubspecialties[i].firm.id,
             });
-            currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            if (!inArray(self.options.currentSubspecialties[i].subspecialty.id, currentSubspecialtyIds)) {
+                currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            }
         }
 
         // subspecialties/services/contexts initialisation
@@ -98,7 +100,15 @@
         self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
-            if (!inArray(subspecialty.id, currentSubspecialtyIds)) {
+            self.options.currentSubspecialties.forEach(function (currentSubspecialty) {
+                subspecialty.services.forEach(function (service) {
+                    if (service.name === currentSubspecialty.service) {
+                        subspecialty.services.splice(subspecialty.services.indexOf(service), 1);
+                    }
+                });
+            });
+
+            if (subspecialty.services.length !== 0) {
                 self.selectableSubspecialties.push(subspecialty);
             }
             self.subspecialtiesById[subspecialty.id] = subspecialty;
@@ -190,6 +200,7 @@
         self.content.on('click', selectors.eventTypeItem, function (e) {
             if (!$(this).hasClass('add_event_disabled')) {
                 // can proceed
+                $(this).addClass("selected");
                 self.createEvent($(this).data('eventtype-id'));
             }
         });
@@ -474,6 +485,11 @@
         // Stop ongoing background tasks such as lightning image loading. Otherwise user has to wait
         window.stop();
         var self = this;
+
+        // disable click on other events
+        self.content.find('#event-type-list').append('<i class="spinner" title="Loading..."></i>');
+        self.content.find('#event-type-list').css('pointer-events', 'none');
+
         // build params for the new event request
         var requestParams = {
             patient_id: self.options.patientId,

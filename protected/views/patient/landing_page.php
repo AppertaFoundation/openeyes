@@ -17,10 +17,12 @@
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+// Removing the unnecessary canViewSummary parameter from the localisation, this needs to be implemented properly by creating a new role - CERA590
+$allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 
 ?>
 
-<?php if($no_episodes) { ?>
+<?php if ($no_episodes && $allow_clinical) { ?>
     <div class="oe-sem-no-events">
         <h3>No Events</h3>
         <div class="alert-box alert">
@@ -34,18 +36,16 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
             <?php } ?>
         </nav>
     </div>
-    <?php $this->renderPartial('//patient/add_new_event',array(
+    <?php $this->renderPartial('//patient/add_new_event', array(
         'button_selector' => '#add-event',
         'episodes' => array(),
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
     ));?>
-<?php } else { ?>
-
+<?php } else if ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
-        <h2 class="event-header-title">Patient Overview</h2>
         <?php $this->renderPartial('//patient/event_actions'); ?>
     </nav>
 
@@ -53,6 +53,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         'css_class' => isset($cssClass) ? $cssClass : '',
         'episode' => isset($current_episode) ? $current_episode : ''
     ]);
+
     ?>
 
     <div class="flex-layout flex-top">
@@ -161,7 +162,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         <div class="patient-overview">
             <table class="standard">
                 <tbody>
-                <?php foreach ($events as $event):
+                <?php foreach ($events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                     <tr>
                         <td>
@@ -202,7 +203,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                     <div class="data-value">
                         <table>
                             <colgroup>
-                                <col class="cols-7">
+                                <col class="cols-8">
                             </colgroup>
                             <tbody>
                             <?php
@@ -216,7 +217,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                             <?php } ?>
 
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis, 3); ?>
+                                list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
                                     <td><strong><?= $name ?></strong></td>
                                     <td>
@@ -224,6 +225,11 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                                     </td>
                                     <td class="date">
                                         <span class="oe-date"><?= $date ?></span>
+                                    </td>
+                                    <td>
+                                        <?php if (isset($event_id) && $event_id) { ?>
+                                            <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -233,7 +239,7 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                 </div>
             </section>
             <section class="element view full view-xxx" id="idg-ele-view-eye-procedures">
-                <header class="element-header"><h3 class="element-title">Surgical History</h3></header>
+                <header class="element-header"><h3 class="element-title">Eye Procedures</h3></header>
                 <div class="element-data full-width">
                     <div class="data-value">
                         <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
@@ -274,26 +280,47 @@ $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
                                             <span class="month"><?= $summary->date[1] ?></span>
                                             <span class="year"><?= $summary->date[2] ?></span>
                                         </span>
-                                    </td>
-                                    <td><i class="oe-i info small pro-left js-has-tooltip"
-                                           data-tooltip-content="<?= $summary->user ?>"></i></td>
-                                </tr>
-                            <?php }
+                                            </td>
+                                            <td><i class="oe-i info small pro-left js-has-tooltip"
+                                                         data-tooltip-content="<?= $summary->user ?>"></i></td>
+                                        </tr>
+                                    <?php }
                         } ?>
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="element view full view-xxx" id="idg-ele-view-appointments">
+                        <header class="element-header"><h3 class="element-title">Appointments</h3></header>
+                        <div class="element-data full-width">
+                            <div class="data-value">
+                                <?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="element view full ">
+                        <header class="element-header">
+                            <h3 class="element-title">Problems &amp; Plans</h3>
+                        </header>
+                        <div class="element-data full-width">
+                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
+                        </div>
+                    </section>
                 </div>
-            </section>
-            <section class="element view full view-xxx" id="idg-ele-view-appointments">
-                <header class="element-header"><h3 class="element-title">Appointments</h3></header>
-                <div class="element-data full-width">
-                    <div class="data-value">
-                        <?php $this->widget('Appointment', ['patient' => $this->patient]) ?>
-                    </div>
-                </div>
-            </section>
+            </div>
+            <?php
+            $this->endContent();
+} else { ?>
+    <main class="oe-home">
+        <div class="oe-error-message">
+            <div class="message">
+                <h1>OpenEyes</h1>
+                <h2>Forbidden</h2>
+                <div class="alert-box error">
+                    <strong>You do not have permission to access this page</strong>
+                </div>          </div>
         </div>
-    </div>
+    </main>
+<?php }?>
 
-    <?php $this->endContent();
-} ?>
+

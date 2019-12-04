@@ -54,7 +54,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionLetterSettings()
     {
-        $this->render('/admin/letter_settings',array(
+        $this->render('/admin/letter_settings', array(
             'settings' => OphCoCorrespondenceLetterSettings::model()->findAll(),
         ));
     }
@@ -226,7 +226,6 @@ class AdminController extends \ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
-
             $macro->attributes = $_POST['LetterMacro'];
 
             if (!$macro->validate()) {
@@ -254,7 +253,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionDeleteLetterMacros()
     {
-        if(!isset($_POST['id'])) {
+        if (!isset($_POST['id'])) {
             return null;
         }
         //Make all the macro ids null that is equal to the macro id

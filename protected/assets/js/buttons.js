@@ -68,13 +68,23 @@ function enableButtons(selector) {
 
 	var $selector = $(selector || 'button, .button');
 
-    $selector
-	.not('.cancel')
-	.removeClass('inactive')
-	.attr('disabled', false)
-	.off('click.disable');
+    $selector.each(function(i, button){
+    	$(button).not('.cancel')
+            .removeClass('inactive')
+            .removeAttr('disabled')
+			.prop('disabled', false)
+            .off('click.disable');
+	});
 
 	$('.spinner').hide();
+}
+
+function updateActiveIcon($form){
+  $form
+    .find('table.standard tbody input[type="checkbox"]:checked')
+    .closest('tr')
+    .find('td i')
+    .attr('class','oe-i remove small');
 }
 
 $(document).ready(function() {

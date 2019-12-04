@@ -40,7 +40,8 @@ class RisksController extends \BaseController
     protected function riskIdsForTagIds($tag_ids = array())
     {
         return array_map(
-            function($r) { return $r->id; },
+            function($r) { return $r->id;
+            },
             OphCiExaminationRisk::findForTagIds($tag_ids)
         );
     }

@@ -4,7 +4,7 @@ $(document).ready(function () {
     if(near === 'near'){
       suffix = 'NearVisualAcuity';
     }
-    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');    
+    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
     var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
     if (el.length) {
       el.addClass('clicked');
@@ -28,6 +28,10 @@ $(document).ready(function () {
   $(this).delegate('#visualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, '');
   });
+
+	$('.va-info-icon').closest('tr').each(function () {
+		OphCiExamination_VisualAcuity_ReadingTooltip($(this));
+	});
 
   $(this).delegate(
     '.visualAcuityReading .removeReading',
@@ -108,9 +112,9 @@ $(document).ready(function () {
 
         if ($('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess')[0].checked ||
           $('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing')[0].checked){
-          $('#'+side+'-add-'+element+'-reading').hide();
+          $('#'+ 'add-' + element + '-reading-btn-'+side).hide();
         } else {
-          $('#'+side+'-add-'+element+'-reading').show();
+            $('#'+ 'add-' + element + '-reading-btn-'+side).show();
         }
       });
     }
@@ -125,13 +129,14 @@ $(document).ready(function () {
   $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
     var $section =  $(this).closest('section');
     var $cviAlert = $('.cvi-alert');
+    var hasCvi = parseInt($cviAlert.data('hascvi')) === 1;
     var threshold = parseInt($cviAlert.data('threshold'));
 
     if( $section.find('.cvi_alert_dismissed').val() !== "1"){
       var show_alert = null;
       $section.find('.va-selector').each(function(){
         var val = parseInt($(this).val());
-        if (val < threshold) {
+        if (val < threshold && !hasCvi) {
           show_alert = (show_alert === null) ? true : show_alert;
         } else {
           show_alert = false;
@@ -290,7 +295,6 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
 }
 
 function swapElement(element_to_swap, elementTypeClass, params){
-  console.log('swap element');
     const nva = elementTypeClass.endsWith("NearVisualAcuity");
     const sidebar = $('#episodes-and-events').data('patient-sidebar');
     const $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);
@@ -363,7 +367,7 @@ function swapElement(element_to_swap, elementTypeClass, params){
                             reading_val_li = conversion_values[i].value;
                         }
                     }
-                    
+
                     let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method_val+'"]');
 
                     // get index and label
@@ -382,7 +386,7 @@ function swapElement(element_to_swap, elementTypeClass, params){
 
         // select equivalent
         if(Object.keys(reading_val).length > 0 && Object.keys(method).length > 0){
-            $.each(Object.keys(reading_val), function(eye_index, eye_side){                
+            $.each(Object.keys(reading_val), function(eye_index, eye_side){
                 $.each(reading_val[eye_side], function(i, val){
                     let target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
 

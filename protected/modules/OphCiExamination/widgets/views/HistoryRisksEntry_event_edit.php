@@ -45,10 +45,11 @@ if (!isset($values)) {
                data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other'? $values['risk_display'] : $values['other']); ?></label>
         <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ?'none':'' ?>">
         <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
-            array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            array('class' => 'other-type-input'.($entry->hasErrors('other') ? ' error': ''), 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>
     </td>
-    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?= $row_count ?>_risk_id_error">
+    <td>
+        <?php $hasRiskErrorClass = ($entry->hasErrors('has_risk') ? 'error' : '') ?>
         <?php if ($removable) {
             if ($values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
@@ -67,18 +68,18 @@ if (!isset($values)) {
                 echo CHtml::hiddenField($field_prefix . '[has_risk]', (string)HistoryRisksEntry::$PRESENT);
             }
         } else { ?>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
                     array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
                 Not checked
             </label>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
                     array('value' => HistoryRisksEntry::$PRESENT)); ?>
                 Yes
             </label>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
                     array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
@@ -86,13 +87,15 @@ if (!isset($values)) {
             </label>
         <?php } ?>
     </td>
-	<td>
+    <td>
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
-						id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-						data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
-      <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
+                        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+                        style="<?php if (!$values['comments']) :
+                            ?>display: none;<?php
+                               endif; ?>"
+                        data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+        <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
         'class' => 'js-comment-field autosize cols-full',
         'rows' => '1',
         'placeholder' => 'Comments',
@@ -101,22 +104,24 @@ if (!isset($values)) {
       ]) ?>
         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
-  		<button
-  			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-  			type="button"
-  			class="button js-add-comments"
+        <button
+            id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+            type="button"
+            class="button js-add-comments"
         data-hide-method = "display"
-  			style="<?php if ($values['comments']): ?>display: none;<?php endif; ?>"
-  			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
-  			<i class="oe-i comments small-icon"></i>
-  		</button>
+            style="<?php if ($values['comments']) :
+                ?>display: none;<?php
+                   endif; ?>"
+            data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
+            <i class="oe-i comments small-icon"></i>
+        </button>
     </div>
-	</td>
+    </td>
     <?php if ($removable) : ?>
         <td>
             <i class="oe-i trash"></i>
         </td>
-    <?php else: ?>
+    <?php else : ?>
         <td>read only</td>
     <?php endif; ?>
 </tr>

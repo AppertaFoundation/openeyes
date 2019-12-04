@@ -21,6 +21,7 @@
 
 <?php $this->beginWidget('CActiveForm', array(
     'id' => 'ticket-filter',
+    'method' => 'get',
     'action' => [
         '/PatientTicketing/default',
         'cat_id' => $cat_id,
@@ -57,7 +58,7 @@
                         'data' => $data,
                         'htmlOptions' => ['empty' => 'All Lists',],
                         'selectedItemsInputName' => 'queue-ids[]',
-                        'selectedItems' => \Yii::app()->request->getpost('queue-ids', null),
+                        'selectedItems' => \Yii::app()->request->getParam('queue-ids', null),
                     ],
                 ],
             ]);
@@ -70,12 +71,12 @@
                 <td>
                     <?= \CHtml::dropDownList(
                         'subspecialty-id',
-                        @$_POST['subspecialty-id'],
+                        \Yii::app()->request->getParam('subspecialty-id', null),
                         Subspecialty::model()->getList(),
                         [
                             'empty' => 'All specialties',
                             'class' => 'cols-11',
-                            'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                            'disabled' => (\Yii::app()->request->getParam('emergency_list') == 1 ? 'disabled' : ''),
                         ]
                     );
                     ?>
@@ -83,7 +84,7 @@
             <?php endif; ?>
 
             <td colspan="2">
-                <?php $priorities = \Yii::app()->request->getPost('priority-ids', []); ?>
+                <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
                 <label class="inline highlight">
                     <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
                     <i class="oe-i circle-red small pad"></i>
@@ -100,7 +101,7 @@
                     <label class="inline highlight">
                         <?= \CHtml::checkBox(
                             'closed-tickets',
-                            \Yii::app()->request->getPost('closed-tickets', false),
+                            \Yii::app()->request->getParam('closed-tickets', false),
                             ['value' => 1]
                         ); ?>
                         Completed
@@ -110,31 +111,30 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <input id="patient-search" type="text" class="cols-11" placeholder="Hospital Number, NHS Number, Firstname Surname or Surname, Firstname">
-
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname'], 'layoutColumns' => ['field' => '11']]); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
                 <div style="display:none" class="cols-11 no-result-patients warning alert-box">
                     <div class="cols-11 column text-center">
-                        No patients found.
+                        No patients found in virtual clinic.
                     </div>
                 </div>
             </td>
             <td class="fade">Context</td>
             <td>
-                <?php if (!@$_POST['subspecialty-id']) { ?>
+                <?php if (!$subspecialty_id = \Yii::app()->request->getParam('subspecialty-id', null)) { ?>
                     <?= \CHtml::dropDownList('firm-id', '', array(), array(
                         'class' => 'cols-11',
                         'empty' => 'All ' . Firm::contextLabel() . 's',
                         'disabled' => 'disabled',
                     )) ?>
                 <?php } else { ?>
-                    <?= \CHtml::dropDownList('firm-id', @$_POST['firm-id'],
-                        Firm::model()->getList(@$_POST['subspecialty-id']), array(
+                    <?= \CHtml::dropDownList('firm-id', \Yii::app()->request->getParam('firm-id'),
+                        Firm::model()->getList($subspecialty_id), array(
                             'class' => 'cols-11',
                             'empty' => 'All ' . Firm::contextLabel() . 's',
-                            'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                            'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
                         )) ?>
                 <?php } ?>
             </td>
@@ -155,11 +155,11 @@
             <td></td>
             <td style="padding-top:0px" id="patient-result-wrapper">
                 <ul id="patient-result-list" class="oe-multi-select inline">
-                    <?php foreach($patients as $patient): ?>
+                    <?php foreach ($patients as $patient) : ?>
                         <li data-patient_id="<?=$patient->id?>">
                             <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
-                            <input type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
+                            <input name="patient-ids[]" type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -174,20 +174,25 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        OpenEyes.UI.Search.init($('#patient-search'));
-        OpenEyes.UI.Search.setLoader($('.js-spinner-as-icon'));
-        OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function (event, uid) {
-            let $list = $('#patient-result-list');
-            let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-            let $hidden = $('<input>', {type: 'hidden', id: uid.item.id, value: uid.item.id, name: 'patient-ids[]'});
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#oe-autocompletesearch'),
+                url: '/PatientTicketing/default/patientSearch',
+                onSelect: function(){
+                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let $list = $('#patient-result-list');
+                    let $item = $('<li>', {'data-patient-id': autoCompleteResponse.id}).html(autoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
+                    let $hidden = $('<input>', {type: 'hidden', id: autoCompleteResponse.id, value: autoCompleteResponse.id, name: 'patient-ids[]'});
+                    $list.html('');
+                    $list.append($item.append($hidden));
+                    // clear input field
+                    $(this).val('');
+                    return false;
+                }
+            });
+        }
 
-            $list.append($item.append($hidden));
 
-            // clear input field
-            $(this).val('');
-            return false;
-
-        });
 
         $('#patient-result-wrapper').on('click', '.remove-circle', function () {
             let id = $(this).data('patient_id');

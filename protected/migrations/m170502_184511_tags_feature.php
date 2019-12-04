@@ -2,27 +2,27 @@
 
 class m170502_184511_tags_feature extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $this->createOETable('tag', array(
-	        'id' => 'pk',
+            'id' => 'pk',
             'name' => 'string NOT NULL',
             'active' => 'TINYINT NOT NULL DEFAULT 1'
         ), true);
 
-	    $this->createIndex('idx_tag_name', 'tag', 'name', true);
+        $this->createIndex('idx_tag_name', 'tag', 'name', true);
 
-	    $this->execute("INSERT IGNORE INTO `tag` (`id`, `name`) VALUES (1, 'Preservative free');");
+        $this->execute("INSERT IGNORE INTO `tag` (`id`, `name`) VALUES (1, 'Preservative free');");
 
-	    $this->createOETable('drug_tag', array(
-	        'id' => 'pk',
+        $this->createOETable('drug_tag', array(
+            'id' => 'pk',
             'drug_id' => 'int(10) unsigned not null',
             'tag_id' => 'int(11) not null',
             'constraint drug_tags_ti_fk foreign key (tag_id) references tag (id)',
             'constraint drug_tags_di_fk foreign key (drug_id) references drug (id)'
         ), true);
 
-	    $this->addColumn('drug_type', 'tag_id', 'int(11) null');
+        $this->addColumn('drug_type', 'tag_id', 'int(11) null');
         $this->addColumn('drug_type_version', 'tag_id', 'int(11) null');
 
         $this->execute("ALTER TABLE `drug_type` ADD CONSTRAINT drug_type_tags_fk foreign key (tag_id) references tag (id)");
@@ -60,10 +60,10 @@ class m170502_184511_tags_feature extends OEMigration
 
         $this->dropColumn('drug', 'preservative_free');
         $this->dropColumn('drug_version', 'preservative_free');
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->dropOETable('drug_tag', true);
         $this->dropOETable('medication_drug_tag', true);
         $this->execute('ALTER TABLE openeyes.drug_type DROP FOREIGN KEY drug_type_tags_fk;');
@@ -74,6 +74,6 @@ class m170502_184511_tags_feature extends OEMigration
         $this->execute("DROP VIEW IF EXISTS `drug_drug_type`");
         $this->addColumn('drug', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
         $this->addColumn('drug_version', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
-	}
+    }
 
 }

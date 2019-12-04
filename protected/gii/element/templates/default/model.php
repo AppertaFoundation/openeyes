@@ -63,7 +63,7 @@
  * This is the model class for table "<?php echo $tableName; ?>".
  *
  * The followings are the available columns in table '<?php echo $tableName; ?>':
-<?php foreach ($columns as $column): ?>
+<?php foreach ($columns as $column) : ?>
  * @property <?php echo $column->type.' $'.$column->name."\n"; ?>
 <?php endforeach; ?>
  *
@@ -94,19 +94,19 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
     {
         // Only define rules for those attributes with user inputs.
         return array(
-<?php foreach ($rules as $rule): ?>
+<?php foreach ($rules as $rule) : ?>
             <?php echo $rule.",\n"; ?>
 <?php endforeach; ?>
 
             // Remove attributes that should not be searched.
             array('<?php
                 $oe_array_keys = array();
-                foreach (array_keys($columns) as $column) {
-                    if (in_array($column, $ignore)) {
-                        continue;
-                    }
-                    $oe_array_keys[] = $column;
+            foreach (array_keys($columns) as $column) {
+                if (in_array($column, $ignore)) {
+                    continue;
                 }
+                $oe_array_keys[] = $column;
+            }
                 echo implode(', ', $oe_array_keys); ?>', 'safe', 'on'=>'search'),
         );
     }
@@ -117,7 +117,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
     public function attributeLabels()
     {
         return array(
-<?php foreach ($labels as $name => $label): ?>
+<?php foreach ($labels as $name => $label) : ?>
             <?php echo "'$name' => '$label',\n"; ?>
 <?php endforeach; ?>
         );

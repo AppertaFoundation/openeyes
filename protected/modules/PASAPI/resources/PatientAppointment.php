@@ -150,6 +150,9 @@ class PatientAppointment extends BaseResource
                 throw new \Exception('No appointment reference found for this id');
             }
 
+            // set the event.worklist_patient_id to null before doing the delete
+            \Event::model()->updateAll(['worklist_patient_id' => null], 'worklist_patient_id = :wp', [':wp' => $model->id]);
+
             if (!$model->delete()) {
                 $this->addModelErrors($model->getErrors());
                 throw new \Exception('Could not delete internal model.');

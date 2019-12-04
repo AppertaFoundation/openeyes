@@ -30,8 +30,8 @@ foreach ($readings as $reading) {
 <div class="cols-9">
   <table id="<?= CHtml::modelName($element) . '_readings_' . $side ?>"
          class="cols-full<?php if (!$element->{"{$side}_values"}) {
-             echo 'hidden "';
-         } ?>">
+                echo 'hidden "';
+                         } ?>">
     <colgroup>
       <col class="cols-3">
       <col class="cols-2">
@@ -40,7 +40,7 @@ foreach ($readings as $reading) {
     <tr style="<?= count($element->{"{$side}_values"}) ? '' : 'display: none;'?>">
       <th>Time</th>
       <th>mm Hg</th>
-        <?php if ($element->getSetting('show_instruments')): ?>
+        <?php if ($element->getSetting('show_instruments')) : ?>
           <th>Instrument</th>
         <?php endif ?>
       <th></th>
@@ -73,9 +73,11 @@ foreach ($readings as $reading) {
   </table>
   <div id="iop-<?= $side; ?>-comments"
        class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
-       style="<?php if (!$element->$comments): ?>display: none;<?php endif; ?>"
+       style="<?php if (!$element->$comments) :
+            ?>display: none;<?php
+              endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">
-      <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
+        <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(
               'class' => 'js-comment-field',
               'rows' => 1,
@@ -92,7 +94,9 @@ foreach ($readings as $reading) {
             type="button"
             class="button js-add-comments"
             data-comment-container="#iop-<?= $side; ?>-comments"
-            style="<?php if ($element->$comments): ?>visibility: hidden;<?php endif; ?>"
+            style="<?php if ($element->$comments) :
+                ?>visibility: hidden;<?php
+                   endif; ?>"
     >
       <i class="oe-i comments small-icon"></i>
     </button>

@@ -22,7 +22,7 @@
     <col class="cols-5">
   </colgroup>
   <tbody>
-  <?php foreach ($elements as $element) { ?>
+    <?php foreach ($elements as $element) { ?>
     <tr>
       <td class="element <?=\CHtml::modelName($element) ?>"
           data-element-id="<?php echo $element->id ?>"
@@ -59,6 +59,6 @@
         </div>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   </tbody>
 </table>

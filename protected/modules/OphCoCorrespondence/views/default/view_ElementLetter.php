@@ -15,117 +15,111 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
-$correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+$is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getRequest()->getUserAgent());?>
 <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-3">
         <table class="cols-full">
-            <?php if($correspondeceApp === "on") { ?>
-            <tr>
-                <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
-                <td>
-                    <div class="data-value" style="text-align: right">
+            <tbody>
+            <?php if ($correspondeceApp === "on") { ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($element->is_signed_off == null) {
+                                echo 'N/A';
+                            } else if ((int)$element->is_signed_off == 1) {
+                                echo 'Yes';
+                            } else {
+                                echo 'No';
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+            <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <small class="fade">To</small><br>
                         <?php
-                        if($element->is_signed_off == NULL){
-                            echo 'N/A';
-                        } else if((int)$element->is_signed_off == 1){
-                            echo 'Yes';
+                            $ccString = "";
+                            $toAddress = "";
+                        if ($element->document_instance) {
+                            foreach ($element->document_instance as $instance) {
+                                foreach ($instance->document_target as $target) {
+                                    if ($target->ToCc == 'To') {
+                                           $toAddress = $target->contact_name . "\n" . $target->address;
+                                    } else {
+                                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                         $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                    }
+                                }
+                            }
                         } else {
-                            echo 'No';
+                            $toAddress = $element->address;
+                            foreach (explode("\n", trim($element->cc)) as $line) {
+                                if (trim($line)) {
+                                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                                }
+                            }
                         }
+                        echo str_replace("\n", '<br/>', CHtml::encode($toAddress))."<br/>".$ccString;
                         ?>
-                    </div>
                 </td>
             </tr>
-            <?php } ?>
+
+            </tbody>
         </table>
     </div>
-    <div class="spinner-overlay">
-        <i class="spinner"></i>
-        <img src="#"
-             width="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>"
-             height="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>"
-             style="background-color: white;"
-        >
-    </div>
-    <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-full element"
-         <?php 
-         // TODO: Remove this section once newblue is updated to include the correspondence-letterdraft style
-         if ($element->draft) {?> 
-         style="background-color: white; color: black; display:none;
-                 background-image: url(<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>);
-                 background-position-x: center;
-                 background-position-y: top;
-                 background-size: initial;
-                 background-repeat-x: no-repeat;
-                 background-repeat-y: no-repeat;">
-            <?php }?>
-            <header>
-                <?php
-            $ccString = "";
-            $toAddress = "";
-             if($element->document_instance) {
-                 foreach ($element->document_instance as $instance) {
-                    foreach ($instance->document_target as $target) {
-                        if($target->ToCc == 'To'){
-                            $toAddress = $target->contact_name . "\n" . $target->address;
-                        } else {
-                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                             $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                        }
-                    }
-                }
-            }else
-            {
-                $toAddress = $element->address;
-                foreach (explode("\n", trim($element->cc)) as $line) {
-                    if (trim($line)) {
-                        $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                    }
-                }
-            }
-            $this->renderPartial('letter_start', array(
-                'toAddress' => $toAddress,
-                'patient' => $this->patient,
-                'date' => $element->date,
-                'clinicDate' => $element->clinic_date,
-                'element' => $element,
-            ));
-                    ?>
-            </header>
-            <?php
-            $this->renderPartial('reply_address', array(
-                'site' => $element->site,
-                'is_internal_referral' => $element->isInternalReferral(),
-            ));
-            $this->renderPartial('print_ElementLetter', array(
-                'element' => $element,
-                'toAddress' => $toAddress,
-                'ccString' => $ccString,
-                'no_header' => true,
-            ));
-            $is_document = isset($element->document_instance);
-            ?>
-            <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
-            <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
-                <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
-                <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php echo $is_document ? '1' : '0'; ?>" />
-            <?php else: ?>
-                <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
-            <?php endif; ?>
+    <div class="cols-9">
+        <div class="spinner-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <p style="margin-bottom: 100px;">Generating PDFs</p>
+            <i class="spinner"></i>
         </div>
-<div class="js-correspondence-image-overlay">
-</div>
-
+        <?php if ($is_mobile_or_tablet) {?>
+            <div class="js-correspondence-image-overlay" style="position: relative;"></div>
+        <?php } else {?>
+            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=0&is_view=1#toolbar=0" data-doprint="<?= $element->checkPrint() ?>" data-eventid="<?= $element->event_id ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+        <?php } ?>
+    </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
         let options = [];
         // OE-8581 Disable lightning image loading due to speed issues
-        options['disableAjaxCall'] = true;
+        options['disableAjaxCall'] = <?= ($is_mobile_or_tablet ? 'false' : 'true'); ?>;
         new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
+        if ((String)($('iframe').data('doprint')).charAt(0) === '1') {
+            let eventId = $('iframe').data('eventid');
+            $.ajax({
+                'type': 'GET',
+                'url': baseUrl + '/OphCoCorrespondence/default/markPrinted/' + eventId,
+                'success': function(html) {
+                    printEvent(html);
+                },
+                'error': function() {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Something went wrong trying to print the letter, please try again or contact support for assistance."
+                    }).open();
+                }
+            });
+        }
     });
 </script>

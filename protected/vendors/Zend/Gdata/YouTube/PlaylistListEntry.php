@@ -147,28 +147,28 @@ class Zend_Gdata_YouTube_PlaylistListEntry extends Zend_Gdata_Entry
     {
         $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('yt') . ':' . 'description':
-            $description = new Zend_Gdata_YouTube_Extension_Description();
-            $description->transferFromDOM($child);
-            $this->_description = $description;
+            case $this->lookupNamespace('yt') . ':' . 'description':
+                $description = new Zend_Gdata_YouTube_Extension_Description();
+                $description->transferFromDOM($child);
+                $this->_description = $description;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'countHint':
-            $countHint = new Zend_Gdata_YouTube_Extension_CountHint();
-            $countHint->transferFromDOM($child);
-            $this->_countHint = $countHint;
+            case $this->lookupNamespace('yt') . ':' . 'countHint':
+                $countHint = new Zend_Gdata_YouTube_Extension_CountHint();
+                $countHint->transferFromDOM($child);
+                $this->_countHint = $countHint;
             break;
-        case $this->lookupNamespace('yt') . ':' . 'playlistId':
-            $playlistId = new Zend_Gdata_YouTube_Extension_PlaylistId();
-            $playlistId->transferFromDOM($child);
-            $this->_playlistId = $playlistId;
+            case $this->lookupNamespace('yt') . ':' . 'playlistId':
+                $playlistId = new Zend_Gdata_YouTube_Extension_PlaylistId();
+                $playlistId->transferFromDOM($child);
+                $this->_playlistId = $playlistId;
             break;
-        case $this->lookupNamespace('gd') . ':' . 'feedLink':
-            $feedLink = new Zend_Gdata_Extension_FeedLink();
-            $feedLink->transferFromDOM($child);
-            $this->_feedLink[] = $feedLink;
+            case $this->lookupNamespace('gd') . ':' . 'feedLink':
+                $feedLink = new Zend_Gdata_Extension_FeedLink();
+                $feedLink->transferFromDOM($child);
+                $this->_feedLink[] = $feedLink;
             break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

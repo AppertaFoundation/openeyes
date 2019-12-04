@@ -17,29 +17,29 @@
  */
 ?>
 <div class="booking-letter">
-	<header>
-		<?php $this->renderPartial('../default/letter_start', array(
+    <header>
+        <?php $this->renderPartial('../default/letter_start', array(
             'toAddress' => $toAddress,
             'patient' => $patient,
             'date' => date('Y-m-d'),
             'site' => $site,
         ))?>
-	</header>
+    </header>
 
-	<?php echo $this->renderPartial('../letters/letter_introduction', array(
+    <?php echo $this->renderPartial('../letters/letter_introduction', array(
             'to' => $to,
             'accessible' => true,
             'patient' => $patient,
     ))?>
 
-	<p class="accessible">
-		I recently invited you to telephone to arrange a date for your admission for surgery under the care of
-		<?=\CHtml::encode($consultantName)?>.
-	</p>
+    <p class="accessible">
+        I recently invited you to telephone to arrange a date for your admission for surgery under the care of
+        <?=\CHtml::encode($consultantName)?>.
+    </p>
 
-	<p class="accessible">
-		Despite a reminder letter, I have not heard from you. I am therefore referring you back to your <?php echo \Yii::app()->params['gp_label'] ?> and have removed you from our waiting list.
-	</p>
+    <p class="accessible">
+        Despite a reminder letter, I have not heard from you. I am therefore referring you back to your <?php echo \Yii::app()->params['gp_label'] ?> and have removed you from our waiting list.
+    </p>
 
-	<?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true)); ?>
+    <?php echo $this->renderPartial('../letters/letter_end', array('accessible' => true)); ?>
 </div>

@@ -4,7 +4,7 @@ class m190412_151923_create_default_country_system_setting extends CDbMigration
 {
     public function up()
     {
-        $field_type = SettingFieldType::model()->find('name = ?' , ["Dropdown list"]);
+        $field_type = SettingFieldType::model()->find('name = ?', ["Dropdown list"]);
         $this->insert('setting_metadata', array(
             'key' => 'default_country',
             'name' => 'Default Country',

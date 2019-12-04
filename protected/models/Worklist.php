@@ -96,6 +96,8 @@ class Worklist extends BaseActiveRecordVersioned
                 'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC', ),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
+            // according to the new coding standards we define relation with camelCase
+            'displayContext' =>  array(self::HAS_MANY, 'WorklistDisplayContext', 'worklist_id'),
         );
     }
 

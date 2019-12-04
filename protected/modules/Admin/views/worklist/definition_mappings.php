@@ -20,8 +20,8 @@
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
     <?php if ($this->manager->canUpdateWorklistDefinition($definition)) {
-    echo EventAction::link('Add Mapping', '/Admin/worklist/addDefinitionMapping/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
-}?>
+        echo EventAction::link('Add Mapping', '/Admin/worklist/addDefinitionMapping/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
+    }?>
     <?php if ($definition->mappings) { ?>
     <form id="mapping-list" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
@@ -71,9 +71,8 @@
             </tr>
             </tfoot>
         </table>
-        <?php
-
-}
+            <?php
+        }
         if ($definition->hidden_mappings) {?>
             <h2>Hidden Mapping Items</h2>
             <table class="generic-admin standard">
@@ -92,11 +91,11 @@
                         <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
                             <a href="/Admin/worklist/definitionMappingUpdate/<?=$mapping->id?>">Edit</a> |
                             <a href="/Admin/worklist/definitionMappingDelete/<?=$mapping->id?>" disabled="disabled">Delete</a></td>
-                        <?php } else {?>
+                            <?php } else {?>
                             <span title="Cannot change mappings for un-editable definition">
                             Edit | Delete
                             </span>
-                        <?php } ?>
+                            <?php } ?>
                     </tr>
                 <?php } ?>
                 </tbody>

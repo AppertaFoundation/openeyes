@@ -7,9 +7,9 @@
     <div class="group">
       <div class="label"></div>
       <div class="data">
-          <?php if (count($this->patient->trials) === 0) { ?>
+            <?php if (count($this->patient->trials) === 0) { ?>
             <div class="nil-recorded">No trials recorded.</div>
-          <?php } else { ?>
+            <?php } else { ?>
             <table>
               <thead>
               <tr>
@@ -17,47 +17,53 @@
                 <th>Study Coordinator</th>
                 <th>Treatment</th>
                 <th>Trial Status</th>
+                <th>Accepted/Rejected Date</th>
                 <th>Trial Type</th>
                 <th>Date Started</th>
                 <th>Date Ended</th>
               </tr>
               </thead>
               <tbody>
-              <?php
+                <?php
               /* @var TrialPatient $trialPatient */
-              foreach ($this->patient->trials as $trialPatient): //
-                  ?>
+                foreach ($this->patient->trials as $trialPatient) : //
+                    ?>
                 <tr>
-                  <td><?php if (Yii::app()->user->checkAccess('TaskViewTrial')) {
-                          echo CHtml::link(CHtml::encode($trialPatient->trial->name),
-                              Yii::app()->controller->createUrl('/OETrial/trial/permissions',
+                  <td>
+                      <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
+                            echo CHtml::link(CHtml::encode($trialPatient->trial->name),
+                              Yii::app()->controller->createUrl('/OETrial/trial/view',
                                   array('id' => $trialPatient->trial_id)));
                       } else {
                           echo CHtml::encode($trialPatient->trial->name);
                       } ?>
                   </td>
                   <td>
-                      <?php
-                      $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
-                      if (sizeof($coordinators)) {
-                        foreach ($coordinators as $item){
-                          echo $item->user->getFullName().'<br>';
+                        <?php
+                        $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
+                        if (sizeof($coordinators)) {
+                            foreach ($coordinators as $item) {
+                                echo $item->user->getFullName().'<br>';
+                            }
+                        } else {
+                            echo 'N/A';
                         }
-                      } else {
-                          echo 'N/A';
-                      }
-                      ?>
+                        ?>
                   </td>
                   <td><?= $trialPatient->treatmentType->name; ?></td>
                   <td><?= $trialPatient->status->name; ?></td>
+                  <td><?php
+                    if (isset($trialPatient->status_update_date)) {
+                        echo Helper::formatFuzzyDate($trialPatient->status_update_date);
+                    } ?></td>
                   <td><?= $trialPatient->trial->trialType->name; ?></td>
                   <td><?= $trialPatient->trial->getStartedDateForDisplay(); ?></td>
                   <td><?= $trialPatient->trial->getClosedDateForDisplay(); ?></td>
                 </tr>
-              <?php endforeach; ?>
+                <?php endforeach; ?>
               </tbody>
             </table>
-          <?php } ?>
+            <?php } ?>
       </div>
     </div>
   </div>

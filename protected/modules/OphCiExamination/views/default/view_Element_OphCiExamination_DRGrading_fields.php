@@ -18,7 +18,7 @@
 ?>
 <table>
   <tbody>
-  <?php if(!is_null($element->{$side . '_clinicalret'})) { ?>
+    <?php if (!is_null($element->{$side . '_clinicalret'})) { ?>
   <tr>
     <td>
         <?php echo $element->getAttributeLabel($side . '_clinicalret_id') ?>:
@@ -27,7 +27,7 @@
         <?php echo $element->{$side . '_clinicalret'}->name ?>
     </td>
   </tr>
-  <?php } ?>
+    <?php } ?>
   <tr>
     <td>
         <?php echo $element->getAttributeLabel($side . '_nscretinopathy_id') ?>:
@@ -44,7 +44,7 @@
         <?php echo $element->{$side . '_nscretinopathy_photocoagulation'} ? 'Yes' : 'No' ?>
     </td>
   </tr>
-  <?php if ($element->{$side . '_clinicalmac'}) { ?>
+    <?php if ($element->{$side . '_clinicalmac'}) { ?>
     <tr>
       <td>
           <?php echo $element->getAttributeLabel($side . '_clinicalmac_id') ?>:
@@ -53,7 +53,7 @@
           <?php echo $element->{$side . '_clinicalmac'}->name ?>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   <tr>
     <td>
         <?php echo $element->getAttributeLabel($side . '_nscmaculopathy_id') ?>:

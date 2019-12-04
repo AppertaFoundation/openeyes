@@ -17,7 +17,7 @@
 class DrugTest extends CDbTestCase
 {
     /**
-     *	@var Drug
+     *  @var Drug
      */
     protected $model;
     public $fixtures = array(
@@ -43,29 +43,29 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	Drug::model
+     *  @covers Drug::model
      *
-     *	@todo Implement testModel().
+     *  @todo Implement testModel().
      */
     public function testModel()
     {
-        $this->assertEquals('Drug',    get_class(Drug::model()),    'Class name should match model.');
+        $this->assertEquals('Drug', get_class(Drug::model()), 'Class name should match model.');
     }
 
     /**
-     *	@covers	DrugForm::tableName
+     *  @covers DrugForm::tableName
      *
-     *	@todo Implement testTableName().
+     *  @todo Implement testTableName().
      */
     public function testTableName()
     {
-        $this->assertEquals('drug',    $this->model->tableName());
+        $this->assertEquals('drug', $this->model->tableName());
     }
 
     /**
-     *	@covers	DrugForm::rules
+     *  @covers DrugForm::rules
      *
-     *	@todo Implement testRules().
+     *  @todo Implement testRules().
      */
     public function testRules()
     {
@@ -74,7 +74,7 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *	@covers	Drug::attributeLabels
+     *  @covers Drug::attributeLabels
      */
     public function testAttributeLabels()
     {
@@ -85,7 +85,7 @@ class DrugTest extends CDbTestCase
             'default_route_id' => 'Default Route',
         );
 
-        $this->assertEquals($expected,    $this->model->attributeLabels());
+        $this->assertEquals($expected, $this->model->attributeLabels());
     }
 
     /**
@@ -111,23 +111,23 @@ class DrugTest extends CDbTestCase
       *
       * @todo Implement testGetTallmanLabel().
       */
-     public function testGetTallmanLabel()
+    public function testGetTallmanLabel()
      {
-         $result = $this->drugs('drug1')->getTallmanLabel();
+        $result = $this->drugs('drug1')->getTallmanLabel();
 
-         if ($this->drugs('drug1')->preservative_free) {
-             $expected = 'ABIDEC drops (No Preservative)';
-             $this->assertEquals($expected, $result);
-         } else {
-             $expected = 'ABIDEC drops';
-             $this->assertEquals($expected, $result);
-         }
-     }
+        if ($this->drugs('drug1')->preservative_free) {
+            $expected = 'ABIDEC drops (No Preservative)';
+            $this->assertEquals($expected, $result);
+        } else {
+            $expected = 'ABIDEC drops';
+            $this->assertEquals($expected, $result);
+        }
+    }
 
     /**
      * @covers Drug::listBySubspecialty
      *
-     * @todo	Implement testListBySubspecialty().
+     * @todo    Implement testListBySubspecialty().
      */
     public function testListBySubspecialty()
     {
