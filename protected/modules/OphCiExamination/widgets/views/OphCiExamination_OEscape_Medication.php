@@ -26,7 +26,7 @@
           color:'#ffffff',
         },
       };
-      
+
       for (key in meds_data[side]){
         text_trace['x'].push(new Date(meds_data[side][key][0]['low']));
         text_trace['y'].push(key);
