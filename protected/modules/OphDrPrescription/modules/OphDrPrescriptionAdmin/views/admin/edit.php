@@ -17,9 +17,9 @@
 ?>
 <h2><?= $title ?></h2>
 
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors));
 
-<
+
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',
     'enableAjaxValidation' => false,
