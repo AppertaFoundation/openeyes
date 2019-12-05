@@ -43,9 +43,9 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'conditions' => array(self::MANY_MANY, 'OphDrPrescription_DispenseCondition', 'ophdrprescription_dispense_condition_assignment(dispense_location_id, dispense_condition_id)'),
-        );
+        return [
+            'conditions' => [self::MANY_MANY, 'OphDrPrescription_DispenseCondition', 'ophdrprescription_dispense_condition_assignment(dispense_location_id, dispense_condition_id)'],
+        ];
     }
 
     /**

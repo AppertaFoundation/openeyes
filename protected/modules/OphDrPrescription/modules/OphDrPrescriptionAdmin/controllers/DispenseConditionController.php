@@ -29,14 +29,6 @@ class DispenseConditionController extends BaseAdminController
         $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
-        if (Yii::app()->request->isPostRequest) {
-            $dispense_conditions = \Yii::app()->request->getPost(CHtml::modelName($dispense_conditions_model), []);
-            foreach ($dispense_conditions as $dispense_condition) {
-                $model = $dispense_conditions_model->findByPk($dispense_condition['id']);
-                $model->display_order = $dispense_condition['display_order'];
-                $model->save();
-            }
-        }
         $criteria = new \CDbCriteria();
         $criteria->order = 'display_order';
         $dispense_conditions = $dispense_conditions_model->findAll($criteria);
@@ -51,51 +43,42 @@ class DispenseConditionController extends BaseAdminController
 
     public function actionEdit($id)
     {
-        if (!$model = OphDrPrescription_DispenseCondition::model()->find('`id`=?', array($id))) {
-            $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
+        if (!$model = OphDrPrescription_DispenseCondition::model()->findByPk($id)) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
         }
 
-        $errors = array();
+        $errors = [];
 
-        if (Yii::app()->request->isPostRequest) {
-            $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
-            $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
-            if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
-            } else {
-                $errors = $model->errors;
-            }
-        }
-
-        $this->render('/admin/edit', array(
-            'model' => $model,
-            'errors' => $errors,
-            'title' => 'Edit dispense condition'
-        ));
+        $this->saveDispenseCondition($model, $errors, 'Edit');
     }
 
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseCondition();
+        $errors = [];
+        $this->saveDispenseCondition($model, $errors, 'Create');
+    }
 
-        $errors = array();
-
+    private function saveDispenseCondition($model, $errors, $form_type)
+    {
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
-            $model->display_order = $this->getNextHighestDisplayOrder();
             $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
+            $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
+
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/admin/DispenseCondition/index'));
+                $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
             } else {
                 $errors = $model->errors;
             }
         }
 
-        $this->render('/admin/edit', array(
+        $this->render('/admin/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create dispense condition'
-        ));
+            'title' => $form_type. ' dispense condition'
+        ]);
+
     }
 
     public function actions() {
@@ -106,14 +89,6 @@ class DispenseConditionController extends BaseAdminController
                 'modelName' => 'OphDrPrescription_DispenseCondition',
             ],
         ];
-    }
-
-    private function getNextHighestDisplayOrder()
-    {
-        $query = 'SELECT MAX(display_order) AS maxdisplay FROM '.OphDrPrescription_DispenseCondition::model()->tableName();
-        $val = Yii::app()->db->createCommand($query)->queryRow();
-
-        return $val['maxdisplay'] + 1;
     }
 
 }

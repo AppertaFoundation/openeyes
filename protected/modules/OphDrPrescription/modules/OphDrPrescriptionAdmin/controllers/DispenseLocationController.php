@@ -29,14 +29,6 @@ class DispenseLocationController extends BaseAdminController
         $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
-        if (Yii::app()->request->isPostRequest) {
-            $dispense_locations = \Yii::app()->request->getPost(CHtml::modelName($dispense_locations_model), []);
-            foreach ($dispense_locations as $dispense_location) {
-                $model = $dispense_locations_model->findByPk($dispense_location['id']);
-                $model->display_order = $dispense_location['display_order'];
-                $model->save();
-            }
-        }
         $criteria = new \CDbCriteria();
         $criteria->order = 'display_order';
         $dispense_locations = $dispense_locations_model->findAll($criteria);
@@ -51,49 +43,40 @@ class DispenseLocationController extends BaseAdminController
 
     public function actionEdit($id)
     {
-        if (!$model = OphDrPrescription_DispenseLocation::model()->find('`id`=?', array($id))) {
-            $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
+        if (!$model = OphDrPrescription_DispenseLocation::model()->findByPk($id)) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
         }
 
-        $errors = array();
+        $errors = [];
 
-        if (Yii::app()->request->isPostRequest) {
-            $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
-            if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
-            } else {
-                $errors = $model->errors;
-            }
-        }
-
-        $this->render('/admin/edit', array(
-            'model' => $model,
-            'errors' => $errors,
-            'title' => 'Edit dispense location'
-        ));
+        $this->saveDispenseLocation($model, $errors, 'Edit');
     }
 
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseLocation();
+        $errors = [];
+        $this->saveDispenseLocation($model, $errors, 'Create');
+    }
 
-        $errors = array();
-
+    private function saveDispenseLocation($model, $errors, $form_type)
+    {
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
-            $model->display_order = $this->getNextHighestDisplayOrder();
+            $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
+
             if ($model->save()) {
-                $this->redirect(array('/OphDrPrescription/admin/DispenseLocation/index'));
+                $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
             } else {
                 $errors = $model->errors;
             }
         }
 
-        $this->render('/admin/edit', array(
+        $this->render('/admin/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create dispense location'
-        ));
+            'title' => $form_type. ' dispense location'
+        ]);
     }
 
     public function actions() {
@@ -104,14 +87,6 @@ class DispenseLocationController extends BaseAdminController
                 'modelName' => 'OphDrPrescription_DispenseLocation',
             ],
         ];
-    }
-
-    private function getNextHighestDisplayOrder()
-    {
-        $query = 'SELECT MAX(display_order) AS maxdisplay FROM '.OphDrPrescription_DispenseLocation::model()->tableName();
-        $val = Yii::app()->db->createCommand($query)->queryRow();
-
-        return $val['maxdisplay'] + 1;
     }
 
 }

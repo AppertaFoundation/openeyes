@@ -36,9 +36,14 @@
             </colgroup>
             <tbody class="sortable">
             <?php foreach ($dispense_locations as $dispense_location) {
-                $this->renderPartial('/admin/dispense_location/_dispense_location', array(
-                    'dispense_location' => $dispense_location
-                ));
+                $this->renderPartial('/admin/dispense_location/_dispense_location_entry', [
+                    'model' => $dispense_location,
+                    'data_id' => $dispense_location->id,
+                    'data_uri' => 'OphDrPrescription/admin/DispenseLocation/edit/'. $dispense_location->id,
+                    'name' => $dispense_location->name,
+                    'display_order' => $dispense_location->display_order,
+                    'is_active' => $dispense_location->active
+                ]);
             } ?>
             </tbody>
             <tfoot>
@@ -49,8 +54,7 @@
                         [
                             'data-uri' => '/OphDrPrescription/admin/DispenseLocation/create',
                             'class' => 'button large',
-                            'id' => 'et_add',
-                            'formmethod' => 'get',
+                            'id' => 'et_add'
                         ]
                     ); ?>
                 </td>

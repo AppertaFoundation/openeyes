@@ -22,12 +22,7 @@
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr style="display: none">
-            <td>Id</td>
-            <td>
-                <?=\CHtml::activeHiddenField($model, 'id'); ?>
-            </td>
-        </tr>
+        <?=\CHtml::activeHiddenField($model, 'id'); ?>
         <tr>
             <td>Name</td>
             <td>
@@ -41,12 +36,7 @@
         <tr>
             <td>Is Active</td>
             <td>
-                <?=\CHtml::activeRadioButtonList(
-                    $model,
-                    'active',
-                    [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?>
+                <?=\CHtml::activeCheckBox($model, 'active') ?>
             </td>
         </tr>
         </tbody>

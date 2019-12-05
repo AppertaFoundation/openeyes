@@ -36,9 +36,14 @@
             </colgroup>
             <tbody class="sortable">
             <?php foreach ($dispense_conditions as $dispense_condition) {
-                $this->renderPartial('/admin/dispense_condition/_dispense_condition', array(
-                        'dispense_condition' => $dispense_condition
-                ));
+                $this->renderPartial('/admin/dispense_condition/_dispense_condition_entry', [
+                    'model' => $dispense_condition,
+                    'data_id' => $dispense_condition->id,
+                    'data_uri' => 'OphDrPrescription/admin/DispenseCondition/edit/'. $dispense_condition->id,
+                    'name' => $dispense_condition->name,
+                    'display_order' => $dispense_condition->display_order,
+                    'is_active' => $dispense_condition->active
+                ]);
             } ?>
             </tbody>
             <tfoot>
@@ -49,8 +54,7 @@
                             [
                                 'data-uri' => '/OphDrPrescription/admin/DispenseCondition/create',
                                 'class' => 'button large',
-                                'id' => 'et_add',
-                                'formmethod' => 'get',
+                                'id' => 'et_add'
                             ]
                         ); ?>
                     </td>
