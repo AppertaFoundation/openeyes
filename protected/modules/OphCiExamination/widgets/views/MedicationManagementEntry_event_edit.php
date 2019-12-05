@@ -56,7 +56,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? " new" : ""?><?= $entry->hidden === "1" ? ' hidden' : '' ?>"
     >
 
-        <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
+        <td class="drug-details" rowspan="2">
                     <?php if ($entry->originallyStopped) { ?>
                         <i class="oe-i stop small pad"></i>
                     <?php } ?>
