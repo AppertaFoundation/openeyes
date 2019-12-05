@@ -104,6 +104,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->setIsNewRecord(false);
             }
 
+            /* ensure current usage type and subtype */
+            $entry->usage_type = $class::getUsagetype();
+            $entry->usage_subtype = $class::getUsageSubtype();
+
             if (!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
@@ -237,18 +241,6 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         } else {
             return parent::getDisplayOrder($action);
         }
-    }
-
-    public function beforeValidate()
-    {
-        $class = self::$entry_class;
-
-        foreach ($this->entries as $entry) {
-            /* ensure current usage type and subtype */
-            $entry->usage_type = $class::getUsagetype();
-            $entry->usage_subtype = $class::getUsageSubtype();
-        }
-        return parent::beforeValidate();
     }
 
     public function afterValidate()

@@ -89,7 +89,7 @@ class EventMedicationUse extends BaseElement
     public $medication_name;
 
     public $equals_attributes = [
-        'medication_id', 'usage_type', 'usage_subtype', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
+        'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
     ];
 
     /**
