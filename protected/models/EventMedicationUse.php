@@ -393,7 +393,7 @@ class EventMedicationUse extends BaseElement
         }
 
         if ($this->end_date) {
-            $data['Stop date'] = Helper::convertDate2NHS($this->end_date);
+            $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
             if ($this->stop_reason_id) {
                 $data['Stop reason'] = $this->stopReason->name;
             }
