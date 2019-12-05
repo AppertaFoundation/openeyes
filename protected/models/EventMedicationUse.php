@@ -88,6 +88,7 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
+    public $check_for_duplicate_entries = true;
     public $equals_attributes = [
         'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
     ];
@@ -312,25 +313,26 @@ class EventMedicationUse extends BaseElement
      */
     public function isEqualsAttributes($medication)
     {
-        $result = true;
+        if ($this->check_for_duplicate_entries) {
+            $result = true;
 
-        foreach ($this->equals_attributes as $attribute) {
-            //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
-            if ($attribute === "start_date") {
-                $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
-                $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
+            foreach ($this->equals_attributes as $attribute) {
+                //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
+                if ($attribute === "start_date") {
+                    $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
+                    $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
 
-                $result = $date1 === $date2;
-            } else {
-                $result = $this->$attribute === $medication->$attribute;
+                    $result = $date1 === $date2;
+                } else {
+                    $result = $this->$attribute === $medication->$attribute;
+                }
+
+                if (!$result) {
+                    return $result;
+                }
             }
-
-            if (!$result) {
-                return $result;
-            }
+            return $result;
         }
-
-        return $result;
     }
 
     /**
