@@ -374,6 +374,39 @@ class EventMedicationUse extends BaseElement
         return implode(' ', $res);
     }
 
+    public function getTooltipContent()
+    {
+        $data = array();
+
+        $medication = Medication::model()->findByPk($this->medication_id);
+        if ($medication) {
+            if ($medication->isAMP()) {
+                $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            }
+
+            if ($medication->isVMP()) {
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            }
+        } else {
+            $data['Error'] = "Error while retrieving data for medication.";
+        }
+
+        if ($this->end_date) {
+            $data['Stop date'] = Helper::convertDate2NHS($this->end_date);
+            $data['Stop reason'] = $this->stopReason->name;
+        }
+
+        $content = array();
+        foreach ($data as $key => $value) {
+            $content[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        return implode("<br/>", $content);
+
+        return $content;
+    }
+
     /**
      * @return bool
      */
