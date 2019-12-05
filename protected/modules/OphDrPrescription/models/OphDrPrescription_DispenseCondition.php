@@ -87,5 +87,10 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    public function defaultScope()
+    {
+        return ['order' => 'display_order'];
+    }
     
 }

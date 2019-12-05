@@ -22,21 +22,14 @@ class DispenseConditionController extends BaseAdminController
     public function actionIndex()
     {
         $dispense_conditions_model = OphDrPrescription_DispenseCondition::model();
-        $path = Yii::getPathOfAlias('application.widgets.js');
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
         $assetManager->registerScriptFile('/js/oeadmin/list.js');
-        $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
-        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
-
-        $criteria = new \CDbCriteria();
-        $criteria->order = 'display_order';
-        $dispense_conditions = $dispense_conditions_model->findAll($criteria);
 
         $this->render(
             '/admin/dispense_condition/index',
             [
-                'dispense_conditions' => $dispense_conditions
+                'dispense_conditions' => $dispense_conditions_model->findAll()
             ]
         );
     }
@@ -47,19 +40,29 @@ class DispenseConditionController extends BaseAdminController
             $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
         }
 
-        $errors = [];
+        $errors = $this->saveModel($model);;
 
-        $this->saveDispenseCondition($model, $errors, 'Edit');
+        $this->render('/admin/edit', [
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Edit dispense condition'
+        ]);
+
     }
 
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseCondition();
-        $errors = [];
-        $this->saveDispenseCondition($model, $errors, 'Create');
+        $errors = $this->saveModel($model);
+
+        $this->render('/admin/edit', [
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Create dispense condition'
+        ]);
     }
 
-    private function saveDispenseCondition($model, $errors, $form_type)
+    private function saveModel($model)
     {
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseCondition'];
@@ -68,17 +71,10 @@ class DispenseConditionController extends BaseAdminController
 
             if ($model->save()) {
                 $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
-            } else {
-                $errors = $model->errors;
             }
         }
 
-        $this->render('/admin/edit', [
-            'model' => $model,
-            'errors' => $errors,
-            'title' => $form_type. ' dispense condition'
-        ]);
-
+        return $model->errors;
     }
 
     public function actions() {

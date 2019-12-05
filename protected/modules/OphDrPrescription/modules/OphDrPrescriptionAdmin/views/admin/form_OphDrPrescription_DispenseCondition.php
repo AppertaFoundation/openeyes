@@ -16,13 +16,13 @@
  */
 ?>
 <div class="cols-5">
+    <?=\CHtml::activeHiddenField($model, 'id'); ?>
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <?=\CHtml::activeHiddenField($model, 'id'); ?>
         <tr>
             <td>Name</td>
             <td>

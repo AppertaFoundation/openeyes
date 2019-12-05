@@ -22,21 +22,14 @@ class DispenseLocationController extends BaseAdminController
     public function actionIndex()
     {
         $dispense_locations_model = OphDrPrescription_DispenseLocation::model();
-        $path = Yii::getPathOfAlias('application.widgets.js');
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('//js/oeadmin/OpenEyes.admin.js');
         $assetManager->registerScriptFile('//js/oeadmin/list.js');
-        $generic_admin = $assetManager->publish($path . '/GenericAdmin.js');
-        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
-
-        $criteria = new \CDbCriteria();
-        $criteria->order = 'display_order';
-        $dispense_locations = $dispense_locations_model->findAll($criteria);
 
         $this->render(
             '/admin/dispense_location/index',
             [
-                'dispense_locations' => $dispense_locations
+                'dispense_locations' => $dispense_locations_model->findAll()
             ]
         );
     }
@@ -47,19 +40,28 @@ class DispenseLocationController extends BaseAdminController
             $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
         }
 
-        $errors = [];
+        $errors = $this->saveModel($model);
 
-        $this->saveDispenseLocation($model, $errors, 'Edit');
+        $this->render('/admin/edit', [
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Edit dispense location'
+        ]);
     }
 
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseLocation();
-        $errors = [];
-        $this->saveDispenseLocation($model, $errors, 'Create');
+        $errors = $this->saveModel($model);
+
+        $this->render('/admin/edit', [
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Create dispense location'
+        ]);
     }
 
-    private function saveDispenseLocation($model, $errors, $form_type)
+    private function saveModel($model)
     {
         if (Yii::app()->request->isPostRequest) {
             $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
@@ -67,16 +69,10 @@ class DispenseLocationController extends BaseAdminController
 
             if ($model->save()) {
                 $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
-            } else {
-                $errors = $model->errors;
             }
         }
 
-        $this->render('/admin/edit', [
-            'model' => $model,
-            'errors' => $errors,
-            'title' => $form_type. ' dispense location'
-        ]);
+        return $model->errors;
     }
 
     public function actions() {

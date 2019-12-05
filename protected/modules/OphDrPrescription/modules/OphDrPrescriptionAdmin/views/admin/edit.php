@@ -17,9 +17,9 @@
 ?>
 <h2><?= $title ?></h2>
 
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))
 
-<?php
+<
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',
     'enableAjaxValidation' => false,
@@ -27,14 +27,14 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'label' => 2,
         'field' => 5,
     ),
-)) ?>
+));
 
-<?php $this->renderPartial(
+$this->renderPartial(
     '/admin/form_' . get_class($model),
     [
         'model' => $model,
         'form' => $form
     ]
-); ?>
+);
 
-<?php $this->endWidget() ?>
+$this->endWidget() ?>

@@ -62,4 +62,9 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
             'active' => 'Active'
         );
     }
+
+    public function defaultScope()
+    {
+        return ['order' => 'display_order'];
+    }
 }
