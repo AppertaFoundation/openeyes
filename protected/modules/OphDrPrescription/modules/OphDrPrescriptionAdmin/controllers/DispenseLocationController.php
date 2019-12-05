@@ -40,11 +40,14 @@ class DispenseLocationController extends BaseAdminController
             $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
         }
 
-        $errors = $this->saveModel($model);
+        $model_saved = $this->saveModel($model);
+        if ($model_saved) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
+        }
 
         $this->render('/admin/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->errors,
             'title' => 'Edit dispense location'
         ]);
     }
@@ -52,11 +55,14 @@ class DispenseLocationController extends BaseAdminController
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseLocation();
-        $errors = $this->saveModel($model);
+        $model_saved = $this->saveModel($model);
+        if ($model_saved) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
+        }
 
         $this->render('/admin/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->errors,
             'title' => 'Create dispense location'
         ]);
     }
@@ -67,12 +73,10 @@ class DispenseLocationController extends BaseAdminController
             $model->attributes = $_POST['OphDrPrescription_DispenseLocation'];
             $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
 
-            if ($model->save()) {
-                $this->redirect(['/OphDrPrescription/admin/DispenseLocation/index']);
-            }
+            return $model->save();
         }
 
-        return $model->errors;
+        return false;
     }
 
     public function actions() {

@@ -40,11 +40,14 @@ class DispenseConditionController extends BaseAdminController
             $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
         }
 
-        $errors = $this->saveModel($model);;
+        $model_saved = $this->saveModel($model);
+        if ($model_saved) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
+        }
 
         $this->render('/admin/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->errors,
             'title' => 'Edit dispense condition'
         ]);
 
@@ -53,11 +56,14 @@ class DispenseConditionController extends BaseAdminController
     public function actionCreate()
     {
         $model = new OphDrPrescription_DispenseCondition();
-        $errors = $this->saveModel($model);
+        $model_saved = $this->saveModel($model);
+        if ($model_saved) {
+            $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
+        }
 
         $this->render('/admin/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->errors,
             'title' => 'Create dispense condition'
         ]);
     }
@@ -69,12 +75,10 @@ class DispenseConditionController extends BaseAdminController
             $model->locations = isset($_POST['OphDrPrescription_DispenseCondition']['locations']) ? $_POST['OphDrPrescription_DispenseCondition']['locations'] : [];
             $model->display_order =  isset($model->id) ? $model->display_order : $model->getNextHighestDisplayOrder(1);
 
-            if ($model->save()) {
-                $this->redirect(['/OphDrPrescription/admin/DispenseCondition/index']);
-            }
+            return $model->save();
         }
 
-        return $model->errors;
+        return false;
     }
 
     public function actions() {
