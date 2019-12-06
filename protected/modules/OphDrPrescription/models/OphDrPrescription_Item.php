@@ -35,7 +35,6 @@ class OphDrPrescription_Item extends EventMedicationUse
     public $original_item_id;
 
     public $taper_support = true;
-    public $check_for_duplicate_entries = false;
 
 		private $fpten_line_usage = array();
 

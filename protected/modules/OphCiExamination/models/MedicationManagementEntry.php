@@ -29,7 +29,6 @@ namespace OEModule\OphCiExamination\models;
 class MedicationManagementEntry extends \EventMedicationUse
 {
     public $taper_support = true;
-    public $check_for_duplicate_entries = false;
 
     /** @var int Temporary flag to store locked (non-editable) status */
     public $locked = 0;

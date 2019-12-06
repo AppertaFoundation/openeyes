@@ -43,6 +43,7 @@ use PrescriptionCreator;
 class MedicationManagement extends BaseMedicationElement
 {
     public $do_not_save_entries = false;
+    public $check_for_duplicate_entries = false;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';
 
