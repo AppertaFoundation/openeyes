@@ -54,7 +54,7 @@ class AnalyticsController extends BaseController
         $ret = null;
         if (Yii::app()->request->getParam('drill')) {
             $params = Yii::app()->request->getParam('params');
-            if(isset($params['ids'])) {
+            if (isset($params['ids'])) {
                 // $params['ids'] = json_decode($params['ids']);
                 if ($specialty === 'Cataract') {
                     $event_list = $this->queryCataractEventList($params);
@@ -62,11 +62,10 @@ class AnalyticsController extends BaseController
                 } else {
                     $patient_list = $this->getPatientList($params);
                 }
-
-            } else if(isset($params['diagnosis'])){
+            } else if (isset($params['diagnosis'])) {
                 $patient_list = $this->getPatientList($params);
             }
-            if(isset($patient_list)) {
+            if (isset($patient_list)) {
                 $ret['patient_list'] = $patient_list;
             }
             $data = isset($event_list) ? count($event_list) : count($patient_list);
@@ -99,7 +98,7 @@ class AnalyticsController extends BaseController
         $this->checkAuth();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
-        // different user and different subspecialty 
+        // different user and different subspecialty
         // should have different result
         $follow_patient_list = $this->getFollowUps($subspecialty_id, null, null, null, $this->surgeon);
         if (Yii::app()->request->getParam('report')) {
@@ -318,15 +317,15 @@ class AnalyticsController extends BaseController
         $params['to'] = empty($params['to']) ? null : $params['to'];
 
         $specialty = Yii::app()->request->getParam('specialty');
-        $subspecialty_id = isset($specialty) ? 
+        $subspecialty_id = isset($specialty) ?
         (
             $specialty === 'All' ? null : $this->getSubspecialtyID($specialty)
         ) : null;
         // if there is surgeon id passed in, use that
-        // but if logged in user has surgeon id, which means 
+        // but if logged in user has surgeon id, which means
         // he/she is not a service manager, overwrite the $surgeon_id
         $surgeon_id = isset($params['clinical_surgeon']) ? $params['clinical_surgeon'] : null;
-        if($this->surgeon){
+        if ($this->surgeon) {
             $surgeon_id = $this->surgeon;
         }
         // one of the field in select statement at the end of this function
@@ -359,8 +358,8 @@ class AnalyticsController extends BaseController
             ) proc', 'proc.patient_id = p.id')
             ->group('p.id');
         // triggered from clinical screen
-        if(isset($params['diagnosis'])){
-            if($params['diagnosis'] === "No Diagnoses") {
+        if (isset($params['diagnosis'])) {
+            if ($params['diagnosis'] === "No Diagnoses") {
                 $diagnosis_term = 'NULL';
                 $no_diagnosis = $this->getPatientWithoutDisorders($subspecialty_id, $surgeon_id, strtotime($params['from']), strtotime($params['to']))
                     ->select('
@@ -370,16 +369,16 @@ class AnalyticsController extends BaseController
                     ->join('(' . $no_diagnosis->getText() . ') patient_without_diagnosis', 'p.id = patient_without_diagnosis.patient_id');
             } else {
                 $paitent_list_command
-                    ->join('(' . 
+                    ->join('(' .
                     $diagnoses
                     ->where("LOWER(t.term) = '" . strtolower($params['diagnosis']) . "'")
-                    ->getText() 
+                    ->getText()
                     . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
             }
             $paitent_list_command->limit($params['limit'])->offset($params['offset']);
         }
         // triggered by download csv
-        if(isset($params['diagnoses_csv'])){
+        if (isset($params['diagnoses_csv'])) {
             $paitent_list_command
                 ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
             $paitent_list_command->where("diagnosis.term IS NOT NULL");
@@ -1194,11 +1193,11 @@ class AnalyticsController extends BaseController
             ->leftJoin('firm f', 'ep2.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
             ->where('ep2.disorder_id is not null');
-        if($subspecialty_id){
+        if ($subspecialty_id) {
             $queryConditions[] = 't.subspecialty_id = ' . $subspecialty_id;
             $outterQueryConditions[] = 'ssa.subspecialty_id = ' . $subspecialty_id;
         }
-        if($surgeon_id){
+        if ($surgeon_id) {
             $queryConditions[] = 't.created_user_id = '. $surgeon_id;
             $outterQueryConditions[] = 'ep3.created_user_id = ' . $surgeon_id;
         }
@@ -1211,8 +1210,8 @@ class AnalyticsController extends BaseController
             , created_date
             ')
             ->from('
-                (' . 
-                $secondary_diagnosis_command->getText() . 
+                (' .
+                $secondary_diagnosis_command->getText() .
                 ' UNION ALL ' .
                 $episode_diagnosis_command->getText() .
             ') t')
@@ -1223,7 +1222,7 @@ class AnalyticsController extends BaseController
             ->leftJoin('firm f', 'ep3.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
             ->leftJoin('
-                (' . 
+                (' .
                     $patient_with_disorder_command->getText()
                 . ') t2', 'p.id = t2.patient_id')
             ->where('t2.disorder_id is null')
@@ -1287,21 +1286,21 @@ class AnalyticsController extends BaseController
               'text' => array(),
               'customdata' => array(),
           );
-          foreach($common_disorders as $common_disorder){
+          foreach ($common_disorders as $common_disorder) {
               $disorder_list['y'][] = $i;
               $disorder_list['x'][] = $common_disorder['total_patients'];
               $disorder_list['text'][] = $common_disorder['term'];
               $disorder_list['customdata'][] = array($common_disorder['term']);
               $i++;
           }
-          foreach($other_disorders as $row){
+          foreach ($other_disorders as $row) {
               $other_disorder['y'][] = $j;
               $other_disorder['x'][] = $row['total_patients'];
               $other_disorder['text'][] = $row['term'];
               $other_disorder['customdata'][] = array($row['term']);
               $j++;
           }
-          if($other_disorder_total[0]['total_patients'] != 0) {
+          if ($other_disorder_total[0]['total_patients'] != 0) {
               $disorder_list['y'][] = $i;
               $disorder_list['x'][] = $other_disorder_total[0]['total_patients'];
               $disorder_list['text'][] = 'Other';
@@ -1647,11 +1646,11 @@ class AnalyticsController extends BaseController
                 ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null, 'followup')->getText().') AS dp');
             $queryConditions[] = 'p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')';
         }
-        if($surgeon_id){
+        if ($surgeon_id) {
             $queryConditions[] = 'e.created_user_id = :surgeon_id';
             $params['surgeon_id'] = $surgeon_id;
         }
-        if($subspecialty_id){
+        if ($subspecialty_id) {
             $queryConditions[] = 'ssa.subspecialty_id = :subspecialty_id';
             $params['subspecialty_id'] = $subspecialty_id;
         }
