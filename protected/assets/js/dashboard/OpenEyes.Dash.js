@@ -450,8 +450,33 @@
                 chart.layout['xaxis']['range'] = [-10,8];
             break;
             }
-            
-            console.log( chart.layout['xaxis']['range']);
+            switch($('#catprom5-eye').val()){
+                case '0':
+                    newTitle += ' - Both Eyes';
+                break;
+                case '1':
+                    newTitle += ' - Eye 1';
+                break;
+                case '2':
+                    newTitle += '- Eye 2';
+                break;
+            }
+            if($('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
+                newTitle += '<br><sub> (From: '+ $('#analytics_datepicker_from').val() +' To: '+ $('#analytics_datepicker_to').val() +') </sub>';
+            }
+            else{
+                if($('#analytics_datepicker_from').val() && !$('#analytics_datepicker_to').val()){
+                    newTitle += '<br><sub> (After: '+ $('#analytics_datepicker_from').val() +') </sub>';
+                }
+                else if(!$('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
+                    newTitle += '<br><sub> (Before: '+ $('#analytics_datepicker_to').val() +') </sub>';
+                }
+                else
+                {
+                    newTitle += '<br><sub> (All Events) </sub>';
+                }
+
+            }
 
             chart.layout['title'] = newTitle;
 
