@@ -102,7 +102,7 @@
                             'class' => 'button large',
                             'name' => 'delete',
                             'data-object' => 'users',
-                            'id' => 'et_delete'
+                            'id' => 'et_delete',
                         ]
                     ); ?>
                 </td>

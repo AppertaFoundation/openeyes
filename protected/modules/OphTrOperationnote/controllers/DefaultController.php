@@ -23,6 +23,7 @@ class DefaultController extends BaseEventTypeController
         'verifyProcedure' => self::ACTION_TYPE_FORM,
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
+        'whiteboard' => self::ACTION_TYPE_VIEW,
     );
 
     protected $show_element_sidebar = false;
@@ -308,6 +309,11 @@ class DefaultController extends BaseEventTypeController
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
+    }
+
+    public function actionWhiteboard($id)
+    {
+        $this->redirect(Yii::app()->createUrl('/OphTrOperationbooking/whiteboard/view/' . $id));
     }
 
     protected function createOpNote()
@@ -1358,8 +1364,7 @@ class DefaultController extends BaseEventTypeController
             return '<span class="extra-info">' .
                 '<span class="fade">Site: </span>' .
                 $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>' .
-                '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
+                '</span>';
         }
         return null;
     }

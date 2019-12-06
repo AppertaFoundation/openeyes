@@ -1,14 +1,20 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
 <?php
-$display_theme = SettingMetadata::model()->getSetting('display_theme');
+if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
+    $display_theme = 'dark';
+}
+else {
+    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
+    $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme'): Yii::app()->params['image_generation'];
+}
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
 Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3_dark.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0_classic.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3_light.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
 
 <link rel="stylesheet" type="text/css" data-theme="dark"
       href="<?= $assetManager->getPublishedUrl($basic_assets_path) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
