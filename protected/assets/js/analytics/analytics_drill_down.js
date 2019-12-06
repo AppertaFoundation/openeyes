@@ -19,6 +19,7 @@ var analytics_drill_down = (function () {
 	// diagnosis type
 	var diagnosis = '';
 
+	var request_url = '/analytics/getdrilldown';
 	function patientDetails() {
 		$('#js-analytics-spinner').show();
 		var link = $(this).data('link');
@@ -28,7 +29,7 @@ var analytics_drill_down = (function () {
 	function getPatient() {
 		$('#js-analytics-spinner').show();
 		$.ajax({
-			url: '/analytics/getdrilldown',
+			url: request_url,
 			type: "POST",
 			data: {
 				drill: true,

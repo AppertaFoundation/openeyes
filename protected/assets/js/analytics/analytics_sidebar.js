@@ -94,7 +94,7 @@ var analytics_sidebar = (function () {
 						// enable csv download for custom data
 						// the parameter indicate if the csv download is for 
 						// custom data or not
-						analytics_csv_download(true)
+						analytics_csv_download()
 					},
 					complete: function () {
 						$('#js-analytics-spinner').hide();

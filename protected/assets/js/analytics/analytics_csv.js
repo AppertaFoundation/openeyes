@@ -2,8 +2,9 @@ var analytics_csv_download = (function () {
 
 	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 1000;
 	var g_custom_flag = false;
+	var request_url = '/analytics/downloadcsv';
 
-	function current_none_custom_data_to_csv(anonymise_flag, selected_tab,  data, additional_file_name = null){
+	function current_none_custom_data_to_csv(anonymise_flag, selected_tab,  data, additional_file_name = null) {
 		var current_specialty = analytics_toolbox.getCurrentSpecialty();
 
 		var csv_file = 'First Name, Last Name, Hos Num, DOB, Age, Diagnoses';
@@ -58,11 +59,14 @@ var analytics_csv_download = (function () {
 			return item['patient_id']
 		})
 		$.ajax({
-			url: '/analytics/DownLoadCSV',
+			url: request_url,
 			type: 'POST',
 			data: {
 				"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
-				"csv_data": JSON.stringify(patient_ids),
+				params: {
+					"ids": JSON.stringify(patient_ids),
+				},
+				'specialty': analytics_toolbox.getCurrentSpecialty()
 			},
 			success: function (response) {
 				var patients = JSON.parse(response);
@@ -135,8 +139,17 @@ var analytics_csv_download = (function () {
 
 	function downLoadClick(e) {
 		e.stopPropagation();
+
 		$('#js-analytics-spinner').show();
 
+		g_custom_flag = false;
+		if($('#js-hs-chart-analytics-clinical-others').css('display') !== 'none'){
+			$('#js-hs-chart-analytics-clinical-others div.js-plotly-plot').each(function(i, item){
+				if($(item).css('display') !== 'none'){
+					g_custom_flag = true;
+				}
+			})
+		}
 		// anonymise_flag = 0 || 1
 		var anonymise_flag = $(this).data('anonymised')
 
@@ -165,7 +178,7 @@ var analytics_csv_download = (function () {
 			// by using patient_ids above
 			case 'service':
 				$.ajax({
-					url: '/analytics/DownLoadCSV',
+					url: request_url,
 					type: 'POST',
 					data: {
 						"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
@@ -204,7 +217,7 @@ var analytics_csv_download = (function () {
 					current_custom_data_to_csv(custom_type, anonymise_flag, analytics_dataCenter.custom.getCustomData()['custom_data']['csv_data']);
 				} else {
 					$.ajax({
-						url: '/analytics/DownLoadCSV',
+						url: request_url,
 						type: 'POST',
 						data: {
 							"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
@@ -228,8 +241,7 @@ var analytics_csv_download = (function () {
 		}
 		return
 	}
-	var init = function (custom_flag = false) {
-		g_custom_flag = custom_flag
+	var init = function () {
 		// bind click event on download (csv) and download (csv - anonymised)
 		$('.extra-actions button').off('click').on('click', _.throttle(downLoadClick, ajaxThrottleTime));
 	}
