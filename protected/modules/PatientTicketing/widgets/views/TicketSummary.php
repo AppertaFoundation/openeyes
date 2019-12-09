@@ -10,11 +10,11 @@ $display_queue = $ticket->getDisplayQueueAssignment();
     <div class="row">
         <?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?>
     </div>
-<?php if (isset($ticket->priority)){ ?>
+    <?php if (isset($ticket->priority)) { ?>
     <div class="row divider">
         <?= $ticket->getAttributeLabel('priority_id') ?>: <span style="color: <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
     </div>
-<?php } ?>
+    <?php } ?>
     <div class="row divider js-report">
         <h3>Clinic Info</h3>
         <div class="row-divider">
