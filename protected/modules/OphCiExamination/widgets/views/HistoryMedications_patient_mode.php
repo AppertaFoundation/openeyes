@@ -64,8 +64,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             </td>
                             <td class="nowrap">
                                 <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
-                                <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-                                    <a href="<?= $entry->getPrescriptionLink(); ?>">
+                                <?php if ($entry->usage_type === "OphDrPrescription") : ?>
+                                    <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                               data-tooltip-content="View prescription"></span>
                                     </a>
@@ -104,8 +104,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </td>
                                     <td class="nowrap">
                                         <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
-                                        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-                                            <a href="<?= $entry->getPrescriptionLink(); ?>">
+                                        <?php if ($entry->usage_type === "OphDrPrescription") : ?>
+                                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                               data-tooltip-content="View prescription"></span>
                                             </a>
@@ -158,8 +158,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 </td>
                                 <td class="nowrap">
                                     <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
-                                    <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-                                        <a href="<?= $entry->getPrescriptionLink(); ?>">
+                                    <?php if ($entry->usage_type === "OphDrPrescription") : ?>
+                                        <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                               data-tooltip-content="View prescription"></span>
                                         </a>
@@ -202,8 +202,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </td>
                                     <td class="nowrap">
                                         <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
-                                        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-                                            <a href="<?= $entry->getPrescriptionLink(); ?>">
+                                        <?php if ($entry->usage_type === "OphDrPrescription") : ?>
+                                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                               data-tooltip-content="View prescription"></span>
                                             </a>
