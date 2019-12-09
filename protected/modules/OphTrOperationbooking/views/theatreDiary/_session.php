@@ -190,7 +190,7 @@
                 <i class="oe-i overnight medium pad js-has-tooltip"
                    data-tooltip-content="Overnight stay required"></i>
                 <?php endif; ?>
-              <i class="oe-i duplicate medium pad js-has-tooltip"
+              <i class="oe-i whiteboard medium pad js-has-tooltip"
                  data-tooltip-content="Click to display Whiteboard" data-id="<?= $booking->operation->event_id ?>"
                  id="<?= $whiteboard_display_mode === 'NEW' ? 'js-display-whiteboard-window' : 'js-display-whiteboard'?>"></i>
 
