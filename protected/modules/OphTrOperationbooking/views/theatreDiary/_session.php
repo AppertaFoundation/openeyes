@@ -111,11 +111,7 @@
                    value="<?php echo substr($booking->admission_time, 0, 5) ?>" size="4">
             <span class="admitTime_ro diaryViewMode" data-id="<?php echo $session->id ?>"
                   data-operation-id="<?php echo $booking->element_id ?>">
-                <?php echo substr(
-                    $booking->admission_time,
-                    0,
-                    5
-                ) ?>
+                <?php echo substr($booking->admission_time, 0, 5) ?>
             </span>
           </td>
           <td class="td_sort diaryEditMode" data-id="<?php echo $session->id ?>"
