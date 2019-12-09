@@ -376,7 +376,7 @@ class EventMedicationUse extends BaseElement
 
     public function getTooltipContent()
     {
-        $data = array();
+        $data = [];
 
         $medication = Medication::model()->findByPk($this->medication_id);
         if ($medication) {
@@ -392,6 +392,11 @@ class EventMedicationUse extends BaseElement
             $data['Error'] = "Error while retrieving data for medication.";
         }
 
+        $dosage = $this->getDoseAndFrequency();
+        if (!empty($dosage)) {
+            $data['Dosage'] = $this->getDoseAndFrequency();
+        }
+
         if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
             if ($this->stop_reason_id) {
@@ -405,8 +410,6 @@ class EventMedicationUse extends BaseElement
         }
 
         return implode("<br/>", $content);
-
-        return $content;
     }
 
     /**
@@ -465,7 +468,7 @@ class EventMedicationUse extends BaseElement
             $result[] = $this->frequency;
         }
 
-        return implode(' , ', $result);
+        return implode(', ', $result);
     }
 
     public function getChk_prescribe()
