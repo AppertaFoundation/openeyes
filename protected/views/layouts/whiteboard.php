@@ -23,10 +23,6 @@
             'whiteboard' => true,
         )); ?>
         <?php $this->renderPartial('//base/head/_assets'); ?>
-        <link rel="stylesheet" type="text/css"
-              href="<?= Yii::app()->assetManager->getPublishedUrl(
-                  Yii::getPathOfAlias('application.modules.OphTrOperationbooking.assets')
-              ) . '/css/whiteboard.css' ?>"/>
     </head>
     <body class="open-eyes oe-grid">
         <?php $this->renderPartial('//base/_debug'); ?>

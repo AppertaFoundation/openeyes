@@ -10,11 +10,11 @@ class m191022_024419_create_procedure_risk_table extends OEMigration
                 'id' => 'pk',
                 'proc_id' => 'int(10) unsigned NOT NULL',
                 'risk_id' => 'int(11) NOT NULL',
-                'CONSTRAINT `procedure_risk_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`)',
-                'CONSTRAINT `procedure_risk_r_id_fk` FOREIGN KEY (`risk_id`) REFERENCES `ophciexamination_risk` (`id`)'
             ),
             true
         );
+        $this->addForeignKey('procedure_risk_proc_id_fk', 'procedure_risk', 'proc_id', 'proc', 'id');
+        $this->addForeignKey('procedure_risk_r_id_fk', 'procedure_risk', 'risk_id', 'ophciexamination_risk', 'id');
     }
 
     public function down()

@@ -264,8 +264,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
             if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
-                return $this->getDisplayHasRisk($alpha)
-                    . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
+                return ($alpha['comments'] ?: '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
             if (!$alpha) {
                 return 'Not checked';
@@ -283,11 +282,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function recentBiometryReport($patient)
     {
+        $biometry_report_subtype = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Biometry Report'));
+
         $criteria = new CDbCriteria();
         $criteria->with = array('event.episode.patient');
         $criteria->addCondition('patient_id = :patient_id');
         $criteria->addCondition('event_sub_type = :sub_type');
-        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => 2);
+        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => $biometry_report_subtype->id);
         $criteria->order = 't.last_modified_date DESC';
         $criteria->limit = 1;
 
@@ -307,8 +308,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
             if ($anticoag && $this->getDisplayHasRisk($anticoag) !== 'Not present') {
-                return $this->getDisplayHasRisk($anticoag)
-                    . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
+                return ($anticoag['comments'] ?: '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
                     . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
             if (!$anticoag) {

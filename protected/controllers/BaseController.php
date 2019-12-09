@@ -122,7 +122,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3.0_print.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3_print.min.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -412,7 +412,7 @@ class BaseController extends Controller
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = "<b><table><thead><tbody><tr><th><td>";
+        $allowable_tags = "<b><table><thead><tbody><tr><th><td><br>";
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {

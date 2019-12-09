@@ -1753,6 +1753,20 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return $risks;
     }
 
+    public function getAllBookingRiskIds()
+    {
+        $risks = array();
+        foreach ($this->procedures as $procedure) {
+            $risks = array_merge(
+                $risks,
+                array_map(static function ($risk) {
+                    return $risk->id;
+                }, $procedure->risks)
+            );
+        }
+        return $risks;
+    }
+
     public function getAllProcedureOpnotes()
     {
         $opnotes = array();
