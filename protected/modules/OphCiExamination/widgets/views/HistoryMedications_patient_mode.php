@@ -46,7 +46,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <table id="<?= $model_name ?>_entry_table">
                     <colgroup>
                         <col class="cols-8">
-                        <col>
+                        <col class="cols-1">
+                        <col class="cols-2">
+                        <col class="cols-1">
                     </colgroup>
                     <tbody>
                     <?php foreach ($current_systemic_meds as $entry) : ?>
@@ -62,8 +64,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </i>
                                 <?php } ?>
                             </td>
-                            <td class="nowrap">
+                            <td>
                                 <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                            </td>
+                            <td>
                                 <?php if ($entry->usage_type === "OphDrPrescription") : ?>
                                     <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
@@ -86,7 +90,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <table>
                             <colgroup>
                                 <col class="cols-8">
-                                <col>
+                                <col class="cols-1">
+                                <col class="cols-2">
+                                <col class="cols-1">
                             </colgroup>
                             <tbody>
                             <?php foreach ($stopped_systemic_meds as $entry) : ?>
@@ -104,12 +110,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </td>
                                     <td class="nowrap">
                                         <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                    <td>
                                         <?php if ($entry->usage_type === "OphDrPrescription") : ?>
                                             <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                               data-tooltip-content="View prescription"></span>
                                             </a>
                                         <?php endif; ?>
+                                    </td>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -134,8 +142,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <?php if ($current_eye_meds) : ?>
                     <table id="<?= $model_name ?>_entry_table">
                         <colgroup>
-                            <col class="cols-8">
-                            <col>
+                            <col class="cols-7">
+                            <col class="cols-1">
+                            <col class="cols-3">
+                            <col class="cols-1">
                         </colgroup>
                         <tbody>
                         <?php foreach ($current_eye_meds as $entry) : ?>
@@ -151,13 +161,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         </i>
                                     <?php } ?>
                                 </td>
-                                <td>
+                                <td class="nowrap">
                                     <?php $laterality = $entry->getLateralityDisplay();
                                     $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                     ?>
-                                </td>
-                                <td class="nowrap">
                                     <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                </td>
+                                <td>
                                     <?php if ($entry->usage_type === "OphDrPrescription") : ?>
                                         <a href="<?= $this->getPrescriptionLink($entry); ?>">
                                         <span class="js-has-tooltip fa oe-i eye small pro-theme"
@@ -179,14 +189,16 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <div class="collapse-data-content">
                             <table>
                             <colgroup>
-                                <col class="cols-8">
-                                <col>
+                                <col class="cols-7">
+                                <col class="cols-1">
+                                <col class="cols-3">
+                                <col class="cols-1">
                             </colgroup>
                             <tbody>
                             <?php foreach ($stopped_eye_meds as $entry) : ?>
                                 <tr>
                                     <td>
-                                    <?= $entry->getMedicationDisplay() ?>
+                                        <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
                                         <?php $tooltip_content = $entry->getTooltipContent();
@@ -196,16 +208,16 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                             </i>
                                         <?php } ?>
                                     </td>
-                                    <td>
+                                    <td class="nowrap">
                                         <?php $laterality = $entry->getLateralityDisplay();
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
-                                    </td>
-                                    <td class="nowrap">
                                         <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                    </td>
+                                    <td>
                                         <?php if ($entry->usage_type === "OphDrPrescription") : ?>
                                             <a href="<?= $this->getPrescriptionLink($entry); ?>">
-                                        <span class="js-has-tooltip fa oe-i eye small pro-theme"
-                                              data-tooltip-content="View prescription"></span>
+                                                <span class="js-has-tooltip fa oe-i eye small pro-theme"
+                                                      data-tooltip-content="View prescription"></span>
                                             </a>
                                         <?php endif; ?>
                                     </td>
