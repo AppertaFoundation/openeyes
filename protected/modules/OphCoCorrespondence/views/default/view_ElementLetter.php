@@ -72,7 +72,6 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                     }
                                 }
                             }
-                        }
                         } else {
                             $toAddress = $element->address;
                             foreach (explode("\n", trim($element->cc)) as $line) {
