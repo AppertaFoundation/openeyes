@@ -39,8 +39,9 @@
 				    {
 								'id': data_point['id'],
 								'event_type': data_point['event_type'],
-								'reading': data_point['reading']
-				    });
+								'reading': data_point['reading'],
+								'comment': data_point['comment'],
+					});
 			}
 
 			let graph_data = [];
@@ -60,28 +61,33 @@
 					eventTypeString = 'Phasing';
         }
 
-				graph_data[key] = {
-				  'parent_ids': readings[key].map(r => r['id']),
-					'timestamp': key,
-					'event_type': eventTypeString,
-					'minimum': Math.min(...readings[key].map(r => r['reading'])),
-					'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
-					'maximum': Math.max(...readings[key].map(r => r['reading'])),
-					'reading_count': readings[key].length
-				};
+
+		const unique = (value, index, self) => {
+			return self.indexOf(value) === index
+		}
+		graph_data[key] = {
+			'parent_ids': readings[key].map(r => r['id']),
+			'timestamp': key,
+			'event_type': eventTypeString,
+			'minimum': Math.min(...readings[key].map(r => r['reading'])),
+			'average': readings[key].map(r => r['reading']).reduce((a, b) => parseInt(a) + parseInt(b), 0) / readings[key].length,
+			'maximum': Math.max(...readings[key].map(r => r['reading'])),
+			'reading_count': readings[key].length,
+			'comment': readings[key].map(r => r['comment']).filter(unique)
+		};
       }
 
-			//Create arrays to pass to graph
-			let x = [];
-			let y = [];
-			let event_ids = [];
-			let error_array = [];
-			let error_minus = [];
-			let display_data = [];
+		//Create arrays to pass to graph
+		let x = [];
+		let y = [];
+		let event_ids = [];
+		let error_array = [];
+		let error_minus = [];
+		let display_data = [];
 
-			let i = 0;
-			for(key in graph_data) {
-          x[i] = graph_data[key]['timestamp'];
+		let i = 0;
+		for(key in graph_data) {
+          x[i] = new Date(+graph_data[key]['timestamp']);
           y[i] = graph_data[key]['average'];
           event_ids[i] = graph_data[key]['parent_ids'];
           error_array[i] = graph_data[key]['maximum'] - graph_data[key]['average'];
@@ -92,14 +98,17 @@
               + 'Maximum: ' + Math.round(graph_data[key]['maximum']).toString() + ' mmHg <br>'
               + 'Average: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg <br>'
               + 'Minimum: ' + Math.round(graph_data[key]['minimum']).toString() + ' mmHg <br>'
-              + 'Readings: ' + graph_data[key]['reading_count'].toString();
+			  + 'Readings: ' + graph_data[key]['reading_count'].toString();
+
+			  display_data[i] += '<br>Comment: ' + graph_data[key]['comment'];
+
           }else if(graph_data[key]['reading_count'] === 1){
 						display_data[i] += '<br>Reading: ' + Math.round(graph_data[key]['average']).toString() + ' mmHg';
+						display_data[i] += '<br>Comment: ' + graph_data[key]['comment'];
           }
           i++;
       }
-
-			let data = [{
+        let data = [{
 				name: 'IOP(' + ((side == 'right') ? 'R' : 'L') + ')',
 				x: x,
 				y: y,
@@ -107,9 +116,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-				 	let d = new Date(parseInt(item));
-          return OEScape.epochToDateStr(d)
-							+ '<br>' + display_data[index];
+          return item.toLocaleDateString("en-GB", "short")	+ '<br>' + display_data[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
