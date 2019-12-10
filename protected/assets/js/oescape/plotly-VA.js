@@ -1,7 +1,12 @@
 function setYAxis_VA(options) {
   return {
     side: 'right',
-    title: '',
+    title: {
+              text: 'VA Graph',
+              font: {
+                color: 'white'
+              }
+            },
     range: options['range'],
     /* Grid line settings of yaxis */
     showgrid: true,
