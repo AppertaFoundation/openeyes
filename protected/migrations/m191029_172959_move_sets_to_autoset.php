@@ -30,6 +30,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
 
             // create entry in medication_set_auto_rule_medication for every medication set item in set
             foreach ($set->medicationSetItems as $medication_item) {
+
                 $set_auto_rule = new MedicationSetAutoRuleMedication();
                 $set_auto_rule->medication_id = $medication_item->medication_id;
                 $set_auto_rule->medication_set_id = $new_set->id;
@@ -45,7 +46,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                     }
                 }
 
-                if (!$set_auto_rule->save()) {
+                if (!$set_auto_rule->save() ) {
                     \OELog::log(print_r($set_auto_rule->getErrors(), true));
                 }
             }
@@ -62,11 +63,13 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                     \OELog::log(print_r($new_rule->getErrors(), true));
                 }
             }
+
+            Yii::app()->db->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $new_set->id . " WHERE medication_set_id = " . $set->id)->execute();
         }
     }
 
     public function safeDown()
     {
-            echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
+        echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
     }
 }
