@@ -55,9 +55,7 @@
     <?php
     echo "<br>";
 
-    $criteria = new CDbCriteria();
-    $criteria->addCondition('active=1');
-    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll($criteria), 'id', 'name');
+    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll('active=1'), 'id', 'name');
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
