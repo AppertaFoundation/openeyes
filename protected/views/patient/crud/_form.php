@@ -72,7 +72,7 @@ foreach ($ethnic_list as $key => $item) {
     <table class="standard highlight-rows">
       <tbody>
       <tr>
-        <td>
+        <td class=<?= Yii::app()->params['add_patient_fields']['title'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'title') ?>
           <br/>
             <?= $form->error($contact, 'title') ?>
@@ -82,7 +82,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['first_name'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'first_name') ?>
           <br/>
             <?= $form->error($contact, 'first_name') ?>
@@ -94,7 +94,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['last_name'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'last_name') ?>
           <br/>
             <?= $form->error($contact, 'last_name') ?>
@@ -117,7 +117,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr class="patient-duplicate-check">
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['dob'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($patient, 'dob') ?>
           <br/>
             <?= $form->error($patient, 'dob') ?>
@@ -195,7 +195,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td>
+        <td class=<?= Yii::app()->params['add_patient_fields']['primary_phone'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'primary_phone') ?>
           <br/>
             <?= $form->error($contact, 'primary_phone') ?>
