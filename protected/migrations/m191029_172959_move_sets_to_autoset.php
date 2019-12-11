@@ -30,7 +30,6 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
 
             // create entry in medication_set_auto_rule_medication for every medication set item in set
             foreach ($set->medicationSetItems as $medication_item) {
-
                 $set_auto_rule = new MedicationSetAutoRuleMedication();
                 $set_auto_rule->medication_id = $medication_item->medication_id;
                 $set_auto_rule->medication_set_id = $new_set->id;
