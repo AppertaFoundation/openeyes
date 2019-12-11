@@ -342,12 +342,12 @@ class AutoSetRuleController extends BaseAdminController
         try {
             if (\Yii::app()->request->isPostRequest) {
                 $set_id = \Yii::app()->request->getParam('set_id');
-                $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
+                $item_data = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
                 $medication_data = \Yii::app()->request->getParam('Medication', []);
                 $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
                 if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
-                    $item = \MedicationSetItem::model()->findByPk($item_data['id']);
+                    $item = \MedicationSetAutoRuleMedication::model()->findByPk($item_data['id']);
 
                     if ($item) {
                         $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
@@ -378,7 +378,7 @@ class AutoSetRuleController extends BaseAdminController
                             $item->tapers = $taper_array;
                         }
 
-                        $result['success'] = $item->save();
+                        $result['success'] = (bool)$item->save();
                         $result['errors'] = $item->getErrors();
 
                         if ($result['success'] === true) {
@@ -456,6 +456,20 @@ class AutoSetRuleController extends BaseAdminController
         ]);
     }
 
+    private function addMedication($set_id, $medication_id)
+    {
+        $set_auto_rule_med = new MedicationSetAutoRuleMedication();
+        $set_auto_rule_med->medication_id = $medication_id;
+        $set_auto_rule_med->medication_set_id = $set_id;
+$set_auto_rule_med->include_children = 1;
+$set_auto_rule_med->include_parent = 1;
+        $set_auto_rule_med->created_date = date('Y-m-d H:i:s');
+
+        $set_auto_rule_med->save();
+
+        return $set_auto_rule_med;
+    }
+
     public function actionAddMedicationToSet()
     {
         $result['success'] = false;
@@ -465,10 +479,22 @@ class AutoSetRuleController extends BaseAdminController
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
             if ($set && $medication_id) {
-                $id = $set->addMedication($medication_id);
-                $result['success'] = (bool)$id;
-                $result['id'] = $id;
+                $med = $this->addMedication($set->id, $medication_id);
+
+                if (!$med->hasErrors()) {
+                    $result['success'] = true;
+                    $result['id'] = $med->id;
+                } else {
+                    $result['success'] = false;
+                    $result['id'] = null;
+                    $result['msg'] = $med->getErrors();
+                }
+            } else {
+                $result['msg'][] = !$set_id ? 'Set id is required. ' : '';
+                $result['msg'][] += ($set_id && !$set) ? 'Set not found' : '';
             }
+        } else {
+            $result['msg'][]= "Only POST request is supported";
         }
 
         echo \CJSON::encode($result);

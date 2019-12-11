@@ -27,6 +27,9 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
     public function run($args)
     {
+        $t = microtime(true);
+        echo "[" . (date("Y-m-d H:i:s")) . "] PopulateAutoMedicationSets ... ";
+
         $this->_pid = getmypid();
 
         if ($this->_isRunning()) {
@@ -36,6 +39,8 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
         $this->_savePid();
         MedicationSet::populateAutoSets();
+
+        echo "OK - took: " . (microtime(true) - $t) . "\n";
         exit(0);
     }
 

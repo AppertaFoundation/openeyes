@@ -45,6 +45,8 @@ EOH;
 
     public function actionIndex()
     {
+        $t = microtime(true);
+        echo "[" . (date("Y-m-d H:i:s")) . "] Local medication to DMD set (localmedicationtodmdmedication) ... ";
         $drugs_with_national_code = Drug::model()->findAll("national_code is NOT NULL");
         foreach ($drugs_with_national_code as $drug) {
             // check for medication ID
@@ -113,6 +115,8 @@ EOH;
         }
 
         MedicationMerge::model()->mergeAll();
+        echo "OK - took: " . (microtime(true) - $t) . "s\n";
+
     }
 
     /**

@@ -44,12 +44,15 @@ EOH;
      */
     public function actionIndex($filename)
     {
+        $t = microtime(true);
+        echo "\n[" . (date("Y-m-d H:i:s")) ."] MedicationSetImport started ... \n";
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
 
         for ($i = 0; $i < $this->spreadsheet->getSheetCount(); $i++) {
             $worksheet = $this->spreadsheet->getSheet($i);
             $this->createAutomaticSet($worksheet->getTitle(), $this->processSheetCells($worksheet));
         }
+        echo "\n[" . (date("Y-m-d H:i:s")) ."] MedicationSetImport finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 
     /**

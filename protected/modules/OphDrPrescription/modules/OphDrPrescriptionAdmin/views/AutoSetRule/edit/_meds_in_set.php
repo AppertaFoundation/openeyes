@@ -93,14 +93,23 @@ if ($is_prescription_set) {
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                 <?php $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
                 <?php if ($set_item) : ?>
-                <tr data-med_id="<?=$med->id?>">
+                <tr data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                     <td>
+                        <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
                         <button class="js-add-taper" type="button" title="Add taper">
                             <i class="oe-i child-arrow small"></i>
                         </button>
                         <?= $med->preferred_term; ?>
                         <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
                         <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
+
+<!--                        <div style="margin-left: 32px;text-align: left;padding-bottom: 4px;">-->
+<!--                            Include parents:  <label class="toggle-switch"><input class="js-input" type="checkbox"><div class="toggle-btn"></div></label>-->
+<!--                        </div>-->
+<!--                        <div style="margin-left: 32px;text-align: left;padding-bottom: 4px;">-->
+<!--                            Include children:  <label class="toggle-switch"><input class="js-input" type="checkbox"><div class="toggle-btn"></div></label>-->
+<!--                        </div>-->
+
                     </td>
                     <td>
                         <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
@@ -274,11 +283,11 @@ if ($is_prescription_set) {
                 $.ajax({
                     'type': 'POST',
                     'data': {
-                        set_id: $('#MedicationSet_id').val(),
+                        set_id: $('.js-medication-set-id').val(),
                         medication_id: item.id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
-                    'url': '/OphDrPrescription/admin/DrugSet/addMedicationToSet',
+                    'url': '/OphDrPrescription/admin/autoSetRule/addMedicationToSet',
                     'dataType': 'json',
                     'beforeSend': function() {
 
@@ -312,6 +321,7 @@ if ($is_prescription_set) {
 
                             data.id = set_item_id;
                             data.medication_id = medication_id;
+                            data.key = OpenEyes.Util.getNextDataKey($table, 'key');
 
                             const $tr_html = Mustache.render($('#medication_template').html(), data);
                             $(drugSetController.options.tableSelector + ' tbody').prepend($tr_html);
@@ -321,6 +331,8 @@ if ($is_prescription_set) {
                                 $tr.find('.js-edit-set-medication').trigger('click');
                                 $tr.animate({'background-color': 'transparent'}, 2000);
                             },500);
+                        } else {
+                            alert('Add medication to set FAILED. Please try again.');
                         }
                         $('.oe-popup-wrap').remove();
                     }
