@@ -461,8 +461,8 @@ class AutoSetRuleController extends BaseAdminController
         $set_auto_rule_med = new MedicationSetAutoRuleMedication();
         $set_auto_rule_med->medication_id = $medication_id;
         $set_auto_rule_med->medication_set_id = $set_id;
-$set_auto_rule_med->include_children = 1;
-$set_auto_rule_med->include_parent = 1;
+        $set_auto_rule_med->include_children = 1;
+        $set_auto_rule_med->include_parent = 1;
         $set_auto_rule_med->created_date = date('Y-m-d H:i:s');
 
         $set_auto_rule_med->save();
