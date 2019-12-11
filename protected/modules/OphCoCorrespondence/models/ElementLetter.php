@@ -368,9 +368,9 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
         if (Yii::app()->params['nhs_num_private'] == true) {
-            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num;
+            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num;
         }
-        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
+        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .': '.$patient->nhsnum;
     }
 
     /**
@@ -403,9 +403,9 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $patient->hos_num;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].': '. $patient->hos_num;
             } else {
-                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .': '.$patient->nhsnum;
             }
 
             $user = Yii::app()->session['user'];
