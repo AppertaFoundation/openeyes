@@ -223,7 +223,7 @@ foreach ($ethnic_list as $key => $item) {
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
+          <td class=<?= Yii::app()->params['add_patient_fields']['hos_num'] === 'mandatory' ? 'required':'' ?>>
                 <?= $form->label($patient, 'hos_num') ?>
             <br/>
                 <?= $form->error($patient, 'hos_num') ?>
@@ -255,7 +255,7 @@ foreach ($ethnic_list as $key => $item) {
         </tr>
 <!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
         <?php
-        if (Yii::app()->params['institution_code']!=='CERA') {?>
+        if (Yii::app()->params['add_patient_fields']['nhs_num_status']!=='hidden') {?>
              <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
               <td>
                   <?= $form->label($patient, 'nhs_num_status_id') ?>
