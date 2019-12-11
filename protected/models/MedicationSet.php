@@ -84,7 +84,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             array('antecedent_medication_set_id, display_order, hidden, automatic', 'numerical', 'integerOnly' => true),
             array('name', 'length', 'max' => 255),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('name, deleted_date, last_modified_date, created_date, automatic, hidden', 'safe'),
+            array('name, deleted_date, last_modified_date, created_date, automatic, hidden, id', 'safe'),
 
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
