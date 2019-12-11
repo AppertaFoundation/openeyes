@@ -372,7 +372,7 @@ class Patient extends BaseActiveRecordVersioned
      **/
     public function gpPracticeValidator($attribute)
     {
-        if (Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)) {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true && empty($this->practice_id)) {
             $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
         }
     }

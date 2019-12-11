@@ -1864,7 +1864,7 @@ class PatientController extends BaseController
                 $referral->attributes = $_POST['PatientReferral'];
             }
 
-            if (Yii::app()->params['institution_code'] === 'CERA') {
+            if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
                 if (isset($_POST['ExtraContact'])) {
                         $gp_ids = $_POST['ExtraContact']['gp_id'];
                     if (isset($_POST['ExtraContact']['practice_id'])) {
@@ -2348,7 +2348,7 @@ class PatientController extends BaseController
 
         $output = array();
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             foreach ($gps as $gp) {
                 $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
                 $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
@@ -2419,7 +2419,7 @@ class PatientController extends BaseController
 
         $output = array();
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             foreach ($gps as $gp) {
                 $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
                 $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';

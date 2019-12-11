@@ -353,7 +353,7 @@ foreach ($ethnic_list as $key => $item) {
                         <li>
                             <span class="js-name" style="text-align:justify; max-width: 90%;">
                                 <?php
-                                if (Yii::app()->params['institution_code'] === 'CERA') {
+                                if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
                                     if ($patient->gp_id && $patient->practice_id) {
                                         $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
                                         $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
@@ -433,7 +433,7 @@ foreach ($ethnic_list as $key => $item) {
           </td>
         </tr>
 
-        <?php if (Yii::app()->params['institution_code']=='CERA') : ?>
+        <?php if (Yii::app()->params['use_contact_practice_associate_model']== true) : ?>
             <tr>
                 <td>
                     <label for="contact">Other Practitioner Contacts</label>

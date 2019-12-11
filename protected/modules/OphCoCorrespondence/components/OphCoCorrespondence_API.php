@@ -688,7 +688,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'delimiter' => "\n",
         ));
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             if ($m[1] == 'ContactPracticeAssociate') {
                     $contact = $contact->gp;
             }
