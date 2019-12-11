@@ -28,26 +28,59 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 \OELog::log(print_r($new_set->getErrors(), true));
             }
 
-            \MedicationSetAutoRuleSetMembership::model()->updateAll(['source_medication_set_id' => $new_set->id], 'source_medication_set_id = :set_id', [':set_id' => $set->id]);
-            \MedicationSetAutoRuleSetMembership::model()->updateAll(['target_medication_set_id' => $new_set->id], 'target_medication_set_id = :set_id', [':set_id' => $set->id]);
-            \MedicationSetAutoRuleAttribute::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $set->id]);
-            \MedicationSetAutoRuleMedication::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $set->id]);
-            \MedicationSetItem::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $set->id]);
-            \MedicationSetRule::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $set->id]);
-            OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $set->id]);
+            // create entry in medication_set_auto_rule_medication for every medication set item in set
+            foreach ($set->medicationSetItems as $medication_item) {
 
+                Yii::app()->db->createCommand("INSERT INTO medication_set_item (
+                                      medication_id,
+                                      medication_set_id) VALUES (
+                                                                 :medication_id,
+                                                                 :medication_set_id
+                                      )
+                                     
+                                      ")->bindValues(array(
+                    ":medication_id" => $medication_item->medication_id,
+                    ":medication_set_id" =>  $new_set->id))->execute();
 
-            /*
-                * Update ophciexamination_risk_tag
-                */
+                $set_auto_rule = new MedicationSetAutoRuleMedication();
+                $set_auto_rule->medication_id = $medication_item->medication_id;
+                $set_auto_rule->medication_set_id = $new_set->id;
+                $set_auto_rule->include_children = 1;
+                $set_auto_rule->include_parent = 1;
+                $set_auto_rule->created_date = date('Y-m-d H:i:s');
+
+                // set all the defaults as well
+                foreach ($set_auto_rule->getAttributes() as $attribute) {
+                    // if attribute starts with 'default'
+                    if (strpos($attribute, 'default') === 0) {
+                        $set_auto_rule->{$attribute} = $medication_item->{$attribute};
+                    }
+                }
+
+                if (!$set_auto_rule->save() ) {
+                    \OELog::log(print_r($set_auto_rule->getErrors(), true));
+                }
+            }
+
+            foreach ($set->medicationSetRules as $set_rule) {
+                $new_rule = new MedicationSetRule();
+                foreach (['subspecialty_id', 'site_id', 'usage_code', 'usage_code_id', 'deleted_date'] as $attr) {
+                    $new_rule->{$attr} = $set_rule->{$attr};
+                }
+
+                $new_rule->medication_set_id = $new_set->id;
+
+                if (!$new_rule->save()) {
+                    \OELog::log(print_r($new_rule->getErrors(), true));
+                }
+            }
+
             Yii::app()->db->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $new_set->id . " WHERE medication_set_id = " . $set->id)->execute();
-
-            $set->delete();
         }
     }
 
     public function safeDown()
     {
-            echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
+        echo "m191029_172959_move_sets_to_autoset does not support migration down.\n";
     }
 }
