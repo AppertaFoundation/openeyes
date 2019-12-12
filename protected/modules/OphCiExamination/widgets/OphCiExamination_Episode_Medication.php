@@ -21,9 +21,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     'patient' => $this->patient,
                 ));
 
-                $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
                 $merged_entries = $widget->getMergedEntries();
-                $meds_entries = array_merge($merged_entries['current'], $merged_entries['stopped'], $untracked);
+                $meds_entries = array_merge($merged_entries['current'], $merged_entries['stopped']);
                 foreach ($meds_entries as $entry) {
                     if (!$entry->drug_id && !$entry->medication_drug_id) {
                         continue;
