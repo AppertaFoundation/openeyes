@@ -130,7 +130,7 @@ class Patient extends BaseActiveRecordVersioned
         return array(
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
-            array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
+            array('hos_num', 'required', 'on' => Yii::app()->params['pas_in_use'] === true ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
             array('gp_id', 'required', 'on' => 'referral'),
             array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
