@@ -22,7 +22,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 ));
 
                 $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
-                $meds_entries = array_merge($meds->orderedEntries, $untracked);
+                $merged_entries = $widget->getMergedEntries();
+                $meds_entries = array_merge($merged_entries['current'], $merged_entries['stopped'], $untracked);
                 foreach ($meds_entries as $entry) {
                     if (!$entry->drug_id && !$entry->medication_drug_id) {
                         continue;
