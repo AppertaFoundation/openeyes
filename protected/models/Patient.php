@@ -226,8 +226,8 @@ class Patient extends BaseActiveRecordVersioned
 
 
     public function nhsNumValidator($attribute, $params){
-        // Validation only triggers for CERA
-        if (Yii::app()->params['institution_code'] == 'CERA') {
+        // Validation only triggers for Australia
+        if (Yii::app()->params['default_country'] === 'Australia') {
             // Throw validation warning message if user has entered non-numeric character
             if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
                 $this->addError($attribute, 'Please enter only numbers.');
