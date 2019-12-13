@@ -39,9 +39,14 @@
                   $ticket = $api->getTicketForEvent($this->event)
                 ) {
                     ?>
-                  <div class="cols-7">
-                    <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
-            </div>
+                    <?php if (isset($ticket->priority)) { ?>
+                        <div class="inline">
+                            <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                        </div>
+                    <?php  } ?>
+                    <div class="cols-7">
+                        <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+                    </div>
                     <?php
                 }
             } ?>
