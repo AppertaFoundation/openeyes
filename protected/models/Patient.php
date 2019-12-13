@@ -229,7 +229,7 @@ class Patient extends BaseActiveRecordVersioned
         // Validation only triggers for Australia
         if (Yii::app()->params['default_country'] === 'Australia') {
             // Throw validation warning message if user has entered non-numeric character
-            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
+            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num) > 0) {
                 $this->addError($attribute, 'Please enter only numbers.');
             }
 
@@ -237,14 +237,14 @@ class Patient extends BaseActiveRecordVersioned
 
             // Check for 11 digits
             $length = strlen($medicareNo);
-            if ($length>0) {
-                if ($length==11) {
+            if ($length > 0) {
+                if ($length == 11) {
                     // Unique check
                     $query = Yii::app()->db->createCommand()
                         ->select('p.id')
                         ->from('patient p')
                         ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
-                            array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
+                            array(':nhs_num' => $this->nhs_num, ':patient_id' => $this->id))
                         ->queryAll();
 
                     if (count($query) !== 0) {
@@ -465,8 +465,7 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['maiden_name'])) {
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
-
-        if (strlen($this->nhs_num) == (Yii::app()->params['default_country'] === 'Australia' ? 11 : 10) ) {
+        if (strlen($this->nhs_num) == (Yii::app()->params['nhs_num_length'] )) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);
