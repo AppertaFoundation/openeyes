@@ -23,7 +23,7 @@ $expert = $settings->getSetting('expert', $element->elementType);
 if ($expert) {
     $mode = 'Expert';
 }
-$doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession', 'Freehand');
+$doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession', 'Freehand', 'FreehandCopyForOE');
 $bindingArray = array(
     'Gonioscopy' => array(
         'mode' => array('id' => $side.'_gonioscopy_mode', 'attrivate' => 'data-value'),

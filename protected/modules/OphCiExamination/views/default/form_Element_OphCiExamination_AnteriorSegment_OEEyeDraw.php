@@ -55,7 +55,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation',
-            'Freehand'
+            'Freehand', 'FreehandCopyForOE'
         ),
     ),
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
