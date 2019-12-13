@@ -246,6 +246,8 @@
 
             this.searchOptionsWrapper.find(".js-searchfilter-check").on("click", function(e){
                 var text = $searchInput.val();
+                // Have to pass opposite of current value because there is a listener after this that changes
+                // the class
                 dialog.runItemSearch(text , undefined, !$(this).hasClass('selected'));
             });
         }
