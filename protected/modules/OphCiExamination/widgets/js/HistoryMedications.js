@@ -300,6 +300,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                       if ($(e.target).hasClass(class_name)) {
                           row_needs_bond_removed = false;
                           $full_bound_entry.find('.' + class_name).attr('value', $full_row.find('.' + class_name).attr('value'));
+                          if (class_name === 'js-end-date') {
+                              let date = new Date($full_row.find('.' + class_name).attr('value'));
+                              let date_display = date.getDate() + ' ' +
+                                  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()] + ' ' +
+                                  date.getFullYear();
+                              $full_bound_entry.find('.alternative-display-element.textual:not(.flex-meds-inputs)').children().html(
+                                  '<i class="oe-i stop small pad"></i>' + date_display
+                              );
+                          }
                       }
                   });
 
