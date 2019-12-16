@@ -108,7 +108,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 
 <script>
     <?php
-    if(!$entry->isStopped() && $entry->hasRisk()): ?>
+    if (!$entry->isStopped() && $entry->hasRisk()) : ?>
         if($('.OEModule_OphCiExamination_models_HistoryRisks').length === 0){
             $('#side-element-Risks a').trigger('click');
         }
