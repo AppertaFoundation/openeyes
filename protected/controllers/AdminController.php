@@ -1822,11 +1822,11 @@ class AdminController extends BaseAdminController
         $deleteSecondaryLogo = @$_GET['secondary_logo'];
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            @unlink($deleteHeaderLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            @unlink($deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         }
