@@ -26,13 +26,13 @@ class OphCoDocument_API extends BaseAPI
     public function getEventIcon($type, Event $event)
     {
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
-        $event_icon = 'i-CoDocument';
+        $sub_type_event_icon = 'i-CoDocument';
 
-        if ($element && isset($element->sub_type->event_icon_id)) {
-            $event_icon = EventIcon::model()->findByPk($element->sub_type->event_icon_id)->name;
+        if ($element && isset($element->sub_type->sub_type_event_icon_id)) {
+            $sub_type_event_icon = SubTypeEventIcon::model()->findByPk($element->sub_type->sub_type_event_icon_id)->name;
         }
 
-        return '<i class="oe-i-e ' . ($type === 'small' ? 'small ' : 'large ') . $event_icon.'"></i>';
+        return '<i class="oe-i-e ' . ($type === 'small' ? 'small ' : 'large ') . $sub_type_event_icon.'"></i>';
     }
 
     public function getEventName($event)

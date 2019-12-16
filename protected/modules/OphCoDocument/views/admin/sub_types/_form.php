@@ -70,14 +70,14 @@
                 <fieldset>
                     <div class="cols-11">
                         <?php
-                        $event_icons = EventIcon::model()->findAll();
+                        $sub_type_event_icons = SubTypeEventIcon::model()->findAll();
                         $icon_images = [];
-                        foreach ($event_icons as $icon){
+                        foreach ($sub_type_event_icons as $icon){
                             $icon_images[$icon->id] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
                         } ?>
                         <?=\CHtml::activeRadioButtonList(
                             $model,
-                            'event_icon_id',
+                            'sub_type_event_icon_id',
                             $icon_images,
                             ['separator' => ' ']
                         ); ?>

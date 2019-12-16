@@ -43,9 +43,9 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, display_order , is_active, event_icon_id', 'safe'),
-            array('name, display_order , is_active, event_icon_id', 'required'),
-            array('id, name, display_order , is_active, event_icon_id', 'safe', 'on' => 'search'),
+            array('name, display_order , is_active, sub_type_event_icon_id', 'safe'),
+            array('name, display_order , is_active, sub_type_event_icon_id', 'required'),
+            array('id, name, display_order , is_active, sub_type_event_icon_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -57,7 +57,7 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'eventIcon' => array(self::HAS_ONE, 'EventIcon', 'event_icon_id')
+            'subTypeEventIcon' => array(self::HAS_ONE, 'SubTypeEventIcon', 'sub_type_event_icon_id')
         );
     }
 

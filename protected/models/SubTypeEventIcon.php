@@ -24,12 +24,12 @@
  * @property string $name
  */
 
-class EventIcon extends BaseActiveRecord
+class SubTypeEventIcon extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return EventIcon the static model class
+     * @return SubTypeEventIcon the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -41,7 +41,7 @@ class EventIcon extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'event_icon';
+        return 'sub_type_event_icon';
     }
 
     public function defaultScope()
