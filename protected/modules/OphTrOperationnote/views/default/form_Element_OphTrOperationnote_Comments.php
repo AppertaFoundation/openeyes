@@ -73,7 +73,11 @@
         </label>
         <?php endif; ?>
 
-        <?php if (\SettingMetadata::model()->getSetting('default_post_op_letter')) :?>
+        <?php
+        $post_op_macro_name = SettingMetadata::model()->getSetting('default_post_op_letter');
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$post_op_macro_name, $firm->id]);
+        if ($macro) :?>
         <label class="inline highlight">
             <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
             <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
