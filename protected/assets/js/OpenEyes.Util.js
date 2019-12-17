@@ -81,7 +81,7 @@
           raw_date.getFullYear();
     }
 
-    Util.formatTimeToFuzzyDate =function (date) {
+    Util.formatTimeToFuzzyDate = function (date) {
         let day = date.getDate();
         let displayDay = day < 10 ? '0' + day.toString() : day;
         let month = date.getMonth() + 1;
@@ -90,6 +90,23 @@
 
         return year + '-' + displayMonth + '-' + displayDay;
     };
+
+    /**
+     * Get date from Fuzzy field set.
+     *
+     * @param fieldset
+     * @returns {*}
+     */
+    Util.dateFromFuzzyFieldSet = function (fieldset) {
+        let res = fieldset.find('select.fuzzy_year').val();
+        let month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
+        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
+        let day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
+        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
+
+        return res;
+    }
+
 	exports.Util = Util;
 
 }(this.OpenEyes));

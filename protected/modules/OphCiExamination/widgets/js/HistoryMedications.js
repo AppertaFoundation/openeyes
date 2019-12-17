@@ -921,7 +921,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     let $wrapper = $row.find('.' + $type + '-date-wrapper');
     $wrapper.show();
     let $fuzzyFieldset = $wrapper.parents('fieldset');
-    let date = this.dateFromFuzzyFieldSet($fuzzyFieldset);
+    let date = OpenEyes.Util.dateFromFuzzyFieldSet($fuzzyFieldset);
     $fuzzyFieldset.find('input[type="hidden"]').val(date);
     $fuzzyFieldset.find('.enable').hide();
     $fuzzyFieldset.find('.cancel').show();

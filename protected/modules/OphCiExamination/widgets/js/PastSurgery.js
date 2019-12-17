@@ -79,7 +79,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
         controller.$section.on('input', ('#'+controller.fuzyDateWrapperSelector), function(e) {
             let $fuzzy_fieldset = $(this).closest('fieldset');
-            let date = controller.dateFromFuzzyFieldSet($fuzzy_fieldset);
+            let date = OpenEyes.Util.dateFromFuzzyFieldSet($fuzzy_fieldset);
             $fuzzy_fieldset.closest('td').find('input[type="hidden"]').val(date);
         });
 
@@ -159,22 +159,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             }
         }
         return true;
-    };
-
-    /**
-     * @TODO: should be common function across history elements
-     * @param fieldset
-     * @returns {*}
-     */
-    PreviousSurgeryController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
-        res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
     };
 
     return PreviousSurgeryController;
