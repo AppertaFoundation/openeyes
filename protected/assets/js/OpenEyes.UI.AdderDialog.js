@@ -230,7 +230,6 @@
 
         if(dialog.options.booleanSearchFilterEnabled) {
 
-            console.log(dialog.headers);
             $('<th/>').text("Search options").appendTo(dialog.headers);
             let $td = $('<td />');
             this.searchOptionsWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
