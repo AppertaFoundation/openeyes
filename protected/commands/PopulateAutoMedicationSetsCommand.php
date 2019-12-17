@@ -49,6 +49,11 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
         }
     }
 
+    public function actionCheckRunning()
+    {
+        return $this->_isRunning();
+    }
+
     private function _savePid()
     {
         file_put_contents($this->_pidfile, $this->_pid);

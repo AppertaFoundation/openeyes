@@ -53,9 +53,17 @@ class AutoSetRuleController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
+        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command_is_running = $command->actionCheckRunning();
+
+        if ($command_is_running) {
+            Yii::app()->user->setFlash('loading', "Rebuild process started at " . date('H:i') . ". ");
+        }
+
         $this->render('/AutoSetRule/index', [
             'data_provider' => $data_provider,
-            'search' => $filters
+            'search' => $filters,
+            'enable_button' => $command_is_running ? 'disabled' : '',
         ]);
     }
 
@@ -267,7 +275,6 @@ class AutoSetRuleController extends BaseAdminController
     public function actionPopulateAll()
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
-        Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
         $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
     }
 

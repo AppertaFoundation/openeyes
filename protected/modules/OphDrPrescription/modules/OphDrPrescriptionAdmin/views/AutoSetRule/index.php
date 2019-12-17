@@ -20,6 +20,11 @@
         <?= \Yii::app()->user->getFlash('error'); ?>
     </div>
 <?php endif; ?>
+<?php if (\Yii::app()->user->hasFlash('loading')) : ?>
+    <div class='alert-box info'>
+        <?= \Yii::app()->user->getFlash('loading'); ?>
+    </div>
+<?php endif; ?>
 
 <div class="row divider">
     <h2>Automatic medication sets</h2>
@@ -97,7 +102,7 @@
                     ]); ?>
                     <?=\CHtml::linkButton('Rebuild all sets now',
                         array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll',
-                            'class' => 'button large')); ?>
+                            'class' => 'button large ' . $enable_button)); ?>
 
                 </td>
                 <td colspan="4">
