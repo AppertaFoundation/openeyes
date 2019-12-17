@@ -108,9 +108,10 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 
 <script>
     <?php
-    if (!$entry->isStopped() && $entry->hasRisk()) : ?>
-        if($('.OEModule_OphCiExamination_models_HistoryRisks').length === 0){
-            $('#side-element-Risks a').trigger('click');
+    if (!$entry->isStopped() && $entry->hasRisk()) { ?>
+        if($('.' + OE_MODEL_PREFIX + 'HistoryRisks').length === 0){
+            let sidebar = $('#episodes-and-events').data('patient-sidebar');
+            sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks');
         }
-    <?php endif; ?>
+    <?php } ?>
 </script>
