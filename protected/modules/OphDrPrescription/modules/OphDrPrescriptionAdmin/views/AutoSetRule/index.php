@@ -100,9 +100,9 @@
                         'id' => 'delete_sets',
                         'class' => 'button large',
                     ]); ?>
-                    <?=\CHtml::linkButton('Rebuild all sets now',
+                    <?=\CHtml::linkButton($button_name,
                         array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll',
-                            'class' => 'button large ' . $enable_button)); ?>
+                            'class' => 'button large ' . $button_status)); ?>
 
                 </td>
                 <td colspan="4">
@@ -134,4 +134,22 @@
         searchUrl: '/OphDrPrescription/admin/autoSetRule/search',
         deleteUrl: '/OphDrPrescription/admin/autoSetRule/delete'
     });
+
+    let $rebuild_button = $('#yt2');
+
+    if ($rebuild_button.hasClass('disabled')) {
+        (function checkCommand() {
+            console.log('lol');
+            $.ajax({
+                url: '/OphDrPrescription/admin/AutoSetRule/CheckRebuildIsRunning',
+                success: function(data) {
+                    $rebuild_button.removeClass('disabled');
+                    $rebuild_button.html('Rebuild all sets now');
+                },
+                complete: function() {
+                    setTimeout(checkCommand, 5000);
+                }
+            });
+        })();
+    }
 </script>
