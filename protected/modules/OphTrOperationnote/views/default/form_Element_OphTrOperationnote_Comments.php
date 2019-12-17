@@ -74,22 +74,24 @@
         <?php endif; ?>
 
         <?php
+        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $post_op_macro_name = SettingMetadata::model()->getSetting('default_post_op_letter');
+        $optom_post_op_name = SettingMetadata::model()->getSetting('default_optom_post_op_letter');
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$post_op_macro_name, $firm->id]);
-        if ($macro) :?>
-        <label class="inline highlight">
-            <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
-            <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
-        </label>
-        <?php endif; ?>
-
-        <?php if (\SettingMetadata::model()->getSetting('default_optom_post_op_letter')) :?>
+        $macro = $correspondence_api->getDefaultMacro($firm, Yii::app()->session['selected_site_id'], $post_op_macro_name);
+        if ($macro) { ?>
+            <label class="inline highlight">
+                <?=\CHtml::hiddenField('auto_generate_gp_letter_after_surgery', 0);?>
+                <?=\CHtml::checkBox('auto_generate_gp_letter_after_surgery', $gp_letter_setting);?>Generate standard GP letter
+            </label>
+        <?php }
+        $macro = $correspondence_api->getDefaultMacro($firm, Yii::app()->session['selected_site_id'], $optom_post_op_name);
+        if ($macro) { ?>
             <label class="inline highlight">
                 <?=\CHtml::hiddenField('auto_generate_optom_post_op_letter_after_surgery', 0);?>
                 <?=\CHtml::checkBox('auto_generate_optom_post_op_letter_after_surgery', $optom_setting);?>Generate standard Optom letter
             </label>
-        <?php endif; ?>
+        <?php } ?>
 
     </div>
 <?php endif; ?>
