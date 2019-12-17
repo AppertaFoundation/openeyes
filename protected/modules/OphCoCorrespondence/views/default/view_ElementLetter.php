@@ -15,7 +15,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
@@ -28,7 +27,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 <tr>
                     <td class="data-label"><?= \CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                     <td>
-                        <div class="data-value" style="text-align: right">
+                        <div class="data-value text-right">
                             <?php
                             if ($element->is_signed_off == null) {
                                 echo 'N/A';
@@ -36,12 +35,26 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'Yes';
                             } else {
                                 echo 'No';
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
-                <?php } ?>
+            <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <small class="fade">To</small><br>
@@ -69,8 +82,8 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         }
                         echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) . "<br/>" . $ccString;
                         ?>
-                    </td>
-                </tr>
+                </td>
+            </tr>
 
             </tbody>
         </table>
@@ -94,7 +107,6 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         // OE-8581 Disable lightning image loading due to speed issues
         options['disableAjaxCall'] = <?= ($is_mobile_or_tablet ? 'false' : 'true'); ?>;
         new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id, options);
-
         if ((String)($('iframe').data('doprint')).charAt(0) === '1') {
             let eventId = $('iframe').data('eventid');
             $.ajax({

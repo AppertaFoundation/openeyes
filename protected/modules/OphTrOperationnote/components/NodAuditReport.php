@@ -409,6 +409,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['ineligible'],
             ),
         );
+
         $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',

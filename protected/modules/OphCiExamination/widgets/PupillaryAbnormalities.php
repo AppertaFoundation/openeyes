@@ -24,7 +24,7 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     protected $print_view = 'PupillaryAbnormalities_event_print';
 
     /**
-     * @return FamilyHistoryElement
+     * @return PupillaryAbnormalitiesElement
      */
     protected function getNewElement()
     {

@@ -23,6 +23,7 @@ class DefaultController extends BaseEventTypeController
         'verifyProcedure' => self::ACTION_TYPE_FORM,
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
+        'whiteboard' => self::ACTION_TYPE_VIEW,
     );
 
     protected $show_element_sidebar = false;
@@ -92,6 +93,11 @@ class DefaultController extends BaseEventTypeController
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
+    }
+
+    public function actionWhiteboard($id)
+    {
+        $this->redirect(Yii::app()->createUrl('/OphTrOperationbooking/whiteboard/view/' . $id));
     }
 
     protected function createOpNote()
@@ -217,54 +223,6 @@ class DefaultController extends BaseEventTypeController
         ));
     }
 
-    /**
-     * @inheritdoc
-     */
-
-    protected function setAndValidateElementsFromData($data)
-    {
-        $errors = array();
-        $elements = array();
-
-        // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
-            $from_data = $this->getElementsForElementType($element_type, $data);
-            if (count($from_data) > 0) {
-                $elements = array_merge($elements, $from_data);
-            } elseif ($element_type->required && (!method_exists($element_type->getInstance(), "isEnabled") || $element_type->getInstance()->isEnabled())) {
-                $errors[$this->event_type->name][] = $element_type->name . ' is required';
-                $elements[] = $element_type->getInstance();
-            }
-        }
-
-        // Filter disabled elements from validation
-
-        $elements = array_filter($elements, function ($e) {
-            return !method_exists($e, "isEnabled") || $e->isEnabled();
-        });
-
-        if (!count($elements)) {
-            $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
-        }
-
-        // assign
-        $this->open_elements = $elements;
-
-        // validate
-        foreach ($this->open_elements as $element) {
-            $this->setValidationScenarioForElement($element);
-            if (!$element->validate()) {
-                $name = $element->getElementTypeName();
-                foreach ($element->getErrors() as $errormsgs) {
-                    foreach ($errormsgs as $error) {
-                        $errors[$name][] = $error;
-                    }
-                }
-            }
-        }
-
-        return $errors;
-    }
 
     protected function afterCreateElements($event)
     {
@@ -303,37 +261,6 @@ class DefaultController extends BaseEventTypeController
             $errors[] = $params; // these are only going to the logs and audit, not displayed to the user
 
             \Yii::app()->user->setFlash('issue.prescription', $msg);
-        }
-
-        return [
-            'success' => $success,
-            'errors' => $errors
-        ];
-    }
-
-    private function createCorrespondenceEvent($macro_name = null)
-    {
-        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-				if (empty($macro_name)) {
-					$macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
-				}
-        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id'], $macro_name);
-
-        $success = false;
-
-        if ($macro) {
-            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
-            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
-            $correspondence_creator->save();
-
-            $success = !$correspondence_creator->hasErrors();
-            $errors = $correspondence_creator->getErrors();
-        } else {
-            $msg = "Unable to create default GP Letter because: No macro named '{$macro_name}' was found";
-            $errors[] = [$msg];
-
-            \Yii::app()->user->setFlash('issue.correspondence', $msg);
         }
 
         return [
@@ -1345,6 +1272,107 @@ class DefaultController extends BaseEventTypeController
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
+    }
+
+    private function createCorrespondenceEvent($macro_name = null)
+    {
+        $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        if (empty($macro_name)) {
+            $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
+        }
+        $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id'], $macro_name);
+
+        $success = false;
+
+        if ($macro) {
+            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
+            $criteria = new CDbCriteria( array(
+                'condition' => "name LIKE :name",
+                'params'    => array(':name' => "$name%")
+            ) );
+
+            $letter_type = \LetterType::model()->find($criteria);
+            $letter_type_id = $letter_type ? $letter_type->id : null;
+
+            $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
+            $correspondence_creator->save();
+
+            $success = !$correspondence_creator->hasErrors();
+            $errors = $correspondence_creator->getErrors();
+        } else {
+            $msg = "Unable to create default Letter because: No macro named '{$macro_name}' was found";
+            $errors[] = [$msg];
+
+            \Yii::app()->user->setFlash('issue.correspondence', $msg);
+        }
+
+        return [
+            'success' => $success,
+            'errors' => $errors
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    protected function setAndValidateElementsFromData($data)
+    {
+        $errors = array();
+        $elements = array();
+
+        // only process data for elements that are part of the element type set for the controller event type
+        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
+            } elseif ($element_type->required && (!method_exists($element_type->getInstance(), "isEnabled") || $element_type->getInstance()->isEnabled())) {
+                $errors[$this->event_type->name][] = $element_type->name . ' is required';
+                $elements[] = $element_type->getInstance();
+            }
+        }
+
+        // Filter disabled elements from validation
+
+        $elements = array_filter($elements, function ($e) {
+            return !method_exists($e, "isEnabled") || $e->isEnabled();
+        });
+
+        if (!count($elements)) {
+            $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
+        }
+
+        // assign
+        $this->open_elements = $elements;
+
+        // validate
+        foreach ($this->open_elements as $element) {
+            $this->setValidationScenarioForElement($element);
+            if (!$element->validate()) {
+                $name = $element->getElementTypeName();
+                foreach ($element->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$name][] = $error;
+                    }
+                }
+            }
+        }
+
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
+        return $errors;
     }
 
     /**

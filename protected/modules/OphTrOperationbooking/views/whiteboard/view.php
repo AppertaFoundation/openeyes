@@ -1,138 +1,238 @@
+<?php
+    /**
+     * @var $booking_id int
+     * @var $cataract_opnote ElementType
+     */
+    $complexity_colour = 'green';
+    $aconst = ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst);
 
-<div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Patient Details</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->patient_name?> <br />
-                <?=date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y')?> <br />
-                <?=$data->hos_num?>
-            </div>
-        </div>
+switch ($data->complexity) {
+    case Element_OphTrOperationbooking_Operation::COMPLEXITY_LOW:
+        $complexity_colour = 'green';
+        break;
+    case Element_OphTrOperationbooking_Operation::COMPLEXITY_MEDIUM:
+        $complexity_colour = 'orange';
+        break;
+    case Element_OphTrOperationbooking_Operation::COMPLEXITY_HIGH:
+        $complexity_colour = 'red';
+        break;
+}
+
+$is_deleted = ((int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_COMPLETED
+    || (int)$data->booking->status->id === OphTrOperationbooking_Operation_Status::STATUS_CANCELLED);
+
+$cataract_card_list = array(
+    'Patient' => array(
+        'data' => array(
+            $data->patient_name,
+            date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'),
+            $data->hos_num
+        )
+    ),
+    'Procedure' => array(
+        'data' => array(
+            'content' => $data->eye->name,
+            'extra_data' => $data->procedure,
+            'deleted' => $is_deleted,
+        ),
+        'colour' => $complexity_colour,
+    ),
+    'Lens' => array(
+        'data' => array(
+            'content' => ((float) $data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power,
+            'extra_data' => $data->iol_model
+                . ' '
+                . ($data->iol_model !== 'Unknown' ? $aconst : null),
+        )
+    ),
+    'Anaesthesia' => array(
+        'data' => implode(
+            ', ',
+            array_map(
+                static function ($elem) {
+                    switch (trim($elem->name)) {
+                        case 'LA':
+                            return 'Local';
+                            break;
+                        case 'GA':
+                            return 'General';
+                            break;
+                        case 'No Anaesthetic':
+                            return 'None';
+                            break;
+                        default:
+                            return $elem->name;
+                            break;
+                    }
+                },
+                $data->booking->anaesthetic_type
+            )
+        )
+    ),
+    'Biometry' =>array(
+        'data' => array(
+            array(
+                'content' => $data->axial_length,
+                'small_data' => $data->axial_length !== 'Unknown' && isset($data->axial_length)  ? 'mm' : null,
+                'extra_data' => isset($data->axial_length) ? 'Axial Length' : null,
+            ),
+            array(
+                'content' => $data->acd,
+                'small_data' => $data->acd !== 'Unknown' && isset($data->acd) ? 'mm' : null,
+                'extra_data' => isset($data->acd) ? 'ACD' : null,
+            )
+        )
+    ),
+    'Predicted Outcome' => array(
+        'data' => array(
+            'content' => $data->predicted_refractive_outcome !== 'Unknown' ?
+                $data->predicted_refractive_outcome . ' D' :
+                $data->predicted_refractive_outcome,
+            'extra_data' => $data->formula,
+        )
+    ),
+    'Equipment' => array(
+        'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
+        'editable' => $data->booking->isEditable(),
+    ),
+    'Comments' => array(
+        'data' => explode("\n", $data->comments),
+        'editable' => $data->booking->isEditable(),
+    )
+);
+
+$other_card_list = array(
+    'Patient' => array(
+        'data' => array(
+            $data->patient_name,
+            date_create_from_format('Y-m-d', $data->date_of_birth)->format('j M Y'),
+            $data->hos_num
+        )
+    ),
+    (int)$data->eye_id === Eye::BOTH ? 'Procedure (1st)' : 'Procedure' => array(
+        'data' => array(
+            'content' =>  (int)$data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
+            'extra_data' => $data->procedure,
+            'deleted' => $is_deleted,
+        ),
+        'colour' => $complexity_colour,
+    ),
+    'Procedure (2nd)' => array(
+        'data' => (int)$data->eye_id === Eye::BOTH ? array(
+            'content' => 'Right',
+            'extra_data' => $data->procedure,
+            'deleted' => $is_deleted,
+        ) : null,
+        'colour' => $complexity_colour,
+    ),
+    'Anaesthesia' => array(
+        'data' => implode(
+            ', ',
+            array_map(
+                static function ($elem) {
+                    switch (trim($elem->name)) {
+                        case 'LA':
+                            return 'Local';
+                            break;
+                        case 'GA':
+                            return 'General';
+                            break;
+                        case 'No Anaesthetic':
+                            return 'None';
+                            break;
+                        default:
+                            return $elem->name;
+                            break;
+                    }
+                },
+                $data->booking->anaesthetic_type
+            )
+        )
+    ),
+    'Biometry' => array(
+        'data' => (int)$data->eye->id === Eye::BOTH ? null : array(
+            array(
+                'content' => $data->axial_length,
+                'small_data' => $data->axial_length !== 'Unknown' ? 'mm' : null,
+                'extra_data' => 'Axial Length',
+            ),
+            array(
+                'content' => $data->acd,
+                'small_data' => $data->acd !== 'Unknown' ? 'mm' : null,
+                'extra_data' => 'ACD',
+            )
+        ),
+    ),
+    'Predicted Outcome' => array(
+        'data' => null,
+    ),
+    'Equipment' => array(
+        'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
+        'editable' => $data->booking->isEditable(),
+    ),
+    'Comments' => array(
+        'data' => explode("\n", $data->comments),
+        'editable' => $data->booking->isEditable(),
+    ),
+);
+?>
+<header class="oe-header">
+    <?php $this->renderPartial($this->getHeaderTemplate(), array(
+        'data' => $data
+    ));?>
+</header>
+<main class="oe-whiteboard">
+    <div class="wb3">
+        <?php
+        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
+            foreach ($cataract_card_list as $title => $card) {
+                $this->widget('WBCard', array(
+                    'title' => $title,
+                    'data' => $card['data'],
+                    'colour' => isset($card['colour']) ? $card['colour'] : null,
+                    'editable' => isset($card['editable']) ? $card['editable'] : false,
+                    'event_id' => $data->event_id,
+                ));
+            }
+        } else {
+            foreach ($other_card_list as $title => $card) {
+                $this->widget('WBCard', array(
+                    'title' => $title,
+                    'data' => $card['data'],
+                    'colour' => isset($card['colour']) ? $card['colour'] : null,
+                    'editable' => isset($card['editable']) ? $card['editable'] : false,
+                    'event_id' => $data->event_id,
+                ));
+            }
+        }
+        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
+            $this->widget('EDCard', array(
+                'title' => 'Axis',
+                'eye' => $data->eye,
+                'doodles' => $data->steep_k ? array(
+                    'AntSegSteepAxis',
+                    array('axis' => $data->axis, 'flatK' => $data->flat_k, 'steepK' => $data->steep_k)
+                ) : null,
+            ));
+        } else {
+            $this->widget('WBCard', array(
+                'title' => null,
+                'data' => null,
+                'event_id' => $data->event_id,
+            ));
+        }
+        $this->widget('RiskCard', array(
+                'data' => $data,
+        )); ?>
     </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Operation Side</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?= $data->eye->name ?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand patient">
-                <h2 class="mdl-card__title-text">Operation Type</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->procedure?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Model &amp; Formula</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->iol_model?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">IOL Power</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->iol_power?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand biometry">
-                <h2 class="mdl-card__title-text">Predicted refractive outcome</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->predicted_refractive_outcome?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Allergies</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=nl2br($data->allergies)?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Alpha-blockers</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->alpha_blocker_name?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Anticoagulants</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->anticoagulant_name?> <br>
-                INR: <?=$data->inr?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Alerts/Risks</h2>
-            </div>
-            <div class="mdl-card__supporting-text" id="comments">
-                <?php echo $this->getWhiteboard()->getPatientRisksDisplay(); ?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet editable">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
-                <?php if ($this->getWhiteboard()->isEditable()) :?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
-                <?php endif; ?>
-            </div>
-            <div class="mdl-card__supporting-text" id="predicted_additional_equipment">
-                <?php if ($data->predicted_additional_equipment) : ?>
-                    <?=nl2br($data->predicted_additional_equipment)?>
-                <?php else :?>
-                    None
-                <?php endif;?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col editable">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Comments</h2>
-                <?php if ($this->getWhiteboard()->isEditable()) :?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
-                <?php endif; ?>
-            </div>
-            <div class="mdl-card__supporting-text" id="comments">
-                <?=nl2br($data->comments)?>
-            </div>
-        </div>
-    </div>
-</div>
+    <!--
+    Manually specifying a high z-index here as the open/close button and footer
+    should appear above everything else on screen, especially the EyeDraw widget.
+    -->
+    <footer class="wb3-actions down" style="z-index: 9999">
+        <?php $this->renderPartial('footer', array(
+            'biometry' => false,
+            'booking_id' => $booking_id,
+        )); ?>
+    </footer>
+</main>
