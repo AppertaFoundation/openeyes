@@ -37,7 +37,7 @@ class m191125_091623_create_event_icon_table extends CDbMigration
         ];
 
         $this->createTable('sub_type_event_icon', [
-            'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY',
+            'id' => 'pk',
             'name' => 'varchar(64) not null',
             'display_order' => 'int unsigned not null'
         ]);
