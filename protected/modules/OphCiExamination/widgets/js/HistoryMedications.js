@@ -22,14 +22,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     if(typeof window.switch_alternative !== "function") {
         window.switch_alternative = function(anchor) {
-            var $wrapper = $(anchor).closest(".alternative-display-element");
+            let $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
             $wrapper.siblings(".alternative-display-element").show();
-            var $col = $wrapper.closest(".alternative-display");
+            let $col = $wrapper.closest(".alternative-display");
             $col.next(".alt-display-trigger").hide();
 
-            var $dropdown = $col.find(".js-unit-dropdown");
-            var $input = $col.find(".dose_unit_term");
+            let $dropdown = $col.find(".js-unit-dropdown");
+            let $input = $col.find(".dose_unit_term");
 
             if($dropdown.length > 0 && $input.val() == "") {
                 $dropdown.removeAttr("disabled").show();
@@ -121,23 +121,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * Setup datepicker
    */
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
-      var modelName = this.options['modelName'];
-    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
-    for (var i=0; i < row_count; i++){
+      let modelName = this.options['modelName'];
+    let row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+    for (let i=0; i < row_count; i++){
       this.constructDatepicker('#'+modelName+'_entries_'+i+'_start_date');
       this.constructDatepicker('#'+modelName+'_entries_'+i+'_end_date');
     }
   };
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
-      var modelName = this.options['modelName'];
-    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+      let modelName = this.options['modelName'];
+    let row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
 		this.constructDatepicker('#'+modelName+'_entries_'+row_count+'_start_date');
 		this.constructDatepicker('#'+modelName+'_entries_'+row_count+'_end_date');
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
-    var $datepicker= $(this.$table).find(name);
+    let $datepicker= $(this.$table).find(name);
     if ($datepicker.length > 0){
       pickmeup(name, {
         format: 'Y-m-d',
@@ -149,16 +149,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.initialiseTriggers = function()
   {
-    var controller = this;
+    let controller = this;
 
     // removal button for table entries
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
         e.preventDefault();
-        var $row = $(e.target).closest("tr");
+        let $row = $(e.target).closest("tr");
         let $closest_table = $(e.target).closest('table');
 
-        var key = $row.attr("data-key");
-        var $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
+        let key = $row.attr("data-key");
+        let $tapers = controller.$table.find("tr[data-parent-key="+key+"]");
         $tapers.remove();
         controller.removeBoundEntry($row);
         controller.$table.find('tr[data-key=' + key + ']').remove();
@@ -172,7 +172,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // removal button for tapers
       controller.$table.on("click", ".js-remove-taper", function(e){
           e.preventDefault();
-          var $row = $(e.target).closest("tr");
+          let $row = $(e.target).closest("tr");
           $row.remove();
       });
 
@@ -230,13 +230,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.initialiseRowEventTriggers = function($row, data)
   {
-      var controller = this;
+      let controller = this;
       let key = $row.data('key');
       let $full_row = controller.$table.find('tr[data-key=' + key + ']');
       let $second_part_of_row = controller.$table.find('tr[data-key=' + key + '].js-second-row');
       controller.updateTextualDisplay($row);
       if($full_row.find(".js-locked").val() === "1") {
-          var $txt_display = $full_row.find(".dose-frequency-route .textual-display");
+          let $txt_display = $full_row.find(".dose-frequency-route .textual-display");
           $txt_display.replaceWith('<span class="textual-display">'+$txt_display.html()+'</span>');
 				$full_row.find(".dose-frequency-route .alternative-display-element").hide();
 				$full_row.find(".dose-frequency-route .alternative-display-element.textual").show();
@@ -251,8 +251,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
 		$full_row.on("click", ".js-btn-prescribe", function () {
-        var $input = $(this).closest(".toggle-switch").find("input");
-        var checked = !$input.prop("checked");
+        let $input = $(this).closest(".toggle-switch").find("input");
+        let checked = !$input.prop("checked");
         if(!checked) {
         		let $data_key = $row.attr('data-key');
 						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
@@ -275,7 +275,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 			$full_row.find(controller.options.routeOptionInputSelector).val(input_value);
 		});
 
-      var controls_onchange = function (e) {
+      let controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
           let bound_entry_key = $row.data('key');
 					let $full_bound_entry;
