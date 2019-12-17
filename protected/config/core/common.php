@@ -400,6 +400,13 @@ return array(
                   'position' => 3,
                 ),
                 */
+                'imagenet' => array(
+                    'title' => 'ImageNET',
+                    'uri' => '',
+                    'requires_setting' => array('setting_key'=>'imagenet_url', 'required_value'=>'not-empty'),
+                    'position' => 92,
+                    'options' => ['target' => '_blank'],
+                ),
         ),
         'admin_menu' => array(
         ),
@@ -488,13 +495,13 @@ return array(
          * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
-        'OphCoCorrespondence_event_actions' => array(
-                'create' => array(
-                    'savedraft' => 'Save draft',
-                    'save' => null,
-                    'saveprint' => 'Save and print'
-            )
-        ),
+                'OphCoCorrespondence_event_actions' => array(
+                    'create' => array(
+                        'savedraft' => 'Save draft',
+                        'save' => null,
+                        'saveprint' => 'Save and print'
+                    )
+                ),
 
         /**
          * Enable or disable the draft printouts DRAFT background
@@ -599,7 +606,8 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.3.1',
+      'oe_version' => '3.4',
+      // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,

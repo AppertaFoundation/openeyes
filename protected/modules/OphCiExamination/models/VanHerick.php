@@ -38,7 +38,6 @@ class VanHerick extends \SplitEventTypeElement
     protected $auto_validate_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\VanHerick';
-    protected $default_from_previous = true;
 
     public function tableName()
     {
@@ -91,5 +90,10 @@ class VanHerick extends \SplitEventTypeElement
             'left_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Van_Herick', 'left_van_herick_id'),
             'right_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Van_Herick', 'right_van_herick_id'),
         );
+    }
+
+    public function canCopy()
+    {
+        return true;
     }
 }

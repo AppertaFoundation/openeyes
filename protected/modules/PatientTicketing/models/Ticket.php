@@ -138,6 +138,7 @@ class Ticket extends \BaseActiveRecordVersioned
     {
         return array(
             'event_id' => 'Source Event',
+            'priority_id' => 'Priority',
         );
     }
 
