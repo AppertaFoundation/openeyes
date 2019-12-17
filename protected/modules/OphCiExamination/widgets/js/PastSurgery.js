@@ -37,7 +37,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
     PreviousSurgeryController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_PastSurgery',
-        monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     };
   /**
    * Setup Datepicker
@@ -176,28 +175,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
 
         return res;
-    };
-
-    /**
-     *
-     * @param dt yyyy-mm-dd
-     * @returns {string}
-     */
-    PreviousSurgeryController.prototype.getFuzzyDateDisplay = function(dt)
-    {
-        var res = [],
-            bits = dt.split('-');
-
-        if(bits[2] != '00') {
-            res.push(parseInt(bits[2]).toString());
-        }
-
-        if(bits[1] != '00') {
-            res.push(this.options.monthNames[parseInt(bits[1])-1]);
-        }
-        res.push(bits[0]);
-
-        return res.join(' ');
     };
 
     return PreviousSurgeryController;

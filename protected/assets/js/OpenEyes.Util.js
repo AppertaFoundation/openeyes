@@ -65,6 +65,22 @@
         }
 	};
 
+    /**
+     * Returns the given date in the format dd Month yyyy
+     *
+     * @param date
+     * @returns {String}
+     */
+    Util.formatDateToDisplayString = function (date) {
+        let raw_date = new Date(date);
+        return raw_date.getDate() + ' ' +
+          ['Jan', 'Feb', 'Mar', 'Apr',
+           'May', 'Jun', 'Jul', 'Aug',
+           'Sep', 'Oct', 'Nov', 'Dec'
+          ][raw_date.getMonth()] + ' ' +
+          raw_date.getFullYear();
+    }
+
     Util.formatTimeToFuzzyDate =function (date) {
         let day = date.getDate();
         let displayDay = day < 10 ? '0' + day.toString() : day;
