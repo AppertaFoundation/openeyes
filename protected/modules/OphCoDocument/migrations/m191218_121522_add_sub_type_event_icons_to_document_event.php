@@ -2,8 +2,8 @@
 
 class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $sub_types = [
             'General' => 'i-genCiDocHole',
             'Biometry Report' => 'i-genImTarget',
@@ -31,13 +31,13 @@ class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigra
             $event_icon = SubTypeEventIcon::model()->find('name = ?', [$icon])->id;
             $this->update('ophcodocument_sub_types', ['sub_type_event_icon_id' => $event_icon], 'name="'.$sub_type .'"');
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->dropForeignKey('document_sub_type_event_icon_id_fk', 'ophcodocument_sub_types');
         $this->dropColumn('ophcodocument_sub_types', 'sub_type_event_icon_id');
         $this->dropColumn('ophcodocument_sub_types_version', 'sub_type_event_icon_id');
-	}
+    }
 
 }
