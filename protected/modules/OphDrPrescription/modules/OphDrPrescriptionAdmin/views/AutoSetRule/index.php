@@ -20,11 +20,6 @@
         <?= \Yii::app()->user->getFlash('error'); ?>
     </div>
 <?php endif; ?>
-<?php if (\Yii::app()->user->hasFlash('loading')) : ?>
-    <div class='alert-box info'>
-        <?= \Yii::app()->user->getFlash('loading'); ?>
-    </div>
-<?php endif; ?>
 
 <div class="row divider">
     <h2>Automatic medication sets</h2>
