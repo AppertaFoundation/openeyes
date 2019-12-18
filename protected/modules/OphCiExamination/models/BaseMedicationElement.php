@@ -254,7 +254,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                     $processed_entries = array_slice($this->entries, 0, $key, true);
 
                     foreach ($processed_entries as $index => $processed_entry) {
-                        if ($entry->isEqualsAttributes($processed_entry)) {
+                        if ($entry->isEqualsAttributes($processed_entry, true)) {
                             if (!$this->getError("entries_{$index}_duplicate_error")) {
                                 $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
                             }

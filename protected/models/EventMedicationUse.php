@@ -89,7 +89,7 @@ class EventMedicationUse extends BaseElement
     public $medication_name;
 
     public $equals_attributes = [
-        'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date'
+        'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date', 'laterality',
     ];
 
     /**
@@ -308,9 +308,11 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * @param EventMedicationUse $medication
+     * @param bool $check_laterality
      * @return bool
      */
-    public function isEqualsAttributes($medication)
+    public function isEqualsAttributes($medication, $check_laterality)
     {
         $result = true;
 
@@ -321,6 +323,10 @@ class EventMedicationUse extends BaseElement
                 $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
 
                 $result = $date1 === $date2;
+            } else if ($attribute === "laterality") {
+                if ($check_laterality) {
+                    $result = $this->$attribute === $medication->$attribute || $this->$attribute === "3" || $medication->$attribute === "3";
+                }
             } else {
                 $result = $this->$attribute === $medication->$attribute;
             }
