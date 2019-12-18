@@ -55,6 +55,7 @@ if ($historyElement) {
                             <?php foreach ($current_eye_medications as $entry) { ?>
                                 <tr>
                                     <td>
+                                        <i class="oe-i start small pad-right pro-theme"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
@@ -99,6 +100,7 @@ if ($historyElement) {
                         <?php foreach ($stopped_eye_medications as $entry) : ?>
                             <tr>
                                 <td>
+                                    <i class="oe-i stop small pad-right pro-theme"></i>
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
@@ -114,7 +116,7 @@ if ($historyElement) {
                                     $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                 ?>
                                 </td>
-                                <td><?= $entry->getStartDateDisplay() ?></td>
+                                <td><?= $entry->getEndDateDisplay() ?></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -199,7 +201,10 @@ if ($historyElement) {
                                 <tbody>
                                 <?php foreach ($current_systemic_medications as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
+                                        <td>
+                                            <i class="oe-i start small pad-right pro-theme"></i>
+                                            <?= $entry->getMedicationDisplay() ?>
+                                        </td>
                                         <td>
                                             <?php
                                             $tooltip_content = $entry->getTooltipContent();
@@ -236,7 +241,10 @@ if ($historyElement) {
                                 <tbody>
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
+                                        <td>
+                                            <i class="oe-i stop small pad-right pro-theme"></i>
+                                            <?= $entry->getMedicationDisplay() ?>
+                                        </td>
                                         <td>
                                             <?php $tooltip_content = $entry->getTooltipContent();
                                             if (!empty($tooltip_content)) { ?>
@@ -245,7 +253,7 @@ if ($historyElement) {
                                                 </i>
                                             <?php } ?>
                                         </td>
-                                        <td><?= $entry->getStartDateDisplay() ?></td>
+                                        <td><?= $entry->getEndDateDisplay() ?></td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>

@@ -46,14 +46,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <table id="<?= $model_name ?>_entry_table">
                     <colgroup>
                         <col class="cols-8">
-                        <col class="cols-1">
-                        <col class="cols-2">
-                        <col class="cols-1">
+                        <col>
                     </colgroup>
                     <tbody>
                     <?php foreach ($current_systemic_meds as $entry) : ?>
                         <tr>
                             <td>
+                                <i class="oe-i start small pad-right pro-theme"></i>
                                 <?= $entry->getMedicationDisplay() ?>
                             </td>
                             <td>
@@ -90,14 +89,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <table>
                             <colgroup>
                                 <col class="cols-8">
-                                <col class="cols-1">
-                                <col class="cols-2">
-                                <col class="cols-1">
+                                <col>
                             </colgroup>
                             <tbody>
                             <?php foreach ($stopped_systemic_meds as $entry) : ?>
                                 <tr>
                                     <td>
+                                        <i class="oe-i stop small pad-right pro-theme"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
@@ -109,7 +107,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         <?php } ?>
                                     </td>
                                     <td class="nowrap">
-                                        <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                        <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
                                     <td>
                                         <?php if ($entry->usage_type === "OphDrPrescription") : ?>
                                             <a href="<?= $this->getPrescriptionLink($entry); ?>">
@@ -143,14 +141,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <table id="<?= $model_name ?>_entry_table">
                         <colgroup>
                             <col class="cols-7">
-                            <col class="cols-1">
-                            <col class="cols-3">
-                            <col class="cols-1">
+                            <col>
                         </colgroup>
                         <tbody>
                         <?php foreach ($current_eye_meds as $entry) : ?>
                             <tr>
                                 <td>
+                                    <i class="oe-i start small pad-right pro-theme"></i>
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
@@ -190,14 +187,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <table>
                             <colgroup>
                                 <col class="cols-7">
-                                <col class="cols-1">
-                                <col class="cols-3">
-                                <col class="cols-1">
+                                <col>
                             </colgroup>
                             <tbody>
                             <?php foreach ($stopped_eye_meds as $entry) : ?>
                                 <tr>
                                     <td>
+                                        <i class="oe-i stop small pad-right pro-theme"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
@@ -211,7 +207,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <td class="nowrap">
                                         <?php $laterality = $entry->getLateralityDisplay();
                                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
-                                        <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                        <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
                                     </td>
                                     <td>
                                         <?php if ($entry->usage_type === "OphDrPrescription") : ?>
