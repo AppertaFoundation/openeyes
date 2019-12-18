@@ -88,7 +88,7 @@
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;"]);
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;","class"=>"js-age js-age-min"]);
                 }
             ],
             [
@@ -96,7 +96,7 @@
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;"]);
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;", "class"=>"js-age js-age-max"]);
                 }
             ],
             [
@@ -209,6 +209,29 @@
             }
         });
     });
+    $('.js-age').change(function () {
+        if ($(this).val()!=="" && parseInt($(this).val()) < 0){
+            $(this).val('0');
+        }
+    });
+    $('.js-age-min').change(function () {
+        var age_min = $(this).val();
+        age_min = (age_min == "")? 0: parseInt(age_min);
+        var age_max = $(this).closest("tr").find('.js-age-max').val();
+        age_max = (age_max == "")? age_min: parseInt(age_max);
+        if (age_max < age_min){
+            $(this).closest("tr").find('.js-age-max').val($(this).val());
+        }
+    });
+    $('.js-age-max').change(function () {
+        var age_max = $(this).val();
+        var age_min = $(this).closest("tr").find('.js-age-min').val();
+        age_min = (age_min == "")? 0: parseInt(age_min);
+        age_max = (age_max == "")? 0: parseInt(age_max);
+        if (age_min > age_max){
+            $(this).val(age_min);
+        }
+    })
 </script>
 
 

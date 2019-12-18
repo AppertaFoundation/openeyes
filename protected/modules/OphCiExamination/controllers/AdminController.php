@@ -23,6 +23,8 @@ use CDbCriteria;
 use OEModule\OphCiExamination\components\ExaminationHelper;
 use OEModule\OphCiExamination\models;
 use Yii;
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 class AdminController extends \ModuleAdminController
 {
@@ -236,7 +238,7 @@ class AdminController extends \ModuleAdminController
                     Audit::add('admin', 'create', $model->id, null, array('module' => 'OphCiExamination', 'model' => 'InjectionManagementComplex_Question'));
                     Yii::app()->user->setFlash('success', 'Injection Management Disorder Question added');
 
-                    $this->redirect(array('ViewOphCiExamination_InjectionManagementComplex_Question', 'disorder_id' => $model->disorder_id));
+                    $this->redirect('ViewOphCiExamination_InjectionManagementComplex_Question?disorder_id='.$model->disorder_id);
                 }
             }
         } elseif (isset($_GET['disorder_id'])) {
@@ -855,7 +857,7 @@ class AdminController extends \ModuleAdminController
         models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $subspecialty_id);
         $tx->commit();
 
-        $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
+        $this->redirect(array('/OphCiExamination/admin/postOpComplications?subspecialty_id='. $subspecialty_id));
     }
 
     /*
@@ -923,8 +925,9 @@ class AdminController extends \ModuleAdminController
     }
 
 
-    /*
+    /**
      * Delete invoice
+     * @throws \Exception
      */
     public function actionDeleteInvoiceStatus()
     {
@@ -949,7 +952,7 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAllergies()
     {
-        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', ['div_wrapper_class' => 'cols-5']);
+        $this->genericAdmin('Edit Allergies', OphCiExaminationAllergy::class, ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionRisks()
@@ -964,16 +967,21 @@ class AdminController extends \ModuleAdminController
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
-            )
+            ),
+            array(
+                'field' => 'display_on_whiteboard',
+                'type' => 'boolean',
+            ),
         );
 
         $this->genericAdmin(
             'Edit Risks',
-            'OEModule\OphCiExamination\models\OphCiExaminationRisk',
+            OphCiExaminationRisk::class,
             array(
                 'extra_fields' => $extra_fields,
                 'div_wrapper_class' => 'cols-6',
-            ));
+            )
+        );
     }
 
     public function actionSocialHistory()
