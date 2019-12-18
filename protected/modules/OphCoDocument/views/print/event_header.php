@@ -40,23 +40,23 @@ $logoHelper = new LogoHelper();
             <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
-			</p>
-		</div>
-		<div class="cols-4 column firm">
-			<?php if ($consultant = $this->event->episode->firm->consultant) {?>
-			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
-			<?php }?>
-			<p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
-			<p><?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
-			<br />
+            </p>
+        </div>
+        <div class="cols-4 column firm">
+            <?php if ($consultant = $this->event->episode->firm->consultant) {?>
+            <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
+            <?php }?>
+            <p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
+            <p><?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
+            <br />
                 <?php echo Yii::app()->params['nhs_num_label'].': '?><strong><?php echo $this->patient->nhsnum ?></strong>
-			<br />
-			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
-			</p>
-		</div>
-		<div class="dates" style="width: 33.33333%;float: left;">
-			<p><?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong></p>
-			<p><?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong></p>
-		</div>
-	</div>
+            <br />
+            DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+            </p>
+        </div>
+        <div class="dates" style="width: 33.33333%;float: left;">
+            <p><?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong></p>
+            <p><?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong></p>
+        </div>
+    </div>
 </header>

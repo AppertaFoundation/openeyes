@@ -212,20 +212,21 @@ class Patient extends BaseActiveRecordVersioned
         // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
             // Use the PatientSearch to sanitise and validate the hospital number
             $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
-            if ($hos_num) {
-                // Add an error if another patient with the same hos_num exists
-                $item_count = Patient::model()->count('hos_num = ? AND id != ?',
-                    array($hos_num, $this->id ?: -1));
-                if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this number. The next available auto generated number is '.$this->autoCompleteHosNum());
-                }
-            } elseif (!empty($this->hos_num)) {
-                $this->addError($attribute, 'Not a valid Hospital Number');
+        if ($hos_num) {
+            // Add an error if another patient with the same hos_num exists
+            $item_count = Patient::model()->count('hos_num = ? AND id != ?',
+                array($hos_num, $this->id ?: -1));
+            if ($item_count) {
+                $this->addError($attribute, 'A patient already exists with this number. The next available auto generated number is '.$this->autoCompleteHosNum());
             }
+        } elseif (!empty($this->hos_num)) {
+            $this->addError($attribute, 'Not a valid Hospital Number');
+        }
     }
 
 
-    public function nhsNumValidator($attribute, $params){
+    public function nhsNumValidator($attribute, $params)
+    {
         // Validation only triggers for Australia
         if (Yii::app()->params['default_country'] === 'Australia') {
             // Throw validation warning message if user has entered non-numeric character
@@ -280,12 +281,12 @@ class Patient extends BaseActiveRecordVersioned
                     $result = $command->queryColumn();
                     $default_hos_num = $result;
 //            Checks the admin setting for the starting number for auto increment
-            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
-                return $default_hos_num[0];
-            } else {
-                return ($default_hos_num[0] + 1);
-            }
+        if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
+            $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+            return $default_hos_num[0];
+        } else {
+            return ($default_hos_num[0] + 1);
+        }
     }
 
     /**
@@ -2200,7 +2201,8 @@ class Patient extends BaseActiveRecordVersioned
         return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
     }
 
-    public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null){
+    public static function findDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null)
+    {
         $sql = '
             SELECT p.*
             FROM patient p 
