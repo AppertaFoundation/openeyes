@@ -35,6 +35,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 10;
+
     protected $errorExceptions = [
             'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
     ];
@@ -570,10 +573,5 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 }

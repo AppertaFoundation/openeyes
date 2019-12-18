@@ -18,6 +18,6 @@
 <li data-element-type-class="<?=\CHtml::modelName($element) ?>"
     data-element-type-id="<?=$element->elementType->id ?>"
     data-element-type-name="<?=$element->elementType->name ?>"
-    data-element-display-order="<?=$element->elementType->display_order ?>">
+    data-element-display-order="<?=$element->display_order ?>">
     <a href="#"><?=$element->elementType->name?></a>
 </li>
