@@ -264,15 +264,15 @@ class TrialTest extends CDbTestCase
             'The permission should have been removed successfully');
     }
 
-    public function testRemoveLastUserPermission()
+    public function testRemoveOwner()
     {
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
         /* @var UserTrialAssignment $userPermission */
         $userPermission = $this->user_trial_assignment('user_trial_assignment_1');
 
-        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST,
-            $trial->removeUserAssignment($userPermission->id), 'The last manager should not have been removable');
+        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER,
+            $trial->removeUserAssignment($userPermission->id), 'The manager should not have been removable');
     }
 
     public function testCloseTrial()
