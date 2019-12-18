@@ -397,8 +397,12 @@ class EventMedicationUse extends BaseElement
             $data['Dosage'] = $this->getDoseAndFrequency();
         }
 
-        if ($this->end_date) {
-            $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
+        if (!is_null($this->end_date)) {
+            if ($this->end_date <= date('Y-m-d')) {
+                $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
+            } else {
+                $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
+            }
             if ($this->stop_reason_id) {
                 $data['Stop reason'] = $this->stopReason->name;
             }
