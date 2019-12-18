@@ -151,14 +151,16 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 $event_type_name = strtolower(EventType::model()->findByPk($exam_event->event_type_id)->name);
                 foreach (['left', 'right'] as $side) {
                     $readings = $iop->getReadings($side);
-
+                    $comment = $iop->{$side . '_comments'} ?: '';
                     if (count($readings) > 0) {
                         foreach ($readings as $reading) {
                                 $iop_data_list[$side][] = array(
                                     'id' => $exam_event->id,
                                     'event_type' => $event_type_name,
                                     'timestamp' => $timestamp,
-                                    'reading' => $reading);
+                                    'reading' => $reading,
+                                    'comment'=> $comment
+                                );
                         }
                     }
                 }
@@ -178,6 +180,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 $event_type_name = strtolower(EventType::model()->findByPk($phasing_event->event_type_id)->name);
                 foreach (['left', 'right'] as $side) {
                     $readings = $iop->getReadings($side);
+                    $comment = $iop->{$side . '_comments'} ?: '';
                     if (count($readings) > 0) {
                         foreach ($readings as $reading) {
                             if ($reading) {
@@ -185,7 +188,8 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'id' => $phasing_event->id,
                                     'event_type' => $event_type_name,
                                     'timestamp' => $timestamp,
-                                    'reading' => $reading);
+                                    'reading' => $reading,
+                                    'comment'=> $comment);
                             }
                         }
                     }
