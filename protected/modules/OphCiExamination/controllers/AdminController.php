@@ -18,11 +18,11 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use OEModule\OphCiExamination\components\ExaminationHelper;
-use Yii;
 use Audit;
 use CDbCriteria;
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use OEModule\OphCiExamination\models;
+use Yii;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
@@ -31,6 +31,16 @@ class AdminController extends \ModuleAdminController
     public $group = 'Examination';
 
     public $defaultAction = 'ViewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason';
+
+    public function actions() {
+        return [
+            'sortWorkflowElementSetItem' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => models\OphCiExamination_ElementSetItem::model(),
+                'modelName' => 'OphCiExamination_ElementSetItem'
+            ],
+        ];
+    }
 
     public function actionEditIOPInstruments()
     {
@@ -396,6 +406,34 @@ class AdminController extends \ModuleAdminController
             'step' => $step,
             'element_types' => $element_types,
         ));
+    }
+
+    public function actionSetWorkflowToDefault() {
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        if (!$element_set_id) {
+            echo 0;
+        }
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $default_types = \ElementType::model()->findAll();
+        foreach ($default_types as $type) {
+            $element_set = models\OphCiExamination_ElementSet::model()->findByPk($element_set_id);
+            $items_to_edit = $element_set ? $element_set->items : [];
+            $items_to_edit = array_filter($items_to_edit, function ($item) use($type) { return $item->element_type_id == $type->id; });
+
+            if (count($items_to_edit) == 1) {
+                $item = array_pop($items_to_edit);
+                $item->display_order = $type->display_order;
+                if (!$item->save()) {
+                    $transaction->rollback();
+                    echo 0;
+                    return;
+                }
+            }
+        }
+        $transaction->commit();
+        echo 1;
     }
 
     public function actionReorderWorkflowSteps()
