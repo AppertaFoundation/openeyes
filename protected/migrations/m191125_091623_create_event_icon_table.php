@@ -47,7 +47,7 @@ class m191125_091623_create_event_icon_table extends CDbMigration
             $this->insert('sub_type_event_icon', ['name' => $event_icon, 'display_order' => $key]);
         }
 
-        $this->addColumn('ophcodocument_sub_types', 'sub_type_event_icon_id', 'int(10) unsigned');
+        $this->addColumn('ophcodocument_sub_types', 'sub_type_event_icon_id', 'int(11)');
         $this->addForeignKey('document_sub_type_event_icon_id_fk', 'ophcodocument_sub_types', 'sub_type_event_icon_id', 'sub_type_event_icon', 'id');
 
         $this->addColumn('ophcodocument_sub_types_version', 'sub_type_event_icon_id', 'int(10) unsigned');
