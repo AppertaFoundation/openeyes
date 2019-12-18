@@ -137,19 +137,25 @@
 
     let $rebuild_button = $('#yt2');
 
-    if ($rebuild_button.hasClass('disabled')) {
-        (function checkCommand() {
-            console.log('lol');
+    (function checkCommand() {
+        if ($rebuild_button.hasClass('disabled')) {
             $.ajax({
                 url: '/OphDrPrescription/admin/AutoSetRule/CheckRebuildIsRunning',
-                success: function(data) {
-                    $rebuild_button.removeClass('disabled');
-                    $rebuild_button.html('Rebuild all sets now');
+                dataType: "text",
+                success: function (data) {
+                    if (data === "success") {
+                        $rebuild_button.removeClass('disabled');
+                        $rebuild_button.html('Rebuild all sets now');
+                    } else {
+                        setTimeout(checkCommand, 5000);
+                    }
                 },
-                complete: function() {
-                    setTimeout(checkCommand, 5000);
+                error: function (error) {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Something went wrong while rebuilding the sets, please try later."
+                    }).open();
                 }
             });
-        })();
-    }
+        }
+    })();
 </script>
