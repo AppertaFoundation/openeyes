@@ -91,4 +91,9 @@ class VanHerick extends \SplitEventTypeElement
             'right_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Van_Herick', 'right_van_herick_id'),
         );
     }
+
+    public function canCopy()
+    {
+        return true;
+    }
 }

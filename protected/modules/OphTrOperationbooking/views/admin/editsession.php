@@ -141,6 +141,8 @@
         </div>
     </div>
 </div>
+
+
 <script type="text/javascript">
     $('input[name="OphTrOperationbooking_Operation_Session[available]"]').live('change', function() {
         if ($(this).val() == '1') {

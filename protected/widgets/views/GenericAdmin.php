@@ -38,7 +38,7 @@
     if ($filters_ready) { ?>
         <?= CHtml::beginForm() ?>
 
-        <table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?>">
+        <table class="standard generic-admin">
             <thead>
                 <tr>
                     <?php if ($display_order) { ?>
@@ -47,7 +47,7 @@
                     }
                     if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
-                    <?php endif;?>
+                                <?php endif;?>
                     <?php foreach ($extra_fields as $field) {?>
                         <th>
                             <?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
@@ -64,7 +64,7 @@
                     <?php }?>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="<?= ($display_order) ? 'sortable' : ''?>">
     <?php }
 }
 ?>

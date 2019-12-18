@@ -30,7 +30,7 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
         if (!$Element->draft || $this->checkEditAccess()) {
             foreach ($Element->items as $item) {
                 // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
-                if ($item->dispense_condition->id === $form_option->id) {
+                if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
                     $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
                     break;
                 }
