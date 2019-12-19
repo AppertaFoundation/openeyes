@@ -20,13 +20,15 @@
         <div class="fpten-form-row">
             <div class="fpten-form-column <?= $form_css_class ?>-patient-details">
                 <?= $this->patient->fullname ?><br/>
-                <?= $this->patient->contact->address->address1 ?>
-                <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-                <?= $this->patient->contact->address->address2 ?><br/>
-                <?= $this->patient->contact->address->city ?>
-                <?= $this->patient->contact->address->county ? '<br/>' : null ?>
-                <?= $this->patient->contact->address->county ?>
+                                <?php if ($this->patient->contact && $this->patient->contact->address) { ?>
+                                    <?= $this->patient->contact->address->address1 ?>
+                                    <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
+                                    <?= $this->patient->contact->address->address2 ?><br/>
+                                    <?= $this->patient->contact->address->city ?>
+                                    <?= $this->patient->contact->address->county ? '<br/>' : null ?>
+                                    <?= $this->patient->contact->address->county ?>
                 <span class="fpten-postcode"><?= $this->patient->contact->address->postcode ?></span>
+                                <?php } ?>
             </div>
         </div>
         <div class="fpten-form-row">
