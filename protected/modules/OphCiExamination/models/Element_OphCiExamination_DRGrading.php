@@ -58,6 +58,7 @@ use Yii;
  */
 class Element_OphCiExamination_DRGrading extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
     public $secondarydiagnosis_disorder_required = false;
 
