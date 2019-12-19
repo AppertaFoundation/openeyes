@@ -85,6 +85,36 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         }
         parent::afterSave();
     }
+
+    private function mergeSameMedication()
+    {
+        $entries_by_med_id = [];
+        $entries = [];
+        $match = false;
+
+        foreach ($this->entries as $entry) {
+            if (array_key_exists($entry->medication_id, $entries_by_med_id)) {
+                foreach ($entries_by_med_id[$entry->medication_id] as $index) {
+                    if ($entry->isEqualsAttributes($entries[$index], false)) {
+                        $entries[$index]->laterality = 3;
+                        $match = true;
+                        break;
+                    }
+                }
+                if (!$match) {
+                    $entries[] = $entry;
+                    $entries_by_med_id[$entry->medication_id][] = count($entries) - 1;
+                }
+                $match = false;
+            } else {
+                $entries[] = $entry;
+                $entries_by_med_id[$entry->medication_id] = [count($entries) - 1];
+            }
+        }
+
+        return $entries;
+    }
+
     /**
      * Handles saving of related entries
      */
@@ -96,7 +126,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $criteria->params['event_id'] = $this->event_id;
         $orig_entries = \EventMedicationUse::model()->findAll($criteria);
         $saved_ids = array();
-        foreach ($this->entries as $entry) {
+
+        $entries = $this->mergeSameMedication();
+
+        foreach ($entries as $entry) {
             /** @var \EventMedicationUse $entry */
             $entry->event_id = $this->event_id;
 
@@ -125,6 +158,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
 
         return true;
     }
+
     /**
      * @return HistoryMedicationsStopReason[]
      */
