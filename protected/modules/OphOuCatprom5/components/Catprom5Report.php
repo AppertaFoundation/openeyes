@@ -17,27 +17,20 @@
  */
 
 namespace OEModule\OphOuCatprom5\components;
-
-use Yii;
-
+/**
+ * 
+ * @property string $searchTemplate
+ * @property int $mode
+ * @property int $eye
+ * @property array $plotlyConfig
+ */
 class Catprom5Report extends \Report implements \ReportInterface
 {
-    /**
-     * @var string
-     */
     protected $searchTemplate = 'application.modules.OphOuCatprom5.views.report.catprom5_search';
-
-    /**
-     * @var int
-     */
     protected $mode;
-
-    /**
-     * @var int
-     */
     protected $eye;
 
-/**
+    /**
      * @param $app
      */
     public function __construct($app)
@@ -48,9 +41,6 @@ class Catprom5Report extends \Report implements \ReportInterface
         parent::__construct($app);
     }
 
-    /**
-     * @var array
-     */
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
@@ -79,7 +69,6 @@ class Catprom5Report extends \Report implements \ReportInterface
     );
 
     /**
-     * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
      *
@@ -111,8 +100,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                 cataract_element_id AS cataract_element_id,
                 C3_rasch_measure AS rasch_measure');
             break;
-            default:
-            case 0:
+            default: // includes and designed for case 0. both
                 $this->command->select(' 
                 cataract_element_id AS cataract_element_id,
                 (C1_rasch_measure - C3_rasch_measure) AS rasch_measure');
@@ -164,10 +152,10 @@ class Catprom5Report extends \Report implements \ReportInterface
           $this->command ->from('(SELECT DISTINCT
           ep1.patient_id patient
           ,eoc2.event_id AS cataract_element_id
-          ,cp5er1.total_rasch_measure AS C1_rasch_measure
+          ,cp5er3.total_rasch_measure AS C1_rasch_measure
           , e3.event_date C1_date
           , e2.event_date O2_date
-          ,cp5er3.total_rasch_measure AS C3_rasch_measure
+          ,cp5er5.total_rasch_measure AS C3_rasch_measure
           , e5.event_date C3_date
   
           FROM episode ep1
@@ -197,8 +185,7 @@ class Catprom5Report extends \Report implements \ReportInterface
           JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
          ORDER BY C1_date desc, C3_date desc) wrapper')->group('patient');;
           break;
-          default:
-          case 0: //All Eyes -  I do not like the repitition in this SQL query, but this was one of the only ways I could see this working under MariaDb 10.1 as Window functions are only availible from 10.2
+          default:// includes and designed for case 0. All Eyes -  I do not like the repitition in this SQL query, but this was one of the only ways I could see this working under MariaDb 10.1 as Window functions are only availible from 10.2
           // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
           $this->command ->from('
             ( SELECT * FROM(
@@ -319,7 +306,6 @@ class Catprom5Report extends \Report implements \ReportInterface
         return $dataSet;
     }
 
-
     /**
      * @return string
      */
@@ -334,6 +320,9 @@ class Catprom5Report extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
+    /**
+     * @return string
+     */
     public function tracesJson()
     {
         $dataset = $this->dataset();
@@ -373,6 +362,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         $traces = array($trace1);
         return json_encode($traces);
     }
+
     /**
      * @return string
      */
@@ -381,8 +371,7 @@ class Catprom5Report extends \Report implements \ReportInterface
       $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
       return json_encode($this->plotlyConfig);
     }
-
-    
+ 
     /**
      * @return mixed|string
      */

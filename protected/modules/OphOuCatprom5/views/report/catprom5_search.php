@@ -30,13 +30,13 @@
                 </select>
             </div>            
             <div class="mdl-selectfield">
-                    <label for="catprom5-eye">Eye</label>  
-                    <select name="eye" id="catprom5-eye" style="browser-default" >
-                        <?php foreach ($eyes as $eye) :?>
-                            <option value="<?=$eye['id']?>"><?=$eye['name']?></option>
-                        <?php endforeach;?>
-                    </select>
-                </div>
+                <label for="catprom5-eye">Eye</label>  
+                <select name="eye" id="catprom5-eye" style="browser-default" >
+                    <?php foreach ($eyes as $eye) :?>
+                        <option value="<?=$eye['id']?>"><?=$eye['name']?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
             <div>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
                     <i class="material-icons right">send</i>
