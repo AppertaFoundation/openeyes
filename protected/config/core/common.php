@@ -43,6 +43,7 @@ return array(
         'application.gii.*',
         'system.gii.generators.module.*',
         'application.modules.OphTrOperationnote.components.*',
+        'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(
@@ -606,7 +607,7 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.4-rc3',
+      'oe_version' => '3.5-a',
       // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)

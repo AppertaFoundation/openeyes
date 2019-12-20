@@ -34,7 +34,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "singleUploadSelector": "#single_document_uploader",
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
-        "uploadModeSelector": "input[name='upload_mode']"
+        "uploadModeSelector": "input[name='upload_mode']",
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -52,7 +52,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 let data = ev.originalEvent.dataTransfer.files;
                 $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
                 $(controller.options.fileInputSelector).trigger('change');
-            },
+                },
         });
 
         $(controller.options.uploadModeSelector).on('change', function () {
