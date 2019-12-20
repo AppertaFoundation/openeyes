@@ -133,7 +133,6 @@ if ($historyElement) {
                 </div>
                 <?php } ?>
             <?php } ?>
-            </div>
     </section>
 
     <div class="collapse-tile-group">
