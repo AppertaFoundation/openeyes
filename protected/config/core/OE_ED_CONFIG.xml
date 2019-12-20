@@ -113,6 +113,11 @@
       <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSegAngleMarks","order":0}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSegSteepAxis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Axis</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSegSteepAxis","order":0}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSynech</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Anterior synechiae</TITLE>
       <INIT_DOODLE_JSON/>

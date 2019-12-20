@@ -29,7 +29,7 @@ $logoHelper = new LogoHelper();
             <p class="nowrap" <?= (!$clinicDate || strtotime('today') === $clinicDate ? 'style="visibility: hidden;"' : '') ?>>
                 Date of visit: <b><?php echo date(Helper::NHS_DATE_FORMAT, $clinicDate) ?></b>
             </p>
-            
+
             <div class="spacer"></div>
             <div class="spacer"></div>
             To:

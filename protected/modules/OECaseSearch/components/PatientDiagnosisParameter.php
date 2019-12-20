@@ -68,16 +68,16 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
 
         $firms = Firm::model()->getListWithSpecialties()
         ?>
-      <div class="flex-layout flex-left">
-        <div style="padding-right: 15px;">
-            <p><?= $this->getLabel()?></p>
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
+
+            <?= $this->getDisplayTitle()?>
         </div>
-        <div style="padding-right: 15px;">
+        <div class="parameter-option">
             <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>
-
-        <div style="padding-right: 15px;">
+        <div class="parameter-option">
             <?php
             $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => $this->name . $this->id,

@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$whiteboard_display_mode = SettingMetadata::model()->getSetting('theatre_diary_whiteboard_display_mode');
+
 if (empty($diary)) {?>
     <div id="theatre-search-no-results">
         <div class="cols-12 column">
@@ -27,7 +29,16 @@ if (empty($diary)) {?>
         <?php echo $theatre->name?> (<?php echo $theatre->site->name?>)
     </h2>
         <?php foreach ($theatre->sessions as $session) {
-            $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
+            $this->renderPartial(
+                '_session',
+                array(
+                    'session' => $session,
+                    'theatre' => $theatre,
+                    'assetPath' => $assetPath,
+                    'ward_id' => $ward_id,
+                    'whiteboard_display_mode'=> $whiteboard_display_mode
+                )
+            );
         }
     }
 }
@@ -35,5 +46,10 @@ if (empty($diary)) {?>
 <script type="text/javascript">
     $(document).ready(function() {
         theatreDiaryIconHovers();
+        // Add handler for Display Whiteboard icon when the display mode is 'Always open in new window/tab'.
+        // The other display mode handler is already handled within module.js.
+        $(document).on('click', '#js-display-whiteboard-window', function() {
+            window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), '_blank');
+        });
     });
 </script>
