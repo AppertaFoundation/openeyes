@@ -93,7 +93,7 @@ class ProcedureController extends BaseAdminController
     {
         $errors = [];
         $criteria = new CDbCriteria();
-        $criteria->with = ['opcsCodes', 'benefits', 'complications'];
+        $criteria->with = ['opcsCodes', 'benefits', 'complications', 'risks'];
         $criteria->together = true;
 
         $procedure = Procedure::model()->findByPk($id, $criteria);
@@ -109,6 +109,7 @@ class ProcedureController extends BaseAdminController
             $user_benefits = \Yii::app()->request->getPost('benefits');
             $user_complications = \Yii::app()->request->getPost('complications');
             $user_notes = \Yii::app()->request->getPost('notes', []);
+            $user_risks = \Yii::app()->request->getPost('risks', []);
 
             // set user data
             $procedure->term = $user_data['term'];
@@ -155,6 +156,14 @@ class ProcedureController extends BaseAdminController
             }
             $procedure->complications = $complications;
 
+            $risks = [];
+            if (isset($user_risks)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', array_values($user_risks));
+                $risks = \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll($criteria);
+            }
+            $procedure->risks = $risks;
+
             // try saving the data
             if (!$procedure->save()) {
                 $errors = $procedure->getErrors();
@@ -168,6 +177,7 @@ class ProcedureController extends BaseAdminController
             'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
             'complications' => Complication::model()->findAll(),
+            'risks' => \OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll(),
             'notes' => ElementType::model()->findAll('event_type_id=?', array(EventType::model()->find('class_name=?', array('OphTrOperationnote'))->id)),
             'errors' => $errors,
         ));

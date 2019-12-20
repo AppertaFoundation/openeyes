@@ -15,10 +15,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $element Element_OphTrOperationbooking_Operation
+ */
 ?>
     <section class="element view full priority view-procedures">
         <header class="element-header">
-            <h3 class="element-title">Procedure<?php if (count($element->procedures) !== 1) echo 's' ?> & OPCS codes</h3>
+            <h3 class="element-title">Procedure<?= count($element->procedures) !== 1 ? 's' : null ?> & OPCS codes</h3>
         </header>
         <div class="element-data full-width">
             <div class="cols-10">
@@ -34,9 +38,9 @@
                             </td>
                             <td>
                                 <span class="priority-text">
-                                    <?= implode(array_map(function ($x) {
+                                    <?= implode(', ', array_map(static function ($x) {
                                         return $x->name;
-                                    }, $procedure->opcsCodes), ', '); ?>
+                                    }, $procedure->opcsCodes)) ?>
                                 </span>
                             </td>
                         </tr>
@@ -79,7 +83,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <?php if (!is_null($element->senior_fellow_to_do)) : ?>
+                        <?php if ($element->senior_fellow_to_do !== null) : ?>
                             <td>
                                 <div class="data-label">
                                     <?= CHtml::encode($element->getAttributeLabel('senior_fellow_to_do')) ?>
@@ -110,7 +114,7 @@
                         </td>
                         <td>
                             <div class="data-value">
-                                <?= $element->getAnaestheticTypeDisplay(); ?>
+                                <?= $element->getAnaestheticTypeDisplay() ?>
                             </div>
                         </td>
                     </tr>
@@ -127,7 +131,7 @@
                             </td>
                         </tr>
                     <?php endif ?>
-                    <?php if (!is_null($element->stop_medication)) : ?>
+                    <?php if ($element->stop_medication !== null) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></div>
@@ -135,8 +139,9 @@
                             <td>
                                 <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
                                 <?php if ($element->stop_medication) : ?>
-                                    <div
-                                            class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
+                                    <div class="data-value panel comments">
+                                        <?= Yii::app()->format->nText($element->stop_medication_details) ?>
+                                    </div>
                                 <?php endif ?>
                             </td>
                         </tr>
@@ -159,7 +164,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
+                            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
                         </td>
                         <td>
                             <div class="data-value"><?php echo $element->site->name ?></div>
@@ -201,11 +206,11 @@
                         </td>
                         <td>
                             <div class="data-value">
-                                <?= \CHtml::encode($element->total_duration) ?>
+                                <?= CHtml::encode($element->total_duration) ?>
                             </div>
                         </td>
                     </tr>
-                    <?php if (!is_null($element->special_equipment)) : ?>
+                    <?php if ($element->special_equipment !== null) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></div>
@@ -221,7 +226,7 @@
                         </tr>
                     <?php endif ?>
 
-                    <?php if (!is_null($element->preassessment_booking_required)) : ?>
+                    <?php if ($element->preassessment_booking_required !== null) : ?>
                         <tr>
                             <td>
                                 <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div>
@@ -327,18 +332,20 @@
                         <div class="data-value">
                             <?php $session = $element->booking->session ?>
                             <?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', ' . $session->FirmName; ?>
-                            <?php if ($warnings = $session->getWarnings()) { ?>
-                                <div class="alert-box alert with-icon">Please note:
-                                    <ul>
-                                        <?php foreach ($warnings as $warning) {
-                                            echo '<li>' . $warning . '</li>';
-                                        } ?>
-                                    </ul>
-                                </div>
-                            <?php } ?>
                         </div>
                     </td>
                 </tr>
+                <?php
+                $warnings = $session->getWarnings();
+                if ($warnings) { ?>
+                    <div class="alert-box alert with-icon">Please note:
+                        <ul>
+                            <?php foreach ($warnings as $warning) {
+                                echo '<li>' . $warning . '</li>';
+                            } ?>
+                        </ul>
+                    </div>
+                <?php } ?>
                 <tr>
                     <td>
                         <h3 class="data-title">Theatre</h3>
@@ -408,7 +415,7 @@
                     <li>
                         Cancelled on <?php echo $booking->NHSDate('booking_cancellation_date'); ?>
                         by <strong><?php echo $booking->usercancelled->FullName; ?></strong>
-                        due to <?= \CHtml::encode($booking->cancellationReasonWithComment) ?>
+                        due to <?= CHtml::encode($booking->cancellationReasonWithComment) ?>
                         <?php if ($booking->erod) { ?>
                             <br/><span class="erod">EROD was <?= $booking->erod->getDescription() ?></span>
                         <?php } ?>
@@ -419,7 +426,8 @@
     </section>
 <?php } ?>
 
-<?php if (($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling') && $element->operation_cancellation_date) { ?>
+<?php if (($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling')
+    && $element->operation_cancellation_date) { ?>
     <section class="element flex-layout">
         <h3 class="element-title highlight cols-2">Cancellation details</h3>
         <div class="element-data cols-10">
@@ -435,40 +443,43 @@
         <section class="element element-data flex-layout">
             <h3 class="data-title cols-2">Cancellation comments</h3>
             <div class="data-value panel comments cols-10">
-                <?= \CHtml::encode($element->cancellation_comment) ?>
+                <?= CHtml::encode($element->cancellation_comment) ?>
             </div>
         </section>
     <?php } ?>
 <?php } ?>
 
-<?php if ($element->eye_id == \EYE::BOTH) : ?>
-<script>
-    $('#js-display-whiteboard').click(event => {
-        event.preventDefault();
-        // Dialog used here instead of Dialog.Alert as the PlansProblemsWidget
-        // has a documentwide eventlistener for clicks on oe-popup buttons which
-        // are used by Dialog.Alert.
-        new OpenEyes.UI.Dialog({
-            title: "Alert",
-            content: "Theatre whiteboard does not currently support bilateral procedures."
-        }).open();
-    });
-</script>
-<?php endif; ?>
-
 <?php
-$this->event_actions[] = EventAction::link(
-    'Display Whiteboard',
-    Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
-    null,
-    array('class' => 'small button', 'target' => '_blank', 'id' => 'js-display-whiteboard')
-);
+$whiteboard_display_mode = SettingMetadata::model()->getSetting('opbooking_whiteboard_display_mode');
+
+if ($whiteboard_display_mode === 'CURRENT') {
+    $this->event_actions[] = EventAction::link(
+        'Display Whiteboard',
+        '#',
+        null,
+        array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->event_id)
+    );
+    $this->event_actions[] = EventAction::link(
+        'Close Whiteboard',
+        '#',
+        null,
+        array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->event_id)
+    );
+} else {
+    $this->event_actions[] = EventAction::link(
+        'Display Whiteboard',
+        Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
+        null,
+        array('class' => 'small button', 'target' => '_blank')
+    );
+}
+
 if ($element->isEditable()) {
     $td_disabled = $this->module->isTheatreDiaryDisabled();
 
     $status = strtolower($element->status->name);
 
-    if ($status === "on-hold") {
+    if ($status === 'on-hold') {
         $this->event_actions[] = EventAction::link(
             'Take off hold',
             Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/putOffHold/' . $element->event_id),
@@ -492,7 +503,9 @@ if ($element->isEditable()) {
             }
 
             $this->event_actions[] = EventAction::button(
-                'Print ' . $element->letterType . ' letter', 'print-letter', $print_letter_options,
+                'Print ' . $element->letterType . ' letter',
+                'print-letter',
+                $print_letter_options,
                 array('id' => 'btn_print-letter', 'class' => 'button small')
             );
 
@@ -500,11 +513,13 @@ if ($element->isEditable()) {
                 $this->event_actions[] = EventAction::button('Print Admission form', 'print_admission_form', null, array('class' => 'small button'));
             }
         }
-        if ($this->checkScheduleAccess() && !$td_disabled) {
-            $this->event_actions[] = EventAction::link('Schedule now',
+        if (!$td_disabled && $this->checkScheduleAccess()) {
+            $this->event_actions[] = EventAction::link(
+                'Schedule now',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/schedule/' . $element->event_id),
                 array('level' => 'secondary'),
-                array('id' => 'btn_schedule-now', 'class' => 'button small'));
+                array('id' => 'btn_schedule-now', 'class' => 'button small')
+            );
         }
     } else {
         if ($this->checkPrintAccess()) {
@@ -513,13 +528,14 @@ if ($element->isEditable()) {
                 $print_letter_options['disabled'] = true;
             }
             $this->event_actions[] = EventAction::button(
-                'Print letter', 'print-letter',
+                'Print letter',
+                'print-letter',
                 $print_letter_options,
                 array('id' => 'btn_print-admissionletter', 'class' => 'small button')
             );
             $this->event_actions[] = EventAction::button('Print admission form', 'print_admission_form', null, array('class' => 'small button'));
         }
-        if ($this->checkScheduleAccess() && !$td_disabled) {
+        if (!$td_disabled && $this->checkScheduleAccess()) {
             $this->event_actions[] = EventAction::link(
                 'Reschedule now',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/reschedule/' . $element->event_id),
@@ -528,17 +544,21 @@ if ($element->isEditable()) {
             );
         }
         if ($this->checkEditAccess()) {
-            $this->event_actions[] = EventAction::link('Reschedule later',
+            $this->event_actions[] = EventAction::link(
+                'Reschedule later',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/rescheduleLater/' . $element->event_id),
                 array('level' => 'secondary'),
-                array('id' => 'btn_reschedule-later', 'class' => 'button small'));
+                array('id' => 'btn_reschedule-later', 'class' => 'button small')
+            );
         }
     }
     if ($this->checkEditAccess()) {
-        $this->event_actions[] = EventAction::link('Cancel operation',
+        $this->event_actions[] = EventAction::link(
+            'Cancel operation',
             Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/default/cancel/' . $element->event_id),
             array(),
-            array('id' => 'btn_cancel-operation', 'class' => 'warning button small'));
+            array('id' => 'btn_cancel-operation', 'class' => 'warning button small')
+        );
     }
 }
 ?>

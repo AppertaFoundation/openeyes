@@ -108,46 +108,44 @@
       </form>
     </div>
 
-        <?php if (Yii::app()->user->checkAccess('admin') || $this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?>
-        <div class="row divider">
-          <h3>Letters sent</h3>
-            <?php if (Yii::app()->user->checkAccess('admin')) { ?>
-              <table class="standard last-right no-padding">
-                <colgroup>
-                  <col class="cols-8">
-                </colgroup>
-                <tbody>
-                <tr>
-                  <td>Set latest letter sent to be:</td>
-                  <td>
-                    <input id="adminconfirmdate" name="adminconfirmdate" class="datepicker1 date" placeholder="from"
-                           type="text" value="<?= date('j M Y') ?>">
-                  </td>
-                </tr>
-                <tr>
-                  <td>Letter filter</td>
-                  <td>
-                    <select name="adminconfirmto" id="adminconfirmto" class="cols-full">
-                      <option value="OFF">Off</option>
-                      <option value="noletters">No letters sent</option>
-                      <option value="0">Invitation letter</option>
-                      <option value="1">1st reminder letter</option>
-                      <option value="2">2nd reminder letter</option>
-                      <option value="3"><?php echo Yii::app()->params['gp_label']?> letter</option>
-                    </select>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            <?php } ?>
-            <?php if ($this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?>
-              <div class="row">
-                <button type="submit" class="green hint cols-full" id="btn_confirm_selected">
-                  Confirm selected
-                </button>
-              </div>
-            <?php } ?>
-        </div>
+        <?php if ($this->checkAccess('OprnOperationBookingLetterSend')) { ?>
+            <div class="row divider">
+              <h3>Letters sent</h3>
+                  <table class="standard last-right no-padding">
+                    <colgroup>
+                      <col class="cols-8">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                      <td>Set latest letter sent to be:</td>
+                      <td>
+                        <input id="adminconfirmdate" name="adminconfirmdate" class="datepicker1 date" placeholder="from"
+                               type="text" value="<?= date('j M Y') ?>">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Letter filter</td>
+                      <td>
+                        <select name="adminconfirmto" id="adminconfirmto" class="cols-full">
+                          <option value="OFF">Off</option>
+                          <option value="noletters">No letters sent</option>
+                          <option value="0">Invitation letter</option>
+                          <option value="1">1st reminder letter</option>
+                          <option value="2">2nd reminder letter</option>
+                          <option value="3"><?php echo Yii::app()->params['gp_label']?> letter</option>
+                        </select>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                <?php if ($this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?>
+                  <div class="row">
+                    <button type="submit" class="green hint cols-full" id="btn_confirm_selected">
+                      Confirm selected
+                    </button>
+                  </div>
+                <?php } ?>
+            </div>
         <?php } ?>
   </nav>
 

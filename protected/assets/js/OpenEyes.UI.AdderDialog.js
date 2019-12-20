@@ -113,7 +113,6 @@
                     }
                     $(this).addClass('selected');
                 } else {
-
                     // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
                     if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
@@ -550,7 +549,7 @@
             filterValue = selectedFilter.data('id');
         }
         // reset results lists if there is no text searched
-        if (!text.length) {
+        if (!text.length && !filterValue) {
             dialog.searchResultList.empty();
             dialog.noSearchResultsWrapper.text('No results found');
             dialog.noSearchResultsWrapper.toggle(true);

@@ -45,10 +45,11 @@ if (!isset($values)) {
                data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other'? $values['risk_display'] : $values['other']); ?></label>
         <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ?'none':'' ?>">
         <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
-            array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            array('class' => 'other-type-input'.($entry->hasErrors('other') ? ' error': ''), 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>
     </td>
-    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?= $row_count ?>_risk_id_error">
+    <td>
+        <?php $hasRiskErrorClass = ($entry->hasErrors('has_risk') ? 'error' : '') ?>
         <?php if ($removable) {
             if ($values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
@@ -67,18 +68,18 @@ if (!isset($values)) {
                 echo CHtml::hiddenField($field_prefix . '[has_risk]', (string)HistoryRisksEntry::$PRESENT);
             }
         } else { ?>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
                     array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
                 Not checked
             </label>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
                     array('value' => HistoryRisksEntry::$PRESENT)); ?>
                 Yes
             </label>
-            <label class="inline highlight">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
                     array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
