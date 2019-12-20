@@ -30,17 +30,6 @@ class Catprom5Report extends \Report implements \ReportInterface
     protected $mode;
     protected $eye;
 
-    /**
-     * @param $app
-     */
-    public function __construct($app)
-    {
-        $this->mode = $app->getRequest()->getQuery('mode', 0);
-        $this->eye = $app->getRequest()->getQuery('eye', 0);
-
-        parent::__construct($app);
-    }
-
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
@@ -67,6 +56,17 @@ class Catprom5Report extends \Report implements \ReportInterface
         'dtickrange'=>['min',null],
       ),
     );
+    
+    /**
+     * @param $app
+     */
+    public function __construct($app)
+    {
+        $this->mode = $app->getRequest()->getQuery('mode', 0);
+        $this->eye = $app->getRequest()->getQuery('eye', 0);
+
+        parent::__construct($app);
+    }
 
     /**
      * @param $dateFrom
