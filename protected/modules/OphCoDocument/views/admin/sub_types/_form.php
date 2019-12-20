@@ -70,7 +70,7 @@
                 <fieldset>
                     <div class="cols-11">
                         <?php
-                        $sub_type_event_icons = SubTypeEventIcon::model()->findAll();
+                        $sub_type_event_icons = EventIcon::model()->findAll();
                         $icon_images = [];
                         foreach ($sub_type_event_icons as $icon) {
                             $icon_images[$icon->id] = '<i class="oe-i-e large ' . $icon->name. '"></i>';

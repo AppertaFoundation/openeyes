@@ -57,7 +57,7 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'subTypeEventIcon' => array(self::HAS_ONE, 'SubTypeEventIcon', 'sub_type_event_icon_id')
+            'subTypeEventIcon' => array(self::HAS_ONE, 'EventIcon', 'sub_type_event_icon_id')
         );
     }
 
