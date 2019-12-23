@@ -28,7 +28,7 @@ $api = Yii::app()->moduleAPI->get('OphCiExamination');
 if ($api) {
     $chosenVA = array();
     $latest_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->patient);
-    if($latest_VA_element && !$VA_data) {
+    if ($latest_VA_element && !$VA_data) {
         $VA_data = $api->getMostRecentVAData($latest_VA_element->id);
         $chosenVA = $latest_VA_element;
         $VAdate = date("d M Y", strtotime($latest_VA_element->event->event_date));
@@ -118,7 +118,7 @@ if ($api) {
     $chosenNearVA = array();
     $latest_Near_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity', $this->patient);
 
-    if($latest_Near_VA_element && !$nearVAdata) {
+    if ($latest_Near_VA_element && !$nearVAdata) {
         $nearVAdata = $api->getMostRecentNearVAData($latest_Near_VA_element->id);
         $chosenNearVA = $latest_Near_VA_element;
         $NearVAdate = date("d M Y", strtotime($latest_Near_VA_element->event->event_date));
@@ -206,8 +206,8 @@ if ($api) {
     }
 }
 
-    if ($refractfound) {
-        ?>
+if ($refractfound) {
+    ?>
     <section class="element full <?php if ($action == 'update') {
         echo 'edit  edit-biometry';
                                  } else if ($action == 'view') {
@@ -238,11 +238,11 @@ if ($api) {
         </div>
     </section>
         <?php
-    } else { ?>
+} else { ?>
 <section class="element full <?php if ($action == 'update') {
     echo 'edit  edit-biometry';
                              } else if ($action == 'view') {
-                                                      echo 'priority';
+                                                  echo 'priority';
                              } ?>
   eye-divider ">
     <header class="element-header">
@@ -256,5 +256,5 @@ if ($api) {
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php } ?>
+<?php } ?>
 </section>
