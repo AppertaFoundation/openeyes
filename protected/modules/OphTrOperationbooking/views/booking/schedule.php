@@ -49,11 +49,7 @@
         <header class="element-header">
             <h3 class="element-title">Options</h3>
         </header>
-        <div class="element-actions">
-        <span class="js-remove-element">
-            <i class="oe-i remove-circle"></i>
-        </span>
-        </div>
+
         <div class="element-fields full-width flex-layout flex-top col-gap">
             <div class="cols-6">
                 <div class="alert-box info large-text">
@@ -198,11 +194,6 @@
         <header class="element-header">
             <h3 class="element-title">Select theatre slot</h3>
         </header>
-        <div class="element-actions">
-        <span class="js-remove-element">
-            <i class="oe-i remove-circle"></i>
-        </span>
-        </div>
 
         <?php if (Yii::app()->user->hasFlash('info')) { ?>
             <div class="alert-box">
