@@ -72,6 +72,27 @@ class OphTrOperationbooking_API extends BaseAPI
             ->findAll($criteria);
     }
 
+    public function getIncompleteOperationsForEpisode($patient, $use_context = false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('status_id', Yii::app()->db->createCommand()->select('id')
+            ->from('ophtroperationbooking_operation_status')
+            ->where(['not in','name', ['Completed', 'On-Hold']])->queryColumn());
+
+        $operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
+
+        if ($operations) {
+            foreach ($operations as $key => $operation) {
+                $operations[$key]['booking'] = $operation->booking;
+            }
+            return $operations;
+        }
+    }
 
     public function getOperationsForEpisode($patient, $use_context = false)
     {
@@ -656,16 +677,16 @@ class OphTrOperationbooking_API extends BaseAPI
         $element = new Element_OphTrOperationbooking_Operation();
         $status_id = Yii::app()->db->createCommand()
             ->select('status_id')
-            ->from($element->getVersionTableSchema()->name)
-                        ->join('ophtroperationbooking_operation_status ops ON ops.id = t.status_id')
-                        ->where('event_id = :event_id AND ops.name != :status_name', array(':event_id'=>$event_id, ':status_name'=>'Completed'))
-            ->order('last_modified_date DESC')
+            ->from($element->getVersionTableSchema()->name. ' t')
+            ->join('ophtroperationbooking_operation_status ops', 'ops.id = status_id')
+            ->where('event_id = :event_id AND ops.name != :status_name', array(':event_id'=>$event_id, ':status_name'=>'Completed'))
+            ->order('t.last_modified_date DESC')
             ->limit(1)
             ->queryScalar();
 
         return $status_id !== false ? $status_id : Yii::app()->db->createCommand()->select('id')
                     ->from('ophtroperationbooking_operation_status')
-                    ->where(['name= :name', ['name' => 'Scheduled']])->queryColumn();
+                    ->where('name=:name', [':name' => 'Scheduled'])->queryScalar();
     }
 
     /**

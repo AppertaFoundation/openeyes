@@ -28,7 +28,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 <tr>
                     <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                     <td>
-                        <div class="data-value" style="text-align: right">
+                        <div class="data-value text-right">
                             <?php
                             if ($element->is_signed_off == null) {
                                 echo 'N/A';
@@ -36,12 +36,26 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                 echo 'Yes';
                             } else {
                                 echo 'No';
-                            }
-                            ?>
+                            } ?>
                         </div>
                     </td>
                 </tr>
                 <?php } ?>
+                <?php
+                $letter_type = LetterType::model()->findByPk($element->letter_type_id); ?>
+                <tr>
+                    <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('letter_type_id')) . ' '; ?></td>
+                    <td>
+                        <div class="data-value text-right">
+                            <?php
+                            if ($letter_type == null) {
+                                echo 'N/A';
+                            } else {
+                                echo $letter_type->name;
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td colspan="2">
                         <small class="fade">To</small><br>
@@ -71,7 +85,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         ?>
                     </td>
                 </tr>
-                
+
             </tbody>
         </table>
     </div>
@@ -83,7 +97,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         <?php if ($is_mobile_or_tablet) {?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
         <?php } else {?>
-            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=0&is_view=1" data-doprint="<?= $element->checkPrint() ?>" data-eventid="<?= $element->event_id ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
+            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=0&is_view=1#toolbar=0" data-doprint="<?= $element->checkPrint() ?>" data-eventid="<?= $element->event_id ?>" style="width: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>px; height: <?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>px; border: 0; position: relative;"></iframe>
         <?php } ?>
     </div>
 </div>
@@ -94,7 +108,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         options['disableAjaxCall'] = <?= ($is_mobile_or_tablet ? 'false' : 'true'); ?>;
         new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , options);
 
-        if ($('iframe').data('doprint').charAt(0) === 1) {
+        if ((String)($('iframe').data('doprint')).charAt(0) === '1') {
             let eventId = $('iframe').data('eventid');
             $.ajax({
                 'type': 'GET',
