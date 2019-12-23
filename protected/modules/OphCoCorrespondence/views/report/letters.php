@@ -37,7 +37,7 @@
     <tr>
       <td>Phrases:</td>
       <td class="phraseList">
-          <?=\CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
+            <?=\CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
       </td>
       <td>
         <button type="button" class="button green hint" id="add_letter_phrase">
@@ -79,6 +79,7 @@
               Match correspondence
             </label>
           </li>
+            <?php if (isset(Yii::app()->modules['OphLeEpatientletter'])) { ?>
           <li>
             <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0"/>
             <input type="checkbox" id="match_legacy_letters"
@@ -87,6 +88,7 @@
               Match legacy letters
             </label>
           </li>
+            <?php } ?>
         </ul>
       </td>
     </tr>
@@ -135,8 +137,8 @@
     <tr>
       <td>Author</td>
       <td>
-          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?=\CHtml::dropDownList(
+            <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
+                <?=\CHtml::dropDownList(
                   'OphCoCorrespondence_ReportLetters[author_id]',
                   '',
                   CHtml::listData(User::model()->findAll(
@@ -144,24 +146,24 @@
                       'id',
                       'fullName'),
                   array('empty' => 'Select')) ?>
-          <?php else: ?>
-              <?php
-              $user = User::model()->findByPk(Yii::app()->user->id);
-              echo CHtml::dropDownList(null, '',
+            <?php else : ?>
+                <?php
+                $user = User::model()->findByPk(Yii::app()->user->id);
+                echo CHtml::dropDownList(null, '',
                   array(Yii::app()->user->id => $user->fullName),
                   array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
                   ) //for some reason the chrome doesn't gray out
-              );
-              echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
-              ?>
-          <?php endif ?>
+                );
+                echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
+                ?>
+            <?php endif ?>
       </td>
       <td>Site</td>
       <td>
-          <?=\CHtml::dropDownList(
+            <?=\CHtml::dropDownList(
               'OphCoCorrespondence_ReportLetters[site_id]',
               '',
               Site::model()->getListForCurrentInstitution(),
@@ -177,11 +179,11 @@
     <tr>
       <td>Status</td>
       <td>
-          <?php
-          $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
-          $htmlOptions['separator'] = '';
-          $htmlOptions['style'] = 'vertical-align: middle';
-          echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]', null,
+            <?php
+            $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
+            $htmlOptions['separator'] = '';
+            $htmlOptions['style'] = 'vertical-align: middle';
+            echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]', null,
               ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'],
               $htmlOptions); ?>
       </td>

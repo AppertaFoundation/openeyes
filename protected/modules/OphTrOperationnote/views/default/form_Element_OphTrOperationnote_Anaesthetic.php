@@ -54,23 +54,27 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         <tr>
           <td>Type</td>
           <td>
-              <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
+                <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
                   false, false, false, false,
                   array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
                   array('field' => 12)); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
-            style="<?php if ($la_hidden): ?>display: none;<?php endif; ?>">
+            style="<?php if ($la_hidden) :
+                ?>display: none;<?php
+                   endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
                 <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
-                    false, false, false, false ,
+                    false, false, false, false,
                     array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
-            style="<?php if ($sed_hidden): ?>display: none;<?php endif; ?>"
+            style="<?php if ($sed_hidden) :
+                ?>display: none;<?php
+                   endif; ?>"
         >
           <td>
             Given by:
@@ -83,7 +87,7 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
             </fieldset>
           </td>
         </tr>
-        <?php if ($element->getSetting('fife')): ?>
+        <?php if ($element->getSetting('fife')) : ?>
           <tr>
             <td>
                 <?php echo $element->getAttributeLabel('anaesthetic_witness_id') ?>
@@ -110,7 +114,7 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         <tr>
           <td>Agents</td>
           <td class="cols-8">
-              <?php echo $form->multiSelectList(
+                <?php echo $form->multiSelectList(
                   $element,
                   'AnaestheticAgent',
                   'anaesthetic_agents',
@@ -130,7 +134,7 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         <tr>
           <td>Complications</td>
           <td>
-              <?php echo $form->multiSelectList(
+                <?php echo $form->multiSelectList(
                   $element,
                   'OphTrOperationnote_AnaestheticComplications',
                   'anaesthetic_complications',
@@ -159,14 +163,16 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
           </style>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?php if (!$element->anaesthetic_comment): ?>display: none;<?php endif ?>"
+            style="<?php if (!$element->anaesthetic_comment) :
+                ?>display: none;<?php
+                   endif ?>"
             class="comment-group js-comment-container"
             data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
           <td>
             Comments
           </td>
           <td>
-              <?php echo $form->textArea($element, 'anaesthetic_comment',
+                <?php echo $form->textArea($element, 'anaesthetic_comment',
                   array('nowrapper' => true), false,
                   array(
                       'rows' => 4,

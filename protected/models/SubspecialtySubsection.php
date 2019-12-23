@@ -63,6 +63,7 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, subspecialty_id, name', 'safe', 'on' => 'search'),
+            array('subspecialty_id, name', 'safe'),
         );
     }
 

@@ -33,21 +33,21 @@
 ));
 ?>
 
-      <?php
+        <?php
 
-         if (!empty($errors)) {
-             ;
-         }  ?>
-		 <script type='text/javascript'>
+        if (!empty($errors)) {
+            ;
+        }  ?>
+         <script type='text/javascript'>
             $(document).ready( function(){
                  window.formHasChanged = true;
             });
          </script>
 
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
-		<?php $this->displayErrors($errors, true)?>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+        <?php $this->displayErrors($errors, true)?>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 <?php $this->endContent();?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>

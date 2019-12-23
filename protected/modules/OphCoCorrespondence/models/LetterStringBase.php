@@ -31,7 +31,7 @@ class LetterStringBase extends BaseEventTypeElement
             return false;
         }
 
-        if ($api = Yii::app()->moduleAPI->get($this->event_type)){
+        if ($api = Yii::app()->moduleAPI->get($this->event_type)) {
             return $api->getElementFromLatestEvent( $this->element_type, $patient, $use_context = false);
         }
 

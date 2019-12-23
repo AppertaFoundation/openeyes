@@ -38,7 +38,7 @@ $pedigree = new Pedigree();
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <div class="element-fields">
-      <?php 
+        <?php
          /*
          $form->widget('application.widgets.ElementSelection', array(
           'element' => $element,
@@ -48,7 +48,7 @@ $pedigree = new Pedigree();
           'layoutColumns' => array('label' => 3, 'field' => 3),
       ));
          */?>
-      <?php $form->dropDownList(
+        <?php $form->dropDownList(
           $element,
           'gene_id',
           CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
@@ -56,7 +56,7 @@ $pedigree = new Pedigree();
           false,
           array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->dropDownList(
+        <?php $form->dropDownList(
           $element,
           'method_id',
           CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
@@ -64,7 +64,7 @@ $pedigree = new Pedigree();
           false,
           array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->dropDownList(
+        <?php $form->dropDownList(
           $element,
           'effect_id',
           CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
@@ -72,37 +72,37 @@ $pedigree = new Pedigree();
           false, array('label' => 3, 'field' => 3)
       ) ?>
 
-      <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->dropDownList(
+        <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->dropDownList(
           $element,
           'base_change_id',
           CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->textField($element, 'base_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->dropDownList(
+        <?php $form->textField($element, 'base_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->dropDownList(
           $element,
           'amino_acid_change_id',
           CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->textField($element, 'amino_acid_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->dropDownList(
+        <?php $form->textField($element, 'amino_acid_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->dropDownList(
           $element,
           'genome_version',
           array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
 
-      <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
-      <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
-      <?php $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
-      <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
+        <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
+        <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
+        <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
+        <?php $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
+        <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
   </div>
 </section>

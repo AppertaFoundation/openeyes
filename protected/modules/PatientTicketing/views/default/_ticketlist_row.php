@@ -28,18 +28,18 @@
   <td><?= $ticket->current_queue->name ?></td>
   <td><a href="<?= $ticket->getSourceLink() ?>">
 
-          <?= $ticket->patient->getHSCICName() ?>
+            <?= $ticket->patient->getHSCICName() ?>
       <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)
       </small>
       <br/>
       <small>
         <span class="fade">No</span>
-          <?= $ticket->patient->hos_num ?>
+            <?= $ticket->patient->hos_num ?>
       </small>
       <br/>
       <small>
         <span class="fade">NHS</span>
-          <?= $ticket->patient->nhs_num ?: '' ?>
+            <?= $ticket->patient->nhs_num ?: '' ?>
       </small>
     </a>
   </td>
@@ -48,8 +48,8 @@
   </td>
   <td><span class="oe-date"><?= Helper::convertMySQL2HTML($ticket->created_date) ?></span></td>
   <td>
-      <?php $ticket_context = $ticket->getTicketFirm(); ?>
-      <?= $ticket->getTicketFirm() ?><br>
+        <?php $ticket_context = $ticket->getTicketFirm(); ?>
+        <?= $ticket->getTicketFirm() ?><br>
     <small class="fade"><?= $ticket->user->getFullName() ?></small>
   </td>
   <td>

@@ -17,10 +17,10 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout">
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
   <div class="js-element-eye cols-6 <?= $eye_side ?>-eye column">
     <div class="data-group">
-        <?php if ($element->hasEye($eye_side)): ?>
+        <?php if ($element->hasEye($eye_side)) : ?>
           <table>
             <colgroup>
               <col class="cols-3">
@@ -53,12 +53,12 @@
               </tr>
               </tbody>
             </table>
-          <?php else: ?>
+        <?php else : ?>
             <div class="data-value not-recorded">
                 Not recorded
             </div>
-          <?php endif; ?>
+        <?php endif; ?>
       </div>
   </div>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
 </div>

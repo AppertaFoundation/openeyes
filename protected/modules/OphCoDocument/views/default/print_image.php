@@ -1,1 +1,1 @@
-<?=\CHtml::image('file://'.$element->{$index}->getPath(), '', ['border'=>0]); ?>
+<?=\CHtml::image('file://'.$element->{$index}->getPath().'?rotate='.$element->{$index}->rotate, '', array('style'=>'max-width: 100%', 'border'=>0)); ?>

@@ -15,7 +15,7 @@
 ?>
 
 
-<?php if ($plan): ?>
+<?php if ($plan) : ?>
   <div class="flex-layout">
     <div class="cols-6 data-group column">
       <table>
@@ -46,7 +46,7 @@
             <th scope="col">HRT</th>
             <td><?= $plan->hrt->name ?></td>
           </tr>
-            <?php } ?>
+        <?php } ?>
         </tbody>
       </table>
     </div>
@@ -72,7 +72,7 @@
         } ?>
     </div>
   </div>
-<?php else: ?>
+<?php else : ?>
   <div class="cols-12 column">
     <div class="data-value not-recorded">(not recorded)</div>
   </div>

@@ -43,30 +43,30 @@
         </tbody>
     </table>
 
-	<table class="standard">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Enabled</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
+    <table class="standard">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Enabled</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
             foreach ($model_list as $i => $model) {
                 ?>
-				<tr data-attr-id="<?php echo $model->id?>" data-attr-name="No Treatment Reason">
-					<td>
-						<a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->name?></a>
-					</td>
-					<td>
-						<input type="checkbox" class="model_enabled" <?php if ($model->active) {
-    echo 'checked';
-}
-                ?> />
-					</td>
-				</tr>
-			<?php 
+                <tr data-attr-id="<?php echo $model->id?>" data-attr-name="No Treatment Reason">
+                    <td>
+                        <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->name?></a>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="model_enabled" <?php if ($model->active) {
+                            echo 'checked';
+                                                                     }
+                                                                        ?> />
+                    </td>
+                </tr>
+                <?php
             }?>
-		</tbody>
-	</table>
+        </tbody>
+    </table>
 </div>

@@ -77,8 +77,7 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = parent::setAndValidateElementsFromData($data);
 
-        if( isset($data['OphInDnaextraction_DnaTests_Transaction']) ){
-
+        if ( isset($data['OphInDnaextraction_DnaTests_Transaction']) ) {
             foreach ($data['OphInDnaextraction_DnaTests_Transaction'] as $transaction_data) {
                 $transaction = $this->getTransactionModel($transaction_data, $data['Element_OphInDnaextraction_DnaTests']['id']);
 
@@ -99,17 +98,14 @@ class DefaultController extends BaseEventTypeController
     {
         $item_ids = array();
 
-        if( isset($data['OphInDnaextraction_DnaTests_Transaction']) ) {
+        if ( isset($data['OphInDnaextraction_DnaTests_Transaction']) ) {
             foreach ($data['OphInDnaextraction_DnaTests_Transaction'] as $transaction_data) {
-
                 $transaction = $this->getTransactionModel($transaction_data, $element->id);
 
                 if (!$transaction->save()) {
-                    if(!$handle_errors)
-                    {
+                    if (!$handle_errors) {
                         //throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
-                    }
-                    else{
+                    } else {
                         $errors = $transaction->getErrors();
                         //  throw new Exception('Unable to save transaction: '.$errors[''][0]);
                     }
@@ -126,11 +122,9 @@ class DefaultController extends BaseEventTypeController
 
         foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
             if (!$transaction->delete()) {
-                if(!$handle_errors)
-                {
+                if (!$handle_errors) {
                     throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
-                }
-                else{
+                } else {
                     $errors = $transaction->getErrors();
                     throw new Exception('Unable to save transaction: '.$errors[''][0]);
                 }
@@ -148,11 +142,11 @@ class DefaultController extends BaseEventTypeController
     public function getTransactionModel($transaction_data, $element_id)
     {
         $transaction = null;
-        if( isset($transaction_data['id']) && $transaction_data['id']){
+        if ( isset($transaction_data['id']) && $transaction_data['id']) {
             $transaction = OphInDnaextraction_DnaTests_Transaction::model()->findByPk($transaction_data['id']);
         }
 
-        if(!$transaction){
+        if (!$transaction) {
             $transaction = new OphInDnaextraction_DnaTests_Transaction();
         }
 
@@ -178,15 +172,15 @@ class DefaultController extends BaseEventTypeController
         $this->renderPartial('newStoragePopup', array('element'=> $element), false, true);
     }
     
-    public function actionGetAvailableLetterNumberToBox( )
+    public function actionGetAvailableLetterNumberToBox()
     {
         $result = array();
-        if((int)$_POST['box_id'] > '0'){
+        if ((int)$_POST['box_id'] > '0') {
             $storage = new OphInDnaextraction_DnaExtraction_Storage();
             $boxModel = new OphInDnaextraction_DnaExtraction_Box();
-            $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);  
+            $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);
 
-            $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
+            $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'], $boxRanges['maxnumber']);
             $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
 
 
@@ -194,8 +188,8 @@ class DefaultController extends BaseEventTypeController
                 return !in_array($element, $usedBoxRows);
             });
 
-            foreach($arrayDiff as $key => $val){
-                if($val['letter'] == "0"){
+            foreach ($arrayDiff as $key => $val) {
+                if ($val['letter'] == "0") {
                     $result['letter'] = "You have not specified a maximum letter value.";
                     $result['number'] = "You have not specified a maximum number value.";
                 } else {
@@ -220,12 +214,12 @@ class DefaultController extends BaseEventTypeController
         $storage->number = Yii::app()->request->getPost('dnaextraction_number');
         $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
 
-        if( $storage->save() ){
+        if ( $storage->save() ) {
             $selectedID = $storage->getPrimaryKey();
             $result = array('s' => 1 , 'selected' => $selectedID);
         } else {
             $errors = '';
-            foreach( $storage->getErrors() as $attribute => $error ){
+            foreach ( $storage->getErrors() as $attribute => $error ) {
                 $errors .= $errors == '' ? '' : "<br>";
                 $errors .= "$attribute: " . ( implode($error) );
             }
@@ -284,12 +278,11 @@ class DefaultController extends BaseEventTypeController
 
         $transaction->setAttributes($element_array);
 
-        if($transaction->save()){
+        if ($transaction->save()) {
             echo CJSON::encode(['success'=>true]);
         } else {
-
             $error_message = '';
-            foreach($transaction->getErrors() as $attr => $error){
+            foreach ($transaction->getErrors() as $attr => $error) {
                 $error_message .= "$attr: " . ( implode(',', $error) ) . PHP_EOL;
             }
 

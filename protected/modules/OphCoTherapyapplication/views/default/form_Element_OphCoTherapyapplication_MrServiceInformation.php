@@ -33,7 +33,7 @@
            name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
     <div class="cols-10 column end">
       <label class="inline highlight">
-          <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
+            <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
     </div>
   </fieldset>
 </div>

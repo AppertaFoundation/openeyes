@@ -86,12 +86,11 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         }
 
         //If user does NOT have the RBAC role 'Report' then select the current user
-        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
             $this->given_by_id = Yii::app()->user->id;
         }
 
         if ($this->given_by_id) {
-
             if (!$user = User::model()->findByPk($this->given_by_id)) {
                 throw new Exception('User not found: ' . $this->given_by_id);
             }
@@ -148,7 +147,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         return $records;
     }
 
-    protected function getSummaryInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
+    protected function getInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
     {
         $patient_data = array();
         $where = '';
@@ -230,7 +229,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         return $results;
     }
 
-    protected function getInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
+    protected function getSummaryInjections($date_from, $date_to, $given_by_user, $drug, $pre_antisept_drug)
     {
         $where = 'e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < (:to_date + interval 1 day)';
 

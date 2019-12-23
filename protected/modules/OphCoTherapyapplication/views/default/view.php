@@ -68,25 +68,25 @@ if (!$warnings && !$this->event->isLocked()) {
 $this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+    <?php $this->renderPartial('//base/_messages'); ?>
 
-	<?php if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-	<?php }?>
+    <?php if ($this->event->delete_pending) {?>
+        <div class="alert-box alert with-icon">
+            This event is pending deletion and has been locked.
+        </div>
+    <?php }?>
 
-	<?php
-        if (count($warnings)) {
-            echo '<div class="alert-box alert with-icon validation-errors top"><p>Application cannot be submitted for the following reasons:</p><ul>';
-            foreach ($warnings as $warning) {
-                echo '<li>'.$warning.'</li>';
-            }
-            echo '</ul></div>';
+    <?php
+    if (count($warnings)) {
+        echo '<div class="alert-box alert with-icon validation-errors top"><p>Application cannot be submitted for the following reasons:</p><ul>';
+        foreach ($warnings as $warning) {
+            echo '<li>'.$warning.'</li>';
         }
+        echo '</ul></div>';
+    }
     ?>
 
-	<?php $this->renderOpenElements($this->action->id, false, array('status' => $status))?>
-	<?php $this->renderPartial('emails', array('service' => $service)) ?>
+    <?php $this->renderOpenElements($this->action->id, false, array('status' => $status))?>
+    <?php $this->renderPartial('emails', array('service' => $service)) ?>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

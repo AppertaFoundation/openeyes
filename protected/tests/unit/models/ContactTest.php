@@ -44,13 +44,13 @@ class ContactTest extends CDbTestCase
        * Sets up the fixture, for example, opens a network connection.
        * This method is called before a test is executed.
        */
-      protected function setUp()
+    protected function setUp()
       {
-          parent::setUp();
-          $this->model = new Contact();
-            //setup attributes to test with = contacts1
-            $this->model->setAttributes($this->contacts('contact1')->getAttributes());
-      }
+        parent::setUp();
+        $this->model = new Contact();
+          //setup attributes to test with = contacts1
+          $this->model->setAttributes($this->contacts('contact1')->getAttributes());
+    }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -63,11 +63,11 @@ class ContactTest extends CDbTestCase
       /**
        * @covers Contact::rules
        */
-      public function testRules()
+    public function testRules()
       {
-          $this->assertTrue($this->contacts('contact1')->validate());
-          $this->assertEmpty($this->contacts('contact1')->errors);
-      }
+        $this->assertTrue($this->contacts('contact1')->validate());
+        $this->assertEmpty($this->contacts('contact1')->errors);
+    }
 
     /**
      * @covers Contact::attributeLabels

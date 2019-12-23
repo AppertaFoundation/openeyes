@@ -31,14 +31,14 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         $biometry_imported_events=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
         $sop=isset($biometry_imported_events->sop_uid) ? $biometry_imported_events->sop_uid : array();
 
-        if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
-            array_unshift(
-                $this->event_actions,
-                EventAction::link('Open In Forum',
-                    ('oelauncher:forumsop/' . $sop),
-                    null, array('class' => 'button small')
-                ));
-        }
+if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
+    array_unshift(
+        $this->event_actions,
+        EventAction::link('Open In Forum',
+            ('oelauncher:forumsop/' . $sop),
+            null, array('class' => 'button small')
+        ));
+}
 
 
         $this->displayErrors($errors);
@@ -46,7 +46,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'form' => $form,
             'disableOptionalElementActions' => true,
         ));
-    $this->renderPartial('_va_view' , ['action' => 'update']);
-    $this->displayErrors($errors, true);
-    $this->endWidget();
-$this->endContent();
+        $this->renderPartial('_va_view', ['action' => 'update']);
+        $this->displayErrors($errors, true);
+        $this->endWidget();
+        $this->endContent();

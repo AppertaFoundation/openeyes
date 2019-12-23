@@ -35,7 +35,9 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
         Patient has no family history
     </div>
 
-    <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
+    <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) {
+        echo 'style="display: none;"';
+               }?>>
         <thead>
         <tr>
             <th>Relative</th>

@@ -20,56 +20,55 @@ if (@$disabled) {
     $html_options['disabled'] = 'disabled';
 }?>
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
-	<?php
+    <?php
     echo CHtml::hiddenField("id[{$i}]", $row->id, $html_options);
-    if($display_order){?>
-	<td class="reorder">
-		<span>&uarr;&darr;</span>
-		<?php
+    if ($display_order) {?>
+    <td class="reorder">
+        <span>&uarr;&darr;</span>
+        <?php
             echo CHtml::hiddenField("display_order[{$i}]", $row->display_order ? $row->display_order : $i, $html_options);
         ?>
-	</td>
-	<?php } ?>
-	<?php if (!$label_extra_field):?>
-	<td>
-		<?php
-            if ($label_field_type) {
-                $this->render('application.widgets.views._generic_admin_'.$label_field_type, array(
-                    'row' => $row,
-                    'params' => array(
-                        'relation' => $label_relation,
-                        'field' => $label_field,
-                        'model' => $label_field_model,
-                        'allow_null' => false,
-                    ),
-                    'i' => $i,
-                ));
-            } else {
-                echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
-            }?>
-			<?php if (isset($errors[$i])) { ?>
-				<span class="error">
-				<?php echo $errors[$i] ?>
-				</span>
-			<?php }?>
-	</td>
-	<?php endif;?>
-	<?php foreach ($extra_fields as $field) {?>
-		<td>
-			<?php $this->render('_generic_admin_'.$field['type'], array('row' => $row, 'params' => $field, 'i' => $i))?>
-		</td>
-	<?php }?>
-	<td>
-		<?php if (isset($row->active)) {
-    echo CHtml::checkBox('active['.$i.']', $row->active);
+    </td>
+    <?php } ?>
+    <?php if (!$label_extra_field) :?>
+    <td>
+        <?php
+        if ($label_field_type) {
+            $this->render('application.widgets.views._generic_admin_'.$label_field_type, array(
+                'row' => $row,
+                'params' => array(
+                    'relation' => $label_relation,
+                    'field' => $label_field,
+                    'model' => $label_field_model,
+                    'allow_null' => false,
+                ),
+                'i' => $i,
+            ));
+        } else {
+            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
+        }?>
+            <?php if (isset($errors[$i])) { ?>
+                <span class="error">
+                <?php echo $errors[$i] ?>
+                </span>
+            <?php }?>
+    </td>
+    <?php endif;?>
+    <?php foreach ($extra_fields as $field) {?>
+        <td>
+            <?php $this->render('_generic_admin_'.$field['type'], array('row' => $row, 'params' => $field, 'i' => $i))?>
+        </td>
+    <?php }?>
+    <td>
+        <?php if (isset($row->active)) {
+            echo CHtml::checkBox('active['.$i.']', $row->active);
         } elseif (!$this->cannot_delete) {?>
-
-			<a href="#" class="deleteRow">delete</a>
-		<?php }?>
-	</td>
-	<?php if ($model::model()->hasAttribute('default')) {?>
-		<td>
-			<?=\CHtml::radioButton('default', $row->default, array('value' => $i))?>
-		</td>
-	<?php }?>
+            <a href="#" class="deleteRow">delete</a>
+        <?php }?>
+    </td>
+    <?php if ($model::model()->hasAttribute('default')) {?>
+        <td>
+            <?=\CHtml::radioButton('default', $row->default, array('value' => $i))?>
+        </td>
+    <?php }?>
 </tr>

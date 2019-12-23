@@ -51,7 +51,7 @@ EOH;
                 $vf = OphInVisualfields_Field_Measurement::model()->with('patient_measurement')->findAllByAttributes(array(
                                 'patient_measurement.patient_id' => $patient->id,
                                 't.study_datetime' => $hfa['Test_Date'] . ' ' . $hfa['TestTime']));
-                
+
                 */
                 $vf_cmd = Yii::app()->db->createCommand()
                     ->select('count(*) as ct')

@@ -2,8 +2,8 @@
 
 class m170630_135359_add_surgical_lids_element extends OEMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->createElementType('OphCiExamination', 'Lids Surgical', array(
             'class_name' => 'OEModule\OphCiExamination\models\SurgicalLids',
             'display_order' => 10,
@@ -27,23 +27,23 @@ class m170630_135359_add_surgical_lids_element extends OEMigration
             'CONSTRAINT `et_ophciexamination_surgical_lids_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)',
             'CONSTRAINT `et_ophciexamination_surgical_lids_e_id_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
         ), true);
-	}
+    }
 
-	public function down()
-	{
-	    $this->dropOETable('et_ophciexamination_surgical_lids', true);
-		$id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\SurgicalLids');
-		$this->delete('element_type', 'id = ?', array($id));
-	}
+    public function down()
+    {
+        $this->dropOETable('et_ophciexamination_surgical_lids', true);
+        $id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\SurgicalLids');
+        $this->delete('element_type', 'id = ?', array($id));
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

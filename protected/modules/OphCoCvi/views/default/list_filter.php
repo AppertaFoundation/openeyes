@@ -95,7 +95,7 @@
                     </div>
 
                     <h3>Created By:</h3>
-                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'createdby_auto_complete']); ?>
+                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'createdby_auto_complete']); ?>
                     <div>
                         <ul id="createdby_list" class="multi-select-search scroll">
                             <?php $createdby_ids = array_key_exists('createdby_ids', $list_filter) ? $list_filter['createdby_ids'] : '';
@@ -113,7 +113,7 @@
                     <?= CHtml::hiddenField('createdby_ids', $this->request->getPost('createdby_ids', ''), array('class' => 'filter-field')); ?>
 
                     <h3>Consultant(s):</h3>
-                    <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'consultant_auto_complete']); ?>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'consultant_auto_complete']); ?>
                     <div>
                         <ul id="consultant_list" class="multi-select-search scroll">
                             <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';

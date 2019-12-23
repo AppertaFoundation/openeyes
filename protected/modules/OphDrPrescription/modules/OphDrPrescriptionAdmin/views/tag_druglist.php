@@ -23,7 +23,7 @@ $items_count = count($items);
     <label>Drugs tagged</label>
   </div>
   <div class="cols-5 column end">
-      <?php if ($items_count > 0): ?>
+        <?php if ($items_count > 0) : ?>
         <table class="generic-admin" id="drugs_list">
           <thead>
           <tr>
@@ -31,17 +31,17 @@ $items_count = count($items);
           </tr>
           </thead>
           <tbody>
-          <?php foreach ($items as $i): ?>
+            <?php foreach ($items as $i) : ?>
             <tr>
               <td><?php echo htmlentities($i->name); ?></td>
             </tr>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
           </tbody>
         </table>
-      <?php else: ?>
+        <?php else : ?>
         <p>
           No drugs have been tagged yet.
         </p>
-      <?php endif; ?>
+        <?php endif; ?>
   </div>
 </div>

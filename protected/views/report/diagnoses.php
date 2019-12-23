@@ -68,7 +68,7 @@
       <td>
         <div id="selected_diagnoses">
         </div>
-          <?php $this->widget('application.widgets.DiagnosisSelection', array(
+            <?php $this->widget('application.widgets.DiagnosisSelection', array(
               'field' => 'disorder_id',
               'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
               'layout' => 'minimal',
