@@ -348,26 +348,94 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getBaseIOPValues(Patient $patient)
+    {
+        //init output array
+        $base_values = [
+            'right' => null,
+            'left' => null,
+            'date' => null,
+        ];
+        //init our date temporary value
+        $first_date = null;
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $elements = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
+                
+                //for each element that we care about
+                foreach ($elements as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        //if the date is null then this is the min value, otherwise check if this is the min value and not null
+                        if ( $base_values['date'] ==null||($first_date > $iop->event->event_date) && $iop->event->event_date != null) {
+                            //set the date to this date
+                            $first_date = $iop->event->event_date;
+                            $base_values['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                            //for each side set the reading value average for this element
+                            $sum_values = [
+                                'right' => null,
+                                'left' => null,
+                            ];
+                            foreach (['left', 'right'] as $side) {
+                                $readings = $iop->getReadings($side);
+                                if (count($readings) > 0) {
+                                    //Get the average for all the values
+                                    foreach ($readings as $reading) {
+                                            $sum_values[$side] += (float)$reading;
+                                    }
+                                    $base_values[$side] = ($sum_values[$side])/count($readings);
+                                } else {
+                                    $base_values[$side] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //return the base values
+        return $base_values;
+    }
+
     public function getMaxIOPValues(Patient $patient)
     {
+        //init output array
         $max_values = [
             'right' => null,
             'left' => null,
         ];
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $iops = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
-        $iops = $this->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
-        foreach ($iops as $iop) {
-            $iop_right = $iop->getReading('right');
-            if ($iop_right > $max_values['right']) {
-                $max_values['right'] = $iop_right;
-            }
-
-            $iop_left = $iop->getReading('left');
-            if ($iop_left > $max_values['left']) {
-                $max_values['left'] = $iop_left;
+                //for each element that we care about
+                foreach ($iops as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        foreach (['left', 'right'] as $side) {
+                            //get all readings for each side separately
+                            $readings = $iop->getReadings($side);
+                            //if we have readings to check
+                            if (count($readings) > 0) {
+                                foreach ($readings as $reading) {
+                                    //if the readinf is larger than our Max value, save that value
+                                    if ((float)$reading > $max_values[$side]) {
+                                        $max_values[$side] = (float)$reading;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        //return the max values
         return $max_values;
     }
 
@@ -745,7 +813,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
@@ -774,7 +842,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVAMethodName($patient, $side, $use_context = false)
@@ -1475,6 +1543,10 @@ class OphCiExamination_API extends \BaseAPI
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
+
+                if (!class_exists($class)) {
+                    continue;
+                }
 
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
@@ -2521,6 +2593,52 @@ class OphCiExamination_API extends \BaseAPI
                     $allergy = $allergy_entry->ophciexaminationAllergy;
                     if (isset($allergy) && isset($allergy->id)) {
                         $required[$allergy->id] = $allergy;
+                    }
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
+     * Get required pupillary abnormalities
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAbnormalities(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationPupillaryAbnormalitySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $abnormality_entry) {
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
+                    if ($abnormality && $abnormality->id) {
+                        $required[$abnormality->id] = $abnormality;
                     }
                 }
             }

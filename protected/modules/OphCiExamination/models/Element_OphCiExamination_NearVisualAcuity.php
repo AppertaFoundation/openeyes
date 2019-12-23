@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination_VisualAcuity
 {
+    use traits\CustomOrdering;
     /**
      * @return string the associated database table name
      */

@@ -31,8 +31,8 @@ class PatientPanel extends BaseCWidget
         parent::init();
     }
 
-    protected function getWidgets() {
-
+    protected function getWidgets()
+    {
         $widgets = Yii::app()->params['patient_summary_id_widgets'];
 
         uasort($widgets, function($a, $b) {
@@ -54,7 +54,7 @@ class PatientPanel extends BaseCWidget
         }
 
         //Force forum to reload patient whenever the patient in OE changes
-        if (Yii::app()->params['forum_force_refresh'] == 'on' && Yii::app()->params['enable_forum_integration'] == 'on') {
+        if (Yii::app()->user->getState('forum_enabled') === 'on') {
             // Check the patient number has changed since last load
             if ( !Yii::app()->user->hasState('last_patient') || (Yii::app()->user->hasState('last_patient') && Yii::app()->user->getState('last_patient') != $this->patient->hos_num )) {
                 Yii::app()->clientScript->registerScript("forceforum", "oelauncher('forum');", CClientScript::POS_LOAD);
@@ -63,7 +63,6 @@ class PatientPanel extends BaseCWidget
                 Yii::app()->user->setState('last_patient', $this->patient->hos_num);
             }
         }
-
 
         return $rendered;
     }

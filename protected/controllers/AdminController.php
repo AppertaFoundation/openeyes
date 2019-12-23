@@ -247,11 +247,12 @@ class AdminController extends BaseAdminController
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
 
             foreach ($findings as $key => $finding) {
-                if (isset($finding['id'])) {
+                if (isset($finding['id']) && !empty($finding['id'])) {
                     $finding_object = Finding::model()->findByPk($finding['id']);
                 } else {
                     $finding_object = new Finding();
                 }
+
 
                 $finding_object->name = $finding['name'];
                 $finding_object->display_order = $finding['display_order'];
@@ -934,7 +935,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';
@@ -1822,11 +1822,11 @@ class AdminController extends BaseAdminController
         $deleteSecondaryLogo = @$_GET['secondary_logo'];
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            @unlink($deleteHeaderLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            @unlink($deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         }
