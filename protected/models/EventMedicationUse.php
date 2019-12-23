@@ -88,6 +88,10 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
+    public $equals_attributes = [
+        'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date', 'laterality',
+    ];
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -135,6 +139,7 @@ class EventMedicationUse extends BaseElement
             array('last_modified_date, created_date, event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('stop_reason_id', 'validateStopReason'),
             array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
@@ -171,6 +176,13 @@ class EventMedicationUse extends BaseElement
     {
         if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
+        }
+    }
+
+    public function validateStopReason()
+    {
+        if ($this->end_date && !$this->stop_reason_id) {
+            $this->addError("stop_reason_id", "You must select a stop reason if the medication is stopped.");
         }
     }
 
@@ -293,6 +305,37 @@ class EventMedicationUse extends BaseElement
             $this->addError('end_date', 'Stop date must be on or after start date');
         }
         parent::afterValidate();
+    }
+
+    /**
+     * @param EventMedicationUse $medication
+     * @param bool $check_laterality
+     * @return bool
+     */
+    public function isEqualsAttributes($medication, $check_laterality)
+    {
+        $result = true;
+
+        foreach ($this->equals_attributes as $attribute) {
+            //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
+            if ($attribute === "start_date") {
+                $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
+                $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
+
+                $result = $date1 === $date2;
+            } else if ($attribute === "laterality") {
+                if ($check_laterality) {
+                    $result = $this->$attribute === $medication->$attribute || $this->$attribute === "3" || $medication->$attribute === "3";
+                }
+            } else {
+                $result = $this->$attribute === $medication->$attribute;
+            }
+
+            if (!$result) {
+                return $result;
+            }
+        }
+        return $result;
     }
 
     /**

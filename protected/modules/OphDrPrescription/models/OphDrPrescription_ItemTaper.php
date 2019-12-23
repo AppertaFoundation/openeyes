@@ -56,13 +56,13 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('frequency_id, duration_id', 'required'),
-                array('dose, item_id, id', 'safe'),
-                                array('dose', 'numerical'),
-                //array('', 'required'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, item_id, dose, frequency_id, duration_id', 'safe', 'on' => 'search'),
+            array('frequency_id, duration_id', 'required'),
+            array('dose, item_id, id', 'safe'),
+            array('dose', 'numerical'),
+            //array('', 'required'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, item_id, dose, frequency_id, duration_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -74,11 +74,11 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'item' => array(self::BELONGS_TO, 'OphDrPrescription_Item', 'item_id'),
-                'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
-                'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'item' => array(self::BELONGS_TO, 'OphDrPrescription_Item', 'item_id'),
+            'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
+            'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -88,8 +88,8 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-                'duration_id' => 'Duration',
-                'frequency_id' => 'Frequency',
+            'duration_id' => 'Duration',
+            'frequency_id' => 'Frequency',
         );
     }
 
@@ -112,7 +112,7 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         $criteria->compare('frequency_id', $this->frequency_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -134,16 +134,16 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
 
     public function fpTenFrequency()
     {
-        if (preg_match("/^\d+/", $this->duration->name)) {
-            return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
-        }
+		if (preg_match("/^\d+/", $this->duration->name)) {
+			return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+		}
 
-        return 'Frequency: ' . $this->frequency->long_name . ' ' . strtolower($this->duration->name);
+		return 'Frequency: ' . $this->frequency->long_name . ' ' . strtolower($this->duration->name);
     }
 
-    public function fpTenDose()
-    {
-        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->item->drug->dose_unit}" : $this->dose)
-            . ', ' . $this->item->route->name . ($this->item->route_option ? ' (' . $this->item->route_option->name . ')' : null);
+	public function fpTenDose()
+	{
+		return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->item->drug->dose_unit}" : $this->dose)
+			. ', ' . $this->item->route->name . ($this->item->laterality ? ' (' . $this->item->laterality->name . ')' : null);
     }
 }

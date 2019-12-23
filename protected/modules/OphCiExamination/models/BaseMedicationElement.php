@@ -32,6 +32,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      * @var bool
      */
     public $do_not_save_entries = false;
+    public $check_for_duplicate_entries = true;
 
     public static $entry_class = \EventMedicationUse::class;
 
@@ -84,6 +85,36 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         }
         parent::afterSave();
     }
+
+    private function mergeSameMedication()
+    {
+        $entries_by_med_id = [];
+        $entries = [];
+        $match = false;
+
+        foreach ($this->entries as $entry) {
+            if (array_key_exists($entry->medication_id, $entries_by_med_id)) {
+                foreach ($entries_by_med_id[$entry->medication_id] as $index) {
+                    if ($entry->isEqualsAttributes($entries[$index], false)) {
+                        $entries[$index]->laterality = 3;
+                        $match = true;
+                        break;
+                    }
+                }
+                if (!$match) {
+                    $entries[] = $entry;
+                    $entries_by_med_id[$entry->medication_id][] = count($entries) - 1;
+                }
+                $match = false;
+            } else {
+                $entries[] = $entry;
+                $entries_by_med_id[$entry->medication_id] = [count($entries) - 1];
+            }
+        }
+
+        return $entries;
+    }
+
     /**
      * Handles saving of related entries
      */
@@ -95,7 +126,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $criteria->params['event_id'] = $this->event_id;
         $orig_entries = \EventMedicationUse::model()->findAll($criteria);
         $saved_ids = array();
-        foreach ($this->entries as $entry) {
+
+        $entries = $this->mergeSameMedication();
+
+        foreach ($entries as $entry) {
             /** @var \EventMedicationUse $entry */
             $entry->event_id = $this->event_id;
 
@@ -104,7 +138,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->setIsNewRecord(false);
             }
 
-            /* ensure corrent usage type and subtype */
+            /* ensure current usage type and subtype */
             $entry->usage_type = $class::getUsagetype();
             $entry->usage_subtype = $class::getUsageSubtype();
 
@@ -124,6 +158,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
 
         return true;
     }
+
     /**
      * @return HistoryMedicationsStopReason[]
      */
@@ -242,14 +277,36 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             return parent::getDisplayOrder($action);
         }
     }
+
     public function afterValidate()
     {
-        // Validate entries
+        $unique_medication_ids = array();
+
         foreach ($this->entries as $key => $entry) {
+            if ($this->check_for_duplicate_entries) {
+                if (in_array($entry->medication_id, $unique_medication_ids)) {
+                    $processed_entries = array_slice($this->entries, 0, $key, true);
+
+                    foreach ($processed_entries as $index => $processed_entry) {
+                        if ($entry->isEqualsAttributes($processed_entry, true)) {
+                            if (!$this->getError("entries_{$index}_duplicate_error")) {
+                                $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
+                            }
+                            if (!$this->getError("entries_{$key}_duplicate_error")) {
+                                $this->addError("entries_{$key}_duplicate_error", ($key + 1) . '- The entry is duplicate');
+                            }
+                        }
+                    }
+                } else {
+                    $unique_medication_ids[] = $entry->medication_id;
+                }
+            }
+
+            // Validate entries
             if (!$entry->validate()) {
                 foreach ($entry->getErrors() as $field => $error) {
-									$attr = "entries_{$key}_{$field}";
-									$this->addError($attr, ($key+1).' - '.implode(', ', $error));
+                    $attr = "entries_{$key}_{$field}";
+                    $this->addError($attr, ($key + 1) . ' - ' . implode(', ', $error));
                 }
             }
         }
