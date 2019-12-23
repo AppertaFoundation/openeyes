@@ -35,6 +35,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -61,7 +62,7 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id', 'safe'),
+                array('eye_id, left_method_id, left_value, right_method_id, right_value, ', 'safe'),
                 array('left_method_id ,left_value', 'requiredIfSide', 'side' => 'left'),
                 array('right_method_id, right_value', 'requiredIfSide', 'side' => 'right'),
                 array('left_value', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 0),
@@ -75,6 +76,11 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
     public function sidedFields()
     {
         return array('value', 'method_id');
+    }
+
+    public function canCopy()
+    {
+        return true;
     }
 
     public function sidedDefaults()

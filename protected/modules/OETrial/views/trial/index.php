@@ -1,7 +1,6 @@
 <?php
 /* @var TrialController $this */
-/* @var CActiveDataProvider $interventionTrialDataProvider */
-/* @var CActiveDataProvider $nonInterventionTrialDataProvider */
+/* @var CActiveDataProvider $trialDataProvider */
 /* @var string $sort_by */
 /* @var string $sort_dir */
 
@@ -37,11 +36,18 @@
           </li>
             <?php if (\CsvController::uploadAccess()) : ?>
               <li>
-                  <?= CHtml::link('Upload trials', Yii::app()->createURL('csv/upload', array('context' => 'trials'))) ?>
+                  <?= CHtml::link('Upload trials',
+                      Yii::app()->createURL('csv/upload',
+                          array('context' => 'trials', 'backuri' => '/OETrial/trial')
+                      )
+                  ) ?>
               </li>
               <li>
                   <?= CHtml::link('Upload trial patients',
-                      Yii::app()->createURL('csv/upload', array('context' => 'trialPatients'))) ?>
+                      Yii::app()->createURL('csv/upload',
+                          array('context' => 'trialPatients', 'backuri' => '/OETrial/trial' )
+                      )
+                  ) ?>
               </li>
             <?php endif ?>
         </ul>
@@ -51,32 +57,16 @@
   <main class="oe-full-main">
         <?php
         $this->renderPartial('_trial_list', array(
-          'dataProvider' => $interventionTrialDataProvider,
-          'title' => 'Intervention Trials',
-          'sort_by' => $sort_by,
-          'sort_dir' => $sort_dir,
-        ));
-        ?>
-        <?php
-        $this->renderPartial('_trial_list', array(
-          'dataProvider' => $nonInterventionTrialDataProvider,
-          'title' => 'Non-Intervention Trials',
+          'dataProvider' => $trialDataProvider,
+          'title' => 'Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
         ));
         ?>
         <?php
         $this->renderPartial('_trial_list_searched', array(
-          'dataProvider' => $interventionTrialSearchDataProvider,
-          'title' => 'Intervention Trials',
-          'sort_by' => $sort_by,
-          'sort_dir' => $sort_dir,
-        ));
-        ?>
-        <?php
-        $this->renderPartial('_trial_list_searched', array(
-          'dataProvider' => $nonInterventionTrialSearchDataProvider,
-          'title' => 'Non-Intervention Trials',
+          'dataProvider' => $trialSearchDataProvider,
+          'title' => 'Trials',
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
         ));
@@ -111,8 +101,7 @@
           $('[data-trial-name*="'+$search_content+ '" i]').attr("data-hidden-label",'show');
           $('[data-trial-description*="'+$search_content+ '" i]').show();
           $('[data-trial-description*="'+$search_content+ '" i]').attr("data-hidden-label",'show');
-          $("#search-table-non-intervention-trials").makePagination(10);
-          $("#search-table-intervention-trials").makePagination(10);
+          $("#search-table-trials").makePagination(10);
       }else {
           $('.trial-list').show();
           $('.searched-trial-list').hide();
@@ -234,15 +223,15 @@
           this.asc = !this.asc;
 
           if (this.asc){
-              $(this).parent('tr').find('#trials-search-list-a').each(function () {
+              $(this).parent('tr').find('.trials-search-list-a').each(function () {
                   $(this).html(' ');
               });
-              $(this).find('#trials-search-list-a').html(' &#x25B2;');
+              $(this).find('.trials-search-list-a').html(' &#x25B2;');
           }else{
-              $(this).parent('tr').find('#trials-search-list-a').each(function () {
+              $(this).parent('tr').find('.trials-search-list-a').each(function () {
                   $(this).html(' ');
               });
-              $(this).find('#trials-search-list-a').html(' &#x25BC;');
+              $(this).find('.trials-search-list-a').html(' &#x25BC;');
           }
           if (!this.asc){rows = rows.reverse();}
           table.children('tbody').empty().html(rows);
@@ -253,7 +242,6 @@
 
 
   $(function () {
-      $("#search-table-non-intervention-trials").makeTableSortable();
-      $("#search-table-intervention-trials").makeTableSortable();
+      $("#search-table-trials").makeTableSortable();
   });
 </script>

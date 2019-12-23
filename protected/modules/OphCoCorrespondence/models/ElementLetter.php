@@ -256,12 +256,12 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' ('.((isset($patient->gp->contact->label))? $patient->gp->contact->label->name : Yii::app()->params['gp_label']).')';
             } else {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
+                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options[Yii::app()->params['gp_label'].$patient->gp_id] .= ' - NO ADDRESS';
+                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
@@ -337,6 +337,17 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
 
+        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
+        if (isset($pcassocitates) && Yii::app()->params['institution_code']=='CERA') {
+            foreach ($pcassocitates as $pcassocitate) {
+                $gp = $pcassocitate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
+                if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
+                    $options['ContactPracticeAssociate'.$cpa->id] = $gp->contact->fullname.' ('.((isset($gp->contact->label))? $gp->contact->label->name : Yii::app()->params['gp_label']).')';
+                }
+            }
+        }
+
         asort($options);
 
         return $options;
@@ -357,9 +368,9 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
         if (Yii::app()->params['nhs_num_private'] == true) {
-            return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num;
+            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num;
         }
-        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
+        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
     }
 
     /**
@@ -392,9 +403,9 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', Hosps No: ' . $patient->hos_num;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $patient->hos_num;
             } else {
-                $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
             }
 
             $user = Yii::app()->session['user'];

@@ -37,6 +37,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**
