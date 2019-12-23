@@ -348,26 +348,94 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getBaseIOPValues(Patient $patient)
+    {
+        //init output array
+        $base_values = [
+            'right' => null,
+            'left' => null,
+            'date' => null,
+        ];
+        //init our date temporary value
+        $first_date = null;
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $elements = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
+                
+                //for each element that we care about
+                foreach ($elements as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        //if the date is null then this is the min value, otherwise check if this is the min value and not null
+                        if ( $base_values['date'] ==null||($first_date > $iop->event->event_date) && $iop->event->event_date != null) {
+                            //set the date to this date
+                            $first_date = $iop->event->event_date;
+                            $base_values['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                            //for each side set the reading value average for this element
+                            $sum_values = [
+                                'right' => null,
+                                'left' => null,
+                            ];
+                            foreach (['left', 'right'] as $side) {
+                                $readings = $iop->getReadings($side);
+                                if (count($readings) > 0) {
+                                    //Get the average for all the values
+                                    foreach ($readings as $reading) {
+                                            $sum_values[$side] += (float)$reading;
+                                    }
+                                    $base_values[$side] = ($sum_values[$side])/count($readings);
+                                } else {
+                                    $base_values[$side] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //return the base values
+        return $base_values;
+    }
+
     public function getMaxIOPValues(Patient $patient)
     {
+        //init output array
         $max_values = [
             'right' => null,
             'left' => null,
         ];
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $iops = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
-        $iops = $this->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
-        foreach ($iops as $iop) {
-            $iop_right = $iop->getReading('right');
-            if ($iop_right > $max_values['right']) {
-                $max_values['right'] = $iop_right;
-            }
-
-            $iop_left = $iop->getReading('left');
-            if ($iop_left > $max_values['left']) {
-                $max_values['left'] = $iop_left;
+                //for each element that we care about
+                foreach ($iops as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        foreach (['left', 'right'] as $side) {
+                            //get all readings for each side separately
+                            $readings = $iop->getReadings($side);
+                            //if we have readings to check
+                            if (count($readings) > 0) {
+                                foreach ($readings as $reading) {
+                                    //if the readinf is larger than our Max value, save that value
+                                    if ((float)$reading > $max_values[$side]) {
+                                        $max_values[$side] = (float)$reading;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        //return the max values
         return $max_values;
     }
 
@@ -745,7 +813,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
@@ -774,7 +842,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVAMethodName($patient, $side, $use_context = false)
@@ -920,10 +988,9 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityForEpisodeLeft(
         $patient,
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         return $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
@@ -938,10 +1005,9 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityForEpisodeRight(
         $patient,
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
     }
 
@@ -959,10 +1025,9 @@ class OphCiExamination_API extends \BaseAPI
         $patient,
         $side = 'left',
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         $va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
@@ -1479,6 +1544,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements
@@ -1546,8 +1615,7 @@ class OphCiExamination_API extends \BaseAPI
         $side,
         $disorder1_id,
         $disorder2_id
-    )
-    {
+    ) {
         $events = $this->getEvents($patient, $use_context);
         $elements = array();
 
@@ -2534,6 +2602,52 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Get required pupillary abnormalities
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAbnormalities(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationPupillaryAbnormalitySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $abnormality_entry) {
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
+                    if ($abnormality && $abnormality->id) {
+                        $required[$abnormality->id] = $abnormality;
+                    }
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
      * Returns the required Disorders (Systemic Diagnoses)
      *
      * @param Patient $patient
@@ -2943,7 +3057,7 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) : ?>
-                    <?php $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers; ?>
+                    <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
                     <tr>
                         <td><?= $entry->getMedicationDisplay() ?></td>
                         <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
@@ -2956,9 +3070,22 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
                     </tr>
-                    <?php foreach ($tapers as $taper) : ?>
+                    <?php
+                                        $taper_date = $entry->end_date;
+                    foreach ($tapers as $taper) :
+                        if ($taper->duration) {
+                            if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                $taper_display_date = $taper->duration->name;
+                            } else if ($taper_date) {
+                                $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                            } else {
+                                $taper_display_date = 'Ongoing';
+                            }
+                        }
+                        ?>
                         <tr>
                             <td>
                                 <div class="oe-i child-arrow small no-click"></div>
@@ -2971,7 +3098,7 @@ class OphCiExamination_API extends \BaseAPI
                                 <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
                             </td>
                             <td>
-                                <?= $taper->duration ? $taper->duration->name : '' ?>
+                                <?= $taper_display_date ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -3023,14 +3150,43 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
             <?php foreach ($current_systemic_meds as $entry) : ?>
+                            <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers : []; ?>
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
                     <td>
                         <?= $entry->frequency ? $entry->frequency : ''; ?>
                     </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
                 </tr>
+                            <?php
+                            $taper_date = $entry->end_date;
+                            foreach ($tapers as $taper) :
+                                if ($taper->duration) {
+                                    if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                                    $taper_display_date = $taper->duration->name;
+                                    } else if ($taper_date) {
+                                                    $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                                    $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                                    } else {
+                                                    $taper_display_date = 'Ongoing';
+                                    }
+                                }
+                                ?>
+                                    <tr>
+                                            <td>
+                                                    <div class="oe-i child-arrow small no-click"></div>
+                                                    <i> then</i>
+                                            </td>
+                                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                                            <td>
+                                                    <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                            </td>
+                                            <td>
+                                                    <?= $taper_display_date ?>
+                                            </td>
+                                    </tr>
+                            <?php endforeach; ?>
             <?php endforeach; ?>
             </tbody>
         </table>

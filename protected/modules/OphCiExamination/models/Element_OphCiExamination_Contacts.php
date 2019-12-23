@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_Contacts extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 

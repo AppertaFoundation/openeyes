@@ -822,4 +822,23 @@ class BaseActiveRecord extends CActiveRecord
         }
         parent::afterValidate();
     }
+
+    /*
+     *  returns next highest display order if table has display_order
+     *
+     * @param int $increase_by
+     *
+     * @return int
+     * */
+    public function getNextHighestDisplayOrder($increase_by = 10)
+    {
+        if ($this->hasAttribute('display_order')) {
+            return Yii::app()->db->createCommand()
+                    ->select('MAX(display_order)')
+                    ->from($this->tableName())
+                    ->queryScalar() + $increase_by;
+        } else {
+            throw new Exception($this->tableName(). ' doesn\'t have attribute \'display_order\'');
+        }
+    }
 }

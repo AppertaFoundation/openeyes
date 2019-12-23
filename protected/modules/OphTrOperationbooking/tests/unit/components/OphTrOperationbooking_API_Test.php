@@ -12,10 +12,11 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once Yii::app()->basePath.'/modules/OphTrOperationbooking/components/OphTrOperationbooking_API.php';
 
 class OphTrOperationbooking_API_Test extends CDbTestCase
 {
+    private $api;
+
     public $fixtures = array(
         'event_types' => 'EventType',
         'events' => 'Event',
@@ -31,29 +32,41 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
         'firms' => 'Firm',
         'sites' => 'Site',
         'theatres' => 'OphTrOperationbooking_Operation_Theatre',
+        'anaesthetic_type' => 'OphTrOperationbooking_AnaestheticAnaestheticType',
+        'sessions' => 'OphTrOperationbooking_Operation_Session',
     );
+
+    public static function setupBeforeClass()
+    {
+        Yii::app()->getModule('OphTrOperationbooking');
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        Yii::app()->session['selected_firm_id'] = 2;
+        $this->api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+    }
 
     public function testGetLatestOperationBookingDiagnosis()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $this->assertEquals('Myopia', $api->getLatestCompletedOperationBookingDiagnosis($this->patients('patient3')));
+        $this->assertEquals('Myopia', $this->api->getLatestCompletedOperationBookingDiagnosis($this->patients('patient3')));
     }
 
+    /**
+     * Case: the patient doesn't have any operation booking event
+     * then the diagnosis is taken from the episode table
+     *
+     */
     public function testGetLatestOperationBookingDiagnosis_DefaultToEpisode()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        Yii::app()->session['selected_firm_id'] = 2;
-
-        $this->assertEquals('Left diabetes mellitus type 2', $api->getLatestCompletedOperationBookingDiagnosis($this->patients('patient5')));
+        $this->assertEquals('Left diabetes mellitus type 2', $this->api->getLatestCompletedOperationBookingDiagnosis($this->patients('patient5')));
     }
 
     public function testGetBookingsForEpisode()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $bookings = $api->getBookingsForEpisode(1);
+        $bookings = $this->api->getBookingsForEpisode(1);
 
         $this->assertCount(1, $bookings);
         $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $bookings[0]);
@@ -62,48 +75,51 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
     public function testGetOperationsForEpisode()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+        $operations = $this->api->getOperationsForEpisode($this->patients('patient3'));
 
-        $operations = $api->getOperationsForEpisode(1);
-
-        $this->assertCount(1, $operations);
+        $this->assertCount(3, $operations);
         $this->assertInstanceOf('Element_OphTrOperationbooking_Operation', $operations[0]);
-        $this->assertEquals(13, $operations[0]->id);
+        $this->assertEquals(5, $operations[0]->id);
     }
 
-    public function testGetOpenBookingsForEpisode()
+    public function testGetScheduledOpenOperations()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+        $operations = $this->api->getScheduledOpenOperations($this->patients('patient2'));
 
-        $bookings = $api->getOpenBookingsForEpisode(6);
+        $this->assertCount(1, $operations);
+        $this->assertEquals(8, $operations[0]->id);
+    }
 
-        $this->assertCount(2, $bookings);
+    public function testSetOpenOperations()
+    {
+        $operations = $this->api->getScheduledOpenOperations($this->patients('patient6'));
 
-        $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $bookings[0]);
-        $this->assertEquals(5, $bookings[0]->id);
-
-        $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $bookings[1]);
-        $this->assertEquals(8, $bookings[1]->id);
+        $this->assertCount(3, $operations);
+        $this->assertEquals(14, $operations[0]->id);
+        $this->assertEquals(15, $operations[1]->id);
     }
 
     public function testGetOperationProcedures()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $procs = $api->getOperationProcedures(5);
+        $procs = $this->api->getOperationProcedures(5);
 
         $this->assertCount(1, $procs);
         $this->assertEquals(1, $procs[0]->id);
     }
 
+    public function testGetOperationForEvent()
+    {
+        $operation = $this->api->getOperationForEvent(11);
+
+        $this->assertEquals(11, $operation->id);
+    }
+
     public function testSetOperationStatus()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
         $eo = $this->el_o('eo5');
 
         foreach ($this->statuses as $status) {
-            $api->setOperationStatus($eo->event_id, $status['name']);
+            $this->api->setOperationStatus($eo->event_id, $status['name']);
 
             $this->assertEquals($status['name'], Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($eo->event_id))->status->name);
         }
@@ -111,31 +127,25 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
     public function testSetOperationStatus_ScheduledOrRescheduled_Scheduled()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
         $eo = $this->el_o('eo5');
 
-        $api->setOperationStatus($eo->event_id, 'Scheduled or Rescheduled');
+        $this->api->setOperationStatus($eo->event_id, 'Scheduled or Rescheduled');
 
         $this->assertEquals('Scheduled', Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($eo->event_id))->status->name);
     }
 
     public function testSetOperationStatus_ScheduledOrRescheduled_Rescheduled()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
         $eo = $this->el_o('eo12');
 
-        $api->setOperationStatus($eo->event_id, 'Scheduled or Rescheduled');
+        $this->api->setOperationStatus($eo->event_id, 'Scheduled or Rescheduled');
 
         $this->assertEquals('Rescheduled', Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($eo->event_id))->status->name);
     }
 
     public function testGetProceduresForOperation()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $procs = $api->getProceduresForOperation(5);
+        $procs = $this->api->getProceduresForOperation(5);
 
         $this->assertCount(1, $procs);
         $this->assertEquals(1, $procs[0]->id);
@@ -143,9 +153,7 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
     public function testGetEyeForOperation()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $eye = $api->getEyeForOperation(5);
+        $eye = $this->api->getEyeForOperation(5);
 
         $this->assertInstanceOf('Eye', $eye);
         $this->assertEquals('Left', $eye->name);
@@ -153,9 +161,7 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
 
     public function testGetMostRecentBookingForEpisode()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $booking = $api->getMostRecentBookingForEpisode($this->episodes('episode6'));
+        $booking = $this->api->getMostRecentBookingForEpisode($this->episodes('episode6'));
 
         $this->assertEquals(7, $booking->id);
         $this->assertEquals(12, $booking->element_id);
@@ -173,62 +179,82 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
             ->method('getEventType')
             ->will($this->returnValue($et));
 
-        Yii::app()->session['selected_firm_id'] = 2;
-
         $this->assertEquals('left foobar procedure, left test procedure', $api->getLetterProcedures($this->patients('patient6')));
+    }
+
+    public function testGetLetterProceduresSameDay()
+    {
+        $this->assertEquals('left foobar procedure', $this->api->getLetterProceduresSameDay($this->patients('patient3')));
     }
 
     public function testGetAdmissionDate()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        Yii::app()->session['selected_firm_id'] = 2;
-
-        $this->assertEquals('26 Jun 2015', $api->getAdmissionDate($this->patients('patient6')));
+        $this->assertEquals('26 Jun 2015', $this->api->getAdmissionDate($this->patients('patient6')));
     }
 
     public function testFindSiteForBookingEvent()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $site = $api->findSiteForBookingEvent($this->events('event1'));
+        $site = $this->api->findSiteForBookingEvent($this->events('event1'));
 
         $this->assertInstanceOf('Site', $site);
         $this->assertEquals(1, $site->id);
         $this->assertEquals('City Road', $site->name);
     }
 
+    public function testFindTheatreForBookingEvent()
+    {
+        $this->assertEquals(1, $this->api->findTheatreForBookingEvent($this->events('event1'))->id);
+    }
+
     public function testCanUpdate()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $this->assertTrue($api->canUpdate($this->events('event7')->id));
-        $this->assertTrue($api->canUpdate($this->events('event8')->id));
-        $this->assertTrue($api->canUpdate($this->events('event9')->id));
-        $this->assertTrue($api->canUpdate($this->events('event10')->id));
-        $this->assertFalse($api->canUpdate($this->events('event11')->id));
-        $this->assertFalse($api->canUpdate($this->events('event12')->id));
+        $this->assertTrue($this->api->canUpdate($this->events('event7')->id));
+        $this->assertTrue($this->api->canUpdate($this->events('event8')->id));
+        $this->assertTrue($this->api->canUpdate($this->events('event9')->id));
+        $this->assertTrue($this->api->canUpdate($this->events('event10')->id));
+        $this->assertFalse($this->api->canUpdate($this->events('event11')->id));
+        $this->assertFalse($this->api->canUpdate($this->events('event12')->id));
     }
 
     public function testShowDeleteIcon()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $this->assertTrue($api->showDeleteIcon($this->events('event7')->id));
-        $this->assertTrue($api->showDeleteIcon($this->events('event8')->id));
-        $this->assertTrue($api->showDeleteIcon($this->events('event9')->id));
-        $this->assertTrue($api->showDeleteIcon($this->events('event10')->id));
-        $this->assertFalse($api->showDeleteIcon($this->events('event11')->id));
-        $this->assertFalse($api->showDeleteIcon($this->events('event12')->id));
+        $this->assertTrue($this->api->showDeleteIcon($this->events('event7')->id));
+        $this->assertTrue($this->api->showDeleteIcon($this->events('event8')->id));
+        $this->assertTrue($this->api->showDeleteIcon($this->events('event9')->id));
+        $this->assertTrue($this->api->showDeleteIcon($this->events('event10')->id));
+        $this->assertFalse($this->api->showDeleteIcon($this->events('event11')->id));
+        $this->assertFalse($this->api->showDeleteIcon($this->events('event12')->id));
     }
 
     public function testFindBookingByEventID()
     {
-        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-
-        $booking = $api->findBookingByEventID(7);
+        $booking = $this->api->findBookingByEventID(7);
 
         $this->assertInstanceOf('OphTrOperationbooking_Operation_Booking', $booking);
         $this->assertEquals(2, $booking->id);
+    }
+
+    public function testAutoScheduleOperationBookings()
+    {
+        $result = $this->api->autoScheduleOperationBookings($this->episodes('episode5'));
+
+        $this->assertTrue($result);
+    }
+
+    public function testAutoScheduleOperationBookings_noAvailableSessions()
+    {
+        $result = $this->api->autoScheduleOperationBookings($this->episodes('episode4'));
+
+        $this->assertInternalType('array', $result);
+    }
+
+    public function testGetLastNonCompleteStatus()
+    {
+        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event8')->id));
+    }
+
+    public function testGetLastNonCompleteStatus_Default()
+    {
+        $this->assertEquals(2, $this->api->getLastNonCompleteStatus($this->events('event2')->id));
     }
 }

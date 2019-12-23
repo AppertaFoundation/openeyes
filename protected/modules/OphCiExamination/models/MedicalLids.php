@@ -40,6 +40,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class MedicalLids extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *
