@@ -27,6 +27,7 @@ class DefaultControllerTest extends CDbTestCase
     //Checking the POST value is same as the specific given string.
     public function testPostData()
     {
+        $this->markTestIncomplete();
         return true;
     }
 }
