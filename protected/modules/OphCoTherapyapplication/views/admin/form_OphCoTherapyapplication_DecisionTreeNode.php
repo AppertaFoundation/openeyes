@@ -38,27 +38,27 @@ echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' =
 
 
 <div class="data-group">
-	<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
-		<?php echo $form->labelEx($model, 'default_value'); ?>
-	</div>
-	<div class="cols-<?php echo $form->layoutColumns['field'];?> column end">
-		<?php
-            if ($model->response_type && $model->response_type->datatype == 'bool') {
-                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
-                        array('name' => get_class($model).'[default_value]',
-                                'id' => get_class($model).'_default_value',
-                                'val' => $model->default_value,
+    <div class="cols-<?php echo $form->layoutColumns['label'];?> column">
+        <?php echo $form->labelEx($model, 'default_value'); ?>
+    </div>
+    <div class="cols-<?php echo $form->layoutColumns['field'];?> column end">
+        <?php
+        if ($model->response_type && $model->response_type->datatype == 'bool') {
+            $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
+                    array('name' => get_class($model).'[default_value]',
+                            'id' => get_class($model).'_default_value',
+                            'val' => $model->default_value,
 
-                        ));
-            } else {
-                $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
-                        array('name' => get_class($model).'[default_value]',
-                        'id' => get_class($model).'_default_value',
-                        'val' => $model->default_value,
-                ));
-            }
+                    ));
+        } else {
+            $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
+                    array('name' => get_class($model).'[default_value]',
+                    'id' => get_class($model).'_default_value',
+                    'val' => $model->default_value,
+            ));
+        }
         ?>
-	</div>
+    </div>
 </div>
 
 <?php
@@ -72,7 +72,7 @@ foreach (OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll
 
 echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll(), 'id', 'label'), $html_options); ?>
 <script id="template_default_value_default" type="text/html">
-	<?php
+    <?php
         $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_default',
             array(
                 'name' => '{{name}}',
@@ -80,10 +80,10 @@ echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherap
                 'val' => null,
             )
         );
-    ?>
+        ?>
 </script>
 <script id="template_default_value_bool" type="text/html">
-	<?php
+    <?php
         $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',
             array(
                 'name' => '{{name}}',
@@ -91,5 +91,5 @@ echo $form->dropdownlist($model, 'response_type_id', CHtml::listData(OphCoTherap
                 'val' => null,
             )
         );
-    ?>
+        ?>
 </script>

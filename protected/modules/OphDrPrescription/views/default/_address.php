@@ -18,7 +18,7 @@
 ?>
 <?php if ($site) {?>
     <h5 class="right-align">
-		<?php
+        <?php
         echo $site->getLetterAddress(array(
             'include_name' => true,
             'delimiter' => '<br />',

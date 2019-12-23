@@ -27,7 +27,7 @@
             <tr class="col-gap">
                 <td>Subspecialty</td>
                 <td>
-                  <?=\CHtml::dropDownList(
+                    <?=\CHtml::dropDownList(
                     'subspecialty_id',
                     $subspecialty_id,
                     CHtml::listData($subspecialities, 'id', 'name'), [
@@ -39,11 +39,11 @@
             </tbody>
         </table>
     </form>
-    <?php if($subspecialty_id) { ?>
+    <?php if ($subspecialty_id) { ?>
         <form method="POST" action="/Admin/procedureSubspecialtyAssignment/edit?subspecialty_id=<?= $subspecialty_id; ?>">
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
               <?php
-              $columns = [
+                $columns = [
                 [
                   'header' => 'Order',
                   'type' => 'raw',
@@ -70,9 +70,9 @@
                       return '<a href="javascript:void(0)" class="delete">delete</a>';
                   }
                 ],
-              ];
+                ];
 
-              $this->widget('zii.widgets.grid.CGridView', array(
+                $this->widget('zii.widgets.grid.CGridView', array(
                 'dataProvider' => $dataProvider,
                 'itemsCssClass' => 'generic-admin standard sortable',
                 'template' => '{items}',
@@ -80,8 +80,8 @@
                 'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
                 'enableSorting' => false,
                 'columns' => $columns
-              ));
-              ?>
+                ));
+                ?>
             <div>
                 <button class="button large" type="button" id="add_new">Add</button>&nbsp
                 <button class="generic-admin-save button large" name="admin-save" type="submit"id="et_admin-save">Save</button>&nbsp;

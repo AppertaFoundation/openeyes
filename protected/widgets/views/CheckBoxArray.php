@@ -22,17 +22,17 @@
  */
 ?>
 <div class="element-fields">
-	<div class="data-group">
-		<?php foreach ($fields as $field) {?>
-			<?=\CHtml::hiddenField(CHtml::modelName($element)."[$field]", '0', array('id' => CHtml::modelName($element).'_'.$field.'_hidden'))?>
-			<?php if (!@$htmlOptions['no-label']) {?>
-				<label>
-			<?php }?>
-			<?=\CHtml::checkBox(CHtml::modelName($element)."[$field]", $checked[$field], $htmlOptions)?>
-			<?php if (!@$htmlOptions['no-label']) {?>
-				<?=\CHtml::encode($element->getAttributeLabel($field))?>
-				</label>
-			<?php }?>
-		<?php }?>
-	</div>
+    <div class="data-group">
+        <?php foreach ($fields as $field) {?>
+            <?=\CHtml::hiddenField(CHtml::modelName($element)."[$field]", '0', array('id' => CHtml::modelName($element).'_'.$field.'_hidden'))?>
+            <?php if (!@$htmlOptions['no-label']) {?>
+                <label>
+            <?php }?>
+            <?=\CHtml::checkBox(CHtml::modelName($element)."[$field]", $checked[$field], $htmlOptions)?>
+            <?php if (!@$htmlOptions['no-label']) {?>
+                <?=\CHtml::encode($element->getAttributeLabel($field))?>
+                </label>
+            <?php }?>
+        <?php }?>
+    </div>
 </div>

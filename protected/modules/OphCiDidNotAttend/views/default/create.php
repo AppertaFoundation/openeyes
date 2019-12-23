@@ -17,7 +17,7 @@
 ?>
 
 <?php $form_id = 'create-form';
-$this->beginContent('//patient/event_container' , array('form_id' => $form_id));
+$this->beginContent('//patient/event_container', array('form_id' => $form_id));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id'=> $form_id,

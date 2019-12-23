@@ -4,10 +4,10 @@
         <?=\CHtml::activeTextField($instruction, "[$index]content");  ?>
     </td>
     <td>
-        <?=\CHtml::activeDropDownList($instruction, "[$index]site_id", CHtml::listData(Site::model()->findAll(),'id', 'name')) ?>
+        <?=\CHtml::activeDropDownList($instruction, "[$index]site_id", CHtml::listData(Site::model()->findAll(), 'id', 'name')) ?>
     </td>
     <td>
-        <?=\CHtml::activeDropDownList($instruction, "[$index]subspecialty_id", CHtml::listData(Subspecialty::model()->findAll(),'id', 'name')) ?>
+        <?=\CHtml::activeDropDownList($instruction, "[$index]subspecialty_id", CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name')) ?>
     </td>
     <td class="actions">
         <div class="wrapper">

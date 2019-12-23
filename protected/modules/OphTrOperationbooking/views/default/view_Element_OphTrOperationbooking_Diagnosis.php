@@ -20,10 +20,10 @@
     <header class="element-header">
         <h3 class="element-title"><?= $this->action->id == 'view' ? $element->elementType->name : ''; ?></h3>
     </header>
-		<div class="element-data full-width">
+        <div class="element-data full-width">
             <div class="cols-10">
                 <span class="priority-text"> <?php $disorder = $element->disorder?>
                 <?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?></span>
             </div>
-		</div>
+        </div>
 </section>

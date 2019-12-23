@@ -50,44 +50,48 @@
 </table>
 
 <?php if ($past_worklist_patients) { ?>
-    <table class="patient-appointments">
-        <colgroup>
-            <col class="cols-2">
-            <col class="cols-5">
-            <col class="cols-2">
-            <col class="cols-3">
-        </colgroup>
-        <thead>
-        <tr>
-            <th colspan="2">Past appointments</th>
-            <th></th>
-            <th>
-                <i class="oe-i small pad js-patient-expand-btn expand <?= $pro_theme ?>"></i>
-            </th>
-        </tr>
-        </thead>
-        <tbody style="display: none;">
-        <?php
-        foreach ($past_worklist_patients as $worklist_patient) {
-            $time = date('H:i', strtotime($worklist_patient->when));
-            $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-            $worklist_name = $worklist_patient->worklist->name;
-            $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-            ?>
-            <tr>
-                <td><span class="time"><?= $time ?></span></td>
-                <td><?= $worklist_name ?></td>
-                <td><span class="oe-date"><?= $date ?></span></td>
-                <td>
-                    <?php if (isset($worklist_status)) { ?>
-                        <?= $worklist_status->attribute_value ?>
-                    <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                        Did not attend.
-                    <?php } ?>
-                </td>
-            </tr>
-        <?php } ?>
-        </tbody>
-    </table>
+    <div class="collapse-data">
+        <div class="collapse-data-header-icon expand">
+            Past Appointments
+            <small>(<?= sizeof($past_worklist_patients) ?>)</small>
+        </div>
+        <div class="collapse-data-content">
+            <div class="restrict-data-shown">
+                <div class="restrict-data-content rows-10">
+                    <!-- restrict data height, overflow will scroll -->
+                    <table class="patient-appointments">
+                        <colgroup>
+                            <col class="cols-1">
+                            <col class="cols-6">
+                            <col class="cols-2">
+                            <col class="cols-3">
+                        </colgroup>
+                        <tbody>
+                        <?php
+                        foreach ($past_worklist_patients as $worklist_patient) {
+                            $time = date('H:i', strtotime($worklist_patient->when));
+                            $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
+                            $worklist_name = $worklist_patient->worklist->name;
+                            $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
+                            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
+                            ?>
+                            <tr>
+                                <td><span class="time"><?= $time ?></span></td>
+                                <td><?= $worklist_name ?></td>
+                                <td><span class="oe-date"><?= $date ?></span></td>
+                                <td>
+                                    <?php if (isset($worklist_status)) { ?>
+                                        <?= $worklist_status->attribute_value ?>
+                                    <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
+                                        Did not attend.
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php } ?>

@@ -2877,4 +2877,12 @@ class ExaminationContext extends PageObjectContext
         $examination = $this->getPage('Examination');
         $examination->checkPcrCalculatedValue($side, $value);
     }
+
+    /**
+     * @Given /^I expand "([^"]*)" sidebar$/
+     */
+    public function iExpandHistorySidebar()
+    {
+        throw new PendingException();
+    }
 }

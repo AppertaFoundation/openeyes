@@ -19,7 +19,7 @@
 <?php
 if (!empty($sub_types)) {
     foreach ($sub_types as $i => $sub_type) {?>
-		<tr class="clickable"
+        <tr class="clickable"
             data-id="<?php echo $sub_type->id?>"
             data-uri="OphCoDocument/oeadmin/documentSubTypesSettings/edit/<?php echo $sub_type->id?>"
         >
@@ -31,5 +31,5 @@ if (!empty($sub_types)) {
             <td><?php echo $sub_type->display_order?></td>
             <td><i class="oe-i <?=($sub_type->is_active ? 'tick' : 'remove');?> small"></i></td>
         </tr>
-	<?php }
-} 
+    <?php }
+}

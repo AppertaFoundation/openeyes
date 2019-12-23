@@ -17,12 +17,12 @@
  */
 ?>
 
-    <div id="patientMergeWrapper" class="container content">
+    <div id="patientMergeWrapper" class="container content main-event">
         
         <div class="data-group">
             <div class="large-3 column large-centered text-right large-offset-9">
                 <section class="box dashboard">
-                <?php 
+                <?php
                     echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small'));
                 ?>
                 </section>
@@ -61,7 +61,7 @@
             </div>
             <br>
             <?php $this->renderPartial('//base/_messages')?>
-            <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')):?>
+            <?php if ($personal_details_conflict_confirm && Yii::app()->user->checkAccess('Patient Merge')) :?>
                 <div id="patientDataConflictConfirmation" class="data-group">
                     <div class="cols-10 large-offset-1 column alert-box with-icon warning">
                         <h2> Personal details are conflicting. </h2>
@@ -74,7 +74,7 @@
               <div class="cols-12 column text-left"></div>
             <?php endif; ?>
             <div class="cols-3 column text-right large-offset-9">
-              <?=\CHtml::link('cancel', array('patientMergeRequest/index'), array('class' => 'button primary')); ?>
+                <?=\CHtml::link('cancel', array('patientMergeRequest/index'), array('class' => 'button primary')); ?>
               <input type="submit" value="Save" class="secondary button" id="mergeRequestUpdate">
             </div>
           </form>

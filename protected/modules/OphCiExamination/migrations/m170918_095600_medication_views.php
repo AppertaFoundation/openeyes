@@ -13,7 +13,7 @@ class m170918_095600_medication_views extends OEMigration
     }
 
     public function up()
-	{
+    {
         $this->createView('history_medication_examination_events', <<<EOSQL
 select event_date, event.created_date, event_id, patient_id from et_ophciexamination_history_medications et
 join event on et.event_id = event.id
@@ -45,14 +45,14 @@ EOSQL
         $this->dropView('history_medication_examination_events');
     }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

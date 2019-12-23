@@ -18,7 +18,7 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-7">
-      <?php echo $form->textArea(
+        <?php echo $form->textArea(
           $element,
           'comments',
           array('class' => 'cols-full', 'nowrapper' => true),
@@ -70,6 +70,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
         }).join(' ');
 
         inputText.val(inputText.val() ? inputText.val() + text : text);
+        autosize.update(inputText);
         inputText.trigger('oninput');
         return true;
       },

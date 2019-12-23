@@ -44,7 +44,7 @@ class PasApiAssignment extends \BaseActiveRecord
 
     public function init()
     {
-        if( array_key_exists('cache_time', \Yii::app()->params['pasapi'])){
+        if ( array_key_exists('cache_time', \Yii::app()->params['pasapi'])) {
             $this->pas_cache_time = \Yii::app()->params['pasapi']['cache_time'];
         }
 
@@ -167,12 +167,12 @@ class PasApiAssignment extends \BaseActiveRecord
      */
     public function isStale()
     {
-        if ($this->isNewRecord || $this->missing_from_pas){
+        if ($this->isNewRecord || $this->missing_from_pas) {
             return true;
         }
 
         // never stale
-        if($this->pas_cache_time === null){
+        if ($this->pas_cache_time === null) {
             return false;
         }
 

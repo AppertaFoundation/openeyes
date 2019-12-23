@@ -18,10 +18,12 @@
 ?>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form flex-layout"
-             style="<?php if (!$element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
+             style="<?php if (!$element->hasEye($eye_side)) {
+                    ?>display: none;<?php
+                    } ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table class="cols-10">
             <tbody>
@@ -31,7 +33,7 @@
               </td>
               <td>
                   <?php
-                  echo $form->radioButtons(
+                    echo $form->radioButtons(
                       $element,
                       $eye_side . '_rapd',
                       array(
@@ -48,7 +50,7 @@
                           'nowrapper' => true,
                       )
                   );
-                  ?>
+                    ?>
               </td>
             </tr>
             <tr>
@@ -68,7 +70,7 @@
                   data-comment-button="#pupils-<?= $eye_side ?>-comment_button">
                 <div class="flex-layout flex-left comment-group">
                   <?php
-                  echo $form->textArea(
+                    echo $form->textArea(
                       $element,
                       $eye_side . '_comments',
                       array('nowrapper' => true),
@@ -78,7 +80,7 @@
                           'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
                       )
                   )
-                  ?>
+                    ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
               </td>
@@ -89,7 +91,9 @@
             <button id="pupils-<?= $eye_side ?>-comment_button"
                     class="button js-add-comments"
                     data-comment-container="#pupils-<?= $eye_side ?>-comments"
-                    style="<?php if ($element->{$eye_side . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
+                    style="<?php if ($element->{$eye_side . '_comments'}) :
+                        ?>visibility: hidden;<?php
+                           endif; ?>"
                     type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
@@ -97,7 +101,9 @@
 
         </div>
         <div class="inactive-form"
-             style="<?php if ($element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
+             style="<?php if ($element->hasEye($eye_side)) {
+                    ?>display: none;<?php
+                    } ?>">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>

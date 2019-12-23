@@ -142,7 +142,7 @@
     </p>
     <p>
         Parent has withdrawn consent (ask parent to sign /date here)
-    <div class="dotted-write"></div>
+    <div class="dotted-write" style="display: block"></div>
     </p>
     <div class="break"></div>
     <h3>Name of proposed procedure or course of treatment</h3>

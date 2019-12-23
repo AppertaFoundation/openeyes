@@ -10,19 +10,19 @@
     <span>(<?php echo $this->patient->getAge(); ?>)</span>
     <span class="header-icon mdi
         <?php
-            if ($this->patient->gender == 'F') {
-                echo 'mdi-human-female';
-            } elseif ($this->patient->gender == 'M') {
-                echo 'mdi-human-male';
-            }?>">
+        if ($this->patient->gender == 'F') {
+            echo 'mdi-human-female';
+        } elseif ($this->patient->gender == 'M') {
+            echo 'mdi-human-male';
+        }?>">
     </span>
     <span class="header-icon mdi
         <?php
-            if ($this->patient->getOphInfo()->cvi_status_id == 1 || $this->patient->getOphInfo()->cvi_status_id == 2) {
-                echo 'mdi-eye';
-            } else {
-                echo 'mdi-eye-off';
-            } ?>">
+        if ($this->patient->getOphInfo()->cvi_status_id == 1 || $this->patient->getOphInfo()->cvi_status_id == 2) {
+            echo 'mdi-eye';
+        } else {
+            echo 'mdi-eye-off';
+        } ?>">
     </span>
     <section class="patient-details">
         <span class="nhs-number">

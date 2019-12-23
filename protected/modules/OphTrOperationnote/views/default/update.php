@@ -42,7 +42,8 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
     <div class="alert-box patient with-icon">
         <?php foreach ($warnings as $warn) { ?>
           <strong><?php echo $warn['long_msg']; ?></strong>
-          - <?php echo $warn['details']; } ?>
+          - <?php echo $warn['details'];
+        } ?>
     </div>
   </div>
 <?php } ?>

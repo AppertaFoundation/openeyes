@@ -2,13 +2,13 @@
 
 class m170421_142834_add_element_vte_assessment extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $eventTypeId = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
             array(':class_name' => 'OphTrOperationnote'))->queryScalar();
 
         $this->insert("element_type", array(
-	        'name' => 'VTE Assessment',
+            'name' => 'VTE Assessment',
             'class_name' => 'Element_OphTrOperationnote_VteAssessment',
             'event_type_id' => $eventTypeId,
             'display_order' => 55,
@@ -47,16 +47,16 @@ class m170421_142834_add_element_vte_assessment extends OEMigration
             'default_value' => 'off',
             'data' => serialize(array('on'=>'On', 'off'=>'Off'))
         ));
-	}
+    }
 
-	public function safeDown()
-	{
-		$this->delete('element_type', 'class_name = :class_name',
+    public function safeDown()
+    {
+        $this->delete('element_type', 'class_name = :class_name',
             array(':class_name' => 'Element_OphTrOperationnote_VteAssessment'));
 
-		$this->delete('setting_metadata', '`key`=:key', array(':key'=>'vte_assessment_element_enabled'));
+        $this->delete('setting_metadata', '`key`=:key', array(':key'=>'vte_assessment_element_enabled'));
 
         $this->dropOETable('et_ophtroperationnote_vte_assessment', true);
         $this->dropOETable('ophtroperationnote_vte_assessment_option', true);
-	}
+    }
 }

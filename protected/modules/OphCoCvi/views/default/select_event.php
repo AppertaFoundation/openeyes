@@ -33,9 +33,9 @@ $this->moduleNameCssClass .= ' edit';
         </div>
         <div class="field-info">
             Current CVI are as follows:
-              <?php if ($current_cvis) {
-                  $manager = $this->getManager();
-                  ?>
+                <?php if ($current_cvis) {
+                    $manager = $this->getManager();
+                    ?>
                 <ul>
                     <?php foreach ($current_cvis as $cvi_event) { ?>
                       <li>
@@ -44,7 +44,7 @@ $this->moduleNameCssClass .= ' edit';
                       </li>
                     <?php } ?>
                 </ul>
-              <?php } ?>
+                <?php } ?>
           </div>
         <div class="field-info">
           <a href="<?= $can_create ? \Yii::app()->request->requestUri . "&createnewcvi=1" : '#'; ?>">

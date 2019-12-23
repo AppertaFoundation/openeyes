@@ -88,7 +88,7 @@ function resetInternalReferralFields(){
 }
 
 function setRecipientToInternalReferral(){
-	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
+	$('#docman_recipient_0').attr('disabled', true);
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
 
@@ -254,66 +254,33 @@ $(document).ready(function() {
 	});
 
     $('#et_save').click(function(e){
-        e.preventDefault();
-        var attachment_check = checkAttachmentFileExist( 0 );
-
-        var event_button = $(this);
-        var event_form = event_button.attr('form');
-
-        if(attachment_check == 1){
-            disableButtons();
-            $('#ElementLetter_draft').val(0);
-            $('#'+event_form ).submit();
-		} else {
-            $(document).ajaxStop(function() {
-                disableButtons();
-                $('#ElementLetter_draft').val(0);
-                $('#'+event_form ).submit();
-            });
-		}
+		$('#'+event_form ).submit();
     });
 
     $('#et_saveprint').click(function(e){
         e.preventDefault();
-        var attachment_check = checkAttachmentFileExist( 0 );
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
-        $('#'+event_form ).append('<input type="hidden" name="saveprint" value="1" /> ');
+		$('#ElementLetter_draft').val(0);
 
-        if(attachment_check == 1){
-            disableButtons();
-            $('#ElementLetter_draft').val(0);
-
-            $('#'+event_form ).submit();
-        } else {
-            $(document).ajaxStop(function() {
-                disableButtons();
-                $('#ElementLetter_draft').val(0);
-                $('#'+event_form ).submit();
-            });
-        }
+        // ajax call to create php cookie
+        $.get(baseUrl + '/OphCoCorrespondence/Default/savePrint?event_id='+OE_event_id, function() {
+			// we need to know which button was clicked in ElementLetter.php, and the button doesn't get posted outside of the form
+			$('#'+event_form ).append( $('<input>', {type: 'hidden', name: 'saveprint', value: '1'}) );
+			disableButtons();
+			$('#'+event_form ).submit();
+        });
     });
 
     $('#et_savedraft').click(function(e){
         e.preventDefault();
-        var attachment_check = checkAttachmentFileExist( 0 );
 
         var event_button = $(this);
         var event_form = event_button.attr('form');
-
-        if(attachment_check == 1){
-            disableButtons();
-            $('#ElementLetter_draft').val(1);
-            $('#'+event_form ).submit();
-        } else {
-            $(document).ajaxStop(function() {
-                disableButtons();
-                $('#ElementLetter_draft').val(1);
-                $('#'+event_form ).submit();
-            });
-        }
-
+		disableButtons();
+		$('#ElementLetter_draft').val(1);
+		$('#'+event_form ).submit();
     });
 
     $(this).on('click','#et_cancel',function() {
@@ -829,38 +796,6 @@ function savePDFprint( module , event_id , $content, $data_id, title)
     });
 }
 
-var checkAttachmentFileExist = function( index ) {
-
-    var table = $('#correspondence_attachments_table');
-    var rows = table.find('tbody tr');
-
-    if (rows.length == index) {
-        return 1;
-	}
-
-	var row = $(rows[index]);
-    var attachments_event_id = row.find("input[name*='attachments_event_id']").val();
-    var data_id = parseInt(row.attr("data-id"));
-    var attachment_title = row.find(".attachments_display_title").val();
-
-	$.ajax({
-		'type': 'POST',
-		'cache': false,
-		'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-		'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: attachments_event_id , 'patient_id': OE_patient_id},
-		'success': function(response) {
-			if(response.success == 1){
-				savePDFprint( response.module ,attachments_event_id, row, data_id, attachment_title);
-			}
-		},
-		'complete': function() {
-			row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
-			checkAttachmentFileExist(++index);
-		}
-	});
-};
-
-
 var re_field = null;
 
 function correspondence_load_data(data) {
@@ -963,11 +898,29 @@ function OphCoCorrespondence_addAttachments(selectedItems){
 
 						let $data_id = parseInt($table.children().length);
 						let $content = $(response.content);
+						const title = $content.find('.attachments_display_title').val();
 
 						$table.append($content);
 						$content.attr('data-id', $data_id);
 						$content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
 						$content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
+
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl + '/' + response.module + '/Default/savePDFprint/' + $content.find('.attachments_event_id').val() + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title='+title,
+							beforeSend: function(xhr) {
+								xhr.setRequestHeader('X-Requested-With', 'pdfprint');
+							},
+							'success': function(response) {
+								if(response.success == 1){
+									$hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
+									$content.append($hidden);
+								}
+							},
+							'complete': function(){
+								enableButtons();
+							}
+						});
 
 						enableButtons();
 					}

@@ -2,12 +2,11 @@
 <?php
   list($latest_cvi_status, $last_cvi_date) = $this->patient->getCviSummary();
   $latest_cvi_status_id = PatientOphInfoCviStatus::model()->findByAttributes(array('name' =>$latest_cvi_status))->id;
-  if (!is_string($last_cvi_date)) {
+if (!is_string($last_cvi_date)) {
     $last_cvi_date = null;
-  }
-  else {
+} else {
     $last_cvi_date = Helper::formatFuzzyDate($last_cvi_date);
-  }
+}
 ?>
 <div class="element-fields flex-layout full-width">
   <div class="data-group cols-10">
@@ -25,14 +24,14 @@
                  name="<?= CHtml::modelName($element).'[cvi_status_id]' ?>"
                  type="hidden">
           <span id="<?= CHtml::modelName($element).'_text'?>">
-              <?= isset($element->cviStatus)?$element->cviStatus->name:$latest_cvi_status ?>
+                <?= isset($element->cviStatus)?$element->cviStatus->name:$latest_cvi_status ?>
           </span>
         </td>
         <td>
           <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>"
                  placeholder="dd Mmm yyyy"
                  name="<?= CHtml::modelName($element) . '[element_date]' ?>"
-                 value="<?= isset($element->element_date) ? $element->getFormatedDate() : $last_cvi_date ?>"
+                 value="<?= isset($element->element_date) && $element->element_date !== '0000-00-00' ? $element->getFormatedDate() : ($last_cvi_date !== 'Undated' ? $last_cvi_date : '') ?>"
                  autocomplete="off"/>
         </td>
       </tr>

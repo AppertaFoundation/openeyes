@@ -22,7 +22,7 @@
         <div class="cols-8 column"><h2>View Family</h2></div>
         <div class="cols-3 column">
         </div><div class="large-1 column right">
-            <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
+            <?php if ( $this->checkAccess('TaskEditPedigreeData') ) : ?>
                 <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
             <?php endif; ?>
         </div>
@@ -44,8 +44,8 @@
                 'label' => $model->getAttributeLabel('gene.name'),
                 'type' => 'raw',
                 'value' => function () use ($model){
-                    if($model->gene){
-                     return '<a href="/Genetics/gene/view/' . $model->gene->id . '" >' . $model->gene->name . '</a>';
+                    if ($model->gene) {
+                        return '<a href="/Genetics/gene/view/' . $model->gene->id . '" >' . $model->gene->name . '</a>';
                     }
                 }
             ),
@@ -53,7 +53,7 @@
                 'label' => $model->getAttributeLabel('base_change_type'),
                 'value' => $model->base_change_type ? $model->base_change_type->change : null,
                 'type'=>'raw',
-            ), 
+            ),
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : null,
@@ -98,7 +98,7 @@
                 'value' => function() use ($model){
 
                     $html = '<ul class="subjects_list">';
-                    foreach($model->subjects as $subject){
+                    foreach ($model->subjects as $subject) {
                         $html .= '<li>';
                         $html .= '<a href="/Genetics/subject/view/' . $subject->id . '" title="' . $subject->patient->fullName . '">';
                         $html .= $subject->patient->fullName . '</a>';

@@ -372,6 +372,9 @@
     Dialog.prototype.setClose = function (closeButton) {
         let dialog = this;
         closeButton.click(function () {
+            if (typeof dialog.options.closeCallback === 'function') {
+                dialog.options.closeCallback();
+            }
             dialog.emit("close");
             $('.oe-popup-wrap').remove();
         });

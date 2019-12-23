@@ -39,6 +39,7 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
+	window.frames.print_content_iframe.print();
 
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {
@@ -62,7 +63,7 @@ function printEvent(printOptions)
 		'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
 		'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
 		'success': function(resp) {
-			switch (resp) {
+			switch (resp.trim()) {
 				case "ok":
 					printIFrameUrl(OE_print_url, printOptions);
 					break;
@@ -97,7 +98,7 @@ function saveCanvasImagesToPdf( printOptions ){
             'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
             'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'success': function(resp) {
-                switch (resp) {
+                switch (resp.trim()) {
                     case "ok":
                         break;
                     case "outofdate":

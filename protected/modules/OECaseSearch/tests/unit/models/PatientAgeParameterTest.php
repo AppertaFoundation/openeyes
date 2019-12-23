@@ -42,8 +42,8 @@ class PatientAgeParameterTest extends CDbTestCase
         $this->parameter->minValue = 5;
         $this->parameter->maxValue = 80;
         $correctOps = array(
-            '>=',
-            '<=',
+            '>',
+            '<',
             'BETWEEN',
         );
         $invalidOps = array(

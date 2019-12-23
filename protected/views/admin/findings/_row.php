@@ -45,7 +45,7 @@
                 'selectedItemsInputName' => "subspecialty-ids[" . $data['key'] . "][]",
                 'selectedItems' => array_map(function($sub){
                     return $sub->id;
-                },$data['finding']->subspecialties),
+                }, $data['finding']->subspecialties),
             ],],
         'template' =>
             "<td class='js-multiselect-dropdown-wrapper'>

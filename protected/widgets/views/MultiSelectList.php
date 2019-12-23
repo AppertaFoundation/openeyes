@@ -59,25 +59,31 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
+     class="<?php echo $div_class ?> row widget" <?php if ($hidden) {
+            ?>hidden<?php
+            } ?>>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
     </label>
   </div>
   <div class="cols-<?= $layoutColumns['field']; ?> column end">
-      <?php } ?>
-    <div class="multi-select<?php if (!$inline) { echo ' multi-select-list'; } ?>"
+<?php } ?>
+    <div class="multi-select<?php if (!$inline) {
+        echo ' multi-select-list';
+                            } ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
-         <?php if ($through): ?>data-statuses='<?= json_encode($through['options']) ?>' <?php endif; ?>
+            <?php if ($through) :
+                ?>data-statuses='<?= json_encode($through['options']) ?>' <?php
+            endif; ?>
     >
       <input type="hidden" name="<?=\CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]"
              class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
         <select id="<?=\CHtml::getIdByName($field) ?>"
                 class="MultiSelectList
-                  <?=($showRemoveAllLink)?' inline':''?>
-                  <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                    <?=($showRemoveAllLink)?' inline':''?>
+                    <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
                 "
                 name=""
                 style=""
@@ -104,75 +110,82 @@ $widgetOptionsJson = json_encode(array(
                 echo '>' . strip_tags($option) . ' </option>';
             } ?>
         </select>
-          <?php if ($showRemoveAllLink) { ?>
+            <?php if ($showRemoveAllLink) { ?>
             <a href="#" class="remove-all" style="display:  <?php echo !$found ? ' none' : 'inline'; ?>">Remove all</a>
-          <?php } ?>
+            <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
           <div
               class="no-selections-msg pill" style="display: <?php echo $found ? ' none' : 'inline';  ?>"><?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
 
-        <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
+        <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)) : ?>
           <input type="hidden" name="<?php echo $field ?>">
         <?php endif; ?>
       <ul class="MultiSelectList multi-select-selections <?= !$found?' hide':''?><?= $sortable?' sortable':''?>">
-          <?php foreach ($selected_ids as $id) {
-              if (isset($options[$id])) { ?>
+            <?php foreach ($selected_ids as $id) {
+                if (isset($options[$id])) { ?>
                 <li>
-                    <?php
-                    if (isset($link) && $link): ?>
+                      <?php
+                        if (isset($link) && $link) : ?>
                   <a href="<?= sprintf($link, $id) ?>">
-                      <?php endif; ?>
+                        <?php endif; ?>
                     <span class="text">
-                      <?php echo strip_tags($options[$id]) ?>
+                        <?php echo strip_tags($options[$id]) ?>
                     </span>
-                      <?php if (isset($link) && $link): ?>
+                        <?php if (isset($link) && $link) : ?>
                   </a>
-                <?php endif; ?>
+                        <?php endif; ?>
 
                   <span data-text="<?php echo $options[$id] ?>"
-                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class'])) { ?><?php echo $htmlOptions['class'] ?><?php } ?>"
-                      <?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?>
-                      <?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
+                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class'])) {
+                            ?><?php echo $htmlOptions['class'] ?><?php
+                                                            } ?>"
+                        <?php if (isset($htmlOptions['data-linked-fields'])) {
+                            ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php
+                        } ?>
+                        <?php if (isset($htmlOptions['data-linked-values'])) {
+                            ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php
+                        } ?>>
                     <i class="oe-i remove-circle small"></i>
                   </span>
                   <input type="hidden" name="<?php echo $field ?>[]" value="<?php echo $id ?>"
-                    <?php if (isset($opts[$id])) {
-                        foreach ($opts[$id] as $key => $val) {
-                            echo ' ' . $key . '="' . $val . '"';
-                        }
-                    } ?>
-                  />
-                    <?php
-                    if ($through) {
-                        $currentField = isset($through['default_option']) ? $through['default_option'] : 0;
-                        foreach ($through['current'] as $current) {
-                            if ($current->{$through['related_by']} === $id) {
-                                $currentField = $current->{$through['field']} ? $current->{$through['field']} : $currentField;
-                                break;
+                      <?php if (isset($opts[$id])) {
+                            foreach ($opts[$id] as $key => $val) {
+                                echo ' ' . $key . '="' . $val . '"';
                             }
-
-                        }
-                        ?>
+                      } ?>
+                  />
+                      <?php
+                        if ($through) {
+                            $currentField = isset($through['default_option']) ? $through['default_option'] : 0;
+                            foreach ($through['current'] as $current) {
+                                if ($current->{$through['related_by']} === $id) {
+                                    $currentField = $current->{$through['field']} ? $current->{$through['field']} : $currentField;
+                                    break;
+                                }
+                            }
+                            ?>
 
                       <select name="<?= preg_replace('#\[(.*)\]#', '[${1}_through]',
                           $field) ?>[<?= $id ?>][<?= $through['field'] ?>]">
-                          <?php foreach ($through['options'] as $option_id => $option) { ?>
+                              <?php foreach ($through['options'] as $option_id => $option) { ?>
                             <option
-                                value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id): ?> selected <?php endif; ?>><?= $option ?></option>
-                          <?php } ?>
+                                value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id) :
+                                    ?> selected <?php
+                                       endif; ?>><?= $option ?></option>
+                                <?php } ?>
                       </select>
-                    <?php } ?>
+                        <?php } ?>
                 </li>
-              <?php } ?>
-          <?php } ?>
+                <?php } ?>
+            <?php } ?>
       </ul>
     </div>
-      <?php if (!@$htmlOptions['nowrapper']) { ?>
+        <?php if (!@$htmlOptions['nowrapper']) { ?>
   </div>
 </div>
-<?php } ?>
+        <?php } ?>
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $widgetPath = $assetManager->publish('protected/widgets/js');

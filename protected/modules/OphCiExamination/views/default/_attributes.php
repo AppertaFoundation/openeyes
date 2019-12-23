@@ -15,8 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if ($element->elementType->name!="Clinic Outcome"):
-?>
+if ($element->elementType->name!="Clinic Outcome") :
+    ?>
 <div class="close-icon-btn">
   <i class="oe-i remove-circle medium"></i>
 </div>
@@ -30,25 +30,25 @@ if ($element->elementType->name!="Clinic Outcome"):
 <table class="select-options cols-full">
   <tbody>
   <tr>
-      <?php
-      $firms = Firm::model()->findAll();
-      $firm_name = array();
-      $firm_sub_id = array();
-      foreach ($firms as $firm){
-        array_push($firm_name, $firm->name);
-        array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
-          $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
-      }
-      foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
+        <?php
+        $firms = Firm::model()->findAll();
+        $firm_name = array();
+        $firm_sub_id = array();
+        foreach ($firms as $firm) {
+            array_push($firm_name, $firm->name);
+            array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+            $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+        }
+        foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
     <td>
       <div class="flex-layout flex-top flex-left">
         <ul class="add-options cols-full" data-multi="false" data-clickadd="false">
-            <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
+              <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
               <li data-value="<?php echo (string)$option->slug; ?>">
                 <span class="restrict-width"><?php echo (string)$option->slug; ?></span>
               </li>
-            <?php }
-            } ?>
+                <?php }
+        } ?>
         </ul>
       </div>
     </td>
