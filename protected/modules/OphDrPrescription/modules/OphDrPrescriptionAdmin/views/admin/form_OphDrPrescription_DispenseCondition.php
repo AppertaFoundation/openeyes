@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,27 +11,18 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-11">
+<div class="cols-5">
+    <?=\CHtml::activeHiddenField($model, 'id'); ?>
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr class="hidden">
-            <td>Id</td>
-            <td>
-                <?=\CHtml::activeTextField(
-                    $model,
-                    'id',
-                    ['hidden' => true]
-                ); ?>
-            </td>
-        </tr>
         <tr>
             <td>Name</td>
             <td>
@@ -44,45 +34,23 @@
             </td>
         </tr>
         <tr>
-            <td>Display Order</td>
-            <td>
-                <?=\CHtml::activeTextField(
-                    $model,
-                    'display_order',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
             <td>Is Active</td>
             <td>
-                <?=\CHtml::activeRadioButtonList(
-                    $model,
-                    'is_active',
-                    [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ', 'selected' => '1']
-                ); ?>
+                <?=\CHtml::activeCheckBox($model, 'active') ?>
             </td>
         </tr>
         <tr>
-            <td>Sub type icon</td>
+            <td>Dispense Locations</td>
             <td>
-                <fieldset>
-                    <div class="cols-11">
-                        <?php
-                        $sub_type_event_icons = EventIcon::model()->findAll();
-                        $icon_images = [];
-                        foreach ($sub_type_event_icons as $icon) {
-                            $icon_images[$icon->id] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
-                        } ?>
-                        <?=\CHtml::activeRadioButtonList(
-                            $model,
-                            'sub_type_event_icon_id',
-                            $icon_images,
-                            ['separator' => ' ']
-                        ); ?>
-                    </div>
-                </fieldset>
+                <?php echo $form->multiSelectList(
+                    $model,
+                    CHtml::modelName($model).'[locations]',
+                    'locations',
+                    'id',
+                    CHtml::listData(OphDrPrescription_DispenseLocation::model()->findAll(array('order' => 'display_order')), 'id', 'name'),
+                    null,
+                    array('empty' => '- Add -', 'label' => 'Locations', 'nowrapper' => true, 'class' => 'cols-full')
+                ) ?>
             </td>
         </tr>
         </tbody>
@@ -100,7 +68,7 @@
                 <?=\CHtml::submitButton(
                     'Cancel',
                     [
-                        'data-uri' => '/' . $this->module->id . '/' . $this->id,
+                        'data-uri' => '/OphDrPrescription/admin/DispenseCondition/index',
                         'class' => 'warning button large primary event-action',
                         'name' => 'cancel',
                         'id' => 'et_cancel',
