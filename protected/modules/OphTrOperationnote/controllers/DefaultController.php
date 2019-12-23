@@ -23,6 +23,7 @@ class DefaultController extends BaseEventTypeController
         'verifyProcedure' => self::ACTION_TYPE_FORM,
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
+        'whiteboard' => self::ACTION_TYPE_VIEW,
     );
 
     protected $show_element_sidebar = false;
@@ -310,6 +311,11 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    public function actionWhiteboard($id)
+    {
+        $this->redirect(Yii::app()->createUrl('/OphTrOperationbooking/whiteboard/view/' . $id));
+    }
+
     protected function createOpNote()
     {
         $this->event->firm_id = $this->selectedFirmId;
@@ -360,24 +366,26 @@ class DefaultController extends BaseEventTypeController
                         }
 
                         $create_correspondence = \Yii::app()->request->getParam('auto_generate_gp_letter_after_surgery');
-                        if ($create_correspondence && ($this->patient->gp_id && $this->patient->practice_id)) {
-                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
-                            $transaction = Yii::app()->db->beginTransaction();
-                            // create 'post-op' letter
-                            $result = $this->createCorrespondenceEvent($macro_name);
-                            if ($result['success'] === true) {
-                                $transaction->commit();
+                        if ($create_correspondence) {
+                            if ($this->patient->gp_id && $this->patient->practice_id) {
+                                                            $macro_name = \SettingMetadata::model()->getSetting('default_post_op_letter');
+                                                            $transaction = Yii::app()->db->beginTransaction();
+                                                            // create 'post-op' letter
+                                                            $result = $this->createCorrespondenceEvent($macro_name);
+                                if ($result['success'] === true) {
+                                    $transaction->commit();
+                                } else {
+                                    $transaction->rollback();
+                                    $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
+                                }
                             } else {
-                                $transaction->rollback();
-                                $this->logEventCreationFail($result['errors'], 'OphCoCorrespondence', 'ElementLetter');
+                                    Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
+                                    $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                             }
-                        } else {
-                            Yii::app()->user->setFlash('error', "GP letter could not be created because the patient has no GP");
-                            $this->logEventCreationFail(['Error Message' => 'GP letter could not be created because the patient has no GP', 'gp_id' => $this->patient->gp_id, 'practice_id' => $this->patient->practice_id], 'OphCoCorrespondence', 'Patient');
                         }
 
                         $create_optom_correspondence = \Yii::app()->request->getParam('auto_generate_optom_post_op_letter_after_surgery');
-                        
+
 
                         if ($create_optom_correspondence) {
                             $macro_name = \SettingMetadata::model()->getSetting('default_optom_post_op_letter');
@@ -786,6 +794,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateComplications(isset($data['OphTrOperationnote_CataractComplications']) ? $data['OphTrOperationnote_CataractComplications'] : array());
         $element->updateOperativeDevices(isset($data['OphTrOperationnote_CataractOperativeDevices']) ? $data['OphTrOperationnote_CataractOperativeDevices'] : array());
+        $procedure_list  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', [$element->event_id]);
+        $eye = $procedure_list->eye;
+        $this->patient->removeBiologicalLensDiagnoses($eye);
     }
 
     /**
@@ -1183,11 +1194,19 @@ class DefaultController extends BaseEventTypeController
             $macro_name = \SettingMetadata::model()->getSetting("default_{$this->event->episode->status->key}_letter");
         }
         $macro = $correspondence_api->getDefaultMacroByEpisodeStatus($this->event->episode, $firm, Yii::app()->session['selected_site_id'], $macro_name);
-        
+
         $success = false;
 
         if ($macro) {
-            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
+            $criteria = new CDbCriteria( array(
+                'condition' => "name LIKE :name",
+                'params'    => array(':name' => "$name%")
+            ) );
+
+            $letter_type = \LetterType::model()->find($criteria);
+            $letter_type_id = $letter_type ? $letter_type->id : null;
+
             $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
             $correspondence_creator->save();
 
@@ -1345,8 +1364,7 @@ class DefaultController extends BaseEventTypeController
             return '<span class="extra-info">' .
                 '<span class="fade">Site: </span>' .
                 $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>' .
-                '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
+                '</span>';
         }
         return null;
     }

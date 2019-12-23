@@ -29,6 +29,10 @@ $(document).ready(function () {
     visualAcuityChange(this, '');
   });
 
+	$('.va-info-icon').closest('tr').each(function () {
+		OphCiExamination_VisualAcuity_ReadingTooltip($(this));
+	});
+
   $(this).delegate(
     '.visualAcuityReading .removeReading',
     'click', function(e) {
@@ -113,13 +117,14 @@ $(document).ready(function () {
   $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
     var $section =  $(this).closest('section');
     var $cviAlert = $('.cvi-alert');
+    var hasCvi = parseInt($cviAlert.data('hascvi')) === 1;
     var threshold = parseInt($cviAlert.data('threshold'));
 
     if( $section.find('.cvi_alert_dismissed').val() !== "1"){
       var show_alert = null;
       $section.find('.va-selector').each(function(){
         var val = parseInt($(this).val());
-        if (val < threshold) {
+        if (val < threshold && !hasCvi) {
           show_alert = (show_alert === null) ? true : show_alert;
         } else {
           show_alert = false;
@@ -278,7 +283,6 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
 }
 
 function swapElement(element_to_swap, elementTypeClass, params){
-  console.log('swap element');
     const nva = elementTypeClass.endsWith("NearVisualAcuity");
     const sidebar = $('#episodes-and-events').data('patient-sidebar');
     const $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);

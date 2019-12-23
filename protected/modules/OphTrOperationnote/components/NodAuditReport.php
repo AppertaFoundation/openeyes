@@ -258,7 +258,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function InsertDataToArray($data, $surgeon_id){
+    public function InsertDataToArray($data, $surgeon_id)
+    {
         $return_data = array(
             'pre-complete'=>array(),
             'post-complete'=>array(),
@@ -290,7 +291,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function PCRRiskDataToArray($data){
+    public function PCRRiskDataToArray($data)
+    {
         $return_data = array(
             'known'=> array(),
             'not_known'=> array(),
@@ -305,7 +307,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function IndicationForSurgeryDataToArray($data){
+    public function IndicationForSurgeryDataToArray($data)
+    {
         $return_data=array(
             'complete'=>array(),
             'incomplete'=>array(),
@@ -319,7 +322,8 @@ class NodAuditReport extends Report implements ReportInterface
         }
         return $return_data;
     }
-    public function NodEligibilityDataToArray($data, $surgeon_id){
+    public function NodEligibilityDataToArray($data, $surgeon_id)
+    {
         $return_data=array(
             'eligible'=>array(),
             'ineligible'=>array(),
@@ -348,6 +352,34 @@ class NodAuditReport extends Report implements ReportInterface
     public function tracesJson()
     {
         $dataset = $this->dataSet();
+        $incomplete_y = array();
+        $complete_y = array();
+        if ($dataset['total'] !== 0) {
+            $incomplete_y = array(
+                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
+                count($dataset['VA']['post-incomplete'])/$dataset['total'],
+                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
+                count($dataset['RF']['post-incomplete'])/$dataset['total'],
+                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
+                count($dataset['E/I']['ineligible'])/$dataset['total'],
+            );
+            $complete_y = array(
+                count($dataset['VA']['pre-complete'])/$dataset['total'],
+                count($dataset['VA']['post-complete'])/$dataset['total'],
+                count($dataset['RF']['pre-complete'])/$dataset['total'],
+                count($dataset['RF']['post-complete'])/$dataset['total'],
+                count($dataset['BM']['pre-complete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
+                count($dataset['E/I']['eligible'])/$dataset['total'],
+            );
+        }
         $trace2 = array(
             'name'=>'Incomplete',
             'type' => 'bar',
@@ -363,18 +395,7 @@ class NodAuditReport extends Report implements ReportInterface
                 'Indication For Surgery',
                 'Eligibility For NOD Audit'
             ),
-            'y' => array(
-                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
-                count($dataset['VA']['post-incomplete'])/$dataset['total'],
-                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
-                count($dataset['RF']['post-incomplete'])/$dataset['total'],
-                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
-                count($dataset['E/I']['ineligible'])/$dataset['total'],
-            ),
+            'y' => $incomplete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-incomplete'],
                 $dataset['VA']['post-incomplete'],
@@ -388,6 +409,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['ineligible'],
             ),
         );
+
         $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',
@@ -403,18 +425,7 @@ class NodAuditReport extends Report implements ReportInterface
                 'Indication For Surgery',
                 'Eligibility For NOD Audit',
             ),
-            'y' => array(
-                count($dataset['VA']['pre-complete'])/$dataset['total'],
-                count($dataset['VA']['post-complete'])/$dataset['total'],
-                count($dataset['RF']['pre-complete'])/$dataset['total'],
-                count($dataset['RF']['post-complete'])/$dataset['total'],
-                count($dataset['BM']['pre-complete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
-                count($dataset['E/I']['eligible'])/$dataset['total'],
-            ),
+            'y' => $complete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-complete'],
                 $dataset['VA']['post-complete'],
@@ -432,7 +443,8 @@ class NodAuditReport extends Report implements ReportInterface
         return json_encode(array($trace1, $trace2));
     }
 
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         return json_encode($this->plotlyConfig);
     }
 
