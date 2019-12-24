@@ -92,6 +92,18 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     });
 
                     /*
+
+                   */
+                    editor.addButton('labelaitem', {
+                        text: 'Input',
+                        icon: false,
+                        tooltip: "",
+                        onclick: function () {
+                            editor.insertContent('<input type="checkbox"/>Input text here');
+                        }
+                    });
+
+                    /*
                     Disable custom table creation within tables.
                     Limited use. User can create a <p> inside <td> by Enter.
                     Then they can add another table
@@ -103,6 +115,28 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                             btn.disabled(nodeName === 'td' || nodeName === 'th');
                         });
                     }
+
+                    // This function works for checkboxes
+                    editor.on('init', function() {
+                        // Get the content of the
+                        $(editor.getBody()).on("change", ":checkbox", function (el) {
+                            if (el.target.checked) {
+                                $(el.target).attr('checked', 'checked');
+                            } else {
+                                $(el.target).removeAttr('checked');
+                            }
+                        });
+                        // Selects
+                        $(editor.getBody()).on("change", "select", function(el){
+                            $(el.target).children('option').each(function() {
+                                if(this.selected){
+                                    $( this ).attr('selected','selected');
+                                }else{
+                                    $( this ).removeAttr('selected');
+                                }
+                            });
+                        });
+                    });
                 }
             },
             options

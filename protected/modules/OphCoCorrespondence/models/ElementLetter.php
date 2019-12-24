@@ -187,9 +187,9 @@ class ElementLetter extends BaseEventTypeElement
 
     public function beforeValidate()
     {
-        if (isset($_POST['ElementLetter'])) {
-            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify($_POST['ElementLetter']['body']);
-        }
+//        if (isset($_POST['ElementLetter'])) {
+//            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify($_POST['ElementLetter']['body']);
+//        }
         return parent::beforeValidate();
     }
     
@@ -788,7 +788,32 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
-        return (new CHtmlPurifier())->purify($this->body);
+
+//        $config->set('HTML.DefinitionID', 'enduser-customize.html tutorial');
+//        $config->set('HTML.DefinitionRev', 1);
+//        $config->set('Cache.DefinitionImpl', null); // remove this later!
+//        $def = $config->getHTMLDefinition(true);
+//        $def->addAttribute('a', 'target', new HTMLPurifier_AttrDef_Enum(
+//            array('_blank','_self','_target','_top')
+//        ));
+//        $form = $def->addElement(
+//            'form',   // name
+//            'Block',  // content set
+//            'Flow', // allowed children
+//            'Common', // attribute collection
+//            array( // attributes
+//                'action*' => 'URI',
+//                'method' => 'Enum#get|post',
+//                'name' => 'ID'
+//            )
+//        );
+//        $form->excludes = array('form' => true);
+//
+//        $htmlPurifier = new CHtmlPurifier();
+//        $htmlPurifier->setOptions($config);
+//        return $htmlPurifier->purify($this->body);
+
+        return $this->body;
     }
 
     public function getCreate_view()
