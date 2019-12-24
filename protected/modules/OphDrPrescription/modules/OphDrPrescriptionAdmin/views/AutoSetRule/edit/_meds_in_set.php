@@ -55,7 +55,7 @@ if ($is_prescription_set) {
                     <th>Default frequency</th>
                     <th>Default duration</th>
                     <th>Default Dispense Condition</th>
-                    <th>Condition	Default Dispense Location</th>
+                    <th>Condition   Default Dispense Location</th>
                     <th>Actions</th>
                 </tr>
             </thead>
