@@ -19,7 +19,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit.prototype.initTriggers = function () {
         const controller = this;
-        $(this.options.tableSelector).on('click', 'td.actions a', function() {
+        $(this.options.tableSelector).on('click', 'td a', function() {
             const $tr = $(this).closest('tr');
             const $tapers = $(controller.options.tableSelector).find('tr[data-parent-med-id="' + $tr.attr('data-med_id') + '"]');
 
@@ -28,30 +28,44 @@ OpenEyes.UI = OpenEyes.UI || {};
             if (action === 'edit') {
                 controller.hideGeneralControls($tr);
                 controller.showEditControls($tr, $tapers);
-                $tr.find('.js-text').hide();
+
+
+                const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
+                $.each(trs, function(i, tr) {
+                    const $tr = $(tr);
+                    $tr.find('.js-text').hide();
+                });
+
                 $tapers.find('.js-text').hide();
                 controller.showEditFields($tr, $tapers);
+
             } else if (action === 'cancel') {
                 controller.hideEditControls($tr, $tapers);
                 controller.showGeneralControls($tr);
-                $tr.find('.js-text').show();
-                $tr.find('.js-input').hide();
+
+                const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
+                $.each(trs, function(i, tr) {
+                    const $tr = $(tr);
+                    $tr.find('.js-text').show();
+                    $tr.find('.js-input').hide();
+                });
+
                 $tapers.find('.js-text').show();
                 $tapers.find('.js-input').hide();
             }
         });
 
-        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="save"]', function() {
+        $(this.options.tableSelector).on('click', 'td a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
             controller.saveRow($tr);
         });
 
-        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="remove"]', function () {
+        $(this.options.tableSelector).on('click', 'td a[data-action_type="remove"]', function () {
             let $tr = $(this).closest('tr');
             $tr.remove();
         });
 
-        $(this.options.tableSelector).on('click', 'td.actions a[data-action_type="delete"]', function() {
+        $(this.options.tableSelector).on('click', 'td a[data-action_type="delete"]', function() {
             const $tr = $(this).closest('tr');
             const text = '<button class="red hint js-delete-row" data-row_med_id="' + $tr.data('med_id') + '">Delete</button> <button class="green js-delete-row-cancel">Cancel</button>';
             let leftPos, toolCSS;
@@ -102,35 +116,61 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.showEditFields = function($tr, $tapers) {
-        $tr.find('.js-input').show();
+    TableInlineEdit.prototype.showEditFields = function($tr, $tapers)
+    {
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $tr.find('.js-input').show();
+        });
+
         if ($tapers !== undefined) {
-					$tapers.find('.js-input').show();
-				}
+            $tapers.find('.js-input').show();
+        }
     };
 
     TableInlineEdit.prototype.showEditControls = function($tr, $tapers)
     {
-        $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $tr.find('td').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
+        });
+
         if ($tapers !== undefined) {
-					$tapers.find('td.actions').find('a[data-action_type="remove"]').show();
-				}
+            $tapers.find('td').find('a[data-action_type="remove"]').show();
+        }
     };
 
     TableInlineEdit.prototype.hideEditControls = function($tr, $tapers)
     {
-        $tr.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
-        $tapers.find('td.actions').find('a[data-action_type="remove"]').hide();
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $tr.find('td').find('a[data-action_type="save"], a[data-action_type="cancel"]').hide();
+        });
     };
 
     TableInlineEdit.prototype.hideGeneralControls = function($tr)
     {
-        $tr.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').hide();
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $tr.find('td').find('a[data-action_type="edit"], a[data-action_type="delete"], button[data-action="add-taper"]').hide();
+        });
     };
 
     TableInlineEdit.prototype.showGeneralControls = function($tr)
     {
-        $tr.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').show();
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $tr.find('td').find('a[data-action_type="edit"], a[data-action_type="delete"], button[data-action="add-taper"]').show();
+        });
     };
 
     TableInlineEdit.prototype.saveRow = function($tr)
@@ -138,10 +178,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         let controller = this;
         let data = {};
         let json_tapers = {};
-        const $actionsTd = $tr.find('td.actions');
-        $.each( $tr.find('.js-input'), function(i, input) {
-            const $input = $(input);
-            data[$input.attr('name')] = $input.val();
+const $actionsTd = $tr.find('td.actions');
+
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            $.each( $tr.find('.js-input'), function(i, input) {
+                const $input = $(input);
+                data[$input.attr('name')] = $input.val();
+            });
         });
 
         data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
@@ -203,16 +249,27 @@ OpenEyes.UI = OpenEyes.UI || {};
                 $actionsTd.find('.js-spinner-as-icon').remove();
 
                 if (result.success && result.success === true) {
-                    $tr.find('.js-text').show();
-                    $tr.find('.js-input').hide();
+
+                    const trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
+                    $.each(trs, function(i, tr) {
+                        const $tr = $(tr);
+                        $tr.find('.js-text').show();
+                        $tr.find('.js-input').hide();
+                    });
+
                     $tapers.find('.js-text').show();
                     $tapers.find('.js-input').hide();
                     if (typeof controller.options.onAjaxComplete === 'function') {
                         controller.options.onAjaxComplete();
                     }
                 } else if(result.errors) {
-                    $tr.find('.js-text').hide();
-                    $tr.find('.js-input').show();
+                    const trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
+                    $.each(trs, function(i, tr) {
+                        const $tr = $(tr);
+                        $tr.find('.js-text').hide();
+                        $tr.find('.js-input').show();
+                    });
+
                     $tapers.find('.js-text').hide();
                     $tapers.find('.js-input').show();
                     controller.showEditControls($tr, $tapers);

@@ -45,43 +45,18 @@ if ($is_prescription_set) {
 </div>
 <div class="row flex-layout flex-stretch flex-right">
     <div class="cols-12">
-        <table id="meds-list" class="standard js-inline-edit" <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>
-
-        <?php if ($is_prescription_set) : ?>
-            <colgroup>
-                <col style="width: 25%">
-                <col style="width: 1%">
-                <col style="width: 5%">
-                <col style="width: 13%">
-                <col style="width: 11.111%">
-                <col style="width: 11.111%">
-                <col style="width: 17%">
-                <col style="width: 12%">
-                <col style="width: 11.111%">
-            </colgroup>
-        <?php else : ?>
-            <colgroup>
-                <col class="cols-3">
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-3">
-                <col class="cols-3" style="width:20%">
-            </colgroup>
-        <?php endif; ?>
-
+        <table id="meds-list" class="standard last-right js-inline-edit" <?= !$medication_data_provider->totalItemCount ? 'style="display:none"' : ''?>>
             <thead>
                 <tr>
                     <th>Preferred Term</th>
                     <th>Default dose</th>
-                    <th>Default unit</th>
-                    <th>Default route</th>
+                    <th>Default Unit</th>
+                    <th>Default Route</th>
                     <th>Default frequency</th>
                     <th>Default duration</th>
-                    <?php if ($is_prescription_set) : ?>
-                        <th>Default Dispense Condition</th>
-                        <th>Default Dispense Location</th>
-                    <?php endif; ?>
-                    <th style="text-align:center">Action</th>
+                    <th>Default Dispense Condition</th>
+                    <th>Condition	Default Dispense Location</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,58 +68,48 @@ if ($is_prescription_set) {
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                 <?php $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
                 <?php if ($set_item) : ?>
-                <tr data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
-                    <td>
-                        <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
-                        <button class="js-add-taper" type="button" title="Add taper">
-                            <i class="oe-i child-arrow small"></i>
-                        </button>
-                        <?= $med->preferred_term; ?>
-                        <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
-                        <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
+                    <tr class="js-row-of-<?=$med->id?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
+                        <td>
+                            <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
 
-<!--                        <div style="margin-left: 32px;text-align: left;padding-bottom: 4px;">-->
-<!--                            Include parents:  <label class="toggle-switch"><input class="js-input" type="checkbox"><div class="toggle-btn"></div></label>-->
-<!--                        </div>-->
-<!--                        <div style="margin-left: 32px;text-align: left;padding-bottom: 4px;">-->
-<!--                            Include children:  <label class="toggle-switch"><input class="js-input" type="checkbox"><div class="toggle-btn"></div></label>-->
-<!--                        </div>-->
-
-                    </td>
-                    <td>
-                        <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
-                        <?= \CHtml::activeTextField($set_item, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
-                    </td>
-                    <td>
-                        <span data-type="default_dose" data-id="<?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : ''; ?>"><?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : '-'; ?></span>
-                    </td>
-                    <td>
-                        <span data-type="default_route" data-id="<?= $set_item->defaultRoute ? $set_item->default_route_id : ''; ?>" class="js-text"><?= $set_item->defaultRoute ? $set_item->defaultRoute->term : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList(
-                            $set_item,
-                            'default_route_id',
-                            $route_options,
-                            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
-                        ); ?>
-                    </td>
-                    <td>
-                        <span data-type="default_frequency" data-id="<?= $set_item->defaultFrequency ? $set_item->default_frequency_id : ''; ?>" class="js-text"><?= $set_item->defaultFrequency ? $set_item->defaultFrequency->term : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList(
-                            $set_item,
-                            'default_frequency_id',
-                            $frequency_options,
-                            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
-                        ); ?>
-                    </td>
-                    <td>
-                        <span data-type="default_duration" data-id="<?= $set_item->defaultDuration ? $set_item->default_duration_id : ''; ?>" class="js-text"><?= $set_item->defaultDuration ? $set_item->defaultDuration->name : '-'; ?></span>
-                        <?= \CHtml::activeDropDownList(
-                            $set_item,
-                            'default_duration_id',
-                            $duration_options,
-                            ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
-                        ); ?>
-                    </td>
+                            <?= $med->preferred_term; ?>
+                            <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
+                            <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
+                        </td>
+                        <td>
+                            <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
+                            <?= \CHtml::activeTextField($set_item, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
+                        </td>
+                        <td>
+                            <span data-type="default_dose" data-id="<?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : ''; ?>"><?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : '-'; ?></span>
+                        </td>
+                        <td>
+                            <span data-type="default_route" data-id="<?= $set_item->defaultRoute ? $set_item->default_route_id : ''; ?>" class="js-text"><?= $set_item->defaultRoute ? $set_item->defaultRoute->term : '-'; ?></span>
+                            <?= \CHtml::activeDropDownList(
+                                $set_item,
+                                'default_route_id',
+                                $route_options,
+                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                            ); ?>
+                        </td>
+                        <td>
+                            <span data-type="default_frequency" data-id="<?= $set_item->defaultFrequency ? $set_item->default_frequency_id : ''; ?>" class="js-text"><?= $set_item->defaultFrequency ? $set_item->defaultFrequency->term : '-'; ?></span>
+                            <?= \CHtml::activeDropDownList(
+                                $set_item,
+                                'default_frequency_id',
+                                $frequency_options,
+                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                            ); ?>
+                        </td>
+                        <td>
+                            <span data-type="default_duration" data-id="<?= $set_item->defaultDuration ? $set_item->default_duration_id : ''; ?>" class="js-text"><?= $set_item->defaultDuration ? $set_item->defaultDuration->name : '-'; ?></span>
+                            <?= \CHtml::activeDropDownList(
+                                $set_item,
+                                'default_duration_id',
+                                $duration_options,
+                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                            ); ?>
+                        </td>
 
                         <?php if ($is_prescription_set) : ?>
                             <td>
@@ -166,16 +131,43 @@ if ($is_prescription_set) {
                                 ); ?>
                             </td>
                         <?php endif; ?>
+
+                        <td class="actions" style="text-align:center">
+                            <button class="js-add-taper" data-action_type="add-taper" type="button" title="Add taper">
+                                <i class="oe-i child-arrow small"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="js-row-of-<?=$med->id?> no-line js-addition-line" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>">
+                        <td class="right" colspan="99">
+
+                            <span data-type="include_parent" data-id="<?= $set_item->include_parent ? $set_item->include_parent : ''; ?>" class="js-text">
+                                <?=$set_item->getAttributelabel('include_parent') . ': ' . ($set_item->include_parent ? 'yes' : 'no')?>
+                            </span>
+
+                            <label class="inline highlight js-input" style="display: none">
+                                <?=\CHtml::activeCheckBox($set_item, 'include_parent'); ?> Include Parent
+                            </label>
+
+                            <span data-type="include_children" data-id="<?= $set_item->include_children ? $set_item->include_children : ''; ?>" class="js-text">
+                                <?=$set_item->getAttributelabel('include_children') . ': ' . ($set_item->include_children ? 'yes' : 'no')?>
+                            </span>
+                            <label class="inline highlight js-input" style="display: none">
+                                <?=\CHtml::activeCheckBox($set_item, 'include_children'); ?> Include Children
+                            </label>
+                            <span class="tabspace"></span>
+
+                            <a data-action_type="save" class="js-tick-set-medication" style="display:none"><i class="oe-i save pad"></i></a>
+                            <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cancel pad"></i></a>
+                            <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil pad"></i></a>
+
+                        </td>
+                    </tr>
                 <?php endif; ?>
 
-                    <td class="actions" style="text-align:center">
-                        <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil"></i></a>
-                        <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
-
-                        <a data-action_type="save" class="js-tick-set-medication" style="display:none"><i class="oe-i tick-green"></i></a>
-                        <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cross-red"></i></a>
-                    </td>
-                </tr>
                 <?php
                 if (!empty($set_item->tapers)) {
                     foreach ($set_item->tapers as $count => $taper) {
@@ -204,7 +196,7 @@ if ($is_prescription_set) {
 
 <script type="text/template" id="medication_item_taper_template">
     <?php
-        $empty_entry = new MedicationSetItemTaper();
+        $empty_entry = new MedicationSetAutoRuleMedicationTaper();
 
         $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
             "taper" => $empty_entry,
@@ -226,37 +218,37 @@ if ($is_prescription_set) {
                 <i class="oe-i child-arrow small"></i>
             </button>
             {{preferred_term}}
-            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{id}}">
+            <input class="js-input" name="MedicationSetAutoRuleMedicationTaper[id]" type="hidden" value="{{id}}">
             <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
         </td>
         <td>
             <span data-type="default_dose" class="js-text" style="display: inline;">{{^default_dose}}-{{/default_dose}}{{#default_dose}}{{default_dose}}{{/default_dose}}</span>
-            <input class="js-input cols-full" style="display: none;" name="MedicationSetItem[default_dose]" id="MedicationSetItem_default_dose" type="text" value="{{default_dose}}">
+            <input class="js-input cols-full" style="display: none;" name="MedicationSetAutoRuleMedicationTaper[default_dose]" id="MedicationSetAutoRuleMedicationTaper" type="text" value="{{default_dose}}">
         </td>
         <td>
             <span data-type="default_dose_unit_term">{{^default_dose_unit_term}}-{{/default_dose_unit_term}}{{#default_dose_unit_term}}{{default_dose_unit_term}}{{/default_dose_unit_term}}</span>
         </td>
         <td>
             <span data-id="{{#default_route_id}}{{default_route_id}}{{/default_route_id}}" data-type="default_route" class="js-text" style="display: inline;">{{^default_route}}-{{/default_route}}{{#default_route}}{{default_route}}{{/default_route}}</span>
-            <?=\CHtml::dropDownList('MedicationSetItem[default_route_id]', null, $route_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedicationTaper[default_route_id]', null, $route_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
         <td>
             <span data-id="{{#default_frequency_id}}{{default_frequency_id}}{{/default_frequency_id}}" data-type="default_frequency" class="js-text" style="display: inline;">{{^default_frequency}}-{{/default_frequency}}{{#default_frequency}}{{default_frequency}}{{/default_frequency}}</span>
-            <?=\CHtml::dropDownList('MedicationSetItem[default_frequency_id]', null, $frequency_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedicationTaper[default_frequency_id]', null, $frequency_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
         <td>
             <span data-id="{{#default_duration_id}}{{default_duration_id}}{{/default_duration_id}}" data-type="default_duration" class="js-text" style="display: inline;">{{^default_duration}}-{{/default_duration}}{{#default_duration}}{{default_duration}}{{/default_duration}}</span>
-            <?=\CHtml::dropDownList('MedicationSetItem[default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedicationTaper[default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
 
         <?php if ($is_prescription_set) : ?>
         <td>
             <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
-            <?= \CHtml::dropDownList('MedicationSetItem[default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedicationTaper[default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
         <td>
             <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
-            <?= \CHtml::dropDownList('MedicationSetItem[default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedicationTaper[default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
         <?php endif; ?>
 
@@ -269,8 +261,6 @@ if ($is_prescription_set) {
         </td>
     </tr>
 </script>
-
-
 
 <script>
     new OpenEyes.UI.AdderDialog({

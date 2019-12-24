@@ -363,15 +363,15 @@ class AutoSetRuleController extends BaseAdminController
                             $taper_array = array();
                             foreach ($tapers as $taper) {
                                 $taper = json_decode($taper, true);
-                                $new_taper = new MedicationSetItemTaper();
-                                if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
-                                    $new_taper->id = $taper['MedicationSetItemTaper[id]'];
+                                $new_taper = new MedicationSetAutoRuleMedicationTaper();
+                                if (isset($taper['MedicationSetAutoRuleMedicationTaper[id]']) && $taper['MedicationSetAutoRuleMedicationTaper[id]'] !== "") {
+                                    $new_taper->id = $taper['MedicationSetAutoRuleMedicationTaper[id]'];
                                     $new_taper->setIsNewRecord(false);
                                 }
-                                $new_taper->medication_set_item_id = $item_data['id'];
-                                $new_taper->dose = $taper['MedicationSetItemTaper[dose]'];
-                                $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
-                                $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
+                                $new_taper->medication_set_auto_rule_id = $item_data['id'];
+                                $new_taper->dose = $taper['MedicationSetAutoRuleMedicationTaper[dose]'];
+                                $new_taper->duration_id = $taper['MedicationSetAutoRuleMedicationTaper[duration_id]'];
+                                $new_taper->frequency_id = $taper['MedicationSetAutoRuleMedicationTaper[frequency_id]'];
 
                                 $taper_array[] = $new_taper;
                             }
