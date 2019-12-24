@@ -44,7 +44,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         }, $entry->medication->allergies)); ?>"<?php
     endif; ?>
     class="divider col-gap <?= $stopped ? 'fade' : ''?> js-first-row <?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
-    <td class="drug-details" rowspan="2">
+    <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= (int)$entry->originallyStopped ?>" />
