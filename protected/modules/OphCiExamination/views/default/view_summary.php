@@ -55,13 +55,13 @@ if ($historyElement) {
                             <?php foreach ($current_eye_medications as $entry) { ?>
                                 <tr>
                                     <td>
-                                        <i class="oe-i start small pad-right pro-theme"></i>
+                                        <i class="oe-i start small pad-right"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
                                         <?php $tooltip_content = $entry->getTooltipContent();
                                         if (!empty($tooltip_content)) { ?>
-                                            <i class="oe-i info small-icon pro-theme js-has-tooltip"
+                                            <i class="oe-i info small-icon js-has-tooltip"
                                                data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
@@ -100,13 +100,13 @@ if ($historyElement) {
                         <?php foreach ($stopped_eye_medications as $entry) : ?>
                             <tr>
                                 <td>
-                                    <i class="oe-i stop small pad-right pro-theme"></i>
+                                    <i class="oe-i stop small pad-right"></i>
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
                                     <?php $tooltip_content = $entry->getTooltipContent();
                                     if (!empty($tooltip_content)) { ?>
-                                        <i class="oe-i info small-icon pro-theme js-has-tooltip"
+                                        <i class="oe-i info small-icon js-has-tooltip"
                                            data-tooltip-content="<?= $tooltip_content ?>">
                                         </i>
                                     <?php } ?>
@@ -202,14 +202,14 @@ if ($historyElement) {
                                 <?php foreach ($current_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <i class="oe-i start small pad-right pro-theme"></i>
+                                            <i class="oe-i start small pad-right"></i>
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td>
                                             <?php
                                             $tooltip_content = $entry->getTooltipContent();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i info small-icon pro-theme js-has-tooltip"
+                                                <i class="oe-i info small-icon js-has-tooltip"
                                                    data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>
@@ -242,13 +242,13 @@ if ($historyElement) {
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <i class="oe-i stop small pad-right pro-theme"></i>
+                                            <i class="oe-i stop small pad-right"></i>
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td>
                                             <?php $tooltip_content = $entry->getTooltipContent();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i info small-icon pro-theme js-has-tooltip"
+                                                <i class="oe-i info small-icon js-has-tooltip"
                                                    data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>
