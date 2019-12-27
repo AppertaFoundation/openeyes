@@ -91,7 +91,7 @@ class DefaultController extends BaseEventTypeController
      */
     private function documentErrorHandler($files, $index)
     {
-        $message = NULL;
+        $message = null;
 
         switch ($files['Document']['error'][$index]) {
             case UPLOAD_ERR_OK:
@@ -155,14 +155,14 @@ class DefaultController extends BaseEventTypeController
     {
         $doc_ids = \Yii::app()->request->getPost('doc_ids', []);
         foreach ($doc_ids as $doc_id) {
-            try{
+            try {
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
                 } else {
                     OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
                 }
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 OELog::log("Failed to delete the ProtectedFile with id = " . $doc_id);
             }
         }
@@ -191,7 +191,7 @@ class DefaultController extends BaseEventTypeController
             foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $file_key) {
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
-                    if ( $handler == NULL) {
+                    if ( $handler == null) {
                         $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(

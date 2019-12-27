@@ -57,7 +57,9 @@
             <div class="cols-11">
                 <div id="document-comments" data-comment-button="#document_comment_button"
                      class="cols-full js-comment-container "
-                     style="<?php if ($element->comment == null) echo 'display:none' ?>">
+                     style="<?php if ($element->comment == null) {
+                            echo 'display:none';
+                            } ?>">
                     <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                         <?php
                         echo $form->textArea($element,
@@ -76,7 +78,9 @@
                             class="button js-add-comments"
                             data-comment-container="#document-comments"
                             type="button"
-                            style="visibility:<?php if ($element->comment != null) echo 'hidden' ?>">
+                            style="visibility:<?php if ($element->comment != null) {
+                                echo 'hidden';
+                                              } ?>">
 
                         <i class="oe-i comments small-icon"></i>
                     </button>
@@ -123,7 +127,7 @@
                         <?php $this->generateFileField($element, 'single_document'); ?>
 
                         <div class="flex-layout flex-right js-remove-document-wrapper" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
-                            <?php if($element->single_document_id): ?>
+                            <?php if ($element->single_document_id) : ?>
                             <input type="hidden" id="original-doc" name="original-doc" value="<?= $element->single_document_id ?>">
                             <?php endif; ?>
                             <button class="hint red" data-side="single">remove uploaded file</button>
