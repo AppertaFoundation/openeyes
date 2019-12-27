@@ -58,7 +58,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         class="divider col-gap <?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
     >
 
-        <td  class="drug-details" rowspan="2">
+        <td class="drug-details" rowspan="2">
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
             <span class="js-prepended_markup">
             <?php

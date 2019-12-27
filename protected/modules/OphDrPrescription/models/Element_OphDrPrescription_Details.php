@@ -30,6 +30,8 @@
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
+    public $check_for_duplicate_entries = false;
+
     /**
      * Returns the static model of the specified AR class.
      *
