@@ -1544,6 +1544,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements

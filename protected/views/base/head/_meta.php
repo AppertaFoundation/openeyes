@@ -8,8 +8,12 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 //the namespace doesn't exist and gets overwritten.
 ?>
 <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
-<title><?=\CHtml::encode($this->pageTitle); ?></title>
-<meta name="viewport" content="width=1230, initial-scale=1" />
+<title><?=\CHtml::encode($this->pageTitle) ?></title>
+<?php if (isset($whiteboard) && $whiteboard) : ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<?php else : ?>
+    <meta name="viewport" content="width=1230, initial-scale=1" />
+<?php endif; ?>
 <meta name="format-detection" content="telephone=no">
 
 <?php if (Yii::app()->params['disable_browser_caching']) {?>

@@ -143,6 +143,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
         $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
         $criteria->addCondition("e.deleted = 0");
+        $criteria->addCondition("e.delete_pending = 0");
         $criteria->addCondition("t.`output_status` = 'PENDING' AND t.`output_type`= 'Internalreferral'");
 
         return DocumentOutput::model()->findAll($criteria);

@@ -30,6 +30,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Comorbidities extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 45;
+
     protected $auto_update_relations = true;
 
     /**
@@ -151,10 +154,5 @@ class Element_OphCiExamination_Comorbidities extends \BaseEventTypeElement
         parent::loadFromExisting($element);
 
         $this->items = $element->items;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 45 : parent::getDisplayOrder($action);
     }
 }
