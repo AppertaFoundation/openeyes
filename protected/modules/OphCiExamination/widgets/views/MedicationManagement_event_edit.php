@@ -190,6 +190,7 @@ $element_errors = $element->getErrors();
                     }
                 });
             }
+            window.MMController = undefined;
         });
 
         window.MMController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
@@ -229,7 +230,7 @@ $element_errors = $element->getErrors();
                     let $historyMedicationFullRow = window.HMController.$table.find('tr[data-key=' + historyMedicationKey + ']');
 
 
-                    if (copyFields && rowNeedsCopying && !($historyMedicationFullRow.find('.new') && $('.element.OEModule_OphCiExamination_models_HistoryMedications').length === 0)) {
+                    if (copyFields && rowNeedsCopying) {
                         $medicationManagementRow = window.HMController.copyRow($historyMedicationFullRow, window.MMController.$table.children("tbody"));
                         window.HMController.bindEntries($(historyMedicationRow), $medicationManagementRow);
                     }
