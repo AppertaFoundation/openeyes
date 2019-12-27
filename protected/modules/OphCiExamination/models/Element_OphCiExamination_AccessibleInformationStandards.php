@@ -31,6 +31,7 @@ use Yii;
  */
 class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**
