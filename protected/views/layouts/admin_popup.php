@@ -19,10 +19,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
-	<?php echo $content?>
+    <?php echo $content?>
 </body>
 </html>

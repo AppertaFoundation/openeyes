@@ -65,7 +65,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         });
 
         $(controller.options.wrapperSelector).on('change', controller.options.fileInputSelector, function () {
-            controller.documentUpload($(this));
+            controller.documentUpload($(this), this.files[0].type);
         });
 
         $(controller.options.wrapperSelector).on('click', controller.options.removeButtonSelector, function (e) {
@@ -140,16 +140,24 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let $td = $("#Document_" + side + "_document_row_id").closest('td');
 
         $td.find('.ophco-image-container').remove();
+        $('#'+side+'_document_rotate').val(0);
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
         $td.find('.js-remove-document-wrapper').hide();
-        $(controller.options.uploadModeSelector).attr('disabled', false);
+
+        if(side === 'single'){
+            $(controller.options.uploadModeSelector).attr('disabled', false);
+        } else {
+            let opposite_side = side === 'right' ? 'left' : 'right';
+            if( $('#Element_OphCoDocument_Document_'+ opposite_side + '_document_id').val() === '') {
+                $(controller.options.uploadModeSelector).attr('disabled', false);
+            }
+        }
 
         $(controller.options.fileInputSelector).val("");
-        //$td.find(controller.options.fileInputSelector).prop('files', null);
-        //$file_input.replaceWith($file_input.val("").clone(true));
+        $td.find('.js-document-id').val("");
+        $('#' + side + '-rotate-actions').hide();
 
         let deleted_doc = $td.find('.js-document-id').val();
-        $td.find('.js-document-id').val("");
 
         let $removed_docs = $(controller.options.removedDocumentsSelector);
         if (typeof $removed_docs.data('documents') === 'undefined') {
@@ -173,7 +181,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         $label.text(text);
     };
 
-    DocumentUploadController.prototype.documentUpload = function($field) {
+    DocumentUploadController.prototype.documentUpload = function($field, file_type) {
         let controller = this;
         let formData = new FormData();
         formData.append($field.attr('name'), $field.prop('files')[0]);
@@ -226,6 +234,10 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                             $field.closest('td').find('.js-remove-document-wrapper').show();
 
                             $(controller.options.uploadModeSelector + ":not(:checked").attr('disabled', true);
+
+                            if (file_type !== "application/pdf") {
+                                $('#' + $field.data('side') + '-rotate-actions').show();
+                            }
                         });
                     }
 
@@ -342,6 +354,10 @@ $(document).ready(function () {
 
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
     $('.js-document-upload-wrapper').data('controller', uploader);
+
+    $(this).on('click','#et_print', function (e) {
+        e.preventDefault();
+        printEvent(null);
+    });
+
 });
-
-

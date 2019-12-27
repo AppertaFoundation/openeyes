@@ -223,12 +223,12 @@ $SCRIPTDIR/oe-fix.sh --no-compile --no-clear --no-assets --no-migrate --no-depen
 # unless the preservedb switch is set add/reset the sample database
 if [ $preservedb = 0 ]; then
 
-    resetswitches="--no-migrate --no-fix ${nosample/1/--clean-base} --banner 'New'"
+    resetswitches=("--no-migrate" "--no-fix" "${nosample/1/--clean-base}" "--banner" 'New')
 
     # If the genetics switch has been set, then enable the genetics module
-    [ $genetics = 1 ] && resetswitches="$resetswitches --genetics-enable"
+    [ $genetics = 1 ] && resetswitches+=("--genetics-enable")
 
-    $SCRIPTDIR/oe-reset.sh $resetswitches
+    $SCRIPTDIR/oe-reset.sh "${resetswitches[@]}"
 
 fi
 
@@ -238,7 +238,7 @@ fi
 [ "$nofix" != "1" ] && { $SCRIPTDIR/oe-fix.sh $fixparams; } || :
 
 # unless we are in build mode, configure apache and cron
-if [ "$OE_MODE" != "BUILD" ]; then
+if [ "${OE_MODE^^}" != "BUILD" ]; then
     echo Configuring Apache
 
     echo "

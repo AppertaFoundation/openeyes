@@ -17,30 +17,30 @@
  */
 ?>
 <div class="title">
-	<strong>Select the type of test to add:</strong>
+    <strong>Select the type of test to add:</strong>
 </div>
 <ul class="events">
-	<?php foreach ($children as $eventType) {
-    if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-        $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-    } else {
-        $assetpath = '/assets/';
-    }
+    <?php foreach ($children as $eventType) {
+        if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+        } else {
+            $assetpath = '/assets/';
+        }
 
-    if ($this->checkAccess('OprnCreateEvent', $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
+        if ($this->checkAccess('OprnCreateEvent', $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
+            ?>
+            <li>
+                <?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
+            </li>
+            <?php
+        } else {
+            ?>
+            <li id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add '.$eventType->name ?>">
+                <?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', '#')?>
+            </li>
+            <?php
+        }
         ?>
-			<li>
-				<?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
-			</li>
-		<?php 
-    } else {
-        ?>
-			<li id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add '.$eventType->name ?>">
-				<?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', '#')?>
-			</li>
-		<?php 
-    }
-    ?>
-	<?php 
-}?>
+        <?php
+    }?>
 </ul>

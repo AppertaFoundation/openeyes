@@ -160,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('fully_specified_name', $this->fully_specified_name, true);
-        $criteria->compare('term', $this->term, true);
+        $criteria->compare('lower(fully_specified_name)', strtolower($this->fully_specified_name), true);
+        $criteria->compare('lower(term)', strtolower($this->term), true);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }
@@ -210,9 +210,19 @@ class Disorder extends BaseActiveRecordVersioned
         $command->prepare();
         $result = $command->queryColumn();
         if (sizeof($result) > 0 && $this->isNewRecord === true) {
-            $this->addError( $attribute,'ID '.$this->id.' already exists. Please choose a unique ID.');
+            $this->addError( $attribute, 'ID '.$this->id.' already exists. Please choose a unique ID.');
             return true;
         }
             return false;
+    }
+
+    public function getPatientDisorders($patient_id) {
+        $criteria = new CDbCriteria();
+        $criteria->join = "LEFT JOIN episode ep ON ep.disorder_id = t.id AND ep.patient_id = :patient_id ";
+        $criteria->join .= "LEFT JOIN secondary_diagnosis sd ON sd.disorder_id = t.id AND sd.patient_id = :patient_id";
+        $criteria->condition = "ep.id IS NOT NULL OR sd.id IS NOT NULL";
+        $criteria->params[':patient_id'] = $patient_id;
+
+        return Disorder::model()->findAll($criteria);
     }
 }

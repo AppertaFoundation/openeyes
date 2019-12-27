@@ -13,9 +13,9 @@ class m170907_133852_history_element_order extends CDbMigration
         'OEModule\OphCiExamination\models\SocialHistory' => 40
     );
 
-	public function up()
-	{
-	    foreach ($this->display_orders as $cls => $display_order) {
+    public function up()
+    {
+        foreach ($this->display_orders as $cls => $display_order) {
             $this->update(
                 'element_type',
                 array('display_order' => $display_order),
@@ -24,21 +24,21 @@ class m170907_133852_history_element_order extends CDbMigration
             );
         }
 
-	}
+    }
 
-	public function down()
-	{
-		echo "WARNING: Old orders not preserved";
-	}
+    public function down()
+    {
+        echo "WARNING: Old orders not preserved";
+    }
 
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+    /*
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+    }
 
-	public function safeDown()
-	{
-	}
-	*/
+    public function safeDown()
+    {
+    }
+    */
 }

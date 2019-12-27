@@ -1026,7 +1026,7 @@ class AdminController extends ModuleAdminController
 
         $save_from_GET = $_GET;
         unset($save_from_GET['page']);
-        if(!empty($save_from_GET)) {
+        if (!empty($save_from_GET)) {
             Yii::app()->session['admin_sessions'] = $save_from_GET;
         }
 
@@ -1904,5 +1904,12 @@ class AdminController extends ModuleAdminController
         }
 
         Audit::add('admin', $action, serialize($_POST), false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session_UnavailableReason'));
+    }
+    public function beforeAction($action)
+    {
+        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'));
+        Yii::app()->clientScript->registerCssFile($assetPath . '/components/jt.timepicker/jquery.timepicker.css');
+
+        return parent::beforeAction($action);
     }
 }

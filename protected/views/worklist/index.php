@@ -4,8 +4,13 @@
  */
 ?>
 
+<input type="hidden" id="wl_print_selected_worklist" value="" />
+
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">Worklists</div>
+    <div class="buttons-right">
+        <button class="button header-tab icon" onclick="goPrint();" name="print" type="button" id="et_print"><i class="oe-i print"></i></button>
+    </div>
 </div>
 
 <div class="oe-full-content subgrid oe-worklists">
@@ -25,7 +30,7 @@
         <h3>Select list</h3>
         <ul>
             <li><a class="js-worklist-filter" href="#" data-worklist="all">All</a></li>
-            <?php foreach ($worklists as $worklist): ?>
+            <?php foreach ($worklists as $worklist) : ?>
                 <li><a href="#" class="js-worklist-filter"
                        data-worklist="js-worklist-<?= $worklist->id ?>"><?= $worklist->name ?>  : <?= $worklist->getDisplayShortDate() ?></a></li>
             <?php endforeach; ?>
@@ -33,7 +38,7 @@
     </nav>
 
     <main class="oe-full-main">
-        <?php foreach ($worklists as $worklist): ?>
+        <?php foreach ($worklists as $worklist) : ?>
             <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist)); ?>
         <?php endforeach; ?>
     </main>
@@ -59,13 +64,19 @@
                 .set('date_from', $('#worklist-date-from').val())
                 .set('date_to', $('#worklist-date-to').val());
         });
+
+        const worklist_selected = $.cookie("worklist_selected");
+        if(worklist_selected){
+            updateWorkLists(worklist_selected);
+            $('.js-worklist-filter').filter('[data-worklist="'+worklist_selected+'"]').addClass('selected');
+        }
     });
 
     $('.js-clear-dates').on('click', () => {
         $('#worklist-date-from').val(null);
         $('#worklist-date-to').val(null);
 
-        window.location.href = window.location.href.substring(0, window.location.href.indexOf('?'));
+        window.location.href = '/worklist/cleardates';
     });
 
     $('.js-worklist-filter').click(function (e) {
@@ -73,6 +84,7 @@
         resetFilters();
         $(this).addClass('selected');
         updateWorkLists($(this).data('worklist'));
+        $.cookie('worklist_selected', $(this).data('worklist'));
     });
 
     function resetFilters() {
@@ -82,9 +94,18 @@
     function updateWorkLists(listID) {
         if (listID == 'all') {
             $('.worklist-group').show();
+            $("#wl_print_selected_worklist").val("");
         } else {
             $('.worklist-group').hide();
             $('#' + listID + '-wrapper').show();
+            $("#wl_print_selected_worklist").val(listID);
         }
+    }
+
+    function goPrint() {
+        const v = $("#wl_print_selected_worklist").val().replace("js-worklist-","");
+        const df = $("#worklist-date-from").val() === "" ? "" : "&date_from="+$("#worklist-date-from").val();
+        const dt = $("#worklist-date-to").val() === "" ? "" : "&date_to="+$("#worklist-date-to").val();
+        window.open("/worklist/print?list_id=" + v + df + dt, "_blank");
     }
 </script>

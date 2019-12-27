@@ -24,6 +24,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisks extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 55;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -152,18 +155,6 @@ class HistoryRisks extends \BaseEventTypeElement
      * If a risk is "not checked", do not store in db
      */
 
-    public function beforeSave()
-    {
-        $entries = $this->entries;
-        foreach ($entries as $key=>$entry) {
-            if($entry->has_risk == HistoryRisksEntry::$NOT_CHECKED) {
-                unset($entries[$key]);
-            }
-        }
-        $this->entries = $entries;
-        return parent::beforeSave();
-    }
-
     /**
      * Get list of available risks for this element (ignoring required risks)
      */
@@ -197,9 +188,46 @@ class HistoryRisks extends \BaseEventTypeElement
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
             $category  = 'entries';
         }
-        return  array_map(function($e) { return $e->getDisplay(); }, $this->$category);
+        return  array_map(function($e) { return $e->getDisplay();
+        }, $this->$category);
     }
 
+    public function getSortedEntries()
+    {
+        return $this->sortEntries($this->entries);
+    }
+
+    private function sortEntries($entries)
+    {
+        usort($entries, function ($a, $b) {
+            if ($a->has_risk == $b->has_risk) {
+                return 0;
+            }
+            return $a->has_risk < $b->has_risk ? 1 : -1;
+        });
+
+        return $entries;
+    }
+
+    public function getHistoryRisksEntries()
+    {
+        $entries = [];
+        foreach ($this->getHistoryRisksEntryKeys() as $key) {
+            $entries[$key] = array_values(array_filter($this->getSortedEntries(), function ($e) use ($key) {
+                return $e->has_risk === $key;
+            }));
+        }
+        return $entries;
+    }
+
+    public function getHistoryRisksEntryKeys()
+    {
+        return array(
+            HistoryRisksEntry::$PRESENT => "1",
+            HistoryRisksEntry::$NOT_PRESENT => "0",
+            HistoryRisksEntry::$NOT_CHECKED => "-9"
+        );
+    }
 
     /**
      * @param $attribute
@@ -210,7 +238,7 @@ class HistoryRisks extends \BaseEventTypeElement
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             // TODO: handle highlighting the "other" text field once that validation is in place.
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                return $attribute .'_' . ($match[1]-1) . '_risk_id_error';
+                return $attribute .'_' . ($match[1]-1) . '_risk_id';
             }
         }
         return parent::errorAttributeException($attribute, $message);
@@ -228,10 +256,5 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
         return null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 55 : parent::getDisplayOrder($action);
     }
 }

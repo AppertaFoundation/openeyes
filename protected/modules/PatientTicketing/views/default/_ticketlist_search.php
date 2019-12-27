@@ -111,8 +111,7 @@
         <tr class="col-gap">
             <td class="fade">Patients:</td>
             <td id="patient-search-wrapper">
-                <input id="patient-search" type="text" class="cols-11" placeholder="Hospital Number, NHS Number, Firstname Surname or Surname, Firstname">
-
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Hospital Number, NHS Number, Firstname Surname or Surname, Firstname'], 'layoutColumns' => ['field' => '11']]); ?>
                 <div style="display:inline-block">
                     <div class="js-spinner-as-icon loader" style="display: none;"><i class="spinner as-icon"></i></div>
                 </div>
@@ -156,7 +155,7 @@
             <td></td>
             <td style="padding-top:0px" id="patient-result-wrapper">
                 <ul id="patient-result-list" class="oe-multi-select inline">
-                    <?php foreach($patients as $patient): ?>
+                    <?php foreach ($patients as $patient) : ?>
                         <li data-patient_id="<?=$patient->id?>">
                             <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
@@ -175,29 +174,23 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        OpenEyes.UI.Search.init($('#patient-search'));
-        OpenEyes.UI.Search.setLoader($('.js-spinner-as-icon'));
-        OpenEyes.UI.Search.getElement().autocomplete('option', 'select', function (event, uid) {
-            let $list = $('#patient-result-list');
-            let $item = $('<li>', {'data-patient_id': uid.item.id}).html(uid.item.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-            let $hidden = $('<input>', {type: 'hidden', id: uid.item.id, value: uid.item.id, name: 'patient-ids[]'});
-
-            $list.html('');
-            $list.append($item.append($hidden));
-
-            // clear input field
-            $(this).val('');
-            return false;
-
-        });
-
-        OpenEyes.UI.Search.getElement().autocomplete('option', 'source', function (request, response) {
-                $.getJSON('/PatientTicketing/default/patientSearch', {
-                    term: request.term,
-                    ajax: 'ajax',
-                    closedTickets: +$('#closed-tickets').is(':checked')
-                }, response);
-        });
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#oe-autocompletesearch'),
+                url: '/PatientTicketing/default/patientSearch',
+                onSelect: function(){
+                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let $list = $('#patient-result-list');
+                    let $item = $('<li>', {'data-patient-id': autoCompleteResponse.id}).html(autoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
+                    let $hidden = $('<input>', {type: 'hidden', id: autoCompleteResponse.id, value: autoCompleteResponse.id, name: 'patient-ids[]'});
+                    $list.html('');
+                    $list.append($item.append($hidden));
+                    // clear input field
+                    $(this).val('');
+                    return false;
+                }
+            });
+        }
 
 
 

@@ -8,14 +8,14 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
         <!-- note: no whitespace (gaps) in HTML, SVG is styled by CSS -->
         <?php
 
-        $selected_size = array_key_exists('oescape_chart_size', $_SESSION) ? $_SESSION['oescape_chart_size'] : 'medium';
+        $selected_size = array_key_exists('oescape_chart_size', $_SESSION) ? $_SESSION['oescape_chart_size'] : 'full';
         $area_sizes = [
             ['name' => 'small', 'width' => '8'],
             ['name' => 'medium', 'width' => '16'],
             ['name' => 'large', 'width' => '24'],
             ['name' => 'full', 'width' => '30'],
         ];
-        foreach ($area_sizes as $size):
+        foreach ($area_sizes as $size) :
             ?>
             <button class="js-oes-area-resize <?= $selected_size == $size['name'] ? 'selected' : '' ?>"
                     data-area="<?= $size['name'] ?>">
@@ -28,6 +28,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
         <?php endforeach; ?>
         <button class="js-oes-eyeside selected" data-side="right">Right</button>
         <button class="js-oes-eyeside" data-side="left">Left</button>
+        <button class="js-oes-eyeside" data-side="both">Both</button>
 
         <?php if ($subspecialty->ref_spec == 'GL') : ?>
         <div class="data-awareness">
@@ -65,7 +66,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                 ),
             ));
             ?>
-            <?php foreach ($subspecialties as $subspecialty): ?>
+            <?php foreach ($subspecialties as $subspecialty) : ?>
                 <li class="icon-btn"
                     data-subspecialty-id="<?= $subspecialty->id ?>">
                     <a class="active"
@@ -74,7 +75,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                            array(
                                'subspecialty_id' => $subspecialty->id,
                                'patient_id' => $this->patient->id)
-                       ) ?>"
+                             ) ?>"
                     >
                         <?= $subspecialty->ref_spec ?>
                     </a>
@@ -95,7 +96,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
     <!-- exit oes and go back to previous page -->
     <div id="js-exit-oescape"
          data-link="<?php $core_api = new CoreAPI();
-         echo $core_api->generatePatientLandingPageLink($this->patient) ?>">
+            echo $core_api->generatePatientLandingPageLink($this->patient) ?>">
         <i class="oe-i remove-circle"></i>
     </div>
 </nav>

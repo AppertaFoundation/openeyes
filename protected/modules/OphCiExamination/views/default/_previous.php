@@ -22,14 +22,14 @@
     <col class="cols-5">
   </colgroup>
   <tbody>
-  <?php foreach ($elements as $element) { ?>
+    <?php foreach ($elements as $element) { ?>
     <tr>
       <td class="element <?=\CHtml::modelName($element) ?>"
           data-element-id="<?php echo $element->id ?>"
           data-element-type-id="<?php echo $element->elementType->id ?>"
           data-element-type-class="<?=\CHtml::modelName($element) ?>"
           data-element-type-name="<?php echo $element->elementType->name ?>"
-          data-element-display-order="<?php echo $element->elementType->display_order ?>">
+          data-element-display-order="<?php echo $element->display_order ?>">
 
         <div class="flex-layout flex-top data-group">
             <?php $this->renderPartial(
@@ -59,6 +59,6 @@
         </div>
       </td>
     </tr>
-  <?php } ?>
+    <?php } ?>
   </tbody>
 </table>

@@ -38,7 +38,7 @@ class DisorderController extends BaseController
         );
     }
 
-    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    protected function setOptionsForGenericAdmin($options, $model)
     {
         $options = array_merge(array(
             'label_field' => $model::SELECTION_LABEL_FIELD,
@@ -53,103 +53,115 @@ class DisorderController extends BaseController
         $columns = $model::model()->metadata->columns;
 
         $options = $this->addExtraFieldsToOptions($options, $columns);
+        $options['display_order'] = false;
+        return $options;
+    }
+
+    protected function renderPartialForGenericAdmin($key, $model, $options, $title, $errors)
+    {
+        $items = array($key => new $model());
+        $options['get_row'] = true;
+        if ($model::model()->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+        }
+        $this->renderPartial('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ), false, true);
+    }
+
+    protected function setItemAttributesForGenericAdmin(&$item, $options, $i, $j, &$attributes, &$errors, $new, $model)
+    {
+        $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+        if ($item->hasAttribute('display_order')) {
+            $options['display_order'] = true;
+            $item->display_order = $j + 1;
+        }
+
+        if (array_key_exists('active', $attributes)) {
+            $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
+        }
+
+        foreach ($options['extra_fields'] as $field) {
+            $name = $field['field'];
+            if (!array_key_exists($name, $attributes)) {
+                // getAttributes doesn't return relations, so this sets this up
+                // to enable the change check below. This will give false positives for saves
+                // but is a simple solution for now.
+                $attributes[$name] = $item->$name;
+            }
+            $item->$name = @$_POST[$name][$i];
+        }
+
+        if ($item->hasAttribute('default')) {
+            $item->default = (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) ?  1: 0;
+        }
+
+        foreach ($options['filter_fields'] as $field) {
+            $item->{$field['field']} = $field['value'];
+        }
+
+        if ($new || $item->getAttributes() != $attributes) {
+            if (!$item->save()) {
+                $errors = $item->getErrors();
+                foreach ($errors as $error) {
+                    $errors[$i] = $error[0];
+                }
+            }
+            Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => $model::getShortModelName(),
+            ));
+        }
+    }
+
+    protected function renderForGenericAdmin($title, $model, $items, $errors, $options)
+    {
+        $this->render('//admin/generic_admin', array(
+            'title' => $title,
+            'model' => $model,
+            'items' => $items,
+            'errors' => $errors,
+            'options' => $options,
+        ));
+    }
+
+    protected function postRequest($model, $options, &$errors){
+        $tx = Yii::app()->db->beginTransaction();
+        $j = 0;
+
+        foreach ((array) @$_POST['id'] as $i => $id) {
+            $item = ($id) ? $model::model()->findByPk($id) : new $model();
+            $new = ($id) ? false : true ;
+            $attributes = $item->getAttributes();
+            if (!empty($_POST[$options['label_field']][$i])) {
+                $this->setItemAttributesForGenericAdmin($item, $options, $i, $j, $attributes, $errors, $new, $model);
+                $items[] = $item;
+                ++$j;
+            }
+        }
+        $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+    }
+
+    protected function genericAdmin($title, $model, array $options = array(), $key = null)
+    {
+        $options = $this->setOptionsForGenericAdmin($options, $model);
         $items = array();
         $errors = array();
-        $options['display_order'] = false;
-
         if ($key !== null) {
-            $items = array($key => new $model());
-            $options['get_row'] = true;
-            if ($model::model()->hasAttribute('display_order')) {
-                $options['display_order'] = true;
-            }
-            $this->renderPartial('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ), false, true);
+            $this->renderPartialForGenericAdmin($key, $model, $options, $title, $errors);
         } else {
             if ($options['filters_ready']) {
                 if (Yii::app()->request->isPostRequest) {
-                    $tx = Yii::app()->db->beginTransaction();
-                    $j = 0;
-
-                    foreach ((array) @$_POST['id'] as $i => $id) {
-                        if ($id) {
-                            $item = $model::model()->findByPk($id);
-                            $new = false;
-                        } else {
-                            $item = new $model();
-                            $new = true;
-                        }
-
-                        $attributes = $item->getAttributes();
-                        if (!empty($_POST[$options['label_field']][$i])) {
-                            $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-                            if ($item->hasAttribute('display_order')) {
-                                $options['display_order'] = true;
-                                $item->display_order = $j + 1;
-                            }
-
-                            if (array_key_exists('active', $attributes)) {
-                                $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
-                            }
-
-                            foreach ($options['extra_fields'] as $field) {
-                                $name = $field['field'];
-                                if (!array_key_exists($name, $attributes)) {
-                                    // getAttributes doesn't return relations, so this sets this up
-                                    // to enable the change check below. This will give false positives for saves
-                                    // but is a simple solution for now.
-                                    $attributes[$name] = $item->$name;
-                                }
-                                $item->$name = @$_POST[$name][$i];
-                            }
-
-                            if ($item->hasAttribute('default')) {
-                                if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
-                                    $item->default = 1;
-                                } else {
-                                    $item->default = 0;
-                                }
-                            }
-
-                            foreach ($options['filter_fields'] as $field) {
-                                $item->{$field['field']} = $field['value'];
-                            }
-
-                            if ($new || $item->getAttributes() != $attributes) {
-                                if (!$item->save()) {
-                                    $errors = $item->getErrors();
-                                    foreach ($errors as $error) {
-                                        $errors[$i] = $error[0];
-                                    }
-                                }
-                                Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array(
-                                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                                    'model' => $model::getShortModelName(),
-                                ));
-                            }
-
-                            $items[] = $item;
-                            ++$j;
-                        }
-                    }
-                    $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
+                    $this->postRequest($model, $options, $errors);
                 } else {
                     list($options, $items) = $this->optionsFiltersNotAvailable($model, $options);
                 }
             }
-
-            $this->render('//admin/generic_admin', array(
-                'title' => $title,
-                'model' => $model,
-                'items' => $items,
-                'errors' => $errors,
-                'options' => $options,
-            ));
+            $this->renderForGenericAdmin($title, $model, $items, $errors, $options);
         }
     }
 
@@ -181,7 +193,7 @@ class DisorderController extends BaseController
     /**
      * Lists all disorders for a given search term.
      */
-    public function actionAutocomplete()
+    public function actionAutoComplete()
     {
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
@@ -220,7 +232,7 @@ class DisorderController extends BaseController
     public function actionGetCommonlyUsedDiagnoses($type)
     {
         $return = array();
-        if($type === 'systemic'){
+        if ($type === 'systemic') {
             foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
                 $return[] = $this->disorderStructure($disorder);
             };
@@ -295,12 +307,11 @@ class DisorderController extends BaseController
         $errors = array();
         $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
-        if(!$subspecialty_id){
+        if (!$subspecialty_id) {
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
         }
 
         if (Yii::app()->request->isPostRequest) {
-
             $transaction = Yii::app()->db->beginTransaction();
 
             $display_orders = Yii::app()->request->getParam('display_order', array());
@@ -353,17 +364,15 @@ class DisorderController extends BaseController
                 $transaction->commit();
 
                 Yii::app()->user->setFlash('success', 'List updated.');
-
             } else {
                 foreach ($errors as $error) {
-                    foreach($error as $attribute => $error_array){
+                    foreach ($error as $attribute => $error_array) {
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
 
                 $transaction->rollback();
-
             }
             $this->redirect(Yii::app()->request->url);
         }
@@ -447,17 +456,15 @@ class DisorderController extends BaseController
                 $transaction->commit();
 
                 Yii::app()->user->setFlash('success', 'List updated.');
-
             } else {
                 foreach ($errors as $error) {
-                    foreach($error as $attribute => $error_array){
+                    foreach ($error as $attribute => $error_array) {
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
 
                 $transaction->rollback();
-
             }
             $this->redirect(Yii::app()->request->url);
         }
@@ -485,7 +492,7 @@ class DisorderController extends BaseController
      */
     public function actionView($id)
     {
-        $this->render('view',array(
+        $this->render('view', array(
             'model'=>$this->loadModel($id),
         ));
     }
@@ -501,17 +508,16 @@ class DisorderController extends BaseController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
-            foreach ($_POST['Disorder'] as $key=> $value){
+        if (isset($_POST['Disorder'])) {
+            foreach ($_POST['Disorder'] as $key=> $value) {
                 $model->$key = $value;
             }
             $model->attributes=$_POST['Disorder'];
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('create',array(
+        $this->render('create', array(
             'model'=>$model,
         ));
     }
@@ -528,17 +534,16 @@ class DisorderController extends BaseController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
-            foreach ($_POST['Disorder'] as $key=> $value){
+        if (isset($_POST['Disorder'])) {
+            foreach ($_POST['Disorder'] as $key=> $value) {
                 $model->$key = $value;
             }
 
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('update',array(
+        $this->render('update', array(
             'model'=>$model,
         ));
     }
@@ -564,15 +569,15 @@ class DisorderController extends BaseController
     {
         $model=new Disorder('search');
         $model->unsetAttributes();  // clear any default values
-        if(isset($_GET['Disorder']))
+        if (isset($_GET['Disorder']))
             $model->attributes=$_GET['Disorder'];
 
-        if(Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')){
-            $this->render('admin',array(
+        if (Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')) {
+            $this->render('admin', array(
                 'model'=>$model,
             ));
         } else {
-            $this->render('index',array(
+            $this->render('index', array(
                 'model'=>$model,
             ));
         }
@@ -588,8 +593,8 @@ class DisorderController extends BaseController
     public function loadModel($id)
     {
         $model=Disorder::model()->findByPk($id);
-        if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+        if ($model===null)
+            throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }
 
@@ -599,8 +604,7 @@ class DisorderController extends BaseController
      */
     protected function performAjaxValidation($model)
     {
-        if(isset($_POST['ajax']) && $_POST['ajax']==='disorder-form')
-        {
+        if (isset($_POST['ajax']) && $_POST['ajax']==='disorder-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
@@ -610,7 +614,7 @@ class DisorderController extends BaseController
         $specialties = Specialty::model()->findAll();
         if ($data->specialty_id !== null || $data->specialty_id != '') {
             foreach ($specialties as $specialty) {
-                if($specialty->id == $data->specialty_id) {
+                if ($specialty->id == $data->specialty_id) {
                     return $specialty->name;
                 }
             }
@@ -681,7 +685,6 @@ class DisorderController extends BaseController
 
                     Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
                     $this->redirect(Yii::app()->request->url);
-
                 }
                 Audit::add('admin', 'delete', $item->primaryKey, null, array(
                     'module' => (is_object($this->module)) ? $this->module->id : 'core',

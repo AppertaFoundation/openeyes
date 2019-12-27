@@ -113,7 +113,6 @@
                     }
                     $(this).addClass('selected');
                 } else {
-
                     // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
                     if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
@@ -128,7 +127,7 @@
                         if (!$(this).hasClass('selected')) {
                             listToFilter.find('li').show();
                         } else {
-                            listToFilter.find('li').hide();
+                            listToFilter.find('li').hide().removeClass('selected');
                             listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
                         }
                     }
@@ -219,7 +218,7 @@
             })
         }
 
-        this.noSearchResultsWrapper = $('<span />').text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
@@ -252,6 +251,9 @@
         }
         if (itemSet.options.number) {
             additionalClasses += ' number';
+        }
+        if (dialog.options.listFilter && (itemSet.options.id === dialog.options.filterListId)) {
+            additionalClasses += ' category-filter ignore';
         }
         let $list = $('<ul />', {
             class: 'add-options cols-full' + additionalClasses,
@@ -547,7 +549,7 @@
             filterValue = selectedFilter.data('id');
         }
         // reset results lists if there is no text searched
-        if (!text.length) {
+        if (!text.length && !filterValue) {
             dialog.searchResultList.empty();
             dialog.noSearchResultsWrapper.text('No results found');
             dialog.noSearchResultsWrapper.toggle(true);
@@ -575,7 +577,7 @@
             $(results).each(function (index, result) {
                 var dataset = AdderDialog.prototype.constructDataset(result);
                 var item = $("<li />", dataset)
-                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                    .append($('<span />', {class: dialog.options.liClass}).text(dataset['data-label']));
                 dialog.searchResultList.append(item);
             });
 

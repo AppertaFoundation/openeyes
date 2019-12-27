@@ -64,8 +64,8 @@ foreach ($treatments as $treatment) {
                 'form' => $form,
                 'side' => $side,
             ),
-            false,
-            false
+                   false,
+                   false
         ) ?>
     </div>
   </div>

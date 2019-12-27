@@ -33,6 +33,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**
@@ -173,9 +174,27 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
         return false;
     }
 
+    public function getReadings($side)
+    {
+        $return_readings = array();
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
+            return;
+        }
+
+        foreach ($values as $value) {
+            if ($value->reading) {
+                $return_readings[] = $value->reading->value;
+            }
+        }
+
+        return $return_readings;
+    }
+
     public function getReading($side)
     {
-        if (!$values = $this->{"{$side}_integer_values"}) {
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
             return;
         }
 

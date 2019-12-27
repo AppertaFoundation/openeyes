@@ -210,62 +210,35 @@ class TrialController extends BaseModuleController
                 break;
         }
 
-        $condition = "trial_type_id = :trialType AND EXISTS (
+        $condition = "EXISTS (
                         SELECT * FROM user_trial_assignment utp WHERE utp.user_id = :userId AND utp.trial_id = t.id
                     ) ORDER BY $sortBy $sortDir, LOWER(t.name) ASC";
 
-        $interventionTrialDataProvider = new CActiveDataProvider('Trial', array(
+        $trialDataProvider = new CActiveDataProvider('Trial', array(
             'criteria' => array(
                 'condition' => $condition,
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
                 ),
             ),
         ));
 
-        $nonInterventionTrialDataProvider = new CActiveDataProvider('Trial', array(
+        $trialSearchDataProvider = new CActiveDataProvider('Trial', array(
             'criteria' => array(
                 'condition' => $condition,
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
-                ),
-            ),
-        ));
-
-
-        $interventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
-            'criteria' => array(
-                'condition' => $condition,
-                'join' => 'JOIN user u ON u.id = t.owner_user_id',
-                'params' => array(
-                    ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
                 ),
             ),
             'pagination'=>false,
         ));
 
-        $nonInterventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
-            'criteria' => array(
-                'condition' => $condition,
-                'join' => 'JOIN user u ON u.id = t.owner_user_id',
-                'params' => array(
-                    ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
-                ),
-            ),
-            'pagination'=>false,
-        ));
 
         $this->render('index', array(
-            'interventionTrialDataProvider' => $interventionTrialDataProvider,
-            'nonInterventionTrialDataProvider' => $nonInterventionTrialDataProvider,
-            'interventionTrialSearchDataProvider' => $interventionTrialSearchDataProvider,
-            'nonInterventionTrialSearchDataProvider' => $nonInterventionTrialSearchDataProvider,
+            'trialDataProvider' => $trialDataProvider,
+            'trialSearchDataProvider' => $trialSearchDataProvider,
             'sort_by' => (int)Yii::app()->request->getParam('sort_by', null),
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', null),
         ));
@@ -282,7 +255,8 @@ class TrialController extends BaseModuleController
 
         $permissionDataProvider = new CActiveDataProvider('UserTrialAssignment', array(
             'criteria' => array(
-                'condition' => 'trial_id = :trialId',
+//                Showing only those users who are either trial owners, principal investigators or study coordinators - CERA-523 - other admins with no relation to the trial are not shown, as requested by CERA
+                'condition' => 'trial_id = :trialId AND (role IS NOT NULL OR is_principal_investigator != 0 OR is_study_coordinator != 0 )' ,
                 'params' => array(
                     ':trialId' => $this->model->id,
                 ),
@@ -447,7 +421,6 @@ class TrialController extends BaseModuleController
 
         /* @var User $user */
         foreach (User::model()->findAll($criteria) as $user) {
-
             $res[] = array(
                 'id' => $user->id,
                 'label' => $user->getFullNameAndTitle(),
@@ -467,25 +440,25 @@ class TrialController extends BaseModuleController
 
     public function actionChangeTrialUserPosition(){
 
-      $user_id = $_POST['user_id'];
-      $trial_id = $_POST['id'];
-      $isTrue = $_POST['isTrue'];
-      $column_name = $_POST['column_name'];
+        $user_id = $_POST['user_id'];
+        $trial_id = $_POST['id'];
+        $isTrue = $_POST['isTrue'];
+        $column_name = $_POST['column_name'];
 
-      $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
-      if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id){
-        $res = array(
-          'Error' => 'At least one principal investigator should be selected.'
-        );
-        echo CJSON::encode($res);
-        Yii::app()->end();
-      }
-      $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
-      $userPermission->$column_name = $isTrue;
+        $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
+        if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id) {
+            $res = array(
+            'Error' => 'At least one principal investigator should be selected.'
+            );
+            echo CJSON::encode($res);
+            Yii::app()->end();
+        }
+        $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
+        $userPermission->$column_name = $isTrue;
 
 
-      if (!$userPermission->save()) {
-        throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
-      }
+        if (!$userPermission->save()) {
+            throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
+        }
     }
 }

@@ -17,8 +17,8 @@
  */
 ?>
 <div class="box admin">
-	<h2><?php echo $reason->id ? 'Edit' : 'Add'?> Session Unavailable Reason</h2>
-	<?php
+    <h2><?php echo $reason->id ? 'Edit' : 'Add'?> Session Unavailable Reason</h2>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     'id' => 'adminform',
                     'enableAjaxValidation' => false,
@@ -28,17 +28,17 @@
                             'field' => 5,
                     ),
             ))?>
-	<?php echo $form->errorSummary($reason); ?>
-	<?php echo $form->textField($reason, 'name')?>
-	<?php echo $form->formActions();?>
-	<?php $this->endWidget()?>
+    <?php echo $form->errorSummary($reason); ?>
+    <?php echo $form->textField($reason, 'name')?>
+    <?php echo $form->formActions();?>
+    <?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessionUnavailableReasons';
-	});
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
+    handleButton($('#et_cancel'),function(e) {
+        e.preventDefault();
+        window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSessionUnavailableReasons';
+    });
+    handleButton($('#et_save'),function(e) {
+        $('#adminform').submit();
+    });
 </script>

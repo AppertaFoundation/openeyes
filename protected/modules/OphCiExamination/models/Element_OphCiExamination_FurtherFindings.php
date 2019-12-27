@@ -32,6 +32,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
 
     /**
@@ -130,10 +131,9 @@ class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
     }
 
     public function isChild($action){
-        if ($action=='view'){
+        if ($action=='view') {
             return false;
-        }
-        else{
+        } else {
             return parent::isChild($action);
         }
     }

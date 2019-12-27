@@ -67,8 +67,13 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
                 'workflow' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow', 'workflow_id'),
                 'items' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
                         'with' => 'element_type',
-                        'order' => 'element_type.name',
+                        'order' => 'items.display_order, element_type.display_order',
                 ),
+                'visibleItems' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
+                    'with' => 'element_type',
+                    'condition' => 'is_hidden = 0',
+                    'order' => 'element_type.name',
+            ),
         );
     }
 
@@ -90,14 +95,45 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      */
     public function getDefaultElementTypes($action = 'edit')
     {
-        $default_element_types = \ElementType::model()->findAll(array(
-                'condition' => 'ophciexamination_element_set_item.set_id = :set_id AND ophciexamination_element_set_item.is_hidden = 0',
-                'join' => 'JOIN ophciexamination_element_set_item ON ophciexamination_element_set_item.element_type_id = t.id',
-                'order' => 'display_order',
-                'params' => array(':set_id' => $this->id),
-        ));
+        $element_types = [];
+        $maximum_worklist_display_order = $this->getWorkFlowMaximumDisplayOrder();
 
-        return $default_element_types;
+        foreach ($this->visibleItems as $item) {
+            if ($item->display_order) {
+                $element_types[$item->display_order] = $item->element_type;
+            } else {
+                $element_types[$maximum_worklist_display_order + $item->element_type->display_order] = $item->element_type;
+            }
+        }
+
+        ksort($element_types);
+        return $element_types;
+    }
+
+    /**
+     * Returns the given elements set specific display order if it exists.
+     *
+     * @return int
+     */
+    public function getSetElementOrder($element)
+    {
+        foreach ($this->visibleItems as $item) {
+            if ($element->getElementType() == $item->element_type && $item->display_order) {
+                return $item->display_order;
+            }
+        }
+        return null;
+    }
+
+    public function getWorkFlowMaximumDisplayOrder()
+    {
+        $maximum_display_order = 0;
+        foreach ($this->visibleItems as $item) {
+            if ($item->display_order && $item->display_order > $maximum_display_order) {
+                $maximum_display_order = $item->display_order;
+            }
+        }
+        return $maximum_display_order;
     }
 
     /**
@@ -149,15 +185,16 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
         return $mandatoryElementTypes;
     }
 
-    public function isDeletable($step_id = null){
-        if(!$step_id){
+    public function isDeletable($step_id = null)
+    {
+        if (!$step_id) {
             $step_id = $this->id;
         }
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('step_id =:step_id');
         $criteria->params[':step_id'] = $step_id;
-       return !(bool)OphCiExamination_Event_ElementSet_Assignment::model()->find($criteria);
+        return !(bool)OphCiExamination_Event_ElementSet_Assignment::model()->find($criteria);
     }
 
     /**

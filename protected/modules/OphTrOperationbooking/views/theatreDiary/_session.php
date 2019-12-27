@@ -15,6 +15,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+    /**
+     * @var $session OphTrOperationbooking_Operation_Session
+     * @var $theatre OphTrOperationbooking_Operation_Theatre
+     * @var $ward_id int
+     */
 ?>
 <div style="display: none;" id="infoBox_<?php echo $session->id ?>">
   <div class="cols-12 column">
@@ -39,7 +45,7 @@
   <h3 class="theatre-booking-heading">
     <span class="date">
       <strong>
-          <?php echo date('d M', strtotime($session->date)) ?>
+            <?php echo date('d M', strtotime($session->date)) ?>
       </strong>
         <?php echo date('Y', strtotime($session->date)) ?>
     </span>
@@ -51,12 +57,12 @@
       <span class="time">
         <?php echo $session->start_time ?>
         -
-          <?php echo $session->end_time ?>
+            <?php echo $session->end_time ?>
       </span>
     </strong>
     for
-      <?php echo $session->firm ? $session->firm->name : 'Emergency List' ?>
-      <?php echo $session->firm ? 'for (' . $session->firm->serviceSubspecialtyAssignment->subspecialty->name . ')' : '' ?>
+        <?php echo $session->firm ? $session->firm->name : 'Emergency List' ?>
+        <?php echo $session->firm ? 'for (' . $session->firm->serviceSubspecialtyAssignment->subspecialty->name . ')' : '' ?>
     -
     <strong><?php echo $theatre->name . ' (' . $theatre->site->name . ')' ?></strong>
   </h3>
@@ -64,9 +70,9 @@
   <div class="theatre-booking-actions">
   <span class="session_options diaryViewMode" data-id="<?php echo $session->id ?>">
     <a class="button large selected inactive" href="#">View</a>
-      <?php if ($this->checkAccess('OprnEditTheatreSession')) { ?>
+        <?php if ($this->checkAccess('OprnEditTheatreSession')) { ?>
         <a href="#" rel="<?php echo $session->id ?>" class="button large blue hint edit-session">Edit</a>
-      <?php } ?>
+        <?php } ?>
   </span>
     <span class="session_options diaryEditMode" data-id="<?php echo $session->id ?>" style="display: none">
       <a href="#" rel="<?php echo $session->id ?>" class="button large blue hint view-session">View</a>
@@ -93,7 +99,7 @@
       </tr>
       </thead>
       <tbody id="tbody_<?php echo $session->id ?>">
-      <?php foreach ($session->getActiveBookingsForWard($ward_id) as $booking) { ?>
+        <?php foreach ($session->getActiveBookingsForWard($ward_id) as $booking) { ?>
         <tr id="oprow_<?php echo $booking->element_id ?>">
           <td class="session">
             <input style="display: none;" type="text"
@@ -104,22 +110,27 @@
                    data-operation-id="<?php echo $booking->element_id ?>"
                    value="<?php echo substr($booking->admission_time, 0, 5) ?>" size="4">
             <span class="admitTime_ro diaryViewMode" data-id="<?php echo $session->id ?>"
-                  data-operation-id="<?php echo $booking->element_id ?>"><?php echo substr($booking->admission_time,
-                    0, 5) ?></span>
+                  data-operation-id="<?php echo $booking->element_id ?>">
+                <?php echo substr($booking->admission_time, 0, 5) ?>
+            </span>
           </td>
           <td class="td_sort diaryEditMode" data-id="<?php echo $session->id ?>"
               style="display: none;">
             <i class="oe-i menu medium pad"></i>
           </td>
           <td class="hospital">
-              <?=\CHtml::link($booking->operation->event->episode->patient->hos_num,
-                  Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $booking->operation->event_id));
-              ?></td>
+              <?= CHtml::link(
+                  $booking->operation->event->episode->patient->hos_num,
+                  Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $booking->operation->event_id)
+              )
+                ?></td>
           <td class="confirm">
             <input type="hidden" name="confirm_<?php echo $booking->element_id ?>" value="0"/>
             <input id="confirm_<?php echo $booking->element_id ?>" type="checkbox" value="1"
                    name="confirm_<?php echo $booking->element_id ?>" disabled="disabled"
-                   <?php if ($booking->confirmed) { ?>checked="checked" <?php } ?>/>
+                   <?php if ($booking->confirmed) {
+                        ?>checked="checked" <?php
+                   } ?>/>
           </td>
           <td class="patient">
               <?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?>,
@@ -130,15 +141,17 @@
                 if ($warnings) {
                     $msgs = [];
                     foreach ($warnings as $warn) {
-                        $msgs[] = $warn['long_msg'] . " - " . $warn['details'];
+                        $msgs[] = $warn['long_msg'] . ' - ' . $warn['details'];
                     } ?>
                     <i class="oe-i warning medium pad js-has-tooltip"
                        data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
                 <?php } ?>
           </td>
           <td class="operation">
-              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
-              <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] ' . $booking->operation->getProceduresCommaSeparated('short_format') : 'No procedures' ?>
+              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip"
+                 data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
+              <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] '
+                  . $booking->operation->getProceduresCommaSeparated('short_format') : 'No procedures' ?>
           </td>
           <td class="">
               <?php echo $booking->operation->priority->name ?>
@@ -150,86 +163,95 @@
               <?php echo $booking->ward ? $booking->ward->name : 'None' ?>
           </td>
           <td class="alerts">
-              <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
+                <?php if ($booking->operation->event->episode->patient->gender === 'M') { ?>
                 <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
-              <?php } else { ?>
+                <?php } else { ?>
                 <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
-              <?php } ?>
+                <?php } ?>
 
 
-              <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
+                <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)) : ?>
                 <i class="oe-i info medium pad js-has-tooltip"
-                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments, ENT_COMPAT,
-                       'UTF-8') ?>"></i>
-              <?php endif; ?>
+                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments, ENT_COMPAT, 'UTF-8') ?>"></i>
+                <?php endif; ?>
 
               <?php
-              if ($booking->operation->comments_rtt && preg_match('/\w/', $booking->operation->comments_rtt)): ?>
+                if ($booking->operation->comments_rtt && preg_match('/\w/', $booking->operation->comments_rtt)) : ?>
                 <i class="oe-i comments medium pad js-has-tooltip"
-                   data-tooltip-content="<?=\CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT,
-                       'UTF-8') ?>"></i>
-              <?php endif; ?>
+                   data-tooltip-content="<?= CHtml::encode($booking->operation->comments_rtt, ENT_COMPAT, 'UTF-8') ?>">
+                </i>
+                <?php endif; ?>
 
-              <?php if ($booking->operation->overnight_stay): ?>
+                <?php if ($booking->operation->overnight_stay) : ?>
                 <i class="oe-i overnight medium pad js-has-tooltip"
                    data-tooltip-content="Overnight stay required"></i>
-              <?php endif; ?>
-              <?php if ($booking->operation->consultant_required) { ?>
+                <?php endif; ?>
+              <i class="oe-i whiteboard medium pad js-has-tooltip"
+                 data-tooltip-content="Click to display Whiteboard" data-id="<?= $booking->operation->event_id ?>"
+                 id="<?= $whiteboard_display_mode === 'NEW' ? 'js-display-whiteboard-window' : 'js-display-whiteboard'?>"></i>
+
+                <?php if ($booking->operation->consultant_required) { ?>
                 <i class="oe-i asterisk medium pad js-has-tooltip"
                    data-tooltip-content="Consultant required"></i>
-              <?php } ?>
+                <?php } ?>
             <i class="oe-i audit-trail medium pad js-has-tooltip"
                data-tooltip-content="Created by: <?= $booking->user->fullName . "\n" ?>Last modified by: <?= $booking->usermodified->fullName ?>"></i>
-              <?php if($booking->operation->is_golden_patient){ ?>
+                <?php if ($booking->operation->is_golden_patient) { ?>
                   <i class="oe-i star medium pad js-has-tooltip" data-tooltip-content="Golden Patient"></i>
-            <?php  }?>
+                <?php  }?>
           </td>
         </tr>
-      <?php } ?>
+        <?php } ?>
       </tbody>
       <tfoot id="tfoot_<?php echo $session->id ?>">
       <tr>
-          <?php
-          $minutes_status = ($session->availableMinutes > 0);
-          $proc_status = (!$session->isProcedureCountLimited() || $session->getAvailableProcedureCount() > 0);
-          $there_is_place_for_complex_booking = (!$session->isComplexBookingCountLimited() || $session->getAvailableComplexBookingCount() > 0);
-          $status = ($minutes_status && $proc_status && $session->available);
-          ?>
+            <?php
+            $minutes_status = ($session->availableMinutes > 0);
+            $proc_status = (!$session->isProcedureCountLimited() || $session->getAvailableProcedureCount() > 0);
+            $there_is_place_for_complex_booking = (!$session->isComplexBookingCountLimited() || $session->getAvailableComplexBookingCount() > 0);
+            $status = ($minutes_status && $proc_status && $session->available);
+            ?>
         <td colspan="10" data-minutes-available="<?= $session->availableMinutes ?>"
             class="<?php echo ($status) ? 'available' : ''; ?>">
           <div class="session_timeleft time-left <?php echo ($status) ? 'available' : 'full'; ?>">
-              <?php if ($minutes_status) { ?>
-                  <?php echo $session->availableMinutes ?> minutes unallocated
-              <?php } else { ?>
-                  <?php echo abs($session->availableMinutes) ?> minutes overbooked
-              <?php } ?>
+                <?php if ($minutes_status) { ?>
+                    <?php echo $session->availableMinutes ?> minutes unallocated
+                <?php } else { ?>
+                    <?php echo abs($session->availableMinutes) ?> minutes overbooked
+                <?php } ?>
             <span data-current-procedure-count="<?php echo $session->getBookedProcedureCount() ?>"
                   class="procedure-count" id="procedure_count_<?php echo $session->id ?>"
-                  <?php if (!$session->isProcedureCountLimited()) { ?>style="display: none;"<?php } ?>>
+                    <?php if (!$session->isProcedureCountLimited()) {
+                        ?>style="display: none;"<?php
+                    } ?>>
                     <br/>
                     <span class="available-val">
                         <?= $proc_status ? $session->getAvailableProcedureCount() : '0' ?>
                     </span> procedure(s) available
                     <span
-                        class="overbooked"<?php if ($session->getAvailableProcedureCount() >= 0) { ?> style="display: none;"<?php } ?>>
+                        class="overbooked"<?php if ($session->getAvailableProcedureCount() >= 0) {
+                            ?> style="display: none;"<?php
+                                          } ?>>
                     (Overbooked by <span
-                          class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()); ?></span>)</span>
+                          class="overbooked-proc-val"><?= abs($session->getAvailableProcedureCount()) ?></span>)</span>
                   </span>
             <span data-current-complex-booking-count="<?= $session->getComplexBookingCount() ?>"
                 class="complex-booking-count" id="complex_booking_count_<?= $session->id ?>"
-                <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>>
+                <?= $session->isComplexBookingCountLimited() ? '' : 'style="display: none;"' ?>>
                 <br/>
                 <span class="available-complex-booking-count">
                     <?= $there_is_place_for_complex_booking ? $session->getAvailableComplexBookingCount() : '0' ?>
                 </span> complex booking(s) available
-                <span class="overbooked" <?= $session->getAvailableComplexBookingCount() >= 0 ? "style = 'display: none;'" : "" ?>>
+                <span class="overbooked" <?= $session->getAvailableComplexBookingCount() >= 0 ? 'style="display: none;"' : '' ?>>
                     (Overbooked by
                     <span
-                            class="overbooked-complex-booking-count"><?= abs($session->getAvailableComplexBookingCount()); ?></span>)
+                            class="overbooked-complex-booking-count"><?= abs($session->getAvailableComplexBookingCount()) ?></span>)
                 </span>
             </span>
             <span class="session-unavailable" id="session_unavailable_<?php echo $session->id ?>"
-                <?php if ($session->available) { ?> style="display:none;" <?php } ?>> - session unavailable
+                <?php if ($session->available) {
+                    ?> style="display:none;" <?php
+                } ?>> - session unavailable
             <span id="session_unavailablereason_<?php echo $session->id ?>">
                 <?php if ($session->unavailablereason) {
                     echo ' - ' . $session->unavailablereason->name;
@@ -239,29 +261,39 @@
           </div>
           <div class="specialists">
             <div class="diaryViewMode"
-                <?php if (!$session->consultant && !$session->anaesthetist && !$session->paediatric && !$session->isProcedureCountLimited()): ?>
+                <?php if (!$session->consultant && !$session->anaesthetist && !$session->paediatric && !$session->isProcedureCountLimited()) : ?>
                   style="display: none"
                 <?php endif; ?>>
-              <div <?php if (!$session->consultant): ?>style="display: none;"<?php endif; ?>
+              <div <?php if (!$session->consultant) :
+                    ?>style="display: none;"<?php
+                   endif; ?>
                    id="consultant_icon_<?php echo $session->id ?>" class="consultant"
                    title="Consultant Present">
                 Consultant
               </div>
-              <div <?php if (!$session->anaesthetist): ?>style="display: none;"<?php endif; ?>
+              <div <?php if (!$session->anaesthetist) :
+                    ?>style="display: none;"<?php
+                   endif; ?>
                    id="anaesthetist_icon_<?php echo $session->id ?>" class="anaesthetist"
                    title="Anaesthetist Present">
-                Anaesthetist <?php if ($session->general_anaesthetic) { ?>(GA)<?php } ?></div>
-              <div<?php if (!$session->paediatric) { ?> style="display: none;"<?php } ?>
+                Anaesthetist <?php if ($session->general_anaesthetic) {
+                    ?>(GA)<?php
+                             } ?></div>
+              <div<?php if (!$session->paediatric) {
+                    ?> style="display: none;"<?php
+                  } ?>
                   id="paediatric_icon_<?php echo $session->id ?>" class="paediatric"
                   title="Paediatric Session">Paediatric
               </div>
-              <div<?php if (!$session->isProcedureCountLimited()) { ?> style="display: none;"<?php } ?>
+              <div<?php if (!$session->isProcedureCountLimited()) {
+                    ?> style="display: none;"<?php
+                  } ?>
                   id="max_procedures_icon_<?php echo $session->id ?>" class="max-procedures"
                   title="Max <?= $session->getMaxProcedureCount() ?>">Max <span
                     class="max-procedures-val"><?= $session->getMaxProcedureCount() ?></span>
                 Procedures
               </div>
-              <div <?= $session->isComplexBookingCountLimited() ? "" : "style='display: none;'" ?>
+              <div <?= $session->isComplexBookingCountLimited() ? '' : "style='display: none;'" ?>
                   id="max_complex_bookings_icon_<?php echo $session->id ?>" class="max-complex-bookings"
                   title="Max Complex <?= $session->getMaxComplexBookingCount() ?>">Max <span
                     class="max-complex-bookings-value"><?= $session->getMaxComplexBookingCount() ?></span>
@@ -269,7 +301,7 @@
               </div>
             </div>
 
-              <?php if ($this->checkAccess('OprnEditTheatreSessionDetails')) { ?>
+                <?php if ($this->checkAccess('OprnEditTheatreSessionDetails')) { ?>
                 <div class="session-options diaryEditMode" data-id="<?php echo $session->id ?>" style="display: none;">
                   <input type="hidden" name="consultant_<?php echo $session->id ?>" value="0"/>
                   <input type="hidden" name="paediatric_<?php echo $session->id ?>" value="0"/>
@@ -279,35 +311,47 @@
                   <label>
                     <input type="checkbox" id="consultant_<?php echo $session->id ?>"
                            name="consultant_<?php echo $session->id ?>"
-                           value="1"<?php if ($session->consultant) { ?> checked="checked"<?php } ?> />
+                           value="1"<?php if ($session->consultant) {
+                                ?> checked="checked"<?php
+                                    } ?> />
                     Consultant present
                   </label>
                   <label>
                     <input type="checkbox" id="paediatric_<?php echo $session->id ?>"
                            name="paediatric_<?php echo $session->id ?>"
-                           value="1"<?php if ($session->paediatric) { ?> checked="checked"<?php } ?> />
+                           value="1"<?php if ($session->paediatric) {
+                                ?> checked="checked"<?php
+                                    } ?> />
                     Paediatric
                   </label>
                   <label>
                     <input type="checkbox" id="anaesthetist_<?php echo $session->id ?>"
                            name="anaesthetist_<?php echo $session->id ?>"
-                           value="1"<?php if ($session->anaesthetist) { ?> checked="checked"<?php } ?> />
+                           value="1"<?php if ($session->anaesthetist) {
+                                ?> checked="checked"<?php
+                                    } ?> />
                     Anaesthetist present
                   </label>
                   <label>
                     <input type="checkbox" id="general_anaesthetic_<?php echo $session->id ?>"
                            name="general_anaesthetic_<?php echo $session->id ?>"
-                           value="1"<?php if ($session->general_anaesthetic) { ?> checked="checked"<?php } ?> />
+                           value="1"<?php if ($session->general_anaesthetic) {
+                                ?> checked="checked"<?php
+                                    } ?> />
                     General anaesthetic available
                   </label>
                   <label>
                     <input type="checkbox" class="session-available"
                            id="available_<?php echo $session->id ?>"
                            name="available_<?php echo $session->id ?>"
-                           value="1"<?php if ($session->available) { ?> checked="checked"<?php } ?> />
+                           value="1"<?php if ($session->available) {
+                                ?> checked="checked"<?php
+                                    } ?> />
                     Session available
                   </label>
-                  <label <?php if ($session->available) { ?>style="display: none; color:#000;"<?php } ?>>
+                  <label <?php if ($session->available) {
+                        ?>style="display: none; color:#000;"<?php
+                         } ?>>
                       <?=\CHtml::dropDownList('unavailablereason_id_' . $session->id,
                           $session->unavailablereason_id,
                           CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'),
@@ -332,7 +376,7 @@
                     </label>
                   </div>
                 </div>
-              <?php } else { ?>
+                <?php } else { ?>
                 <input type="hidden" id="consultant_<?php echo $session->id ?>"
                        name="consultant_<?php echo $session->id ?>" value="<?php echo $session->consultant ?>"/>
                 <input type="hidden" id="paediatric_<?php echo $session->id ?>"
@@ -345,7 +389,7 @@
                        value="<?php echo $session->general_anaesthetic ?>"/>
                 <input type="hidden" id="available_<?php echo $session->id ?>"
                        name="available_<?php echo $session->id ?>" value="<?php echo $session->available ?>"/>
-              <?php } ?>
+                <?php } ?>
           </div>
         </td>
       </tr>
@@ -358,10 +402,10 @@
                   class="cols-9 comments diaryEditMode"
                   style="display: none;"
                   data-id="<?php echo $session->id ?>"><?=\CHtml::encode($session['comments']) ?></textarea>
-          <?php $title = 'Modified on ' . Helper::convertMySQL2NHS($session->last_modified_date) .
-            ' at ' . date("H:i:s",strtotime($session->last_modified_date)) .
+            <?php $title = 'Modified on ' . Helper::convertMySQL2NHS($session->last_modified_date) .
+            ' at ' . date('H:i:s', strtotime($session->last_modified_date)) .
             ' by ' . $session->session_usermodified->fullName;
-          ?>
+            ?>
 
         <span class="comments diaryViewMode"
               data-id="<?php echo $session->id ?>"

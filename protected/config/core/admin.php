@@ -40,7 +40,8 @@ return array(
                 'Custom episode summaries' => '/admin/episodeSummaries',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
-                'Patient Shortcodes' => '/admin/patientshortcodes'
+                'Patient Shortcodes' => '/admin/patientshortcodes',
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
@@ -50,6 +51,8 @@ return array(
                 'Benefits' => '/oeadmin/benefit/list',
                 'Complications' => '/oeadmin/complication/list',
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
+                'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
                 'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),
@@ -62,6 +65,8 @@ return array(
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
                 'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
+                'Dispense conditions' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseCondition/index'),
+                'Dispense locations' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseLocation/index'),
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',

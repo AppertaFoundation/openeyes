@@ -35,6 +35,12 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 10;
+
+    protected $errorExceptions = [
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
+    ];
     /**
      * Returns the static model of the specified AR class.
      *
@@ -55,6 +61,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return 'et_ophciexamination_diagnoses';
     }
 
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -63,10 +76,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('diagnoses' ,'disorderIdIsSet', 'required'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id', 'safe', 'on' => 'search'),
+            array('diagnoses', 'checkForDuplicates'),
+            array('diagnoses', 'disorderIdIsSet', 'required'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -77,6 +91,49 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $this->addError($attributeName, "Diagnosis cannot be empty");
             }
         }
+    }
+
+    public function checkForDuplicates($attribute, $params)
+    {
+        $entries_by_disorder_id = [];
+
+        foreach ($this->diagnoses as $diagnosis) {
+            $entries_by_disorder_id[$diagnosis->disorder_id][] = ['eye_id' => $diagnosis->eye_id, 'date' => $diagnosis->date];
+        }
+
+        foreach ($entries_by_disorder_id as $disorder_id => $disorders) {
+            foreach ($disorders as $disorder) {
+                $keys = array_keys($disorders, ['eye_id' => $disorder['eye_id'], 'date' => $disorder['date']]);
+                if (count($keys) > 1) {
+                    $duplicates = [];
+
+                    foreach ($this->diagnoses as $key => $value) {
+                        if ($value->disorder_id == $disorder_id && $value->eye_id === $disorder['eye_id'] && $value->date === $disorder['date']) {
+                            $duplicates[] = $key;
+                        }
+                    }
+
+                    foreach ($duplicates as $duplicate) {
+                        $this->addError($attribute, "row $duplicate - You have duplicates for " . \Disorder::model()->findByPk($disorder_id)->term . " diagnosis. Each combination of diagnosis, eye side and date must be unique.");
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $attribute
+     * @inheritdoc
+     */
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_diagnoses') {
+            if (preg_match('/(\d+)/', $message, $match) === 1) {
+                return $attribute . '_entries_row_' . ($match[1]+1);
+            }
+        }
+        return parent::errorAttributeException($attribute, $message);
     }
 
     /**
@@ -136,9 +193,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     /**
      * Update the diagnoses for this element using a hash structure of
      * [{
-     * 		'disorder_id' => integer,
-     * 		'eye_id' => \Eye::LEFT|\Eye::RIGHT|\Eye::BOTH,
-     * 		'principal' => boolean
+     *      'disorder_id' => integer,
+     *      'eye_id' => \Eye::LEFT|\Eye::RIGHT|\Eye::BOTH,
+     *      'principal' => boolean
      * }, ... ].
      *
      * @param $update_disorders
@@ -147,56 +204,82 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      */
     public function updateDiagnoses($update_disorders)
     {
-        $current_diagnoses = OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', array($this->id));
-        $curr_by_disorder_id = array();
-        $secondary_disorder_ids = array();
+        $disorder_to_update = [];
+        $disorder_to_create = [];
+        $added_diagnoses = [];
+        $current_diagnoses = OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', [$this->id]);
+
+        foreach ($update_disorders as $ud) {
+            if (isset($ud['id']) && $ud['id'] !== "") {
+                $disorder_to_update[$ud['id']] = $ud;
+            } else {
+                $disorder_to_create[] = $ud;
+            }
+        }
+
+        //delete and update ophciexamination_diagnosis entries
         foreach ($current_diagnoses as $cd) {
-            $curr_by_disorder_id[$cd->id] = $cd;
-        }
-        foreach ($update_disorders as $u_disorder) {
-            if (!isset($curr_by_disorder_id[$u_disorder['id']])) {
-                $curr = new OphCiExamination_Diagnosis();
-                $curr->element_diagnoses_id = $this->id;
-                $curr->disorder_id = $u_disorder['disorder_id'];
-                $curr->date = $u_disorder['date'];
+            if (!array_key_exists($cd->id, $disorder_to_update)) {
+                $secondary_diagnosis = \SecondaryDiagnosis::model()->find('disorder_id = :disorder_id', [':disorder_id' => $cd->disorder_id]);
+                if (!$secondary_diagnosis) {
+                    throw new \Exception("Unable to find secondary disorder linked to disorder $cd->disorder_id");
+                }
+                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
+                if (!$cd->delete()) {
+                    throw new \Exception('Unable to remove old disorder');
+                }
             } else {
-                $curr = @$curr_by_disorder_id[$u_disorder['id']];
-                unset($curr_by_disorder_id[$u_disorder['id']]);
-            }
-            if ($curr->eye_id != $u_disorder['eye_id']
-                || $curr->principal != $u_disorder['principal'] || $curr->date != $u_disorder['date']) {
-                // need to update & save
-                $curr->eye_id = $u_disorder['eye_id'];
-                $curr->principal = $u_disorder['principal'];
-                $curr->date = $u_disorder['date'];
-                if (!$curr->save()) {
-                    throw new \Exception('save failed'.print_r($curr->getErrors(), true));
+                $cd->eye_id = $disorder_to_update[$cd->id]['eye_id'];
+                $cd->principal = $disorder_to_update[$cd->id]['principal'];
+                $cd->date = $disorder_to_update[$cd->id]['date'];
+                if (!$cd->save()) {
+                    throw new \Exception('save failed' . print_r($cd->getErrors(), true));
                 };
+                $added_diagnoses[] = $cd;
             }
-            if ($u_disorder['principal']) {
-                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id'] ,  $u_disorder['date']);
+        }
+
+        //delete SecondaryDiagnosis entries that are removed in a new examination.
+        foreach ($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
+            if (!array_key_exists($secondary_diagnosis->disorder_id, $disorder_to_update)) {
+                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
+            }
+        }
+
+        //merge ophciexamination_diagnosis entries if there is the same diagnosis with same date on different eyes otherwise create new one
+        foreach ($disorder_to_create as $new_disorder) {
+            $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$new_disorder['disorder_id'], $this->id, $new_disorder['date'], $new_disorder['principal']]);
+            if ($related_diagnosis) {
+                if ($related_diagnosis->eye_id === intval($new_disorder['eye_id']) || $related_diagnosis->eye_id === \Eye::BOTH) {
+                    $this->addError('disorder_id', 'Duplicate');
+                } else {
+                    $related_diagnosis->eye_id = \Eye::BOTH;
+                    if (!$related_diagnosis->save()) {
+                        throw new \Exception('save failed' . print_r($related_diagnosis->getErrors(), true));
+                    };
+                    $added_diagnoses[] = $related_diagnosis;
+                }
             } else {
-                //add a secondary diagnosis
-                // Note that this may be creating duplicate diagnoses, but that is okay as the dates on them will differ
-                $this->event->episode->patient->addDiagnosis($u_disorder['disorder_id'],
-                    $u_disorder['eye_id'], substr($u_disorder['date'], 0, 10));
-                // and track
-                $secondary_disorder_ids[] = $u_disorder['disorder_id'];
+                $new_diagnosis = new OphCiExamination_Diagnosis();
+                $new_diagnosis->element_diagnoses_id = $this->id;
+                $new_diagnosis->disorder_id = $new_disorder['disorder_id'];
+                $new_diagnosis->eye_id = $new_disorder['eye_id'];
+                $new_diagnosis->date = $new_disorder['date'];
+                $new_diagnosis->principal = $new_disorder['principal'];
+                if (!$new_diagnosis->save()) {
+                    throw new \Exception('Unable to save old secondary disorder');
+                }
+                $added_diagnoses[] = $new_diagnosis;
             }
         }
-        // remove any current diagnoses no longer needed
-        foreach ($curr_by_disorder_id as $curr) {
-            if (!$curr->delete()) {
-                throw new \Exception('Unable to remove old disorder');
-            };
-        }
-        // ensure secondary diagnoses are consistent
-        // FIXME: ongoing discussion as to whether we should be removing diagnosis from the patient here
-        // particularly if this is a save of an older examination record.
-        foreach (\SecondaryDiagnosis::model()->findAll('patient_id=?', array($this->event->episode->patient_id)) as $sd) {
-            if ($sd->disorder->specialty && $sd->disorder->specialty->code == 130) {
-                if (!in_array($sd->disorder_id, $secondary_disorder_ids)) {
-                        $this->event->episode->patient->removeDiagnosis($sd->id);
+
+        if ($this->isAtTip()) {
+            foreach ($added_diagnoses as $diagnosis) {
+                if ($diagnosis->principal) {
+                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
+                } else {
+                    $this->event->episode->patient->addDiagnosis($diagnosis->disorder_id,
+                        $diagnosis->eye_id, $diagnosis->date);
                 }
             }
         }
@@ -240,7 +323,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return string html table of daignoses and further findings
      *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
-    public function getLetter_string() {
+    public function getLetter_string()
+    {
         $table_vals = array();
         $subspecialty = null;
         if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
@@ -293,15 +377,19 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         ) {
             foreach (OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)
-                         ) as $finding
+                         ) as $finding_assignment
             ) {
+                $finding = $finding_assignment->finding;
                 $table_vals[] = array(
                     'finding_id' => $finding->id,
                     'date' => \Helper::convertDate2NHS($this->event->event_date),
                     'laterality' => '',
-                    'term' => $finding->description
+                    'term' => $finding->name .
+                        (isset($finding_assignment->description) && $finding_assignment->description ?
+                            " : " . $finding_assignment->description :
+                            "")
                 );
-                $finding_ids[] = $finding->finding_id;
+                $finding_ids[] = $finding->id;
                 $findings[] = $finding;
             }
         }
@@ -329,7 +417,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         <table class="standard">
             <tbody>
             <?php
-            foreach ($table_vals as $val):?>
+            foreach ($table_vals as $val) :?>
                 <tr>
                     <td><?= $val['date'] ?></td>
                     <td><?= @$val['principal'] ? 'Principal: ' : '' ?><?= $val['laterality'] . $val['term'] ?></td>
@@ -370,8 +458,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                          ->findAll(
                              't.disorder_id=? and parent.subspecialty_id=?',
                              array($disorder_id, $subspecialty->id)
-                         ) as $secto_disorder
-            ) {
+                         ) as $secto_disorder) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -399,8 +486,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                          ->findAll(
                              't.finding_id=? and parent.subspecialty_id=?',
                              array($finding_id, $subspecialty->id)
-                         ) as $secto_disorder
-            ) {
+                         ) as $secto_disorder) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -427,7 +513,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 }
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
-                if(!$diagnosis->eye_id){
+                if (!$diagnosis->eye_id) {
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
@@ -487,10 +573,5 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 }

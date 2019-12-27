@@ -50,6 +50,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -221,14 +222,14 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-      parent::setDefaultOptions($patient);
+        parent::setDefaultOptions($patient);
 
-      if ($patient === null) {
-        throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
-      }
-      $processor = new \EDProcessor();
-      $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
-      $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this, \Eye::RIGHT, 'right_eyedraw');
     }
 
     /**
@@ -239,9 +240,9 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
      */
     public function beforeDelete()
     {
-      $processor = new \EDProcessor();
-      $processor->removeElementEyedraws($this);
-      return parent::beforeDelete();
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
+        return parent::beforeDelete();
     }
 
     /**
@@ -250,12 +251,12 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
      */
     public function afterSave()
     {
-      $processor = new \EDProcessor();
-      $processor->shredElementEyedraws($this, [
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, [
         'left_eyedraw' => \Eye::LEFT,
         'right_eyedraw' => \Eye::RIGHT,
-      ]);
-      parent::afterSave();
+        ]);
+        parent::afterSave();
     }
 
     /**
@@ -263,7 +264,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
      */
     public function getIrisOptions()
     {
-      return OphCiExamination_Gonioscopy_Iris::model()->findAll(['order' => 'display_order']);
+        return OphCiExamination_Gonioscopy_Iris::model()->findAll(['order' => 'display_order']);
     }
 
     /**

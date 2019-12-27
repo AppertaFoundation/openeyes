@@ -52,7 +52,7 @@ class DisorderController extends BaseEventTypeController
      */
     public function actionView($id)
     {
-        $this->render('view',array(
+        $this->render('view', array(
             'model'=>$this->loadModel($id),
         ));
     }
@@ -68,14 +68,13 @@ class DisorderController extends BaseEventTypeController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
+        if (isset($_POST['Disorder'])) {
             $model->attributes=$_POST['Disorder'];
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('create',array(
+        $this->render('create', array(
             'model'=>$model,
         ));
     }
@@ -92,14 +91,13 @@ class DisorderController extends BaseEventTypeController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Disorder']))
-        {
+        if (isset($_POST['Disorder'])) {
             $model->attributes=$_POST['Disorder'];
-            if($model->save())
+            if ($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
 
-        $this->render('update',array(
+        $this->render('update', array(
             'model'=>$model,
         ));
     }
@@ -113,7 +111,7 @@ class DisorderController extends BaseEventTypeController
     {
             $this->loadModel($id)->delete();
             // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if(!isset($_GET['ajax']))
+            if (!isset($_GET['ajax']))
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 
     }
@@ -124,7 +122,7 @@ class DisorderController extends BaseEventTypeController
     public function actionIndex()
     {
         $dataProvider=new CActiveDataProvider('Disorder');
-        $this->render('index',array(
+        $this->render('index', array(
             'dataProvider'=>$dataProvider,
         ));
     }
@@ -136,10 +134,10 @@ class DisorderController extends BaseEventTypeController
     {
         $model=new Disorder('search');
         $model->unsetAttributes();  // clear any default values
-        if(isset($_GET['Disorder']))
+        if (isset($_GET['Disorder']))
             $model->attributes=$_GET['Disorder'];
 
-        $this->render('admin',array(
+        $this->render('admin', array(
             'model'=>$model,
         ));
     }
@@ -154,8 +152,8 @@ class DisorderController extends BaseEventTypeController
     public function loadModel($id)
     {
         $model=Disorder::model()->findByPk($id);
-        if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+        if ($model===null)
+            throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }
 
@@ -165,8 +163,7 @@ class DisorderController extends BaseEventTypeController
      */
     protected function performAjaxValidation($model)
     {
-        if(isset($_POST['ajax']) && $_POST['ajax']==='disorder-form')
-        {
+        if (isset($_POST['ajax']) && $_POST['ajax']==='disorder-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

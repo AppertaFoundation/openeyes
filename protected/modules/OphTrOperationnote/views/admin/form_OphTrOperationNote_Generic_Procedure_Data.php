@@ -35,7 +35,7 @@
                         <?php if (isset($model->procedure)) {
                             echo $model->procedure->term;
                         } else {
-                            echo CHtml::activeDropDownList($model,'proc_id', CHtml::listData($procedures, 'id', 'term'), array('empty' => '-- Select --'));
+                            echo CHtml::activeDropDownList($model, 'proc_id', CHtml::listData($procedures, 'id', 'term'), array('empty' => '-- Select --'));
                         } ?>
                     </div>
                 </div>

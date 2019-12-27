@@ -89,8 +89,8 @@ class Zend_Gdata_Extension_When extends Zend_Gdata_Extension
                 $reminder->transferFromDOM($child);
                 $this->_reminders[] = $reminder;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
+            default:
+                parent::takeChildFromDOM($child);
             break;
         }
     }

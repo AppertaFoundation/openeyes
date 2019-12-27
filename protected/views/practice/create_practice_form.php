@@ -34,29 +34,11 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                 <tbody>
                 <tr>
                     <td>
-                        <?php echo $form->labelEx($contact, 'title'); ?>
-                    </td>
-                    <td>
-                        <?php echo $form->telField($contact, 'title', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'title'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
                         <?php echo $form->labelEx($contact, 'first_name'); ?>
                     </td>
                     <td>
-                        <?php echo $form->telField($contact, 'first_name', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $form->textArea($contact, 'first_name', array('size' => 50, 'maxlength' => 300)); ?>
                         <?php echo $form->error($contact, 'first_name'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $form->labelEx($contact, 'last_name'); ?>
-                    </td>
-                    <td>
-                        <?php echo $form->telField($contact, 'last_name', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'last_name'); ?>
                     </td>
                 </tr>
                 <tr>
@@ -64,21 +46,21 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                         <?php echo $form->labelEx($model, 'code'); ?>
                     </td>
                     <td>
-                        <?php echo $form->telField($model, 'code', array('size' => 15, 'maxlength' => 20)); ?>
+                        <?php echo $form->textField($model, 'code', array('size' => 15, 'maxlength' => 20)); ?>
                         <?php echo $form->error($model, 'code'); ?>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <?php echo $form->labelEx($contact, 'primary_phone'); ?>
+                        <?php echo $form->error($contact, 'primary_phone'); ?>
                     </td>
                     <td>
                         <?php echo $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
-                        <?php echo $form->error($contact, 'primary_phone'); ?>
                     </td>
                 </tr>
                 <tr>
-                    <?php $this->renderPartial('../patient/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
+                    <?php $this->renderPartial('../practice/_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
                 </tr>
                 <tr>
                     <td colspan="2" class="align-right">
@@ -86,19 +68,23 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             Yii::app()->controller->createUrl('practice/create', array("context" => 'AJAX')),
                             [
                                 'type' => 'POST',
-                                'error' => 'js:function(error){
-                                $("#errors").text("Please input the mandatory fields.");
-                                $(".alert-box").css("display","");
-                          }',
                                 'success' => 'js:function(event){
+                                 if (event.includes("error")){
+                                     $alertBox = $("#practice-alert-box"); 
+                                     $alertBox.find("#errors").html(event);
+                                     $("#practice-alert-box").css("display","");
+                                    }else{
                                removeSelectedPractice();
-                               addGpItem("selected_practice_wrapper",event);
+                               addGpItem("practice",event);
                                $("#practice-form")[0].reset();
                                 $("#js-add-practice-event").css("display","none");
+                                $("#practice-alert-box").css("display","none");
+                                }
                           }',
-                            ]
+                            ],
+                            array('class' => 'button hint green')
                         );
-                        ?>
+?>
                     </td>
                 </tr>
                 </tbody>

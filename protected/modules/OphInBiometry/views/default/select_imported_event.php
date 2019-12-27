@@ -25,11 +25,11 @@ $this->moduleNameCssClass .= ' edit';
 <div class="data-group">
   <div class="cols-12 column">
       <div class="alert-box issue">
-          <?php if (count($imported_events) > 0) { ?>
+            <?php if (count($imported_events) > 0) { ?>
               The following Biometry reports are available for this patient. <b>Please select a report.</b>
-          <?php } else { ?>
+            <?php } else { ?>
               There are no imported events.
-          <?php } ?>
+            <?php } ?>
       </div>
 
     <section class="element view full priority">
@@ -80,12 +80,12 @@ $this->moduleNameCssClass .= ' edit';
         <?php $this->displayErrors($errors, true) ?>
         <?php $this->endWidget(); ?>
     </section>
-      <?php
-      if (!$this->isManualEntryDisabled()) {
-          ?>
+        <?php
+        if (!$this->isManualEntryDisabled()) {
+            ?>
         <a href="/OphInBiometry/Default/create?patient_id=<?php echo $this->patient->id ?>&force_manual=1"
            style="float:right;margin:10px;">I don't want to select a report let me enter the data manually</a>
-      <?php } ?>
+        <?php } ?>
   </div>
 </div>
 

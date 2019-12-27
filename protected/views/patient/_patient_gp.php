@@ -20,7 +20,7 @@
     <header class="element-header">
         <h3 class="element-title"><?= Yii::app()->params['general_practitioner_label'] ?: 'General Practitioner'?></h3>
     </header>
-	<div class="element-data full-width js-toggle-body">
+    <div class="element-data full-width js-toggle-body">
         <table class="standard">
             <colgroup>
                 <col class="cols-1">
@@ -51,5 +51,5 @@
             </tr>
             </tbody>
         </table>
-	</div>
+    </div>
 </section>

@@ -29,7 +29,9 @@
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
 
-        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
+        <?php if (isset($errors) && !empty($errors)) {
+            $this->displayErrors($errors);
+        } ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">
@@ -47,11 +49,7 @@
         <header class="element-header">
             <h3 class="element-title">Options</h3>
         </header>
-        <div class="element-actions">
-        <span class="js-remove-element">
-            <i class="oe-i remove-circle"></i>
-        </span>
-        </div>
+
         <div class="element-fields full-width flex-layout flex-top col-gap">
             <div class="cols-6">
                 <div class="alert-box info large-text">
@@ -141,7 +139,7 @@
                                     ?>
                                     <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
                                                 id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
-                                <? } else { ?>
+                                <?php } else { ?>
                                     <?php
                                     if ($operation->referral) {
                                         echo $operation->referral->getDescription();
@@ -196,11 +194,6 @@
         <header class="element-header">
             <h3 class="element-title">Select theatre slot</h3>
         </header>
-        <div class="element-actions">
-        <span class="js-remove-element">
-		    <i class="oe-i remove-circle"></i>
-		</span>
-        </div>
 
         <?php if (Yii::app()->user->hasFlash('info')) { ?>
             <div class="alert-box">

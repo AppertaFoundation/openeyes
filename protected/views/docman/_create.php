@@ -21,67 +21,68 @@
     $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
 ?>
 <table class="cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-	<colgroup>
-		<col>
-		<col class="cols-3">
-		<col class="cols-4">
-	</colgroup>
+    <colgroup>
+        <col>
+        <col class="cols-3">
+        <col class="cols-4">
+    </colgroup>
     <thead>
         <tr id="dm_0">
-					<th colspan="4"></th>
-					<th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
+                    <th colspan="4"></th>
+                    <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
         </tr>
     </thead>
     <tbody>
     <?php /* Generate recipients by macro */ ?>
-    <?php if (!empty($macro_data)):?>
-        <?php if (array_key_exists('to', $macro_data)):?>
-       
+    <?php if (!empty($macro_data)) :?>
+        <?php if (array_key_exists('to', $macro_data)) :?>
             <tr class="valign-top rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                 <td> To <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
-               	<td>
-										<?php
-										$contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
-										if($contact_type == 'PRACTICE'){$contact_type = Yii::app()->params['gp_label'];}
-										$this->renderPartial('//docman/table/contact_name_type', array(
-											'address_targets' => $element->address_targets,
-											'contact_name' => $macro_data["to"]["contact_name"],
-											'contact_id' => $macro_data["to"]["contact_id"],
+                <td>
+                                        <?php
+                                        $contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
+                                        if ($contact_type == 'PRACTICE') {
+                                            $contact_type = Yii::app()->params['gp_label'];
+                                        }
+                                        $this->renderPartial('//docman/table/contact_name_type', array(
+                                            'address_targets' => $element->address_targets,
+                                            'contact_name' => $macro_data["to"]["contact_name"],
+                                            'contact_id' => $macro_data["to"]["contact_id"],
                                             'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
-											'contact_type' => $contact_type,
-											'row_index' => $row_index,
-											// Internal referral will always be the first row - indexed 0
-											'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
-											//contact_type is not editable as per requested, former validation left until the req finalized
-											'is_editable' => false, //strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
-											'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
-											'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
-										));
-										?>
+                                            'contact_type' => $contact_type,
+                                            'row_index' => $row_index,
+                                            // Internal referral will always be the first row - indexed 0
+                                            'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+                                            //contact_type is not editable as per requested, former validation left until the req finalized
+                                            'is_editable' => false, //strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
+                                            'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
+                                            'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
+                                        ));
+                                        ?>
                 </td>
-							<td>
-								<?php
-								$contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
-								$this->renderPartial('//docman/table/contact_address', array(
-									'contact_id' => $macro_data["to"]["contact_id"],
-									'contact_type' => $contact_type,
-									'row_index' => $row_index,
-									'address' => $macro_data["to"]["address"],
-									'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL') && ($contact_type != 'Practice'),
-								));
-								?>
-							</td>
-							<td class="docman_delivery_method align-left">
-									<?php $this->renderPartial('//docman/table/delivery_methods', array(
-											'is_draft' => $element->draft,
-											'contact_type' => strtoupper($contact_type),
-											'row_index' => $row_index,
-											'can_send_electronically' => $can_send_electronically
-									));
-									?>
-							</td>
+                            <td>
+                                <?php
+                                $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
+                                $this->renderPartial('//docman/table/contact_address', array(
+                                    'contact_id' => $macro_data["to"]["contact_id"],
+                                    'contact_type' => $contact_type,
+                                    'row_index' => $row_index,
+                                    'address' => $macro_data["to"]["address"],
+                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL') && ($contact_type != 'Practice'),
+                                ));
+                                ?>
+                            </td>
+                            <td class="docman_delivery_method align-left">
+                                    <?php $this->renderPartial('//docman/table/delivery_methods', array(
+                                            'is_draft' => $element->draft,
+                                            'contact_type' => strtoupper($contact_type),
+                                            'row_index' => $row_index,
+                                            'can_send_electronically' => $can_send_electronically
+                                    ));
+                                    ?>
+                            </td>
             </tr>
-        <?php else: ?>
+        <?php else : ?>
             <?php
                 // if no To was set in the macro we just display an empty row
                 $this->renderPartial(
@@ -96,24 +97,24 @@
                             'can_send_electronically' => $can_send_electronically,
                         )
                     );
-                ?>
+            ?>
         <?php endif; ?>
         <?php $row_index++; ?>
 
-        <?php if( isset($macro_data['cc']) ): ?>
-            <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
+        <?php if ( isset($macro_data['cc']) ) : ?>
+            <?php foreach ($macro_data['cc'] as $cc_index => $macro) : ?>
                 <?php $index = $row_index + $cc_index ;
                 $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                         $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
                         $contact_id = isset($macro["contact_id"]) ? $macro["contact_id"] : null;
-                        ?>
+                ?>
                 <tr class="valign-top rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
                     <td> Cc <?=\CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_name_type', array(
-														'address_targets' => $element->address_targets,
-														'contact_id' => $contact_id,
-														'contact_name' => $contact_name,
+                                                        'address_targets' => $element->address_targets,
+                                                        'contact_id' => $contact_id,
+                                                        'contact_name' => $contact_name,
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
                             'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
@@ -146,7 +147,7 @@
                                 'can_send_electronically' => $can_send_electronically,
                             ));
                         ?>
-										</td>
+                                        </td>
                     <td>
                         <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
@@ -156,74 +157,74 @@
     <?php endif; ?>
         <?php
             /* generates a default 'To' and 'Cc' rows */
-            if(empty($macro_data)){
-                $contact_id = null;
-                if(isset($defaults['To']['contact_id'])){
-                    $contact_id = $defaults['To']['contact_id'];
-                }
-                $contact_type = null;
-                if(isset($defaults['To']['contact_type'])){
-                    $contact_type = $defaults['To']['contact_type'];
-                }
-                $address = null;
-                if(isset($defaults['To']['address'])){
-                    $address = $defaults['To']['address'];
-                }
-                $contact_name = null;
-                if(isset($defaults['To']['contact_name'])){
-                    $contact_name = $defaults['To']['contact_name'];
-                }
-                $contact_nickname = null;
-                if(isset($defaults['To']['contact_nickname'])){
-                    $contact_nickname = $defaults['To']['contact_nickname'];
-                }
+        if (empty($macro_data)) {
+            $contact_id = null;
+            if (isset($defaults['To']['contact_id'])) {
+                $contact_id = $defaults['To']['contact_id'];
+            }
+            $contact_type = null;
+            if (isset($defaults['To']['contact_type'])) {
+                $contact_type = $defaults['To']['contact_type'];
+            }
+            $address = null;
+            if (isset($defaults['To']['address'])) {
+                $address = $defaults['To']['address'];
+            }
+            $contact_name = null;
+            if (isset($defaults['To']['contact_name'])) {
+                $contact_name = $defaults['To']['contact_name'];
+            }
+            $contact_nickname = null;
+            if (isset($defaults['To']['contact_nickname'])) {
+                $contact_nickname = $defaults['To']['contact_nickname'];
+            }
                 
-                echo $this->renderPartial(
-                    '//docman/document_row_recipient',
-                    array(
-                        'contact_id' => $contact_id, 
-                        'address' => $address, 'row_index' => 0, 
-                        'selected_contact_type' => $contact_type, 
-                        'contact_name' => $contact_name, 
-                        'contact_nickname' => $contact_nickname,
-                        'can_send_electronically' => $can_send_electronically,
-                    )
-                );
-            }
+            echo $this->renderPartial(
+                '//docman/document_row_recipient',
+                array(
+                    'contact_id' => $contact_id,
+                    'address' => $address, 'row_index' => 0,
+                    'selected_contact_type' => $contact_type,
+                    'contact_name' => $contact_name,
+                    'contact_nickname' => $contact_nickname,
+                    'can_send_electronically' => $can_send_electronically,
+                )
+            );
+        }
         ?>
-        <?php 
-            if(empty($macro_data)){
-                $contact_id = null;
-                if(isset($defaults['Cc']['contact_id'])){
-                    $contact_id = $defaults['Cc']['contact_id'];
-                }
-                $contact_type = null;
-                if(isset($defaults['Cc']['contact_type'])){
-                    $contact_type = $defaults['Cc']['contact_type'];
-                }
-                $address = null;
-                if(isset($defaults['Cc']['address'])){
-                    $address = $defaults['Cc']['address'];
-                }
-                $contact_name = null;
-                if(isset($defaults['Cc']['contact_name'])){
-                    $contact_name = $defaults['Cc']['contact_name'];
-                }
-                /* generates a default 'To' and 'Cc' rows */
-                echo $this->renderPartial(
-                    '//docman/document_row_recipient',
-                    array(
-                        'contact_id' => $contact_id, 
-                        'address' => $address, 
-                        'row_index' => 1, 
-                        'selected_contact_type' => $contact_type, 
-                        'contact_name' => $contact_name,
-                        'contact_nickname' => $contact_nickname,
-                        'can_send_electronically' => $can_send_electronically,
-                        'is_internal_referral' => $element->isInternalReferralEnabled(),
-                    )
-                );
+        <?php
+        if (empty($macro_data)) {
+            $contact_id = null;
+            if (isset($defaults['Cc']['contact_id'])) {
+                $contact_id = $defaults['Cc']['contact_id'];
             }
+            $contact_type = null;
+            if (isset($defaults['Cc']['contact_type'])) {
+                $contact_type = $defaults['Cc']['contact_type'];
+            }
+            $address = null;
+            if (isset($defaults['Cc']['address'])) {
+                $address = $defaults['Cc']['address'];
+            }
+            $contact_name = null;
+            if (isset($defaults['Cc']['contact_name'])) {
+                $contact_name = $defaults['Cc']['contact_name'];
+            }
+            /* generates a default 'To' and 'Cc' rows */
+            echo $this->renderPartial(
+                '//docman/document_row_recipient',
+                array(
+                    'contact_id' => $contact_id,
+                    'address' => $address,
+                    'row_index' => 1,
+                    'selected_contact_type' => $contact_type,
+                    'contact_name' => $contact_name,
+                    'contact_nickname' => $contact_nickname,
+                    'can_send_electronically' => $can_send_electronically,
+                    'is_internal_referral' => $element->isInternalReferralEnabled(),
+                )
+            );
+        }
         ?>
         <tr class="new_entry_row">
             <td style="text-align: left" colspan="5">

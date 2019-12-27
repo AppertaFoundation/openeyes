@@ -17,30 +17,30 @@
  */
 ?>
 <div class="cols-5">
-	<form id="operation_name_rules">
-		<table class="standard">
-			<thead>
-			<tr>
-				<th><input type="checkbox" id="checkall" class="operation_name_rules" /></th>
-				<th>Theatre</th>
-				<th>Operation name</th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php
+    <form id="operation_name_rules">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="checkall" class="operation_name_rules" /></th>
+                <th>Theatre</th>
+                <th>Operation name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
             $criteria = new CDbCriteria();
             $criteria->order = 'display_order asc';
             foreach (OphTrOperationbooking_Operation_Name_Rule::model()->findAll() as $i => $rule) {?>
-				<tr class="clickable sortable" data-attr-id="<?php echo $rule->id?>?>" data-uri="OphTrOperationbooking/admin/editoperationnamerule/<?php echo $rule->id?>">
-					<td><input type="checkbox" name="operation_name[]" value="<?php echo $rule->id?>" class="operation_name_rules" /></td>
-					<td><?php echo $rule->theatre->name?></td>
-					<td><?php echo $rule->name?></td>
-				</tr>
-			<?php }?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="3">
+                <tr class="clickable sortable" data-attr-id="<?php echo $rule->id?>?>" data-uri="OphTrOperationbooking/admin/editoperationnamerule/<?php echo $rule->id?>">
+                    <td><input type="checkbox" name="operation_name[]" value="<?php echo $rule->id?>" class="operation_name_rules" /></td>
+                    <td><?php echo $rule->theatre->name?></td>
+                    <td><?php echo $rule->name?></td>
+                </tr>
+            <?php }?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
                         <?= CHtml::submitButton(
                             'Add',
                             [
@@ -58,16 +58,16 @@
                             ]
                         ); ?>
 
-<!--						--><?php //echo EventAction::button('Add', 'add_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
-<!--						--><?php //echo EventAction::button('Delete', 'delete_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
-	<p>
-		The operation name rules allow the system to use specific operation names in admission letters. Any operation that is booked for a specific theatre will use the name assigned in the theatre rule, rather than the generic term &quot;operation&quot;
-	</p>
+<!--                        --><?php //echo EventAction::button('Add', 'add_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
+<!--                        --><?php //echo EventAction::button('Delete', 'delete_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+    <p>
+        The operation name rules allow the system to use specific operation names in admission letters. Any operation that is booked for a specific theatre will use the name assigned in the theatre rule, rather than the generic term &quot;operation&quot;
+    </p>
 </div>
 
 

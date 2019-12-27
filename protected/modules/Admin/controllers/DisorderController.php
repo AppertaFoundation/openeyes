@@ -16,7 +16,6 @@
 class DisorderController extends BaseAdminController
 {
     public $items_per_page = 60;
-
     public $group = 'Disorders';
 
     public function actionList()
@@ -29,18 +28,18 @@ class DisorderController extends BaseAdminController
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
         if ($query) {
-                if (is_numeric($query)) {
-                    $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $query;
-                } else {
-                    $criteria->addSearchCondition('lower(fully_specified_name)', strtolower($query), true, 'OR');
-                    $criteria->addSearchCondition('lower(term)', strtolower($query), true, 'OR');
-                    $criteria->addSearchCondition('lower(aliases)', strtolower($query) , true, 'OR');
-                }
+            if (is_numeric($query)) {
+                $criteria->addCondition('id = :id');
+                $criteria->params[':id'] = $query;
+            } else {
+                $criteria->addSearchCondition('lower(fully_specified_name)', strtolower($query), true, 'OR');
+                $criteria->addSearchCondition('lower(term)', strtolower($query), true, 'OR');
+                $criteria->addSearchCondition('lower(aliases)', strtolower($query), true, 'OR');
+            }
         }
 
         if ($specialty) {
-            if($specialty == "None") {
+            if ($specialty == "None") {
                 $criteria->addCondition('specialty_id IS NULL');
             } else {
                 $criteria->compare('specialty_id', $specialty);
@@ -65,11 +64,15 @@ class DisorderController extends BaseAdminController
         }
         if ($request->getPost('Disorder')) {
             $model->attributes = $request->getPost('Disorder');
-            if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Disorder saved');
-                $this->redirect(array('List'));
-            } else {
+            if (!$model->validate()) {
                 $errors = $model->getErrors();
+            } else {
+                if ($model->save()) {
+                    Yii::app()->user->setFlash('success', 'Disorder saved');
+                    $this->redirect(array('List'));
+                } else {
+                    $errors = $model->getErrors();
+                }
             }
         }
 

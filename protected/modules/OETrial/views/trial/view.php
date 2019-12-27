@@ -13,7 +13,6 @@
     'permission' => $permission,
 )); ?>
 
-
 <div class="oe-full-content subgrid oe-worklists">
 
     <?php $this->renderPartial('_trialActions', array(
@@ -25,18 +24,18 @@
     <section class="element edit cols-11">
       <div class="element-fields">
 
-          <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
+            <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE) : ?>
             <div class="alert-box alert with-icon">
               This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
               Trials
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
 
-          <?php if (!$trial->is_open): ?>
+            <?php if (!$trial->is_open) : ?>
             <div class="alert-box alert with-icon">This Trial has been closed. You will need to reopen it before you
               can make any changes.
             </div>
-          <?php endif; ?>
+            <?php endif; ?>
       </div>
     </section>
 
@@ -53,18 +52,18 @@
         <tr class="col-gap">
           <td>Principal Investigator</td>
           <td>
-              <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
-              foreach ($principal_investigators as $item){
-              	echo $item->user->getFullName().'<br>';
-              }
-             ?>
+                <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
+                foreach ($principal_investigators as $item) {
+                    echo $item->user->getFullName().'<br>';
+                }
+                ?>
           </td>
           <td>Date</td>
           <td>
-              <?= $trial->getStartedDateForDisplay(); ?>
-              <?php if ($trial->started_date !== null): ?>
+                <?= $trial->getStartedDateForDisplay(); ?>
+                <?php if ($trial->started_date !== null) : ?>
                 &mdash; <?= $trial->getClosedDateForDisplay() ?>
-              <?php endif; ?>
+                <?php endif; ?>
           </td>
         </tr>
         <tr>
@@ -73,7 +72,7 @@
                 <?= $trial->getEthicsNumberForDisplay(); ?>
             </td>
         </tr>
-        <?php if ($trial->external_data_link !== ''): ?>
+        <?php if ($trial->external_data_link !== '') : ?>
           <tr class="col-gap">
             <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
             <td>
@@ -82,11 +81,11 @@
             </td>
           </tr>
         <?php endif; ?>
-        <?php if (strlen($trial->description)): ?>
+        <?php if (strlen($trial->description)) : ?>
           <tr class="col-gap">
             <td>Description</td>
             <td colspan="3">
-                <?= CHtml::encode($trial->description) ?>
+                <?= nl2br(CHtml::encode($trial->description)) ?>
             </td>
           </tr>
         <?php endif; ?>
@@ -95,7 +94,7 @@
     </div>
 
 
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => true,
@@ -104,7 +103,7 @@
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => false,
@@ -113,7 +112,7 @@
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
-      <?php $this->renderPartial('_patientList', array(
+        <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
           'permission' => $permission,
           'renderTreatmentType' => false,
@@ -145,9 +144,12 @@
         window.location.reload(false);
       },
       error: function (response) {
+        //  Changed to meet requirements of CERA-583, there was no popup box shown earlier because content:response throws an error
+        var displayError = response.responseText;
+        displayError = displayError.substring(displayError.search('<p>'),displayError.indexOf('(') ) + '</p>';
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: response
+          content: displayError
         }).open();
       },
     });
@@ -243,6 +245,7 @@
 
     $(document).on('click', '.js-save-comment-trial-patient', function () {
         var $container=$(this).closest('.js-trial-patient-comment-tr');
+        var $containerAttrVal = $(this).closest('.js-trial-patient-comment-tr').attr('data-trial-patient-id');
         var $actions = $(this).closest('.js-comment-trial-patient-actions');
         var trialPatientId = $(this).closest('.js-trial-patient-comment-tr').data('trial-patient-id');
         var comment = $container.find('.js-comment-trial-patient').val();
@@ -259,6 +262,13 @@
             success: function (response) {
                 $container.find('.js-hidden-comment-trial-patient').val(comment);
                 $actions.hide();
+                // Make the comment button green when there is a comment.
+                if (comment != '') {
+                    $($("[data-trial-patient-id="+$containerAttrVal+"]")[0]).find("#trial_patient_comment_button").addClass("hint green");
+                }
+                else {
+                    $($("[data-trial-patient-id="+$containerAttrVal+"]")[0]).find("#trial_patient_comment_button").removeClass("hint green");
+                }
             },
             error: function (response) {
                 new OpenEyes.UI.Dialog.Alert({

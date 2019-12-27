@@ -33,17 +33,18 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 'Age',
                 'Ethnicity',
                 'External Reference',
+                'Accepted/Rejected Date'
             );
 
 
-            $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
+            $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference', 'Accepted/Rejected Date');
 
             if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
                 $columns[] = 'Treatment Type';
                 $sortableColumns[] = 'Treatment Type';
             }
 
-            foreach ($columns as $field): ?>
+            foreach ($columns as $field) : ?>
                 <?php
                 $new_sort_dir = ($field === $sort_by) ? 1 - $sort_dir : 0;
                 $sort_symbol = '';

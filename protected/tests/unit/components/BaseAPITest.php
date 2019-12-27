@@ -91,18 +91,18 @@ class BaseAPITest extends CDbTestCase
 
     /*
      */
-     public function testGetMostRecentElementInEpisode()
+    public function testGetMostRecentElementInEpisode()
      {
-         $test = $this->getMockBuilder('BaseAPI')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->setMockClassName('TestModule_API')
-            ->getMock();
-         $event = $this->events('event2');
+        $test = $this->getMockBuilder('BaseAPI')
+           ->disableOriginalConstructor()
+           ->setMethods(null)
+           ->setMockClassName('TestModule_API')
+           ->getMock();
+        $event = $this->events('event2');
 
-         $resultElement = $test->getMostRecentElementInEpisode($event->episode_id, $event->event_type_id, ElementMock_TestClass::model());
-         $this->assertEquals(3, $resultElement->id);
-     }
+        $resultElement = $test->getMostRecentElementInEpisode($event->episode_id, $event->event_type_id, ElementMock_TestClass::model());
+        $this->assertEquals(3, $resultElement->id);
+    }
 
     private function generateMockTableAndData($table_name)
     {

@@ -23,17 +23,21 @@ $logoHelper = new LogoHelper();
 
 ?>
 <header class="header">
-	<div class="title">
-	<?php echo $logoHelper->render('//base/_logo_seal'); ?>
-	<h1><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
-	</div>
-	<div class="data-group">
-		<!-- Patient details -->
-		<div class="cols-4 column patient">
-			<strong><?php echo $this->patient->contact->fullName?></strong>
-			<br />
-			<p>
-			<?php echo $this->patient->getLetterAddress(array(
+    <div class="title">
+    <?php echo $logoHelper->render('//base/_logo_seal'); ?>
+    <h1><?php if ($this->attachment_print_title != null ) {
+        echo $this->attachment_print_title;
+        } else {
+            echo $event_type;
+        } ?></h1>
+    </div>
+    <div class="data-group">
+        <!-- Patient details -->
+        <div class="cols-4 column patient">
+            <strong><?php echo $this->patient->contact->fullName?></strong>
+            <br />
+            <p>
+            <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
 			</p>
@@ -43,9 +47,9 @@ $logoHelper = new LogoHelper();
 			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
 			<?php }?>
 			<p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
-			<p>Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
+			<p><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ')?><strong><?php echo $this->patient->hos_num ?></strong>
 			<br />
-                <?php echo Yii::app()->params['nhs_num_label']?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
+                <?php echo Yii::app()->params['nhs_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ')?><strong><?php echo $this->patient->nhsnum ?></strong>
 			<br />
 			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
 			</p>

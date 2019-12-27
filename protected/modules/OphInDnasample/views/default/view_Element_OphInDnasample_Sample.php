@@ -35,7 +35,7 @@
       <div class="cols-10 column">
         <div class="data-value">
             <?php echo $element->type ? $element->type->name : 'None' ?>
-            <?php if ($element->type->id == 4): ?>
+            <?php if ($element->type->id == 4) : ?>
               (<?php echo $element->other_sample_type; ?>)
             <?php endif; ?>
         </div>
