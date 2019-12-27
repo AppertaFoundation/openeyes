@@ -153,19 +153,19 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             }
         }
 
-        $(controller.options.fileInputSelector).val("");
-        $td.find('.js-document-id').val("");
-        $('#' + side + '-rotate-actions').hide();
-
         let deleted_doc = $td.find('.js-document-id').val();
-
         let $removed_docs = $(controller.options.removedDocumentsSelector);
+
         if (typeof $removed_docs.data('documents') === 'undefined') {
             $removed_docs.data('documents', []);
         }
         let documents = $removed_docs.data('documents');
         documents.push(deleted_doc);
         $removed_docs.data('documents', documents);
+
+        $(controller.options.fileInputSelector).val("");
+        $td.find('.js-document-id').val("");
+        $('#' + side + '-rotate-actions').hide();
     };
 
     DocumentUploadController.prototype.paste = function (side, files) {

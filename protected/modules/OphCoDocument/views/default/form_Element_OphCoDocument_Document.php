@@ -185,7 +185,7 @@
 
                         <div class="flex-layout flex-<?=$side?> js-remove-document-wrapper"
                             <?= ($element->{$side."_document_id"} ? '' : 'style="display:none"'); ?> >
-                            <input type="hidden" id="original-left-doc" value="<?= $element->{$side."_document_id"} ?>">
+                            <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side."_document_id"} ?>">
                             <button class="hint red" data-side="<?=$side?>">remove uploaded file</button>
                         </div>
                         <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
