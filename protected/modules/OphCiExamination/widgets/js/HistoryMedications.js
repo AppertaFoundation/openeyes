@@ -780,10 +780,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.copyRow = function($origin, $target, old_values)
     {
-        var $row = $(this.boundController.createRow());
+        let dose_unit_dropdown_disabled = ($origin.find('select.js-unit-dropdown').attr('disabled') === "disabled");
+        var $row = $(this.boundController.createRow(undefined , dose_unit_dropdown_disabled));
         $row.appendTo($target);
         var data = this.getRowData($origin, old_values);
-        data.show_dose_units = !($origin.find('select.js-unit-dropdown').attr('disabled') === "disabled");
+        data.show_dose_units = !dose_unit_dropdown_disabled;
+
         data.usage_type = $target.attr("data-usage-type");
 
         this.boundController.setRowData($row, data);
@@ -791,7 +793,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if(data.end_date !== "") {
             this.showStopControls($row);
         }
-        this.updateRowRouteOptions($row);
+        this.updateRowRouteOptions($row, false);
 
         $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
         this.disableRemoveButton($row);
@@ -933,14 +935,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $fuzzyFieldset.find('.cancel').hide();
   };
 
-  HistoryMedicationsController.prototype.updateRowRouteOptions = function($row)
+  HistoryMedicationsController.prototype.updateRowRouteOptions = function($row, reset_values = true)
   {
       var $routeOptionWrapper = $row.find(this.options.routeOptionWrapperSelector);
       $routeOptionWrapper.hide();
-      $routeOptionWrapper.find('input').each(function() {
-          $(this).prop( "checked", false );
-      });
-			$row.find(this.options.routeOptionInputSelector).val('');
+
+      if(reset_values) {
+          $routeOptionWrapper.find('input').each(function () {
+              $(this).prop("checked", false);
+          });
+          $row.find(this.options.routeOptionInputSelector).val('');
+      }
 
       var value = $row.find(this.options.routeFieldSelector + ' option:selected').val();
       if (value !== "" && typeof value !== "undefined") {
@@ -952,7 +957,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
-  HistoryMedicationsController.prototype.createRow = function(medications)
+  HistoryMedicationsController.prototype.createRow = function(medications, has_dose_unit_term = false)
   {
       var newRows = [];
       var template = this.templateText;
@@ -963,6 +968,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if(typeof medications === "undefined") {
           // just create an empty row
           data.row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+          data.has_dose_unit_term = has_dose_unit_term;
+
           return Mustache.render(
               this.templateText,
               data
@@ -976,10 +983,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
+      data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined';
 
       newRows.push(Mustache.render(
           template,
-          data ));
+          data));
 
       if (data['tapers'] !== undefined) {
           data['tapers'].forEach(function(taper, taper_key) {

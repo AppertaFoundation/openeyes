@@ -95,14 +95,21 @@ if ($historyElement) {
                                 <colgroup>
                                     <col class="cols-7">
                                 </colgroup>
-                                <tbody>
-                                <?php foreach ($stopped_eye_medications as $entry) : ?>
-                                    <tr>
-                                        <td>
-                                            <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
-                                            <?= $entry->getMedicationDisplay() ?>
-                                        </td>
-                                        <td><?php
+                              <thead>
+                              <tr>
+                                  <th>Stopped</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th><i class="oe-i small pro-theme js-patient-expand-btn pad expand"></i></th>
+                              </tr>
+                              </thead>
+                              <tbody style="display: none;">
+                              <?php foreach ($stopped_eye_medications as $entry) { ?>
+                          <tr>
+                              <td>
+																<?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+																<?= $entry->getMedicationDisplay() ?></td>
+                              <td><?php
                                             $laterality = $entry->getLateralityDisplay();
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                         ?>
@@ -110,25 +117,26 @@ if ($historyElement) {
                                         <td>
                                             <?php if ($entry->getDoseAndFrequency()) { ?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
-                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                                 data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                                 </i>
                                             <?php } ?>
                                         </td>
                                         <td><?= $entry->getStartDateDisplay() ?></td>
                                     </tr>
-                                <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                <?php } ?>
+                              </tbody>
+                          </table>
+                      </div>
+                  </diV>
                         </div>
                     </div>
                 </div>
                 <?php } ?>
             <?php } ?>
-            </div>
     </section>
 
     <div class="collapse-tile-group">
-        <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
     </div>
 </div>
 

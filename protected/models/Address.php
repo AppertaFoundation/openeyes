@@ -71,6 +71,7 @@ class Address extends BaseActiveRecordVersioned
             array('contact_id, country_id', 'required'),
             array('email', 'required', 'on'=>array('self_register')),
             array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
+            array('city', 'cityValidator'),
         );
     }
 
@@ -169,7 +170,12 @@ class Address extends BaseActiveRecordVersioned
 
         if ($include_country) {
             if (!empty($this->country->name)) {
-                $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                $site = null;
+                // CConsoleApplication can't access the session
+                if (\Yii::app() instanceof \CWebApplication) {
+                    $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                }
+
                 if (!$site || ($site->institution->contact->address->country_id != $this->country_id)) {
                     $address[] = $this->country->name;
                 }
@@ -217,6 +223,14 @@ class Address extends BaseActiveRecordVersioned
         }
 
         return false;
+    }
+
+    public function cityValidator($attribute, $param){
+        if (isset($this->city)) {
+            if (1 === preg_match('~[0-9]~', $this->city)) {
+                $this->addError($attribute, "City has Numeric values");
+            }
+        }
     }
 
     public function getDefaultCountryId(){

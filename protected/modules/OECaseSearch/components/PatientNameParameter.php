@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class PatientNumberParameter
+ * Class PatientNameParameter
  */
-class PatientNumberParameter extends CaseSearchParameter implements DBProviderInterface
+class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $number;
+    public $patient_name;
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -14,14 +14,14 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = 'patient_number';
-        $this->operation = '='; // Remove if more operations are added.
+        $this->name = 'patient_name';
+        $this->operation = 'LIKE'; // Remove if more operations are added.
     }
 
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return Yii::app()->params['hos_label_long'] . ' Number';
+        return 'Patient Name';
     }
 
     /**
@@ -31,7 +31,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeNames()
     {
         return array_merge(parent::attributeNames(), array(
-                'number',
+                'patient_name',
             )
         );
     }
@@ -39,7 +39,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeLabels()
     {
         return array_merge(parent::attributeLabels(), array(
-            'number' => 'Value',
+            'patient_name' => 'Patient Name',
         ));
     }
 
@@ -50,42 +50,53 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('number', 'required'),
-            array('number', 'numerical'),
+            array('patient_name', 'required'),
         ));
     }
 
     public function renderParameter($id)
     {
         ?>
-        <div class="flex-layout flex-left">
+      <div class="flex-layout flex-left js-case-search-param">
+        <div class="parameter-option">
             <?= $this->getDisplayTitle() ?>
-                <?php echo CHtml::activeTextField($this, "[$id]number"); ?>
-                <?php echo CHtml::error($this, "[$id]number"); ?>
         </div>
+        <div class="parameter-option">
+            <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
+            <?php echo CHtml::error($this, "[$id]patient_name"); ?>
+        </div>
+      </div>
         <?php
     }
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The database search provider.
+     * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
      * @throws CHttpException
      */
     public function query($searchProvider)
     {
-        $op = '=';
+        $op = 'LIKE';
         /*
-        // Reimplement this code if more operation choices are added to this parameter type.
-         if ($this->operation === '=') {
-            $op = '=';
-        } else {
-            throw new CHttpException(400, 'Invalid operator specified.');
+         // Reimplement this code if other operations are added to this parameter type.
+         switch ($this->operation) {
+            case 'LIKE':
+                $op = 'LIKE';
+                break;
+            default:
+                throw new CHttpException(400, 'Invalid operator specified.');
+                break;
         }*/
 
         return "SELECT DISTINCT p.id 
-FROM patient p
-WHERE p.hos_num $op :p_num_number_$this->id";
+FROM patient p 
+JOIN contact c 
+  ON c.id = p.contact_id
+WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$this->id)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) $op LOWER(:p_n_name_like_$this->id)) OR
+     SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id)
+      OR SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id)
+";
     }
 
     /**
@@ -96,7 +107,8 @@ WHERE p.hos_num $op :p_num_number_$this->id";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_num_number_$this->id" => $this->number,
+            "p_n_name_like_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_$this->id" => $this->patient_name,
         );
     }
 
@@ -105,6 +117,6 @@ WHERE p.hos_num $op :p_num_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation $this->number";
+        return "$this->name: $this->operation \"$this->patient_name\"";
     }
 }

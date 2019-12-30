@@ -176,7 +176,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         $settings = new SettingMetadata();
         $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? self::MAX_WPTEN_LINE_CHARS : self::MAX_FPTEN_LINE_CHARS;
         $item_lines_used = 0;
-        $drug_label = $this->drug->label;
+        $drug_label = $this->medication->label;
 
         foreach (array(
             'item_drug' => $drug_label,
@@ -287,13 +287,17 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public function fpTenFrequency()
     {
-        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+        if (preg_match("/^\d+/", $this->drugDuration->name)) {
+            return "Frequency: {$this->frequency->term} for {$this->drugDuration->name}";
+        }
+
+        return 'Frequency: ' . $this->frequency->term . ' ' . strtolower($this->drugDuration->name);
     }
 
     public function fpTenDose()
     {
-        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
-            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->dose_unit_term}" : $this->dose)
+            . ', ' . $this->route ? $this->route->term : "" . ($this->laterality ? ' (' . $this->laterality->name . ')' : null);
     }
 
     public function saveTapers()

@@ -33,7 +33,7 @@
   		<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
   	to the html. Then call
 		OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
-	Set NAME to what ever you want. If used correctly you will have 
+	Set NAME to what ever you want. If used correctly you will have
 		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?> and <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
 	on the same page along with
 		OpenEyes.UI.AutoCompleteSearch.init({input: $('#oe-autocompletesearch'), ...}); and OpenEyes.UI.AutoCompleteSearch.init({input: $('NAME'), ...});
@@ -59,15 +59,14 @@ OpenEyes.UI = OpenEyes.UI || {};
     var xhr;
     var response;
     var current_focus;
-    var item_clicked;
     var inputbox;
     var onSelect = [];
     var timeout_id = null;
-    
-    function initAutocomplete(options) {
-    	let input = options.input;
-    	input.on('input',function() {
-    		inputbox = options.input;
+    var max_height = null;
+
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, extra_params, search_data_prefix) {
+    	input.on('input',function(){
+    		inputbox = input;
     		inputbox.parent().find('.alert-box').addClass('hidden');
     		search_term = this.value.trim();
 
@@ -94,17 +93,17 @@ OpenEyes.UI = OpenEyes.UI || {};
 				let data = {
 					term: search_term
 				};
-				data = $.extend(true, {}, data, (options.extra_params || {}));
+				data = $.extend(true, {}, data, (extra_params || {}));
 
 				let params = {};
-				if (options.search_data_prefix) {
-					params[options.search_data_prefix] = data;
+				if (search_data_prefix) {
+					params[search_data_prefix] = data;
 				}
 
 				params.ajax = 'ajax';
         params.term = search_term;
 
-				xhr = $.getJSON(options.url, params, function(data, status) {
+				xhr = $.getJSON(autocomplete_url, params, function(data, status) {
 					if (status === 'success') {
 						response = data;
 						if(response.length > 0){
@@ -122,7 +121,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	});
 
     	input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function(){
-    		item_clicked = response[$(this).index()];
+			exports.item_clicked = response[$(this).index()];
             inputbox.val('');
             onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
     		hideMe();
@@ -145,7 +144,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     				$('.oe-menu-item a:eq('+current_focus+')').trigger('click');
     			}
     		}
-
+			max_height = autocomplete_max_height;
     		$('.oe-autocomplete a').removeClass('hint');
     		$('.oe-autocomplete a:eq('+current_focus+')').addClass('hint');
     	});
@@ -158,7 +157,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    var search_options = ``;
 
         $.each(response,function(index, value){
-        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1">`;
+        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
         	if(value.fullname !== undefined){
         		search_options += matchSearchTerm(value.fullname);
         	}
@@ -181,8 +180,12 @@ OpenEyes.UI = OpenEyes.UI || {};
 
      		search_options += `</a></li>`;
         });
-
-        inputbox.parent().find(".oe-autocomplete").append(search_options).css({'position':'absolute', 'top':inputbox.outerHeight()}).removeClass('hidden');
+        var input_box_css = {'position':'absolute', 'top':inputbox.outerHeight()};
+        if (max_height != 'null'){
+        	input_box_css['overflow-y'] = 'auto';
+        	input_box_css['max-height'] = max_height;
+		}
+        inputbox.parent().find(".oe-autocomplete").append(search_options).css(input_box_css).removeClass('hidden');
     }
 
     function matchSearchTerm(str){
@@ -210,12 +213,12 @@ OpenEyes.UI = OpenEyes.UI || {};
     	init: function (options) {
     		if(options.input){
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options);
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.extra_params, options.search_data_prefix);
 	    		return exports.AutoCompleteSearch;
     		}
     	},
         getResponse: function(){
-            return item_clicked;
+            return exports.item_clicked;
         }
     };
 

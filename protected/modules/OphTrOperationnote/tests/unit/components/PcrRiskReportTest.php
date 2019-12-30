@@ -18,19 +18,173 @@
  */
 class PcrRiskReportTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Test the actual calculation.
-     */
-    public function testCalculatedPcrRisk()
+    public function getEmptyReport()
     {
-        $pcr = $this->getMockBuilder('PcrRiskReport')
-            ->setMethods(array('queryData'))
+        $report = $this->getMockBuilder('_WrapperPcrRiskReport')
+            ->setMethods(['getTotalOperations', 'querySurgeonData'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pcr->expects($this->any())
-            ->method('queryData')
+        $report->setEmptyTest();
+
+        $report->expects($this->any())
+            ->method('getTotalOperations')
+            ->will($this->returnValue(0));
+
+        $report->expects($this->any())
+            ->method('querySurgeonData')
             ->will($this->returnValue(array(
+                array('id' => 1),
+                array('id' => 2),
+                array('id' => 3),
+                array('id' => 6),
+                array('id' => 7),
+                array('id' => 11),
+                array('id' => 453),
+                array('id' => 833),
+            )));
+
+        return $report;
+    }
+
+    public function getReport()
+    {
+        $report = $this->getMockBuilder('_WrapperPcrRiskReport')
+            ->setMethods(['getTotalOperations', 'querySurgeonData'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $report->expects($this->any())
+            ->method('getTotalOperations')
+            ->will($this->returnValue(8));
+
+        $report->expects($this->any())
+            ->method('querySurgeonData')
+            ->will($this->returnValue(array(
+                array('id' => 1),
+                array('id' => 2),
+                array('id' => 3),
+                array('id' => 6),
+                array('id' => 7),
+                array('id' => 11),
+                array('id' => 453),
+                array('id' => 833),
+            )));
+
+        return $report;
+    }
+
+    public function testDataSet()
+    {
+        $report = $this->getReport();
+
+        $data = $report->dataSet();
+        $expected = array('name' => 'adjusted', 'x' => 8, 'y' => 11.992504684572143, 'surgeon' => '<br><i>Surgeon: </i>Surgeon 1', 'color' => 'red');
+
+        $this->assertEquals($expected, $data[0]);
+    }
+
+    /**
+     * Test the series generation for the graph with empty DataSet.
+     */
+    public function testEmptyDataSet()
+    {
+        $report = $this->getEmptyReport();
+
+        $data = $report->dataSet();
+        $expected = array('name' => 'adjusted', 'x' => 0, 'y' => 0, 'surgeon' => '<br><i>Surgeon: </i>Surgeon 1', 'color' => 'red');
+
+        $this->assertEquals($expected, $data[0]);
+    }
+
+    /**
+     * Test the series generation for the graph.
+     */
+    public function testTracesJson()
+    {
+        $report = $this->getReport();
+        $this->assertInternalType('string', $report->tracesJson());
+    }
+
+    public function testTracesJsonWithEmptyDataSet()
+    {
+        $report = $this->getEmptyReport();
+        $this->assertInternalType('string', $report->tracesJson());
+    }
+
+    /**
+     * Test the configuration for the graph.
+     */
+    public function testPlotlyConfig()
+    {
+        $report = $this->getReport();
+        $expected = json_encode(array(
+            'type' => 'scatter',
+            'showlegend' => true,
+            'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+            'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
+            'title' => 'PCR Rate (risk adjusted)<br><sub>Total Operations: 8</sub>',
+            'font' => array(
+                'family' => 'Roboto,Helvetica,Arial,sans-serif',
+            ),
+            'xaxis' => array(
+                'title' => 'No. Operations',
+                'showgrid' => false,
+                'ticks' => 'outside',
+                'dtick' => 100,
+                'tick0' => 0,
+            ),
+            'yaxis' => array(
+                'title' => 'PCR Rate',
+                'ticks' => 'outside',
+                'dtick' => 10,
+                'tick0' => 0,
+                'showgrid'=>true,
+                'range' => [0,50],
+            ),
+            'legend'=> array(
+                'x' => 0.8,
+                'y' => 1,
+                'bordercolor' => '#fff',
+                'borderwidth' => 1,
+                'font' => array(
+                    'size' => 13
+                )
+            ),
+            'shapes' => array(
+                array(
+                    'type' => 'line',
+                    'xref' => 'x',
+                    'yref' => 'y',
+                    'line' => array(
+                        'dash' =>'dot',
+                        'width' => 1,
+                        'color' => 'rgb(0,0,0)',
+                    ),
+                    'x0' => 0,
+                    'x1' => 1000,
+                    'y0' => 1.92,
+                    'y1' => 1.92,
+                )
+            ),
+        ));
+
+        $config = $report->plotlyConfig();
+        $this->assertEquals($expected, $config);
+    }
+}
+
+class _WrapperPcrRiskReport extends PcrRiskReport
+{
+    public $allSurgeons = true;
+    private $empty_test = false;
+    protected $mode = 0;
+    protected $totalOperations = 1000;
+
+    protected function queryData($surgeon, $dateFrom, $dateTo)
+    {
+        if (!$this->empty_test) {
+            return array(
                 array('complication' => null, 'risk' => '4.80'),
                 array('complication' => 'None', 'risk' => '3.67'),
                 array('complication' => 'PC rupture with vitreous loss', 'risk' => '4.76'),
@@ -39,63 +193,13 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
                 array('complication' => 'None', 'risk' => '2.77'),
                 array('complication' => 'None', 'risk' => '7.86'),
                 array('complication' => 'None', 'risk' => null),
-            )));
+            );
+        }
 
-        $pcr->expects($this->any())
-            ->method('average')
-            ->will($this->returnValue(1.92));
-
-        $pcrCases = 2;
-        $totalCases = 8;
-        $sumPcrRisk = 4.80 + 3.67 + 4.76 + 4.78 + 1.46 + 2.77 + 7.86;
-        $adjustedRate = (($pcrCases / $totalCases) / ($sumPcrRisk / $totalCases)) * 1.92;
-
-        $output = $pcr->dataSet();
-        $this->assertCount(1, $output); //We should only have one surgeons data.
-        $this->assertEquals($totalCases, $output[0][0]); //They should have the number of surgeries above
-        $this->assertEquals($adjustedRate, $output[0][1]);
+        return array();
     }
 
-    /**
-     * Test the series generation for the graph.
-     */
-    public function testSeries()
-    {
-        $dataSet = array(8, 1.56);
-
-        $pcr = $this->getMockBuilder('PcrRiskReport')
-            ->setMethods(array('dataSet'))
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $pcr->expects($this->any())
-            ->method('dataSet')
-            ->will($this->returnValue(array($dataSet)));
-
-        $seriesJson = $pcr->seriesJson();
-        $seriesDecoded = json_decode($seriesJson, true);
-
-        $this->assertInternalType('string', $seriesJson); //is a string
-        $this->assertCount(3, $seriesDecoded); //Has 3 series when decoded
-        $this->assertEquals('Current Surgeon', $seriesDecoded[0]['name']);
-        $this->assertEquals($dataSet, $seriesDecoded[0]['data'][0]); //First series is the PCR data
-
-        $this->assertEquals('Upper 98%', $seriesDecoded[1]['name']);
-        $this->assertEquals('Upper 95%', $seriesDecoded[2]['name']);
-    }
-
-    /**
-     * Test the configuration for the graph.
-     */
-    public function testConfig()
-    {
-        $pcr = new PcrRiskReport(Yii::app());
-        $config = $pcr->graphConfig();
-        $configDecoded = json_decode($config, true);
-
-        $this->assertInternalType('string', $config); //is a string
-        $this->assertEquals('spline', $configDecoded['chart']['type']); // check it looks ok
-        $this->assertEquals(false, $configDecoded['credits']['enabled']); //check globabl config merge
-        $this->assertEquals('PcrRiskReport', $configDecoded['chart']['renderTo']);
+    public function setEmptyTest() {
+        $this->empty_test = true;
     }
 }

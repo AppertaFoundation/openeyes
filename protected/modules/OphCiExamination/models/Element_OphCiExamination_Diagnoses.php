@@ -217,6 +217,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         //delete and update ophciexamination_diagnosis entries
         foreach ($current_diagnoses as $cd) {
             if (!array_key_exists($cd->id, $disorder_to_update)) {
+                $secondary_diagnosis = \SecondaryDiagnosis::model()->find('disorder_id = :disorder_id', [':disorder_id' => $cd->disorder_id]);
+                if (!$secondary_diagnosis) {
+                    throw new \Exception("Unable to find secondary disorder linked to disorder $cd->disorder_id");
+                }
+                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
                 if (!$cd->delete()) {
                     throw new \Exception('Unable to remove old disorder');
                 }
@@ -228,6 +233,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     throw new \Exception('save failed' . print_r($cd->getErrors(), true));
                 };
                 $added_diagnoses[] = $cd;
+            }
+        }
+
+        //delete SecondaryDiagnosis entries that are removed in a new examination.
+        foreach ($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
+            if (!array_key_exists($secondary_diagnosis->disorder_id, $disorder_to_update)) {
+                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
             }
         }
 
@@ -362,14 +374,19 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         ) {
             foreach (OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)
-                         ) as $finding) {
+                         ) as $finding_assignment
+            ) {
+                $finding = $finding_assignment->finding;
                 $table_vals[] = array(
                     'finding_id' => $finding->id,
                     'date' => \Helper::convertDate2NHS($this->event->event_date),
                     'laterality' => '',
-                    'term' => $finding->description
+                    'term' => $finding->name .
+                        (isset($finding_assignment->description) && $finding_assignment->description ?
+                            " : " . $finding_assignment->description :
+                            "")
                 );
-                $finding_ids[] = $finding->finding_id;
+                $finding_ids[] = $finding->id;
                 $findings[] = $finding;
             }
         }

@@ -72,7 +72,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, tags, medicationSets, gender, age_min, age_max', 'safe'),
+            array('name, medicationSets, gender, age_min, age_max, display_on_whiteboard', 'safe'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -80,7 +80,6 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)'),
             'medicationSets' => array(self::MANY_MANY, \MedicationSet::class, 'ophciexamination_risk_tag(risk_id, medication_set_id)'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
@@ -96,7 +95,8 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'medicationSets' => 'Drug sets'
+            'medicationSets' => 'Drug sets',
+                      'display_on_whiteboard' => 'Display on Whiteboard',
         );
     }
 

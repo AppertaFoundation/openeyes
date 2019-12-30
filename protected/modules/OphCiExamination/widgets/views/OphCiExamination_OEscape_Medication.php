@@ -26,7 +26,7 @@
           color:'#ffffff',
         },
       };
-      
+
       for (key in meds_data[side]){
         text_trace['x'].push(new Date(meds_data[side][key][0]['low']));
         text_trace['y'].push(key);
@@ -63,7 +63,7 @@
       }
       data.push(text_trace);
       layout_meds['margin']['b'] = 0;
-      layout_meds['title'] = "Medications, IOP, VA & MD";
+      layout_meds['title'] = {text: 'Medications, IOP, VA & MD', font: {color:'white'}};
       layout_meds['yaxis'] = meds_yaxis;
       layout_meds['height'] = 25*max_med+50;
       layout_meds['showlegend'] = false;
