@@ -149,7 +149,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Bleb</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Trabeculectomy bleb</TITLE>
+      <TITLE>Drainage bleb</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -3477,7 +3477,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               </INDEX_LIST>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Trabeculectomy bleb</PRIMARY_TERM>
+              <PRIMARY_TERM>Drainage bleb</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Trabeculectomy bleb</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Bleb.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>Bleb</GOTO_DOODLE_CLASS_NAME>
