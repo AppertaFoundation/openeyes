@@ -92,9 +92,9 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     });
 
                     /*
-
+                    Inserts input of type checkbox into the editor.
                    */
-                    editor.addButton('labelaitem', {
+                    editor.addButton('inputcheckbox', {
                         text: 'Input',
                         icon: false,
                         tooltip: "",
