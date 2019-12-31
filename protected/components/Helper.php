@@ -539,6 +539,7 @@ class Helper
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824
                 break;
+            case '':
             case 'm':
                 $val *= (1024 * 1024); //1048576
                 break;

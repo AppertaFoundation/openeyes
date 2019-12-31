@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -16,13 +15,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+ * This is the model class for table "event_icon".
+ *
+ * The followings are the available columns in table 'event_icon':
+ *
+ * @property int $id
+ * @property string $name
+ */
 
-class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
+class EventIcon extends BaseActiveRecord
 {
-
     /**
      * Returns the static model of the specified AR class.
-     * @return the static model class
+     *
+     * @return EventIcon the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -34,7 +41,12 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophcodocument_sub_types';
+        return 'event_icon';
+    }
+
+    public function defaultScope()
+    {
+        return ['order' => $this->getTableAlias(true, false).'.display_order'];
     }
 
     /**
@@ -42,23 +54,12 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('name, display_order , is_active, sub_type_event_icon_id', 'safe'),
-            array('name, display_order , is_active, sub_type_event_icon_id', 'required'),
-            array('id, name, display_order , is_active, sub_type_event_icon_id', 'safe', 'on' => 'search'),
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        return array(
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'subTypeEventIcon' => array(self::HAS_ONE, 'EventIcon', 'sub_type_event_icon_id')
-        );
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return [
+            ['id, name', 'safe'],
+            ['id, name', 'safe', 'on' => 'search']
+        ];
     }
 
     /**
@@ -66,25 +67,21 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
-            'name' => 'Name',
-        );
+            'name' => 'Icon Name',
+        ];
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
     public function search()
     {
         $criteria = new CDbCriteria;
-        $criteria->compare('id', $this->id, true);
+
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
 }

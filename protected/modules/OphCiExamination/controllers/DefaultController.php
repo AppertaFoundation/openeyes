@@ -674,7 +674,7 @@ class DefaultController extends \BaseEventTypeController
 
         header('Content-type: application/json');
         // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
-        echo json_encode(array('id' => $disorder->id, 'name' => addslashes($disorder->term)));
+        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
         Yii::app()->end();
     }
 
