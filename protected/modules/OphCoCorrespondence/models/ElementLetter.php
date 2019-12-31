@@ -788,32 +788,51 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
+        require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
 
-//        $config->set('HTML.DefinitionID', 'enduser-customize.html tutorial');
-//        $config->set('HTML.DefinitionRev', 1);
-//        $config->set('Cache.DefinitionImpl', null); // remove this later!
-//        $def = $config->getHTMLDefinition(true);
-//        $def->addAttribute('a', 'target', new HTMLPurifier_AttrDef_Enum(
-//            array('_blank','_self','_target','_top')
-//        ));
-//        $form = $def->addElement(
-//            'form',   // name
-//            'Block',  // content set
-//            'Flow', // allowed children
-//            'Common', // attribute collection
-//            array( // attributes
-//                'action*' => 'URI',
-//                'method' => 'Enum#get|post',
-//                'name' => 'ID'
-//            )
-//        );
-//        $form->excludes = array('form' => true);
-//
-//        $htmlPurifier = new CHtmlPurifier();
-//        $htmlPurifier->setOptions($config);
-//        return $htmlPurifier->purify($this->body);
+        // Refer to http://htmlpurifier.org/docs/enduser-customize.html
+        // for info on whitelisting elements.
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.DefinitionID', 'elementletter-customize.html input select option');
+        // The HTML definitions are cached, so we need to increment this
+        // whenever we make a change to flush the cache.
+        $config->set('HTML.DefinitionRev', 1);
+        $config->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
 
-        return $this->body;
+        if ($def = $config->maybeGetRawHTMLDefinition()) {
+            $input = $def->addElement(
+                'input',   // name
+                'Block',  // content set
+                'Inline', // allowed children
+                'Common', // attribute collection
+                array(
+                    'type' => 'Enum#checkbox',
+                    'checked' => 'Bool#checked',
+                )
+            );
+
+            $select = $def->addElement(
+                'select',   // name
+                'Formctrl',  // content set
+                'Required: option',
+                'Common', // attribute collection
+                array()
+            );
+
+            $options = $def->addElement(
+                'option',   // name
+                false,
+                'Optional: #PCDATA',
+                'Common', // attribute collection
+                array(
+                    'value' => 'CDATA',
+                    'selected' => 'Bool#selected'
+                )
+            );
+        }
+
+        $Filter = new HTMLPurifier($config);
+        return $Filter->purify($this->body);
     }
 
     public function getCreate_view()
