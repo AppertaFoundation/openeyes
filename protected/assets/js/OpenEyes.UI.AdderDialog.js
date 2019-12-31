@@ -45,6 +45,7 @@
         onReturn: null,
         returnOnSelect: false,
         deselectOnReturn: true,
+        deselectOnClose: true,
         id: null,
         popupClass: 'oe-add-select-search auto-width',
         liClass: 'auto-width',
@@ -507,7 +508,9 @@
             }
 
             // deselect options when closing the adderDialog
-            dialog.popup.find('.selected').removeClass('selected');
+            if (dialog.options.deselectOnClose) {
+                dialog.popup.find('.selected').removeClass('selected');
+            }
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
