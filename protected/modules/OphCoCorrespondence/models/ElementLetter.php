@@ -187,9 +187,9 @@ class ElementLetter extends BaseEventTypeElement
 
     public function beforeValidate()
     {
-//        if (isset($_POST['ElementLetter'])) {
-//            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify($_POST['ElementLetter']['body']);
-//        }
+        if (isset($_POST['ElementLetter'])) {
+            $_POST['ElementLetter']['body'] =  $this->purifyContent($_POST['ElementLetter']['body']);
+        }
         return parent::beforeValidate();
     }
     
@@ -788,6 +788,10 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
+        return $this->purifyContent($this->body);
+    }
+
+    public function purifyContent($content) {
         require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
 
         // Refer to http://htmlpurifier.org/docs/enduser-customize.html
@@ -832,7 +836,7 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         $Filter = new HTMLPurifier($config);
-        return $Filter->purify($this->body);
+        return $Filter->purify($content);
     }
 
     public function getCreate_view()
