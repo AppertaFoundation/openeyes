@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<section class="element view tile  view-per-operative-drugs">
+<?php $sectionWidthCss = isset($isPrintView) && $isPrintView ? 'full' : 'tile'; ?>
+<section class="element view <?= $sectionWidthCss ?> view-per-operative-drugs">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
@@ -50,7 +50,7 @@
 
 <?php
 if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)) : ?>
-    <section class="element view tile">
+    <section class="element view <?= $sectionWidthCss ?> ">
         <header class="element-header">
             <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
         </header>
@@ -69,7 +69,7 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
 <?php endif; ?>
 
 <?php $element = Element_OphTrOperationnote_Comments::model()->findByAttributes(['event_id' => $element->event->id]); ?>
-<section class="element view tile  view-per-operative-comments">
+<section class="element view <?= $sectionWidthCss ?> ">
     <header class="element-header">
         <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
     </header>
@@ -77,7 +77,7 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
         <div class="data-group">
             <div class="data-value <?php if (!$element->comments) {
                 ?> none<?php
-                                   } ?>">
+            } ?>">
                 <div class="tile-data-overflow">
                     <?php if (!$element->comments) { ?>
                         None
