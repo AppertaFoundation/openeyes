@@ -371,8 +371,9 @@ return array(
                     'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
                 ),
                 'forum' => array(
-                    'title' => 'FORUM',
-                    'uri' => "javascript:oelauncher('forum');",
+                    'title' => 'Track patients in FORUM',
+                    'alt_title' => 'Stop tracking in FORUM',
+                    'uri' => "forum/toggleForumTracking",
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),

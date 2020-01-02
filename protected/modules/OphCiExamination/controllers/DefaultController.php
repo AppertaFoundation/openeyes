@@ -593,13 +593,36 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->event || $this->event->isNewRecord) {
             $elements = $this->getElementsByWorkflow(null, $this->episode);
         } else {
-            $elements = $this->event->getElements();
+            $elements = $this->getSortedElements();
             if ($this->step) {
                 $elements = $this->mergeNextStep($elements);
             }
         }
 
         return $this->filterElements($elements);
+    }
+
+    /**
+     * Returns the current events elements ordered by workflow set
+     * where applicable.
+     * @return \BaseEventTypeElement[]
+     */
+    protected function getSortedElements()
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $sortable_elements = [];
+
+        foreach ($this->event->getElements() as $element) {
+            $flow_order = $set->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_elements[$flow_order] = $element;
+            } else {
+                $sortable_elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+            }
+        }
+
+        ksort($sortable_elements);
+        return $sortable_elements;
     }
 
     /**
@@ -904,6 +927,242 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save assignment');
             }
         }
+    }
+
+    public function getOptionalElements()
+    {
+        $elements = parent::getOptionalElements();
+
+        return $this->filterElements($elements);
+    }
+
+    /**
+     * Get the first workflow step using rules.
+     *
+     * @return OphCiExamination_ElementSet
+     */
+    protected function getFirstStep()
+    {
+        $firm_id = $this->firm->id;
+        $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
+        $workflow = new models\OphCiExamination_Workflow_Rule();
+
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
+    /**
+     * Returns Element Set Assignment
+     * @param null $event
+     * @return mixed|null
+     */
+    public function getElementSetAssignment($event = null)
+    {
+        if (!$event) {
+            $event = $this->event;
+        }
+
+        if ($event && !$event->isNewRecord && $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+            return $assignment;
+        }
+
+        return null;
+
+    }
+
+    /**
+     * @param null $event
+     * @return null|OphCiExamination_ElementSet
+     */
+    protected function getCurrentStep($event = null)
+    {
+        if (!$event) {
+            $event = $this->event;
+        }
+
+        $assignment = $this->getElementSetAssignment($event);
+
+        return $assignment ? $assignment->step : $this->getFirstStep();
+    }
+
+    /**
+     * Get the next workflow step.
+     *
+     * @param Event $event
+     *
+     * @return OphCiExamination_ElementSet
+     */
+    protected function getNextStep($event = null)
+    {
+        $step = $this->getCurrentStep();
+
+        return $step->getNextStep();
+    }
+
+    /**
+     * Merge workflow next step elements into existing elements.
+     *
+     * @param array       $elements
+     *
+     * @throws \CException
+     *
+     * @return array
+     */
+    protected function mergeNextStep($elements)
+    {
+        if (!$event = $this->event) {
+            throw new \CException('No event set for step merging');
+        }
+
+        //TODO: should we be passing episode here?
+        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
+        $extra_by_etid = array();
+
+        foreach ($extra_elements as $extra) {
+            $extra_by_etid[$extra->getElementType()->id] = $extra;
+        }
+
+        $merged_elements = array();
+        foreach ($elements as $element) {
+            $element_type = $element->getElementType();
+            $merged_elements[] = $element;
+            if (isset($extra_by_etid[$element_type->id])) {
+                unset($extra_by_etid[$element_type->id]);
+            }
+        }
+
+        foreach ($extra_by_etid as $extra_element) {
+            $extra_element->setDefaultOptions($this->patient);
+
+            // Precache Element Type to avoid bug in usort
+            $extra_element->getElementType();
+
+            $merged_elements[] = $extra_element;
+        }
+            $sortable_merged_elements = [];
+
+        foreach ($merged_elements as $element) {
+            $flow_order = $this->step->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_merged_elements[$flow_order] = $element;
+            } else {
+                $sortable_merged_elements[$this->step->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+            }
+        }
+
+            ksort($sortable_merged_elements);
+
+            return $sortable_merged_elements;
+    }
+
+    protected function getSetFromEpisode($episode)
+    {
+        $firm_id = $this->firm->id;
+        $status_id = ($episode) ? $episode->episode_status_id : 1;
+        $workflow = new models\OphCiExamination_Workflow_Rule();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
+    /**
+     * Get the array of elements for the current site, subspecialty, episode status and workflow position
+     *
+     * @param OphCiExamination_ElementSet $set
+     * @param Episode $episode
+     * @return \BaseEventTypeElement[]
+     * @throws \CException
+     */
+    protected function getElementsByWorkflow($set = null, $episode = null)
+    {
+        $elements = array();
+        if (!$set) {
+            $set = $this->getSetFromEpisode($episode);
+        }
+
+        if ($set) {
+            $element_types = $set->DefaultElementTypes;
+            foreach ($element_types as $element_type) {
+                    $elements[$element_type->id] = $element_type->getInstance();
+            }
+            $this->mandatoryElements = $set->MandatoryElementTypes;
+        }
+
+        $this->set = $set;
+
+        return $this->filterElements($elements);
+    }
+
+    /**
+     * Ajax function for quick disorder lookup.
+     *
+     * Used when eyedraw elements have doodles that are associated with disorders
+     *
+     * @throws Exception
+     */
+    public function actionGetDisorder()
+    {
+        if (!@$_GET['disorder_id']) {
+            return;
+        }
+        if (!$disorder = \Disorder::model()->findByPk(@$_GET['disorder_id'])) {
+            throw new \Exception('Unable to find disorder: '.@$_GET['disorder_id']);
+        }
+
+        header('Content-type: application/json');
+        // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
+        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
+        Yii::app()->end();
+    }
+
+    /**
+     * Ajax action to load the questions for a side and disorder_id.
+     */
+    public function actionLoadInjectionQuestions()
+    {
+        // need a side specification for the form element names
+        $side = @$_GET['side'];
+        if (!in_array($side, array('left', 'right'))) {
+            throw new \Exception('Invalid side argument');
+        }
+
+        // disorder id verification
+        $questions = array();
+        foreach (@$_GET['disorders'] as $did) {
+            if ((int) $did) {
+                foreach (models\Element_OphCiExamination_InjectionManagementComplex::model()->getInjectionQuestionsForDisorderId($did) as $q) {
+                    $questions[] = $q;
+                }
+            }
+        }
+
+        // need a form object
+        $form = Yii::app()->getWidgetFactory()->createWidget($this, 'BaseEventTypeCActiveForm', array(
+                'id' => 'clinical-create',
+                'enableAjaxValidation' => false,
+                'htmlOptions' => array('class' => 'sliding'),
+        ));
+
+        $element = new models\Element_OphCiExamination_InjectionManagementComplex();
+
+        // and now render
+        $this->renderPartial(
+                'form_Element_OphCiExamination_InjectionManagementComplex_questions',
+                array('element' => $element, 'form' => $form, 'side' => $side, 'questions' => $questions),
+                false, false
+        );
+    }
+
+    /**
+     * Get all the attributes for an element.
+     *
+     * @param BaseEventTypeElement $element
+     * @param int                  $subspecialty_id
+     *
+     * @return OphCiExamination_Attribute[]
+     */
+    public function getAttributes($element, $subspecialty_id = null)
+    {
+        $attributes = models\OphCiExamination_Attribute::model()->findAllByElementAndSubspecialty($element->ElementType->id, $subspecialty_id);
+
+        return $attributes;
     }
 
     /**
@@ -1504,7 +1763,8 @@ class DefaultController extends \BaseEventTypeController
 	 * @param $errors
 	 * @return mixed
 	 */
-	protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors)
+    {
 		$et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
 		$data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
 		$pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');

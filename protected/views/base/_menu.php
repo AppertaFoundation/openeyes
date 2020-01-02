@@ -34,6 +34,11 @@
                     if (array_key_exists('options', $item)) {
                         $options = $item['options'];
                     }
+
+                    if ($item['title'] === 'Track patients in FORUM' && Yii::app()->user->getState('forum_enabled') === 'on') {
+                        $item['title'] = $item['alt_title'];
+                    }
+
                     echo CHtml::link($item['title'], $link, $options)
                     ?>
                     <?php if ($has_sub) : ?>

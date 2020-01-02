@@ -20,6 +20,8 @@ $( document ).ready(function() {
     if(window.location.href.indexOf("update") == -1) {
         loadBiometryElementData();
     }
+
+    $(document).on('eyedrawAfterReset', loadBiometryElementData);
     autosize($('textarea'));
 
     $('#js-display-whiteboard').click(function(e) {
