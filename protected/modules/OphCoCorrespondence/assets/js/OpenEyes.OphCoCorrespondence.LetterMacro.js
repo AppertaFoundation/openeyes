@@ -95,11 +95,11 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     Inserts input of type checkbox into the editor.
                    */
                     editor.addButton('inputcheckbox', {
-                        text: 'Input',
+                        text: 'CheckBox',
                         icon: false,
                         tooltip: "",
                         onclick: function () {
-                            editor.insertContent('<input type="checkbox"/>Input text here');
+                            editor.insertContent('<p><input type="checkbox"/>Input text here</p>');
                         }
                     });
 
