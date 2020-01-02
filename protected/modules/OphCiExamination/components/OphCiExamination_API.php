@@ -3131,7 +3131,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
-            return "(no current systemic medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current systemic medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
