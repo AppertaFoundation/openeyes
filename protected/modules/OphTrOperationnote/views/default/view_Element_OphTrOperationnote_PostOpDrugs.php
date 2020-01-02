@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $sectionWidthCss = isset($isPrintView) && $isPrintView ? 'full' : 'tile'; ?>
-<section class="element view <?= $sectionWidthCss ?> view-per-operative-drugs">
+<?php $section_width_css = isset($is_print_view) && $is_print_view ? 'full' : 'tile'; ?>
+<section class="element view <?= $section_width_css ?> view-per-operative-drugs">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
@@ -50,7 +50,7 @@
 
 <?php
 if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)) : ?>
-    <section class="element view <?= $sectionWidthCss ?> ">
+    <section class="element view <?= $section_width_css ?> view-per-operative-comments">
         <header class="element-header">
             <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
         </header>
@@ -69,7 +69,7 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
 <?php endif; ?>
 
 <?php $element = Element_OphTrOperationnote_Comments::model()->findByAttributes(['event_id' => $element->event->id]); ?>
-<section class="element view <?= $sectionWidthCss ?> ">
+<section class="element view <?= $section_width_css ?> ">
     <header class="element-header">
         <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
     </header>

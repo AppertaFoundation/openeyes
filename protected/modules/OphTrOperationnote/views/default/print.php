@@ -35,7 +35,7 @@
     $postdrugs_element = Element_OphTrOperationnote_PostOpDrugs::model()->find('event_id = ?', array($this->event->id));
     $this->renderPartial('view_Element_OphTrOperationnote_PostOpDrugs', array(
             'element' => $postdrugs_element,
-            'isPrintView' => true
+            'is_print_view' => true
     ));
     ?>
 
