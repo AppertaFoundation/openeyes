@@ -3037,7 +3037,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
-            return "(no current eye medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current eye medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
