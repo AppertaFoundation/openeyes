@@ -524,6 +524,7 @@ class OphCiExamination_APITest extends CDbTestCase
         if ($event_date) {
             $event->event_date = $event_date;
         }
+        $event->delete_pending = 0;
         $event->save(false);
 
         return $event;
