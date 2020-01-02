@@ -50,7 +50,7 @@
 
 <?php
 if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)) : ?>
-    <section class="element view <?= $section_width_css ?>">
+    <section class="element view <?= $section_width_css ?> view-per-operative-instructions">
         <header class="element-header">
             <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
         </header>
@@ -69,7 +69,7 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
 <?php endif; ?>
 
 <?php $element = Element_OphTrOperationnote_Comments::model()->findByAttributes(['event_id' => $element->event->id]); ?>
-<section class="element view <?= $section_width_css ?>  view-per-operative-instructions">
+<section class="element view <?= $section_width_css ?> view-per-operative-comments">
     <header class="element-header">
         <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
     </header>
