@@ -119,7 +119,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     // This function works for checkboxes
                     editor.on('init', function() {
                         // Get the content of the
-                        $(editor.getBody()).on("change", ":checkbox", function (el) {
+                        $(editor.getBody()).on("change", ":checkbox", function(el) {
                             if (el.target.checked) {
                                 $(el.target).attr('checked', 'checked');
                             } else {
@@ -127,7 +127,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                             }
                         });
                         // Selects
-                        $(editor.getBody()).on("change", "select", function(el){
+                        $(editor.getBody()).on("change", "select", function(el) {
                             $(el.target).children('option').each(function() {
                                 if(this.selected){
                                     $( this ).attr('selected','selected');
@@ -135,6 +135,16 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                                     $( this ).removeAttr('selected');
                                 }
                             });
+                        });
+                        // Radio button
+                        $(editor.getBody()).on("change", ":radio", function(el) {
+                            // On changing the state of the radio button,
+                            // First, remove the checked attribute from the radio group (i.e. all the radio buttons with the same name)
+                            // then add it back only to the radio button that was clicked.
+                            $(editor.dom.getRoot()).find('input[type=radio][name=' + el.target.name + ']').each(function() {
+                                $(this).attr('checked', false);
+                            });
+                            $(el.target).attr('checked', true);
                         });
                     });
                 }

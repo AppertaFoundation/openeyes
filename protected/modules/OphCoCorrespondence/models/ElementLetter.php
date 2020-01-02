@@ -807,7 +807,7 @@ class ElementLetter extends BaseEventTypeElement
         $config->set('HTML.DefinitionID', 'elementletter-customize.html input select option');
         // The HTML definitions are cached, so we need to increment this
         // whenever we make a change to flush the cache.
-        $config->set('HTML.DefinitionRev', 1);
+        $config->set('HTML.DefinitionRev', 2);
         $config->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
 
         if ($def = $config->maybeGetRawHTMLDefinition()) {
@@ -817,7 +817,7 @@ class ElementLetter extends BaseEventTypeElement
                 'Inline', // allowed children
                 'Common', // attribute collection
                 array(
-                    'type' => 'Enum#checkbox',
+                    'type' => 'Enum#checkbox,radio',
                     'checked' => 'Bool#checked',
                 )
             );
