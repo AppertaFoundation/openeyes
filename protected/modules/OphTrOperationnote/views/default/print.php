@@ -37,7 +37,7 @@
             'element' => $postdrugs_element,
             'isPrintView' => true
     ));
-?>
+    ?>
 
 <!-- Metadata -->
 <?php

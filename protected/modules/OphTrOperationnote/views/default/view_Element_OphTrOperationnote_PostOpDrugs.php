@@ -77,7 +77,7 @@ if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnot
         <div class="data-group">
             <div class="data-value <?php if (!$element->comments) {
                 ?> none<?php
-            } ?>">
+                                   } ?>">
                 <div class="tile-data-overflow">
                     <?php if (!$element->comments) { ?>
                         None
