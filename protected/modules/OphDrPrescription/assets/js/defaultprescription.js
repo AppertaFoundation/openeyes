@@ -42,7 +42,7 @@ function fpTenPrintOption() {
     let $save_print_form_btn = $('#et_save_print_form');
 
     $('#prescription_items tbody tr').each(function(i, elem) {
-        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
+        if ($(elem).find('.dispenseCondition').val() != undefined && $(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
             exists = true;
         }
     });
