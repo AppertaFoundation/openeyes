@@ -1511,7 +1511,7 @@ class Patient extends BaseActiveRecordVersioned
 
     public function removeDiagnosis($diagnosis_id)
     {
-        if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
+        if (!$sd = SecondaryToCommonOphthalmicDisorder::model()->findByPk($diagnosis_id)) {
             throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
         }
 
@@ -1519,7 +1519,7 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to find disorder: '.$sd->disorder_id);
         }
 
-        $patient = $sd->patient;
+        $patient = $this;
 
         if ($disorder->specialty_id) {
             $type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
