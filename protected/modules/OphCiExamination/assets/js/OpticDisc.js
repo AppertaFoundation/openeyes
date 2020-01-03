@@ -5,9 +5,8 @@ function OphCiExamination_OpticDisc_updateCDRatio(field) {
     var cdratio_field = $(field).closest('.eyedraw-fields').find('.cd-ratio');
     var _drawing = ED.getInstance($(field).closest('.js-element-eye').find('canvas').first().attr('data-drawing-name'));
     let data_side = $(field).closest('.js-element-eye').data('side');
-    let cd_ratio_readonly_id = '#cd-ratio-readonly-' + data_side;
-    $(cd_ratio_readonly_id).remove();
-    cd_ratio_readonly_id = cd_ratio_readonly_id.replace('#', "");
+    let cd_ratio_readonly_id = 'cd-ratio-readonly-' + data_side;
+    $('#' + cd_ratio_readonly_id).remove();
     if($(field).val() == 'Basic') {
         _drawing.unRegisterForNotifications(this);
         cdratio_field.show();
