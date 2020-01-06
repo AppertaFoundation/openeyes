@@ -158,7 +158,9 @@ class BaseEventTypeController extends BaseModuleController
 
     public function getPageTitle()
     {
-        return ucfirst($this->getAction()->getId()) .
+        $action_type = ucfirst($this->getAction()->getId());
+        return ((in_array($action_type, ['Update', 'Create']) && (string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") ? 
+            $action_type : 'Edit' ) .
             ($this->event_type ? ' ' . $this->event_type->name : '') .
             ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
             ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
