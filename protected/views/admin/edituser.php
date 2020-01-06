@@ -113,12 +113,15 @@
             <td><?=Firm::contextLabel()?></td>
             <td>
                 <?php
+                foreach (Firm::model()->findAll() as $firm) {
+                    $firm_label[$firm->id] = "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+                }
                 echo $form->multiSelectList(
                     $user,
                     'User[firms]',
                     'firms',
                     'id',
-                    CHtml::listData(Firm::model()->findAll(), 'id', 'name'),
+                    $firm_label,
                     null,
                     [
                         'class' => 'cols-full',
