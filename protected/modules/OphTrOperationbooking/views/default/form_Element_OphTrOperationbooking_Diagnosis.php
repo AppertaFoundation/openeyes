@@ -52,7 +52,12 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
-    <?php $diagnoses = CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)); ?>
+    <?php $diagnoses = CommonOphthalmicDisorder::getList(
+        Firm::model()->findByPk($this->selectedFirmId),
+        false,
+        true,
+        $this->patient
+    ); ?>
     <script type="text/javascript">
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-operation-booking-diagnosis'),

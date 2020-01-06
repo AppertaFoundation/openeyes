@@ -31,12 +31,38 @@ $('body').delegate('select.drugRoute', 'change', function () {
   return false;
 });
 
+/* Determine whether to display the 'Print to FP10' button when creating a prescription event.
+ * - Add check covers scenario where adding a drug from a pre-defined drug set with the Print to FP10 option is selected by default.
+ *   Adding a drug that is not in a drug set doesn't require this check.
+ * - Remove check occurs when removing a drug to determine if there are still drugs marked as 'Print to FP10'.
+ * - Change check occurs whenever the dispense condition is changed to or from 'Print to FP10'.
+ */
+function fpTenPrintOption() {
+    let exists = false;
+    let $save_print_form_btn = $('#et_save_print_form');
+
+    $('#prescription_items tbody tr').each(function(i, elem) {
+        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
+            exists = true;
+        }
+    });
+
+    if (exists && $save_print_form_btn.data('enabled') === 'on') {
+        $save_print_form_btn.show();
+    } else if (!$save_print_form_btn.hidden) {
+        $save_print_form_btn.hide();
+    }
+}
+
 // Remove item from prescription
 $('#prescription_items').delegate('i.removeItem', 'click', function () {
   var row = $(this).closest('tr');
   var drug_id = row.find('input[name$="[drug_id]"]').first().val();
   var key = row.attr('data-key');
   $('#prescription_items tr[data-key="' + key + '"]').remove();
+
+  fpTenPrintOption();
+
   return false;
 });
 
@@ -140,7 +166,7 @@ function addSet(set_id) {
       set_id: set_id
     }, function (data) {
       $('#prescription_items').find('tbody').append(data);
-
+        fpTenPrintOption();
     });
   } else {
     $.getJSON(baseUrl + "/OphDrPrescription/PrescriptionCommon/SetFormAdmin", {

@@ -177,12 +177,6 @@ $(document).ready(function(){
 
     if (!isCollapsedGroup) {
       $tileGroup.find('.element').each(function () {
-
-        // Skip titles that already have a count from Tile Data Overflow
-        if ($(this).find('small').length) {
-          return true;
-        }
-
         let rowCount = $(this).find('tr').length;
         let $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
         $(this).find('.element-title').append($countDisplay);
