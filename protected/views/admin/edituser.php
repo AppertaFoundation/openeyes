@@ -113,8 +113,9 @@
             <td><?=Firm::contextLabel()?></td>
             <td>
                 <?php
+                $firm_label = [];
                 foreach (Firm::model()->findAll() as $firm) {
-                    $firm_label[$firm->id] = "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+                    $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "");
                 }
                 echo $form->multiSelectList(
                     $user,
