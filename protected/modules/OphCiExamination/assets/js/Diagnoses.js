@@ -200,17 +200,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.searchResult).append($item);
     };
 
-    DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
-        var res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
-    };
-
-
     DiagnosesController.prototype.initialiseDatepicker = function () {
         var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
         for (var i = 0; i < row_count; i++) {

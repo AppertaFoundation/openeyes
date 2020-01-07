@@ -226,7 +226,6 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                <div class="alternative-display inline">
                    <div class="alternative-display-element textual">
                        <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);"
-                        <?= ($direct_edit || ($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
                             <?php if (!is_null($entry->end_date)) : ?>
                                <i class="oe-i stop small pad"></i>
                                 <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -236,7 +235,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                        </a>
                    </div>
                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper"
-                        <?= (!$direct_edit && !($entry->hasErrors())) ? '' : 'style="display: none;"' ?>>
+                        <?= $entry->hasErrors() ? '' : 'style="display:none;"'?>>
                        <i class="oe-i stop small pad"></i>
                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                               name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
@@ -267,7 +266,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     'rows' => '1',
                     'placeholder' => 'Comments',
                     'autocomplete' => 'off',
-                ]) ?>
+                            ]) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>
             <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
