@@ -86,9 +86,8 @@
         <hr class="divider">
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
-            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>
-        >
-            <div>
+            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>>
+            <div id="single-rotate-actions" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
                 <label>Rotate Single Image:</label>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'single');"></i>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
@@ -116,6 +115,7 @@
                                    id="Document_single_document_row_id"
                                    style="display:none;"
                                    class="js-document-file-input"
+                                   data-side="single"
                             >
                         </div>
 
@@ -154,7 +154,7 @@
                         $document_id = $side.'_document_id';
                         ?>
                     <td>
-                        <div>
+                        <div id="<?=$side?>-rotate-actions" <?= (!$element->{$side . '_document_id'} ? 'style="display:none"' : ''); ?>>
                             <label>Rotate <?=$side?> Image:</label>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, '<?=$side?>');"></i>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, '<?=$side?>');" style="transform: scale(-1, 1);"></i>
@@ -174,6 +174,7 @@
                                    id="Document_<?=$side?>_document_row_id"
                                    style="display:none;"
                                    class="js-document-file-input"
+                                   data-side="<?=$side?>"
                             >
                         </div>
                         <?php $this->generateFileField($element, $side.'_document'); ?>

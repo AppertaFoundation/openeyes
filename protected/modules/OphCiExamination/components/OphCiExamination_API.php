@@ -3373,7 +3373,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
-            return "(no current eye medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current eye medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         /** @var \EventMedicationUse[] $current_eye_meds */
@@ -3463,7 +3471,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
-            return "(no current systemic medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current systemic medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         /** @var \EventMedicationUse[] $current_systemic_meds */
