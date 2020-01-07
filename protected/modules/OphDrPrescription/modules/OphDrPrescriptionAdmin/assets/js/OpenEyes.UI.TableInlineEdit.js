@@ -118,11 +118,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers)
     {
+        const controller = this;
         const tr_id = $tr.data('med_id');
         const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
         $.each(trs, function(i, tr) {
             const $tr = $(tr);
-            $tr.find('.js-input').show();
+            $.each($tr.find('.js-input-wrapper'), function(i, wrapper) {
+                controller.setInputState($(wrapper), 'edit', false);
+            });
         });
 
         if ($tapers !== undefined) {
@@ -178,7 +181,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let controller = this;
         let data = {};
         let json_tapers = {};
-const $actionsTd = $tr.find('td.actions');
+const $actionsTd = $tr.find('td:last-child');
 
         const tr_id = $tr.data('med_id');
         const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
@@ -186,7 +189,18 @@ const $actionsTd = $tr.find('td.actions');
             const $tr = $(tr);
             $.each( $tr.find('.js-input'), function(i, input) {
                 const $input = $(input);
-                data[$input.attr('name')] = $input.val();
+                let name, value;
+                if ($input.prop('tagName') === 'LABEL') {
+                    $checkbox = $input.find('[type="checkbox"]');
+                    name = $checkbox.attr('name');
+                    value = $checkbox.is(':checked') ? 1 : 0;
+                } else {
+                    name = $input.attr('name');
+                    value = $input.val();
+                }
+
+                data[name] = value;
+
             });
         });
 
@@ -226,8 +240,8 @@ const $actionsTd = $tr.find('td.actions');
                     $actionsTd.append("<small style='color:red'>Saved.</small>");
                     controller.updateRowValuesAfterSave($tr);
                     if ($tapers !== undefined) {
-											controller.updateRowValuesAfterSave($tapers);
-										}
+                        controller.updateRowValuesAfterSave($tapers);
+                    }
                     setTimeout(() => {
                         $actionsTd.find('small').remove();
                         controller.showGeneralControls($tr);
@@ -293,22 +307,46 @@ const $actionsTd = $tr.find('td.actions');
     };
 
     TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
-        $($tr.find('.js-input')).each(function(inputIndex, input){
-            const $text = $(input).parent().find('.js-text');
-            const $input = $(input);
-            let selectedText = '-';
+        const controller = this;
+        const tr_id = $tr.data('med_id');
+        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        $.each(trs, function(i, tr) {
+            const $tr = $(tr);
+            controller.updateIndividualRowValuesAfterSave($tr);
+        });
+    };
 
-            if ($input.val()) {
-                if ($input.prop('tagName') === 'SELECT') {
-                    selectedText = $input.find('option:selected').text();
-                } else {
-                    selectedText = $(this).val();
-                }
+    TableInlineEdit.prototype.updateIndividualRowValuesAfterSave = function($tr) {
+        const controller = this;
+        $.each($tr.find('.js-input-wrapper'), function(i, wrapper) {
+            console.log($(wrapper));
+            controller.setInputState($(wrapper), 'show', true);
+        });
+    };
+
+    TableInlineEdit.prototype.setInputState = function($wrapper, state, showEditValue) {
+        const $input = $wrapper.find('.js-input');
+        const $text = $wrapper.find('.js-text');
+        let selectedText = '-';
+
+        $text.toggle(state === 'show');
+        $input.toggle(state === 'edit');
+
+        if (showEditValue === true) {
+
+            if ($input.prop('tagName') === 'SELECT' && $input.val() && $input.val() !== '') {
+                selectedText = $input.find('option:selected').text();
+            } else if ($input.prop('tagName') === 'LABEL') {
+                const $first = $input.find('[type="checkbox"]');
+                selectedText = $first.is(':checked') ? 'yes' : 'no';
+            } else {
+                selectedText = $input.val();
             }
 
-            $text.text(selectedText);
+            const label = $text.data('display-label') !== undefined ? $text.data('display-label') : '';
+            $text.text(label + selectedText);
             $text.data('id', $input.val());
-        });
+        }
     };
 
     TableInlineEdit.prototype.deleteRow = function($tr, $tapers)

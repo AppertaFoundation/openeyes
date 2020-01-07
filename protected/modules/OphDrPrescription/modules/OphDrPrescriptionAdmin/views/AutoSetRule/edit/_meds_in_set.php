@@ -76,14 +76,14 @@ if ($is_prescription_set) {
                             <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
                             <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
                         </td>
-                        <td>
+                        <td class="js-input-wrapper">
                             <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
                             <?= \CHtml::activeTextField($set_item, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
                         </td>
                         <td>
                             <span data-type="default_dose" data-id="<?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : ''; ?>"><?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : '-'; ?></span>
                         </td>
-                        <td>
+                        <td class="js-input-wrapper">
                             <span data-type="default_route" data-id="<?= $set_item->defaultRoute ? $set_item->default_route_id : ''; ?>" class="js-text"><?= $set_item->defaultRoute ? $set_item->defaultRoute->term : '-'; ?></span>
                             <?= \CHtml::activeDropDownList(
                                 $set_item,
@@ -144,20 +144,24 @@ if ($is_prescription_set) {
                     <tr class="js-row-of-<?=$med->id?> no-line js-addition-line" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>">
                         <td class="right" colspan="99">
 
-                            <span data-type="include_parent" data-id="<?= $set_item->include_parent ? $set_item->include_parent : ''; ?>" class="js-text">
-                                <?=$set_item->getAttributelabel('include_parent') . ': ' . ($set_item->include_parent ? 'yes' : 'no')?>
-                            </span>
+                            <div class="js-input-wrapper" style="display: inline-block;">
+                                <span data-type="include_parent" data-id="<?= $set_item->include_parent ? $set_item->include_parent : ''; ?>" class="js-text" data-display-label="Include Parent: ">
+                                    <?=$set_item->getAttributelabel('include_parent') . ': ' . ($set_item->include_parent ? 'yes' : 'no')?>
+                                </span>
 
-                            <label class="inline highlight js-input" style="display: none">
-                                <?=\CHtml::activeCheckBox($set_item, 'include_parent'); ?> Include Parent
-                            </label>
+                                <label class="inline highlight js-input" style="display: none">
+                                    <?=\CHtml::activeCheckBox($set_item, 'include_parent'); ?> Include Parent
+                                </label>
+                            </div>
 
-                            <span data-type="include_children" data-id="<?= $set_item->include_children ? $set_item->include_children : ''; ?>" class="js-text">
-                                <?=$set_item->getAttributelabel('include_children') . ': ' . ($set_item->include_children ? 'yes' : 'no')?>
-                            </span>
-                            <label class="inline highlight js-input" style="display: none">
-                                <?=\CHtml::activeCheckBox($set_item, 'include_children'); ?> Include Children
-                            </label>
+                            <div class="js-input-wrapper" style="display: inline-block;">
+                                <span data-type="include_children" data-id="<?= $set_item->include_children ? $set_item->include_children : ''; ?>" class="js-text" data-display-label="Include Children: ">
+                                    <?=$set_item->getAttributelabel('include_children') . ': ' . ($set_item->include_children ? 'yes' : 'no')?>
+                                </span>
+                                <label class="inline highlight js-input" style="display: none">
+                                    <?=\CHtml::activeCheckBox($set_item, 'include_children'); ?> Include Children
+                                </label>
+                            </div>
                             <span class="tabspace"></span>
 
                             <a data-action_type="save" class="js-tick-set-medication" style="display:none"><i class="oe-i save pad"></i></a>
