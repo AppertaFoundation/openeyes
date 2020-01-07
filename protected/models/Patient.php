@@ -1519,8 +1519,6 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to find disorder: '.$sd->disorder_id);
         }
 
-        $patient = $this;
-
         if ($disorder->specialty_id) {
             $type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
         } else {
@@ -1531,7 +1529,7 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(), true));
         }
 
-        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$patient, 'diagnosis' => $sd));
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$this, 'diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }

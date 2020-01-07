@@ -220,10 +220,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $current_disorder = \Disorder::model()->findByPk($cd->disorder_id);
                 foreach ($current_disorder->commonOphthalmicDisorders as $common_oph_disorder) {
                     $secondary_diagnoses = \SecondaryToCommonOphthalmicDisorder::model()->findAll('parent_id = :parent_id', [':parent_id' => $common_oph_disorder->id]);
-                    if ($secondary_diagnoses) {
-                        foreach ($secondary_diagnoses as $secondary_diagnosis) {
-                            $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
-                        }
+                    foreach ($secondary_diagnoses as $secondary_diagnosis) {
+                        $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
                     }
                 }
                 if (!$cd->delete()) {
