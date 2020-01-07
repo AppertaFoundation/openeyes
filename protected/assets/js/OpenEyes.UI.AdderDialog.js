@@ -45,7 +45,6 @@
         onReturn: null,
         returnOnSelect: false,
         deselectOnReturn: true,
-        deselectOnClose: true,
         id: null,
         popupClass: 'oe-add-select-search auto-width',
         liClass: 'auto-width',
@@ -505,10 +504,7 @@
                         $(dialog).find('li').removeClass('selected');
                     }
                 });
-            }
-
-            // deselect options when closing the adderDialog
-            if (dialog.options.deselectOnClose) {
+                // deselect options when closing the adderDialog
                 dialog.popup.find('.selected').removeClass('selected');
             }
 

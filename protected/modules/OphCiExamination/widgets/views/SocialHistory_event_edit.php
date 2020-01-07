@@ -209,7 +209,6 @@ $nothing_selected_text = "Nothing selected.";
       openButton: $('#add-social-history-btn'),
       width: 1000,
       deselectOnReturn: false,
-      deselectOnClose: false,
       itemSets: [
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
