@@ -15,11 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+$delete_action = null;
 if (isset($this->event_actions)) {
     foreach ($this->event_actions as $i => $event_action) {
         if ($event_action->label == "Delete") {
+            $delete_action = $event_action;
             unset($this->event_actions[$i]);
-            array_push($this->event_actions, $event_action);
             break;
         }
     }
@@ -28,7 +29,22 @@ if (isset($this->event_actions)) {
 ?>
 <div class="buttons-right">
   <i class="spinner" title="Loading..." style="display: none;"></i>
-    <?php foreach ($this->event_actions as $action) {
-        ?><?php echo $action->toHtml(); ?><?php
-    } ?>
+    <?php
+    $print_actions = array();
+    foreach ($this->event_actions as $key => $action) {
+        if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
+            $print_actions[] = $action;
+        } else {
+            echo $action->toHtml();
+        }
+    }
+
+    if (!empty($print_actions)) {
+        echo EventAction::printDropDownButtonAsHtml($print_actions);
+    }
+
+    if (isset($delete_action)) {
+        echo $delete_action->toHtml();
+    }
+    ?>
 </div>

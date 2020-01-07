@@ -24,21 +24,28 @@
         <div class="column cols-2 end">
             <?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
         </div>
-    </div>
+  </div>
+  <div id="workflow-flash" class="alert-box info" style="display: none">Workflow saved</div>
+  <i class="spinner loader" style="display: none;"></i>
     <form id="admin_workflow_steps">
     <div class="data-group">
-      <table class="standard">
+      <table class="standard"  id="et_sort" data-uri = "/OphCiExamination/admin/sortWorkflowElementSetItem">
         <thead>
         <tr>
+          <th>Display Order</th>
           <th>Element type</th>
           <th>Hidden</th>
           <th>Mandatory</th>
           <th>Actions</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="sortable ui-sortable">
         <?php foreach ($step->items as $i => $item) { ?>
           <tr class="clickable" data-id="<?php echo $item->id?>">
+              <td class="reorder">
+                  <span>&uarr;&darr;</span>
+                  <input type="hidden" name="OphCiExamination_ElementSetItem[display_order][]" value="<?= $item->id ?>">
+              </td>
             <td><?php echo $item->element_type->name?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
@@ -48,15 +55,19 @@
         </tbody>
         <tfoot class="pagination-container">
         <tr>
-          <td colspan="3">
+          <td colspan="5">
             <div class="grid-view">
-              <div class="data-group">
-                <div class="cols-3 column">
-                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
+              <div id="workflow-edit-controls" class="data-group">
+                <div>
+                    <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
                 </div>
-                <div class="cols-3 column end">
+                <div>
+                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                     <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
                 </div>
+              </div>
+              <div>
+                <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
               </div>
             </div>
           </td>
