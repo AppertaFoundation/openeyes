@@ -200,17 +200,17 @@ class _WrapperPcrRiskReport extends PcrRiskReport
     }
 
     protected function isCurrentUserServiceManager()
-		{
-				return false;
-		}
+    {
+                return false;
+    }
 
-		protected function isCurrentUserById($id)
-		{
-				return false;
-		}
+    protected function isCurrentUserById($id)
+    {
+            return false;
+    }
 
-	public function setEmptyTest()
-		{
+    public function setEmptyTest()
+    {
         $this->empty_test = true;
     }
 }
