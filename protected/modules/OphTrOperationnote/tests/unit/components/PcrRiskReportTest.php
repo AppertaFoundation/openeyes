@@ -199,7 +199,18 @@ class _WrapperPcrRiskReport extends PcrRiskReport
         return array();
     }
 
-    public function setEmptyTest() {
+    protected function isCurrentUserServiceManager()
+		{
+				return false;
+		}
+
+		protected function isCurrentUserById($id)
+		{
+				return false;
+		}
+
+	public function setEmptyTest()
+		{
         $this->empty_test = true;
     }
 }
