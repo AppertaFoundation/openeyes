@@ -62,19 +62,23 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <tbody>
                               <?php foreach ($current_eye_medications as $entry) { ?>
                                   <tr>
-                                      <td><?= $entry->getMedicationDisplay() ?></td>
                                       <td>
-                                        <?php
-                                        $laterality = $entry->getLateralityDisplay();
-                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                        ?>
+                                          <i class="oe-i start small pad"></i>
+                                          <?= $entry->getMedicationDisplay() ?>
                                       </td>
+                                      <td></td>
                                       <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
                                             <i class="oe-i info small pro-theme js-has-tooltip"
                                                data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                             </i>
                                         <?php } ?>
+                                      </td>
+                                      <td>
+                                          <?php
+                                          $laterality = $entry->getLateralityDisplay();
+                                          $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                          ?>
                                       </td>
                                       <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
@@ -101,23 +105,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <colgroup>
                                   <col class="cols-7">
                               </colgroup>
-                              <thead>
-                              <tr>
-                                  <th>Stopped</th>
-                                  <th></th>
-                                  <th></th>
-                                  <th><i class="oe-i small pro-theme js-patient-expand-btn pad expand"></i></th>
-                              </tr>
-                              </thead>
-                              <tbody style="display: none;">
-                              <?php foreach ($stoppedEyeMedications as $entry) { ?>
+                              <tbody>
+                              <?php foreach ($stopped_eye_medications as $entry) { ?>
                                   <tr>
-                                      <td><?= $entry->getMedicationDisplay() ?></td>
                                       <td>
-                                          <?php
-                                            $laterality = $entry->getLateralityDisplay();
-                                            $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                            ?>
+                                          <i class="oe-i stop small pad"></i>
+                                          <?= $entry->getMedicationDisplay() ?>
                                       </td>
                                       <td>
                                           <?php if ($entry->getDoseAndFrequency()) {?>
@@ -125,6 +118,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                                  data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                               </i>
                                             <?php } ?>
+                                      </td>
+                                      <td>
+                                          <?php
+                                          $laterality = $entry->getLateralityDisplay();
+                                          $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                          ?>
                                       </td>
                                       <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
@@ -213,7 +212,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                 <tbody>
                                 <?php foreach ($current_systemic_medications as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
+                                        <td>
+                                            <i class="oe-i start small pad"></i>
+                                            <?= $entry->getMedicationDisplay() ?>
+                                        </td>
+                                        <td></td>
                                         <td>
                                             <?php if ($entry->getDoseAndFrequency()) {?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
@@ -251,7 +254,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                     <tbody>
                                     <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                         <tr>
-                                            <td><?= $entry->getMedicationDisplay() ?></td>
+                                            <td>
+                                                <i class="oe-i stop small pad"></i>
+                                                <?= $entry->getMedicationDisplay() ?>
+                                            </td>
                                             <td>
                                                 <?php if ($entry->getDoseAndFrequency()) {?>
                                                     <i class="oe-i info small pro-theme js-has-tooltip"

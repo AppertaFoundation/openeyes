@@ -47,22 +47,25 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <tbody>
                     <?php foreach ($current_systemic_meds as $entry) : ?>
                         <tr>
-                            <td><?= $entry->getMedicationDisplay() ?></td>
+                            <td>
+                                <i class="oe-i start small pad-right pro-theme"></i>
+                                <?= $entry->getMedicationDisplay() ?>
+                            </td>
                             <td>
                                 <?php if ($entry->getDoseAndFrequency()) { ?>
                                     <i class="oe-i info small pro-theme js-has-tooltip"
-                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                     </i>
                                 <?php } ?>
+                                <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                             </td>
-                            <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
             <?php } else { ?>
-                <div class="data-value none">
-                    No current Systemic Medications
+                <div class="data-value not-recorded">
+                    No current Systemic MedicationsT
                 </div>
             <?php } ?>
 
@@ -74,21 +77,28 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </div>
                     <div class="collapse-data-content">
                         <table>
-                            <colgroup>
-                                <col class="cols-7">
-                            </colgroup>
                             <tbody>
                             <?php foreach ($stopped_systemic_meds as $entry) { ?>
                                 <tr>
-                                    <td><?= $entry->getMedicationDisplay() ?></td>
-                                    <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                                     <td>
-                                        <?php if ($entry->prescription_item) { ?>
-                                            <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                                        class="js-has-tooltip fa oe-i eye small pro-theme"
-                                                        data-tooltip-content="View prescription"></span></a>
-                                        <?php } ?>
+                                        <i class="oe-i stop small pad-right pro-theme"></i>
+                                        <?= $entry->getMedicationDisplay() ?>
                                     </td>
+                                    <td>
+                                        <?php if ($entry->getDoseAndFrequency()) { ?>
+                                            <i class="oe-i info small pro-theme js-has-tooltip"
+                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                            </i>
+                                        <?php } ?>
+                                        <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
+                                    </td>
+                                    <?php if ($entry->prescription_item) { ?>
+                                        <td>
+                                        <a href="<?= $entry->getPrescriptionLink() ?>"><span
+                                                    class="js-has-tooltip fa oe-i eye small pro-theme"
+                                                    data-tooltip-content="View prescription"></span></a>
+                                         </td>
+                                    <?php } ?>
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -111,23 +121,39 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php } else { ?>
                 <?php if ($current_eye_meds) { ?>
                     <table id="<?= $model_name ?>_entry_table">
+                        <colgroup>
+                            <col class="cols-8">
+                            <col>
+                        </colgroup>
                         <tbody>
                         <?php foreach ($current_eye_meds as $entry) { ?>
                             <tr>
-                                <td><?= $entry->getMedicationDisplay() ?></td>
                                 <td>
-                                    <?php $laterality = $entry->getLateralityDisplay();
-                                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                    ?>
+                                    <i class="oe-i start small pad-right pro-theme"></i>
+                                    <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
                                     <?php if ($entry->getDoseAndFrequency()) { ?>
                                         <i class="oe-i info small pro-theme js-has-tooltip"
-                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                         </i>
                                     <?php } ?>
                                 </td>
-                                <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
+                                <td class="nowrap">
+                                    <?php $laterality = $entry->getLateralityDisplay();
+                                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality, 'pad' => ''));
+                                    ?>
+                                    <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                                </td>
+                                <td>
+                                    <?php
+                                    $link = $entry->prescription_item ? $entry->getPrescriptionLink() : $entry->getExaminationLink();
+                                    $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
+                                    <a href="<?= $link ?>">
+                                        <i class="js-has-tooltip fa oe-i direction-right-circle small pad"
+                                           data-tooltip-content="<?= $tooltip_content ?>"></i>
+                                    </a>
+                                </td>
                             </tr>
                         <?php } ?>
                         </tbody>
@@ -146,26 +172,32 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         </div>
                         <div class="collapse-data-content">
                             <table>
+                                <colgroup>
+                                    <col class="cols-8">
+                                    <col>
+                                </colgroup>
                                 <tbody>
                                 <?php foreach ($stopped_eye_meds as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
                                         <td>
-                                            <?php $laterality = $entry->getLateralityDisplay();
-                                            $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                            ?>
+                                            <i class="oe-i stop small pad-right pro-theme"></i>
+                                            <?= $entry->getMedicationDisplay() ?>
                                         </td>
+                                        <td></td>
                                         <td>
-                                            <span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span>
-                                        </td>
-                                        <td>
-                                            <?php if ($entry->prescription_item) { ?>
-                                                <a href="<?= $this->getPrescriptionLink($entry) ?>">
-                                                    <span class="js-has-tooltip fa oe-i eye small pro-theme"
-                                                        data-tooltip-content="View prescription"></span>
-                                                </a>
+                                            <?php if ($entry->getDoseAndFrequency()) { ?>
+                                                <i class="oe-i info small pro-theme js-has-tooltip"
+                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                                </i>
                                             <?php } ?>
                                         </td>
+                                        <td class="nowrap">
+                                            <?php $laterality = $entry->getLateralityDisplay();
+                                            $this->widget('EyeLateralityWidget', array('laterality' => $laterality, 'pad' => ''));
+                                            ?>
+                                            <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
+                                        </td>
+                                        <td><i class="oe-i"></i></td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
