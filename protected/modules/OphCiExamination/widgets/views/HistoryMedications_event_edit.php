@@ -218,7 +218,7 @@ foreach ($element->entries as $entry) {
 </div>
 <script type="text/javascript">
     $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
-        window.HMController = undefined;
+        delete window.HMController;
     });
     var medicationsController;
     $(document).ready(function () {
