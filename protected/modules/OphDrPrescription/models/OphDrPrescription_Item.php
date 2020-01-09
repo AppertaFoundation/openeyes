@@ -35,10 +35,10 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
     private $fpten_line_usage = array();
 
-    // Maximum characters per line on FP10 form is roughly 36.
+    // Maximum characters per line on FP10 form is roughly 31.
     // Maximum characters per line on WP10 form is roughly 30.
     // Assuming the space left of the white margin can be used for printing, this could be expanded further.
-    const MAX_FPTEN_LINE_CHARS = 36;
+    const MAX_FPTEN_LINE_CHARS = 31;
     const MAX_WPTEN_LINE_CHARS = 30;
 
     /**
