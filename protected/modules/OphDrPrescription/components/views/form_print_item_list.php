@@ -192,7 +192,7 @@
                 </p>
                 <div class="fpten-form-row">
                     <div class="fpten-form-column fpten-doctor-name">
-                        <?= $this->user->getFullNameAndTitle() ?>
+                        <?= $this->user->getFirstInitialFullNameAndTitle() ?>
                     </div>
                     <div class="fpten-form-column end fpten-registration-code">
                         <?=  str_replace('GMC', '', $this->user->registration_code) ?>
