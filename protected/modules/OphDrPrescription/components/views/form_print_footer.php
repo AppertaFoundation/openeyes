@@ -11,25 +11,39 @@
     </div>
 </div>
 <div class="fpten-form-row">
-    <div class="fpten-form-column <?= $form_css_class ?>-site" >
-        <?= $this->user->getFullNameAndTitle() ?><br/>
-        <?= $this->getDepartmentName()?><?= $this->getDepartmentName() ? '<br/>' : null ?>
-        <?= $this->site->name ?><br/>
-        <?= $this->site->contact->address->address1 ?><?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-        <?= $this->site->contact->address->address2 ?><br/>
-        <?= $this->site->contact->address->city . ' ' . $this->site->contact->address->county ?><br/>
-        Tel: <?= $this->site->telephone ?><br/>
-        <?= $this->getInstitutionName() ?: $this->site->institution->name ?>
-    </div>
-    <div class="fpten-form-column <?= $form_css_class ?>-site-code">
-        <?= ($side === 'left') ? str_replace('GMC', '', $this->user->registration_code) : '&nbsp;' ?><br/>
-        <?= $this->getDepartmentName() ? '<br/>' : null ?>
-        <?= ($side === 'left') ? '<strong>' . $cost_code . '</strong>' : null?><br/>
-        <br/>
-        <?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-        <?= $this->site->contact->address->postcode ?><br/>
-        <br/>
-        <?= ($side === 'left') ? $this->site->institution->remote_id : null ?>
+    <div class="fpten-form-column <?= $form_css_class ?>-site">
+        <table style="">
+            <tbody>
+            <tr>
+                <td>
+                    <?= $this->getDepartmentName()?><?= $this->getDepartmentName() ? '<br/>' : null ?>
+                    <?= $this->site->name ?><br/>
+                    <?= $this->site->contact->address->address1 ?><br/>
+                    <?= $this->site->contact->address->address2 ?><?= $this->site->contact->address->address2 ? '<br/>' : null ?>
+                    <?= $this->site->contact->address->city ?>
+                </td>
+                <?php if ($side === 'left') : ?>
+                <td class="fpten-site-code">
+                    <?= $cost_code ?>
+                </td>
+                <?php else : ?>
+                <td></td>
+                <?php endif; ?>
+            </tr>
+            <tr>
+                <td>
+                    <?= $this->site->contact->address->county ?><br/>
+                    Tel: <?= $this->site->telephone ?><br/>
+                    <?= $this->getInstitutionName() ?: $this->site->institution->name ?>
+                </td>
+                <td <?= $form_css_class === 'wpten' ? 'class="wpten-site-postcode"' : null ?>>
+                    <?= $this->site->contact->address->postcode ?><br/>
+                    <br/>
+                    <?= ($side === 'left') ? $this->site->institution->remote_id : null ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <?php if ($side === 'left') : ?>
         <span class="fpten-form-column fpten-prescriber-code">HP</span>

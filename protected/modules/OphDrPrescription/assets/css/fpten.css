@@ -12,6 +12,32 @@ body {
     margin: 0;
 }
 
+.fpten-container table, .wpten-container table {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.fpten-container td, .wpten-container td {
+    font-size: 7.5pt !important;
+    font-weight: bold !important;
+}
+
+.fpten-container .fpten-patient-details tr *, .wpten-container .wpten-patient-details tr * {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.fpten-container .fpten-patient-details tr:first-child *, .wpten-container .wpten-patient-details tr:first-child * {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.fpten-container .fpten-site tr *, .wpten-container .wpten-site tr * {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 .fpten-container, .wpten-container {
     font-family: arial, sans-serif;
     font-weight: bold;
@@ -39,42 +65,36 @@ body {
 }
 
 .fpten-registration-code {
-    padding-top: 2mm;
-    font-size: 12pt;
-    font-weight: initial;
+    font-size: 7.5pt;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 0;
 }
 
 /*Site box appears at the bottom toward the center.*/
 .fpten-site, .wpten-site {
     text-align: left;
-    width: 50mm;
+    /*width: 50mm;*/
     margin-left: 14mm;
     padding-top: 2mm;
     padding-left: 3mm;
-    font-weight: initial;
 }
 
-.right .wpten-site, .right .fpten-site {
+.wpten-site-postcode {
+    white-space: nowrap;
+}
+
+.right .fpten-site {
     margin-left: 9mm; !important;
 }
 
 .fpten-site {
-    width: 60mm;
+    width: 70mm;
 }
 
-.fpten-site-code, .wpten-site-code {
-    text-align: left;
-    padding-top: 2mm;
-    width: 20mm;
-    font-weight: initial;
-}
-
-.fpten-site-code {
-    width: 13mm;
-}
-
-.right .fpten-site-code, .right .wpten-site-code {
-    width: 30mm;
+.fpten-container td.fpten-site-code, .wpten-container td.fpten-site-code {
+    font-size: 12pt !important;
+    font-weight: bold !important;
 }
 
 /*Age box appears at the top toward the center.*/
@@ -124,7 +144,7 @@ body {
 /*Postcode is right-aligned to the edge of the parent box.*/
 .fpten-patient-details {
     width: 50mm;
-    height: 25mm;
+    height: 30mm;
     padding-top: 3mm;
 }
 
@@ -134,20 +154,10 @@ body {
     padding-top: 2mm;
 }
 
-.fpten-nhs {
-    height: 5mm;
-    line-height: 5mm;
-    float: right;
-}
-
-.fpten-nhs-text, .wpten-nhs-text {
+.wpten-nhs-text {
     float: right;
     text-align: left;
     padding-top: 2mm;
-}
-
-.fpten-nhs-text {
-    padding-top: 0;
 }
 
 .fpten-postcode {
@@ -189,8 +199,9 @@ body {
 /*Appears beneath the prescriber.*/
 .fpten-prescription-list, .wpten-prescription-list {
     padding-top: 1mm;
+    padding-right: 5mm;
     height: 85mm;
-    width: 50mm;
+    width: 56mm;
     overflow: hidden;
     margin-left: 30mm;
 }
@@ -209,6 +220,7 @@ body {
     padding-top: 2mm;
     padding-bottom: 2mm;
     border-bottom: 1px solid;
+    text-align: right;
 }
 
 .fpten-prescription-list-filler {
@@ -242,4 +254,15 @@ body {
     font-size: 7.5pt;
     font-weight: bold;
     text-align: right;
+    border-bottom: 1px solid;
+}
+
+.fpten-doctor-name {
+    font-size: 7.5pt;
+    font-weight: bold;
+    margin-left: 0;
+}
+
+.end {
+    float: right !important;
 }
