@@ -51,6 +51,7 @@ use Patient;
  */
 class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     protected static $ed_persistence_attributes = array(
         'left_eyedraw' => \Eye::LEFT,
         'right_eyedraw' => \Eye::RIGHT,

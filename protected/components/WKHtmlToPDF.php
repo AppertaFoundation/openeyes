@@ -33,6 +33,11 @@ class WKHtmlToPDF extends WKHtmlToX
     public $bottom_margin;
     public $left_margin;
     public $right_margin;
+    public $page_size;
+    public $orientation;
+    public $disable_smart_shrinking;
+    public $page_width;
+    public $page_height;
 
     public function __construct()
     {
@@ -49,6 +54,11 @@ class WKHtmlToPDF extends WKHtmlToX
         $this->bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
         $this->left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
         $this->right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
+        $this->page_size = Yii::app()->params['wkhtmltopdf_page_size'];
+        $this->orientation = Yii::app()->params['wkhtmltopdf_orientation'];
+        $this->disable_smart_shrinking = Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] ?: false;
+        $this->page_width = Yii::app()->params['wkhtmltopdf_page_width'];
+        $this->page_height = Yii::app()->params['wkhtmltopdf_page_height'];
     }
 
     public function formatFooter($footer, $left, $middle, $right)
@@ -99,7 +109,8 @@ class WKHtmlToPDF extends WKHtmlToX
         $footer = str_replace('{{PAGE}}', '<span class="page"></span>', $footer);
         $footer = str_replace('{{PAGES}}', '<span class="topage"></span>', $footer);
         $footer = str_replace('{{CUSTOM_TAGS}}', CJavaScript::encode($this->custom_tags), $footer);
-        $footer = str_replace('{{NHS No}}', Yii::app()->params['nhs_num_label'].' Number', $footer);
+        $footer = str_replace('{{NHS No}}', Yii::app()->params['nhs_num_label']. ((Yii::app()->params['institution_code']==='CERA')? '' : ' Number'), $footer);
+        $footer = str_replace('{{Hos No}}', Yii::app()->params['hos_num_label']. ((Yii::app()->params['institution_code']==='CERA')? '' : ' No') , $footer);
 
         return $footer;
     }
@@ -185,8 +196,10 @@ class WKHtmlToPDF extends WKHtmlToX
         $suffix,
         $html,
         $output_html = false,
-        $inject_autoprint_js = true
+        $inject_autoprint_js = true,
+        $print_footer = true
     ) {
+        $footer = null;
         !$output_html && $html = $this->remapAssetPaths($html);
         !$output_html && $html = $this->remapCanvasImagePaths($html);
 
@@ -194,10 +207,10 @@ class WKHtmlToPDF extends WKHtmlToX
 
         $html_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.html";
         $pdf_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.pdf";
-        $footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . 'footer.html';
 
         $this->writeFile($html_file, $html);
 
+        $footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . 'footer.html';
         $footer = $this->formatFooter(
             $this->readFile(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'print' . DIRECTORY_SEPARATOR . 'pdf_footer.php'),
             $this->left,
@@ -209,9 +222,8 @@ class WKHtmlToPDF extends WKHtmlToX
         );
 
         $this->writeFile($footer_file, $footer);
-
         if ($output_html) {
-            echo $html . $footer;
+            echo $html . ($print_footer ? $footer : null);
 
             return true;
         }
@@ -221,9 +233,18 @@ class WKHtmlToPDF extends WKHtmlToX
         $left_margin = $this->left_margin ? '-L ' . $this->left_margin : '';
         $right_margin = $this->right_margin ? '-R ' . $this->right_margin : '';
 
+        $page_size = $this->page_size;
 
         $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltopdf_nice_level'] . ' ' : '';
-        $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
+        $res = $this->execute($nice . escapeshellarg($this->application_path)
+            . ($this->disable_smart_shrinking ? ' --disable-smart-shrinking' : null)
+            . ($print_footer === 'true' ? ' --footer-html ' . escapeshellarg($footer_file) : null)
+            . ($this->orientation ? " --orientation $this->orientation" : null)
+            . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin "
+            . ($this->page_width ? "--page-width $this->page_width " : null)
+            . ($this->page_width ? "--page-height $this->page_height " : null)
+            . ($page_size ? "--page-size $page_size ": null)
+            . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
             if ($this->fileSize($pdf_file) == 0) {

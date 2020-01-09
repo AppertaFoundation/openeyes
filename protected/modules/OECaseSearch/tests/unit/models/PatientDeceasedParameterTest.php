@@ -42,7 +42,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         // Ensure the query is correct for each operator.
         foreach ($correctOps as $operator) {
             $this->parameter->operation = $operator;
-            $sqlValue = ($operator === '0') ? "SELECT id FROM patient WHERE NOT(is_deceased)" : "SELECT id FROM patient";
+            $sqlValue = ($operator === '0') ? "SELECT id FROM patient WHERE NOT(is_deceased)" : "SELECT id FROM patient WHERE is_deceased=1";
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
                 trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
@@ -75,9 +75,9 @@ class PatientDeceasedParameterTest extends CDbTestCase
      */
     public function testSearch()
     {
-        // Ensure all patient fixtures are returned.
+        // Ensure only the patient with the is_deceased as 1 fixture is returned.
         $match = array();
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 9; $i < 10; $i++) {
             $match[] = $this->patient("patient$i");
         }
 

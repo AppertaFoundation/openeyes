@@ -15,8 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<?php
+
 
 class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
 {
@@ -44,9 +43,9 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, display_order , is_active', 'safe'),
-            array('name, display_order , is_active', 'required'),
-            array('id, name, display_order , is_active', 'safe', 'on' => 'search'),
+            array('name, display_order , is_active, sub_type_event_icon_id', 'safe'),
+            array('name, display_order , is_active, sub_type_event_icon_id', 'required'),
+            array('id, name, display_order , is_active, sub_type_event_icon_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -58,6 +57,7 @@ class OphCoDocument_Sub_Types extends BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'subTypeEventIcon' => array(self::HAS_ONE, 'EventIcon', 'sub_type_event_icon_id')
         );
     }
 

@@ -54,6 +54,14 @@ class Trial extends BaseActiveRecordVersioned
    * The return code for actionRemovePermission() if the user tried to remove themselves from the Trial
    */
     const REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF = 'remove_self_fail';
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove admin from the Trial
+     */
+    const REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN = 'remove_admin_fail';
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove owner from the Trial
+     */
+    const REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER = 'remove_owner_fail';
 
   /**
    * The return code for actionTransitionState() if the transition was a success
@@ -84,6 +92,7 @@ class Trial extends BaseActiveRecordVersioned
         'max' => 10,
         ),
         array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
+        array('closed_date','closedDateValidator','on'=>'manual'),
         array('description, last_modified_date, created_date, ethics_number', 'safe'),
         );
     }
@@ -187,7 +196,11 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         foreach (array('started_date', 'closed_date') as $date_column) {
-            $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);;
+            if (isset($this->$date_column) && !empty($this->$date_column)) {
+                $this->$date_column = Helper::convertNHS2MySQL($this->$date_column);
+            } else {
+                $this->$date_column = null;
+            }
         }
 
         return true;
@@ -203,17 +216,36 @@ class Trial extends BaseActiveRecordVersioned
         parent::afterSave();
 
         if ($this->getIsNewRecord()) {
-          // Create a new permission assignment for the user that created the Trial
-            $newPermission = new UserTrialAssignment();
-            $newPermission->user_id = Yii::app()->user->id;
-            $newPermission->trial_id = $this->id;
-            $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
-            $newPermission->role = 'Trial Owner';
-            $newPermission->is_principal_investigator = 1;
+            // Create a new permission assignment for the user that created the Trial
+            if (array_key_exists('principal_investigator', $_SESSION) && !empty($_SESSION['principal_investigator'])) {
+                $current_user_id = $_SESSION['principal_investigator'];
+            } else {
+                $current_user_id =  Yii::app()->user->id;
+            }
 
-            if (!$newPermission->save()) {
-                throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
-                . print_r($newPermission->getErrors(), true));
+            // unsetting the session, so that if it is empty for the next row it won't insert the principal investigator that was entered for the previous row for the trial import.
+            unset($_SESSION['principal_investigator']);
+
+            $admin_user_group = User::model()->findAllByRoles(array('admin'));
+            if (!in_array($current_user_id, $admin_user_group)) {
+                array_push($admin_user_group, $current_user_id);
+            }
+            foreach ($admin_user_group as $user_id) {
+                $newPermission = new UserTrialAssignment();
+                $newPermission->user_id = $user_id;
+                $newPermission->trial_id = $this->id;
+                $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+                if ($user_id == $current_user_id) {
+                    // Always make the current user as the owner of the trial.
+                    if (Yii::app()->user->id == $user_id) {
+                        $newPermission->role = 'Trial Owner';
+                    }
+                    $newPermission->is_principal_investigator = 1;
+                }
+                if (!$newPermission->save()) {
+                    throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                      . print_r($newPermission->getErrors(), true));
+                }
             }
         }
     }
@@ -283,9 +315,9 @@ class Trial extends BaseActiveRecordVersioned
                 $sortBySql = 'ISNULL(treatment_type_id), t.treatment_type_id';
                 break;
         }
-  
+
           $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
-  
+
           $patientDataProvider = new CActiveDataProvider('TrialPatient', array(
           'criteria' => array(
           'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
@@ -302,10 +334,10 @@ class Trial extends BaseActiveRecordVersioned
           'pageSize' => 10,
           ),
           ));
-  
+
           return $patientDataProvider;
     }
-  
+
     /**
      * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
      * @param TrialType $type The trial type.
@@ -431,12 +463,21 @@ class Trial extends BaseActiveRecordVersioned
         $logMessage = null;
       /* @var UserTrialAssignment $permission */
         $assignment = UserTrialAssignment::model()->findByPk($permission_id);
+        $admin_user_group = User::model()->findAllByRoles(array('admin'));
         if ($assignment->trial->id !== $this->id) {
             throw new Exception('Cannot remove permission from another trial');
         }
 
         if ($assignment->user_id === Yii::app()->user->id) {
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF;
+        }
+
+        if ($assignment->user_id === $assignment->created_user_id) {
+            return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER;
+        }
+
+        if (in_array($assignment->user_id, $admin_user_group)) {
+            return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
         }
 
       // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
@@ -560,5 +601,18 @@ class Trial extends BaseActiveRecordVersioned
     {
         $study_coordinators = UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
         return $study_coordinators;
+    }
+    public function closedDateValidator($attribute, $params)
+    {
+        if ($this->hasErrors('closed_date')) {
+            return;
+        }
+        if (isset($this->started_date) && isset($this->$attribute)) {
+            $started_date = new DateTime($this->started_date);
+            $closed_date =  new DateTime($this->$attribute);
+            if ($closed_date < $started_date) {
+                $this->addError($attribute, 'Invalid date. Closed date cannot be earlier than started date.');
+            }
+        }
     }
 }

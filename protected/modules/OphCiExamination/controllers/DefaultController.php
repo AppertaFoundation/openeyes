@@ -93,13 +93,36 @@ class DefaultController extends \BaseEventTypeController
         if (!$this->event || $this->event->isNewRecord) {
             $elements = $this->getElementsByWorkflow(null, $this->episode);
         } else {
-            $elements = $this->event->getElements();
+            $elements = $this->getSortedElements();
             if ($this->step) {
                 $elements = $this->mergeNextStep($elements);
             }
         }
 
         return $this->filterElements($elements);
+    }
+
+    /**
+     * Returns the current events elements ordered by workflow set
+     * where applicable.
+     * @return \BaseEventTypeElement[]
+     */
+    protected function getSortedElements()
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $sortable_elements = [];
+
+        foreach ($this->event->getElements() as $element) {
+            $flow_order = $set->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_elements[$flow_order] = $element;
+            } else {
+                $sortable_elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+            }
+        }
+
+        ksort($sortable_elements);
+        return $sortable_elements;
     }
 
     /**
@@ -581,15 +604,28 @@ class DefaultController extends \BaseEventTypeController
 
             $merged_elements[] = $extra_element;
         }
-        usort($merged_elements, function ($a, $b) {
-            if ($a->getElementType()->display_order == $b->getElementType()->display_order) {
-                return 0;
+            $sortable_merged_elements = [];
+
+        foreach ($merged_elements as $element) {
+            $flow_order = $this->step->getSetElementOrder($element);
+            if ($flow_order) {
+                $sortable_merged_elements[$flow_order] = $element;
+            } else {
+                $sortable_merged_elements[$this->step->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
             }
+        }
 
-            return ($a->getElementType()->display_order > $b->getElementType()->display_order) ? 1 : -1;
-        });
+            ksort($sortable_merged_elements);
 
-        return $merged_elements;
+            return $sortable_merged_elements;
+    }
+
+    protected function getSetFromEpisode($episode)
+    {
+        $firm_id = $this->firm->id;
+        $status_id = ($episode) ? $episode->episode_status_id : 1;
+        $workflow = new models\OphCiExamination_Workflow_Rule();
+        return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
     }
 
     /**
@@ -604,10 +640,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $elements = array();
         if (!$set) {
-            $firm_id = $this->firm->id;
-            $status_id = ($episode) ? $episode->episode_status_id : 1;
-            $workflow = new models\OphCiExamination_Workflow_Rule();
-            $set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $set = $this->getSetFromEpisode($episode);
         }
 
         if ($set) {
@@ -641,7 +674,7 @@ class DefaultController extends \BaseEventTypeController
 
         header('Content-type: application/json');
         // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
-        echo json_encode(array('id' => $disorder->id, 'name' => addslashes($disorder->term)));
+        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
         Yii::app()->end();
     }
 
@@ -1303,6 +1336,53 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Custom validation on Pupillary Abnormalities element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors)
+    {
+        $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
+        $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
+        $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+
+        $pupillary_abnormalities->eye_id = $data['eye_id'];
+
+        foreach (['left', 'right'] as $side) {
+            if (isset($data['entries_' . $side])) {
+                $entries = [];
+
+                foreach ($data['entries_' . $side] as $index => $value) {
+                    $entry = new models\PupillaryAbnormalityEntry();
+                    $entry->attributes = $value;
+                    $entries[] = $entry;
+                    if (!$entry->validate()) {
+                        $entryErrors = $entry->getErrors();
+                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                            foreach ($entryErrorMessages as $entryErrorMessage) {
+                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                            }
+                        }
+                    }
+                }
+                $pupillary_abnormalities->{'entries_' . $side} = $entries;
+            } else {
+                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                } else {
+                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * custom validation for virtual clinic referral.
      *
      * this should hand off validation to a faked PatientTicket request via the API.
@@ -1342,6 +1422,10 @@ class DefaultController extends \BaseEventTypeController
 
         if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])) {
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
+            $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
         }
 
         return $errors;
@@ -1486,12 +1570,10 @@ class DefaultController extends \BaseEventTypeController
 
             if (count($err)) {
                 $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if (isset($errors[$et_name])) {
-                    if ($errors[$et_name]) {
-                        $errors[$et_name] = array_merge($errors[$et_name], $err);
-                    } else {
-                        $errors[$et_name] = $err;
-                    }
+                if (isset($errors[$et_name]) && $errors[$et_name]) {
+                    $errors[$et_name] = array_merge($errors[$et_name], $err);
+                } else {
+                    $errors[$et_name] = $err;
                 }
             }
         }
