@@ -63,7 +63,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <?php foreach ($current_eye_medications as $entry) { ?>
                                   <tr>
                                       <td>
-                                          <i class="oe-i start small pad"></i>
+                                          <i class="oe-i start small pad-right"></i>
                                           <?= $entry->getMedicationDisplay() ?>
                                       </td>
                                       <td></td>
@@ -109,7 +109,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <?php foreach ($stopped_eye_medications as $entry) { ?>
                                   <tr>
                                       <td>
-                                          <i class="oe-i stop small pad"></i>
+                                          <i class="oe-i stop small pad-right"></i>
                                           <?= $entry->getMedicationDisplay() ?>
                                       </td>
                                       <td>
