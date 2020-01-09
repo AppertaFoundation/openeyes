@@ -23,17 +23,17 @@ body {
     font-weight: bold !important;
 }
 
-.fpten-container .fpten-patient-details tr *, .wpten-container .wpten-patient-details tr * {
+.fpten-patient-details td, .wpten-container .wpten-patient-details td {
     margin-left: 0 !important;
     padding-left: 0 !important;
 }
 
-.fpten-container .fpten-patient-details tr:first-child *, .wpten-container .wpten-patient-details tr:first-child * {
+.fpten-patient-details tr:first-child td, .wpten-container .wpten-patient-details tr:first-child td {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.fpten-container .fpten-site tr *, .wpten-container .wpten-site tr * {
+.fpten-site td, .wpten-container .wpten-site td {
     margin: 0 !important;
     padding: 0 !important;
 }
