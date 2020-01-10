@@ -19,8 +19,7 @@
                     <?= $this->getDepartmentName()?><?= $this->getDepartmentName() ? '<br/>' : null ?>
                     <?= $this->site->name ?><br/>
                     <?= $this->site->contact->address->address1 ?><br/>
-                    <?= $this->site->contact->address->address2 ?><?= $this->site->contact->address->address2 ? '<br/>' : null ?>
-                    <?= $this->site->contact->address->city ?>
+                    <?= $this->site->contact->address->address2 ?>
                 </td>
                 <?php if ($side === 'left') : ?>
                 <td class="fpten-site-code">
@@ -32,11 +31,13 @@
             </tr>
             <tr>
                 <td>
-                    <?= $this->site->contact->address->county ?><br/>
+                    <?= $this->site->contact->address->city ?><br/>
+                    <?= $this->site->contact->address->county ?><?= $this->site->contact->address->county ? '<br/>' : null ?>
                     Tel: <?= $this->site->telephone ?><br/>
                     <?= $this->getInstitutionName() ?: $this->site->institution->name ?>
                 </td>
                 <td <?= $form_css_class === 'wpten' ? 'class="wpten-site-postcode"' : null ?>>
+                    <?= $this->site->contact->address->county ? '<br/>' : null?>
                     <?= $this->site->contact->address->postcode ?><br/>
                     <br/>
                     <?= ($side === 'left') ? $this->site->institution->remote_id : null ?>

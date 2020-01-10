@@ -24,17 +24,19 @@
                     <br/>
                     <?= $this->patient->contact->address->address1 ?><br/>
                     <?= $this->patient->contact->address->address2 ?><?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-                    <?= $this->patient->contact->address->city ?>
                 </div>
                 <div class="fpten-form-row">
                     <table>
                         <tbody>
                         <tr>
                             <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
-                                <?= $this->patient->contact->address->county ?>
-                                <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/><br/>' : null ?>
+                                <?= $this->patient->contact->address->city ?><br/>
+                                <?= $this->patient->contact->address->county ?><br/><br/>
+                                <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/>' : null ?>
+                                <?= (!$this->patient->contact->address->county && $form_css_class !== 'wpten') ? '<br/>' : null ?>
                             </td>
                             <td>
+                                <?= $this->patient->contact->address->county ? '<br/>' : null ?>
                                 <?= $this->patient->contact->address->postcode ?>
                             </td>
                         </tr>
