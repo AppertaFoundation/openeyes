@@ -36,7 +36,7 @@ $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
 ?>
-<div class="group">
+<div class="group" name="group-systemic-medications">
     <div class="label">Systemic Medications</div>
     <div class="data">
         <?php if (!$current_systemic_meds && !$stopped_systemic_meds) : ?>
@@ -147,7 +147,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
 <!-- oe-popup-overflow handles scrolling if data overflow height -->
 <div class="oe-popup-overflow quicklook-data-groups">
-    <div class="group">
+    <div class="group" name="group-eye-medications">
         <div class="label">Eye Medications</div>
         <div class="data">
             <?php if (!$current_eye_meds && !$stopped_eye_meds) : ?>
