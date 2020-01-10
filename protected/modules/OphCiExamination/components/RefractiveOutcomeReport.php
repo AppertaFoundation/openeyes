@@ -93,7 +93,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     {
         $this->getExaminationEvent();
 //The variable below contains a prtial SQl command that searches for whether an IOL has been inserted during an operation by searching for keywords search as PCIOl in the eyedraw canvas - OE-9419
-        $iol_classes = implode("OR", array_map(function($val) { return " et_ophtroperationnote_cataract.eyedraw LIKE '%".$val."%' "; }, \Yii::app()->params['eyedraw_iol_classes']));
+        $iol_classes = implode("OR", array_map(function($iol_class) { return " et_ophtroperationnote_cataract.eyedraw LIKE '%".$iol_class."%' "; }, \Yii::app()->params['eyedraw_iol_classes']));
         $this->command
             ->select('
                   post_examination.episode_id
