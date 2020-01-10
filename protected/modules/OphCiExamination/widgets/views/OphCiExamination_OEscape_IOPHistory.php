@@ -50,7 +50,7 @@
 			layout_iop['annotations'] = [];
 			layout_iop['yaxis'] = setYAxis_IOP();
 			layout_iop['height'] = 400;
-            if(x_data.length){
+            if(iop_plotly_data[side]['x']!= 'undefined'){
               layout_iop['xaxis']['rangeselector'] = selectorOptions;
             }
 
