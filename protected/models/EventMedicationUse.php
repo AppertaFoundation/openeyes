@@ -440,6 +440,10 @@ class EventMedicationUse extends BaseElement
             $data['Stop reason'] = $this->stopReason->name;
         }
 
+        if(!is_null($this->route)) {
+            $data['Route'] = $this->route->term;
+        }
+
         $content = array();
         foreach ($data as $key => $value) {
             $content[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
