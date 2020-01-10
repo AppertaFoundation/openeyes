@@ -253,9 +253,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <?php endforeach; ?>
                             </tbody>
                         </table>
-                <?php } ?>
-            <?php endif; ?>
                         </div>
                     </div>
+                <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
