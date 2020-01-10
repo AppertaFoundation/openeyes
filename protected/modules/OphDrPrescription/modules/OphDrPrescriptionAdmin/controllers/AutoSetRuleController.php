@@ -367,14 +367,12 @@ class AutoSetRuleController extends BaseAdminController
                                 $taper = json_decode($taper, true);
                                 $new_taper = new MedicationSetAutoRuleMedicationTaper();
                                 if (isset($taper['MedicationSetAutoRuleMedicationTaper[id]']) && $taper['MedicationSetAutoRuleMedicationTaper[id]'] !== "") {
-                                    $new_taper->id = $taper['MedicationSetAutoRuleMedicationTaper[id]'];
-                                    $new_taper->setIsNewRecord(false);
+                                    $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['MedicationSetAutoRuleMedicationTaper[id]']);
                                 }
                                 $new_taper->medication_set_auto_rule_id = $item_data['id'];
                                 $new_taper->dose = $taper['MedicationSetAutoRuleMedicationTaper[dose]'];
                                 $new_taper->duration_id = $taper['MedicationSetAutoRuleMedicationTaper[duration_id]'];
                                 $new_taper->frequency_id = $taper['MedicationSetAutoRuleMedicationTaper[frequency_id]'];
-
                                 $taper_array[] = $new_taper;
                             }
                             $item->tapers = $taper_array;
@@ -382,6 +380,11 @@ class AutoSetRuleController extends BaseAdminController
 
                         $result['success'] = (bool)$item->save();
                         $result['errors'] = $item->getErrors();
+                        foreach ($item->tapers as $taper) {
+                            if ($taper->hasErrors()) {
+                                $result['errors'][] = $taper->getErrors();
+                            }
+                        }
 
                         if ($result['success'] === true) {
                                 $transaction->commit();

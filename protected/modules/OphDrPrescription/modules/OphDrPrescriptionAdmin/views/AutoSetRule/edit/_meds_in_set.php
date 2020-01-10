@@ -92,7 +92,7 @@ if ($is_prescription_set) {
                                 ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
                             ); ?>
                         </td>
-                        <td>
+                        <td class="js-input-wrapper">
                             <span data-type="default_frequency" data-id="<?= $set_item->defaultFrequency ? $set_item->default_frequency_id : ''; ?>" class="js-text"><?= $set_item->defaultFrequency ? $set_item->defaultFrequency->term : '-'; ?></span>
                             <?= \CHtml::activeDropDownList(
                                 $set_item,
@@ -101,7 +101,7 @@ if ($is_prescription_set) {
                                 ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
                             ); ?>
                         </td>
-                        <td>
+                        <td class="js-input-wrapper">
                             <span data-type="default_duration" data-id="<?= $set_item->defaultDuration ? $set_item->default_duration_id : ''; ?>" class="js-text"><?= $set_item->defaultDuration ? $set_item->defaultDuration->name : '-'; ?></span>
                             <?= \CHtml::activeDropDownList(
                                 $set_item,
@@ -112,7 +112,7 @@ if ($is_prescription_set) {
                         </td>
 
                         <?php if ($is_prescription_set) : ?>
-                            <td>
+                            <td class="js-input-wrapper">
                                 <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text"><?= $set_item->defaultDispenseCondition ? $set_item->defaultDispenseCondition->name : '-'; ?></span>
                                 <?= \CHtml::activeDropDownList(
                                     $set_item,
@@ -121,7 +121,7 @@ if ($is_prescription_set) {
                                     ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
                                 ); ?>
                             </td>
-                            <td>
+                            <td class="js-input-wrapper">
                                 <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text"><?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?></span>
                                 <?= \CHtml::activeDropDownList(
                                     $set_item,
