@@ -35,6 +35,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class FamilyHistory extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\FamilyHistory';
     protected $default_from_previous = true;

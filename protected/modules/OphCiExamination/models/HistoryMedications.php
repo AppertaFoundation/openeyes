@@ -29,6 +29,12 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryMedications extends BaseMedicationElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 25;
+
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryMedications';
     public $new_entries = array();
     public function tableName()

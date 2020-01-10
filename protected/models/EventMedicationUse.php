@@ -88,6 +88,10 @@ class EventMedicationUse extends BaseElement
     public $chk_stop;
     public $medication_name;
 
+    public $equals_attributes = [
+        'medication_id', 'dose', 'dose_unit_term', 'route_id', 'frequency_id', 'start_date', 'laterality',
+    ];
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -304,6 +308,37 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * @param EventMedicationUse $medication
+     * @param bool $check_laterality
+     * @return bool
+     */
+    public function isEqualsAttributes($medication, $check_laterality)
+    {
+        $result = true;
+
+        foreach ($this->equals_attributes as $attribute) {
+            //this is required for edit mode: the "undated" posted entries will have date="00-00-00" while the new ones date=""
+            if ($attribute === "start_date") {
+                $date1 = ($this->start_date === "" || $this->start_date === null) ? "0000-00-00" : $this->start_date;
+                $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
+
+                $result = $date1 === $date2;
+            } else if ($attribute === "laterality") {
+                if ($check_laterality) {
+                    $result = $this->$attribute === $medication->$attribute || $this->$attribute === "3" || $medication->$attribute === "3";
+                }
+            } else {
+                $result = $this->$attribute === $medication->$attribute;
+            }
+
+            if (!$result) {
+                return $result;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @return bool
      */
     public function prescriptionNotCurrent()
@@ -374,6 +409,45 @@ class EventMedicationUse extends BaseElement
         return implode(' ', $res);
     }
 
+    public function getTooltipContent()
+    {
+        $data = [];
+
+        $medication = Medication::model()->findByPk($this->medication_id);
+        if ($medication) {
+            if ($medication->isAMP()) {
+                $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            }
+
+            if ($medication->isVMP()) {
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            }
+        } else {
+            $data['Error'] = "Error while retrieving data for medication.";
+        }
+
+        $dosage = $this->getDoseAndFrequency();
+        if (!empty($dosage)) {
+            $data['Dosage'] = $this->getDoseAndFrequency();
+        }
+
+        $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
+        if (!is_null($this->end_date)) {
+            $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
+        }
+        if (!is_null($this->stop_reason_id)) {
+            $data['Stop reason'] = $this->stopReason->name;
+        }
+
+        $content = array();
+        foreach ($data as $key => $value) {
+            $content[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        return implode("<br/>", $content);
+    }
+
     /**
      * @return bool
      */
@@ -430,7 +504,7 @@ class EventMedicationUse extends BaseElement
             $result[] = $this->frequency;
         }
 
-        return implode(' , ', $result);
+        return implode(', ', $result);
     }
 
     public function getChk_prescribe()

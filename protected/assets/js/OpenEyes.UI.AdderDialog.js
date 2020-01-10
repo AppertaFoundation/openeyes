@@ -117,8 +117,8 @@
                     }
                     $(this).addClass('selected');
                 } else {
-                    // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
-                    if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
+                    // Don't desel ect the item if the itemset is mandatory and there aren't any other items selected
+                    if (!$(this).data('itemSet') || !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
                         $(this).removeClass('selected');
                     }
@@ -148,7 +148,7 @@
         let dialog = this;
         if (this.options.itemSets) {
             this.selectWrapper = $('<table />', {class: 'select-options'});
-            let headers = $('<thead />').appendTo(this.selectWrapper);
+            dialog.headers = $('<thead />').appendTo(this.selectWrapper);
             this.selectWrapper.appendTo(this.popup);
             let $container = $('<tbody />');
             $container.appendTo(this.selectWrapper);
@@ -156,7 +156,7 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(headers);
+                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(dialog.headers);
                 let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
                 if (itemSet.options.supportSigns) {
@@ -185,6 +185,8 @@
         let $td = $('<td />');
         this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
         $td.appendTo(this.$tr);
+
+        $('<th/>').text("Search").appendTo(dialog.headers);
 
         let $searchInput = $('<input />', {
             class: 'search cols-full js-search-autocomplete',
@@ -226,11 +228,25 @@
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         if(dialog.options.booleanSearchFilterEnabled) {
-            var $searchFilter = $('<div><label class="inline"><input class="js-searchfilter-check" type="checkbox" /> '+this.options.booleanSearchFilterLabel+'</label> </div>');
-            $searchFilter.appendTo($filterDiv);
-            this.searchWrapper.find(".js-searchfilter-check").on("click", function(e){
+
+            $('<th/>').text("Search options").appendTo(dialog.headers);
+            let $td = $('<td />');
+            this.searchOptionsWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+            $td.appendTo(this.$tr);
+            $('<div class="lists-layout">' +
+                '<div class="list-wrap ">' +
+                '<ul class="add-options cols-full ">' +
+                '<li class="js-searchfilter-check" data-label="Include branded drugs in search results">' +
+                '<span class="fixed-width ">Include branded drugs in search results</span>' +
+                '</li></ul></div></div>').appendTo(this.searchOptionsWrapper);
+
+
+
+            this.searchOptionsWrapper.find(".js-searchfilter-check").on("click", function(e){
                 var text = $searchInput.val();
-                dialog.runItemSearch(text);
+                // Have to pass opposite of current value because there is a listener after this that changes
+                // the class
+                dialog.runItemSearch(text , undefined, !$(this).hasClass('selected'));
             });
         }
 
@@ -576,7 +592,7 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue, searchFilterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
@@ -603,7 +619,12 @@
         };
 
         if(this.options.booleanSearchFilterEnabled) {
-            var filter_on = this.searchWrapper.find(".js-searchfilter-check").prop("checked");
+            let filter_on;
+            if(typeof searchFilterValue === "undefined") {
+                filter_on = this.searchOptionsWrapper.find(".js-searchfilter-check").hasClass("selected");
+            } else {
+                filter_on = searchFilterValue;
+            }
             ajaxOptions[this.options.booleanSearchFilterURLparam] = filter_on ? 1 : 0;
         }
 

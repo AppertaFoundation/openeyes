@@ -10,6 +10,7 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $auto_update_relations = true;
     public $relation_defaults = array(
         'left_vitreous' => array(
