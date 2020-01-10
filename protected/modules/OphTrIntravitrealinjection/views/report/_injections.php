@@ -26,7 +26,7 @@
     <input type="hidden" name="pre_va" value="<?php echo $report->pre_va?>" />
     <input type="hidden" name="post_va" value="<?php echo $report->post_va?>" />
 </form>
-<table>
+<table class="standard">
     <thead>
         <tr>
             <th><?php echo Patient::model()->getAttributeLabel('hos_num')?></th>
@@ -56,7 +56,7 @@
                     <td><?php echo $injection['patient_surname']?></td>
                     <td><?php echo $injection['patient_gender']?></td>
                     <td><?php echo $injection['patient_dob']?></td>
-                    <td><?php echo $injection['eye']?></td>
+                    <td><?php echo ucfirst($injection['eye'])?></td>
                     <td><?php echo $injection['drug']?></td>
                     <td><?php echo $injection['site']?></td>
                     <td><?php echo $injection['first_injection_date']?></td>
