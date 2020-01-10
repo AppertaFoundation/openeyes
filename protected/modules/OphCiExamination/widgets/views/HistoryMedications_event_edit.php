@@ -217,6 +217,9 @@ foreach ($element->entries as $entry) {
     </script>
 </div>
 <script type="text/javascript">
+    $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
+        delete window.HMController;
+    });
     var medicationsController;
     $(document).ready(function () {
         medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({

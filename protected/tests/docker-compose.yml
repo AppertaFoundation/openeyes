@@ -20,7 +20,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - "../..:/var/www/openeyes"
+      - "../..:/var/www/openeyes:delegated"
 
   behat:
     image: appertaopeneyes/ci:php7
