@@ -139,7 +139,7 @@
             $(this).parent().html('None');
         });
 
-        $('#js-display-whiteboard').click(function(e) {
+        $(document).on('click', '#js-display-whiteboard', function(e) {
             e.preventDefault();
             oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
         });
