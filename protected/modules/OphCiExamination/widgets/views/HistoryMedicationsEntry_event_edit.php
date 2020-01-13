@@ -178,7 +178,7 @@ $allergy_ids = !is_null($entry->medication_id) ?
                         <?php if ($is_new) : ?>
                                                     <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
                                                                  name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $entry->start_date ?>"
+                                                                 value="<?= $entry->start_date === '0000-00-00' ? '' : $entry->start_date ?>"
                                                                  style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                                                                  autocomplete="off">
 
