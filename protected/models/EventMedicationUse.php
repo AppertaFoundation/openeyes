@@ -440,7 +440,7 @@ class EventMedicationUse extends BaseElement
             $data['Stop reason'] = $this->stopReason->name;
         }
 
-        if(!is_null($this->route)) {
+        if (!is_null($this->route)) {
             $data['Route'] = $this->route->term;
         }
 
