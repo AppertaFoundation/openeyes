@@ -35,9 +35,6 @@
             stepmode: 'backward',
             count: 1,
             label: '1y'
-        }, {
-            step: 'all',
-            label: 'All'
         }],
         yanchor: 'top'
     };
