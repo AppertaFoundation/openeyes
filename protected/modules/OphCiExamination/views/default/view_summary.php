@@ -46,11 +46,19 @@ if ($historyElement) {
                 <?php if ($current_eye_medications) { ?>
                 <div class="data-value">
                     <div class="tile-data-overflow">
-                        <table>
+                        <table id="view-Eye-Medications-Current">
                             <colgroup>
                                 <col class="cols-8">
                                 <col>
                             </colgroup>
+                            <thead style="display: none;">
+                                <tr>
+                                    <th>Drug</th>
+                                    <th>Info</th>
+                                    <th>Laterality</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
                             <tbody>
                             <?php foreach ($current_eye_medications as $entry) { ?>
                                 <tr>
@@ -91,11 +99,19 @@ if ($historyElement) {
                     <small>(<?= sizeof($stopped_eye_medications) ?>)</small>
                 </div>
                 <div class="collapse-data-content">
-                    <table>
+                    <table id="view-Eye-Medications-Stopped">
                         <colgroup>
                             <col class="cols-8">
                             <col>
                         </colgroup>
+                        <thead style="display: none;">
+                            <tr>
+                                <th>Drug</th>
+                                <th>Info</th>
+                                <th>Laterality</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
                         <tbody>
                         <?php foreach ($stopped_eye_medications as $entry) : ?>
                             <tr>

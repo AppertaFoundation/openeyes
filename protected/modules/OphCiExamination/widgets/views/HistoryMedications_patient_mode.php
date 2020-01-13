@@ -36,14 +36,14 @@ $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
 ?>
-<div class="group">
+<div class="group" name="group-systemic-medications">
     <div class="label">Systemic Medications</div>
     <div class="data">
         <?php if (!$current_systemic_meds && !$stopped_systemic_meds) : ?>
             <div class="nil-recorded">Nil recorded.</div>
         <?php else : ?>
             <?php if ($current_systemic_meds) : ?>
-                <table id="<?= $model_name ?>_entry_table">
+                <table id="<?= $model_name ?>_systemic_current_entry_table">
                     <colgroup>
                         <col class="cols-8">
                         <col>
@@ -94,7 +94,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <small>(<?= sizeof($stopped_systemic_meds) ?>)</small>
                     </div>
                     <div class="collapse-data-content">
-                        <table>
+                        <table id="<?= $model_name ?>_systemic_stopped_entry_table">
                             <colgroup>
                                 <col class="cols-8">
                                 <col>
@@ -147,14 +147,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
 <!-- oe-popup-overflow handles scrolling if data overflow height -->
 <div class="oe-popup-overflow quicklook-data-groups">
-    <div class="group">
+    <div class="group" name="group-eye-medications">
         <div class="label">Eye Medications</div>
         <div class="data">
             <?php if (!$current_eye_meds && !$stopped_eye_meds) : ?>
                 <div class="nil-recorded">Nil recorded.</div>
             <?php else : ?>
                 <?php if ($current_eye_meds) : ?>
-                    <table id="<?= $model_name ?>_entry_table">
+                    <table id="<?= $model_name ?>_eye_current_entry_table">
                         <colgroup>
                             <col class="cols-7">
                             <col>
@@ -208,7 +208,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <small>(<?= sizeof($stopped_eye_meds) ?>)</small>
                         </div>
                         <div class="collapse-data-content">
-                            <table>
+                            <table id="<?= $model_name ?>_eye_stopped_entry_table"> 
                             <colgroup>
                                 <col class="cols-7">
                                 <col>
