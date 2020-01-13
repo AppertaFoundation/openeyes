@@ -608,6 +608,46 @@ return array(
         'Greek',
         'Italian'
       ),
+        //        Parameter for short labels in patient panel, or anywhere real estate is at a premium
+        'nhs_num_label_short' => 'NHS',
+        'hos_num_label_short' => 'ID',
+        'gender_short' => 'Gen',
+//        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
+        'add_patient_fields' => [ 'title' => '',
+            'first_name' => 'mandatory',
+            'last_name' => 'mandatory',
+            'dob' => 'mandatory',
+            'primary_phone' => '',
+            'hos_num' => 'mandatory',
+            'nhs_num_status' => 'hidden'
+        ],
+//        Set the parameter below to true if you want to use practitioner praactice associations feature
+        'use_contact_practice_associate_model' => false,
+        //        Set the parameter below to indicate whether PAS is being used or not
+        'pas_in_use' => true,
+//        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
+        'demographics_content' => [
+            'mobile' => true,
+            'next_of_kin' => true,
+            'pas' => true,
+        ],
+        //        allow null check is to set whether duplicate checks for patient are to be performed on null RVEEh UR number or any further added patient identifiers
+        'patient_identifiers' => array(
+            'RVEEH_UR' => array(
+                'code' => 'RVEEH_UR',
+                'label' => 'Patient Identifier',
+                'unique' => true,
+                'allow_null_check' => false,
+            )
+        ),
+        'canViewSummary' => true,
+        'default_country' => 'United Kingdom',
+        'default_patient_import_context' => 'Historic Data Entry',
+        'default_patient_import_subspecialty' => 'GL',
+//        Add elements that need to be excluded from the admin sidebar in settings
+        'exclude_admin_structure_param_list' => array(
+//            'Worklist',
+        ),
       'oe_version' => '3.5-a',
       // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
