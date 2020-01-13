@@ -17,10 +17,10 @@ $('body').delegate('#clear_prescription', 'click', function () {
 
 // Update drug route options for selected route if not admin page
 $('body').delegate('select.drugRoute', 'change', function () {
-  var selected = $(this).children('option:selected');
-  var options_td = $(this).parent().next();
+  let selected = $(this).children('option:selected');
+  let options_td = $(this).parent().next();
   if (options_td.attr("class") == 'route_option_cell') {
-    var key = $(this).closest('tr').attr('data-key');
+    let key = $(this).closest('tr').attr('data-key');
     $.get(baseUrl + "/OphDrPrescription/Default/RouteOptions", {
       key: key,
       route_id: selected.val()
@@ -42,7 +42,7 @@ function fpTenPrintOption() {
     let $save_print_form_btn = $('#et_save_print_form');
 
     $('#prescription_items tbody tr').each(function(i, elem) {
-        if ($(elem).find('.dispenseCondition').val() == $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
+        if ($(elem).find('.dispenseCondition').val() !== undefined && $(elem).find('.dispenseCondition').val() === $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
             exists = true;
         }
     });
@@ -56,9 +56,9 @@ function fpTenPrintOption() {
 
 // Remove item from prescription
 $('#prescription_items').delegate('i.removeItem', 'click', function () {
-  var row = $(this).closest('tr');
-  var drug_id = row.find('input[name$="[drug_id]"]').first().val();
-  var key = row.attr('data-key');
+  let row = $(this).closest('tr');
+  let drug_id = row.find('input[name$="[drug_id]"]').first().val();
+  let key = row.attr('data-key');
   $('#prescription_items tr[data-key="' + key + '"]').remove();
 
   fpTenPrintOption();
@@ -69,27 +69,27 @@ $('#prescription_items').delegate('i.removeItem', 'click', function () {
 // Add taper to item
 $('#prescription_items').on('click', '.js-add-taper', function (event) {
   event.preventDefault();
-  var row = $(this).closest('tr');
-  var key = row.attr('data-key');
-  var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
-  var taper_key = (last_row.attr('data-taper')) ? parseInt(last_row.attr('data-taper')) + 1 : 0;
-  var colspanNum = (controllerName == 'DefaultController') ? 2 : 0;
+  let row = $(this).closest('tr');
+  let key = row.attr('data-key');
+  let last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
+  let taper_key = (last_row.attr('data-taper')) ? parseInt(last_row.attr('data-taper')) + 1 : 0;
+  let colspanNum = (controllerName == 'DefaultController') ? 2 : 0;
   // Clone item fields to create taper row
-  var dose_input = row.find('td.prescriptionItemDose input').first().clone();
+  let dose_input = row.find('td.prescriptionItemDose input').first().clone();
   dose_input.attr('name', dose_input.attr('name').replace(/\[dose\]/, "[taper][" + taper_key + "][dose]"));
   dose_input.attr('id', dose_input.attr('id').replace(/_dose$/, "_taper_" + taper_key + "_dose"));
-  var frequency_input = row.find('td.prescriptionItemFrequencyId select').first().clone();
+  let frequency_input = row.find('td.prescriptionItemFrequencyId select').first().clone();
   frequency_input.attr('name', frequency_input.attr('name').replace(/\[frequency_id\]/, "[taper][" + taper_key + "][frequency_id]"));
   frequency_input.attr('id', frequency_input.attr('id').replace(/_frequency_id$/, "_taper_" + taper_key + "_frequency_id"));
   frequency_input.val(row.find('td.prescriptionItemFrequencyId select').val());
-  var duration_input = row.find('td.prescriptionItemDurationId select').first().clone();
+  let duration_input = row.find('td.prescriptionItemDurationId select').first().clone();
   duration_input.attr('name', duration_input.attr('name').replace(/\[duration_id\]/, "[taper][" + taper_key + "][duration_id]"));
   duration_input.attr('id', duration_input.attr('id').replace(/_duration_id$/, "_taper_" + taper_key + "_duration_id"));
   duration_input.val(row.find('td.prescriptionItemDurationId select').val());
 
   // Insert taper row
-  var odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
-  var new_row = $('<tr data-key="' + key + '" data-taper="' + taper_key + '" class="prescription-tapier ' + odd_even + '"></tr>');
+  let odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
+  let new_row = $('<tr data-key="' + key + '" data-taper="' + taper_key + '" class="prescription-tapier ' + odd_even + '"></tr>');
   new_row.append(
     $('<td></td>'),
     $('<td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>'),
@@ -107,7 +107,7 @@ $('#prescription_items').on('click', '.js-add-taper', function (event) {
 
 // Remove taper from item
 $('#prescription_items').delegate('i.removeTaper', 'click', function () {
-  var row = $(this).closest('tr');
+  let row = $(this).closest('tr');
   row.remove();
   return false;
 });
@@ -225,7 +225,7 @@ function addItem(label, item_id) {
 
 // Get next key for adding rows
 function getNextKey() {
-  var last_item = $('#prescription_items .prescriptionItem').last();
+  let last_item = $('#prescription_items .prescriptionItem').last();
   return (last_item.attr('data-key')) ? parseInt(last_item.attr('data-key')) + 1 : 0;
 }
 
@@ -233,7 +233,7 @@ function getDispenseLocation(dispense_condition) {
   $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
     condition_id: dispense_condition.val(),
   }, function (data) {
-    var dispense_location = dispense_condition.closest('.prescriptionItem').find('.dispenseLocation');
+    let dispense_location = dispense_condition.closest('.prescriptionItem').find('.dispenseLocation');
     dispense_location.find('option').remove();
     dispense_location.append(data);
     dispense_location.show();
@@ -301,22 +301,22 @@ $(function () {
 $(document).ready(function () {
   if (window.location.href.indexOf("/update/") > -1) return;
 
-  var error_count = $('a.errorlink').length;
-  var today = $.datepicker.formatDate('dd-M-yy', new Date());
-  var show_warning = false;
-  var ol_list = $("body").find("ol.events");
-  var prescription_count = 0;
+  let error_count = $('a.errorlink').length;
+  let today = $.datepicker.formatDate('dd-M-yy', new Date());
+  let show_warning = false;
+  let ol_list = $("body").find("ol.events");
+  let prescription_count = 0;
   ol_list.each(function (idx, ol) {
-    var li_list = $(ol).find("li");
+    let li_list = $(ol).find("li");
     li_list.each(function (idx, li) {
 
       if ($(li).html().indexOf("OphDrPrescription/default/view") > 0) {
-        var p_day = $(li).find("span.day").first().html();
+        let p_day = $(li).find("span.day").first().html();
 
         if (p_day.length < 2) {
           p_day = '0' + p_day;
         }
-        var prescription_date =
+        let prescription_date =
           p_day + '-'
           + $(li).find("span.mth").first().html() + '-'
           + $(li).find("span.yr").html();
@@ -331,18 +331,18 @@ $(document).ready(function () {
   })
 
   if (show_warning && error_count == 0) {
-    var warning_message = 'Prescriptions have already been created for this patient today.';
+    let warning_message = 'Prescriptions have already been created for this patient today.';
     if (prescription_count == 1) {
       warning_message = 'A Prescription has already been created for this patient today.';
     }
 
-    var p = $('#event-content');
-    var position = p.position();
+    let p = $('#event-content');
+    let position = p.position();
     // alert ('L->'+position.left+ ' T '+position.top);
-    var topdist = position.left + 400;
-    var leftdist = position.top + 500;
+    let topdist = position.left + 400;
+    let leftdist = position.top + 500;
 
-    var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
+    let dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
       '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
       '<span id="ui-id-1" class="ui-dialog-title">Confirm Prescription</span>' +
       '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
@@ -353,7 +353,7 @@ $(document).ready(function () {
       '<input class="warning small" id="prescription-no" type="submit" name="yt0" value="No" onclick="goBack()">' +
       '</div>';
 
-    var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;">';
+    let blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;">';
 
 
     $(dialog_msg).prependTo("body");
@@ -378,8 +378,8 @@ function goBack() {
 
 // Add comments to item
 $('#prescription_items').on('click', '.js-add-comments', function () {
-  var $row = $(this).closest('tr');
-  var key = $row.attr('data-key');
+  let $row = $(this).closest('tr');
+  let key = $row.attr('data-key');
   $('#comments-' + key).show();
   autosize($('.js-input-comments'));
   $row.find('.js-add-comments').hide();
@@ -387,8 +387,8 @@ $('#prescription_items').on('click', '.js-add-comments', function () {
 });
 // Remove comments from item
 $('#prescription_items').on('click', '.js-remove-add-comments', function () {
-  var $row = $(this).closest('tr');
-  var key = $row.attr('data-key');
+  let $row = $(this).closest('tr');
+  let key = $row.attr('data-key');
   $('#comments-' + key).hide();
   $row.find('.js-add-comments').show();
   return false;

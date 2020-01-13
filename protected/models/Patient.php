@@ -1545,8 +1545,8 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
         $criteria->compare('specialty.code', 130);
 
-        $criteria->order = 'date asc';
-        $result =SecondaryDiagnosis::model()->findAll($criteria);
+        $criteria->order = 'date desc';
+        $result = SecondaryDiagnosis::model()->findAll($criteria);
         return $result;
     }
 

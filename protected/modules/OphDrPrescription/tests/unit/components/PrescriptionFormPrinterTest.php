@@ -9,6 +9,9 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         'sites' => Site::class,
         'ophdrprescription_items' => OphDrPrescription_Item::class,
         'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
+        'drug_duration' => DrugDuration::class,
+        'drug_route' => DrugRoute::class,
+        'drug_frequency' => DrugFrequency::class,
     );
 
     private $instance;
@@ -174,8 +177,8 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->instance->run();
         ob_end_clean();
 
-        // After output, ensure the page number has increased to 2.
-        $expected = 2;
+        // After output, ensure the page number has increased to 3.
+        $expected = 3;
         $this->assertEquals($expected, $this->instance->getPageNumber());
 
         // Before output, ensure the page number has been reset to 1.
