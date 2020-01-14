@@ -42,6 +42,7 @@ use PrescriptionCreator;
  */
 class MedicationManagement extends BaseMedicationElement
 {
+    use traits\CustomOrdering;
     public $do_not_save_entries = false;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';

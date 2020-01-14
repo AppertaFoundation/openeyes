@@ -1436,6 +1436,29 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function savecomplexAttributes_MedicationManagement($element, $data, $index)
+    {
+        $data = $data['OEModule_OphCiExamination_models_MedicationManagement'];
+
+        if (!is_null($element->prescription_id) && isset($data['prescription_reason'])) {
+            $reason_other = \OphDrPrescriptionEditReasons::model()->find('caption=:caption', [':caption' => 'Other, please specify:']);
+            if ($reason_other) {
+                $reason_other_id = $reason_other->id ?: null;
+            }
+
+            $prescription = $element->prescription;
+            if ($data['prescription_reason'] === $reason_other_id) {
+                $prescription->edit_reason_id = $data['prescription_reason'];
+                $prescription->edit_reason_other .= ': ' .$data['reason_other'];
+            } else {
+                $prescription->edit_reason_id = $data['prescription_reason'];
+            }
+            if (!$prescription->save()) {
+                throw new \Exception("Error while saving prescription: ".print_r($prescription->getErrors(), true));
+            }
+        }
+    }
+
     /**
      * custom validation for virtual clinic referral.
      *
