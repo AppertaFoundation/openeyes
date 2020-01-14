@@ -29,6 +29,7 @@
     ); ?>
 
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+    <input type="hidden" class="js-search-data js-update-row-data js-medication-set-id" data-name="set_id" value="<?=$set->id;?>" />
     <div class="row divider flex-layout flex-top col-gap">
         <div class="cols-left">
             <table class="large">

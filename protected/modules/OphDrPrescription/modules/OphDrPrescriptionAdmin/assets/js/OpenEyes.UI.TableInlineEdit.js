@@ -29,7 +29,6 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.hideGeneralControls($tr);
                 controller.showEditControls($tr, $tapers);
 
-
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
                 $.each(trs, function(i, tr) {
                     const $tr = $(tr);
@@ -116,6 +115,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
+    TableInlineEdit.prototype.applyToRows = function(callback) {
+        const controller = this;
+    };
+
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers)
     {
         const controller = this;
@@ -181,7 +184,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         let controller = this;
         let data = {};
         let json_tapers = {};
-const $actionsTd = $tr.find('td:last-child');
+        const $actionsTd = $tr.find('td:last-child');
 
         const tr_id = $tr.data('med_id');
         const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
@@ -232,20 +235,19 @@ const $actionsTd = $tr.find('td:last-child');
             'beforeSend': function() {
                 controller.hideEditControls($tr, $tapers);
 
-                const $spinner = '<div class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
+                const $spinner = '<div style="display:inline-block" class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
                 $actionsTd.append($spinner);
             },
             'success': function (resp) {
                 if (resp.success === true) {
-                    $actionsTd.append("<small style='color:red'>Saved.</small>");
+
                     controller.updateRowValuesAfterSave($tr);
                     if ($tapers !== undefined) {
-                        controller.updateRowValuesAfterSave($tapers);
+                        $.each($tapers, function (taperIndex, taper) {
+                            controller.updateIndividualRowValuesAfterSave($(taper));
+                        });
                     }
-                    setTimeout(() => {
-                        $actionsTd.find('small').remove();
-                        controller.showGeneralControls($tr);
-                    }, 2000);
+                    controller.showGeneralControls($tr);
                 }
             },
             'error': function(resp){
@@ -300,7 +302,6 @@ const $actionsTd = $tr.find('td:last-child');
                     new OpenEyes.UI.Dialog.Alert({
                         content: content
                     }).open();
-
                 }
             }
         });
@@ -319,7 +320,6 @@ const $actionsTd = $tr.find('td:last-child');
     TableInlineEdit.prototype.updateIndividualRowValuesAfterSave = function($tr) {
         const controller = this;
         $.each($tr.find('.js-input-wrapper'), function(i, wrapper) {
-            console.log($(wrapper));
             controller.setInputState($(wrapper), 'show', true);
         });
     };

@@ -55,7 +55,7 @@ class MedicationSetAutoRuleMedicationTaper extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('medication_set_auto_rule_id, frequency_id, duration_id', 'required'),
-            array('medication_set_auto_rule_id, frequency_id', 'numerical', 'integerOnly'=>true),
+            array('frequency_id', 'numerical', 'integerOnly'=>true),
             array('dose', 'numerical'),
             array('duration_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),
@@ -75,7 +75,7 @@ class MedicationSetAutoRuleMedicationTaper extends BaseActiveRecordVersioned
         return array(
             'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
             'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
-            'medication_set_auto_rule_id' => array(self::BELONGS_TO, MedicationSetAutoRuleMedication::class, 'medication_set_auto_rule_id'),
+            'medicationSetAutoRule' => array(self::BELONGS_TO, MedicationSetAutoRuleMedication::class, 'medication_set_auto_rule_id'),
             'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
         );

@@ -201,7 +201,7 @@ class AutoSetRuleController extends BaseAdminController
             $criteria->addSearchCondition('preferred_term', trim($filters['query']));
         }
 
-        $data_provider = new CActiveDataProvider('MedicationSetItem', [
+        $data_provider = new CActiveDataProvider('MedicationSetAutoRuleMedication', [
             'criteria' => $criteria,
         ]);
 
@@ -347,6 +347,7 @@ class AutoSetRuleController extends BaseAdminController
                 $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
                 if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+
                     $item = \MedicationSetAutoRuleMedication::model()->findByPk($item_data['id']);
 
                     if ($item) {
@@ -361,6 +362,7 @@ class AutoSetRuleController extends BaseAdminController
 
                         $item->tapers = array();
 
+
                         if ($tapers) {
                             $taper_array = array();
                             foreach ($tapers as $taper) {
@@ -369,7 +371,7 @@ class AutoSetRuleController extends BaseAdminController
                                 if (isset($taper['MedicationSetAutoRuleMedicationTaper[id]']) && $taper['MedicationSetAutoRuleMedicationTaper[id]'] !== "") {
                                     $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['MedicationSetAutoRuleMedicationTaper[id]']);
                                 }
-                                $new_taper->medication_set_auto_rule_id = $item_data['id'];
+                                $new_taper->medication_set_auto_rule_id = $item->id;
                                 $new_taper->dose = $taper['MedicationSetAutoRuleMedicationTaper[dose]'];
                                 $new_taper->duration_id = $taper['MedicationSetAutoRuleMedicationTaper[duration_id]'];
                                 $new_taper->frequency_id = $taper['MedicationSetAutoRuleMedicationTaper[frequency_id]'];
@@ -378,25 +380,41 @@ class AutoSetRuleController extends BaseAdminController
                             $item->tapers = $taper_array;
                         }
 
-                        $result['success'] = (bool)$item->save();
-                        $result['errors'] = $item->getErrors();
+                        // auto relation update throws an error
+                        try {
+                            $result['success'] = $item->save();
+                        } catch (Exception $e) {
+                            $result['success'] = false;
+
+                            //interesting behaviour, after $item->save() fails the original relation is restored
+                            if ($tapers) {
+                                $item->tapers = $taper_array;
+                            }
+                        }
+
+                        $result['errors'] = [];
                         foreach ($item->tapers as $taper) {
-                            if ($taper->hasErrors()) {
-                                $result['errors'][] = $taper->getErrors();
+
+                            if (!$taper->validate() && $taper->hasErrors()) {
+                                foreach ($taper->getErrors() as $key => $error) {
+                                    $result['errors'][$taper->id] = $error[0];
+                                }
                             }
                         }
 
                         if ($result['success'] === true) {
-                                $transaction->commit();
+                            $transaction->commit();
                         } else {
                             $transaction->rollback();
                         }
                     }
+                } else {
+                    $result['errorsMessage'] = 'Missing required parameters.';
                 }
             }
         } catch (Exception $e) {
                 $transaction->rollback();
-                $result['errors'] = $e->getMessage();
+                $result['errorsMessage'] = $e->getMessage();
         } finally {
             echo \CJSON::encode($result);
             \Yii::app()->end();
@@ -496,7 +514,7 @@ class AutoSetRuleController extends BaseAdminController
                 }
             } else {
                 $result['msg'][] = !$set_id ? 'Set id is required. ' : '';
-                $result['msg'][] += ($set_id && !$set) ? 'Set not found' : '';
+                $result['msg'][] = ($set_id && !$set) ? 'Set not found' : '';
             }
         } else {
             $result['msg'][]= "Only POST request is supported";
@@ -510,11 +528,11 @@ class AutoSetRuleController extends BaseAdminController
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
-            $item = \Yii::app()->request->getParam('MedicationSetItem');
+            $item = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication');
 
             if (isset($item['id'])) {
-                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
-                $result['success'] = (bool)$affected_rows;
+                $med = \MedicationSetAutoRuleMedication::model()->findByPk($item['id']);
+                $result['success'] = $med->deleteWithTapers()->delete();
             } else {
                 $result['success'] = false;
                 $result['error'] = "Missing ID.";

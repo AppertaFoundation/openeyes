@@ -37,6 +37,7 @@
  */
 class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 {
+    private $delete_with_tapers = false;
     protected $auto_update_relations = true;
 
 	/**
@@ -61,6 +62,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
+            array('tapers', 'safe'), // auto update relation
 			array('id, medication_set_id, medication_id, include_parent, include_children, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
@@ -104,6 +106,21 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 			'created_date' => 'Created Date',
 		);
 	}
+
+    public function deleteWithTapers()
+    {
+        $this->delete_with_tapers = true;
+        return $this;
+    }
+
+    public function beforeDelete()
+    {
+        if ($this->delete_with_tapers === true) {
+            MedicationSetAutoRuleMedicationTaper::model()->deleteAllByAttributes(['medication_set_auto_rule_id' => $this->id]);
+        }
+
+        return parent::beforeDelete();
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

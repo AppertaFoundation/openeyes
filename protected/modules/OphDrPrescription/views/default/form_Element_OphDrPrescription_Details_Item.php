@@ -149,7 +149,7 @@ $dispense_condition_options = array(
 
 <?php foreach ($item->tapers as $count => $taper) : ?>
     <tr data-key="<?= $key ?>" data-taper="<?= $count ?>"
-        class="prescription-tapier <?= ($key % 2) ? 'odd' : 'even'; ?>">
+        class="prescription-taper <?= ($key % 2) ? 'odd' : 'even'; ?>">
         <td></td>
         <td>
             <i class="oe-i child-arrow small no-click pad"></i>
