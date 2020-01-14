@@ -131,7 +131,7 @@ $dispense_condition_options = array(
                   . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                   . ") or id='" . $item->dispense_condition_id . "'",
                 'order' => 'display_order',
-          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)) ?>
+            )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)) ?>
 
     </td>
     <td>
