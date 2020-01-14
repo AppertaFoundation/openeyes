@@ -34,6 +34,7 @@ use Yii;
  */
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 

@@ -56,24 +56,17 @@
 
             <?php foreach ($document_targets as $row_index => $target) :?>
                 <tr class="valign-top rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
-                    <td> 
+                    <td>
                         <?php echo $target->ToCc; ?>
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
                         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
                     </td>
-                                    <td>
-                                        <?php if ($element->draft) : ?>
-                                            <?php
-                                            $contact_type = strtoupper($target->contact_type);
-                                            $contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
-                                            $contact_nick_name = null;
-                                            if ($contact_type === 'GP') {
-                                                if (isset($element['event']['episode']['patient']['gp']['contact'])) {
-                                                    $contact_nick_name = $element['event']['episode']['patient']['gp']['contact']->nick_name;
-                                                }
-                                            } else {
-                                                $contact_nick_name = $element['event']['episode']['patient']['contact']->nick_name;
-                                            }
+									<td>
+										<?php if($element->draft): ?>
+											<?php
+											$contact_type = strtoupper($target->contact_type);
+											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
+                                            $contact_nick_name = $contact_type === 'GP' ? (isset($element['event']['episode']['patient']['gp']) ? $element['event']['episode']['patient']['gp']['contact']->nick_name : '') : $element['event']['episode']['patient']['contact']->nick_name;
 
                                             $this->renderPartial('//docman/table/contact_name_type', array(
                                                 'address_targets' => $element->address_targets,

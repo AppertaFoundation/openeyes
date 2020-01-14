@@ -119,7 +119,7 @@ if (isset($model)) {
                         'procedure',
                         null,
                         CHtml::listData(
-                            Procedure::model()->findAll(),
+                            Procedure::model()->findAll(['order' => 'term asc']),
                             'id',
                             'term',
                             'procedure.term'

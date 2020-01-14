@@ -139,7 +139,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
                 $value = $this->predicted_refraction;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
-                } elseif ($value < -10 || $value > 40) {
+                } elseif ($value < -30 || $value > 30) {
                     $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
                 }
             }

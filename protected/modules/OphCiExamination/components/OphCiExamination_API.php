@@ -1544,6 +1544,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements
@@ -2598,6 +2602,52 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Get required pupillary abnormalities
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAbnormalities(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationPupillaryAbnormalitySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $abnormality_entry) {
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
+                    if ($abnormality && $abnormality->id) {
+                        $required[$abnormality->id] = $abnormality;
+                    }
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
      * Returns the required Disorders (Systemic Diagnoses)
      *
      * @param Patient $patient
@@ -2987,7 +3037,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
-            return "(no current eye medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current eye medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
@@ -3007,7 +3065,7 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) : ?>
-                    <?php $tapers = \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers; ?>
+                    <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
                     <tr>
                         <td><?= $entry->getMedicationDisplay() ?></td>
                         <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
@@ -3020,9 +3078,22 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
                     </tr>
-                    <?php foreach ($tapers as $taper) : ?>
+                    <?php
+                                        $taper_date = $entry->end_date;
+                    foreach ($tapers as $taper) :
+                        if ($taper->duration) {
+                            if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                $taper_display_date = $taper->duration->name;
+                            } else if ($taper_date) {
+                                $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                            } else {
+                                $taper_display_date = 'Ongoing';
+                            }
+                        }
+                        ?>
                         <tr>
                             <td>
                                 <div class="oe-i child-arrow small no-click"></div>
@@ -3035,7 +3106,7 @@ class OphCiExamination_API extends \BaseAPI
                                 <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
                             </td>
                             <td>
-                                <?= $taper->duration ? $taper->duration->name : '' ?>
+                                <?= $taper_display_date ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -3068,7 +3139,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
-            return "(no current systemic medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current systemic medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
@@ -3087,14 +3166,43 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
             <?php foreach ($current_systemic_meds as $entry) : ?>
+                            <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers : []; ?>
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
                     <td>
                         <?= $entry->frequency ? $entry->frequency : ''; ?>
                     </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
                 </tr>
+                            <?php
+                            $taper_date = $entry->end_date;
+                            foreach ($tapers as $taper) :
+                                if ($taper->duration) {
+                                    if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                                    $taper_display_date = $taper->duration->name;
+                                    } else if ($taper_date) {
+                                                    $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                                    $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                                    } else {
+                                                    $taper_display_date = 'Ongoing';
+                                    }
+                                }
+                                ?>
+                                    <tr>
+                                            <td>
+                                                    <div class="oe-i child-arrow small no-click"></div>
+                                                    <i> then</i>
+                                            </td>
+                                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                                            <td>
+                                                    <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                            </td>
+                                            <td>
+                                                    <?= $taper_display_date ?>
+                                            </td>
+                                    </tr>
+                            <?php endforeach; ?>
             <?php endforeach; ?>
             </tbody>
         </table>

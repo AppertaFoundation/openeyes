@@ -245,42 +245,55 @@
                 plusOrMinusHalf = 0,
                 plusOrMinusOnePercent = 0,
                 plusOrMinusHalfPercent = 0,
-                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0];
+                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0],
+                reading = 0,
+                rowTotal = 0,
+                xaxis_max_val = 40,
+                step = 2.5;
+            if(data){
 
-            for(var i = 0; i < data.length; i++){
-                total += parseInt(data[i][1], 10);                              
-                
-                // 18 and 22 are the indexes of the -1 and +1 columns
-                if(data[i][0] < 18 || data[i][0] > 22){
-                    plusOrMinusOne += parseFloat(data[i][1], 10);
+                for(var i = 0; i < data.length; i++){
+                    rowTotal = data[i]['rowTotal'];
+                    total += parseInt(rowTotal, 10);                              
+                    reading = data[i]['reading'];
+
+                    if(reading < -1 || reading > 1){
+                        plusOrMinusOne += parseFloat(rowTotal, 10);
+                    }
+                    
+                    if(reading < -0.5 || reading > 0.5){
+                        plusOrMinusHalf += parseFloat(rowTotal, 10);
+                    }
                 }
                 
-                // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-                if(data[i][0] < 19 || data[i][0] > 21){
-                    plusOrMinusHalf += parseFloat(data[i][1], 10);
-                }
+                plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
+                plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
+
+                chart.data[0]['x'] = data.map(function (item) {
+                  return item['reading'];
+                });
+                chart.data[0]['y'] = data.map(function (item) {
+                  return item['rowTotal'];
+                });
+                chart.data[0]['customdata'] = data.map(function (item) {
+                    return item['eventList'];
+                });
+                chart.data[0]['hovertext'] = data.map(function (item) {
+                  return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
+                    item['reading'] +
+                    '<br><i>Num Eyes:</i> '+ item['rowTotal'];
+                });
+                // calculate xaxis range and step
+                var temp = Math.abs(Math.min.apply(Math, data.map(function(o){ return o['reading']})));
+                xaxis_max_val = Math.abs(Math.max.apply(Math, data.map(function(o){ return o['reading']})));
+                xaxis_max_val = temp > xaxis_max_val ? temp : xaxis_max_val;
+                step = xaxis_max_val > 10 ? Math.ceil((xaxis_max_val * 2 / 40) * 2) / 2 : 0.5;
             }
-            
-            plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
-            plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
+            chart.layout['xaxis']['range'] = [-xaxis_max_val - step, xaxis_max_val + step];
+            chart.layout['xaxis']['dtick'] = step;
             chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
-              '<sub>Total eyes: ' + total +
-              ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
-            chart.data[0]['x'] = data.map(function (item) {
-              return item[0];
-            });
-            chart.data[0]['y'] = data.map(function (item) {
-              return item[1];
-            });
-            chart.data[0]['customdata'] = data.map(function (item) {
-                return item[2];
-            });
-            chart.layout['yaxis']['range']=Math.max(...chart.data[0]['y']);
-            chart.data[0]['hovertext'] = data.map(function (item) {
-              return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
-                chart.layout['xaxis']['ticktext'][item[0]] +
-                '<br><i>Num Eyes:</i> '+ item[1];
-            });
+            '<sub>Total eyes: ' + total +
+            ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
             Plotly.redraw(chart);
         },
         'CataractComplicationsReport': function(data){

@@ -60,4 +60,16 @@
          'dispense_condition_id' => 5,
          // No comment
      ),
+     'prescription_item6' => array(
+         'id' => 6,
+         'prescription_id' => 1,
+         'drug_id' => 1,
+         'dose' => '10ml',
+         'route_id' => 1,
+         'frequency_id' => 1,
+         'duration_id' => 12,
+         'route_option_id' => 1,
+         'dispense_condition_id' => 5,
+         // No comment
+     ),
  );

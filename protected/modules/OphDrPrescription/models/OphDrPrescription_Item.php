@@ -35,11 +35,11 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
     private $fpten_line_usage = array();
 
-    // Maximum characters per line on FP10 form is roughly 38.
-    // Maximum characters per line on WP10 form is roughly 32.
+    // Maximum characters per line on FP10 form is roughly 31.
+    // Maximum characters per line on WP10 form is roughly 30.
     // Assuming the space left of the white margin can be used for printing, this could be expanded further.
-    const MAX_FPTEN_LINE_CHARS = 38;
-    const MAX_WPTEN_LINE_CHARS = 32;
+    const MAX_FPTEN_LINE_CHARS = 31;
+    const MAX_WPTEN_LINE_CHARS = 30;
 
     /**
      * Returns the static model of the specified AR class.
@@ -213,19 +213,21 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      * @return DateTime|null
      * @throws Exception
      */
-    public function stopDateFromDuration()
+    public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->duration->name, array('Other', 'Until review'))) {
+        if (in_array($this->duration->name, array('Other', 'Once', 'Until review'))) {
             return null;
         }
 
         $start_date = new DateTime($this->prescription->event->event_date);
         $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
-        foreach ($this->tapers as $taper) {
-            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
-                return null;
+        if ($include_tapers) {
+            foreach ($this->tapers as $taper) {
+                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                    return null;
+                }
+                $end_date->add(DateInterval::createFromDateString($taper->duration->name));
             }
-            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
         }
         return $end_date;
     }
@@ -297,12 +299,16 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     public function fpTenFrequency()
     {
-        return "Frequency: {$this->frequency->long_name} for {$this->duration->name}";
+        if (preg_match("/^\d+/", $this->duration->name)) {
+            return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' FOR ' . strtoupper($this->duration->name);
+        }
+
+        return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' ' . strtoupper($this->duration->name);
     }
 
     public function fpTenDose()
     {
-        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->drug->dose_unit}" : $this->dose)
-            . ', ' . $this->route->name . ($this->route_option ? ' (' . $this->route_option->name . ')' : null);
+        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->drug->dose_unit) : strtoupper($this->dose))
+            . ', ' . strtoupper($this->route->name) . ($this->route_option ? ' (' . strtoupper($this->route_option->name) . ')' : null);
     }
 }

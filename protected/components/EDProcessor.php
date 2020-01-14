@@ -125,7 +125,9 @@ class EDProcessor
                 continue;
             }
 
-            $ed_json = json_decode($element->$attr);
+            $cleaned_attribute = htmlspecialchars_decode($element->$attr);
+            $ed_json = json_decode($cleaned_attribute);
+
             if (!is_array($ed_json)) {
                 throw new Exception("Could not parse {$attr} as json array {$element->$attr} on canvas {$canvas_mnemonic}");
             }
