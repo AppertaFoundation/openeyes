@@ -641,7 +641,7 @@ class DefaultController extends \BaseEventTypeController
 
         header('Content-type: application/json');
         // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
-        echo json_encode(array('id' => $disorder->id, 'name' => addslashes($disorder->term)));
+        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
         Yii::app()->end();
     }
 
@@ -1303,6 +1303,52 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Custom validation on Pupillary Abnormalities element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors){
+        $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
+        $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
+        $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+
+        $pupillary_abnormalities->eye_id = $data['eye_id'];
+
+        foreach (['left', 'right'] as $side) {
+            if (isset($data['entries_' . $side])) {
+                $entries = [];
+
+                foreach ($data['entries_' . $side] as $index => $value) {
+                    $entry = new models\PupillaryAbnormalityEntry();
+                    $entry->attributes = $value;
+                    $entries[] = $entry;
+                    if (!$entry->validate()) {
+                        $entryErrors = $entry->getErrors();
+                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                            foreach ($entryErrorMessages as $entryErrorMessage) {
+                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                            }
+                        }
+                    }
+                }
+                $pupillary_abnormalities->{'entries_' . $side} = $entries;
+            } else {
+                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                } else {
+                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * custom validation for virtual clinic referral.
      *
      * this should hand off validation to a faked PatientTicket request via the API.
@@ -1338,6 +1384,79 @@ class DefaultController extends \BaseEventTypeController
         $api = Yii::app()->moduleAPI->get('PatientTicketing');
         if (isset($data['patientticket_queue']) && $api) {
             $errors = $this->setAndValidatePatientTicketingFromData($data, $errors, $api);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses'])) {
+            $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
+            $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateOphthalmicDiagnosesFromData($data, $errors)
+    {
+        $et_name = models\Element_OphCiExamination_Diagnoses::model()->getElementTypeName();
+        $diagnoses = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses');
+              $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses']['entries'] : [];
+        $duplicate_exists = false;
+
+        $concat_occurrences = [];
+        foreach ($entries as $entry) {
+            if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
+                $eye_id =  \Eye::BOTH;
+            } else if (isset($entry['right_eye'])) {
+                $eye_id =  \Eye::RIGHT;
+            } else if (isset($entry['left_eye'])) {
+                $eye_id =  \Eye::LEFT;
+            } else {
+                            continue;
+            }
+
+            // create a string with concatenation of  the columns that must be unique
+            $concat_data = $eye_id.$entry['disorder_id'].$entry['date'];
+
+            // do not take into consideration rows that have an id associated as they are already in the database
+            if (isset($entry['id']) && $entry['id']) {
+                $concat_occurrences[] = $concat_data;
+                continue;
+            }
+
+            // search if the input is already present in the database
+            $not_already_exists = true;
+            if (isset($diagnoses->id)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('element_diagnoses_id=:element_diagnoses_id');
+                $criteria->addCondition('eye_id=:eye_id');
+                $criteria->addCondition('disorder_id=:disorder_id');
+                $criteria->addCondition('date=:date');
+
+                $criteria->params[":element_diagnoses_id"] = $diagnoses->id;
+                $criteria->params[":eye_id"] = $eye_id;
+                $criteria->params[":disorder_id"] = $entry['disorder_id'];
+                $criteria->params[":date"] = $entry['date'];
+
+                $count_saved_diagnosis = models\OphCiExamination_Diagnosis::model()->count($criteria);
+
+                // allow no more than one appearance in the database
+                $not_already_exists = $count_saved_diagnosis <= 1;
+            }
+
+            // if the concatenated info is not already present (neither on the screen nor in the database)
+            if ($not_already_exists && !in_array($concat_data, $concat_occurrences)) {
+                // add it to the known array
+                $concat_occurrences[] = $concat_data;
+            } else {
+                $duplicate_exists = true;
+            }
+        }
+
+        // if there is any duplicate, add error message
+        if ($duplicate_exists) {
+            $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combination of diagnosis, eye side and date must be unique.";
         }
 
         return $errors;

@@ -1,0 +1,269 @@
+/*
+ * Layout CSS classes for FP10/WP10 form.
+ */
+
+/*
+* Wrapping container for the entire FP10 form.
+* This has the initial margin from the top of the page, plus any requisite margins for the surrounds of the form.
+* It also contains the default font specifications.
+*/
+
+body {
+    margin: 0;
+}
+
+.fpten-container table, .wpten-container table {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.fpten-container td, .wpten-container td {
+    font-size: 7.5pt !important;
+    font-weight: bold !important;
+}
+
+.fpten-patient-details td, .wpten-container .wpten-patient-details td {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.fpten-patient-details tr:first-child td, .wpten-container .wpten-patient-details tr:first-child td {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.fpten-site td, .wpten-container .wpten-site td {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.fpten-container, .wpten-container {
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    font-size: 7.5pt;
+    padding: 3mm 0 0 3mm;
+    width: 105mm;
+}
+
+.fpten-container {
+    width: 105mm;
+}
+
+.fpten-form-row:before, .fpten-form-row:after {
+    display: table;
+    content: '';
+}
+
+.fpten-form-row:after{
+    clear: both;
+}
+
+.fpten-form-column {
+    display: table-cell;
+    float: left;
+}
+
+.fpten-registration-code {
+    font-size: 7.5pt;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 0;
+}
+
+/*Site box appears at the bottom toward the center.*/
+.fpten-site, .wpten-site {
+    text-align: left;
+    /*width: 50mm;*/
+    margin-left: 14mm;
+    padding-top: 2mm;
+    padding-left: 3mm;
+}
+
+.wpten-site-postcode {
+    white-space: nowrap;
+}
+
+.right .fpten-site {
+    margin-left: 9mm; !important;
+}
+
+.fpten-site {
+    width: 70mm;
+}
+
+.fpten-container td.fpten-site-code, .wpten-container td.fpten-site-code {
+    font-size: 12pt !important;
+    font-weight: bold !important;
+}
+
+/*Age box appears at the top toward the center.*/
+.fpten-age, .wpten-age {
+    padding-top: 5mm;
+    height: 13mm;
+    width: 19mm;
+    margin-left: 31mm;
+    line-height: 13mm;
+    text-align: center;
+}
+
+.fpten-age {
+    padding-top: 3mm;
+    height: 7mm;
+    line-height: 7mm;
+}
+
+/*DOB box appears directly below the Age box.*/
+.fpten-dob, .wpten-dob {
+    height: 13mm;
+    width: 19mm;
+    margin-left: 31mm;
+    text-align: center;
+    line-height: 13mm;
+}
+
+.fpten-dob {
+    height: 15mm;
+    padding-top: 3mm;
+    line-height: 15mm;
+}
+
+.right .wpten-age, .right .wpten-dob, .right .fpten-age, .right .fpten-dob {
+    margin-left: 27mm; !important;
+}
+
+/*Patient details box appears at the top right corner beside age and DOB.*/
+.fpten-patient-details, .wpten-patient-details {
+    text-align: left;
+    padding-top: 5mm;
+    padding-left: 2mm;
+    height: 16mm;
+    width: 50mm;
+}
+
+/*Postcode is right-aligned to the edge of the parent box.*/
+.fpten-patient-details {
+    width: 50mm;
+    height: 30mm;
+    padding-top: 3mm;
+}
+
+.wpten-nhs {
+    height: 5mm;
+    width: 50mm;
+    padding-top: 2mm;
+}
+
+.wpten-nhs-text {
+    float: right;
+    text-align: left;
+    padding-top: 2mm;
+}
+
+.fpten-postcode {
+    text-align: left;
+    float: right;
+}
+
+/*Prescriber initiative appears at top of main box in the center*/
+.fpten-prescriber {
+    height: 10mm;
+    width: 63mm;
+    margin-left: 21mm;
+    text-align: center;
+    font-size: 8pt;
+    line-height: 10mm;
+}
+
+.right .fpten-prescriber {
+    margin-left: 25mm; !important;
+}
+
+.wpten-prescriber {
+    height: 10mm;
+    text-align: center;
+    font-size: 8pt;
+    line-height: 5mm;
+}
+
+.fpten-prescriber-code {
+    font-size: 10pt;
+    height: 10mm;
+    width: 15mm;
+    line-height: 10mm;
+    text-align: center;
+    margin-right: 0;
+    float: right;
+}
+
+/*Appears beneath the prescriber.*/
+.fpten-prescription-list, .wpten-prescription-list {
+    padding-top: 1mm;
+    padding-right: 5mm;
+    height: 85mm;
+    width: 56mm;
+    overflow: hidden;
+    margin-left: 30mm;
+}
+
+.fpten-prescription-list {
+    height: 78mm;
+    width: 63mm;
+    margin-left: 21mm;
+}
+
+.right .fpten-prescription-list, .right .wpten-prescription-list {
+    margin-left: 25mm; !important;
+}
+
+.fpten-prescription-item {
+    padding-top: 2mm;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid;
+    text-align: right;
+}
+
+.fpten-prescription-list-filler {
+    text-align: center;
+    padding-top: 2mm;
+}
+
+/*Appears directly above the Trust code in the site box.*/
+.fpten-date, .wpten-date {
+    width: 35mm;
+    height: 12mm;
+    text-align: center;
+    margin-left: 70mm;
+    line-height: 12mm;
+}
+
+.fpten-date {
+    width: 28mm;
+    margin-left: 58mm;
+}
+
+.right .wpten-date {
+    margin-left: 65mm; !important;
+}
+
+.right .fpten-date {
+    margin-left: 53mm; !important;
+}
+
+.fpten-page-counter {
+    font-size: 7.5pt;
+    font-weight: bold;
+    text-align: right;
+    border-bottom: 1px solid;
+}
+
+.fpten-doctor-name {
+    font-size: 7.5pt;
+    font-weight: bold;
+    margin-left: 0;
+    width: 70%;
+}
+
+.end {
+    float: right !important;
+}
