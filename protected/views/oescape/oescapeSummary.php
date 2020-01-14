@@ -202,23 +202,24 @@ if (!empty($subspecialty)) { ?>
                             if(max>charts[i][eye_side]['layout']['xaxis']['range'][1])
                             max = new Date(charts[i][eye_side]['layout']['xaxis']['range'][1]);
                         }
-                        break;
+                    break;
                     
                         case "YTD": //don't bother here as we are using the current date
                             break;
 
                     // Reset Zoom
                     default:
-                    for (let i in chartData) {
-                        for (let x in chartData[i]['x']) {
-                            let value = chartData[i]['x'][x];
-                            if (min === null || value < min) {
-                                min = value;
-                            } else if (max === null || value > max) {
-                                max = value;
+                        for (let i in chartData) {
+                            for (let x in chartData[i]['x']) {
+                                let value = chartData[i]['x'][x];
+                                if (min === null || value < min) {
+                                    min = value;
+                                } else if (max === null || value > max) {
+                                    max = value;
+                                }
                             }
                         }
-                    }
+                    break;
                 }
             });
 
@@ -248,6 +249,7 @@ if (!empty($subspecialty)) { ?>
                     // set the min and max to min and max
                     limits[eye_side].min = min;
                     limits[eye_side].max = max;
+                break;
             };
             //For each chart, resize to fit aforementioned range
             
