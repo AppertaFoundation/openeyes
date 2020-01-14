@@ -33,7 +33,11 @@ if (!empty($subspecialty)) { ?>
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
     <div id='oes-side-indicator' style="">
-      <button class="selected plot-display-label reset-zoom cols-2">Reset Zoom Level</button>
+      <button class="selected plot-display-label reset-zoom">Reset Zoom Level</button>
+      <button class="selected plot-display-label reset-zoom">1m</button>
+      <button class="selected plot-display-label reset-zoom">6m</button>
+      <button class="selected plot-display-label reset-zoom">1y</button>
+      <button class="selected plot-display-label reset-zoom">YTD</button>
       <h4 id='oes-side-indicator-left' class='cols-7' style="color:#fe6767;
       text-align: center;
       font-weight: 500;
@@ -121,7 +125,7 @@ if (!empty($subspecialty)) { ?>
                     if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
                     my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
                     //test max
-                    if(my_min_value>chart_list[i]['layout']['xaxis']['range'][1])
+                    if(my_max_value>chart_list[i]['layout']['xaxis']['range'][1])
                     my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
                 }
                 // set these ranges to the min and max values
@@ -146,7 +150,7 @@ if (!empty($subspecialty)) { ?>
 
   });
 
-  function resetChartZoom() {
+  function resetChartZoom(level ="reset") {
         let charts = [];
 
         //Check if charts exist to avoid operating on undefined elements
@@ -182,41 +186,89 @@ if (!empty($subspecialty)) { ?>
             Object.keys(charts).forEach(function(chart_key) {
                 let chartData = charts[chart_key][eye_side]['data'];
 
-                for (let i in chartData) {
-                    for (let x in chartData[i]['x']) {
-                        let value = chartData[i]['x'][x];
-                        if (min === null || value < min) {
-                            min = value;
-                        } else if (max === null || value > max) {
-                            max = value;
+                switch(level){
+                    case "1m": // 1 month intentionally flows down
+                    case "6m": // 6 month intentionally flows down
+                    case "1y":  // 1 year    
+                        // init locals
+                        min = new Date(-8640000000000000);
+                        max = new Date(8640000000000000);
+                        //set min max
+                        for (let i in charts){
+                            //test min
+                            if(min<charts[i][eye_side]['layout']['xaxis']['range'][0])
+                            min = new Date(charts[i][eye_side]['layout']['xaxis']['range'][0]);
+                            //test max
+                            if(max>charts[i][eye_side]['layout']['xaxis']['range'][1])
+                            max = new Date(charts[i][eye_side]['layout']['xaxis']['range'][1]);
+                        }
+                        break;
+                    
+                        case "YTD": //don't bother here as we are using the current date
+                            break;
+
+                    // Reset Zoom
+                    default:
+                    for (let i in chartData) {
+                        for (let x in chartData[i]['x']) {
+                            let value = chartData[i]['x'][x];
+                            if (min === null || value < min) {
+                                min = value;
+                            } else if (max === null || value > max) {
+                                max = value;
+                            }
                         }
                     }
                 }
             });
 
-            limits[eye_side].min = min;
-            limits[eye_side].max = max;
+            let temp = new Date(max);  
+            switch(level){
+                case "YTD": //Year to current date
+                    temp = new Date();        
+                    limits[eye_side].max = new Date(temp);
+                    limits[eye_side].min = new Date( temp.setYear(temp.getFullYear()-1));
+                break;  
+                  
+                case "1y":   // 1 year                       
+                    limits[eye_side].max = new Date(temp);
+                    limits[eye_side].min = new Date( temp.setYear(temp.getFullYear()-1));
+                break;
 
+                case "1m":   // 1 month              
+                    limits[eye_side].max = new Date(temp);
+                    limits[eye_side].min = new Date( temp.setMonth(temp.getMonth()-1));
+                break;
+                case "6m":   // 6 month                      
+                    limits[eye_side].max = new Date(temp);
+                    limits[eye_side].min = new Date( temp.setMonth(temp.getMonth()-6));
+                break;
+                    
+                default:    //reset chart
+                    // set the min and max to min and max
+                    limits[eye_side].min = min;
+                    limits[eye_side].max = max;
+            };
             //For each chart, resize to fit aforementioned range
-            if (min !== max){
-                for(let key in charts){
+            
+            for(let key in charts){
 
-                    let updateParams = {
-                        'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
-                    };
+                let updateParams = {
+                    'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
+                };
 
-                    if (key==='IOP'){
-                        //set the iop target line
-                        let index = charts[key][eye_side].layout.shapes.length-1;
-                        if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
-                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-                            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
-                        }
+                if (key==='IOP'){
+                    //set the iop target line
+                    let index = charts[key][eye_side].layout.shapes.length-1;
+                    if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                        Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                        Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                        Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
                     }
-                    Plotly.relayout(charts[key][eye_side], updateParams);
                 }
+                Plotly.relayout(charts[key][eye_side], updateParams);
             }
+            
 
         });
     }
@@ -227,7 +279,7 @@ if (!empty($subspecialty)) { ?>
   Array.prototype.forEach.call(els, function(el) {
     // for each reset button
     el.addEventListener('click', function () {
-            resetChartZoom();
+            resetChartZoom(this.textContent);
     })
   });
 </script>
