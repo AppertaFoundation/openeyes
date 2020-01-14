@@ -92,8 +92,22 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     protected function queryData($surgeon, $dateFrom, $dateTo, $months = 0, $procedures = array())
     {
         $this->getExaminationEvent();
-//The variable below contains a prtial SQl command that searches for whether an IOL has been inserted during an operation by searching for keywords search as PCIOl in the eyedraw canvas - OE-9419
-        $iol_classes = implode("OR", array_map(function($iol_class) { return " et_ophtroperationnote_cataract.eyedraw LIKE '%".$iol_class."%' "; }, \Yii::app()->params['eyedraw_iol_classes']));
+        $iol_binds = array();
+        // The variable below contains a prtial SQl command that searches for whether an IOL has been inserted during an operation by searching for keywords search as PCIOl in the eyedraw canvas - OE-9419
+        $iol_classes = '('. implode(
+            'OR',
+            array_map(
+                function ($iol_class) {
+                    return " et_ophtroperationnote_cataract.eyedraw LIKE CONCAT('%', :".$iol_class.", '%') ";
+                },
+                \Yii::app()->params['eyedraw_iol_classes']
+            )
+        ) . ')';
+
+        foreach (\Yii::app()->params['eyedraw_iol_classes'] as $iol_class) {
+            $iol_binds[$iol_class] = $iol_class;
+        }
+
         $this->command
             ->select('
                   post_examination.episode_id
@@ -122,11 +136,12 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
                AND post_examination.created_date > note_event.created_date',
                 array(
                     'examination' => $this->examinationEvent['id'],
-                    )
+                )
             )
             ->join('et_ophciexamination_refraction', 'post_examination.id = et_ophciexamination_refraction.event_id')
             ->join('et_ophtroperationnote_cataract', 'note_event.id = et_ophtroperationnote_cataract.event_id')
-            ->where('post_examination.deleted <> 1 and note_event.deleted <> 1 AND '.$iol_classes)
+            ->where('post_examination.deleted <> 1 and note_event.deleted <> 1')
+            ->andWhere($iol_classes, $iol_binds)
             ->group('note_event.id, op_procedure.eye_id')
             ->order('post_exam_date desc');
 

@@ -1,6 +1,6 @@
 var analytics_cataract = (function () {
 	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 100;
-	var throttleTIme = analytics_toolbox.getThrottleTime() || 1000;
+	var throttleTime = analytics_toolbox.getThrottleTime() || 1000;
 	var dict = {
 		'/report/ajaxReport?report=PcrRisk&template=analytics': [
 			'PcrRiskReport',
