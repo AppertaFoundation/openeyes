@@ -190,6 +190,7 @@ $element_errors = $element->getErrors();
                     }
                 });
             }
+            delete window.MMController;
         });
 
         window.MMController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
