@@ -498,16 +498,13 @@
         if (shouldClose) {
             if (dialog.options.deselectOnReturn) {
                 let itemSets = dialog.popup.find('ul');
-                itemSets.each(function () {
-                    let deselect = $(dialog).data('deselectonreturn');
+                itemSets.each(function (itemSet) {
+                    let deselect = $(itemSet).data('deselectonreturn');
                     if (typeof deselect === "undefined" || deselect) {
-                        $(dialog).find('li').removeClass('selected');
+                        $(itemSet).find('li').removeClass('selected');
                     }
                 });
             }
-
-            // deselect options when closing the adderDialog
-            dialog.popup.find('.selected').removeClass('selected');
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
