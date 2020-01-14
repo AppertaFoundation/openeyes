@@ -44,7 +44,7 @@ sudo apt-get update && sudo apt-get install default-jdk -y
 [ -d "$MODULEROOT/${module}" ] && echo "using existing ${module} files" || git -C $MODULEROOT clone ${basestring}/${module}.git $module
 
 # Copy DICOM related files in place as required
-if [[ `lsb_release -rs` == "14.04" ]]; then
+if [[ $(lsb_release -rs) == "14.04" ]]; then
     # Ubuntu 14.04 uses upstart / init.d
     sudo cp -f $SCRIPTDIR/dicom-file-watcher.conf /etc/init/
 else

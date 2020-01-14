@@ -176,7 +176,8 @@ class User extends BaseActiveRecordVersioned
                 'firm_id',
                 'through' => 'firm_preferences',
                 'order' => 'firm_preferences.position DESC',
-                'limit' => 6,
+                'limit' => (string)SettingMetadata::model()->getSetting('recent_context_firm_limit'), //Method to get recent_context_firm_limit from setting_installation (default is 6)
+                'group' => 'user_id, firm_id',
             ),
             'firmSelections' => array(
                 self::MANY_MANY,
@@ -404,6 +405,14 @@ class User extends BaseActiveRecordVersioned
     public function getFullNameAndTitle()
     {
         return implode(' ', array($this->title, $this->first_name, $this->last_name));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstInitialFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
     }
 
     /**
