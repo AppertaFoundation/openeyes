@@ -90,6 +90,7 @@
                 <thead>
                 <tr>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
+                    <th class="drill_down_patient_list text-left" style="vertical-align: center;">NHS No</th>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
                     <th class="text-left" style="vertical-align: center;">DOB</th>
                     <th class="text-left" style="vertical-align: center;">Age</th>
