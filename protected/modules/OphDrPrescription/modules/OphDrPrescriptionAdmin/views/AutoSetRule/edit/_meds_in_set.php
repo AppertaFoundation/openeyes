@@ -298,7 +298,7 @@ if ($is_prescription_set) {
             const $table = $(drugSetController.options.tableSelector + ' tbody');
             selectedItems.forEach(item => {
 
-                //how nice...
+                //how nice that filter is coming back as a selected item
                 if (item.label && item.label === 'Include branded drugs in search results') {
                     return;
                 }

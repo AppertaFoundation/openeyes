@@ -115,10 +115,6 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.applyToRows = function(callback) {
-        const controller = this;
-    };
-
     TableInlineEdit.prototype.showEditFields = function($tr, $tapers)
     {
         const controller = this;
