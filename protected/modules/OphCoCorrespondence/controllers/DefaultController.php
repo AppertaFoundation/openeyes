@@ -896,14 +896,32 @@ class DefaultController extends BaseEventTypeController
                 $tplidx = $this->pdf_output->ImportPage($i);
                 $this->pdf_output->useTemplate($tplidx);
             }
-        } else {
+
+
+            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+            //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
+            //this throws an error if GP or Patient not found in Internal referral
+
+            /**
+             * awaiting for requirements... ...
+             */
+
+            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
+                if( !$gp_found || !$patient_found ){
+                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
+                }
+            }*/
+
+            return $errors;
+
+        }  else {
             $this->pdf_output->AddPage('P');
             $this->pdf_output->SetFont('Arial', 'B', 16);
             $this->pdf_output->SetY(($this->pdf_output->GetPageHeight() / 2) - 10);
             $this->pdf_output->Cell(0, 10, 'Attachment unavailable -', 0, 2, 'C');
             $this->pdf_output->Cell(0, 10, 'please try re-printing the event to re-generate attachments', 0, 2, 'C');
         }
-
     }
 
 		protected function verifyActionAccess(CAction $action)
