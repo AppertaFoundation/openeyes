@@ -10,9 +10,9 @@ class m200115_001547_add_nhs_hos_num_label_short extends CDbMigration
             'name' => 'NHS Number short label',
             'default_value' => 'NHS'
             )
-		);
-		
-		$this->insert('setting_metadata', array('element_type_id' => null,
+        );
+        
+        $this->insert('setting_metadata', array('element_type_id' => null,
             'field_type_id' => 4,
             'key' => 'hos_num_label_short',
             'name' => 'Hospital Number short label',
