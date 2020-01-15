@@ -347,7 +347,6 @@ class AutoSetRuleController extends BaseAdminController
                 $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
                 if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
-
                     $item = \MedicationSetAutoRuleMedication::model()->findByPk($item_data['id']);
 
                     if ($item) {
@@ -394,7 +393,6 @@ class AutoSetRuleController extends BaseAdminController
 
                         $result['errors'] = [];
                         foreach ($item->tapers as $taper) {
-
                             if (!$taper->validate() && $taper->hasErrors()) {
                                 foreach ($taper->getErrors() as $key => $error) {
                                     $result['errors'][$taper->id] = $error[0];
