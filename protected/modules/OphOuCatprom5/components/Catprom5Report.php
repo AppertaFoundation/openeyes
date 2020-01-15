@@ -346,7 +346,7 @@ class Catprom5Report extends \Report implements \ReportInterface
               return $item['ids'];
           }, array_values($dataset)),
           'hovertext' => array_map(function ($item, $item2) {
-            return '<b>Catprom5</b><br><i>Diff Post: </i>'. $item .
+            return '<b>Catprom5</b><br><i>Score: </i>'. $item .
             '<br><i>Num results:</i> '. $item2['count'];
           }, $temp, $dataset),
           'hoverinfo' => 'text',
