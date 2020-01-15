@@ -140,12 +140,12 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#date-start').change(function() {
+	$('#date-start').on('pickmeup-change change', function() {
 		setDiaryFilter({'date-start':$(this).val()});
 		$('#date-filter_3').attr('checked','checked');
 	});
 
-	$('#date-end').change(function() {
+	$('#date-end').on('pickmeup-change change', function() {
 		setDiaryFilter({'date-end':$(this).val()});
 		$('#date-filter_3').attr('checked','checked');
 	});
@@ -461,6 +461,19 @@ $(document).ready(function() {
 			instance.disable();
 		}
 	});
+
+	pickmeup('#date-start', {
+		format: 'Y-m-d',
+		hide_on_select: true,
+		date: $('#date-start').val()
+	});
+	pickmeup('#date-end', {
+		format: 'Y-m-d',
+		hide_on_select: true,
+		date: $('#date-end').val()
+	});
+
+	return getDiary();
 });
 
 function getDiary() {
