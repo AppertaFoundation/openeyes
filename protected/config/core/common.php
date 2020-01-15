@@ -608,9 +608,6 @@ return array(
         'Greek',
         'Italian'
       ),
-        //        Parameter for short labels in patient panel, or anywhere real estate is at a premium
-        'nhs_num_label_short' => 'NHS',
-        'hos_num_label_short' => 'ID',
         'gender_short' => 'Gen',
 //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
         'add_patient_fields' => [ 'title' => '',
