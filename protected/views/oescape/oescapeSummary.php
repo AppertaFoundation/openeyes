@@ -202,10 +202,10 @@ if (!empty($subspecialty)) { ?>
                             if(max>charts[i][eye_side]['layout']['xaxis']['range'][1])
                             max = new Date(charts[i][eye_side]['layout']['xaxis']['range'][1]);
                         }
-                    break;
+                        break;
                     
-                        case "YTD": //don't bother here as we are using the current date
-                            break;
+                    case "YTD": //don't bother here as we are using the current date
+                        break;
 
                     // Reset Zoom
                     default:
@@ -219,7 +219,7 @@ if (!empty($subspecialty)) { ?>
                                 }
                             }
                         }
-                    break;
+                        break;
                 }
             });
 
@@ -229,27 +229,28 @@ if (!empty($subspecialty)) { ?>
                     temp = new Date();        
                     limits[eye_side].max = new Date(temp);
                     limits[eye_side].min = new Date( temp.setYear(temp.getFullYear()-1));
-                break;  
+                    break;
                   
                 case "1y":   // 1 year                       
                     limits[eye_side].max = new Date(temp);
                     limits[eye_side].min = new Date( temp.setYear(temp.getFullYear()-1));
-                break;
+                    break;
 
                 case "1m":   // 1 month              
                     limits[eye_side].max = new Date(temp);
                     limits[eye_side].min = new Date( temp.setMonth(temp.getMonth()-1));
-                break;
+                    break;
+
                 case "6m":   // 6 month                      
                     limits[eye_side].max = new Date(temp);
                     limits[eye_side].min = new Date( temp.setMonth(temp.getMonth()-6));
-                break;
+                    break;
                     
                 default:    //reset chart
                     // set the min and max to min and max
                     limits[eye_side].min = min;
                     limits[eye_side].max = max;
-                break;
+                    break;
             };
             //For each chart, resize to fit aforementioned range
             
