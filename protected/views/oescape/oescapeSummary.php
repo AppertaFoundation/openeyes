@@ -139,41 +139,47 @@ if (!empty($subspecialty)) { ?>
 
         $('.rangeslider-container').on('mouseenter mouseover', function (slider) {
             let parent_chart = $(this).parents('.js-plotly-plot')[0];
-            let eye_side = $(parent_chart).attr('data-eye-side');
             let current_range = parent_chart['layout']['xaxis']['range'];
 
-            let chart_list = $('.plotly-'+eye_side);
-            for(let i = 0; i < chart_list.length; i++) {
-                Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
-            }
+            let chart_list  = getOEscapeCharts();
+              
+            ['right', 'left'].forEach(function(eye_side)  {
+                Object.keys(chart_list).forEach(function(chart_key) {
+                    Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
+                })
+            })
         });
 
   });
 
-  function resetChartZoom(level ="reset") {
-        let charts = [];
+  function getOEscapeCharts(){
+    let charts = [];
+    //Check if charts exist to avoid operating on undefined elements
+    if($('.plotly-VA').length) {
+        charts['VA'] = [];
+        charts['VA']['right'] = $('.plotly-VA')[0];
+        charts['VA']['left'] = $('.plotly-VA')[1];
+    }
+    if($('.plotly-Meds').length) {
+        charts['Med'] = [];
+        charts['Med']['right'] = $('.plotly-Meds')[0];
+        charts['Med']['left'] = $('.plotly-Meds')[1];
+    }
+    if($('.plotly-MR').length) {
+        charts['MR'] = [];
+        charts['MR']['right'] = $('.plotly-MR')[0];
+        charts['MR']['left'] = $('.plotly-MR')[1];
+    }
+    if($('.plotly-IOP').length) {
+        charts['IOP'] = [];
+        charts['IOP']['right'] = $('.plotly-IOP')[0];
+        charts['IOP']['left'] = $('.plotly-IOP')[1];
+    }
+    return charts;
+  }
 
-        //Check if charts exist to avoid operating on undefined elements
-        if($('.plotly-VA').length) {
-            charts['VA'] = [];
-            charts['VA']['right'] = $('.plotly-VA')[0];
-            charts['VA']['left'] = $('.plotly-VA')[1];
-        }
-        if($('.plotly-Meds').length) {
-            charts['Med'] = [];
-            charts['Med']['right'] = $('.plotly-Meds')[0];
-            charts['Med']['left'] = $('.plotly-Meds')[1];
-        }
-        if($('.plotly-MR').length) {
-            charts['MR'] = [];
-            charts['MR']['right'] = $('.plotly-MR')[0];
-            charts['MR']['left'] = $('.plotly-MR')[1];
-        }
-        if($('.plotly-IOP').length) {
-            charts['IOP'] = [];
-            charts['IOP']['right'] = $('.plotly-IOP')[0];
-            charts['IOP']['left'] = $('.plotly-IOP')[1];
-        }
+  function resetChartZoom(level ="reset") {
+        let charts = getOEscapeCharts();
 
         let limits = {};
         ['right', 'left'].forEach(function(eye_side)  {
