@@ -1447,12 +1447,11 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $prescription = $element->prescription;
+            $prescription->edit_reason_id = $data['prescription_reason'];
             if ($data['prescription_reason'] === $reason_other_id) {
-                $prescription->edit_reason_id = $data['prescription_reason'];
                 $prescription->edit_reason_other .= ': ' .$data['reason_other'];
-            } else {
-                $prescription->edit_reason_id = $data['prescription_reason'];
             }
+
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: ".print_r($prescription->getErrors(), true));
             }
