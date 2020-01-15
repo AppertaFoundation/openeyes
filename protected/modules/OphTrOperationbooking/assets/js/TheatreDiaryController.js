@@ -89,10 +89,8 @@ $(document).ready(function() {
 			$('#date-start').val(format_pickmeup_date(returnDateWithInterval(new Date(sd), -7)));
 		}
 
-		setDiaryFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',true);
-		$('#date-start').trigger('change');
-		$('#date-end').trigger('change');
+		setDiaryFilter({'date-filter':'','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
+
 		return false;
 	});
 
@@ -118,10 +116,7 @@ $(document).ready(function() {
 			}
 		}
 
-		setDiaryFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',true);
-		$('#date-start').trigger('change');
-		$('#date-end').trigger('change');
+		setDiaryFilter({'date-filter':'','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
 		return false;
 	});
