@@ -80,7 +80,7 @@ if (!empty($subspecialty)) { ?>
   let max_value = new Date();
 
   $(document).ready(function () {
-    $('.js-oes-eyeside').data("data-side", "both").click();
+    $('.js-oes-eyeside[data-side="both"]').click();
 
     //Set chart zooms to initial value
     resetChartZoom();

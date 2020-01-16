@@ -98,6 +98,9 @@ $(document).ready(function () {
 				}
 				$('.plotly-right, .plotly-left').show(); //show both sides
 				$('.oes-right-side').css('padding', '20px 0 20px 0'); // fix right side padding css
+
+				// click the 50/50 split option
+				$('.js-oes-area-resize[data-area ="medium"]').click();
         break;
 
 			default:
