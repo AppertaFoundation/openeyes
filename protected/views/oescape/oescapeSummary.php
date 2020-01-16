@@ -80,75 +80,106 @@ if (!empty($subspecialty)) { ?>
   let max_value = new Date();
 
   $(document).ready(function () {
-        $('.js-oes-eyeside').data("data-side", "both").click();
+    $('.js-oes-eyeside').data("data-side", "both").click();
 
     //Set chart zooms to initial value
     resetChartZoom();
 
-        let charts = [];
-        charts['VA'] = [];
-        charts['VA']['right'] = $('.plotly-VA')[0];
-        charts['VA']['left'] = $('.plotly-VA')[1];
-
-        charts['Med'] = [];
-        charts['Med']['right'] = $('.plotly-Meds')[0];
-        charts['Med']['left'] = $('.plotly-Meds')[1];
-
-        charts['IOP'] = [];
-        charts['IOP']['right'] = $('.plotly-IOP')[0];
-        charts['IOP']['left'] = $('.plotly-IOP')[1];
-
-        //hide cursors in plot
+    let charts = getOEscapeCharts();
     ['right', 'left'].forEach(function (eye_side) {
       for(let key in charts){
         $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
       }
-      $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
     });
 
-        $('.plotly-right, .plotly-left').on('mouseenter mouseover', function (e) {
-            if($(this).hasClass('plotly-right')||$(this).hasClass('plotly-left')){
-                let eye_side = $('.js-oes-eyeside.selected').data('side');
-                let chart_list= [];
-                if(eye_side=='both') {
-                    chart_list = $('.plotly-left, .plotly-right');
-                }
-                else {
-                    chart_list = $('.plotly-' + eye_side);
-                }
-                // init locals
-                let my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
-                let my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
-                //set min max
-                for (let i=0; i < chart_list.length; i++){
-                    //test min
-                    if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
-                    my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
-                    //test max
-                    if(my_max_value>chart_list[i]['layout']['xaxis']['range'][1])
-                    my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
-                }
-                // set these ranges to the min and max values
-                let current_range = [my_min_value, my_max_value];
-                // end
-                for (let i=0; i < chart_list.length; i++){
-                    Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
-                }
+    $('.plotly-right, .plotly-left').on('mouseover', function (e) {
+        if($(this).hasClass('plotly-right')||$(this).hasClass('plotly-left')){
+            let eye_side = $('.js-oes-eyeside.selected').data('side');
+            let chart_list= [];
+            if(eye_side=='both') {
+                chart_list = $('.plotly-left, .plotly-right');
             }
-        });
+            else {
+                chart_list = $('.plotly-' + eye_side);
+            }
+            // init locals
+            let my_min_value = new Date(chart_list[0]['layout']['xaxis']['range'][0]);
+            let my_max_value = new Date(chart_list[0]['layout']['xaxis']['range'][1]);
+            //set min max
+            for (let i=0; i < chart_list.length; i++){
+                //test min
+                if(my_min_value<chart_list[i]['layout']['xaxis']['range'][0])
+                my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
+                //test max
+                if(my_max_value>chart_list[i]['layout']['xaxis']['range'][1])
+                my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
+            }
+            // set these ranges to the min and max values
+            let current_range = [my_min_value, my_max_value];
+            // end
+            for (let i=0; i < chart_list.length; i++){
+                Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+            }
+        };
+    });
 
-        $('.rangeslider-container').on('mouseenter mouseover', function (slider) {
-            let parent_chart = $(this).parents('.js-plotly-plot')[0];
-            let current_range = parent_chart['layout']['xaxis']['range'];
 
-            let chart_list  = getOEscapeCharts();
-              
-            ['right', 'left'].forEach(function(eye_side)  {
+    $('.plotly-right, .plotly-left').on('mousemove', function (e) {
+        let hoveredChart = this;
+        let chart_list  = getOEscapeCharts();
+        let currentHoverLayer = hoveredChart.getElementsByClassName("hoverlayer");   
+        let hoverLayer1 = this.querySelector(".hoverlayer");
+        
+        if(currentHoverLayer[0]!=undefined){
+            let spikeLines = currentHoverLayer[0].getElementsByTagName("line");
+            let syncList =[];
+            for(var i = 0; i < spikeLines.length; i++){
+                // console.log(spikeLines[i].attr('x1'));
+                let line = spikeLines[i];
+                let x1 = line.getAttribute('x1');
+                let x2 = line.getAttribute('x2');
+                if(x1==x2){
+                    line.setAttribute('y1','50');
+                    line.setAttribute('y2','700');
+                    syncList.push(line);
+                };
+            }
+
+            $.each(['right', 'left'], function(index,eye_side)  {
                 Object.keys(chart_list).forEach(function(chart_key) {
-                    Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
-                })
+                    
+                    //this hover layer
+                    let hoverLayer2 = chart_list[chart_key][eye_side].querySelector(".hoverlayer");                   
+                    // on any hover event, clone spikelines and put into myDiv2
+                    if (hoverLayer2!=hoverLayer1&&hoverLayer2!=null){               
+                       let lines = hoverLayer2.getElementsByTagName('line')
+                       for (let line of lines){
+                           line.remove();
+                       }
+                       //need to redeclare as we just cleared it.
+                       hoverLayer2 = chart_list[chart_key][eye_side].querySelector(".hoverlayer")
+                        for (let spike of syncList) {
+                            let clone = spike.cloneNode(true)
+                            hoverLayer2.appendChild(spike.cloneNode(true)); // true for cloning all children nodes
+                        }
+                    }
+                });
+            });
+        }
+    });
+
+    $('.rangeslider-container').on('mouseenter mouseover', function (slider) {
+        let parent_chart = $(this).parents('.js-plotly-plot')[0];
+        let current_range = parent_chart['layout']['xaxis']['range'];
+
+        let chart_list  = getOEscapeCharts();
+            
+        $.each(['right', 'left'], function(index,eye_side)  {
+            Object.keys(chart_list).forEach(function(chart_key) {
+                Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
             })
-        });
+        })
+    });
 
   });
 
