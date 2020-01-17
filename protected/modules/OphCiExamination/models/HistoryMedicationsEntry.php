@@ -67,7 +67,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function tableName()
     {
-        return 'ophciexamination_history_medications_entry';
+        return 'archive_ophciexamination_history_medications_entry';
     }
 
     /**
