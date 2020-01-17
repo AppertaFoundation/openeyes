@@ -200,7 +200,7 @@ $stop_fields_validation_error = array_intersect(
 
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
+                <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
                     ?> style="display: none;"<?php
                                                             }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
