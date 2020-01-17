@@ -174,6 +174,10 @@ $stop_fields_validation_error = array_intersect(
         <?php } ?>
     </td>
 </tr>
+<?php
+    $start_date_display = str_replace('-00', '', $entry->start_date);
+    $start_date_display = str_replace('0000', '', $start_date_display);
+?>
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
@@ -182,7 +186,7 @@ $stop_fields_validation_error = array_intersect(
                         <?php if ($is_new) : ?>
                                                     <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
                                                                  name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $entry->start_date ?>"
+                                                                 value="<?= $start_date_display ?>"
                                                                  style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                                                                  autocomplete="off">
 
