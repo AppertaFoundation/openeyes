@@ -181,7 +181,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                             Created Date:
                                     </td>
                                     <td>
-        <!--                  Added a timestamp for create date and modified date -- CERA-490 -->
+        <!--                  Added a timestamp for create date and modified date CERA-490 -->
                                             <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
                                     </td>
                             </tr>
