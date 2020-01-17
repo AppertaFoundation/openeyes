@@ -221,7 +221,7 @@ $allergy_ids = !is_null($entry->medication_id) ?
 
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
                         class="js-stop-reason-select cols-5"
-                        style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+                        style="<?=  !($entry->hasErrors('stop_reason_id')) && ($is_new || is_null($entry->end_date)) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
         </span>
             <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
