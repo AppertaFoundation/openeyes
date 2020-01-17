@@ -139,28 +139,63 @@ if (!empty($subspecialty)) { ?>
                 let x1 = line.getAttribute('x1');
                 let x2 = line.getAttribute('x2');
                 if(x1==x2){
-                    line.setAttribute('y1','50');
-                    line.setAttribute('y2','700');
                     syncList.push(line);
                 };
             }
-
             $.each(['right', 'left'], function(index,eye_side)  {
                 Object.keys(chart_list).forEach(function(chart_key) {
-                    
                     //this hover layer
                     let hoverLayer2 = chart_list[chart_key][eye_side].querySelector(".hoverlayer");                   
                     // on any hover event, clone spikelines and put into myDiv2
-                    if (hoverLayer2!=hoverLayer1&&hoverLayer2!=null){               
-                       let lines = hoverLayer2.getElementsByTagName('line')
-                       for (let line of lines){
-                           line.remove();
-                       }
-                       //need to redeclare as we just cleared it.
-                       hoverLayer2 = chart_list[chart_key][eye_side].querySelector(".hoverlayer")
+                    if (hoverLayer2!=hoverLayer1&&hoverLayer2!=null){
+                       let lines = $(hoverLayer2).find('line');
+                       lines.remove();
+                    }
+                    //need to redeclare as we just cleared it before we repopulate
+                    hoverLayer2 = chart_list[chart_key][eye_side].querySelector(".hoverlayer")
+                    if (hoverLayer2!=hoverLayer1&&hoverLayer2!=null){  
+                        let hoverHeight1 =0;
+                        let hoverHeight2 = hoverLayer2.parentElement.clientHeight;
                         for (let spike of syncList) {
                             let clone = spike.cloneNode(true)
-                            hoverLayer2.appendChild(spike.cloneNode(true)); // true for cloning all children nodes
+                            clone.setAttribute('y1','50');     
+                            switch(hoverHeight2){
+                                case 400:
+                                    hoverHeight1 = 40;
+                                    hoverHeight2 = 350;
+                                    break;
+
+                                case 600:
+                                    hoverHeight1 = 50;
+                                    hoverHeight2 = 430;
+                                    break;
+
+                                case 800:
+                                    hoverHeight1 = 65;
+                                    hoverHeight2 = 600.001;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            clone.setAttribute('y1',hoverHeight1);
+                            clone.setAttribute('y2',hoverHeight2);
+                            let lgeBtn = ($('.js-oes-area-resize.selected[data-area="large"]')[0]);
+                            let smlBtn = ($('.js-oes-area-resize.selected[data-area="small"]')[0]);
+                            SelectedSide = hoveredChart.getAttribute("data-eye-side");
+                            // if scaling down
+                            if((lgeBtn!=undefined&&eye_side=="left"&&SelectedSide=='right')||(smlBtn!=undefined&&eye_side=="right"&&SelectedSide=='left')){
+                                let shiftedX = (syncList[0].getAttribute('x1')-70)/2.7297;//this hardcoded number isnt great but is close to what i need
+                                clone.setAttribute('x1',shiftedX+70);
+                                clone.setAttribute('x2',shiftedX+70);
+                            }
+                            // if scaling up
+                            if((lgeBtn!=undefined&&eye_side=="right"&&SelectedSide=='left')||(smlBtn!=undefined&&eye_side=="left"&&SelectedSide=='right')){
+                                let shiftedX = ((syncList[0].getAttribute('x1')-70)*2.7297);//this hardcoded number isnt great but is close to what i need
+                                clone.setAttribute('x1',shiftedX+70);
+                                clone.setAttribute('x2',shiftedX+70);
+                            }
+                            hoverLayer2.appendChild(clone); //Add the line to the chart
                         }
                     }
                 });
