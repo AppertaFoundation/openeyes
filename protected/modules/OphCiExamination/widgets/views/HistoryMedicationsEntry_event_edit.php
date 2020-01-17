@@ -44,6 +44,10 @@ $allergy_ids = !is_null($entry->medication_id) ?
     }, $entry->medication->allergies)) :
     [];
 
+$stop_fields_validation_error = array_intersect(
+    array("end_date", "stop_reason_id"),
+    array_keys($entry->errors));
+
 ?>
 
 <tr
@@ -170,6 +174,10 @@ $allergy_ids = !is_null($entry->medication_id) ?
         <?php } ?>
     </td>
 </tr>
+<?php
+    $start_date_display = str_replace('-00', '', $entry->start_date);
+    $start_date_display = str_replace('0000', '', $start_date_display);
+?>
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
@@ -178,7 +186,7 @@ $allergy_ids = !is_null($entry->medication_id) ?
                         <?php if ($is_new) : ?>
                                                     <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
                                                                  name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $entry->start_date ?>"
+                                                                 value="<?= $start_date_display ?>"
                                                                  style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                                                                  autocomplete="off">
 
@@ -221,10 +229,10 @@ $allergy_ids = !is_null($entry->medication_id) ?
 
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
                         class="js-stop-reason-select cols-5"
-                        style="<?= $is_new || is_null($entry->end_date) ? "display:none" : "" ?>">
+                        style="<?=  !$stop_fields_validation_error && ($is_new || is_null($entry->end_date)) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
         </span>
-            <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+            <div class="js-stop-reason-text" style="<?=  !$stop_fields_validation_error && ($is_new || is_null($entry->end_date)) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
             </div>
         </div>

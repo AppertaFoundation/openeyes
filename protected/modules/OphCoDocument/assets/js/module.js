@@ -35,6 +35,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         "doubleUploadSelector": "#double_document_uploader",
         "dropAreaSelector": ".upload-label",
         "uploadModeSelector": "input[name='upload_mode']",
+        "action": "",
+        "removedDocumentsSelector": "#removed-docs"
     };
 
     DocumentUploadController.prototype.initialiseTriggers = function () {
@@ -50,9 +52,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 ev.preventDefault();
 
                 let data = ev.originalEvent.dataTransfer.files;
-                $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
-                $(controller.options.fileInputSelector).trigger('change');
-                },
+
+                $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data).trigger('change');
+            },
         });
 
         $(controller.options.uploadModeSelector).on('change', function () {
@@ -119,10 +121,18 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             } else {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: "No image data was found in your clipboard , copy an image (or take a screesnhot)."
+                    content: "No image data was found in your clipboard , copy an image (or take a screenshot)."
                 }).open();
             }
         }, false);
+
+        $("a.button.header-tab.red").on('click', function () {
+           controller.options.action = 'cancel';
+        });
+
+        $("#et_save").on('click', function () {
+           controller.options.action = 'save';
+        });
     };
 
     DocumentUploadController.prototype.removeDocument = function (side) {
@@ -142,6 +152,16 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 $(controller.options.uploadModeSelector).attr('disabled', false);
             }
         }
+
+        let deleted_doc = $td.find('.js-document-id').val();
+        let $removed_docs = $(controller.options.removedDocumentsSelector);
+
+        if (typeof $removed_docs.data('documents') === 'undefined') {
+            $removed_docs.data('documents', []);
+        }
+        let documents = $removed_docs.data('documents');
+        documents.push(deleted_doc);
+        $removed_docs.data('documents', documents);
 
         $(controller.options.fileInputSelector).val("");
         $td.find('.js-document-id').val("");
