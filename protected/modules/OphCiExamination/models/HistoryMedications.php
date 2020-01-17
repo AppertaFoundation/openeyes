@@ -23,9 +23,9 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $user
  * @property \User $usermodified
  * @property \EventMedicationUse[] $entries
- * @property HistoryMedicationsEntry[] $orderedEntries
- * @property HistoryMedicationsEntry[] $currentOrderedEntries
- * @property HistoryMedicationsEntry[] $stoppedOrderedEntries
+ * @property HistoryMedicationsEntry[] $current_entries
+ * @property HistoryMedicationsEntry[] $closed_entries
+ * @property HistoryMedicationsEntry[] $prescribed_entries
  */
 class HistoryMedications extends BaseMedicationElement
 {
@@ -77,29 +77,9 @@ class HistoryMedications extends BaseMedicationElement
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
             ),
-            'orderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
         ),
             $this->getEntryRelations()
         );
-    }
-
-    public function getStoppedOrderedEntries()
-    {
-        $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
-            return $entry->end_date && $entry->end_date <= date('Y-m-d', strtotime($this->event->event_date));
-        });
-        return $stoppedEntries;
-    }
-
-    public function getCurrentOrderedEntries()
-    {
-        $currentEntries = array_filter($this->orderedEntries, function ($entry) {
-            return !$entry->end_date || $entry->end_date > date('Y-m-d', strtotime($this->event->event_date));
-        });
-        return $currentEntries;
     }
 
     protected function errorAttributeException($attribute, $message)
