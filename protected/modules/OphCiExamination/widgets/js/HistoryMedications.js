@@ -305,6 +305,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                               $full_bound_entry.find('.alternative-display-element.textual:not(.flex-meds-inputs)').children().html(
                                   '<i class="oe-i stop small pad"></i>' + date_display
                               );
+                          } else if (class_name === 'js-stop-reason') {
+                              $full_bound_entry.find('.js-stop-reason-text').html($full_row.find('.' + class_name + ' option:selected').html());
                           }
                       }
                   });
