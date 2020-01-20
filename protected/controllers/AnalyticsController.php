@@ -384,7 +384,8 @@ class AnalyticsController extends BaseController
             $paitent_list_command->where("diagnosis.term IS NOT NULL");
         }
         // triggered from service screen
-        if (isset($params['ids'])&&count($params['ids'])) {
+
+        if (isset($params['ids'])&&((is_array($params['ids']) && count($params['ids'])) || $params['ids'])) {
             $params['ids'] = json_decode($params['ids']);
             $paitent_list_command
                 ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
