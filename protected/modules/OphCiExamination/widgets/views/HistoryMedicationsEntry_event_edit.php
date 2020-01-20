@@ -177,6 +177,8 @@ $stop_fields_validation_error = array_intersect(
 <?php
     $start_date_display = str_replace('-00', '', $entry->start_date);
     $start_date_display = str_replace('0000', '', $start_date_display);
+    $end_date_display = str_replace('-00', '', $entry->end_date);
+    $end_date_display = str_replace('0000', '', $end_date_display);
 ?>
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
@@ -218,7 +220,7 @@ $stop_fields_validation_error = array_intersect(
                       }?> class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
                 <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
-                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                                             name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>"
                                              data-default="<?= date('Y-m-d') ?>"
                                              style="width:80px" placeholder="yyyy-mm-dd"
                                              autocomplete="off">
