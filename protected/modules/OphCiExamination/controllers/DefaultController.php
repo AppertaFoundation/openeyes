@@ -1436,7 +1436,7 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    protected function savecomplexAttributes_MedicationManagement($element, $data, $index)
+    protected function saveComplexAttributes_MedicationManagement($element, $data, $index)
     {
         $data = $data['OEModule_OphCiExamination_models_MedicationManagement'];
 
@@ -1446,15 +1446,15 @@ class DefaultController extends \BaseEventTypeController
                 $reason_other_id = $reason_other->id ?: null;
             }
 
+            $edit_reason = \OphDrPrescriptionEditReasons::model()->findByPk($data['prescription_reason']);
             $prescription = $element->prescription;
-            $prescription->edit_reason_id = $data['prescription_reason'];
-            if ($data['prescription_reason'] === $reason_other_id) {
-                $prescription->edit_reason_other .= ': ' .$data['reason_other'];
-            }
+            $prescription->edit_reason_id = $edit_reason->id;
+            $prescription->edit_reason_other .= $data['prescription_reason'] === $reason_other_id ? ': ' .$data['reason_other'] : ': ' .$edit_reason->caption;;
 
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: ".print_r($prescription->getErrors(), true));
             }
+            $prescription->event->audit('event', 'update', serialize($prescription->attributes), $prescription->edit_reason_other, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }
 
