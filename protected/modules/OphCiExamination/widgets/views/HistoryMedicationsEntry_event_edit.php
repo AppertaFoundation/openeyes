@@ -117,8 +117,8 @@ $stop_fields_validation_error = array_intersect(
                         <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"
                                      class="dose_unit_term" <?= $show_unit ? 'disabled' : '' ?> />
                         <?php echo CHtml::dropDownList($field_prefix . '[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled' => $show_unit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:' . ($show_unit ? '' : 'none'))); ?>
-                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => 'Frequency', 'class' => 'js-frequency cols-4')) ?>
-                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => 'Route', 'class' => 'js-route cols-3')) ?>
+                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
+                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class' => 'js-route cols-3')) ?>
                                                 <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>" >
                                                                                                 <?php
                                                                                                     $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
