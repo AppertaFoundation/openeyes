@@ -79,9 +79,6 @@ var analytics_csv_cataract = (function () {
 				break;
 			case 'CP5':
 				CATPROM5_to_csv();
-			break;
-			default:
-				console.log('Could not find CSV for graph');
 				break;
 		}
 	}
