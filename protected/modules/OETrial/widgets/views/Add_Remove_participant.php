@@ -3,14 +3,14 @@
  * @var $this TrialContext
  */
 ?>
+
 <span class="js-add-remove-participant"
       data-patient-id="<?= $this->patient->id ?>"
       data-trial-id="<?= $this->trial->id ?>"
 >
-<a class="js-add-to-trial"
+<button class="js-add-to-trial button blue hint"
    style="<?= $this->isPatientInTrial() ? 'display:none;' : '' ?>"
->Add to trial</a>
-<a class="js-remove-from-trial"
-   style="<?= $this->isPatientInTrial() ? '' : 'display:none;' ?>"
->Remove from trial</a>
+>Add to Shortlist</button>
+
+<em style="display: none;font-style: italic" class="oe-list-patient js-remove-from-trial">Shortlisted</em>
 </span>

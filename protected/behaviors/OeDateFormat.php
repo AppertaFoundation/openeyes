@@ -71,7 +71,7 @@ class OeDateFormat extends CActiveRecordBehavior
     {
         list($day, $month, $year) = $this->formatFuzzyDateSplit();
         if ($year === '') {
-            return '-';
+            return 'Undated';
         }
         $day = ltrim($day, "0");
         return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .

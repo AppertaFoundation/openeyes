@@ -135,11 +135,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $data->leftJoin("document_output", "document_target.id = document_output.document_target_id");
 
         if ($this->statuses) {
-            if ( in_array('DRAFT', $this->statuses) ) {
-                $data->andWhere(['or', 'l.draft = 1', ['in', 'document_output.output_status', $this->statuses] ]);
-            } else {
-                $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
-            }
+            $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
         }
 
         $data->select(implode(',', $select));
@@ -305,7 +301,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     {
         $output = $this->description()."\n\n";
 
-        $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Link\n";
+        $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Status,Link\n";
 
         foreach ($this->letters as $letter) {
             $output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.ucfirst($letter['status']).'","'.$letter['link']."\"\n";

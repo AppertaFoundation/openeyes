@@ -23,6 +23,7 @@ class DefaultController extends BaseEventTypeController
         'verifyProcedure' => self::ACTION_TYPE_FORM,
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
+        'whiteboard' => self::ACTION_TYPE_VIEW,
     );
 
     protected $show_element_sidebar = false;
@@ -308,6 +309,11 @@ class DefaultController extends BaseEventTypeController
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
+    }
+
+    public function actionWhiteboard($id)
+    {
+        $this->redirect(Yii::app()->createUrl('/OphTrOperationbooking/whiteboard/view/' . $id));
     }
 
     protected function createOpNote()
@@ -1192,7 +1198,15 @@ class DefaultController extends BaseEventTypeController
         $success = false;
 
         if ($macro) {
-            $letter_type_id = \LetterType::model()->find("name = ?", [$this->event->episode->status->name]);
+            $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
+            $criteria = new CDbCriteria( array(
+                'condition' => "name LIKE :name",
+                'params'    => array(':name' => "$name%")
+            ) );
+
+            $letter_type = \LetterType::model()->find($criteria);
+            $letter_type_id = $letter_type ? $letter_type->id : null;
+
             $correspondence_creator = new CorrespondenceCreator($this->event->episode, $macro, $letter_type_id);
             $correspondence_creator->save();
 
@@ -1350,8 +1364,7 @@ class DefaultController extends BaseEventTypeController
             return '<span class="extra-info">' .
                 '<span class="fade">Site: </span>' .
                 $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-                '</span>' .
-                '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
+                '</span>';
         }
         return null;
     }

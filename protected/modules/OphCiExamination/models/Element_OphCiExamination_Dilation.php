@@ -34,6 +34,8 @@ use Yii;
  */
 class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
+    
     protected $errorExceptions = array(
       'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_left',
       'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_right',

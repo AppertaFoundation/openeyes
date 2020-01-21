@@ -434,6 +434,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['CATPROM5']['post-incomplete'],
             ),
         );
+
         $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',

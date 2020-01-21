@@ -1544,6 +1544,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements
@@ -3033,7 +3037,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
-            return "(no current eye medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current eye medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
@@ -3127,7 +3139,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
-            return "(no current systemic medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current systemic medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();

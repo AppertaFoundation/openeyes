@@ -33,6 +33,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     protected $errorExceptions = array(

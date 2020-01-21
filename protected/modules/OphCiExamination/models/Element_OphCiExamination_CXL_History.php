@@ -46,6 +46,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_CXL_History extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**

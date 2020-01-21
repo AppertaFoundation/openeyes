@@ -113,6 +113,11 @@
       <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSegAngleMarks","order":0}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSegSteepAxis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Axis</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSegSteepAxis","order":0}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSynech</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Anterior synechiae</TITLE>
       <INIT_DOODLE_JSON/>
@@ -144,7 +149,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Bleb</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Trabeculectomy bleb</TITLE>
+      <TITLE>Drainage bleb</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -957,7 +962,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>VitreousOpacity</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Vitreous opacity</TITLE>
+      <TITLE>Vitreous haemorrhage</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -3022,7 +3027,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>DiabeticNV</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Vitreous opacity</PRIMARY_TERM>
+              <PRIMARY_TERM>Vitreous haemorrhage</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Vitreous opacity</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/VitreousOpacity.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>VitreousOpacity</GOTO_DOODLE_CLASS_NAME>
@@ -3472,7 +3480,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               </INDEX_LIST>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Trabeculectomy bleb</PRIMARY_TERM>
+              <PRIMARY_TERM>Drainage bleb</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Trabeculectomy bleb</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Bleb.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>Bleb</GOTO_DOODLE_CLASS_NAME>

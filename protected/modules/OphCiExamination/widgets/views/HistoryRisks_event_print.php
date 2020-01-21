@@ -18,10 +18,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php use OEModule\OphCiExamination\models\HistoryRisksEntry; ?>
 <div class="cols-12">
-    <?php if (!$this->patient->hasRiskStatus()) { ?>
+    <?php if ($this->patient->no_risks_date) { ?>
         <p class="data-value flex-layout flex-top">Patient has no known risks.</p>
     <?php } else { ?>
+        <?php
+            $history_risks_entries = $element->getHistoryRisksEntries();
+            $history_risks_entry_keys = $element->getHistoryRisksEntryKeys();
+            $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
+        ?>
         <div class="data-value flex-layout flex-top">
             <div class="cols-12">
                 <table class="last-left">
@@ -39,19 +45,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <?php $not_checked_required_risks = $this->getNotCheckedRequiredRisks($element);
-                            foreach (['present', 'not_checked', 'not_present'] as $attribute) { ?>
+                            <?php foreach ($history_risks_entry_keys as $attribute) { ?>
                                 <td>
                                     <span class="large-text">
-                                        <?php if ($element->$attribute) { ?>
-                                                <?php foreach ($element->getEntriesDisplay($attribute) as $entry) { ?>
-                                                    <?= $entry['risk'] ?>
+                                        <?php if (count($history_risks_entries[$attribute] > 0)) { ?>
+                                                <?php foreach ($history_risks_entries[$attribute] as $entry) { ?>
+                                                    <?= $entry->getDisplayRisk() ?>
                                                     <?php if ($entry['comments'] != '') { ?>
                                                         (Comments: <?= $entry['comments'] ?> )
                                                     <?php } ?>
                                                     <br>
                                                 <?php } ?>
-                                        <?php } else if ($attribute === 'not_checked' && count($not_checked_required_risks) > 0) { ?>
+                                        <?php } else if ($attribute === $history_risks_entry_keys[HistoryRisksEntry::$NOT_CHECKED] && count($not_checked_required_risks) > 0) { ?>
                                                 <?php foreach ($not_checked_required_risks as $entry) { ?>
                                                     <?= $entry ?>
                                                     <br>

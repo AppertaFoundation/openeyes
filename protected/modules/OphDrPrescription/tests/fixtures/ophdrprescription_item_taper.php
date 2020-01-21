@@ -50,4 +50,11 @@
             'frequency_id' => 1,
             'duration_id' => 1,
         ),
+        'prescription_item_taper8' => array(
+            'id' => 8,
+            'item_id' => 4,
+            'dose' => '10mL',
+            'frequency_id' => 1,
+            'duration_id' => 12,
+        ),
     );
