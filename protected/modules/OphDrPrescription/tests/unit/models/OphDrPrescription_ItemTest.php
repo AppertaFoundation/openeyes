@@ -28,15 +28,15 @@ class OphDrPrescription_ItemTest extends CDbTestCase
     {
         return array(
             'Single taper' => array(
-                'lines' => 7,
+                'lines' => 9,
                 'index' => 0,
             ),
             'No taper' => array(
-                'lines' => 5,
+                'lines' => 6,
                 'index' => 1,
             ),
             'Multiple tapers' => array(
-                'lines' => 27,
+                'lines' => 34,
                 'index' => 2,
             ),
             'Simple duration' => array(
@@ -113,8 +113,8 @@ class OphDrPrescription_ItemTest extends CDbTestCase
     public function testFpTenDose()
     {
         foreach ($this->items as $item) {
-            $expected = 'Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose)
-                . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+            $expected = strtoupper('Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->drug->dose_unit}" : $item->dose)
+                . ', ' . $item->route->name . ($item->route_option ? ' (' . $item->route_option->name . ')' : null));
 
             $actual = $item->fpTenDose();
 
@@ -129,10 +129,10 @@ class OphDrPrescription_ItemTest extends CDbTestCase
     {
         foreach ($this->items as $index => $item) {
             if ($index === 3) {
-                $duration = strtolower($item->duration->name);
-                $expected = "Frequency: {$item->frequency->long_name} {$duration}";
+                $duration = strtoupper($item->duration->name);
+                $expected = strtoupper("FREQUENCY: {$item->frequency->long_name} {$duration}");
             } else {
-                $expected = "Frequency: {$item->frequency->long_name} for {$item->duration->name}";
+                $expected = strtoupper("FREQUENCY: {$item->frequency->long_name} FOR {$item->duration->name}");
             }
             $actual = $item->fpTenFrequency();
 

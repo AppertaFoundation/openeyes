@@ -1047,6 +1047,8 @@ class DefaultController extends BaseEventTypeController
                     $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
                 }
             }*/
+
+            return $errors;
         }
     }
 

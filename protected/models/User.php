@@ -410,6 +410,14 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return string
      */
+    public function getFirstInitialFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
+    }
+
+    /**
+     * @return string
+     */
     public function getFullNameAndTitleAndQualifications()
     {
         return implode(' ', array(
