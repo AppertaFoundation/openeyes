@@ -33,8 +33,8 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 $set_auto_rule = new MedicationSetAutoRuleMedication();
                 $set_auto_rule->medication_id = $medication_item->medication_id;
                 $set_auto_rule->medication_set_id = $new_set->id;
-                $set_auto_rule->include_children = 1;
-                $set_auto_rule->include_parent = 1;
+                $set_auto_rule->include_children = 0;
+                $set_auto_rule->include_parent = 0;
                 $set_auto_rule->created_date = date('Y-m-d H:i:s');
 
                 // set all the defaults as well

@@ -262,8 +262,8 @@ class AutoSetRuleController extends BaseAdminController
         if (\Yii::app()->request->isPostRequest) {
             $set->tmp_attrs = \Yii::app()->request->getParam('MedicationAutoRuleAttributes', []);
             $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
-            $set->tmp_meds = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
             $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+            // $set->tmp_meds (MedicationSetAutoRuleMedication) are added via ajax
 
             $set->name = $data['name'];
             $set->hidden = $data['hidden'];

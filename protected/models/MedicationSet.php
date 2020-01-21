@@ -388,6 +388,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 
         }, $this->medicationSetAutoRuleMedications);
         $updated_ids = array();
+
         foreach ($this->tmp_meds as $med) {
             if ($med['id'] == -1) {
                 $med_m = new MedicationSetAutoRuleMedication();
@@ -538,21 +539,21 @@ class MedicationSet extends BaseActiveRecordVersioned
                 $auto_set = MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_set_id' => $this->id, 'medication_id' => $id]);
 
                 if ($auto_set) {
-                    $new_set = new MedicationSetItem();
-                    $new_set->medication_set_id = $this->id;
-                    $new_set->medication_id = $id;
+                    $new_set_item = new MedicationSetItem();
+                    $new_set_item->medication_set_id = $this->id;
+                    $new_set_item->medication_id = $id;
 
                     foreach ($auto_set->attributes as $attribute) {
                         if (strpos($attribute, 'default') === 0) {
-                            $new_set->$attribute = $auto_set->$attribute;
+                            $new_set_item->$attribute = $auto_set->$attribute;
                         }
                     }
 
-                    if ($new_set->save() && $auto_set->tapers) {
+                    if ($new_set_item->save() && $auto_set->tapers) {
                         // save tapers
                         foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
                             $new_taper = new MedicationSetItemTaper();
-                            $new_taper->medication_set_item_id = $new_set->id;
+                            $new_taper->medication_set_item_id = $new_set_item->id;
                             $new_taper->dose = $taper->dose;
                             $new_taper->frequency_id = $taper->frequency_id;
                             $new_taper->duration_id = $taper->duration_id;
