@@ -120,7 +120,6 @@
                         $('#js-analytics-spinner').hide();
                         $("#"+chartId).show();
                     }
-
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
                     }
@@ -424,6 +423,78 @@
             chart.data[1]['customdata'] = incompletedData.map(function (item) {
                 return item;
             });
+            Plotly.redraw(chart);
+        },
+
+        
+        'OEModule_OphOuCatprom5_components_Catprom5Report': function(data){
+            
+            var chart = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0];
+            var newTitle = '';
+
+            switch($('#catprom5-mode').val()){
+            case '0':
+                newTitle = 'Catprom5: Pre-op vs Post-op difference';                
+                chart.layout['xaxis']['autorange'] = true;
+            break;
+            case '1':
+                newTitle = 'Catprom5: Pre-op';
+                
+                chart.layout['xaxis']['autorange'] = false;
+                chart.layout['xaxis']['range'] = [-10,8];
+
+            break;
+            case '2':
+                newTitle = 'Catprom5: Post-op';
+                chart.layout['xaxis']['autorange'] = false;
+                chart.layout['xaxis']['range'] = [-10,8];
+            break;
+            }
+            switch($('#catprom5-eye').val()){
+                case '0':
+                    newTitle += ' - Both Eyes';
+                break;
+                case '1':
+                    newTitle += ' - Eye 1';
+                break;
+                case '2':
+                    newTitle += '- Eye 2';
+                break;
+            }
+            if($('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
+                newTitle += '<br><sub> (From: '+ $('#analytics_datepicker_from').val() +' To: '+ $('#analytics_datepicker_to').val() +') </sub>';
+            }
+            else{
+                if($('#analytics_datepicker_from').val() && !$('#analytics_datepicker_to').val()){
+                    newTitle += '<br><sub> (After: '+ $('#analytics_datepicker_from').val() +') </sub>';
+                }
+                else if(!$('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
+                    newTitle += '<br><sub> (Before: '+ $('#analytics_datepicker_to').val() +') </sub>';
+                }
+                else
+                {
+                    newTitle += '<br><sub> (All Events) </sub>';
+                }
+
+            }
+
+            chart.layout['title'] = newTitle;
+
+            var keys = Object.keys(data);
+            var vals =  Object.values(data);
+            chart.data[0]['x'] = keys.map(function (item) {
+                return item;
+              });
+
+              chart.data[0]['y'] = vals.map(function (item) {
+                return item['count'];
+              });
+              chart.data[0]['customdata'] = vals.map(function (item) {
+                return item['ids'];
+              });
+              chart.data[0]['hovertext'] = keys.map(function(item) { 
+                return '<b>Catprom5</b><br><i>Diff Post: </i>' + item +'<br><i>Num results:</i> ' + data[item].count;
+                })
             Plotly.redraw(chart);
         }
 

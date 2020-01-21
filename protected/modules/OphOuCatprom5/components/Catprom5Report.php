@@ -17,14 +17,19 @@
  */
 
 namespace OEModule\OphOuCatprom5\components;
-
-use Yii;
-
+/**
+ * 
+ * @property string $searchTemplate
+ * @property int $mode
+ * @property int $eye
+ * @property array $plotlyConfig
+ */
 class Catprom5Report extends \Report implements \ReportInterface
 {
-    /**
-     * @var array
-     */
+    protected $searchTemplate = 'application.modules.OphOuCatprom5.views.report.catprom5_search';
+    protected $mode;
+    protected $eye;
+
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
@@ -51,9 +56,19 @@ class Catprom5Report extends \Report implements \ReportInterface
         'dtickrange'=>['min',null],
       ),
     );
+    
+    /**
+     * @param $app
+     */
+    public function __construct($app)
+    {
+        $this->mode = $app->getRequest()->getQuery('mode', 0);
+        $this->eye = $app->getRequest()->getQuery('eye', 0);
+
+        parent::__construct($app);
+    }
 
     /**
-     * @param $surgeon
      * @param $dateFrom
      * @param $dateTo
      *
@@ -65,84 +80,205 @@ class Catprom5Report extends \Report implements \ReportInterface
 
         $this->command->reset();
 
-        $test= Yii::app()->request->getParam('catprom5');
-        switch ($test) {
-            case 'pre':
-            //catprom 5 events that are before operations
+        $this->mode = $this->app->getRequest()->getQuery('mode', 0);
+        $this->eye = $this->app->getRequest()->getQuery('eye', 0);
+
+        if (empty($this->mode)){
+          $this->mode =0;
+        }
+        if (empty($this->eye)){
+          $this->eye =0;
+        }
+        switch ($this->mode) {
+            case 1:
+                  $this->command->select(' 
+                  cataract_element_id AS cataract_element_id,
+                  C1_rasch_measure AS rasch_measure');
+            break;
+            case 2:
+                $this->command->select('
+                cataract_element_id AS cataract_element_id,
+                C3_rasch_measure AS rasch_measure');
+            break;
+            default: // includes and designed for case 0. both
                 $this->command->select(' 
-                  eoc.event_id as cataract_element_id,
-                  e1.event_date as cataract_date,
-                  e2.event_date as catprom5_date,
-                  cp5er.event_id as catprom5_element_id,
-                  cp5er.total_rasch_measure as rasch_measure,
-                  cp5er.total_raw_score as raw_score')
-                  ->from('et_ophtroperationnote_cataract eoc')
-                  ->join('event e1', 'eoc.event_id = e1.id')
-                  ->join('episode ep1', 'ep1.id=e1.episode_id')
-                  ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
-                  ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date <= e1.event_date')
-                  ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
+                cataract_element_id AS cataract_element_id,
+                (C1_rasch_measure - C3_rasch_measure) AS rasch_measure');
+              break;
+        }
+        
+        switch ($this->eye) { 
+          case 1: //Eye1
+          // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
+            $this->command ->from('(SELECT DISTINCT
+            ep1.patient_id patient
+            ,eoc2.event_id AS cataract_element_id
+            ,cp5er1.total_rasch_measure AS C1_rasch_measure
+            , e1.event_date C1_date
+            , e2.event_date O2_date
+            ,cp5er3.total_rasch_measure AS C3_rasch_measure
+            , e3.event_date C3_date
+    
+            FROM episode ep1
+            JOIN event e1 on e1.episode_id = ep1.id
+            JOIN cat_prom5_event_result cp5er1 on e1.id = cp5er1.event_id    
+    
+            JOIN event e2 on e2.episode_id = ep1.id
+                AND e1.id != e2.id 
+                AND e1.event_date < e2.event_date  
+            JOIN et_ophtroperationnote_cataract eoc2 on eoc2.event_id = e2.id
+    
+            JOIN event e3 on e3.episode_id = ep1.id
+                AND e2.id != e3.id 
+                AND e2.event_date < e3.event_date  
+            JOIN cat_prom5_event_result cp5er3 on e3.id = cp5er3.event_id
+        
+            LEFT JOIN event e4 on e4.episode_id = ep1.id 
+                AND e1.id != e4.id 
+                AND e3.id != e4.id 
+                AND e3.event_date < e4.event_date  
+            LEFT JOIN et_ophtroperationnote_cataract eoc4 on eoc4.event_id = e4.id
+    
+            LEFT JOIN event e5 on e5.episode_id = ep1.id 
+                AND e4.id != e5.id 
+                AND e4.event_date < e5.event_date  
+    
+            LEFT JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
+           ORDER BY C1_date, C3_date) wrapper')->group('patient');;
           break;
-            case 'post':
-              //catprom 5 events that are after operations
-                $this->command->select(' 
-                    eoc.event_id as cataract_element_id,
-                    e1.event_date as cataract_date,
-                    e2.event_date as catprom5_date,
-                    cp5er.event_id as catprom5_element_id,
-                    cp5er.total_rasch_measure as rasch_measure,
-                    cp5er.total_raw_score as raw_score')
-                    ->from('et_ophtroperationnote_cataract eoc')
-                    ->join('event e1', 'eoc.event_id = e1.id')
-                    ->join('episode ep1', 'ep1.id=e1.episode_id')
-                    ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
-                    ->join('event e2', 'e2.episode_id = ep2.id and e2.event_date >= e1.event_date')
-                    ->Join('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id');
-            break;
-            case 'dif':
-            default:
-            //the diff between catprom 5 events before and after operations
-                $this->command->select(' 
-                    eoc.event_id as cataract_element_id,
 
-                    cp5er2.event_id as C2_catprom5_element_id,
-                    cp5er2.total_rasch_measure as C2_rasch_measure,
-                    cp5er2.total_raw_score as C2_raw_score,
-
-                    cp5er3.event_id as C3_catprom5_element_id,
-                    cp5er3.total_rasch_measure as C3_rasch_measure,
-                    cp5er3.total_raw_score as C3_raw_score,
-                    (cp5er2.total_rasch_measure - cp5er3.total_rasch_measure) as rasch_measure
-                    ')
-                    ->from('et_ophtroperationnote_cataract eoc')
-                    ->join('event e1', 'eoc.event_id = e1.id')
-                    ->join('episode ep1', 'ep1.id=e1.episode_id')
-
-                    ->join('episode ep2', 'ep2.patient_id = ep1.patient_id')
-                    ->join('event e2', 'e2.episode_id = ep2.id')
-                    ->Join('cat_prom5_event_result cp5er2', 'e2.id = cp5er2.event_id')
-                    
-                    ->join('episode ep3', 'ep3.patient_id = ep1.patient_id')
-                    ->join('event e3', 'e3.episode_id = ep3.id
-                    and e2.id != e3.id #Not the same event
-                    and e2.event_date < e3.event_date  #e2 is earlier than e3')
-                    ->Join('cat_prom5_event_result cp5er3', 'e3.id = cp5er3.event_id')
-                    ;
-            break;
-        }
-
-        if ($dateFrom) {
-            Yii::log(var_dump($dateFrom).  'from' );
-            $this->command->andWhere('e1.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-            $this->command->andWhere('e2.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-            // $this->command->andWhere('e3.event_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        }
+          case 2: //Eye2           
+           // This will require events in the format C->O->C->O-C and any patients with variations to this will not display, or will potentially display incorrectly.
+          $this->command ->from('(SELECT DISTINCT
+          ep1.patient_id patient
+          ,eoc2.event_id AS cataract_element_id
+          ,cp5er3.total_rasch_measure AS C1_rasch_measure
+          , e3.event_date C1_date
+          , e2.event_date O2_date
+          ,cp5er5.total_rasch_measure AS C3_rasch_measure
+          , e5.event_date C3_date
   
+          FROM episode ep1
+          JOIN event e1 on e1.episode_id = ep1.id
+          JOIN cat_prom5_event_result cp5er1 on e1.id = cp5er1.event_id    
+  
+          JOIN event e2 on e2.episode_id = ep1.id
+              AND e1.id != e2.id 
+              AND e1.event_date < e2.event_date  
+          JOIN et_ophtroperationnote_cataract eoc2 on eoc2.event_id = e2.id
+  
+          JOIN event e3 on e3.episode_id = ep1.id
+              AND e2.id != e3.id 
+              AND e2.event_date < e3.event_date  
+          JOIN cat_prom5_event_result cp5er3 on e3.id = cp5er3.event_id
+  
+          JOIN event e4 on e4.episode_id = ep1.id 
+              AND e1.id != e4.id 
+              AND e3.id != e4.id 
+              AND e3.event_date < e4.event_date  
+          JOIN et_ophtroperationnote_cataract eoc4 on eoc4.event_id = e4.id
+  
+          JOIN event e5 on e5.episode_id = ep1.id 
+              AND e4.id != e5.id 
+              AND e4.event_date < e5.event_date  
+  
+          JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
+         ORDER BY C1_date desc, C3_date desc) wrapper')->group('patient');;
+          break;
+          default:// includes and designed for case 0. All Eyes -  I do not like the repitition in this SQL query, but this was one of the only ways I could see this working under MariaDb 10.1 as Window functions are only availible from 10.2
+          // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
+          $this->command ->from('
+            ( SELECT * FROM(
+                SELECT * FROM(
+                  SELECT DISTINCT
+                  ep1.patient_id patient
+                  ,eoc2.event_id AS cataract_element_id
+                  ,cp5er1.total_rasch_measure AS C1_rasch_measure
+                  , e1.event_date C1_date
+                  , e2.event_date O2_date
+                  ,cp5er3.total_rasch_measure AS C3_rasch_measure
+                  , e3.event_date C3_date
+          
+                  FROM episode ep1
+                  JOIN event e1 on e1.episode_id = ep1.id
+                  JOIN cat_prom5_event_result cp5er1 on e1.id = cp5er1.event_id    
+          
+                  JOIN event e2 on e2.episode_id = ep1.id
+                      AND e1.id != e2.id 
+                      AND e1.event_date < e2.event_date  
+                  JOIN et_ophtroperationnote_cataract eoc2 on eoc2.event_id = e2.id
+          
+                  JOIN event e3 on e3.episode_id = ep1.id
+                      AND e2.id != e3.id 
+                      AND e2.event_date < e3.event_date  
+                  JOIN cat_prom5_event_result cp5er3 on e3.id = cp5er3.event_id
+              
+                  LEFT JOIN event e4 on e4.episode_id = ep1.id 
+                      AND e1.id != e4.id 
+                      AND e3.id != e4.id 
+                      AND e3.event_date < e4.event_date  
+                  LEFT JOIN et_ophtroperationnote_cataract eoc4 on eoc4.event_id = e4.id
+          
+                  LEFT JOIN event e5 on e5.episode_id = ep1.id 
+                      AND e4.id != e5.id 
+                      AND e4.event_date < e5.event_date  
+          
+                  LEFT JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
+                  ORDER BY C1_date, C3_date
+                ) Eye1sub GROUP BY patient
+              )Eye1
+            UNION
+            SELECT * FROM(
+              SELECT * FROM(
+                SELECT DISTINCT
+                ep1.patient_id patient
+                ,eoc2.event_id AS cataract_element_id
+                ,cp5er3.total_rasch_measure AS C1_rasch_measure
+                , e3.event_date C1_date
+                , e2.event_date O2_date
+                ,cp5er5.total_rasch_measure AS C3_rasch_measure
+                , e5.event_date C3_date
+        
+                FROM episode ep1
+                JOIN event e1 on e1.episode_id = ep1.id
+                JOIN cat_prom5_event_result cp5er1 on e1.id = cp5er1.event_id    
+        
+                JOIN event e2 on e2.episode_id = ep1.id
+                    AND e1.id != e2.id 
+                    AND e1.event_date < e2.event_date  
+                JOIN et_ophtroperationnote_cataract eoc2 on eoc2.event_id = e2.id
+        
+                JOIN event e3 on e3.episode_id = ep1.id
+                    AND e2.id != e3.id 
+                    AND e2.event_date < e3.event_date  
+                JOIN cat_prom5_event_result cp5er3 on e3.id = cp5er3.event_id
+        
+                JOIN event e4 on e4.episode_id = ep1.id 
+                    AND e1.id != e4.id 
+                    AND e3.id != e4.id 
+                    AND e3.event_date < e4.event_date  
+                JOIN et_ophtroperationnote_cataract eoc4 on eoc4.event_id = e4.id
+        
+                JOIN event e5 on e5.episode_id = ep1.id 
+                    AND e4.id != e5.id 
+                    AND e4.event_date < e5.event_date  
+        
+                JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
+                ORDER BY C1_date desc, C3_date desc
+              ) Eye2sub GROUP BY patient
+            ) Eye2
+          ) wrapper');
+        break;
+        }
+        if ($dateFrom) {
+            $this->command->andWhere('C1_date >= :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('O2_date >= :dateFrom', array('dateFrom' => $dateFrom));
+            $this->command->andWhere('C3_date >= :dateFrom', array('dateFrom' => $dateFrom));
+        }  
         if ($dateTo) {
-            Yii::log(var_dump($dateFrom).  'to' );
-            $this->command->andWhere('e1.event_date <= :dateTo', array('dateTo' => $dateTo));
-            $this->command->andWhere('e2.event_date <= :dateTo', array('dateTo' => $dateTo));
-            // $this->command->andWhere('e3.event_date <= :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('C1_date <= :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('O2_date <= :dateTo', array('dateTo' => $dateTo));
+            $this->command->andWhere('C3_date <= :dateTo', array('dateTo' => $dateTo));
         }
         return $this->command->queryAll();
     }
@@ -170,7 +306,6 @@ class Catprom5Report extends \Report implements \ReportInterface
         return $dataSet;
     }
 
-
     /**
      * @return string
      */
@@ -185,6 +320,9 @@ class Catprom5Report extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
+    /**
+     * @return string
+     */
     public function tracesJson()
     {
         $dataset = $this->dataset();
@@ -208,7 +346,7 @@ class Catprom5Report extends \Report implements \ReportInterface
               return $item['ids'];
           }, array_values($dataset)),
           'hovertext' => array_map(function ($item, $item2) {
-            return '<b>Catprom5</b><br><i>Diff Post: </i>'. $item .
+            return '<b>Catprom5</b><br><i>Score: </i>'. $item .
             '<br><i>Num results:</i> '. $item2['count'];
           }, $temp, $dataset),
           'hoverinfo' => 'text',
@@ -224,27 +362,30 @@ class Catprom5Report extends \Report implements \ReportInterface
         $traces = array($trace1);
         return json_encode($traces);
     }
+
     /**
      * @return string
      */
     public function plotlyConfig()
     {
-      
-        $test= Yii::app()->request->getParam('catprom5');
-        switch ($test) {
-            case 'pre':
-                $this->plotlyConfig['title'] = 'Catprom5: Pre-op';
-                $this->plotlyConfig['xaxis']['range'] = [-10,8];
-          break;
-            case 'post':
-                $this->plotlyConfig['title'] = 'Catprom5: Post-op';
-                $this->plotlyConfig['xaxis']['range'] = [-10,8];
-          break;
-            case 'diff':
-            default:
-                $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference';
-          break;
+      $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
+      return json_encode($this->plotlyConfig);
+    }
+ 
+    /**
+     * @return mixed|string
+     */
+    public function renderSearch($analytics = false)
+    {
+        if ($analytics) {
+            $this->searchTemplate = 'application.modules.OphOuCatprom5.views.report.catprom5_search_analytics';
         }
-        return json_encode($this->plotlyConfig);
+
+        $displayModes = array(array('id' => '0', 'name' => 'Pre-op vs Post-op difference'), array('id' => '1', 'name' => 'Pre-op'), array('id' => '2', 'name' => 'Post-op'));
+
+        $displayEyes = array(array('id' => '0', 'name' => 'All Eyes'), array('id' => '1', 'name' => 'Eye 1'), array('id' => '2', 'name' => 'Eye 2'));
+
+
+        return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes,'eyes'=>$displayEyes));
     }
 }
