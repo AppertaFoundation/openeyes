@@ -283,7 +283,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     {
         return true;
     }
-
+    
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();

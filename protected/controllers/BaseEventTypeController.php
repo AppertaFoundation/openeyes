@@ -1157,6 +1157,7 @@ class BaseEventTypeController extends BaseModuleController
     {
         $model_name = \CHtml::modelName($element);
         $el_data = is_null($index) ? $data[$model_name] : $data[$model_name][$index];
+        
         if ($element->widgetClass) {
             $widget = $this->createWidget($element->widgetClass, array(
                 'patient' => $this->patient,
@@ -1363,6 +1364,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function saveEvent($data)
     {
+
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
             $oe_ids = array();
