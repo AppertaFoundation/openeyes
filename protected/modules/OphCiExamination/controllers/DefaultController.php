@@ -1447,23 +1447,20 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $prescription = $element->prescription;
-            $audit_log = 'Reason: ';
             $audit_prescription_edit_reason = '';
             if ($data['prescription_reason'] === $reason_other_id) {
                 $prescription->edit_reason_other = $data['reason_other'];
-                $audit_log .= $prescription->edit_reason_other;
                 $audit_prescription_edit_reason = $prescription->edit_reason_other;
             } else if ($data['prescription_reason']) {
                 $edit_reason = \OphDrPrescriptionEditReasons::model()->findByPk($data['prescription_reason']);
                 $prescription->edit_reason_id = $edit_reason->id;
-                $audit_log .= $edit_reason->caption;
                 $audit_prescription_edit_reason = $edit_reason->caption;
             }
 
             if (!$prescription->save()) {
                 throw new \Exception("Error while saving prescription: ".print_r($prescription->getErrors(), true));
             }
-            $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), $audit_log, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
+            $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }
 
