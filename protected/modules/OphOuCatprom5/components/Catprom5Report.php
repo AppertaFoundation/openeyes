@@ -18,7 +18,7 @@
 
 namespace OEModule\OphOuCatprom5\components;
 /**
- * 
+ *
  * @property string $searchTemplate
  * @property int $mode
  * @property int $eye
@@ -83,11 +83,11 @@ class Catprom5Report extends \Report implements \ReportInterface
         $this->mode = $this->app->getRequest()->getQuery('mode', 0);
         $this->eye = $this->app->getRequest()->getQuery('eye', 0);
 
-        if (empty($this->mode)){
-          $this->mode =0;
+        if (empty($this->mode)) {
+            $this->mode =0;
         }
-        if (empty($this->eye)){
-          $this->eye =0;
+        if (empty($this->eye)) {
+            $this->eye =0;
         }
         switch ($this->mode) {
             case 1:
@@ -107,10 +107,10 @@ class Catprom5Report extends \Report implements \ReportInterface
               break;
         }
         
-        switch ($this->eye) { 
-          case 1: //Eye1
-          // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
-            $this->command ->from('(SELECT DISTINCT
+        switch ($this->eye) {
+            case 1: //Eye1
+            // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
+                $this->command ->from('(SELECT DISTINCT
             ep1.patient_id patient
             ,eoc2.event_id AS cataract_element_id
             ,cp5er1.total_rasch_measure AS C1_rasch_measure
@@ -144,12 +144,13 @@ class Catprom5Report extends \Report implements \ReportInterface
                 AND e4.event_date < e5.event_date  
     
             LEFT JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
-           ORDER BY C1_date, C3_date) wrapper')->group('patient');;
+           ORDER BY C1_date, C3_date) wrapper')->group('patient');
+                ;
           break;
 
-          case 2: //Eye2           
-           // This will require events in the format C->O->C->O-C and any patients with variations to this will not display, or will potentially display incorrectly.
-          $this->command ->from('(SELECT DISTINCT
+            case 2: //Eye2
+             // This will require events in the format C->O->C->O-C and any patients with variations to this will not display, or will potentially display incorrectly.
+                $this->command ->from('(SELECT DISTINCT
           ep1.patient_id patient
           ,eoc2.event_id AS cataract_element_id
           ,cp5er3.total_rasch_measure AS C1_rasch_measure
@@ -183,11 +184,12 @@ class Catprom5Report extends \Report implements \ReportInterface
               AND e4.event_date < e5.event_date  
   
           JOIN cat_prom5_event_result cp5er5 on e5.id = cp5er5.event_id
-         ORDER BY C1_date desc, C3_date desc) wrapper')->group('patient');;
+         ORDER BY C1_date desc, C3_date desc) wrapper')->group('patient');
+                ;
           break;
-          default:// includes and designed for case 0. All Eyes -  I do not like the repitition in this SQL query, but this was one of the only ways I could see this working under MariaDb 10.1 as Window functions are only availible from 10.2
-          // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
-          $this->command ->from('
+            default:// includes and designed for case 0. All Eyes -  I do not like the repitition in this SQL query, but this was one of the only ways I could see this working under MariaDb 10.1 as Window functions are only availible from 10.2
+            // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
+                $this->command ->from('
             ( SELECT * FROM(
                 SELECT * FROM(
                   SELECT DISTINCT
@@ -274,7 +276,7 @@ class Catprom5Report extends \Report implements \ReportInterface
             $this->command->andWhere('C1_date >= :dateFrom', array('dateFrom' => $dateFrom));
             $this->command->andWhere('O2_date >= :dateFrom', array('dateFrom' => $dateFrom));
             $this->command->andWhere('C3_date >= :dateFrom', array('dateFrom' => $dateFrom));
-        }  
+        }
         if ($dateTo) {
             $this->command->andWhere('C1_date <= :dateTo', array('dateTo' => $dateTo));
             $this->command->andWhere('O2_date <= :dateTo', array('dateTo' => $dateTo));
@@ -368,8 +370,8 @@ class Catprom5Report extends \Report implements \ReportInterface
      */
     public function plotlyConfig()
     {
-      $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
-      return json_encode($this->plotlyConfig);
+        $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
+        return json_encode($this->plotlyConfig);
     }
  
     /**
