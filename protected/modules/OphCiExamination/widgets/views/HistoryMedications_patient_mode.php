@@ -175,10 +175,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                   <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
-                                    <i class="oe-i start small pad-right pro-theme"></i>
-                                    <?= $entry->getMedicationDisplay() ?>
-                                </td>
-                                <td>
                                     <?php $tooltip_content = $entry->getTooltipContent();
                                     if (!empty($tooltip_content)) { ?>
                                         <i class="oe-i info small-icon pro-theme js-has-tooltip"
