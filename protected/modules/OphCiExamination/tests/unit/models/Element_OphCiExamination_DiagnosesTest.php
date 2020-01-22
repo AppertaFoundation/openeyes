@@ -44,7 +44,7 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     }
 
     /**
-     * @covers /OEModule/OphCiExamination/models/Element_OphCiExamination_Diagnoses::model
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model
      */
     public function testModel()
     {
@@ -56,7 +56,7 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     }
 
     /**
-     * @covers /OEModule/OphCiExamination/models/Element_OphCiExamination_Diagnoses::tableName
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::tableName
      */
     public function testTableName()
     {

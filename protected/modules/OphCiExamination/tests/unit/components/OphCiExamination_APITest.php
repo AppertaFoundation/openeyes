@@ -1,4 +1,8 @@
 <?php
+
+use OEModule\OphCiExamination\models\OphCiExamination_Instrument;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure;
+use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
 /**
  * OpenEyes.
  *
@@ -47,9 +51,9 @@ class OphCiExamination_APITest extends CDbTestCase
         'iop_value' => '\OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value',
         'optic_disc' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc',
         'event_type' => 'EventType',
-        'et_iop' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',
-        'iop_values' => '\OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value',
-        'instrument' => '\OEModule\OphCiExamination\models\OphCiExamination_Instrument',
+        'et_iop' => Element_OphCiExamination_IntraocularPressure::class,
+        'iop_values' => OphCiExamination_IntraocularPressure_Value::class,
+        'instrument' => OphCiExamination_Instrument::class,
         'targetiop' => '\OEModule\OphCiExamination\models\OphCiExamination_TargetIop',
         'overallmanagementplan' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
         'va' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
@@ -560,12 +564,23 @@ class OphCiExamination_APITest extends CDbTestCase
         return $element;
     }
 
+    /**
+     * @param Element_OphCiExamination_IntraocularPressure $element
+     * @param $eye_id
+     * @param $value
+     * @return OphCiExamination_IntraocularPressure_Value
+     * @throws CException
+     * @throws Exception
+     */
     private function addIopReading(models\Element_OphCiExamination_IntraocularPressure $element, $eye_id, $value)
     {
         $reading = new models\OphCiExamination_IntraocularPressure_Value();
         $reading->element_id = $element->id;
         $reading->eye_id = $eye_id;
-        $reading->reading_id = Yii::app()->db->createCommand('select id from ophciexamination_intraocularpressure_reading where value = ?')->queryScalar(array($value));
+        $reading->instrument_id = 1;
+        $reading->reading_id = Yii::app()->db->createCommand(
+            'select id from ophciexamination_intraocularpressure_reading where value = ?'
+        )->queryScalar(array($value));
         $reading->save(false);
 
         return $reading;
