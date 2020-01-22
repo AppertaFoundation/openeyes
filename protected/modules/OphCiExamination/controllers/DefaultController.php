@@ -1447,14 +1447,12 @@ class DefaultController extends \BaseEventTypeController
             }
 
             $prescription = $element->prescription;
-            $audit_prescription_edit_reason = '';
+            $edit_reason = \OphDrPrescriptionEditReasons::model()->findByPk($data['prescription_reason']);
+            $audit_prescription_edit_reason = $edit_reason ? $edit_reason->caption : '';
+            $prescription->edit_reason_id = $edit_reason ? $edit_reason->id : '';
             if ($data['prescription_reason'] === $reason_other_id) {
-                $prescription->edit_reason_other = $data['reason_other'];
-                $audit_prescription_edit_reason = $prescription->edit_reason_other;
-            } else if ($data['prescription_reason']) {
-                $edit_reason = \OphDrPrescriptionEditReasons::model()->findByPk($data['prescription_reason']);
-                $prescription->edit_reason_id = $edit_reason->id;
-                $audit_prescription_edit_reason = $edit_reason->caption;
+                $audit_prescription_edit_reason .= ' ' . $data['reason_other'];
+                $prescription->edit_reason_other .= ': ' . $data['reason_other'];
             }
 
             if (!$prescription->save()) {
