@@ -42,54 +42,54 @@ $element_errors = $element->getErrors();
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="medications entries js-entry-table js-current-medications"
                              id="<?= $model_name ?>_entry_table">
-                    <colgroup>
-                        <col class="cols-2">
-                        <col class="cols-6">
-                        <col class="cols-3">
-                        <col class="cols-icon" span="2">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>Drug</th>
-                        <th>Dose/frequency/route/start/stop</th>
-                        <th>Duration/dispense/comments</th>
-                        <th><i class="oe-i drug-rx small no-click"></i></th>
-                        <th></th><!-- actions -->
-                    </tr>
-                    </thead>
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-6">
+                <col class="cols-3">
+                <col class="cols-icon" span="2">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th>Dose/frequency/route/start/stop</th>
+                    <th>Duration/dispense/comments</th>
+                    <th><i class="oe-i drug-rx small no-click"></i></th>
+                    <th><!-- actions --></th>
+                </tr>
+            </thead>
             <tbody>
                 <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key => $entry) {
-                        if ($prescribe_access || $entry->prescribe == 0 ) {
-                                                $this->render(
-                                                    'MedicationManagementEntry_event_edit',
-                                                    array(
-                                                        'entry' => $entry,
-                                                        'form' => $form,
-                                                        'model_name' => $model_name,
-                                                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                                                        'row_count' => $row_count,
-                                                        'stop_reason_options' => $stop_reason_options,
-                                                        'laterality_options' => $laterality_options,
-                                                        'route_options' => $route_options,
-                                                        'frequency_options' => $frequency_options,
-                                                        'direct_edit' => false,
-                                                        'usage_type' => /* $entry->usage_type */ 'UTYPE',
-                                                        'row_type' => /*$entry->group */ 'group',
-                                                        'is_last' => ($row_count == $total_count - 1),
-                                                        'prescribe_access' => $prescribe_access,
-                                                        'patient' => $this->patient,
-                                                        'locked' => $entry->locked,
-                                                        'unit_options' => $unit_options,
-                                                        'has_dose_unit_term' => '{{has_dose_unit_term}}',
-                                                        'is_template' => false
-                                                    )
-                                                );
+                        if ($prescribe_access || $entry->prescribe == 0) {
+                                $this->render(
+                                    'MedicationManagementEntry_event_edit',
+                                    array(
+                                        'entry' => $entry,
+                                        'form' => $form,
+                                        'model_name' => $model_name,
+                                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                        'row_count' => $row_count,
+                                        'stop_reason_options' => $stop_reason_options,
+                                        'laterality_options' => $laterality_options,
+                                        'route_options' => $route_options,
+                                        'frequency_options' => $frequency_options,
+                                        'direct_edit' => false,
+                                        'usage_type' => /* $entry->usage_type */ 'UTYPE',
+                                        'row_type' => /*$entry->group */ 'group',
+                                        'is_last' => ($row_count == $total_count - 1),
+                                        'prescribe_access' => $prescribe_access,
+                                        'patient' => $this->patient,
+                                        'locked' => $entry->locked,
+                                        'unit_options' => $unit_options,
+                                        'has_dose_unit_term' => '{{has_dose_unit_term}}',
+                                        'is_template' => false
+                                    )
+                                );
                         } else {
                             $this->render(
-                            'MedicationManagementEntry_event_edit_read_only',
+                                'MedicationManagementEntry_event_edit_read_only',
                                 array(
                                     'entry' => $entry,
                                     'form' => $form,
@@ -388,11 +388,15 @@ $element_errors = $element->getErrors();
         new OpenEyes.UI.AdderDialog({
             openButton: $('#mm-add-medication-btn'),
             itemSets: [
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode($common_systemic) ?>,
+                    {'multiSelect': true, header: "Common Systemic"}
+                )
                 ,
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode($common_ophthalmic) ?>,
+                    {'multiSelect': true, header: "Common Ophthalmic"}
+                    )
             ],
             onReturn: function (adderDialog, selectedItems) {
                 window.MMController.addEntriesWithAllergyCheck(selectedItems);

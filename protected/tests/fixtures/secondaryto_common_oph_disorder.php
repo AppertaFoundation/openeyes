@@ -27,6 +27,7 @@ return array(
         'id' => 2,
         'parent_id' => 4,
         'disorder_id' => 3,
+        'letter_macro_text' => 'Test 2',
     ),
     array(
         'id' => 3,
@@ -50,6 +51,7 @@ return array(
         'id' => 6,
         'parent_id' => 6,
         'finding_id' => 2,
+        'letter_macro_text' => 'testing blahblah6',
     ),
     array(
         'id' => 7,

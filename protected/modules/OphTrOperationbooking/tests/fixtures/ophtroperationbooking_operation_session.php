@@ -31,6 +31,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session2' => array(
         'id' => 2,
@@ -46,6 +48,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session3' => array(
         'id' => 3,
@@ -61,6 +65,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session4' => array(
         'id' => 4,
@@ -76,6 +82,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session5' => array(
         'id' => 5,
@@ -91,6 +99,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session6' => array(
         'id' => 6,
@@ -106,6 +116,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session7' => array(
         'id' => 7,
@@ -121,6 +133,8 @@ return array(
         'general_anaesthetic' => true,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session8' => array(
         'id' => 8,
@@ -136,6 +150,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'unavailable1' => array(
         'id' => 9,
@@ -151,6 +167,8 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
     'session10' => array(
         'id' => 10,
@@ -166,5 +184,7 @@ return array(
         'general_anaesthetic' => false,
         'unavailable_reason_id' => null,
         'max_procedures' => null,
+        'theatre_id' => 1,
+        'default_admission_time' => '12:00:00',
     ),
 );

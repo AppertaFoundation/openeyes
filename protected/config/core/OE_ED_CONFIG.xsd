@@ -178,7 +178,7 @@
 										<xs:element name="EYEDRAW_CLASS_MNEMONIC" type="xs:string"/>
 										<xs:element name="CANVAS_MNEMONIC" type="xs:string"/>
 										<xs:element name="ON_TOOLBAR_LOCATION" type="xs:string"/>
-										<xs:element name="ON_TOOLBAR_ORDER" type="xs:string"/>
+										<xs:element name="ON_TOOLBAR_ORDER" type="xs:integer"/>
 										<xs:element name="NEW_EYE_INIT_FLAG" type="xs:boolean">
 											<xs:annotation>
 												<xs:documentation>These doodles are initialised if
