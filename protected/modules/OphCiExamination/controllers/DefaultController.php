@@ -1452,7 +1452,7 @@ class DefaultController extends \BaseEventTypeController
             $prescription->edit_reason_id = $edit_reason ? $edit_reason->id : '';
             if ($data['prescription_reason'] === $reason_other_id) {
                 $audit_prescription_edit_reason .= ' ' . $data['reason_other'];
-                $prescription->edit_reason_other .= ': ' . $data['reason_other'];
+                $prescription->edit_reason_other .= ' - ' . $data['reason_other'];
             }
 
             if (!$prescription->save()) {
