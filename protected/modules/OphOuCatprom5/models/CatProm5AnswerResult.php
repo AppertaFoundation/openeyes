@@ -79,7 +79,6 @@ class CatProm5AnswerResult extends \BaseEventTypeElement
      */
     public function search()
     {
-
         $criteria=new CDbCriteria;
 
         $criteria->compare('id', $this->id);

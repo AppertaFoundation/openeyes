@@ -15,7 +15,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
-      'catProm5AnswerResults' => array(),
+        'catProm5AnswerResults' => array(),
     );
     /**
      * @return string the associated database table name
@@ -50,8 +50,8 @@ class CatProm5EventResult extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-          'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-          'catProm5AnswerResults' => array(self::HAS_MANY, 'CatProm5AnswerResult', 'element_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'catProm5AnswerResults' => array(self::HAS_MANY, 'CatProm5AnswerResult', 'element_id'),
         );
     }
 
@@ -71,7 +71,7 @@ class CatProm5EventResult extends \BaseEventTypeElement
     public function rowScoreToRaschMeasure($rawScore)
     {
         $row = Yii::app()->db->createCommand('select rasch_measure from cat_prom5_score_map where raw_score=:raw_score')
-          ->bindValue('raw_score', $rawScore)->queryRow();
+            ->bindValue('raw_score', $rawScore)->queryRow();
         return $row['rasch_measure'];
     }
 
@@ -103,7 +103,6 @@ class CatProm5EventResult extends \BaseEventTypeElement
      */
     public function search()
     {
-
         $criteria=new CDbCriteria;
 
         $criteria->compare('id', $this->id);

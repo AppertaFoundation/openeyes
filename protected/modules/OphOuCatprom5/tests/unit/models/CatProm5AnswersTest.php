@@ -3,7 +3,7 @@ class CatProm5AnswersTest extends CDbTestCase {
     public $model;
 
     public $fixtures = array(
-    'cat_prom5_answers' => 'CatProm5Answers',
+        'cat_prom5_answers' => 'CatProm5Answers',
     );
 
     public function dataProvider_Search()
@@ -130,9 +130,7 @@ class CatProm5AnswersTest extends CDbTestCase {
                 $expectedResults[] = $this->cat_prom5_answers($key);
             }
         }
-
         $this->assertEquals($numResults, $results->getItemCount(), 'Number of Results should match');
         $this->assertEquals($expectedResults, $data, 'Actual results should match');
-
     }
 }
