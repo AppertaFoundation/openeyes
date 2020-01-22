@@ -74,8 +74,7 @@
      *
      * @param container
      */
-    Dash.init = function(container)
-    {
+    Dash.init = function(container) {
         var $dateInputs = $('#from-date, #to-date');
         Dash.$container = $(container);
 
@@ -137,8 +136,7 @@
     /**
      * Upgrade elements from ajax with material design javascript
      */
-    Dash.upgradeMaterial = function()
-    {
+    Dash.upgradeMaterial = function() {
         var mdlUpgrades = {
             MaterialRadio: '.mdl-radio',
             MaterialCheckbox: '.mdl-checkbox'
@@ -156,9 +154,7 @@
         }
     };
 
-    Dash.selectCheckList = function(wrapper)
-    {
-
+    Dash.selectCheckList = function(wrapper){
         $(wrapper).find('.checkbox-select').each(function(){
             var $checkboxes;
 
@@ -173,21 +169,18 @@
         });
     };
 
-    Dash.addBespokeReport = function(report, dependency, size)
-    {
+    Dash.addBespokeReport = function(report, dependency, size){
         var wrapper;
 
         wrapper = appendDashWrapper(report, size);
         Dash.loadBespokeReport(report, dependency, wrapper)
     };
 
-    Dash.updateBespokeReport = function(report, wrapper)
-    {
+    Dash.updateBespokeReport = function(report, wrapper) {
         loadBespokeHtml(report, wrapper);
     };
 
-    Dash.loadBespokeReport = function(report, dependency, wrapper)
-    {
+    Dash.loadBespokeReport = function(report, dependency, wrapper) {
         if(dependency){
             $.getScript(dependency, function(){
                 loadBespokeHtml(report, wrapper);
@@ -199,14 +192,14 @@
 
     Dash.postUpdate = {
         'PcrRiskReport': function(data){
-          var newTitle = '';
-          if($('#pcr-risk-mode').val() == 0){
-            newTitle = 'PCR Rate (risk adjusted)';
-          }else if($('#pcr-risk-mode').val() == 1){
-            newTitle = 'PCR Rate (risk unadjusted)';
-          }else if($('#pcr-risk-mode').val() == 2){
-            newTitle = 'PCR Rate (risk adjusted & unadjusted)';
-          }
+            var newTitle = '';
+            if($('#pcr-risk-mode').val() == 0){
+                newTitle = 'PCR Rate (risk adjusted)';
+            }else if($('#pcr-risk-mode').val() == 1){
+                newTitle = 'PCR Rate (risk unadjusted)';
+            }else if($('#pcr-risk-mode').val() == 2){
+                newTitle = 'PCR Rate (risk adjusted & unadjusted)';
+            }
             var chart = $('#PcrRiskReport')[0];
             var surgon_data = [[],[]];
             var totaleyes = 0;
@@ -250,7 +243,6 @@
                 xaxis_max_val = 40,
                 step = 2.5;
             if(data){
-
                 for(var i = 0; i < data.length; i++){
                     rowTotal = data[i]['rowTotal'];
                     total += parseInt(rowTotal, 10);                              
@@ -258,29 +250,27 @@
 
                     if(reading < -1 || reading > 1){
                         plusOrMinusOne += parseFloat(rowTotal, 10);
-                    }
-                    
+                    }                    
                     if(reading < -0.5 || reading > 0.5){
                         plusOrMinusHalf += parseFloat(rowTotal, 10);
                     }
-                }
-                
+                }                
                 plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
                 plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
 
                 chart.data[0]['x'] = data.map(function (item) {
-                  return item['reading'];
+                    return item['reading'];
                 });
                 chart.data[0]['y'] = data.map(function (item) {
-                  return item['rowTotal'];
+                    return item['rowTotal'];
                 });
                 chart.data[0]['customdata'] = data.map(function (item) {
                     return item['eventList'];
                 });
                 chart.data[0]['hovertext'] = data.map(function (item) {
-                  return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
-                    item['reading'] +
-                    '<br><i>Num Eyes:</i> '+ item['rowTotal'];
+                    return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
+                        item['reading'] +
+                        '<br><i>Num Eyes:</i> '+ item['rowTotal'];
                 });
                 // calculate xaxis range and step
                 var temp = Math.abs(Math.min.apply(Math, data.map(function(o){ return o['reading']})));
@@ -296,55 +286,57 @@
             Plotly.redraw(chart);
         },
         'CataractComplicationsReport': function(data){
-          var chart = $('#CataractComplicationsReport')[0];
-          chart.data[0]['x'] = data.map(function (item) {
-            if (item['total']) {
-              return item['total'];
-            } else {
-              return 0;
+            var chart = $('#CataractComplicationsReport')[0];
+            chart.data[0]['x'] = data.map(function (item) {
+                if (item['total']) {
+                    return item['total'];
+                }
+                else {
+                    return 0;
+                }
+            });
+
+            chart.data[0]['customdata'] = data.map(function (item) {
+                return item['event_list']? item['event_list']:0;
+            });
+            chart.data[0]['hovertext'] = data.map((item, index) => {
+                if (item['total']){
+                return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
+                    chart.layout['yaxis']['ticktext'][index] +
+                    '<br><i>Percentage:</i> '+ item['y'].toFixed(2) +
+                    '%<br>Total Operations: '+ item['total'];
+                } 
+                else {
+                    return '';
+                }
+            });
+
+            var max_complications = 0;
+            for (var i =0; i<chart.data[0]['x'].length;i++){
+                var current_complication =  parseInt(chart.data[0]['x'][i]);
+                if (current_complication > max_complications){
+                    max_complications = current_complication;
+                }
             }
-          });
 
-          chart.data[0]['customdata'] = data.map(function (item) {
-              return item['event_list']? item['event_list']:0;
-          });
-          chart.data[0]['hovertext'] = data.map((item, index) => {
-            if (item['total']){
-              return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
-                chart.layout['yaxis']['ticktext'][index] +
-                '<br><i>Percentage:</i> '+ item['y'].toFixed(2) +
-                '%<br>Total Operations: '+ item['total'];
-            } else {
-              return '';
-            }
-          });
-
-          var max_complications = 0;
-          for (var i =0; i<chart.data[0]['x'].length;i++){
-              var current_complication =  parseInt(chart.data[0]['x'][i]);
-              if (current_complication > max_complications){
-                  max_complications = current_complication;
-              }
-          }
-
-          chart.layout['xaxis']['range'] = max_complications;
+            chart.layout['xaxis']['range'] = max_complications;
 
 
 
-          $.ajax({
+            $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
                     chart.layout['title'] =  'Complication Profile<br>' +
-                      '<sub>Total Complications: '+ data[0] +
-                      ' Total Operations: ' + data[1] + '</sub>';
-                  Plotly.redraw(chart);
+                        '<sub>Total Complications: '+ data[0] +
+                        ' Total Operations: ' + data[1] + '</sub>';
+                    Plotly.redraw(chart);
                 }
             });
 
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
-          var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
+            var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
@@ -361,19 +353,19 @@
             chart.layout['yaxis']['title'] = 'Visual acuity '+months+' months'+ (months > 1 ? 's' : '') +' after surgery (LogMAR)';
 
             chart.data[1]['x'] = data.map(function (item){
-              return item[0];
+                return item[0];
             });
             chart.data[1]['y'] = data.map(function (item){
-              return item[1];
+                return item[1];
             });
             chart.data[1]['text'] = data.map(function (item){
-              return item[2];
+                return item[2];
             });
             chart.data[1]['customdata'] = data.map(function (item){
                 return item[3];
             });
             chart.data[1]['hovertext'] = data.map(function (item){
-              return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
+                return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
             });
             chart.data[1]['marker']['size']=data.map(function (item){
                 return item[2];
@@ -425,80 +417,71 @@
             });
             Plotly.redraw(chart);
         },
-
         
         'OEModule_OphOuCatprom5_components_Catprom5Report': function(data){
-            
             var chart = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0];
             var newTitle = '';
 
             switch($('#catprom5-mode').val()){
-            case '0':
-                newTitle = 'Catprom5: Pre-op vs Post-op difference';                
-                chart.layout['xaxis']['autorange'] = true;
-            break;
-            case '1':
-                newTitle = 'Catprom5: Pre-op';
-                
-                chart.layout['xaxis']['autorange'] = false;
-                chart.layout['xaxis']['range'] = [-10,8];
-
-            break;
-            case '2':
-                newTitle = 'Catprom5: Post-op';
-                chart.layout['xaxis']['autorange'] = false;
-                chart.layout['xaxis']['range'] = [-10,8];
-            break;
+                case '0':
+                    newTitle = 'Catprom5: Pre-op vs Post-op difference';                
+                    chart.layout['xaxis']['autorange'] = true;
+                    break;
+                case '1':
+                    newTitle = 'Catprom5: Pre-op';
+                    chart.layout['xaxis']['autorange'] = false;
+                    chart.layout['xaxis']['range'] = [-10,8];
+                    break;
+                case '2':
+                    newTitle = 'Catprom5: Post-op';
+                    chart.layout['xaxis']['autorange'] = false;
+                    chart.layout['xaxis']['range'] = [-10,8];
+                    break;
             }
             switch($('#catprom5-eye').val()){
                 case '0':
                     newTitle += ' - Both Eyes';
-                break;
+                    break;
                 case '1':
                     newTitle += ' - Eye 1';
-                break;
+                    break;
                 case '2':
                     newTitle += '- Eye 2';
-                break;
+                    break;
             }
             if($('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
                 newTitle += '<br><sub> (From: '+ $('#analytics_datepicker_from').val() +' To: '+ $('#analytics_datepicker_to').val() +') </sub>';
             }
-            else{
+            else {
                 if($('#analytics_datepicker_from').val() && !$('#analytics_datepicker_to').val()){
                     newTitle += '<br><sub> (After: '+ $('#analytics_datepicker_from').val() +') </sub>';
                 }
                 else if(!$('#analytics_datepicker_from').val() && $('#analytics_datepicker_to').val()){
                     newTitle += '<br><sub> (Before: '+ $('#analytics_datepicker_to').val() +') </sub>';
                 }
-                else
-                {
+                else {
                     newTitle += '<br><sub> (All Events) </sub>';
                 }
-
             }
-
             chart.layout['title'] = newTitle;
 
             var keys = Object.keys(data);
             var vals =  Object.values(data);
+
             chart.data[0]['x'] = keys.map(function (item) {
                 return item;
-              });
-
-              chart.data[0]['y'] = vals.map(function (item) {
+            });
+            chart.data[0]['y'] = vals.map(function (item) {
                 return item['count'];
-              });
-              chart.data[0]['customdata'] = vals.map(function (item) {
-                return item['ids'];
-              });
-              chart.data[0]['hovertext'] = keys.map(function(item) { 
+            });
+            chart.data[0]['customdata'] = vals.map(function (item) {
+                    return item['ids'];
+            });
+            chart.data[0]['hovertext'] = keys.map(function(item) { 
                 return '<b>Catprom5</b><br><i>Diff Post: </i>' + item +'<br><i>Num results:</i> ' + data[item].count;
-                })
+            });
             Plotly.redraw(chart);
         }
-
     };
-
     exports.Dash = Dash;
 }(this.OpenEyes));
