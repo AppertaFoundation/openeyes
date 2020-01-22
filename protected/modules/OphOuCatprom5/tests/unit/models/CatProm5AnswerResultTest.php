@@ -22,13 +22,13 @@ class CatProm5AnswerResultTest extends CDbTestCase {
       array(array('answer_id'=>15), 1, array('cat_prom5_answer_item3')),
       array(array('answer_id'=>20), 1, array('cat_prom5_answer_item4')),
       array(array('answer_id'=>24), 1, array('cat_prom5_answer_item5')),
-      array(array('answer_id'=>28), 1, array('cat_prom5_answer_item6')),
+      array(array('answer_id'=>29), 1, array('cat_prom5_answer_item6')),
       array(array('answer_id'=>2), 1, array('cat_prom5_answer_item7')),
       array(array('answer_id'=>6), 1, array('cat_prom5_answer_item8')),
       array(array('answer_id'=>13), 1, array('cat_prom5_answer_item9')),
       array(array('answer_id'=>19), 1, array('cat_prom5_answer_item10')),
       array(array('answer_id'=>23), 1, array('cat_prom5_answer_item11')),
-      array(array('answer_id'=>27), 1, array('cat_prom5_answer_item12')),
+      array(array('answer_id'=>28), 1, array('cat_prom5_answer_item12')),
     );
 
   }

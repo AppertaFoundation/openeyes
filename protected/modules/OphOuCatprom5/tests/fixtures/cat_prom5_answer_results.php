@@ -34,7 +34,7 @@ return array(
     'id' => 6,
     'element_id' => 1,
     'question_id' => 6,
-    'answer_id' => 28,
+    'answer_id' => 29,
   ),
 
   'cat_prom5_answer_item7' => array(

@@ -9,7 +9,7 @@ class CatProm5AnswersTest extends CDbTestCase {
     public function dataProvider_Search()
     {
         return array(
-        array(array('answer'=>'No'), 4, array('answer1','answer5', 'answer22', 'answer26')),
+        array(array('answer'=>'No'), 5, array('answer1','answer5', 'answer22', 'answer26', 'answer27')),
         array(array('answer'=>'Never'), 2, array('answer1', 'answer18')),
         array(array('answer'=>'yes'), 7, array('answer2', 'answer3', 'answer4', 'answer23', 'answer24', 'answer25', 'answer26')),
         array(array('answer'=>'No, never'), 1, array('answer1')),
@@ -44,7 +44,7 @@ class CatProm5AnswersTest extends CDbTestCase {
 
         array(array('score'=>0), 8 , array('answer1', 'answer5', 'answer11', 'answer18', 'answer22', 'answer28', 'answer29', 'answer30')),
         array(array('score'=>1), 5 , array('answer2', 'answer6', 'answer12', 'answer19', 'answer23')),
-        array(array('score'=>2), 5 , array('answer3', 'answer7', 'answer13', 'answer20', 'answer24')),
+        array(array('score'=>2), 6 , array('answer3', 'answer7', 'answer13', 'answer20', 'answer24', 'answer27')),
         array(array('score'=>3), 5 , array('answer4', 'answer8', 'answer14', 'answer21', 'answer25')),
         array(array('score'=>4), 3 , array('answer9', 'answer15', 'answer26')),
         array(array('score'=>5), 2 , array('answer10', 'answer16')),
@@ -54,7 +54,7 @@ class CatProm5AnswersTest extends CDbTestCase {
         array(array('question_id'=>2), 6, array('answer5', 'answer6', 'answer7', 'answer8', 'answer9', 'answer10')),
         array(array('question_id'=>3), 7, array('answer11', 'answer12', 'answer13', 'answer14', 'answer15', 'answer16', 'answer17')),
         array(array('question_id'=>4), 4, array('answer18', 'answer19', 'answer20', 'answer21')),
-        array(array('question_id'=>5), 5, array('answer22', 'answer23', 'answer24', 'answer25', 'answer26','answer27')),
+        array(array('question_id'=>5), 6, array('answer22', 'answer23', 'answer24', 'answer25', 'answer26','answer27')),
         array(array('question_id'=>6), 3, array('answer28', 'answer29', 'answer30')),
         );
     }
