@@ -53,11 +53,15 @@
         createBlackoutDiv: true,
         enableCustomSearchEntries: false,
         searchAsTypedPrefix: 'As typed: ',
+        searchAsTypedItemProperties: {},
         filter: false,
         filterDataId: "",
         listFilter:false,
         filterListId: "",
-        listForFilterId: ""
+        listForFilterId: "",
+        booleanSearchFilterEnabled: false,
+        booleanSearchFilterLabel: '',
+        booleanSearchFilterURLparam: ''
     };
 
     /**
@@ -113,8 +117,8 @@
                     }
                     $(this).addClass('selected');
                 } else {
-                    // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
-                    if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
+                    // Don't desel ect the item if the itemset is mandatory and there aren't any other items selected
+                    if (!$(this).data('itemSet') || !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
                         $(this).removeClass('selected');
                     }
@@ -144,7 +148,7 @@
         let dialog = this;
         if (this.options.itemSets) {
             this.selectWrapper = $('<table />', {class: 'select-options'});
-            let headers = $('<thead />').appendTo(this.selectWrapper);
+            dialog.headers = $('<thead />').appendTo(this.selectWrapper);
             this.selectWrapper.appendTo(this.popup);
             let $container = $('<tbody />');
             $container.appendTo(this.selectWrapper);
@@ -152,7 +156,7 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(headers);
+                $('<th style="'+ itemSet.options.style + '" data-id="'+itemSet.options.id + '"/>').text(header).appendTo(dialog.headers);
                 let $td = $('<td />', {style: itemSet.options.style}).appendTo(dialog.$tr);
                 let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
                 if (itemSet.options.supportSigns) {
@@ -181,6 +185,8 @@
         let $td = $('<td />');
         this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
         $td.appendTo(this.$tr);
+
+        $('<th/>').text("Search").appendTo(dialog.headers);
 
         let $searchInput = $('<input />', {
             class: 'search cols-full js-search-autocomplete',
@@ -215,13 +221,37 @@
                     filterValue = $(this).data('id');
                 }
                 dialog.runItemSearch(dialog.popup.find('input.search').val(), filterValue);
-            })
+            });
         }
 
         this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
+        if(dialog.options.booleanSearchFilterEnabled) {
+
+            $('<th/>').text("Search options").appendTo(dialog.headers);
+            let $td = $('<td />');
+            this.searchOptionsWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+            $td.appendTo(this.$tr);
+            $('<div class="lists-layout">' +
+                '<div class="list-wrap ">' +
+                '<ul class="add-options cols-full ">' +
+                '<li class="js-searchfilter-check" data-label="Include branded drugs in search results">' +
+                '<span class="fixed-width ">Include branded drugs in search results</span>' +
+                '</li></ul></div></div>').appendTo(this.searchOptionsWrapper);
+
+
+
+            this.searchOptionsWrapper.find(".js-searchfilter-check").on("click", function(e){
+                var text = $searchInput.val();
+                // Have to pass opposite of current value because there is a listener after this that changes
+                // the class
+                dialog.runItemSearch(text , undefined, !$(this).hasClass('selected'));
+            });
+        }
+
         this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+        this.searchResultList.hide();
         this.searchResultList.appendTo($filterDiv);
     };
 
@@ -260,16 +290,19 @@
             'data-multiselect': itemSet.options.multiSelect,
             'data-id': itemSet.options.id,
             'data-deselectOnReturn': itemSet.options.deselectOnReturn,
+            'data-resetSelectionToDefaultOnReturn': itemSet.options.resetSelectionToDefaultOnReturn,
         });
 
         itemSet.items.forEach(function (item) {
 
-            let dataset = AdderDialog.prototype.constructDataset(item);
-            let $listItem = $('<li />', dataset);
-            $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
-            if (item.selected) {
-                $listItem.addClass('selected');
-            }
+      let dataset = AdderDialog.prototype.constructDataset(item);
+      let $listItem = $('<li />', dataset);
+      if(typeof item.prepended_markup !== "undefined") {
+            $(item.prepended_markup).appendTo($listItem);
+        }$('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if (item.selected || item.defaultSelected) {
+        $listItem.addClass('selected');
+      }
 
             $listItem.data('itemSet', itemSet);
             $listItem.appendTo($list);
@@ -481,7 +514,18 @@
     AdderDialog.prototype.return = function () {
         let shouldClose = true;
         let dialog = this;
-        if (dialog.options.onReturn) {
+
+        for (let item of this.options.itemSets) {
+            let optionCount = $('.add-options[data-id="' + item.options.id + '"]').find('li.selected').length;
+            if (item.options.mandatory && optionCount === 0) {
+                shouldClose = false;
+                new OpenEyes.UI.Dialog.Alert({
+                    content: item.options.header + " must have an option selected."
+                }).open();
+            }
+        }
+
+        if (shouldClose && dialog.options.onReturn) {
             let selectedValues = [];
             let selectedAdditions = [];
             dialog.getSelectedItems().forEach(selectedItem => {
@@ -495,18 +539,27 @@
         }
 
         if (shouldClose) {
+            let itemSets = dialog.popup.find('ul');
             if (dialog.options.deselectOnReturn) {
-                let itemSets = dialog.popup.find('ul');
-                itemSets.each(function () {
-                    let deselect = $(dialog).data('deselectonreturn');
-                    if (typeof deselect === "undefined" || deselect) {
-                        $(dialog).find('li').removeClass('selected');
+                itemSets.each(function (index, itemSet) {
+                    let deselect = $(itemSet).data('deselectonreturn');
+                    let reset = $(itemSet).data('resetselectiontodefaultonreturn');
+                    if (typeof deselect === "undefined" || deselect || reset) {
+                        $(itemSet).find('li').removeClass('selected');
                     }
                 });
             }
 
-            // deselect options when closing the adderDialog
-            dialog.popup.find('.selected').removeClass('selected');
+            itemSets.each(function (itemSetIndex, itemSet) {
+                if ($(itemSet).data('resetselectiontodefaultonreturn')) {
+                    $(itemSet).find('li').each(function (listIndex, listItem) {
+                        let itemData = dialog.options.itemSets[itemSetIndex].items[listIndex];
+                        if ('defaultSelected' in itemData && itemData.defaultSelected) {
+                            $(listItem).addClass('selected');
+                        }
+                    });
+                }
+            });
 
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
@@ -539,12 +592,12 @@
      * Performs a search using the given text
      * @param {string} text The term to search with
      */
-    AdderDialog.prototype.runItemSearch = function (text, filterValue) {
+    AdderDialog.prototype.runItemSearch = function (text, filterValue, searchFilterValue) {
         let dialog = this;
         if (this.searchRequest !== null) {
             this.searchRequest.abort();
         }
-        if (typeof filterValue == "undefined" && this.options.filter) {
+        if (typeof filterValue === "undefined" && this.options.filter) {
             let selectedFilter = this.popup.find('ul[data-id="' + this.options.filterDataId + '"]').find('li.selected');
             filterValue = selectedFilter.data('id');
         }
@@ -557,44 +610,64 @@
         }
 
         dialog.searchingSpinnerWrapper.show();
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+
+        var ajaxOptions = {
             term: text,
             filter: filterValue,
             code: this.options.searchOptions.code,
             ajax: 'ajax'
-        }, function (results) {
-            dialog.searchRequest = null;
-            let no_data = !$(results).length;
+        };
 
-            dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
-            dialog.noSearchResultsWrapper.toggle(no_data);
-
-            if (dialog.options.searchOptions.resultsFilter) {
-                results = dialog.options.searchOptions.resultsFilter(results);
+        if(this.options.booleanSearchFilterEnabled) {
+            let filter_on;
+            if(typeof searchFilterValue === "undefined") {
+                filter_on = this.searchOptionsWrapper.find(".js-searchfilter-check").hasClass("selected");
+            } else {
+                filter_on = searchFilterValue;
             }
+            ajaxOptions[this.options.booleanSearchFilterURLparam] = filter_on ? 1 : 0;
+        }
 
-            $(results).each(function (index, result) {
-                var dataset = AdderDialog.prototype.constructDataset(result);
-                var item = $("<li />", dataset)
-                    .append($('<span />', {class: dialog.options.liClass}).text(dataset['data-label']));
-                dialog.searchResultList.append(item);
-            });
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource,
+            ajaxOptions, function (results) {
+                dialog.searchRequest = null;
+                let no_data = !$(results).length;
+
+                dialog.searchResultList.empty();
+                dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
+                dialog.noSearchResultsWrapper.toggle(no_data);
+
+                if (dialog.options.searchOptions.resultsFilter) {
+                    results = dialog.options.searchOptions.resultsFilter(results);
+                }
+
+                $(results).each(function (index, result) {
+                    var dataset = AdderDialog.prototype.constructDataset(result);
+                    var $listItem = $("<li />", dataset);
+                    if(typeof result.prepended_markup !== "undefined") {
+                        $(result.prepended_markup).appendTo($listItem);
+                    }
+                    $('<span />', {class: dialog.options.liClass}).text(dataset['data-label']).appendTo($listItem);
+                    dialog.searchResultList.append($listItem);
+                });
 
             if (dialog.options.enableCustomSearchEntries) {
                 dialog.appendCustomEntryOption(text, dialog);
+                dialog.searchResultList.show();
             } else {
                 dialog.searchResultList.toggle(!no_data);
             }
+
             dialog.searchingSpinnerWrapper.hide();
-        });
+            });
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
-        let custom_entry = AdderDialog.prototype.constructDataset({
+        let new_entry_data = $.extend({
             label: text,
             type: 'custom'
-        });
+        }, dialog.options.searchAsTypedItemProperties);
+        let custom_entry = AdderDialog.prototype.constructDataset(new_entry_data);
         let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
             .append($('<span />', {class: 'auto-width'}).text(text));
 

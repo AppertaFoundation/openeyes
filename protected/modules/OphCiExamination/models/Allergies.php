@@ -34,6 +34,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class Allergies extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 50;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -107,7 +110,7 @@ class Allergies extends \BaseEventTypeElement
     public function afterValidate()
     {
         if (!$this->no_allergies_date && !$this->entries) {
-            $this->addError('no_allergies_date', 'Please confirm the patient has no allergies.');
+            $this->addError('no_allergies', 'Please confirm the patient has no allergies.');
         }
         return parent::afterValidate();
     }
@@ -204,11 +207,6 @@ class Allergies extends \BaseEventTypeElement
         });
 
         return $entries;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 50 : parent::getDisplayOrder($action);
     }
 
     /**

@@ -299,13 +299,19 @@ $(document).ready(function () {
 		let iconCenter = iconPos.width / 2;
 
 		// check for the available space for tooltip:
-		if ( ( $( window ).width() - iconPos.left) < 100 ){
-			leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
-			toolCSS = "oe-tooltip offset-left";
-		} else {
-			leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
-			toolCSS = "oe-tooltip";
-		}
+    let hotlistPanel = $('body').find('.oe-hotlist-panel');
+    let unsafeWidth = (hotlistPanel.length === 1 && hotlistPanel.css('Display') !== 'none')
+      ? hotlistPanel.width()
+      : 0;
+    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 100);
+
+    if (tooltipOverlap > 0) {
+      leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
+      toolCSS = "oe-tooltip offset-left";
+    } else {
+      leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
+      toolCSS = "oe-tooltip";
+    }
 
 		// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
 		let z_index;
@@ -331,6 +337,25 @@ $(document).ready(function () {
 
 	});
 
+	let $header_print_dropdown = $('#js-header-print-dropdown');
+	let $header_print_dropdown_button = $('#js-header-print-dropdown-btn');
+	let $header_print_subnav = $('#js-header-print-subnav');
+
+	$header_print_dropdown.on({
+		mouseover: function() {
+			$header_print_dropdown_button.addClass('active');
+			$header_print_subnav.show();
+			},
+		mouseout: function() {
+			$header_print_dropdown_button.removeClass('active');
+			$header_print_subnav.hide();
+		}
+	});
+
+	$header_print_subnav.on({
+		mouseover: function() { $(this).show(); },
+		mouseout: function() { $(this).hide();}
+	});
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');

@@ -1,19 +1,18 @@
 <?php
 
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2015
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DrugSetController extends BaseAdminController
@@ -27,182 +26,466 @@ class DrugSetController extends BaseAdminController
 
     public $assetPath;
 
-    /**
-     * Init the edit admin page, because we have a custom save URL, so we need to use
-     * Admin in more then 1 function.
-     *
-     * @param bool $id
-     *
-     * @return Admin
-     */
-    protected function initAdmin($id = false)
+    const FILTER_USAGE_CODE_ID_FOR_ALL = 'ALL';
+
+    public function getFilters()
     {
-        $admin = new Admin(DrugSet::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
+        $default = [
+            'query' => null,
+            'subspecialty_id' => null,
+            'site_id' => null,
+            'usage_code_ids' => [self::FILTER_USAGE_CODE_ID_FOR_ALL],
+        ];
+
+        $filters = \Yii::app()->request->getParam('search');
+
+        if (!$filters) {
+            $filters = \Yii::app()->session->get('sets_filters');
+            $filters = $filters ? $filters : $default;
+        } else {
+            \Yii::app()->session['sets_filters'] = $filters;
         }
-        $element = Element_OphDrPrescription_Details::model();
-        $admin->setCustomSaveURL('/OphDrPrescription/admin/drugSet/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/admin/drugSet/list');
 
-        $admin->setEditFields(array(
-            'active' => 'checkbox',
-            'name' => 'text',
-            'subspecialty' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'setItems' => array(
-                'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
-                'viewArguments' => array('element' => $element),
-            ),
-        ));
+        // make sure all the required keys are set
+        foreach (['query', 'subspecialty_id', 'site_id'] as $item) {
+            if (!isset($filters[$item])) {
+                $filters[$item] = null;
+            }
+        }
 
-        $this->assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('OphDrPrescription.assets'));
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
+        }
 
-        return $admin;
+        return $filters;
     }
 
-    /**
-     * Render the basic drug set admin page.
-     */
-    public function actionList()
+    public function actionIndex()
+    {
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
+
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+
+        $model = new MedicationSet();
+        $model->unsetAttributes();
+        if (isset($_GET['MedicationSet'])) {
+            $model->attributes = $_GET['MedicationSet'];
+        }
+
+        $filters = $this->getFilters();
+        $criteria = $this->getSearchCriteria($filters);
+
+        $data_provider = new CActiveDataProvider('MedicationSet', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/DrugSet/index', [
+            'data_provider' => $data_provider,
+            'search' => $filters
+        ]);
+    }
+
+    private function getSearchCriteria($filters = [])
     {
         $criteria = new \CDbCriteria();
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '', 'subspecialty_id' => null]);
 
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :query');
-                    $criteria->params[':query'] = $search['query'];
-                } else {
-                    $criteria->addSearchCondition('LOWER(name)', strtolower($search['query']));
-                }
-            }
-            if ($search['subspecialty_id']) {
-                $criteria->addCondition('subspecialty_id = :subspecialty_id');
-                $criteria->params[':subspecialty_id'] = $search['subspecialty_id'];
-            }
+        $criteria->with = ['medicationSetRules'];
+        $criteria->together = true;
 
+        if (isset($filters['usage_code_ids']) &&
+          $filters['usage_code_ids'] &&
+          !in_array(self::FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
+            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+        }
 
-            if ($search['active'] == 1) {
-                $criteria->addCondition('active = 1');
-            } elseif ($search['active'] != '') {
-                $criteria->addCondition('active != 1');
+        if (isset($filters['automatic'])) {
+            $criteria->addCondition('automatic', $filters['automatic']);
+        }
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('name', $filters['query']);
+        }
+
+        foreach (['site_id', 'subspecialty_id'] as $search_key) {
+            if (isset($filters[$search_key]) && $filters[$search_key]) {
+                $criteria->addCondition("medicationSetRules.{$search_key} = :$search_key");
+                $criteria->params[":$search_key"] = $filters[$search_key];
             }
         }
 
-        $this->render('/drugset/index', [
-            'drug_sets' => DrugSet::model()->findAll($criteria),
-            'search' => $search
+        // just make sure usage_code_ids is set every time
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
+        }
+
+        return $criteria;
+    }
+
+    public function actionSearch()
+    {
+        $filters = $this->getFilters();
+        $criteria = $this->getSearchCriteria($filters);
+        $data['items'] = [];
+
+        //OphDrPrescription/admin/DrugSet/index?MedicationSet_sort=name.asc
+        $sort = new \CSort();
+        $sort->attributes = array(
+            'name' => [
+                'asc' => 'name asc',
+                'desc' => 'name desc',
+            ],
+        );
+
+        $data_provider = new CActiveDataProvider('MedicationSet', [
+            'sort' => $sort,
+            'criteria' => $criteria,
         ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = $this->itemsPerPage;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        foreach ($data_provider->getData() as $set) {
+            $set_attributes = $set->attributes;
+            $set_attributes['count'] = $set->itemsCount();
+            $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
+            $set_attributes['automatic'] = $set->attributes['automatic'] ? $set->attributes['automatic'] : null;
+            $rules = MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $set->id]);
+            $ret_val = [];
+
+            foreach ($rules as $rule) {
+                $ret_val[]= "Site: " . (!$rule->site ? "-" : $rule->site->name) .
+                    ", SS: " . (!$rule->subspecialty ? "-" : $rule->subspecialty->name) .
+                    ", Usage code: " . ($rule->usageCode ? $rule->usageCode->name : '-');
+            }
+
+            $set_attributes['rules'] = implode(" // ", $ret_val);
+            $data['items'][] = $set_attributes;
+        }
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_contents();
+        ob_clean();
+        $data['pagination'] = $pagination;
+
+        echo CJSON::encode($data);
+        \Yii::app()->end();
+    }
+
+    public function actionSearchMedication()
+    {
+        $search = \Yii::app()->request->getParam('search');
+        $set_id = isset($search['set_id']) ? $search['set_id'] : null;
+        $data['items'] = [];
+
+        $filters = \Yii::app()->request->getParam('search', []);
+        $criteria = new \CDbCriteria();
+
+        if (isset($filters['set_id']) && $filters['set_id']) {
+            $criteria->together = true;
+            $criteria->with = ['medication', 'medicationSet'];
+
+            $criteria->addCondition('medication_set_id = :set_id');
+            $criteria->params[':set_id'] = $filters['set_id'];
+        }
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', trim($filters['query']));
+        }
+
+        $data_provider = new CActiveDataProvider('MedicationSetItem', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new \CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        //$pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        foreach ($data_provider->getData() as $set_item) {
+            $item = $set_item->attributes;
+            $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
+            $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
+            $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
+            $item['preferred_term'] = $set_item->medication ? $set_item->medication->preferred_term : null;
+            $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
+
+            $data['items'][] = $item;
+        }
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_clean();
+        $data['pagination'] = $pagination;
+
+        header('Content-type: application/json');
+        echo CJSON::encode($data);
+        \Yii::app()->end();
     }
 
     /**
      * Edits or adds drug sets.
      *
-     * @param bool|int $id
-     *
-     * @throws CHttpException
+     * @param bool $id
+     * @throws Exception
      */
-    public function actionEdit($id = false)
+    public function actionEdit($id = null)
     {
-        $assetManager = \Yii::app()->getAssetManager();
-        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+        $asset_manager = \Yii::app()->getAssetManager();
+        $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
+        $asset_manager->publish($base_assets_path);
 
-        $admin = $this->initAdmin($id);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
-        $admin->editModel();
+
+        $data = \Yii::app()->request->getParam('MedicationSet');
+        $filters = \Yii::app()->request->getParam('search', []);
+        $filtered_usage_code = \Yii::app()->request->getParam('usage_code');
+
+        $set = MedicationSet::model()->findByPk($id);
+
+        if (!$set) {
+            $set = new MedicationSet;
+        }
+
+        // automatic sets cannot be edited here
+        if ($set->automatic) {
+            $this->redirect("/OphDrPrescription/admin/DrugSet/index");
+        }
+
+        $is_new_record = $set->isNewRecord;
+
+        if (\Yii::app()->request->isPostRequest) {
+            if (!$set->automatic) {
+                $set->name = $data['name'];
+
+                // set relation
+                $relation = [];
+                $rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+                $keep_rule_ids = [];
+                foreach ($rules as $rule) {
+                    if (isset($rule['id']) && $rule['id']) {
+                        $keep_rule_ids[] = $rule['id'];
+                        $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
+                        if ($rule_model) {
+                            $rule_model->attributes = $rule;
+                        }
+                    } else {
+                        $rule_model = new MedicationSetRule;
+                        $rule_model->attributes = $rule;
+                    }
+
+                    if ($rule_model) {
+                        $relation[] = $rule_model;
+                    }
+                }
+
+                $set->medicationSetRules = $relation;
+                $criteria = new \CDbCriteria();
+                $criteria->addNotInCondition('id', $keep_rule_ids);
+                $criteria->addCondition('medication_set_id = :set_id');
+                $criteria->params['set_id'] = $set->id;
+                \MedicationSetRule::model()->deleteAll($criteria);
+
+                if ($set->autoValidateRelation(true)->validate() && !$set->getErrors()) {
+                    $transaction = Yii::app()->db->beginTransaction();
+                    if ($set->save()) {
+                        $can_continue_save = true;
+                        if ($is_new_record) {
+                            $set->validateRelation('medicationSetRules', 'medication_set_id');
+                            if ($set->getErrors()) {
+                                $can_continue_save = false;
+                            }
+                        }
+
+                        if ($can_continue_save) {
+                            foreach ($set->medicationSetRules as $rule_model) {
+                                $rule_model->medication_set_id = $set->id;
+                                $rule_model->save();
+                            }
+                            $transaction->commit();
+                            $this->redirect($is_new_record ? "/OphDrPrescription/admin/DrugSet/edit/{$set->id}" : "/OphDrPrescription/admin/DrugSet/index");
+                        }
+                    }
+                    $transaction->rollback();
+                }
+            }
+            //esle if the set is an auto set we just managing site, subspecialty and usage_code
+        }
+
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['medicationSetItems', 'medicationSetItems.medicationSet'];
+        $criteria->together = true;
+        $criteria->addCondition('medicationSet.id = :set_id');
+        $criteria->params[':set_id'] = $set->id;
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', $filters['query']);
+        }
+
+        $data_provider = new CActiveDataProvider('Medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/DrugSet/edit',
+            [
+                'medication_set' => $set,
+                'medication_data_provider' => $data_provider,
+                'filtered_usage_code' => $filtered_usage_code,
+                'errors' => $set->getErrors()
+            ]
+        );
     }
 
-    /**
-     * Deletes rows for the model.
-     */
     public function actionDelete()
     {
-        if (Yii::app()->request->isPostRequest) {
-            $ids = Yii::app()->request->getPost('DrugSet');
-            foreach ($ids["id"] as $id) {
-                $model = DrugSet::model()->findByPk($id);
-                if (!$model->delete()) {
-                    echo 0;
-                    return;
+        $ids = \Yii::app()->request->getParam('delete-ids', []);
+        $usage_code = \Yii::app()->request->getParam('usage-code');
+        $response['message'] = '';
+
+        foreach ($ids as $id) {
+            $set = \MedicationSet::model()->findByPk($id);
+
+            if ($set && $usage_code) {
+                // if the set is automatic we just remove the usage code
+                if ($set->automatic) {
+                    $deleted_rows = $set->removeUsageCode($usage_code);
+                } else {
+                    if (\MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $id])) {
+                        $set->delete();
+                    }
                 }
             }
         }
-        echo 1;
+
+        // This is because of handleButton.js handles the deletion - yes should be refactored...
+        // protected/assets/js/handleButtons.js
+        if ($response['message']) {
+            echo \CJSON::encode($response);
+        } else {
+            echo "1";
+        }
+
+        \Yii::app()->end();
     }
 
-    /**
-     * Save drug set data from the admin interface.
-     */
-    public function actionSaveDrugSet()
+    public function actionUpdateMedicationDefaults()
     {
-        // we need to decide if it's a new set or modification
-        $drugSet = Yii::app()->request->getParam('DrugSet');
-        $prescriptionItem = Yii::app()->request->getParam('prescription_item');
+        $result['success'] = false;
+                $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (\Yii::app()->request->isPostRequest) {
+                        $set_id = \Yii::app()->request->getParam('set_id');
+                        $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
+                        $medication_data = \Yii::app()->request->getParam('Medication', []);
+                        $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
-        if (isset($drugSet['id'])) {
-            $drugSetId = $drugSet['id'];
-        }
-        if ($drugSetId > 0) {
-            $drugset = DrugSet::model()->findByPk($drugSetId);
-        } else {
-            $drugset = new DrugSet();
-        }
-        $drugset->name = $drugSet['name'];
-        $drugset->subspecialty_id = $drugSet['subspecialty'];
-        $drugset->active = $drugSet['active'];
+                if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+                    $item = \MedicationSetItem::model()->findByPk($item_data['id']);
 
-        if ($drugset->save()) {
-            // we delete previous tapers and items, and insert the new ones
+                    if ($item) {
+                                $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                                $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                                $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                                $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
 
-            $currentDrugRows = DrugSetItem::model()->findAll(new CDbCriteria(array('condition' => "drug_set_id = '".$drugset->id."'")));
-            foreach ($currentDrugRows as $currentDrugRow) {
-                DrugSetItemTaper::model()->deleteAll(new CDbCriteria(array('condition' => "item_id = '".$currentDrugRow->id."'")));
-                $currentDrugRow->delete();
-            }
+                                $item->tapers = array();
 
-            if (isset($prescriptionItem) && is_array($prescriptionItem)) {
-                foreach ($prescriptionItem as $item) {
-                    $item_model = new DrugSetItem();
-                    $item_model->drug_set_id = $drugset->id;
-                    $item_model->attributes = $item;
-                    $item_model->save(); // we need an id to save tapers
-                    if (isset($item['taper'])) {
-                        $tapers = array();
-                        foreach ($item['taper'] as $taper) {
-                            $taper_model = new DrugSetItemTaper();
-                            $taper_model->attributes = $taper;
-                            $taper_model->item_id = $item_model->id;
-                            $taper_model->save();
-                            $tapers[] = $taper_model;
+                        if ($tapers) {
+                            $taper_array = array();
+                            foreach ($tapers as $taper) {
+                                                $taper = json_decode($taper, true);
+                                                $new_taper = new MedicationSetItemTaper();
+                                if (isset($taper['MedicationSetItemTaper[id]']) && $taper['MedicationSetItemTaper[id]'] !== "") {
+                                    $new_taper->id = $taper['MedicationSetItemTaper[id]'];
+                                    $new_taper->setIsNewRecord(false);
+                                }
+                                                $new_taper->medication_set_item_id = $item_data['id'];
+                                                $new_taper->dose = $taper['MedicationSetItemTaper[dose]'];
+                                                $new_taper->duration_id = $taper['MedicationSetItemTaper[duration_id]'];
+                                                $new_taper->frequency_id = $taper['MedicationSetItemTaper[frequency_id]'];
+
+                                                $taper_array[] = $new_taper;
+                            }
+                                    $item->tapers = $taper_array;
                         }
-                        //$item_model->tapers = $tapers;
+
+                                $result['success'] = $item->save();
+                                $result['errors'] = $item->getErrors();
+
+                        if ($result['success'] === true) {
+                                $transaction->commit();
+                        } else {
+                                $transaction->rollback();
+                        }
                     }
-                    //$items[] = $item_model;
-                    //$item_model->save();
                 }
-                Yii::app()->user->setFlash('info.save_message', 'Save successful.');
-            } else {
-                Yii::app()->user->setFlash('info.save_message',
-                    'Unable to save drugs, please add at least one drug to the set. Set name and subspecialty saved.');
             }
-            $this->redirect('/OphDrPrescription/admin/drugSet/list');
-        } else {
-            if ($drugSetId > 0) {
-                $admin = $this->initAdmin($drugSetId);
-            } else {
-                $admin = $this->initAdmin(false);
-            }
-            $this->render('//admin/generic/edit', array('admin' => $admin, 'errors' => $drugset->getErrors()));
+        } catch (Exception $e) {
+                $transaction->rollback();
+        } finally {
+                echo \CJSON::encode($result);
+                \Yii::app()->end();
         }
+    }
+
+    public function actionAddMedicationToSet()
+    {
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $set_id = \Yii::app()->request->getParam('set_id');
+            $set = \MedicationSet::model()->findByPk($set_id);
+            $medication_id = \Yii::app()->request->getParam('medication_id');
+
+            if ($set && $medication_id) {
+                $id = $set->addMedication($medication_id);
+                $result['success'] = (bool)$id;
+                $result['id'] = $id;
+            }
+        }
+
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
+    }
+
+    public function actionRemoveMedicationFromSet()
+    {
+        $result['success'] = false;
+        if (\Yii::app()->request->isPostRequest) {
+            $item = \Yii::app()->request->getParam('MedicationSetItem');
+
+            if (isset($item['id'])) {
+                $affected_rows = \MedicationSetItem::model()->findByPk($item['id']);
+                $affected_rows->delete();
+
+                $result['success'] = (bool)$affected_rows;
+            } else {
+                $result['success'] = false;
+                $result['error'] = "Missing ID.";
+            }
+        }
+
+        echo \CJSON::encode($result);
+        \Yii::app()->end();
     }
 }

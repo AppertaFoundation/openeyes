@@ -159,11 +159,13 @@ $(document).ready(function(){
               " element? All data in this element will be lost"
           });
           dialog.on('ok', function () {
+							$parent.trigger('element_removed');
               removeElement($parent);
               $(document).trigger('element_removed');
           }.bind(this));
           dialog.open();
       } else {
+					$parent.trigger('element_removed');
           removeElement($parent);
       }
   });
@@ -177,12 +179,6 @@ $(document).ready(function(){
 
     if (!isCollapsedGroup) {
       $tileGroup.find('.element').each(function () {
-
-        // Skip titles that already have a count from Tile Data Overflow
-        if ($(this).find('small').length) {
-          return true;
-        }
-
         let rowCount = $(this).find('tr').length;
         let $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
         $(this).find('.element-title').append($countDisplay);

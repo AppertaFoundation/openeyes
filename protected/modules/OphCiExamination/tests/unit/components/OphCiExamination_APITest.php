@@ -16,6 +16,7 @@
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\components\OphCiExamination_API;
 
 class OphCiExamination_APITest extends CDbTestCase
 {
@@ -30,8 +31,8 @@ class OphCiExamination_APITest extends CDbTestCase
     {
         parent::setUp();
 
-        Yii::app()->session['selected_firm_id'] = 2;
-        $this->api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $dataContext = new DataContext(Yii::app(), ['subspecialties' => Subspecialty::model()->findByPk(2)]);
+        $this->api = new OphCiExamination_API(Yii::app(), $dataContext);
     }
 
     public $fixtures = array(

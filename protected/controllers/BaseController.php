@@ -407,12 +407,16 @@ class BaseController extends Controller
 
     public function setPageTitle($pageTitle)
     {
-        parent::setPageTitle($pageTitle . ' - OE');
+        if ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
+            parent::setPageTitle($pageTitle . ' - OE');
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = "<b><table><thead><tbody><tr><th><td><br>";
+        $allowable_tags = "<b><div><p><input><option><select><table><thead><tbody><tr><th><td><br>";
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {

@@ -320,7 +320,7 @@ return array(
         'position' => 6,
         'steps' => array(
             array(
-                'element' => "a:contains('Display Whiteboard')",
+                'element' => "a:contains('Whiteboard')",
                 'title' => 'Whiteboard view',
                 'content' => "Clicking this button will bring up the theatre whiteboard view.<br/><br/>You can use this to record important comments / reminders to be shown during the operation.<br/><br/>The whiteboard will update when you make a lens selection or if any risks/allergies are recorded against the patient",
                 'placement' => 'auto'

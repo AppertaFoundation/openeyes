@@ -47,6 +47,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.StickyElement.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Tooltip.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.LoadingOverlay.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>

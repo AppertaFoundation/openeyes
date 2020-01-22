@@ -1,18 +1,17 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -20,28 +19,67 @@
  * This is the model class for table "medication".
  *
  * The followings are the available columns in table 'medication':
- * @deprecated since v2.0
+ * @property integer $id
+ * @property string $source_type
+ * @property string $source_subtype
+ * @property string $preferred_term
+ * @property string $short_term
+ * @property string $preferred_code
+ * @property string $vtm_term
+ * @property string $vtm_code
+ * @property string $vmp_term
+ * @property string $vmp_code
+ * @property string $amp_term
+ * @property string $amp_code
+ * @property int $source_old_id
+ * @property string $deleted_date
+ * @property string $last_modified_user_id
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $created_date
+ * @property int $default_form_id
+ * @property int $default_route_id
+ * @property string $default_dose_unit_term
  *
- * @property int $id
- * @property int $patient_id
- * @property int $route_id
- * @property int $drug_id
- * @property int $medication_drug_id
- * @property int $option_id
- * @property int $frequency_id
- * @property string $start_date
- * @property string $end_date
- * @property int $prescription_item_id
- * @property Tag[] $tags
+ * The followings are the available model relations:
+ * @property EventMedicationUse[] $eventMedicationUses
+ * @property User $lastModifiedUser
+ * @property User $createdUser
+ * @property MedicationSet[] $medicationSets
+ * @property MedicationSetItem[] $medicationSetItems
+ * @property MedicationSearchIndex[] $medicationSearchIndexes
+ * @property MedicationAttributeOption[] $medicationAttributeOptions
+ * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
+ * @property \OEModule\OphCiExamination\models\OphCiExaminationAllergy[] $allergies
+ * @property MedicationRoute $defaultRoute
+ * @property MedicationForm $defaultForm
  */
 class Medication extends BaseActiveRecordVersioned
 {
+    const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+
+    const SOURCE_TYPE_LEGACY = "LEGACY";
+    const SOURCE_TYPE_LOCAL = "LOCAL";
+    const SOURCE_TYPE_DMD = "DM+D";
+
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     /**
      * @return string the associated database table name
      */
     public function tableName()
     {
-        return 'archive_medication';
+        return 'medication';
+    }
+
+    public function scopes()
+    {
+        return [
+            'prescribable' => [
+                'condition' => 't.is_prescribable = 1'
+            ],
+        ];
     }
 
     /**
@@ -49,17 +87,19 @@ class Medication extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        $required_fields = 'start_date';
-        if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history']) {
-            $required_fields .= ', frequency_id, route_id';
-        }
-        return array(
-            array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
-            array($required_fields, 'required'),
-            array('start_date', 'OEFuzzyDateValidatorNotFuture'),
-            array('end_date', 'OEFuzzyDateValidator'),
-            array('option_id', 'validateOptionId'),
-        );
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return [
+            ['source_type, preferred_term', 'required'],
+            ['source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10],
+            ['source_subtype', 'length', 'max' => 45],
+            ['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255],
+            ['id, deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
+            // The following rule is used by search().
+            // @todo Please remove those attributes that should not be searched.
+            ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
+					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+        ];
     }
 
     /**
@@ -67,164 +107,382 @@ class Medication extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-            'medication_drug' => array(self::BELONGS_TO, 'MedicationDrug', 'medication_drug_id'),
-            'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
-            'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
-            'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
-            'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
-            'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'tags' => array(self::MANY_MANY, 'Tag', 'medication_tag(tag_id, medication_id)'),
-        );
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return [
+            'eventMedicationUses' => [self::HAS_MANY, EventMedicationUse::class, 'medication_id'],
+            'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
+
+            'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
+
+            'medicationSetItems' => [self::HAS_MANY, MedicationSetItem::class, 'medication_id'],
+            // We need to set up a duplicate relation to be used with allergies, otherwise BaseActiveRecord::afterSave wont auto-save the medicationSetItems
+            'medicationSetItems2' => [self::HAS_MANY, MedicationSetItem::class, 'medication_id'],
+            'medicationSearchIndexes' => [self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'],
+            'medicationAttributeAssignments' => [self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'],
+
+            'medicationAttributeOptions' => array(self::MANY_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)'),
+
+            'allergies' => [self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, ['medication_set_id' => "medication_set_id"], "through" => "medicationSetItems2"],
+            "defaultForm" => [self::BELONGS_TO, MedicationForm::class, 'default_form_id'],
+            "defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
+        ];
     }
 
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
     public function attributeLabels()
     {
-        return array(
-            'drug_id' => 'Medication',
-            'route_id' => 'Route',
-            'option_id' => 'Option',
-            'frequency_id' => 'Frequency',
-            'stop_reason_id' => 'Reason for stopping',
-        );
+        return [
+            'id' => 'ID',
+            'source_type' => 'Source Type',
+            'source_subtype' => 'Source Subtype',
+            'preferred_term' => 'Preferred Term',
+            'preferred_code' => 'Preferred Code',
+            'vtm_term' => 'VTM Term',
+            'vtm_code' => 'VTM Code',
+            'vmp_term' => 'VMP Term',
+            'vmp_code' => 'VMP Code',
+            'amp_term' => 'AMP Term',
+            'amp_code' => 'AMP Code',
+            'deleted_date' => 'Deleted Date',
+            'last_modified_user_id' => 'Last Modified User',
+            'last_modified_date' => 'Last Modified Date',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+            'will_copy' => 'Will copy',
+            'default_form_id' => 'Default form',
+            'default_route_id' => 'Default route',
+            'default_dose_unit_term' => 'Default dose unit'
+        ];
     }
 
-    public function afterValidate()
+    public function isVTM()
     {
-        if ($this->drug_id && $this->medication_drug_id) {
-            $this->addError('drug_id', 'Cannot have two different drug types in the same medication record');
-        }
-
-        return parent::afterValidate();
+        return $this->vtm_term != '' && $this->vmp_term == '' && $this->amp_term == '';
     }
 
-    public function validateOptionId()
+    public function isVMP()
     {
-        if (!$this->option_id && $this->route && $this->route->options) {
-            $this->addError('option_id', "Must specify an option for route '{$this->route->name}'");
-        }
+        return $this->vmp_term != '' && $this->amp_term == '';
     }
 
-    public function beforeSave()
+    public function isAMP()
     {
-        if (!$this->end_date) {
-            $this->stop_reason_id = null;
-        }
-
-        return parent::beforeSave();
+        return $this->amp_term != '';
     }
 
     /**
-     * Will remove the patient adherence element if it is no longer relevant.
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
      */
-    protected function removePatientAdherence()
+    public function search()
     {
-        $medications = $this->patient->patientMedications(new CDbCriteria());
-        if (!count($medications)) {
-            // delete the adherence as no longer applies
-            if ($ad = $this->patient->adherence) {
-                $ad->delete();
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('id', $this->id);
+        $criteria->compare('source_type', $this->source_type, true);
+        $criteria->compare('source_subtype', $this->source_subtype, true);
+        $criteria->compare('preferred_term', $this->preferred_term, true);
+        $criteria->compare('preferred_code', $this->preferred_code, true);
+        $criteria->compare('vtm_term', $this->vtm_term, true);
+        $criteria->compare('vtm_code', $this->vtm_code, true);
+        $criteria->compare('vmp_term', $this->vmp_term, true);
+        $criteria->compare('vmp_code', $this->vmp_code, true);
+        $criteria->compare('amp_term', $this->amp_term, true);
+        $criteria->compare('amp_code', $this->amp_code, true);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
+
+        return new CActiveDataProvider($this, [
+            'criteria'=>$criteria,
+        ]);
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Medication the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return bool
+     */
+
+    public function getToBeCopiedIntoMedicationManagement()
+    {
+        foreach ($this->medicationSets as $medSet) {
+            if ($medSet->name == "medication_management") {
+                return true;
             }
-        }
-    }
-
-    public function afterSave()
-    {
-        if ($this->end_date) {
-            $this->removePatientAdherence();
-        }
-
-        return parent::afterSave();
-    }
-
-    public function afterDelete()
-    {
-        $this->removePatientAdherence();
-
-        return parent::afterDelete();
-    }
-
-    /**
-     * Wrapper for the drug name for display.
-     *
-     * @return string
-     */
-    public function getDrugLabel()
-    {
-        if ($this->drug) {
-            return $this->drug->label;
-        } elseif ($this->medication_drug) {
-            return $this->medication_drug->name;
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Takes a prescription item and sets the appropriate medication values from it.
-     *
-     * @param $item
-     */
-    public function createFromPrescriptionItem($item)
-    {
-        $endDate = $item->stopDateFromDuration();
-
-        $this->drug_id = $item->drug_id;
-        $this->drug = $item->drug;
-        $this->route_id = $item->route_id;
-        $this->route = $item->route;
-        $this->option_id = $item->route_option_id;
-        $this->route = $item->route;
-        $this->dose = $item->dose;
-        $this->frequency_id = $item->frequency_id;
-        $this->frequency = $item->frequency;
-        $this->start_date = $item->prescription->event->event_date;
-        if ($endDate) {
-            $this->end_date = $endDate->format('Y-m-d');
-        }
-        $this->prescription_item_id = $item->id;
-    }
-
-    /**
-     * Is the medication current.
-     *
-     * @return bool
-     */
-    public function isCurrentMedication()
-    {
-        $now = new DateTime();
-
-        return !$this->end_date || $this->end_date > $now->format('Y-m-d');
-    }
-
-    /**
-     * Is the preview current.
-     *
-     * @return bool
-     */
-    public function isPreviousMedication()
-    {
-        $now = new DateTime();
-
-        return $this->end_date && $this->end_date < $now->format('Y-m-d');
-    }
-
-    /**
-     * @param $item
-     *
-     * @return bool
-     */
-    public function matches($item)
-    {
-        if ($this->drug_id === $item->drug_id) {
-            return true;
-        }
-
-        if ($this->medication_drug->name === $item->drug->name) {
-            return true;
         }
 
         return false;
+    }
+
+    /**
+     * @param $site_id
+     * @param $subspecialty_id
+     * @return Medication[]
+     */
+
+    public function getSiteSubspecialtyMedications($site_id, $subspecialty_id)
+    {
+        $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
+        $criteria = new CDbCriteria();
+        $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
+                                        (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id 
+                                            AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
+        $criteria->params = [":site_id" => $site_id, "subspecialty_id" => $subspecialty_id, ':usage_code_id' => $common_oph_id];
+        $criteria->order = 'preferred_term';
+        return $this->findAll($criteria);
+    }
+
+    /**
+     * @param string $usage_code
+     * @return array|null MedicationSet
+     * @throws CException
+     */
+    public function getSetsByUsageCode($usage_code)
+    {
+        $usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => $usage_code])->queryScalar();
+        $criteria = new CDbCriteria();
+        $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
+                                            AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id))";
+        $criteria->params = [":medication_id" => $this->id, ':usage_code_id' => $usage_code_id];
+        $criteria->order = 'name';
+        return MedicationSet::model()->findAll($criteria);
+    }
+
+    /**
+     * @return bool
+     */
+
+    public function isPreservativeFree()
+    {
+        return !empty($this->getAttrs(self::ATTR_PRESERVATIVE_FREE));
+    }
+
+    /**
+     * @return string
+     */
+
+    public function getLabel($short = false)
+    {
+        $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term): $this->preferred_term;
+
+        if ($this->isAMP()) {
+            $name.=" (".$this->vtm_term.")";
+        }
+
+        if ($this->isPreservativeFree()) {
+            $name.= ' (PF)';
+        }
+
+        return $name;
+    }
+
+    /**
+     * @return string
+     */
+
+    public function __toString()
+    {
+        return $this->getLabel();
+    }
+
+    /**
+     * @return string
+     */
+
+    public function alternativeTerms()
+    {
+        $terms = [];
+        foreach ($this->medicationSearchIndexes as $idx) {
+            if ($idx->alternative_term != $this->preferred_term) {
+                $terms[] = $idx->alternative_term;
+            }
+        }
+
+        return implode(", ", $terms);
+    }
+
+    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null)
+    {
+
+        $criteria = new CDbCriteria();
+        $criteria->with = ['medicationSetRules.usageCode'];
+        $criteria->together = true;
+        $criteria->compare('usageCode.usage_code', $usage_code);
+        if (!is_null($subspecialty_id)) {
+            $criteria->addCondition('medicationSetRules.subspecialty_id = :subspecialty_id OR medicationSetRules.subspecialty_id IS NULL');
+            $criteria->params[':subspecialty_id'] = $subspecialty_id;
+        } else {
+            $criteria->addCondition('medicationSetRules.subspecialty_id IS NULL');
+        }
+        if (!is_null($site_id)) {
+            $criteria->addCondition('medicationSetRules.site_id = :site_id OR medicationSetRules.site_id IS NULL');
+            $criteria->params[':site_id'] = $site_id;
+        } else {
+            $criteria->addCondition('medicationSetRules.site_id IS NULL');
+        }
+        $sets = MedicationSet::model()->findAll($criteria);
+
+        $return = [];
+        $ids = [];
+
+        /** @var MedicationSet[] $sets */
+
+        foreach ($sets as $set) {
+            foreach ($set->items as $item) {
+                if (in_array($item->medication->id, $ids)) {
+                    continue;
+                }
+                $return[] = [
+                    'label' => $item->medication->preferred_term,
+                    'value' => $item->medication->preferred_term,
+                    'name' => $item->medication->preferred_term,
+                    'id' => $item->medication->id,
+                    'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
+                    'dose' => $item->default_dose,
+                    'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
+                    'frequency_id' => $item->default_frequency_id,
+                    'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
+                    'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
+                    'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
+                    'set_ids' =>  array_map(function ($e) {
+                        return $e->id;
+                    }, $item->medication->getMedicationSetsForCurrentSubspecialty()),
+                    'allergy_ids' => array_map(function ($e) {
+                        return $e->id;
+                    }, $item->medication->allergies),
+                ];
+                $ids[] = $item->medication->id;
+            }
+        }
+
+        usort($return, function ($a, $b) {
+            return strcmp($a['label'], $b['label']);
+        });
+
+        return $raw ? $return : CHtml::listData($return, 'id', 'label');
+    }
+
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null)
+    {
+        return $this->listByUsageCode("COMMON_OPH", $subspecialty_id, $raw, $site_id);
+    }
+
+    public function listCommonSystemicMedications($raw = false)
+    {
+        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
+    }
+
+    public function getMedicationSetsForCurrentSubspecialty()
+    {
+        $firm_id = $this->getApp()->session->get('selected_firm_id');
+        $site_id = $this->getApp()->session->get('selected_site_id');
+        /** @var Firm $firm */
+        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        if ($firm) {
+            $sets = [];
+            foreach ($this->medicationSets as $set) {
+                $relevant = false;
+                if (empty($set->medicationSetRules)) {
+                    $relevant = true;
+                } else {
+                    foreach ($set->medicationSetRules as $rule) {
+                        if ($rule->subspecialty_id === null && $rule->site_id === null) {
+                            $relevant = true;
+                        }
+
+                        if ($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
+                            $relevant = true;
+                        }
+                    }
+                }
+
+                if ($relevant) {
+                    $sets[] = $set;
+                }
+            }
+
+            return $sets;
+        } else {
+            return $this->medicationSets;
+        }
+    }
+
+    /**
+     * Returns whether the medication belongs to a set
+     * marked with $usage_code in the current context
+     *
+     * @param $usage_code
+     * @return bool
+     */
+
+    public function isMemberOf($usage_code)
+    {
+        foreach ($this->getMedicationSetsForCurrentSubspecialty() as $medicationSet) {
+            foreach ($medicationSet->medicationSetRules as $rule) {
+                if ($rule->usageCode && $rule->usageCode->usage_code == $usage_code) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function addDefaultSearchIndex()
+    {
+        $searchIndex = new MedicationSearchIndex();
+        $searchIndex->medication_id = $this->id;
+        $searchIndex->alternative_term = $this->preferred_term;
+        $searchIndex->save();
+    }
+
+    /**
+     * Returns all attributes as [['attr_name'=> $attr_name, 'value'=> $value, 'description' => $description], [...]]
+     *
+     * @param string $attr_name     If set, the result will be filtered to this attribute
+     * @return array
+     */
+
+    public function getAttrs($attr_name = null)
+    {
+        $ret = [];
+        foreach ($this->medicationAttributeAssignments as $attr_assignment) {
+            $aname = isset($attr_assignment->medicationAttributeOption->medicationAttribute) ? $attr_assignment->medicationAttributeOption->medicationAttribute->name : null;
+            if (is_null($attr_name) || $aname == $attr_name) {
+                $ret[] = [
+                    'attr_name' => $aname,
+                    'value' => $attr_assignment->medicationAttributeOption->value,
+                    'description' => $attr_assignment->medicationAttributeOption->description,
+                ];
+            }
+        }
+
+        return $ret;
     }
 }
