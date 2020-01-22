@@ -37,11 +37,12 @@ class CatProm5AnswersTest extends CDbTestCase {
         array(array('answer'=>'Yes, some difficulty'), 1, array('answer24')),
         array(array('answer'=>'Yes, a great deal of difficulty'), 1, array('answer25')),
         array(array('answer'=>'I cannot read any more because of my eyesight'), 1, array('answer26')),
-        array(array('answer'=>'I gave all the answers and wrote them down myself'), 1, array('answer27')),
-        array(array('answer'=>'I gave all the answers and someone else wrote them down as I spoke'), 1, array('answer28')),
-        array(array('answer'=>'A friend or relative gave some of the answers on my behalf'), 1, array('answer29')),
+        array(array('answer'=>'I cannot read because of other reason'), 1, array('answer27')),
+        array(array('answer'=>'I gave all the answers and wrote them down myself'), 1, array('answer28')),
+        array(array('answer'=>'I gave all the answers and someone else wrote them down as I spoke'), 1, array('answer29')),
+        array(array('answer'=>'A friend or relative gave some of the answers on my behalf'), 1, array('answer30')),
 
-        array(array('score'=>0), 8 , array('answer1', 'answer5', 'answer11', 'answer18', 'answer22', 'answer27', 'answer28', 'answer29')),
+        array(array('score'=>0), 8 , array('answer1', 'answer5', 'answer11', 'answer18', 'answer22', 'answer28', 'answer29', 'answer30')),
         array(array('score'=>1), 5 , array('answer2', 'answer6', 'answer12', 'answer19', 'answer23')),
         array(array('score'=>2), 5 , array('answer3', 'answer7', 'answer13', 'answer20', 'answer24')),
         array(array('score'=>3), 5 , array('answer4', 'answer8', 'answer14', 'answer21', 'answer25')),
@@ -53,8 +54,8 @@ class CatProm5AnswersTest extends CDbTestCase {
         array(array('question_id'=>2), 6, array('answer5', 'answer6', 'answer7', 'answer8', 'answer9', 'answer10')),
         array(array('question_id'=>3), 7, array('answer11', 'answer12', 'answer13', 'answer14', 'answer15', 'answer16', 'answer17')),
         array(array('question_id'=>4), 4, array('answer18', 'answer19', 'answer20', 'answer21')),
-        array(array('question_id'=>5), 5, array('answer22', 'answer23', 'answer24', 'answer25', 'answer26')),
-        array(array('question_id'=>6), 3, array('answer27', 'answer28', 'answer29')),
+        array(array('question_id'=>5), 5, array('answer22', 'answer23', 'answer24', 'answer25', 'answer26','answer27')),
+        array(array('question_id'=>6), 3, array('answer28', 'answer29', 'answer30')),
         );
     }
 
