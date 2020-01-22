@@ -20,5 +20,6 @@ return array(
     'person1' => array(
         'id' => 1,
         'contact_id' => 5,
+        'remote_id' => getenv('OE_INSTITUTION_CODE') ?: 'NEW',
     ),
 );
