@@ -42,12 +42,13 @@
                             ) as $entry_icon => $method) :
             $entries = $element->$method();
     if (!empty($entries)) : ?>
-                <?php foreach ($entries as $entry) : ?>
+                <?php foreach ($entries as $key => $entry) : ?>
                     <?php echo $this->render(
                         'MedicationManagementEntry_event_view',
                         [
                             'entry' => $entry,
-                            'entry_icon' => $entry_icon
+                            'entry_icon' => $entry_icon,
+                            'row_count' => $key
                         ]
                     ); ?>
                 <?php endforeach; ?>
