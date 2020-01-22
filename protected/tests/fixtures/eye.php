@@ -21,15 +21,21 @@ return array(
         'id' => 1,
         'name' => 'Left',
         'display_order' => 3,
+        'created_user_id' => 1,
+        'last_modified_user_id' => 1,
     ),
     'eyeRight' => array(
         'id' => 2,
         'name' => 'Right',
         'display_order' => 1,
+        'created_user_id' => 1,
+        'last_modified_user_id' => 1,
     ),
     'eyeBoth' => array(
         'id' => 3,
         'name' => 'Both',
         'display_order' => 2,
+        'created_user_id' => 1,
+        'last_modified_user_id' => 1,
     ),
 );

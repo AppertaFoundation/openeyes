@@ -210,14 +210,17 @@ class ImportLegacyVFCommand extends CConsoleCommand
         $event->event_type_id = $eventType->id;
         $event->created_user_id = 1;
         $event->event_date = $measurement->study_datetime;
+        $event->delete_pending = 0;
         $event->save(true, null, true);
 
         $image = new Element_OphInVisualfields_Image();
         $image->event_id = $event->id;
         if ($measurement->eye->name == 'Left') {
             $image->left_field_id = $measurement->id;
+            $image->eye_id = 0;
         } else {
             $image->right_field_id = $measurement->id;
+            $image->eye_id = 1;
         }
         $image->save();
         echo 'done'.PHP_EOL;

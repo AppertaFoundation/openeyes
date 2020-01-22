@@ -67,7 +67,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PHPUnit_Framework_Error
+     * @expectedException ArgumentCountError
      */
     public function testNotEnoughArgs()
     {

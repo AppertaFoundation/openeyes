@@ -130,9 +130,8 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         $cmd = $this->getMockCmd($manager, array('usageError'));
 
         if (is_null($expected)) {
-            // null indicates we don't care about result from method because usageError will terminate the script
-            $cmd->expects($this->once())
-                ->method('usageError');
+            // null indicates we don't care about result from method because an exception will terminate the script.
+            $this->expectException(PHPUnit_Framework_Error_Warning::class);
             $cmd->getDateLimit($horizon);
         } else {
             $cmd->expects($this->never())

@@ -52,6 +52,8 @@ class MeasurementVisualFieldHumphrey extends \services\Resource
 
         $protected_file = \ProtectedFile::createForWriting($title);
         $protected_file->name = $title;
+        $protected_file->title = $title;
+        $protected_file->description = $title;
         file_put_contents($protected_file->getPath(), base64_decode($report->image_scan_data));
         $protected_file->mimetype = 'image/gif';
         $protected_file->save();
@@ -61,6 +63,8 @@ class MeasurementVisualFieldHumphrey extends \services\Resource
         file_put_contents($cropped_file->getPath(), base64_decode($report->image_scan_crop_data));
         $cropped_file->mimetype = 'image/gif';
         $cropped_file->name = $title;
+        $cropped_file->title = $title;
+        $cropped_file->description = $title;
         $cropped_file->save();
 
         $report->scanned_field_id = $protected_file->id;

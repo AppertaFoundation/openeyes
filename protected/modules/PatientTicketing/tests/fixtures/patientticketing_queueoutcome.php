@@ -21,56 +21,67 @@ return array(
                 'id' => 1,
                 'queue_id' => 1,
                 'outcome_queue_id' => 2,
+                'display_order' => 1
         ),
         '2' => array(
                 'id' => 2,
                 'queue_id' => 1,
                 'outcome_queue_id' => 6,
+                'display_order' => 2
         ),
         '3' => array(
                 'id' => 3,
                 'queue_id' => 2,
                 'outcome_queue_id' => 3,
+                'display_order' => 3
         ),
         '4' => array(
                 'id' => 4,
                 'queue_id' => 3,
                 'outcome_queue_id' => 4,
+                'display_order' => 4
         ),
         '5' => array(
                 'id' => 5,
                 'queue_id' => 5,
                 'outcome_queue_id' => 3,
+                'display_order' => 5
         ),
         '6' => array(
                 'id' => 6,
                 'queue_id' => 6,
                 'outcome_queue_id' => 7,
+                'display_order' => 6
         ),
         '7' => array(
                 'id' => 7,
                 'queue_id' => 6,
                 'outcome_queue_id' => 9,
+                'display_order' => 7
         ),
         '8' => array(
                 'id' => 8,
                 'queue_id' => 7,
                 'outcome_queue_id' => 8,
+                'display_order' => 8
         ),
         '9' => array(
                 'id' => 9,
                 'queue_id' => 9,
                 'outcome_queue_id' => 11,
+                'display_order' => 9
         ),
         '10' => array(
                 'id' => 10,
                 'queue_id' => 8,
                 'outcome_queue_id' => 11,
+                'display_order' => 10
         ),
         '11' => array(
             'id' => 11,
             'queue_id' => 12,
             'outcome_queue_id' => 13,
+            'display_order' => 11
         ),
 
 );
