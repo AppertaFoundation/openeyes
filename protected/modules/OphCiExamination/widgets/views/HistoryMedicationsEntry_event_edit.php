@@ -68,8 +68,9 @@ $stop_fields_validation_error = array_intersect(
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
                     echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                 }
-                            $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             } else {
+                echo "{{& allergy_warning}}";
                 echo "{{& prepended_markup}}";
             } ?>
             </span>
