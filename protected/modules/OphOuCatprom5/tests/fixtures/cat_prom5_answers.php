@@ -159,18 +159,24 @@ return array(
   ),
   'answer27' => array(
     'id' => 27,
-    'answer' => 'I gave all the answers and wrote them down myself',
-    'question_id' => 6,
-    'score' => 0,
+    'answer' => 'I cannot read because of other reasons',
+    'question_id' => 5,
+    'score' => 2,
   ),
   'answer28' => array(
     'id' => 28,
-    'answer' => 'I gave all the answers and someone else wrote them down as I spoke',
+    'answer' => 'I gave all the answers and wrote them down myself',
     'question_id' => 6,
     'score' => 0,
   ),
   'answer29' => array(
     'id' => 29,
+    'answer' => 'I gave all the answers and someone else wrote them down as I spoke',
+    'question_id' => 6,
+    'score' => 0,
+  ),
+  'answer30' => array(
+    'id' => 30,
     'answer' => 'A friend or relative gave some of the answers on my behalf',
     'question_id' => 6,
     'score' => 0,
