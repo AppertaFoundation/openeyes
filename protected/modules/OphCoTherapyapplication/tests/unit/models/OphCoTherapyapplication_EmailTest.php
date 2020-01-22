@@ -110,11 +110,16 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
         $this->assertEquals(0, $ev2_em2->archived);
     }
 
+    /**
+     * @return Event
+     * @throws Exception
+     */
     private function createEvent()
     {
         $event = new Event();
         $event->episode_id = $this->ep('episode1')->id;
         $event->event_type_id = $this->event_type->id;
+        $event->delete_pending = 0;
         $event->save();
 
         return $event;
@@ -124,6 +129,7 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
     {
         $email = new OphCoTherapyapplication_Email();
         $email->event_id = $event->id;
+        $email->eye_id = Eye::LEFT;
         $email->save();
 
         return $email;
