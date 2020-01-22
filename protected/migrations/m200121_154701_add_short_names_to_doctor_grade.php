@@ -32,10 +32,12 @@ class m200121_154701_add_short_names_to_doctor_grade extends OEMigration
 
         foreach (DoctorGrade::model()->findAll() as $doctor_grade) {
             if (array_key_exists($doctor_grade->grade, $short_names)) {
-                $this->update('doctor_grade', array('short_name' => $short_names[$doctor_grade->grade]), "grade='{$doctor_grade->grade}'");
+                $short_name = $short_names[$doctor_grade->grade];
             } else {
-                $this->update('doctor_grade', array('short_name' => $doctor_grade->grade), "grade='{$doctor_grade->grade}'");
+                $short_name = $doctor_grade->grade;
             }
+
+            $this->update('doctor_grade', array('short_name' => $short_name), "grade='{$doctor_grade->grade}'");
         }
     }
 
