@@ -49,7 +49,6 @@ host=${DATABASE_HOST:-"localhost"}
 # If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
 [ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
 
-
 # Process commandline parameters
 
 nobanner=0
@@ -103,13 +102,22 @@ do
             dbpassword="$2"
             shift
     	;;
-        -u) # Set username and move to next param
-            username="$2"
-            shift
-        ;;
+      -u) # Set username and move to next param
+          username="$2"
+          shift
+      ;;
     	--no-fix) nofix=1
     		## do not run oe-fix (useful when calling from other scripts)
     	;;
+      --host)
+        host="$2"
+        shift
+        ## Reset a different database
+      ;;
+      --connectionID)
+        migrateparams="-q --connectionID $2"
+        shift
+      ;;
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
@@ -136,7 +144,7 @@ done
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
-		checkoutparams="$chekoutparams --depth 1 --single-branch"
+		checkoutparams="$checkoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
             checkoutparams="$checkoutparams $i"
@@ -159,8 +167,8 @@ if [ $showhelp = 1 ]; then
     echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword] [--genetics-enable] [--genetics-disable]"
     echo ""
     echo "COMMAND OPTIONS:"
-    echo "	--help         : Display this help text"
-    echo "	--no-migrate "
+    echo "        --help         : Display this help text"
+    echo "        --no-migrate "
     echo "          | -nm   : Prevent database migrations running automatically after"
     echo "                   checkout"
 	echo "	--branch       : Download sample database on the specified branch"
@@ -182,7 +190,9 @@ if [ $showhelp = 1 ]; then
 	echo "                  : disable genetics modules (if currently enabled)"
 	echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
 	echo "	--ignore-warnings	: Ignore warnings during migration"
-	echo "	--no-fix		: do not run oe-fix routines after reset"
+	echo "        --no-fix                : do not run oe-fix routines after reset"
+	echo "        --host                  : Reset database on specified host. Defaults to DATABASE_HOST"
+	echo "        --connectionID          : run migrations against the specified Yii database connection. Defaults to db"
 	echo "	--custom-file"
 	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
 	echo "					  'oe-reset -f <filename>.sql' "
@@ -198,18 +208,18 @@ fi
 dbconnectionstring="mysql -u $username $dbpassword --port=$port --host=$host"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
-		dwservrunning=1
-		echo "Stopping dicom-file-watcher..."
-		sudo service dicom-file-watcher stop
+    dwservrunning=1
+    echo "Stopping dicom-file-watcher..."
+    sudo service dicom-file-watcher stop
 fi
 
 if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 
-	## If no branch is specified, use build branch or fallback to master
-	[ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
+  ## If no branch is specified, use build branch or fallback to master
+  [ "$branch" = "0" ] && branch=${BUILD_BRANCH:-"master"} || :
 
-	## Checkout new sample database branch
-	echo "Downloading database for $branch"
+  ## Checkout new sample database branch
+  echo "Downloading database for $branch"
 
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
 fi
@@ -226,9 +236,9 @@ eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
 if [ $nofiles = "0" ]; then
-	echo Deleting protected files
-	sudo rm -rf $WROOT/protected/files/*
-	sudo rm -rf /tmp/docman
+  echo Deleting protected files
+  sudo rm -rf $WROOT/protected/files/*
+  sudo rm -rf /tmp/docman
 fi
 
 if [ $cleanbase = "0" ]; then
@@ -237,8 +247,8 @@ if [ $cleanbase = "0" ]; then
   [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
   [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
 
-	echo "Re-importing database"
-	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
+  echo "Re-importing database"
+  eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
@@ -246,109 +256,109 @@ fi
 [ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
 
-	echo "
+  echo "
 
-	setting institution to $icode
+  setting institution to $icode
 
-	"
+  "
 
-	echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
+  echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
 
-	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql
+  eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql
 
-	rm /tmp/openeyes-mysql-institute.sql
+  rm /tmp/openeyes-mysql-institute.sql
 fi
 
 # Run pre-migration demo scripts
 if [ $demo = "1" ]; then
 
-	echo "RUNNING PRE_MIGRATION SCRIPTS..."
+  echo "RUNNING PRE_MIGRATION SCRIPTS..."
 
-	shopt -s nullglob
-	for f in $(ls $MODULEROOT/sample/sql/demo/pre-migrate | sort -V)
-	do
-		if [[ $f == *.sql ]]; then
-			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
-		elif [[ $f == *.sh ]]; then
-			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
-		fi
-	done
+  shopt -s nullglob
+  for f in $(ls $MODULEROOT/sample/sql/demo/pre-migrate | sort -V)
+  do
+    if [[ $f == *.sql ]]; then
+      echo "importing $f"
+      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
+    elif [[ $f == *.sh ]]; then
+      echo "running $f"
+      bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
+    fi
+  done
 fi
 
 # Run migrations
 if [ $migrate = "1" ]; then
-	echo Performing database migrations
-	bash $SCRIPTDIR/oe-migrate.sh $migrateparams
-	echo "The following migrations were applied..."
-	grep applied $WROOT/protected/runtime/migrate.log
+  echo Performing database migrations
+  bash $SCRIPTDIR/oe-migrate.sh $migrateparams
+  echo "The following migrations were applied..."
+  grep applied $WROOT/protected/runtime/migrate.log
 fi
 
 # Run demo scripts
 if [ $demo = "1" ]; then
 
-	echo "RUNNING DEMO SCRIPTS..."
+  echo "RUNNING DEMO SCRIPTS..."
 
-	shopt -s nullglob
-	for f in $(ls $MODULEROOT/sample/sql/demo | sort -V)
-	do
-		if [[ $f == *.sql ]]; then
-			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
-		elif [[ $f == *.sh ]]; then
-			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/$f"
-		fi
-	done
+  shopt -s nullglob
+  for f in $(ls $MODULEROOT/sample/sql/demo | sort -V)
+  do
+    if [[ $f == *.sql ]]; then
+      echo "importing $f"
+      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
+    elif [[ $f == *.sh ]]; then
+      echo "running $f"
+      bash -l "$MODULEROOT/sample/sql/demo/$f"
+    fi
+  done
 fi
 
 # Run genetics scripts if genetics is enabled
 if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "/\*'Genetics'," $WROOT/protected/config/local/common.php ; then
 
-	echo "RUNNING Genetics files..."
+  echo "RUNNING Genetics files..."
 
-	shopt -s nullglob
+  shopt -s nullglob
     for f in $(ls $MODULEROOT/sample/sql/demo/genetics | sort -V)
     do
-		if [[ $f == *.sql ]]; then
-			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
-		elif [[ $f == *.sh ]]; then
-			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
-		fi
+    if [[ $f == *.sql ]]; then
+      echo "importing $f"
+      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
+    elif [[ $f == *.sh ]]; then
+      echo "running $f"
+      bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
+    fi
     done
 
 fi
 
 # Set banner to confirm reset
 if [ ! $nobanner = "1" ]; then
-	echo "setting banner to: $bannertext"
-	echo "
-	use ${DATABASE_NAME:-'openeyes'};
-	UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
-	" | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
+  echo "setting banner to: $bannertext"
+  echo "
+  use ${DATABASE_NAME:-'openeyes'};
+  UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
+  " | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
 
-	eval $dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql
-	sudo rm /tmp/openeyes-mysql-setbanner.sql
+  eval $dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql
+  sudo rm /tmp/openeyes-mysql-setbanner.sql
 fi
 
 # Run local post-migaration demo scripts
 if [ $demo = "1" ]; then
 
-	echo "RUNNING POST RESET SCRIPTS..."
+  echo "RUNNING POST RESET SCRIPTS..."
 
-	shopt -s nullglob
+  shopt -s nullglob
     for f in $(ls $MODULEROOT/sample/sql/demo/local-post | sort -V)
     do
-		if [[ $f == *.sql ]]; then
-			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
-		elif [[ $f == *.sh ]]; then
-			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
-		fi
+    if [[ $f == *.sql ]]; then
+      echo "importing $f"
+      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
+    elif [[ $f == *.sh ]]; then
+      echo "running $f"
+      bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
+    fi
     done
 fi
 

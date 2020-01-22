@@ -18,7 +18,7 @@
 class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
 {
     /**
-     * @var Element_OphCiExamination_Diagnoses
+     * @var /OEModule/OphCiExamination/models/Element_OphCiExamination_Diagnoses
      */
     protected $model;
     public $fixtures = array(
@@ -44,21 +44,28 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     }
 
     /**
-     * @covers Element_OphCiExamination_Diagnoses::model
+     * @covers /OEModule/OphCiExamination/models/Element_OphCiExamination_Diagnoses::model
      */
     public function testModel()
     {
-        $this->assertInstanceOf(OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::class, $this->model, 'Class name should match model.');
+        $this->assertInstanceOf(
+            OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::class,
+            OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model(),
+            'Class name should match model.'
+        );
     }
 
     /**
-     * @covers Element_OphCiExamination_Diagnoses::tableName
+     * @covers /OEModule/OphCiExamination/models/Element_OphCiExamination_Diagnoses::tableName
      */
     public function testTableName()
     {
         $this->assertEquals('et_ophciexamination_diagnoses', $this->model->tableName());
     }
 
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_FurtherFindings()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -66,6 +73,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
         $this->assertEquals("Further Findings: Finding 2\n", strip_tags($etDiagString));
     }
 
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -73,6 +83,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
         $this->assertEquals("Principal diagnosis: Left Myopia\n", strip_tags($etDiagString));
     }
 
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -80,6 +93,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
         $this->assertEquals("Secondary diagnosis: Right Myopia\n", strip_tags($etDiagString));
     }
 
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_and_secondary()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -87,6 +103,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
         $this->assertEquals("Principal diagnosis: Left Retinal lattice degeneration\nSecondary diagnosis: Right Myopia\n", strip_tags($etDiagString));
     }
 
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_and_secondary_and_findings()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -99,6 +118,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     same eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_with_secondaryto_secondary_with_letter_macro_text_same_eye()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -115,6 +137,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     same eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_with_secondaryto_secondary_with_letter_macro_text_same_eye_different_subspecialty()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -131,6 +156,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text NOT defined
     same eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_with_secondaryto_secondary_withOUT_letter_macro_text_same_eye()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -147,6 +175,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     same eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary_with_secondaryto_secondary_with_letter_macro_text_same_eye()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -163,6 +194,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     different eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_with_secondaryto_secondary_with_letter_macro_text_diff_eyes()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -179,6 +213,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     different eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary_with_secondaryto_secondary_with_letter_macro_text_diff_eyes()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -195,6 +232,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     same eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary_with_secondaryto_primary_with_letter_macro_text_same_eyes()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -211,6 +251,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     letter macro text defined
     different eyes
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary_with_secondaryto_primary_with_letter_macro_text_diff_eyes()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -226,6 +269,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     parent finding with primary secto disorder
     letter macro text defined
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_finding_with_secondaryto_primary_with_letter_macro_text()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -241,6 +287,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     parent finding with secondary secto disorder
     letter macro text defined
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_finding_with_secondaryto_secondary_with_letter_macro_text()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -256,6 +305,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     parent primary disorder with finding secto
     letter macro text defined
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_primary_with_secondaryto_finding_with_letter_macro_text()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -271,6 +323,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     parent secondary disorder with finding secto
     letter macro text defined
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_Diagnoses_secondary_with_secondaryto_finding_with_letter_macro_text()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');
@@ -285,6 +340,9 @@ class Element_OphCiExamination_DiagnosesTest extends CDbTestCase
     /*
     multiple pairs of findings and diagnoses
     */
+    /**
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::getLetter_string
+     */
     public function testGetLetter_string_multiple()
     {
         $this->markTestIncomplete('Fixture data inconsistent with output from getLetter_string.');

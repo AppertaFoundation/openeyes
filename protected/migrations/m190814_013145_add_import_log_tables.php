@@ -22,7 +22,7 @@ class m190814_013145_add_import_log_tables extends OEMigration
 				'message' => 'string NOT NULL',
 				'import_status_id' => 'int NOT NULL'
 			));
-		$builder = Yii::app()->db->schema->commandBuilder;
+		$builder = $this->getDbConnection()->schema->commandBuilder;
 		$builder->createMultipleInsertCommand(
 			'import_status',
 			array(

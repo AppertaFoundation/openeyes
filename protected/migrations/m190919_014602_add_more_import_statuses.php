@@ -4,7 +4,7 @@ class m190919_014602_add_more_import_statuses extends CDbMigration
 {
 	public function up()
 	{
-		$builder = Yii::app()->db->schema->commandBuilder;
+		$builder = $this->getDbConnection()->schema->commandBuilder;
 		$builder->createMultipleInsertCommand(
 			'import_status',
 			array(
