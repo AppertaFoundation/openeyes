@@ -86,14 +86,21 @@ $layoutColumns = array(
                     onReturn: function (adderDialog, selectedItems) {
                         var $table = $('.<?= $eye_side ?>-eye .procedures');
                         if (selectedItems.length) {
-                            for(let index in selectedItems) {
-                                let selected_data = [];
-                                selected_data.id = selectedItems[index]['id'];
-                                selected_data.term = selectedItems[index]['label'];
-                                selected_data.eye_side = '<?=$eye_side?>';
-                                var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
-                                $table.find('tbody').append(form);
-                            }
+                            let $current_procedures = $table.find(':input[name="treatment_<?=$eye_side?>_procedures[]"]');
+                            let proc_ids = [];
+                            $current_procedures.each(function (index, procedure) {
+                                proc_ids.push(parseInt(procedure.value));
+                            });
+                            selectedItems.forEach(function (selectedItem) {
+                                if (!proc_ids.includes(selectedItem.id)) {
+                                    let selected_data = [];
+                                    selected_data.id = selectedItem.id;
+                                    selected_data.term = selectedItem.label;
+                                    selected_data.eye_side = '<?=$eye_side?>';
+                                    var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
+                                    $table.find('tbody').append(form);
+                                }
+                            });
                             return true;
                         } else {
                             return false;
