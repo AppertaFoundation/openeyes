@@ -317,6 +317,11 @@ class HistoryMedicationsEntry extends \BaseElement
                 ($this->drug ? $this->drug->tallmanlabel : ''));
     }
 
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+    }
+
     /**
      * @return string
      */
