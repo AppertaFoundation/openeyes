@@ -38,7 +38,7 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 $is_posting = Yii::app()->request->getIsPostRequest();
 
 
-$allergy_ids = !is_null($entry->medication_id) ?
+$entry_allergy_ids = !is_null($entry->medication_id) ?
     implode(",", array_map(function ($e) {
         return $e->id;
     }, $entry->medication->allergies)) :
@@ -54,9 +54,11 @@ $stop_fields_validation_error = array_intersect(
     class="divider col-gap js-first-row <?= $stopped ? 'fade' : ''?> <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
     data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    <?php if (!is_null($entry->medication_id)) :
+    <?php if (!is_null($entry->medication_id)) {
+    ?>data-allergy-ids="<?= $entry_allergy_ids ?>"<?php
+    } elseif ($allergy_ids) {
         ?>data-allergy-ids="<?= $allergy_ids ?>"<?php
-    endif; ?>
+    } ?>
 
     <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
