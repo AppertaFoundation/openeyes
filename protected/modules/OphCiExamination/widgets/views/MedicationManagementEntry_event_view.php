@@ -16,7 +16,7 @@
  */
 ?>
 <?php /** @var EventMedicationUse $entry */ ?>
-<tr class="divider col-gap <?= isset($stopped) && $stopped ? "fade": ""; ?>">
+<tr data-key="<?= $row_count ?>" class="divider col-gap <?= isset($stopped) && $stopped ? "fade": ""; ?>">
     <td rowspan="2">
         <i class="oe-i <?= $entry_icon ?> small pad-right "></i>
         <?= $entry->getMedicationDisplay(true) ?>

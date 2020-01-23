@@ -18,7 +18,7 @@
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id = CHtml::modelName($element) . '_element'; ?>
 <div class="element-data full-width">
-    <table class="medications">
+    <table class="medications" id="Medication_Management_medication_current_entries">
         <colgroup>
             <col class="cols-3">
             <col class="cols-5">
@@ -27,27 +27,30 @@
             <!-- actions auto-->
         </colgroup>
         <thead>
-        <tr>
-            <th>Drug</th>
-            <th>Dose/frequency/route/start/stop</th>
-            <th>Duration/dispense/comments</th>
-            <th><i class="oe-i drug-rx small no-click"></i></th>
-            <th></th><!-- actions -->
-        </tr>
+            <tr>
+                <th>Drug</th>
+                <th>Dose/frequency/route/start/stop</th>
+                <th>Duration/dispense/comments</th>
+                <th><i class="oe-i drug-rx small no-click"></i></th>
+                <th></th><!-- actions -->
+            </tr>
         </thead>
         <tbody>
         <?php foreach (array(
-                                         "start" => "getContinuedEntries",
-                                         "direction-right " => "getEntriesStartedToday",
-                                     ) as $entry_icon => $method) :
+                                "start" => "getContinuedEntries",
+                                "direction-right " => "getEntriesStartedToday",
+                            ) as $entry_icon => $method) :
             $entries = $element->$method();
     if (!empty($entries)) : ?>
-                <?php foreach ($entries as $entry) : ?>
-                    <?php echo $this->render('MedicationManagementEntry_event_view',
+                <?php foreach ($entries as $key => $entry) : ?>
+                    <?php echo $this->render(
+                        'MedicationManagementEntry_event_view',
                         [
                             'entry' => $entry,
-                            'entry_icon' => $entry_icon
-                        ]); ?>
+                            'entry_icon' => $entry_icon,
+                            'row_count' => $key
+                        ]
+                    ); ?>
                 <?php endforeach; ?>
 
     <?php endif; ?>
@@ -62,7 +65,7 @@
             </div>
             <div class="collapse-data-content" style="display:none;">
 
-                <table class="medications">
+                <table class="medications" id="Medication_Management_medication_stopped_entries">
                     <colgroup>
                         <col class="cols-3">
                         <col class="cols-5">
@@ -72,12 +75,14 @@
 
                     <tbody>
                     <?php foreach ($stoppedEntries as $entry) : ?>
-                        <?php echo $this->render('MedicationManagementEntry_event_view',
+                        <?php echo $this->render(
+                            'MedicationManagementEntry_event_view',
                             [
                                 'entry' => $entry,
                                 'entry_icon' => 'stop',
                                 'stopped' => true
-                            ]); ?>
+                            ]
+                        ); ?>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
