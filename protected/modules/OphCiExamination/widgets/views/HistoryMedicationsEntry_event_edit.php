@@ -55,7 +55,7 @@ $stop_fields_validation_error = array_intersect(
     data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
     <?php if (!is_null($entry->medication_id)) {
-    ?>data-allergy-ids="<?= $entry_allergy_ids ?>"<?php
+        ?>data-allergy-ids="<?= $entry_allergy_ids ?>"<?php
     } elseif ($allergy_ids) {
         ?>data-allergy-ids="<?= $allergy_ids ?>"<?php
     } ?>
@@ -155,7 +155,7 @@ $stop_fields_validation_error = array_intersect(
                 'rows' => '1',
                 'placeholder' => 'Comments',
                 'autocomplete' => 'off',
-            ]) ?>
+                        ]) ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </div>
         <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
@@ -207,7 +207,7 @@ $stop_fields_validation_error = array_intersect(
             <div class="alternative-display-element textual">
                 <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
                     ?> style="display: none;"<?php
-                                                            }?>>
+                                                }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
