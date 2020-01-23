@@ -18,6 +18,7 @@
 <tr>
     <td><?= $term ?>
         <input type="hidden" name="treatment_<?= $eye_side ?>_procedures[]" value=<?= $id ?>>
+    </td>
     <td>
         <i class="oe-i trash"></i>
     </td>
