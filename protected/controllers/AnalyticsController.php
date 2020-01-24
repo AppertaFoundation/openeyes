@@ -53,6 +53,7 @@ class AnalyticsController extends BaseController
     {
         $ret = null;
         if (Yii::app()->request->getParam('drill')) {
+            $specialty = Yii::app()->request->getParam('specialty');
             $params = Yii::app()->request->getParam('params');
             if (isset($params['ids'])) {
                 // $params['ids'] = json_decode($params['ids']);
@@ -975,6 +976,7 @@ class AnalyticsController extends BaseController
         $command = Yii::app()->db->createCommand()
             ->select('
                 p.hos_num as hos_num,
+                p.nhs_num as nhs_num,
                 eoc.event_id as event_id,
                 e.event_date as event_date,
                 eye.name as eye_side,
@@ -1604,7 +1606,6 @@ class AnalyticsController extends BaseController
             ->andWhere("eoc.id is not null")
             ->andWhere("eoc.followup_period_id is not null")
             ->group("p.id");
-
         // extract out the query in the foreach loop
         // and integrate them into the following query
         // use the column value instead the object from findByPk within the loop
