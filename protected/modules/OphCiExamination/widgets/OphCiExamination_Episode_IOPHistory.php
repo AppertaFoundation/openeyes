@@ -291,7 +291,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'comments' => $iop_element->{$side . '_comments'}
                                 );
                                 
-                OELog::log("reading_time: ".$reading->reading_time);
+                                OELog::log("reading_time: ".$reading->reading_time);
             }
         }
 
