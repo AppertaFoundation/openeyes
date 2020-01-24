@@ -284,7 +284,7 @@ var analytics_cataract = (function () {
 		}
 		$('.js-cataract-report-type').off('click').on('click', _.throttle(cataractPlotType, ajaxThrottleTime));
 
-		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTIme));
+		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTime));
 
 		$('#js-all-surgeons').off('click').on('click', _.throttle(toggleAllSurgeonOpt, ajaxThrottleTime));
 
