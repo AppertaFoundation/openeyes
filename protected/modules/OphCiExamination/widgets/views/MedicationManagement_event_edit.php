@@ -237,7 +237,7 @@ $element_errors = $element->getErrors();
                         }
                     });
 
-                    if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
+                    if($previous_option !== undefined && $previous_option.val() !== $select_field.val()) {
                         prescription_modified = true;
                     }
                 });
