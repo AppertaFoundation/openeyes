@@ -24,5 +24,7 @@ return array(
                 'referral_type_id' => 1,
                 'received_date' => date('Y-m-d', strtotime('-20 days')),
                 'referrer' => 'TEST',
+                'clock_start' => '2020-01-01 00:00:00',
+                'breach' => '2020-01-02 12:00:00'
         ),
 );

@@ -99,6 +99,7 @@ EOH;
      * @param $horizon
      *
      * @return DateTime
+     * @throws Exception
      */
     public function getDateLimit($horizon)
     {

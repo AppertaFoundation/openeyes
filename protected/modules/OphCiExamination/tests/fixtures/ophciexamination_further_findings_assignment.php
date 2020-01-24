@@ -20,11 +20,13 @@ return array(
         'id' => 1,
         'finding_id' => 2,
         'element_id' => 1,
+        'description' => 'Finding 2'
     ),
     'ex_further_finding_ass2' => array(
         'id' => 2,
         'finding_id' => 1,
         'element_id' => 2,
+        'description' => 'Finding 1'
     ),
     'ex_further_finding_ass3' => array(
         'id' => 3,
@@ -42,45 +44,54 @@ return array(
         'id' => 5,
         'finding_id' => 1,
         'element_id' => 3,
+        'description' => 'Finding 1'
     ),
     'ex_further_finding_ass6' => array(
         'id' => 6,
         'finding_id' => 1,
         'element_id' => 4,
+        'description' => 'Finding 1'
     ),
     'ex_further_finding_ass7' => array(
         'id' => 7,
         'finding_id' => 1,
         'element_id' => 5,
+        'description' => 'Finding 1'
     ),
     'ex_further_finding_ass8' => array(
         'id' => 8,
         'finding_id' => 2,
         'element_id' => 6,
+        'description' => 'Finding 2'
     ),
     'ex_further_finding_ass9' => array(
         'id' => 9,
         'finding_id' => 2,
         'element_id' => 7,
+        'description' => 'Finding 2'
     ),
     'ex_further_finding_ass10' => array(
         'id' => 10,
         'finding_id' => 1,
         'element_id' => 8,
+        'description' => 'Finding 1'
     ),
     'ex_further_finding_ass11' => array(
         'id' => 11,
         'finding_id' => 2,
         'element_id' => 8,
+        'description' => 'Finding 2'
     ),
     'ex_further_finding_ass12' => array(
         'id' => 12,
         'finding_id' => 3,
         'element_id' => 8,
+        'description' => 'Finding 3'
     ),
     'ex_further_finding_ass13' => array(
         'id' => 13,
         'finding_id' => 4,
         'element_id' => 8,
+        'description' => 'Finding 4'
     ),
 );

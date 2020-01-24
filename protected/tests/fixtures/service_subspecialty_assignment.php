@@ -29,10 +29,12 @@ return array(
     ),
     'servicespecialtyassignment3' => array(
         'id' => 3,
+        'service_id' => 2,
         'subspecialty_id' => 2,
     ),
     'servicespecialtyassignment4' => array(
         'id' => 4,
+        'service_id' => 2,
         'subspecialty_id' => 3,
     ),
 );
