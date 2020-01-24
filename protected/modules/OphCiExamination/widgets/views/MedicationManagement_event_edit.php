@@ -219,6 +219,7 @@ $element_errors = $element->getErrors();
 
         $('#et_save_check_prescription_reason').on('click', function () {
             let prescription_modified = false;
+            let has_errors = <?= $element->hasErrors() ?>
 
             //check if old prescribed medications have been modified
             prescribed_medications.forEach(function (medication) {
@@ -266,7 +267,7 @@ $element_errors = $element->getErrors();
                 prescription_modified = true;
             }
 
-            if (prescription_modified) {
+            if (prescription_modified && !has_errors) {
                 $('#js-save-mm-event').show();
             } else {
                 $('#et_save').trigger('click');
