@@ -32,23 +32,24 @@ if (!empty($subspecialty)) { ?>
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
-    <div id='oes-side-indicator' style="">
-      <button class="selected plot-display-label reset-zoom">Reset Zoom Level</button>
+    <div id='oes-side-indicator' style="height: 25px">
+    <div id='oes-zoom-btns' style="display:inline-block;">
+    <button class="selected plot-display-label reset-zoom">Reset Zoom Level</button>
       <button class="selected plot-display-label reset-zoom">1m</button>
       <button class="selected plot-display-label reset-zoom">6m</button>
       <button class="selected plot-display-label reset-zoom">1y</button>
       <button class="selected plot-display-label reset-zoom">YTD</button>
-      <h4 id='oes-side-indicator-left' class='cols-7' style="color:#fe6767;
+    </div>
+      <h4 id='oes-side-indicator-left' class='cols-5' style="color:#fe6767;
       text-align: center;
       font-weight: 500;
       display:none;">
       Left
       </h4>
-      <h4 id='oes-side-indicator-right' class='cols-7' style="color:#9fec6d;
+      <h4 id='oes-side-indicator-right' class='cols-5' style="color:#9fec6d;
       text-align: center;
       font-weight: 500;
       display:inline-block;">
-
       Right
       </h4>
     </div>
