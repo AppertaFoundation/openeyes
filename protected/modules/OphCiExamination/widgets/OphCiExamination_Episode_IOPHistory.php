@@ -285,7 +285,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'eye' => $side,
                                     'instrument_name' => $reading->instrument->name,
                                     'dilated' => 'N/A',
-                                    'reading_date' => date('j M Y', strtotime($reading->reading_time)),
+                                    'reading_date' => date('d/m/y', strtotime($reading->reading_time)),
                                     'reading_time' => date('G:i', strtotime($reading->reading_time)),
                                     'raw_value' => $reading->reading->value,
                                     'comments' => $iop_element->{$side . '_comments'}
