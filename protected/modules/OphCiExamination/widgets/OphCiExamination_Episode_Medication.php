@@ -38,6 +38,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
         foreach ($events as $event) {
             $meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications');
+            $start_date = '';
+            $end_date = '';
             if ($meds) {
                 $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
                     'patient' => $this->patient,
@@ -69,16 +71,15 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $drug_aliases = $entry->medication->alternativeTerms() ? ' ('.$entry->medication->alternativeTerms().')': '';
                     $drug_name = $entry->medication->preferred_term . $drug_aliases;
 
-                    if ($entry->start_date === null || $entry->start_date === "0000-00-00" || $entry->start_date === "") {
-                        continue;
-                    }
+                    if ($entry->start_date !== null && $entry->start_date !== "0000-00-00" && $entry->start_date !== "") {
+                        $start_date = $this->formatSQLDateForOEscape($entry->start_date);
+                        $start_date = Helper::mysqlDate2JsTimestamp($start_date);
+                        $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
+                        $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
 
-                    $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
-                    $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
-                    $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
-
-                    if ($start_date < $earliest_date) {
-                        $earliest_date = $start_date;
+                        if ($start_date < $earliest_date) {
+                            $earliest_date = $start_date;
+                        }
                     }
 
                      // Construct data to store medication records for left and right eye based on drug name.
@@ -105,6 +106,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
         foreach (['left', 'right'] as $side) {
             foreach ($medication_list[$side] as $key => &$med) {
+                if ($med[0]['low'] === '') {
+                    $med[0]['low'] = $earliest_date;
+                }
+
                 if (sizeof($med)>1) {
                     $med = $this->purifyMedicationSeries($med);    //sort and merge each medication's time series
                 }
@@ -116,6 +121,23 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         }
 
         return $medication_list;
+    }
+
+    /**
+     * Removes any occurrences of 00 in SQL date for OEscape formatting
+     * @param $date
+     * @return string
+     */
+    private function formatSQLDateForOEscape($date) {
+        $ymd_date = explode('-', $date);
+        $new_date = [];
+        foreach ($ymd_date as $date_type) {
+            if ($date_type === '00') {
+                $date_type = '01';
+            }
+            $new_date[] = $date_type;
+        }
+        return implode('-', $new_date);
     }
 
     /**
