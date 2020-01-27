@@ -53,6 +53,7 @@ class AnalyticsController extends BaseController
     {
         $ret = null;
         if (Yii::app()->request->getParam('drill')) {
+            $specialty = Yii::app()->request->getParam('specialty');
             $params = Yii::app()->request->getParam('params');
             if (isset($params['ids'])) {
                 // $params['ids'] = json_decode($params['ids']);
@@ -391,7 +392,7 @@ class AnalyticsController extends BaseController
                 ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
             $paitent_list_command->where('p.id IN (' . implode(', ', $params['ids']) . ')');
         }
- 
+
         $res = $paitent_list_command
             ->select("
               p.hos_num as hos_num
@@ -975,6 +976,7 @@ class AnalyticsController extends BaseController
         $command = Yii::app()->db->createCommand()
             ->select('
                 p.hos_num as hos_num,
+                p.nhs_num as nhs_num,
                 eoc.event_id as event_id,
                 e.event_date as event_date,
                 eye.name as eye_side,
@@ -1247,7 +1249,7 @@ class AnalyticsController extends BaseController
               ->select('COUNT(DISTINCT t.patient_id) total_patients')
               ->where('t.disorder_type IS NULL')
               ->queryAll();
-          
+
           $other_disorders = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
               ->select('
                     COUNT(DISTINCT t.patient_id) total_patients
@@ -1315,7 +1317,7 @@ class AnalyticsController extends BaseController
               $disorder_list['customdata'][] = array('No Diagnoses');
               $i++;
           }
-  
+
           return $disorder_list;
     }
 
@@ -1575,8 +1577,8 @@ class AnalyticsController extends BaseController
                 e.id as event_id
                 , p.id as patient_id
                 , UNIX_TIMESTAMP(e.event_date) as event_date
-                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
-                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
+                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date
+                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks
                 , MAX(UNIX_TIMESTAMP(w.start)) as start
             ")
             ->from("event e")
@@ -1586,7 +1588,8 @@ class AnalyticsController extends BaseController
             ->leftjoin("firm f", "e2.firm_id = f.id")
             ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
             ->leftjoin("et_ophciexamination_clinicoutcome eoc", "eoc.event_id = e.id")
-            ->leftjoin("period", "period.id = eoc.followup_period_id")
+            ->leftjoin("ophciexamination_clinicoutcome_entry eoc_entry", "eoc_entry.element_id = eoc.id")
+            ->leftjoin("period", "period.id = eoc_entry.followup_period_id")
             ->leftjoin("worklist_patient wp", "p.id = wp.patient_id")
             ->leftjoin("worklist w", "wp.worklist_id = w.id")
             ->where("p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1")
@@ -1602,9 +1605,8 @@ class AnalyticsController extends BaseController
                 )
             ")
             ->andWhere("eoc.id is not null")
-            ->andWhere("eoc.followup_period_id is not null")
+            ->andWhere("eoc_entry.followup_period_id is not null")
             ->group("p.id");
-
         // extract out the query in the foreach loop
         // and integrate them into the following query
         // use the column value instead the object from findByPk within the loop
