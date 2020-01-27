@@ -219,7 +219,7 @@ $element_errors = $element->getErrors();
 
         $('#et_save_check_prescription_reason').on('click', function () {
             let prescription_modified = false;
-            let has_errors = <?= $element->hasErrors() ?>
+            let prescription_event_exists = false;
 
             //check if old prescribed medications have been modified
             prescribed_medications.forEach(function (medication) {
@@ -242,6 +242,10 @@ $element_errors = $element->getErrors();
                         prescription_modified = true;
                     }
                 });
+
+                if($(medication).find('[name*="prescription_item_id"]').val()){
+                    prescription_event_exists = true;
+                }
             });
 
             //check if new prescribed medications have been added
@@ -267,7 +271,7 @@ $element_errors = $element->getErrors();
                 prescription_modified = true;
             }
 
-            if (prescription_modified && !has_errors) {
+            if (prescription_modified && prescription_event_exists) {
                 $('#js-save-mm-event').show();
             } else {
                 $('#et_save').trigger('click');
