@@ -129,13 +129,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
      * @return string
      */
     private function formatSQLDateForOEscape($date) {
-        $ymd_date = explode('-', $date);
+        $date_sections = explode('-', $date);
         $new_date = [];
-        foreach ($ymd_date as $date_type) {
-            if ($date_type === '00') {
-                $date_type = '01';
+        foreach ($date_sections as $date_section) {
+            if ($date_section === '00') {
+                $date_section = '01';
             }
-            $new_date[] = $date_type;
+            $new_date[] = $date_section;
         }
         return implode('-', $new_date);
     }
