@@ -204,6 +204,7 @@ $element_errors = $element->getErrors();
     $(document).ready(function () {
         let prescribed_medications = [];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
+        let prescription_event_exists = false;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -217,9 +218,14 @@ $element_errors = $element->getErrors();
             $save_button.hide();
         }
 
+        prescribed_medications.forEach(function (medication) {
+            if($(medication).find('[name*="prescription_item_id"]').val()){
+                prescription_event_exists = true;
+            }
+        });
+
         $('#et_save_check_prescription_reason').on('click', function () {
             let prescription_modified = false;
-            let prescription_event_exists = false;
 
             //check if old prescribed medications have been modified
             prescribed_medications.forEach(function (medication) {
@@ -243,9 +249,6 @@ $element_errors = $element->getErrors();
                     }
                 });
 
-                if($(medication).find('[name*="prescription_item_id"]').val()){
-                    prescription_event_exists = true;
-                }
             });
 
             //check if new prescribed medications have been added
