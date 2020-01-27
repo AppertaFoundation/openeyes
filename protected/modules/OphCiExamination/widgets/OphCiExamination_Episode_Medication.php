@@ -72,9 +72,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $drug_name = $entry->medication->preferred_term . $drug_aliases;
 
                     if ($entry->start_date !== null && $entry->start_date !== "0000-00-00" && $entry->start_date !== "") {
-                        $start_date = $this->formatSQLDateForOEscape($entry->start_date);
+                        $start_date = $this->changeInvalidSqlDateMonthAndDayToOne($entry->start_date);
+                        $end_date = $this->changeInvalidSqlDateMonthAndDayToOne($entry->end_date);
                         $start_date = Helper::mysqlDate2JsTimestamp($start_date);
-                        $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
+                        $end_date = Helper::mysqlDate2JsTimestamp($end_date);
                         $stop_reason = $entry->stopReason ? $entry->stopReason->name : null;
 
                         if ($start_date < $earliest_date) {
@@ -128,7 +129,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
      * @param $date
      * @return string
      */
-    private function formatSQLDateForOEscape($date) {
+    private function changeInvalidSqlDateMonthAndDayToOne($date) {
         $date_sections = explode('-', $date);
         $new_date = [];
         foreach ($date_sections as $date_section) {
