@@ -89,6 +89,7 @@ foreach ($element->entries as $entry) {
                     array(
                         'entry' => $entry,
                         'form' => $form,
+                        'allergy_ids' => '',
                         'model_name' => $model_name,
                         'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                         'row_count' => $row_count,
@@ -151,6 +152,7 @@ foreach ($element->entries as $entry) {
                                 array(
                                     'entry' => $entry,
                                     'form' => $form,
+                                    'allergy_ids' => '',
                                     'model_name' => $model_name,
                                     'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                                     'row_count' => $row_count,
@@ -194,6 +196,7 @@ foreach ($element->entries as $entry) {
             array(
                 'entry' => $empty_entry,
                 'form' => $form,
+                'allergy_ids' => '{{allergy_ids}}',
                 'model_name' => $model_name,
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
