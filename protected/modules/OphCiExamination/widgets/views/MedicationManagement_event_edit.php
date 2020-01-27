@@ -302,6 +302,8 @@ $element_errors = $element->getErrors();
                     }
                 });
             }
+            $('#et_save_check_prescription_reason').hide();
+            $('#et_save').show();
             delete window.MMController;
         });
 
