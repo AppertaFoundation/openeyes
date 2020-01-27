@@ -106,7 +106,7 @@ EOH;
             $interval = @DateInterval::createFromDateString($horizon);
             $now = new DateTime();
             $limit = clone $now;
-            if($interval){
+            if ($interval) {
                 $limit->add($interval);
             }
 
