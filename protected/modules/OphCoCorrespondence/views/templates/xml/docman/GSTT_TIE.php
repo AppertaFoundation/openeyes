@@ -24,7 +24,7 @@
     <VisitID><?=$data['visit_id'];?></VisitID>
 <?php if(isset($data['document_links']) && is_array($data['document_links']) ): ?>
         <?php foreach($data['document_links'] as $link):?>
-            <DocumentLink><?=$link;?></DocumentLink>
+    <DocumentLink><?=$link;?></DocumentLink>
         <?php endforeach;?>
     <?php endif;?>
     <GP>
