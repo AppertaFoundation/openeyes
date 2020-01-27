@@ -47,6 +47,7 @@
                         'MedicationManagementEntry_event_view',
                         [
                             'entry' => $entry,
+                            'patient' => $this->patient,
                             'entry_icon' => $entry_icon,
                             'row_count' => $key
                         ]
@@ -79,6 +80,7 @@
                             'MedicationManagementEntry_event_view',
                             [
                                 'entry' => $entry,
+                                'patient' => $this->patient,
                                 'entry_icon' => 'stop',
                                 'stopped' => true
                             ]

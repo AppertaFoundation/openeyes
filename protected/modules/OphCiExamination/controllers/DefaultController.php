@@ -285,7 +285,7 @@ class DefaultController extends \BaseEventTypeController
             return;
         }
 
-        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
+        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date, 'patient' => $this->patient));
 
         $filteredElements = array_filter($elements, function ($element) {
             return !in_array(get_class($element), array(

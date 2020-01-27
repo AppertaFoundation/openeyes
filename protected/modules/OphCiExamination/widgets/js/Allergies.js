@@ -118,11 +118,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.notifyHistoryMedicationsController = function(new_allergy_ids) {
-        let historyMedicationController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
-            element: $('#OEModule_OphCiExamination_models_HistoryMedications_element'),
-            allAllergies: this.options.allAllergies
-        });
-        historyMedicationController.updateAllergyStatuses(new_allergy_ids);
+        let $historyMedicationsElement = $('#OEModule_OphCiExamination_models_HistoryMedications_element');
+        if ($historyMedicationsElement.length > 0) {
+            let historyMedicationController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
+                element: $historyMedicationsElement,
+                allAllergies: this.options.allAllergies
+            });
+            historyMedicationController.updateAllergyStatuses(new_allergy_ids);
+        }
     };
 
 
