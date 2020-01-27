@@ -21,6 +21,18 @@
 </div>
 
 <div class="cols-12">
+<form method="GET">
+    <input type="hidden" name="set_id" value="<?= Yii::app()->request->getParam('set_id') ?>"/>
+    <input type="text"
+           class="search cols-6"
+           autocomplete=""
+           name="search"
+           id="search_query"
+           value="<?= Yii::app()->request->getParam('search') ?>"
+           placeholder="Search medication in set..."
+    >
+</form>
+
     <table id="medicationset-medications-list" class="standard">
         <colgroup>
             <col class="cols-1">

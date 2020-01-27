@@ -298,7 +298,6 @@ class MedicationSet extends BaseActiveRecordVersioned
         if ($this->automatic) {
             $this->_saveAutoAttrs();
             $this->_saveAutoSets();
-            $this->_saveAutoMeds();
             $this->_saveSetRules();
         }
 
@@ -381,7 +380,7 @@ class MedicationSet extends BaseActiveRecordVersioned
      * Applies to automatic sets only
      */
 
-    private function _saveAutoMeds()
+    public function saveAutoMeds()
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
@@ -390,10 +389,14 @@ class MedicationSet extends BaseActiveRecordVersioned
         $updated_ids = array();
 
         foreach ($this->tmp_meds as $med) {
-            if ($med['id'] == -1) {
+            if (!isset($med['id'])) {
                 $med_m = new MedicationSetAutoRuleMedication();
             } else {
                 $med_m = MedicationSetAutoRuleMedication::model()->findByPk($med['id']);
+            }
+
+            if (!$med_m) {
+                throw new Exception("MedicationSetAutoRuleMedication {$med['id']} did not found");
             }
 
             $med_m->medication_id = $med['medication_id'];

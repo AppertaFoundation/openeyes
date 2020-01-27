@@ -419,47 +419,25 @@ class AutoSetRuleController extends BaseAdminController
         }
     }
 
-    public function actionUpdateMedicationDefaultsOLD()
-    {
-        $result['success'] = false;
-        if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
-            $medication_data = \Yii::app()->request->getParam('Medication', []);
-
-            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
-                $item = \MedicationSetItem::model()->findByPk($item_data['id']);
-
-                if ($item) {
-                    $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
-                    $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
-                    $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
-                    $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
-
-                    $result['success'] = $item->save();
-                    $result['errors'] = $item->getErrors();
-                }
-            }
-        }
-
-        echo \CJSON::encode($result);
-        \Yii::app()->end();
-    }
-
     public function actionListMedications()
     {
         $set_id = \Yii::app()->request->getParam('set_id');
+        $search = \Yii::app()->request->getParam('search');
         if (!$set_id) {
             \Yii::app()->user->setFlash('error', 'Set not found.');
             $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
         }
 
-        $medication_set_name = \MedicationSet::model()->findByPk($set_id)->name;
+        $medication_set = \MedicationSet::model()->findByPk($set_id);
 
         $criteria = new \CDbCriteria();
         $criteria->with = ['medicationSets'];
         $criteria->together = true;
-        $criteria->addSearchCondition('medication_set_id', $set_id);
+        $criteria->addCondition('medication_set_id', $set_id);
+
+        if ($search) {
+            $criteria->addSearchCondition('LOWER(t.preferred_term)', strtolower($search), true);
+        }
 
         $data_provider = new CActiveDataProvider('Medication', [
             'criteria' => $criteria
@@ -472,7 +450,7 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         $this->render('/AutoSetRule/listMedications', [
-            'medication_set_name' => $medication_set_name,
+            'medication_set_name' => $medication_set->name,
             'data_provider' => $data_provider,
         ]);
     }

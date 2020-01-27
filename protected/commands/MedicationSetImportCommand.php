@@ -85,7 +85,6 @@ EOH;
 
                     if ($medication) {
                         $new_set->tmp_meds[] = array(
-                            'id' => '-1',
                             'medication_id' => $medication->id,
                             'include_parent' => 1,
                             'include_children' => 1,
@@ -125,6 +124,7 @@ EOH;
 
         try {
             if ($new_set->save()) {
+                $new_set->saveAutoMeds();
                 if ($current_set) {
                     \MedicationSetAutoRuleSetMembership::model()->updateAll(['source_medication_set_id' => $new_set->id], 'source_medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetAutoRuleSetMembership::model()->updateAll(['target_medication_set_id' => $new_set->id], 'target_medication_set_id = :set_id', [':set_id' => $current_set->id]);
