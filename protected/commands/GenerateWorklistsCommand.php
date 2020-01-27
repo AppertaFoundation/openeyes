@@ -103,10 +103,12 @@ EOH;
     public function getDateLimit($horizon)
     {
         if ($horizon) {
-            $interval = DateInterval::createFromDateString($horizon);
+            $interval = @DateInterval::createFromDateString($horizon);
             $now = new DateTime();
             $limit = clone $now;
-            $limit->add($interval);
+            if($interval){
+                $limit->add($interval);
+            }
 
             if ($limit <= $now) {
                 $this->usageError("Invalid horizon string {$horizon}");
