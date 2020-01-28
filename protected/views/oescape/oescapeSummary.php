@@ -23,7 +23,7 @@ if (!empty($subspecialty)) { ?>
     }
 </style>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
-<?php $this->renderPartial('//base/_messages'); ?>
+    <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side" style="width: 50%;">
     <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
         <?php $summaryItems = array();
@@ -49,23 +49,23 @@ if (!empty($subspecialty)) { ?>
             </h4>
         </div>
         <?php if (count($summaryItems)) { ?>
-        <?php foreach ($summaryItems as $summaryItem) {
-            Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-            $widget = $this->createWidget($summaryItem->getClassName(), array(
-            'patient' => $this->patient,
-            'subspecialty' => $subspecialty,
-            'event_type' => $summaryItem->event_type,
-            )); ?>
-        <?php $widget->run_oescape(count($summaryItems));
+            <?php foreach ($summaryItems as $summaryItem) {
+                Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+                $widget = $this->createWidget($summaryItem->getClassName(), array(
+                'patient' => $this->patient,
+                'subspecialty' => $subspecialty,
+                'event_type' => $summaryItem->event_type,
+                )); ?>
+                <?php $widget->run_oescape(count($summaryItems));
             }
         } ?>
     </div>
 </div>
 <div class="oes-right-side" style="width: 50%;">
     <?php
-        if (isset($widget)) {
-            $widget->run_right_side();
-        } ?>
+    if (isset($widget)) {
+        $widget->run_right_side();
+    } ?>
 </div>
 <?php } ?>
 
