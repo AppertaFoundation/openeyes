@@ -409,12 +409,13 @@ class EventMedicationUse extends BaseElement
         return implode(' ', $res);
     }
 
+    /**
+     * @throws Exception
+     * */
     public function saveTapers()
     {
         // delete existing tapers
-
-        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
-        bindValues(array(":item_id" => $this->id))->execute();
+        OphDrPrescription_ItemTaper::model()->deleteAllByAttributes(['item_id'=> $this->id]);
 
         // add new ones
         foreach ($this->tapers as $taper) {
