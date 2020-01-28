@@ -1181,15 +1181,22 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function saveComplexAttributes_Element_OphCiExamination_ClinicOutcome($element, $data, $index)
     {
-        if ($element->status && $element->status->patientticket && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-            if (isset($data['patientticket_queue'])) {
-                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                $queue_data = $api->extractQueueData($queue, $data);
-                $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
-            } else {
-                $api->updateTicketForEvent($this->event);
+        $api = Yii::app()->moduleAPI->get('PatientTicketing');
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] : [];
+        $patient_ticket_ids = models\OphCiExamination_ClinicOutcome_Status::model()->getPatientTicketIds();
+
+        foreach ($entries as $entry) {
+            if (array_search($entry['status_id'], $patient_ticket_ids) !== false) {
+                if (isset($data['patientticket_queue'])) {
+                    $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                    $queue_data = $api->extractQueueData($queue, $data);
+                    $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
+                } else {
+                    $api->updateTicketForEvent($this->event);
+                }
             }
         }
+
     }
 
     private function getOtherSide($side1, $side2, $selectedSide)
@@ -1549,17 +1556,14 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
-        $co_sid = $data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
-        $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
-        if ($status && $status->patientticket) {
-            $err = array();
-            $queue = null;
-            if (!$data['patientticket_queue']) {
-                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-            } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
+        $err = array();
+        if (!$data['patientticket_queue']) {
+            $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
+        } else {
+            $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+            if (!$queue) {
                 $err['patientticket_queue'] = 'Virtual Clinic not found';
-            }
-            if ($queue) {
+            } else {
                 if (!$api->canAddPatientToQueue($this->patient, $queue)) {
                     $err['patientticket_queue'] = 'Cannot add Patient to Queue';
                 } else {
@@ -1567,10 +1571,12 @@ class DefaultController extends \BaseEventTypeController
                     $err = array_merge($err, $fld_errs);
                 }
             }
+        }
 
-            if (count($err)) {
-                $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if (isset($errors[$et_name]) && $errors[$et_name]) {
+        if (count($err)) {
+            $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
+            if (isset($errors[$et_name])) {
+                if ($errors[$et_name]) {
                     $errors[$et_name] = array_merge($errors[$et_name], $err);
                 } else {
                     $errors[$et_name] = $err;
