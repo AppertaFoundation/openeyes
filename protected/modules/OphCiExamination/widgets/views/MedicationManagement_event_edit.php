@@ -225,59 +225,63 @@ $element_errors = $element->getErrors();
         });
 
         $('#et_save_check_prescription_reason').on('click', function () {
-            let prescription_modified = false;
+            if (!prescription_event_exists) {
+                $('#et_save').trigger('click');
+            } else {
+                let prescription_modified = false;
 
-            //check if old prescribed medications have been modified
-            prescribed_medications.forEach(function (medication) {
-                let $dose = $(medication).find('.js-dose');
-                if ($dose.prop("defaultValue") !== $dose.val()) {
-                    prescription_modified = true;
-                }
+                //check if old prescribed medications have been modified
+                prescribed_medications.forEach(function (medication) {
+                    let $dose = $(medication).find('.js-dose');
+                    if ($dose.prop("defaultValue") !== $dose.val()) {
+                        prescription_modified = true;
+                    }
 
-                select_fields_selectors.forEach(function (selector) {
-                    let $select_field = $(medication).find(selector);
-                    let $previous_option;
+                    select_fields_selectors.forEach(function (selector) {
+                        let $select_field = $(medication).find(selector);
+                        let $previous_option;
 
-                    $select_field.find('option').each(function () {
-                        if (this.defaultSelected) {
-                            $previous_option = $(this);
+                        $select_field.find('option').each(function () {
+                            if (this.defaultSelected) {
+                                $previous_option = $(this);
+                            }
+                        });
+
+                        if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
+                            prescription_modified = true;
                         }
                     });
 
-                    if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
-                        prescription_modified = true;
+                });
+
+                //check if new prescribed medications have been added
+                let $new_prescribed_medications = [];
+                $('.js-entry-table tr.js-first-row.new').find('[name$="prescribe]"]').each(function () {
+                    if ($(this).prop('checked')) {
+                        $new_prescribed_medications.push($(this).parents('tr.js-first-row'));
                     }
                 });
 
-            });
-
-            //check if new prescribed medications have been added
-            let $new_prescribed_medications = [];
-            $('.js-entry-table tr.js-first-row.new').find('[name$="prescribe]"]').each(function () {
-                if ($(this).prop('checked')) {
-                    $new_prescribed_medications.push($(this).parents('tr.js-first-row'));
+                if ($new_prescribed_medications.length > 0) {
+                    prescription_modified = true;
                 }
-            });
 
-            if ($new_prescribed_medications.length > 0) {
-                prescription_modified = true;
-            }
-
-            //check if some old prescribed medication has been deleted
-            let prescribed_medications_check = [];
-            $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescription_item_id]"]').each(function () {
-                if ($(this).val()) {
-                    prescribed_medications_check.push($(this).parents('tr.js-first-row'));
+                //check if some old prescribed medication has been deleted
+                let prescribed_medications_check = [];
+                $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescription_item_id]"]').each(function () {
+                    if ($(this).val()) {
+                        prescribed_medications_check.push($(this).parents('tr.js-first-row'));
+                    }
+                });
+                if (prescribed_medications_check.length !== prescribed_medications.length) {
+                    prescription_modified = true;
                 }
-            });
-            if (prescribed_medications_check.length !== prescribed_medications.length) {
-                prescription_modified = true;
-            }
 
-            if (prescription_modified && prescription_event_exists) {
-                $('#js-save-mm-event').show();
-            } else {
-                $('#et_save').trigger('click');
+                if (prescription_modified) {
+                    $('#js-save-mm-event').show();
+                } else {
+                    $('#et_save').trigger('click');
+                }
             }
         });
 
