@@ -45,6 +45,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
         <?php $this->displayErrors($errors)?>
         <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
         <?php $this->displayErrors($errors, true)?>
+        <?php $this->renderPartial('//patient/event_footer', array('form_id' => $form_id)); ?>
 
     <?php $this->endWidget()?>
 <?php $this->endContent();?>
