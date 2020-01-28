@@ -38,7 +38,9 @@ $read_only = date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
-<?php if ($read_only) { \Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events'); }?>
+<?php if ($read_only) {
+    \Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
+}?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
@@ -122,8 +124,12 @@ $read_only = date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
-            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) { ?>disabled<?php } ?>" type="button">Add standard set</button>
-            <button class="button hint green js-add-select-search <?php if ($read_only) { ?>disabled<?php } ?>" id="mm-add-medication-btn" type="button">
+            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
+                ?>disabled<?php
+                                                                          } ?>" type="button">Add standard set</button>
+            <button class="button hint green js-add-select-search <?php if ($read_only) {
+                ?>disabled<?php
+                                                                  } ?>" id="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
