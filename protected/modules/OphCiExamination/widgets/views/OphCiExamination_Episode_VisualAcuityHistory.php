@@ -17,7 +17,7 @@
   <div class="data-group">
     <div class="data-label column cols-9"></div>
     <div class="data-value column cols-3">
-      <form id="va_history_form" action="#OphCiExamination_Episode_VisualAcuityHistory">
+      <form id="va-history-form" action="#OphCiExamination_Episode_VisualAcuityHistory">
         <label for="va_history_unit_id">Visual Acuity unit</label>
           <?= CHtml::dropDownList('va_history_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
       </form>

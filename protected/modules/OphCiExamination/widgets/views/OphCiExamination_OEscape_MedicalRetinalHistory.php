@@ -16,7 +16,7 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js') ?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js') ?>"></script>
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-<form id="mr_history_form" action="#OphCiExamination_Episode_MedicalRetinalHistory">
+<form id="mr-history-form" action="#OphCiExamination_Episode_MedicalRetinalHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
     <?= CHtml::dropDownList(

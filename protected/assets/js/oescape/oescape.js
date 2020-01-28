@@ -98,8 +98,8 @@ $(document).ready(function () {
 				$('#plotly-Meds-left , #plotly-IOP-left').appendTo($('#right-charts-container'));
 
 				//add vertical padding to substitute for dropdown selectors on right
-				$('<div class="SelectorPadRight" style=" padding:' + $('#va_history_form').height() + 'px 100% 0 0"><div>').clone().appendTo($('#right-charts-container'));
-				$('<div class="SelectorPadRight" style=" padding:' + $('#mr_history_form').height() + 'px 100% 0 0"><div>').clone().appendTo($('#right-charts-container'));
+				$('<div class="SelectorPadRight" style=" padding:' + $('#va-history-form').height() + 'px 100% 0 0"><div>').clone().appendTo($('#right-charts-container'));
+				$('<div class="SelectorPadRight" style=" padding:' + $('#mr-history-form').height() + 'px 100% 0 0"><div>').clone().appendTo($('#right-charts-container'));
 
 				$('#plotly-VA-left').appendTo($('#right-charts-container')); //adding graph content to right side
 				$('#plotly-MR-left').appendTo($('#right-charts-container')); //adding graph content to right side
