@@ -52,8 +52,17 @@ $(document).ready(function () {
           }
           break;
 			case 'right':
-				$('#oes-side-indicator-left').hide().appendTo($('#oes-side-indicator')); //show the left eye indicator
-				$('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the left eye indicator
+				$('#oes-side-indicator-left').hide().appendTo($('#oes-side-indicator')); //show the right eye indicator
+				$('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the right eye indicator
+
+        // put the left hand content back so that we dont delete it by accident
+        $('#plotly-Meds-left').appendTo($('#js-hs-chart-Meds'));
+        $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
+        $('#plotly-VA-left').appendTo($('#js-hs-chart-VA'));
+        $('#plotly-MR-left').appendTo($('#js-hs-chart-MR'));
+        if ($("#charts-container").hasClass('General')){
+          $('#plotly-IOP-left').appendTo($('#js-hs-chart-IOP'));
+        }
 
 				$('#plotly-Meds-right').appendTo($('#js-hs-chart-Meds'));
 				$('#plotly-IOP-right').appendTo($('#js-hs-chart-IOP'));
