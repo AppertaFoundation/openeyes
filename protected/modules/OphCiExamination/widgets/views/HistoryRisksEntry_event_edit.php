@@ -104,7 +104,7 @@ if (!isset($values)) {
         'placeholder' => 'Comments',
         'autocomplete' => 'off',
         'id' => strtr($field_prefix, '[]', '__').'_comments'
-      ]) ?>
+                               ]) ?>
         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>
         <button
