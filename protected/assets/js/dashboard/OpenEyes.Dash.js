@@ -236,7 +236,7 @@
                 newTitle = 'PCR Rate (risk unadjusted)';
             }else if($('#pcr-risk-mode').val() == 2){
                 // this is 'Both' mode which will include both adjusted and unadjusted data
-                totalOperations = totalOperations / 2;
+                totalOperations /= 2;
                 newTitle = 'PCR Rate (risk adjusted & unadjusted)';
             }
             var chart = $('#PcrRiskReport')[0];
