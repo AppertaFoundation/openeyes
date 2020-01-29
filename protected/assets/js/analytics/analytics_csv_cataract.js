@@ -33,6 +33,11 @@ var analytics_csv_cataract = (function () {
 		var file_name = 'NODAuditReportCompletion';
 		csv_export_cataract(file_name, data);
 	}
+	function CATPROM5_to_csv() {
+		var data = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0].data[0];
+		var file_name = data.name;
+		csv_export_cataract(file_name, data);
+	}
 
 	function csv_export_cataract(filename, data) {
 		filename += '.csv';
@@ -74,6 +79,9 @@ var analytics_csv_cataract = (function () {
 				break;
 			case 'NOD':
 				NOD_Audit_to_csv();
+				break;
+			case 'CP5':
+				CATPROM5_to_csv();
 				break;
 		}
 	}
