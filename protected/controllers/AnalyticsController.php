@@ -783,6 +783,7 @@ class AnalyticsController extends BaseController
                 FROM common_ophthalmic_disorder cod
                 LEFT JOIN disorder d
                     ON d.id = cod.disorder_id
+                WHERE d.term IS NOT NULL
             ");
             $common_ophthalmic_disorders = $common_ophthalmic_disorders_command->queryAll($criteria);
         } else {
@@ -791,6 +792,7 @@ class AnalyticsController extends BaseController
                     cod.id
                   , cod.disorder_id
                 FROM common_ophthalmic_disorder cod
+                WHERE cod.disorder_id IS NOT NULL
             ";
             $sql .= $where;
             $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAllBySQL($sql);
