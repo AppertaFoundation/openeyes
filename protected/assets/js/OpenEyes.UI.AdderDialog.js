@@ -498,7 +498,7 @@
         if (shouldClose) {
             if (dialog.options.deselectOnReturn) {
                 let itemSets = dialog.popup.find('ul');
-                itemSets.each(function (itemSet) {
+                    itemSets.each(function (index, itemSet) {
                     let deselect = $(itemSet).data('deselectonreturn');
                     if (typeof deselect === "undefined" || deselect) {
                         $(itemSet).find('li').removeClass('selected');
