@@ -47,7 +47,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
         <?php $this->displayErrors($errors, true)?>
         <?php
         $cancel_url = $this->event->eventType->class_name.'/default/view/'.$this->event->id;
-        $this->renderPartial('//patient/event_footer', array('form_id' => $form_id, 'cancel_url'=>$cancel_url)); 
+        $this->renderPartial('//patient/event_footer', array('form_id' => $form_id, 'cancel_url'=>$cancel_url));
         ?>
 
     <?php $this->endWidget()?>
