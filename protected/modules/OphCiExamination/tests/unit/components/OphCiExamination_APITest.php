@@ -21,6 +21,9 @@ use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
 
 use OEModule\OphCiExamination\models;
 
+/**
+ * @property OEModule\OphCiExamination\components\OphCiExamination_API $api
+ */
 class OphCiExamination_APITest extends CDbTestCase
 {
     private $api;

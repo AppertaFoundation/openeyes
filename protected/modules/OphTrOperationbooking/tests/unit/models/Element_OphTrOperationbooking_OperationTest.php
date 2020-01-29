@@ -29,6 +29,7 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
         'sequences' => 'OphTrOperationbooking_Operation_Sequence',
         'sessions' => 'OphTrOperationbooking_Operation_Session',
         'anaesthetic_type_assignments' => 'OphTrOperationbooking_AnaestheticAnaestheticType',
+        'operations' => 'Element_OphTrOperationbooking_Operation',
     );
 
     public static function setUpBeforeClass()
@@ -54,12 +55,16 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
         $this->assertEquals(array_keys($expected), array_keys($res), 'Response key order does not match expected'.print_r($res, true));
     }
 
-    protected function getMalePatient()
+    protected function getMalePatient($is_stub = true)
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
-        $p->method('isChild')->willReturn(false);
+        if ($is_stub) {
+            $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
+            $p->method('isChild')->willReturn(false);
 
-        return $p;
+            return $p;
+        }
+
+        return 'patient1';
     }
 
     protected function getFemalePatient()
@@ -666,10 +671,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
             array(
                 array(
                     'consultant_required' => false,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'X'))),
+                    'anaesthetic_type' => 'LA',
                     'decision_date' => date('Y-m-d', strtotime('+5 days')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm1',
                 'session4',
                 'Check decision date affects which session is picked',
@@ -677,10 +682,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
             array(
                 array(
                     'consultant_required' => false,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'X'))),
+                    'anaesthetic_type' => 'LA',
                     'decision_date' => date('Y-m-d', strtotime('-3 weeks')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm1',
                 'session3',
                 'Short notice restriction on EROD',
@@ -688,10 +693,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
             array(
                 array(
                     'consultant_required' => false,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'X'))),
+                    'anaesthetic_type' => 'LA',
                     'decision_date' => date('Y-m-d', strtotime('-3 weeks')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm2',
                 'session10',
                 'Short notice different firm',
@@ -699,10 +704,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
             array(
                 array(
                     'consultant_required' => true,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'X'))),
+                    'anaesthetic_type' => 'LA',
                     'decision_date' => date('Y-m-d', strtotime('-1 day')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm1',
                 'session5',
                 'Consultant impacting which session is picked',
@@ -712,10 +717,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
                 // To resolve the issue, the code has been changed to 'GA'.
                 array(
                     'consultant_required' => false,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'GA'))),
+                    'anaesthetic_type' => 'GA',
                     'decision_date' => date('Y-m-d', strtotime('-1 day')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm1',
                 'session7',
                 'Anaethetist impacting which session is picked',
@@ -723,10 +728,10 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
             array(
                 array(
                     'consultant_required' => false,
-                    'anaesthetic_type' => array(ComponentStubGenerator::generate('AnaestheticType', array('code' => 'GA'))),
+                    'anaesthetic_type' => 'GA',
                     'decision_date' => date('Y-m-d', strtotime('-1 day')),
                 ),
-                $this->getMalePatient(),
+                $this->getMalePatient(false),
                 'firm1',
                 'session7',
                 'GA anaesthetic impacting which session is picked',
@@ -741,25 +746,22 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
      * @param $firm_key
      * @param $expected_erod_session_key
      * @param $description
+     * @throws Exception
      */
     public function testcalculateEROD($op_properties, $patient, $firm_key, $expected_erod_session_key, $description)
     {
-        $this->markTestIncomplete('Currently experiences issues with ComponentStubGenerator.');
+        //$this->markTestIncomplete('Currently experiences issues with ComponentStubGenerator.');
 
-        $test = $this->getMockBuilder('Element_OphTrOperationbooking_Operation')
-                ->disableOriginalConstructor()
-                ->setMethods(array('getPatient', 'getFirm'))
-                ->getMock();
+        $test = new Element_OphTrOperationbooking_Operation();
 
         foreach ($op_properties as $k => $v) {
-            $test->$k = $v;
+            if ($k !== 'anaesthetic_type') {
+                $test->$k = $v;
+            }
         }
 
-        // the element firm is only used for retrieving EROD rules, which we aren't testing at the moment
-        $test->method('getFirm')->willReturn($this->firms($firm_key));
-
-        $test->method('getPatient')->willReturn($patient);
-
+        $test->anaesthetic_type = array(AnaestheticType::model()->findByAttributes(array('code' => $op_properties['anaesthetic_type'])));
+        $test->event_id = $this->event('event1')->id;
         $calculated = $test->calculateEROD($this->firms($firm_key));
 
         if ($expected_erod_session_key) {

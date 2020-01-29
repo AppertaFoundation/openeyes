@@ -47,7 +47,7 @@ return array(
      ),
      'va' => array(
           'name' => 'Visual acuity',
-          'class_name' => 'BaseEventTypeElement',
+          'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
           'event_type_id' => 1002,
           'display_order' => 4,
      ),
