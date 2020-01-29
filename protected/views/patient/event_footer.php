@@ -12,7 +12,7 @@
         </h2>
     </div>
     <div class="buttons-right">
-        <?php                
+        <?php
         $cancel_url = $this->event->eventType->class_name.'/default/view/'.$this->event->id;
         echo EventAction::link('Cancel', Yii::app()->createUrl($cancel_url), array('level' => 'cancel'))->toHtml();
         echo EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id))->toHtml();
