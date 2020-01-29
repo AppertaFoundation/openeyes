@@ -1,5 +1,8 @@
 <?php
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+
 /**
  * OpenEyes.
  *
@@ -46,8 +49,9 @@ return array(
           'display_order' => 3,
      ),
      'va' => array(
+         'id' => 419,
           'name' => 'Visual acuity',
-          'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+          'class_name' => Element_OphCiExamination_VisualAcuity::class,
           'event_type_id' => 1002,
           'display_order' => 4,
      ),
@@ -56,6 +60,12 @@ return array(
         'class_name' => 'BaseEventTypeElement',
         'event_type_id' => 1011,
         'display_order' => 20,
+    ),
+    'cct' => array(
+        'name' => 'Anterior Segment CCT',
+        'class_name' => Element_OphCiExamination_AnteriorSegment_CCT::class,
+        'event_type_id' => 1002,
+        'display_order' => 5,
     ),
     /*
      'elementType5' => array(

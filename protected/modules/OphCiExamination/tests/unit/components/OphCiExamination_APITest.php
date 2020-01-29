@@ -46,6 +46,7 @@ class OphCiExamination_APITest extends CDbTestCase
         'firm' => 'Firm',
         'patient' => 'Patient',
         'episode' => 'Episode',
+        'element_types' => 'ElementType',
         'event' => 'Event',
         'cct' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
         'cct_method' => '\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method',
@@ -148,13 +149,6 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCT_NotLatestEvent()
     {
-        /**
-         * This test has been marked incomplete - it needs updating to work with latest models
-         */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         $event1 = $this->createEvent(date('Y-m-d 23:59:58'));
         $element = $this->createCctElement($event1, Eye::BOTH);
 
