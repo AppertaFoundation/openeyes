@@ -79,6 +79,7 @@
               Match correspondence
             </label>
           </li>
+            <?php if (isset(Yii::app()->modules['OphLeEpatientletter'])) { ?>
           <li>
             <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0"/>
             <input type="checkbox" id="match_legacy_letters"
@@ -87,6 +88,7 @@
               Match legacy letters
             </label>
           </li>
+            <?php } ?>
         </ul>
       </td>
     </tr>

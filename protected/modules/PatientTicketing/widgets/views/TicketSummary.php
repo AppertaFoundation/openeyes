@@ -7,11 +7,8 @@ $display_queue = $ticket->getDisplayQueueAssignment();
 ?>
 
 <?php if ($display_queue->report) { ?>
-    <div class="row">
-        <?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?>
-    </div>
     <div class="row divider">
-        <?= $ticket->getAttributeLabel('priority_id') ?>: <span style="color: <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+        <?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?>
     </div>
     <div class="row divider js-report">
         <h3>Clinic Info</h3>
@@ -46,12 +43,6 @@ $display_queue = $ticket->getDisplayQueueAssignment();
             </td>
             <td>
                 <div class="data-value"><?= Helper::convertDate2NHS($old_assignment->assignment_date) ?></div>
-            </td>
-            <td>
-                <div class="data-label"><?= $old_assignment->ticket->getAttributeLabel('priority') ?>:</div>
-            </td>
-            <td>
-                <div class="data-value" style="color: <?= $old_assignment->ticket->priority->colour ?>"><?= $old_assignment->ticket->priority->name ?></div>
             </td>
             <?php if ($old_assignment->report) {
                 $notes_width = 3;

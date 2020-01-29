@@ -188,7 +188,7 @@ class ElementLetter extends BaseEventTypeElement
     public function beforeValidate()
     {
         if (isset($_POST['ElementLetter'])) {
-            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify($_POST['ElementLetter']['body']);
+            $_POST['ElementLetter']['body'] =  $this->purifyContent($_POST['ElementLetter']['body']);
         }
         return parent::beforeValidate();
     }
@@ -338,7 +338,7 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id'=>$patient->id));
-        if (isset($pcassocitates) && Yii::app()->params['institution_code']=='CERA') {
+        if (isset($pcassocitates) && Yii::app()->params['use_contact_practice_associate_model']==true) {
             foreach ($pcassocitates as $pcassocitate) {
                 $gp = $pcassocitate->gp;
                 $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp->id));
@@ -368,9 +368,9 @@ class ElementLetter extends BaseEventTypeElement
             }
         }
         if (Yii::app()->params['nhs_num_private'] == true) {
-            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num;
+            return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num;
         }
-        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
+        return $re.', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .': '.$patient->nhsnum;
     }
 
     /**
@@ -403,9 +403,9 @@ class ElementLetter extends BaseEventTypeElement
             }
 
             if (Yii::app()->params['nhs_num_private'] == true) {
-                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $patient->hos_num;
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', '.Yii::app()->params['hos_num_label'].': '. $patient->hos_num;
             } else {
-                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .(Yii::app()->params['institution_code']==="CERA"? ': ':' No: ').$patient->nhsnum;
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', '.Yii::app()->params['hos_num_label'].': '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .': '.$patient->nhsnum;
             }
 
             $user = Yii::app()->session['user'];
@@ -788,7 +788,62 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
-        return (new CHtmlPurifier())->purify($this->body);
+        // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
+        // the functionality was quite limited in a sense that it was not possible to customise
+        // the whitelist element list. So, it is replaced with HTML purifer.
+        return $this->purifyContent($this->body);
+    }
+
+    /**
+     * @param $content the HTML to be sanitised.
+     * @return string The output HTML without any malicious code
+     */
+    public function purifyContent($content) {
+        require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+
+        // Refer to http://htmlpurifier.org/docs/enduser-customize.html
+        // for info on whitelisting elements.
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.DefinitionID', 'elementletter-customize.html input select option');
+        // The HTML definitions are cached, so we need to increment this
+        // whenever we make a change to flush the cache.
+        $config->set('HTML.DefinitionRev', 2);
+        $config->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
+
+        if ($def = $config->maybeGetRawHTMLDefinition()) {
+            $input = $def->addElement(
+                'input',   // name
+                'Block',  // content set
+                'Inline', // allowed children
+                'Common', // attribute collection
+                array(
+                    'type' => 'Enum#checkbox,radio',
+                    'checked' => 'Bool#checked',
+                )
+            );
+
+            $select = $def->addElement(
+                'select',   // name
+                'Formctrl',  // content set
+                'Required: option',
+                'Common', // attribute collection
+                array()
+            );
+
+            $options = $def->addElement(
+                'option',   // name
+                false,
+                'Optional: #PCDATA',
+                'Common', // attribute collection
+                array(
+                    'value' => 'CDATA',
+                    'selected' => 'Bool#selected'
+                )
+            );
+        }
+
+        $Filter = new HTMLPurifier($config);
+        return $Filter->purify($content);
     }
 
     public function getCreate_view()

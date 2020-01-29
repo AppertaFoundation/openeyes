@@ -34,6 +34,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class PupillaryAbnormalities extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\PupillaryAbnormalities';

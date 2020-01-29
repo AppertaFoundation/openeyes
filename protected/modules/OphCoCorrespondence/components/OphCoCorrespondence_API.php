@@ -688,7 +688,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'delimiter' => "\n",
         ));
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             if ($m[1] == 'ContactPracticeAssociate') {
                     $contact = $contact->gp;
             }
@@ -958,6 +958,13 @@ class OphCoCorrespondence_API extends BaseAPI
         if (empty($macro_name)) {
             $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
         }
+
+        return $this->getDefaultMacro($firm, $site_id, $macro_name);
+
+    }
+
+    public function getDefaultMacro($firm = null, $site_id = null, $macro_name = null)
+    {
         $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$macro_name, $firm->id]);
 
         if (!$macro) {
