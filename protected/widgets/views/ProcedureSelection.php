@@ -146,18 +146,20 @@
             let adjustedTotalDuration = 0;
             $('#procedureList_' + identifier).find('.item').map(function () {
                 let $span = $(this).find('.duration span');
-                let duration = parseInt($span.data('default-duration'));
-                let adjustedDuration;
+                if ($span.length > 0) {
+                    let duration = parseInt($span.data('default-duration'));
+                    let adjustedDuration;
 
-                if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
-                    totalDuration *= 2;
+                    if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
+                        totalDuration *= 2;
+                    }
+                    adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
+
+                    totalDuration += duration;
+                    adjustedTotalDuration += adjustedDuration;
+
+                    $span.text(adjustedDuration);
                 }
-                adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
-
-                totalDuration += duration;
-                adjustedTotalDuration += adjustedDuration;
-
-                $span.text(adjustedDuration);
             });
 
             if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())
@@ -363,10 +365,10 @@
                 'type': 'GET',
                 'data': {'name': name},
                 'success': function (data) {
-                    var enableDurations = <?php echo $durations ? 'true' : 'false'?>;
+                    let enableDurations = <?php echo $durations ? 'true' : 'false'?>;
 
-                    // append selection onto procedure list
-                    $('#procedureList_' + identifier).find('.body').append(data);
+                    // append duration of the procedure
+                    $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').parents('td').after(data);
                     $('#procedureList_' + identifier).css('visibility', 'visible');
 
                     if (enableDurations) {
@@ -383,8 +385,8 @@
 
                         $('ul.add-options.js-search-results').children().each(function () {
                             if ($(this).text() == m[1]) {
-                                var id = $(this).val();
-                                var name = $(this).text();
+                                let id = $(this).val();
+                                let name = $(this).text();
 
                                 removed_stack_<?php echo $identifier?>.push({name: name, id: id});
 
@@ -420,9 +422,10 @@
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
-                    var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
-                    for (i in selectedItems) {
-                        ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
+                    for (let index = 0; index < selectedItems.length; index++) {
+                        // append selection into procedure list
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input type='hidden' id='Procedures_<?=$identifier?>[]' class='js-procedure' value='" + selectedItems[index]['id'] + "'><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
+                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
                     }
                     return true;
                 },
