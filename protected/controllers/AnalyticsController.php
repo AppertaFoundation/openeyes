@@ -770,7 +770,7 @@ class AnalyticsController extends BaseController
         $where = '';
         $queryConditions = array('and');
         $queryConditions[] = 'd.term IS NOT NULL';
-        if($subspecialty_id){
+        if ($subspecialty_id) {
             $where = "AND cod.subspecialty_id = " . $subspecialty_id;
             $queryConditions[] = 'cod.subspecialty_id = ' . $subspecialty_id;
         }
