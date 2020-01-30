@@ -123,6 +123,7 @@ $config = array(
         'OphCiDidNotAttend',
         'OECaseSearch',
         'OETrial',
+        'OphOuCatprom5'
     ),
 
     'params' => array(
