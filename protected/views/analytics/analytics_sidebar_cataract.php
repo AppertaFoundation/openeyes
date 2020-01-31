@@ -63,11 +63,11 @@
                         name="allsurgeons">
             </div>
             <div class="row">
-                <button id="js-clear-date-range" class="pro-theme" type="button" onclick="viewAllDates()">View all dates</button>
+                <button id="js-clear-date-range" class="pro-theme" type="button">View all dates</button>
             </div>
             <!-- only the user with service manager role can view all surgeons -->
             <div class="row">
-                <button id="js-all-surgeons" <?=$isServiceMgr ? '' : 'style="display:none;"'?> class="pro-theme" type="button" onclick="viewAllSurgeons()">View all surgeons</button>
+                <button id="js-all-surgeons" <?=$isServiceMgr ? '' : 'style="display:none;"'?> class="pro-theme" type="button">View all surgeons</button>
             </div>
             <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
         </form>
