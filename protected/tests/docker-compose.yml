@@ -12,7 +12,7 @@ version: '3.4'
 
 services:
   phpunit:
-    image: appertaopeneyes/ci:latest
+    image: appertaopeneyes/ci:php7
     environment:
       TESTS_TO_RUN: "PHPUNIT"
     secrets:

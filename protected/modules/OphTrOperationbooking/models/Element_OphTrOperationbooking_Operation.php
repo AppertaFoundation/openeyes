@@ -101,7 +101,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public $anaesthetist_required_ids = array();
 
-
+    protected $errorExceptions = array(
+      'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
+    );
 
     /**
      * Returns the static model of the specified AR class.

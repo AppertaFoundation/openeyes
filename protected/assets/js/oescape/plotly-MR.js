@@ -38,6 +38,13 @@ function setYAxis_MR(options){
     tickfont: {
       color: '#fff',
     },
+    /*spike setting aka Cursor*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'line',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   };
   for (var key in options){
     yaxis_setting[key] = options[key];
