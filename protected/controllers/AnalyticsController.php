@@ -414,7 +414,7 @@ class AnalyticsController extends BaseController
 
     private function getEventDate()
     {
-        if(isset(Yii::app()->modules['OphOuCatprom5'])){
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
               MAX(t.date_to) as date_to
@@ -434,8 +434,7 @@ class AnalyticsController extends BaseController
                     JOIN event e2 on e2.id = cat.event_id
                 ) t'
             );
-        }
-        else{
+        } else {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
                 MAX(e.event_date) as date_to
