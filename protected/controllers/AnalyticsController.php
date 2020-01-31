@@ -414,13 +414,36 @@ class AnalyticsController extends BaseController
 
     private function getEventDate()
     {
-        $event_date_command = Yii::app()->db->createCommand()
+        if(isset(Yii::app()->modules['OphOuCatprom5'])){
+            $event_date_command = Yii::app()->db->createCommand()
+            ->select('
+                MAX(t.date_to) as date_to
+            , MIN(t.date_from) as date_from
+            ')
+            ->from('(
+                    SELECT
+                    MAX(e.event_date) as date_to
+                    , MIN(e.event_date) as date_from
+                    FROM et_ophtroperationnote_cataract eoc
+                    JOIN event e on e.id = eoc.event_id
+                    UNION 
+                    SELECT
+                    MAX(e2.event_date) as date_to
+                    , MIN(e2.event_date) as date_from
+                    FROM cat_prom5_event_result cat
+                    JOIN event e2 on e2.id = cat.event_id
+                ) t'
+            );
+        }
+        else{
+            $event_date_command = Yii::app()->db->createCommand()
             ->select('
                 MAX(e.event_date) as date_to
-              , MIN(e.event_date) as date_from
+            , MIN(e.event_date) as date_from
             ')
             ->from('et_ophtroperationnote_cataract eoc')
             ->join('event e', 'e.id = eoc.event_id');
+        }
         $event_date = $event_date_command->queryAll();
         return $event_date;
     }
