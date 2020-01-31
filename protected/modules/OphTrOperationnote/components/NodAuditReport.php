@@ -169,19 +169,19 @@ class NodAuditReport extends Report implements ReportInterface
                     ->andWhere('et_ophtroperationnote_surgeon.surgeon_id IS NOT NULL')
                     ->group('eoc.id');
                 break;
-                case 'CATPROM5':
-                    if(isset(Yii::app()->modules['OphOuCatprom5'])){
-                        $this->command->select('eoc.id as cataract_element_id,
+            case 'CATPROM5':
+                if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                    $this->command->select('eoc.id as cataract_element_id,
                                                 eoc.event_id as cataract_event_id,
                                                 e1.event_date as cataract_date,
                                                 e2.event_date as other_date,
                                                 cp5er.event_id as catprom5_element_id,
                                                 cp5er.total_rasch_measure as rasch_score,
                                                 cp5er.total_raw_score as raw_score')
-                            ->leftJoin('cat_prom5_event_result cp5er','e2.id = cp5er.event_id')
-                            ->andWhere('cp5er.event_id is not null')
-                            ->group('e2.id, e1.id');
-                    }
+                        ->leftJoin('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id')
+                        ->andWhere('cp5er.event_id is not null')
+                        ->group('e2.id, e1.id');
+                }
                     break;
         }
 
@@ -268,7 +268,7 @@ class NodAuditReport extends Report implements ReportInterface
             } else {
                 $return_data['total'] += count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
             }
-            if(isset(Yii::app()->modules['OphOuCatprom5'])){
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
                 if (!isset($return_data['CATPROM5'])) {
                     $return_data['CATPROM5'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']);
                 } else {
@@ -400,7 +400,7 @@ class NodAuditReport extends Report implements ReportInterface
                 count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
                 count($dataset['E/I']['eligible'])/$dataset['total'],
             );
-            if(isset(Yii::app()->modules['OphOuCatprom5'])){
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
                 array_push($incomplete_y,
                     count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
                     count($dataset['CATPROM5']['post-incomplete'])/$dataset['total']
@@ -440,8 +440,8 @@ class NodAuditReport extends Report implements ReportInterface
             ),
         );
 
-        if(isset(Yii::app()->modules['OphOuCatprom5'])){
-            array_push($trace2['x'],   
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            array_push($trace2['x'],
                 'CatProm5 Pre-op',
                 'CatProm5 Post-op'
             );
@@ -479,7 +479,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['eligible'],
             ),
         );
-        if(isset(Yii::app()->modules['OphOuCatprom5'])){
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             array_push($trace1['x'],
                 'CatProm5 Pre-op',
                 'CatProm5 Post-op'
