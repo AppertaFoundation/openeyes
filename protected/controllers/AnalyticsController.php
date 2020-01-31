@@ -417,7 +417,7 @@ class AnalyticsController extends BaseController
         if(isset(Yii::app()->modules['OphOuCatprom5'])){
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
-                MAX(t.date_to) as date_to
+              MAX(t.date_to) as date_to
             , MIN(t.date_from) as date_from
             ')
             ->from('(
