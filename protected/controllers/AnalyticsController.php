@@ -437,7 +437,7 @@ class AnalyticsController extends BaseController
         } else {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
-                MAX(e.event_date) as date_to
+              MAX(e.event_date) as date_to
             , MIN(e.event_date) as date_from
             ')
             ->from('et_ophtroperationnote_cataract eoc')
