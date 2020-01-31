@@ -8,7 +8,17 @@ var analytics_dataCenter = (function(){
     return ajaxURL;
   }
 
-
+  // for saving the search criteria in cataract page
+  var ca_search_form = {};
+  function setCataractSearchForm(key, val){
+    ca_search_form[key] = val;
+  }
+  function getCataractSearchForm(){
+    return ca_search_form;
+  }
+  function clearCataractSearchForm(){
+    ca_search_form = {};
+  }
   // for specialty ajax call
   // to get service data and clinical data
   var responseData = null;
@@ -98,6 +108,11 @@ var analytics_dataCenter = (function(){
     ajax: {
       setAjaxURL: setAjaxURL,
       getAjaxURL: getAjaxURL,
+    },
+    cataract: {
+      setCataractSearchForm: setCataractSearchForm,
+      getCataractSearchForm: getCataractSearchForm,
+      clearCataractSearchForm: clearCataractSearchForm,
     }
   };
 })();

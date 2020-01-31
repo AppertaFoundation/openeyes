@@ -167,6 +167,7 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
                     'y1' => 1.92,
                 )
             ),
+            'hovermode' => 'closest'
         ));
 
         $config = $report->plotlyConfig();
