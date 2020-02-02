@@ -1057,30 +1057,28 @@ class AnalyticsController extends BaseController
 
     public function getCommonDisorders($subspecialty_id = null, $only_name = false)
     {
-        $criteria = new CDbCriteria();
-        if (isset($criteria, $subspecialty_id)) {
-            $criteria->compare('subspecialty_id', $subspecialty_id);
+        $where = '';
+        $queryConditions = array('and');
+        $queryConditions[] = 'd.term IS NOT NULL';
+        if ($subspecialty_id) {
+            $where = "AND cod.subspecialty_id = " . $subspecialty_id;
+            $queryConditions[] = 'cod.subspecialty_id = ' . $subspecialty_id;
         }
-        // for performance purpose, as $disorder->disorder-> will
-        // cause high cost
-        
-        $where = $subspecialty_id ? "WHERE cod.subspecialty_id = " . $subspecialty_id : "";
 
         if ($only_name) {
-            $common_ophthalmic_disorders_command = Yii::app()->db->createCommand("
-                SELECT DISTINCT
-                    d.term
-                FROM common_ophthalmic_disorder cod
-                LEFT JOIN disorder d
-                    ON d.id = cod.disorder_id
-            ");
-            $common_ophthalmic_disorders = $common_ophthalmic_disorders_command->queryAll($criteria);
+            $common_ophthalmic_disorders_command = Yii::app()->db->createCommand()
+            ->select('d.term', 'DISTINCT')
+            ->from('common_ophthalmic_disorder cod')
+            ->leftJoin('disorder d', 'd.id = cod.disorder_id')
+            ->where($queryConditions);
+            $common_ophthalmic_disorders = $common_ophthalmic_disorders_command->queryAll();
         } else {
             $sql = "
                 SELECT DISTINCT
                     cod.id
                   , cod.disorder_id
                 FROM common_ophthalmic_disorder cod
+                WHERE cod.disorder_id IS NOT NULL
             ";
             $sql .= $where;
             $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAllBySQL($sql);
