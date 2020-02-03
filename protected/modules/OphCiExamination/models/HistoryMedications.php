@@ -110,30 +110,6 @@ class HistoryMedications extends BaseMedicationElement
     }
 
     /**
-     * Retrieve the entries that are tracking prescription items
-     */
-    public function getPrescriptionEntries()
-    {
-        return array_filter($this->entries, function($entry) {
-            return $entry->prescription_item_id !== null;
-        });
-    }
-
-    /**
-     * @return HistoryMedicationsStopReason[]
-     */
-    public function getStopReasonOptions()
-    {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            if ($entry->stop_reason_id) {
-                $force[] = $entry->stop_reason_id;
-            }
-        }
-        return HistoryMedicationsStopReason::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
      * @return bool
      */
     public function hasRisks()
