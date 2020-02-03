@@ -33,7 +33,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
-$read_only = date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d');
+$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
