@@ -669,7 +669,7 @@ class AnalyticsController extends BaseController
                 va_info.event_date as event_date,
                 va_info.value as value,
                 va_info.name as name,
-                va_info.reading as reading
+                va_info.reading as reading,
                 IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
