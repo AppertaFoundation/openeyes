@@ -336,9 +336,9 @@ class AnalyticsController extends BaseController
         // prepare diagnoses list from existing function
         $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, strtotime($params['from']), strtotime($params['to']))
         ->select('
-                t.disorder_id disorder_id,
-                t.term term,
-                t.patient_id
+            t.disorder_id disorder_id,
+            t.term term,
+            t.patient_id
         ');
         $paitent_list_command = Yii::app()->db->createCommand()
             ->from('patient p')
