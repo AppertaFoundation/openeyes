@@ -260,8 +260,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
                 $full_row.find(".js-add-taper").hide();
                 $second_part_of_row.find(".js-meds-stop-btn").show();
-                $('.js-end-date').val('');
-                $('.js-stop-reason').val('');
+                $second_part_of_row.find('.js-end-date').val('');
+                $second_part_of_row.find('.js-stop-reason').val('');
             }
             else {
                 $full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
