@@ -431,12 +431,18 @@ class AutoSetRuleController extends BaseAdminController
         $medication_set = \MedicationSet::model()->findByPk($set_id);
 
         $criteria = new \CDbCriteria();
-        $criteria->with = ['medicationSets'];
-        $criteria->together = true;
-        $criteria->addCondition('medication_set_id', $set_id);
+        $criteria->join = 'JOIN medication_set_item i ON t.id = i.medication_id ';
+        $criteria->join .= 'JOIN medication_set s ON s.id = i.medication_set_id';
+        $criteria->addCondition('s.id = :set_id');
+        $criteria->params[':set_id'] = $set_id;
 
         if ($search) {
-            $criteria->addSearchCondition('LOWER(t.preferred_term)', strtolower($search), true);
+            if (is_numeric($search)) {
+                $criteria->addSearchCondition('preferred_code', $search, true);
+            } else {
+                $criteria->addSearchCondition('LOWER(t.preferred_term)', strtolower($search), true);
+            }
+
         }
 
         $data_provider = new CActiveDataProvider('Medication', [

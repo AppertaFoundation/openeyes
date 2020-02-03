@@ -100,7 +100,7 @@
         <td></td>
         <td>
             <a href="/OphDrPrescription/admin/autoSetRule/edit/{{id}}" class="button">Edit</a>
-            <a class="button js-list-medication" data-set_id="{{id}}">List medications</a>
+            <a href="/OphDrPrescription/admin/autoSetRule/listMedications?set_id={{id}}" class="button">List medications</a>
         </td>
 
     </tr>
