@@ -404,7 +404,8 @@ class NodAuditReport extends Report implements ReportInterface
                 array_push($incomplete_y,
                     count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
                     count($dataset['CATPROM5']['post-incomplete'])/$dataset['total']
-                );array_push($complete_y,
+                );
+                array_push($complete_y,
                     count($dataset['CATPROM5']['pre-complete'])/$dataset['total'],
                     count($dataset['CATPROM5']['post-complete'])/$dataset['total']
                 );
