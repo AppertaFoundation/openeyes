@@ -310,6 +310,8 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     }
                 });
             }
+            $('#et_save_check_prescription_reason').hide();
+            $('#et_save').show();
             delete window.MMController;
         });
 
