@@ -245,7 +245,7 @@ $read_only = date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-
                         }
                     });
 
-                    if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
+                    if(typeof $previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
                         prescription_modified = true;
                     }
                 });
