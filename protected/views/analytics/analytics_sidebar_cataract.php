@@ -1,4 +1,4 @@
-<?PHP Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
+<?php Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
     <style>
         .download-csv-container{
             position: relative;
@@ -40,7 +40,7 @@
             <li><a href="#" data-container="#visual-acuity-grid" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
             <li><a href="#" data-container="#refractive-outcome-grid" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
             <li><a href="#" data-container="#nod-audit-grid" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
-            <?PHP if (isset(Yii::app()->modules['OphOuCatprom5'])) { ?>
+            <?php if (isset(Yii::app()->modules['OphOuCatprom5'])) { ?>
                 <li><a href="#" data-container="#catprom5-grid" data-report="CP5" class="js-cataract-report-type">Cat-PROM5</a></li>
             <?php } ?>
         </ul>
