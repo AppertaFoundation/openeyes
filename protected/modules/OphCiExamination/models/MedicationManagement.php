@@ -308,10 +308,6 @@ class MedicationManagement extends BaseMedicationElement
                             $p->prescription_item_id = null;
                             $p->save();
                         }
-                        //delete all tapers first
-                        foreach ($prescription_Item->tapers as $taper) {
-                            $taper->delete();
-                        }
                         $prescription_Item->delete();
                         $changed = true;
                     } else if (!$mgment_item->compareToPrescriptionItem()) {
@@ -320,10 +316,6 @@ class MedicationManagement extends BaseMedicationElement
                         $changed = true;
                     }
                 } else {
-                    // management item was deleted
-                    foreach ($prescription_Item->tapers as $taper) {
-                        $taper->delete();
-                    }
                     $prescription_Item->delete();
                     $changed = true;
                 }
