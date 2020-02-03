@@ -336,9 +336,9 @@ class AnalyticsController extends BaseController
         // prepare diagnoses list from existing function
         $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, strtotime($params['from']), strtotime($params['to']))
         ->select('
-              t.disorder_id disorder_id
-            , t.term term
-            , t.patient_id
+                t.disorder_id disorder_id,
+                t.term term,
+                t.patient_id
         ');
         $paitent_list_command = Yii::app()->db->createCommand()
             ->from('patient p')
@@ -346,8 +346,8 @@ class AnalyticsController extends BaseController
             ->leftJoin('episode e', 'p.id = e.patient_id')
             ->leftJoin('(
                 SELECT
-                  e2.patient_id
-                , GROUP_CONCAT(p.short_format) AS procedures
+                    e2.patient_id,
+                    GROUP_CONCAT(p.short_format) AS procedures
                 FROM et_ophtroperationnote_procedurelist eop
                 LEFT JOIN ophtroperationnote_procedurelist_procedure_assignment oppa
                 ON eop.id = oppa.procedurelist_id
@@ -395,17 +395,17 @@ class AnalyticsController extends BaseController
 
         $res = $paitent_list_command
             ->select("
-              p.hos_num as hos_num
-            , p.nhs_num as nhs_num
-            , p.id AS patient_id
-            , CONCAT(c.first_name, ' ', c.last_name) AS name
-            , p.dob as dob
-            , IF(p.date_of_death IS NOT NULL
-            , YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)
-            , YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)) as age
-            , p.gender as gender
-            , $diagnosis_term diagnoses
-            , proc.procedures
+                p.hos_num as hos_num,
+                p.nhs_num as nhs_num,
+                p.id AS patient_id,
+                CONCAT(c.first_name, ' ', c.last_name) AS name,
+                p.dob as dob,
+                IF(p.date_of_death IS NOT NULL,
+                YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0),
+                YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)) as age,
+                p.gender as gender,
+                $diagnosis_term diagnoses,
+                proc.procedures
             ", 'DISTINCT')
             ->group('p.id')
             ->queryAll();
@@ -417,19 +417,19 @@ class AnalyticsController extends BaseController
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
-              MAX(t.date_to) as date_to
-            , MIN(t.date_from) as date_from
+                MAX(t.date_to) as date_to,
+                MIN(t.date_from) as date_from
             ')
             ->from('(
                     SELECT
-                    MAX(e.event_date) as date_to
-                    , MIN(e.event_date) as date_from
+                        MAX(e.event_date) as date_to,
+                        MIN(e.event_date) as date_from
                     FROM et_ophtroperationnote_cataract eoc
                     JOIN event e on e.id = eoc.event_id
                     UNION 
                     SELECT
-                    MAX(e2.event_date) as date_to
-                    , MIN(e2.event_date) as date_from
+                        MAX(e2.event_date) as date_to,
+                        MIN(e2.event_date) as date_from
                     FROM cat_prom5_event_result cat
                     JOIN event e2 on e2.id = cat.event_id
                 ) t'
@@ -437,8 +437,8 @@ class AnalyticsController extends BaseController
         } else {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
-              MAX(e.event_date) as date_to
-            , MIN(e.event_date) as date_from
+                MAX(e.event_date) as date_to,
+                MIN(e.event_date) as date_from
             ')
             ->from('et_ophtroperationnote_cataract eoc')
             ->join('event e', 'e.id = eoc.event_id');
@@ -647,8 +647,8 @@ class AnalyticsController extends BaseController
             ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
         $bestReadingSQL = Yii::app()->db->createCommand()
             ->select('
-              eor.element_id as eoi_id
-            , MAX(eor.value) AS reading
+              eor.element_id as eoi_id,
+             MAX(eor.value) AS reading
             ')
             ->from('ophciexamination_visualacuity_reading eor')
             ->where('eor.side = ' . $vaEyeId)
@@ -665,12 +665,12 @@ class AnalyticsController extends BaseController
         // to get patient age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                va_info.patient_id as patient_id
-            ,   va_info.event_date as event_date
-            ,   va_info.value as value
-            ,   va_info.name as name
-            ,   va_info.reading as reading
-            ,   IF(p.date_of_death IS NOT NULL,
+                va_info.patient_id as patient_id,
+                va_info.event_date as event_date,
+                va_info.value as value,
+                va_info.name as name,
+                va_info.reading as reading
+                IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
@@ -717,9 +717,9 @@ class AnalyticsController extends BaseController
         // get iop reading data, instead of getting it from model
         $readingSQL = Yii::app()->db->createCommand()
             ->select('
-              eoi.id AS eoi_id
-            , e.name AS side
-            , eor.value AS reading
+              eoi.id AS eoi_id,
+              e.name AS side,
+              eor.value AS reading
             ')
             ->from('et_ophciexamination_intraocularpressure eoi')
             ->join('ophciexamination_intraocularpressure_value eov', 'eoi.id = eov.element_id')
@@ -737,12 +737,12 @@ class AnalyticsController extends BaseController
         // to get age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                iop_info.patient_id as patient_id
-            ,   iop_info.event_date as event_date
-            ,   iop_info.value as value
-            ,   iop_info.name as name
-            ,   iop_info.reading as reading
-            ,   IF(p.date_of_death IS NOT NULL,
+                iop_info.patient_id as patient_id,
+                iop_info.event_date as event_date,
+                iop_info.value as value,
+                iop_info.name as name,
+                iop_info.reading as reading,
+                IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
@@ -798,11 +798,11 @@ class AnalyticsController extends BaseController
         // to get age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                crt_new.patient_id as patient_id
-            ,   crt_new.event_date as event_date
-            ,   crt_new.value as value
-            ,   crt_new.name as name
-            ,   IF(p.date_of_death IS NOT NULL,
+                crt_new.patient_id as patient_id,
+                crt_new.event_date as event_date,
+                crt_new.value as value,
+                crt_new.name as name,
+                IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
@@ -1097,8 +1097,8 @@ class AnalyticsController extends BaseController
         } else {
             $sql = "
                 SELECT DISTINCT
-                    cod.id
-                  , cod.disorder_id
+                    cod.id,
+                    cod.disorder_id
                 FROM common_ophthalmic_disorder cod
                 WHERE cod.disorder_id IS NOT NULL
             ";
@@ -1136,11 +1136,11 @@ class AnalyticsController extends BaseController
     {
         $command_principal = Yii::app()->db->createCommand()
             ->select('
-                  e.patient_id patient_id
-                , e.disorder_id disorder_id
-                , d.term term
-                , d.fully_specified_name fully_specified_name
-                , cod.id disorder_type
+                  e.patient_id patient_id,
+                  e.disorder_id disorder_id,
+                  d.term term,
+                  d.fully_specified_name fully_specified_name,
+                  cod.id disorder_type
             ')
             ->from('episode e')
             ->leftJoin('disorder d', 'd.id = e.disorder_id')
@@ -1152,11 +1152,11 @@ class AnalyticsController extends BaseController
 
         $command_secondary = Yii::app()->db->createCommand()
             ->select('
-                  sd.patient_id patient_id
-                , sd.disorder_id disorder_id
-                , d.term term
-                , d.fully_specified_name fully_specified_name
-                , cod.id disorder_type
+                  sd.patient_id patient_id,
+                  sd.disorder_id disorder_id,
+                  d.term term,
+                  d.fully_specified_name fully_specified_name,
+                  cod.id disorder_type
             ')
             ->from('secondary_diagnosis sd')
             ->leftJoin('disorder d', 'd.id = sd.disorder_id')
@@ -1194,11 +1194,11 @@ class AnalyticsController extends BaseController
         $params = array();
         $secondary_diagnosis_command = Yii::app()->db->createCommand()
             ->select('
-              sd.patient_id
-            , sd.disorder_id
-            , sd.created_user_id
-            , ssa.subspecialty_id
-            , sd.created_date
+              sd.patient_id,
+              sd.disorder_id,
+              sd.created_user_id,
+              ssa.subspecialty_id,
+              sd.created_date
             ')
             ->from('secondary_diagnosis sd')
             ->leftJoin('episode ep', 'ep.patient_id = sd.patient_id')
@@ -1206,11 +1206,11 @@ class AnalyticsController extends BaseController
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id');
         $episode_diagnosis_command = Yii::app()->db->createCommand()
             ->select('
-              ep2.patient_id
-            , ep2.disorder_id
-            , ep2.created_user_id
-            , ssa.subspecialty_id
-            , ep2.created_date
+              ep2.patient_id,
+              ep2.disorder_id,
+              ep2.created_user_id,
+              ssa.subspecialty_id,
+              ep2.created_date
             ')
             ->from('episode ep2')
             ->leftJoin('firm f', 'ep2.firm_id = f.id')
@@ -1226,11 +1226,11 @@ class AnalyticsController extends BaseController
         }
         $patient_with_disorder_command = Yii::app()->db->createCommand()
             ->select('
-              patient_id
-            , disorder_id
-            , created_user_id
-            , subspecialty_id
-            , created_date
+              patient_id,
+              disorder_id,
+              created_user_id,
+              subspecialty_id,
+              created_date
             ')
             ->from('
                 (' .
@@ -1272,31 +1272,31 @@ class AnalyticsController extends BaseController
 
           $other_disorders = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
               ->select('
-                    COUNT(DISTINCT t.patient_id) total_patients
-                  , t.disorder_id disorder_id
-                  , t.term term
-                  , t.fully_specified_name fully_specified_name
+                    COUNT(DISTINCT t.patient_id) total_patients,
+                    t.disorder_id disorder_id,
+                    t.term term,
+                    t.fully_specified_name fully_specified_name
               ')
               ->where('t.disorder_type IS NULL')
               ->group('
-                    t.disorder_id
-                  , t.term
-                  , t.fully_specified_name
+                    t.disorder_id,
+                    t.term,
+                    t.fully_specified_name
               ')
               ->queryAll();
 
           $common_disorders = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
               ->select('
-                    COUNT(DISTINCT t.patient_id) total_patients
-                  , t.disorder_id disorder_id
-                  , t.term term
-                  , t.fully_specified_name fully_specified_name
+                    COUNT(DISTINCT t.patient_id) total_patients,
+                    t.disorder_id disorder_id,
+                    t.term term,
+                    t.fully_specified_name fully_specified_name
               ')
               ->where('t.disorder_type IS NOT NULL')
               ->group('
-                    t.disorder_id
-                  , t.term
-                  , t.fully_specified_name
+                    t.disorder_id,
+                    t.term,
+                    t.fully_specified_name
               ')
               ->queryAll();
           // $i for y axis in first level of plot
@@ -1594,12 +1594,12 @@ class AnalyticsController extends BaseController
         // use the column value instead the object from findByPk within the loop
         $followup_elements_command = Yii::app()->db->createCommand()
             ->select("
-                e.id as event_id
-                , p.id as patient_id
-                , UNIX_TIMESTAMP(e.event_date) as event_date
-                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date
-                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks
-                , MAX(UNIX_TIMESTAMP(w.start)) as start
+                e.id as event_id,
+                  p.id as patient_id,
+                  UNIX_TIMESTAMP(e.event_date) as event_date,
+                  UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date,
+                  CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks,
+                  MAX(UNIX_TIMESTAMP(w.start)) as start
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1632,10 +1632,10 @@ class AnalyticsController extends BaseController
         // use the column value instead the object from findByPk within the loop
         $referral_document_command = Yii::app()->db->createCommand()
             ->select("
-                e.id as event_id
-                , p.id as patient_id
-                , UNIX_TIMESTAMP(e.event_date) as event_date
-                , MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
+                e.id as event_id,
+                  p.id as patient_id,
+                  UNIX_TIMESTAMP(e.event_date) as event_date,
+                  MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1740,12 +1740,12 @@ class AnalyticsController extends BaseController
         */
         $tickets_command = Yii::app()->db->createCommand()
             ->select('
-                ptt.id ticket_id
-              , ptt.patient_id patient_id
-              , ptt.event_id event_id
-              , e.created_user_id event_owner
-              , MAX(e.event_date) event_date
-              , MAX(w.start) worklist_date
+                ptt.id ticket_id,
+                ptt.patient_id patient_id,
+                ptt.event_id event_id,
+                e.created_user_id event_owner,
+                MAX(e.event_date) event_date,
+                MAX(w.start) worklist_date
             ')
             ->from('patientticketing_ticket ptt')
             ->join('event e', 'e.id = ptt.event_id')
@@ -1762,10 +1762,10 @@ class AnalyticsController extends BaseController
         $ticket_ids = array_column($tickets, 'ticket_id');
         $ticket_assignments_command = Yii::app()->db->createCommand()
             ->select('
-                ptt.id ticket_id
-              , pta.id assignment_id
-              , pta.assignment_date assignment_date
-              , pta.details details
+                ptt.id ticket_id,
+                pta.id assignment_id,
+                pta.assignment_date assignment_date,
+                pta.details details
             ')
             ->from('patientticketing_ticket ptt')
             ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
