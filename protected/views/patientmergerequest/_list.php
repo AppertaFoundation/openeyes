@@ -5,10 +5,10 @@
             <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
             <th class="secondary">
                 <!--                Parameterised secondary and primary hospital number - CERA-519-->
-                <?php echo $data_provider->getSort()->link('secondary_hos_num', 'Secondary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]). ((Yii::app()->params["institution_code"]=="CERA")?"":" Number").'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('secondary_hos_num', 'Secondary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]).'</span>', array('class' => 'sort-link')) ?>            </th>
             <th></th>
             <th class="primary">
-                <?php echo $data_provider->getSort()->link('primary_hos_num', 'Primary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]). ((Yii::app()->params["institution_code"]=="CERA")?"":" Number").'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('primary_hos_num', 'Primary<br><span class="hos_num">'. (Yii::app()->params["hos_num_label"]).'</span>', array('class' => 'sort-link')) ?>            </th>
             <th class="status"><?php echo $data_provider->getSort()->link('status', 'Status', array('class' => 'sort-link')); ?></th>
             <th class="created"><?php echo $data_provider->getSort()->link('created_date', 'Created', array('class' => 'sort-link')); ?></th>
             <?php if ($filters['show_merged']) :?>

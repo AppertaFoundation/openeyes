@@ -733,6 +733,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                         matched_allergy_ids.push(parseInt(id));
                     }
                 }
+                intersection = controller.getIdsFromAllergiesElement(intersection, id);
+                matched_allergy_ids = controller.getIdsFromAllergiesElement(matched_allergy_ids, id);
             });
 
             $row.find(".js-allergy-warning").remove();
@@ -989,6 +991,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
       data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined';
+      data['allergy_ids'] = medications[i]['allergy_ids'];
 
       newRows.push(Mustache.render(
           template,
@@ -1010,6 +1013,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     return newRows;
   };
 
+    HistoryMedicationsController.prototype.getIdsFromAllergiesElement = function(intersect, med_allergy) {
+        let $allergies_rows = $('#OEModule_OphCiExamination_models_Allergies_entry_table').find('tr').not('#OEModule_OphCiExamination_models_Allergies_no_allergies_wrapper');
+
+        if ($allergies_rows) {
+            $allergies_rows.each(function (row_index, row) {
+                let name = 'OEModule_OphCiExamination_models_Allergies[entries][' + $(row).data('key') + '][allergy_id]';
+                let value = $(row).find('input[name="' + name + '"]').val();
+                if (value == med_allergy && !intersect.includes(value)) {
+                    intersect.push(value);
+                }
+            });
+        }
+
+        return intersect;
+    };
+
     HistoryMedicationsController.prototype.getAllergyWarning = function(medication)
     {
         if(typeof medication.allergy_ids === "undefined" || medication.allergy_ids.toString() === "") {
@@ -1028,6 +1047,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     intersect.push(k);
                 }
             }
+            intersect = controller.getIdsFromAllergiesElement(intersect, med_allergy);
         });
 
         if(intersect.length > 0) {

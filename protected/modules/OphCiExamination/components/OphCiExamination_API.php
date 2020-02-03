@@ -2577,7 +2577,7 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($outcome) {
-            return $outcome->description;
+            return $outcome->comments;
         }
     }
 

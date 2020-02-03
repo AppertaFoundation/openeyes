@@ -292,4 +292,12 @@ class OphDrPrescription_Item extends EventMedicationUse
         return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->drug->dose_unit) : strtoupper($this->dose))
             . ', ' . strtoupper($this->route->name) . ($this->route_option ? ' (' . strtoupper($this->route_option->name) . ')' : null);
     }
+
+    protected function beforeDelete()
+    {
+        foreach ($this->tapers as $taper) {
+            $taper->delete();
+        }
+        return parent::beforeDelete();
+    }
 }

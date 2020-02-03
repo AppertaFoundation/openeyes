@@ -169,27 +169,6 @@ class MedicationManagementEntry extends \EventMedicationUse
         return parent::afterValidate();
     }
 
-    public function saveTapers()
-    {
-        // delete existing tapers
-
-        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
-        bindValues(array(":item_id" => $this->id))->execute();
-
-        // add new ones
-        foreach ($this->tapers as $taper) {
-            $taper->item_id = $this->id;
-            if (!$taper->save()) {
-                foreach ($taper->getErrors() as $err) {
-                    $this->addError("tapers", $err);
-                }
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public function beforeDelete()
     {
         \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
