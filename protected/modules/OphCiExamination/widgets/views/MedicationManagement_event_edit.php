@@ -212,6 +212,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
     $(document).ready(function () {
         let prescribed_medications = [];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
+        let prescription_event_exists = false;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -219,11 +220,18 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             }
         });
 
-        if (prescribed_medications.length > 0) {
+        prescribed_medications.forEach(function (medication) {
+            if($(medication).find('[name*="prescription_item_id"]').val()){
+                prescription_event_exists = true;
+            }
+        });
+
+        if (prescription_event_exists) {
             let $save_button = $('#et_save');
             $save_button.before("<button class='button header-tab green' id='et_save_check_prescription_reason'>Save</button>");
             $save_button.hide();
         }
+
 
         $('#et_save_check_prescription_reason').on('click', function () {
             let prescription_modified = false;
@@ -249,6 +257,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                         prescription_modified = true;
                     }
                 });
+
             });
 
             //check if new prescribed medications have been added
@@ -279,6 +288,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             } else {
                 $('#et_save').trigger('click');
             }
+
         });
 
         $('#submit_reason').on('click', function () {
