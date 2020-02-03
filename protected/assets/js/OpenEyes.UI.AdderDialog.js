@@ -539,8 +539,8 @@
         }
 
         if (shouldClose) {
-            let itemSets = dialog.popup.find('ul');
             if (dialog.options.deselectOnReturn) {
+                let itemSets = dialog.popup.find('ul');
                 itemSets.each(function (index, itemSet) {
                     let deselect = $(itemSet).data('deselectonreturn');
                     let reset = $(itemSet).data('resetselectiontodefaultonreturn');

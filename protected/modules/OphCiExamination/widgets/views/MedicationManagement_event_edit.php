@@ -33,10 +33,14 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
+$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<?php if ($read_only) {
+    \Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
+}?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
@@ -62,7 +66,7 @@ $element_errors = $element->getErrors();
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key => $entry) {
-                        if ($prescribe_access || $entry->prescribe == 0) {
+                        if (($prescribe_access || $entry->prescribe == 0) && !$read_only) {
                                 $this->render(
                                     'MedicationManagementEntry_event_edit',
                                     array(
@@ -120,8 +124,12 @@ $element_errors = $element->getErrors();
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
-            <button id="mm-add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
-            <button class="button hint green js-add-select-search" id="mm-add-medication-btn" type="button">
+            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
+                ?>disabled<?php
+                                                                          } ?>" type="button">Add standard set</button>
+            <button class="button hint green js-add-select-search <?php if ($read_only) {
+                ?>disabled<?php
+                                                                  } ?>" id="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -237,7 +245,7 @@ $element_errors = $element->getErrors();
                         }
                     });
 
-                    if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
+                    if(typeof $previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
                         prescription_modified = true;
                     }
                 });
