@@ -53,6 +53,9 @@ class DefaultController extends BaseEventTypeController
             $this->editable = $this->userIsAdmin() || $model->draft
             || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         }
+        if ($model->edit_reason_id) {
+            $this->showReasonForEdit($model->edit_reason_id, $model->edit_reason_other);
+        }
         return parent::actionView($id);
     }
 
