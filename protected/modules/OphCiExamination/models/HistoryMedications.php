@@ -110,55 +110,6 @@ class HistoryMedications extends BaseMedicationElement
     }
 
     /**
-     * Retrieve the entries that are tracking prescription items
-     */
-    public function getPrescriptionEntries()
-    {
-        return array_filter($this->entries, function($entry) {
-            return $entry->prescription_item_id !== null;
-        });
-    }
-
-    /**
-     * @return HistoryMedicationsStopReason[]
-     */
-    public function getStopReasonOptions()
-    {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            if ($entry->stop_reason_id) {
-                $force[] = $entry->stop_reason_id;
-            }
-        }
-        return HistoryMedicationsStopReason::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
-     * @return \DrugRoute[]
-     */
-    public function getRouteOptions()
-    {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            $force[] = $entry->route_id;
-        }
-        return \DrugRoute::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
-     * @return \DrugFrequency[]
-     */
-    public function getFrequencyOptions()
-    {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            $force[] = $entry->frequency_id;
-        }
-
-        return \DrugFrequency::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
      * @return bool
      */
     public function hasRisks()
