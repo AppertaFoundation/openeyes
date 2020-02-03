@@ -125,9 +125,10 @@ $required_allergy_ids = array_map(function ($r) {
     $(function () {
       var allergyController;
       $(document).ready(function () {
-        allergyController = new OpenEyes.OphCiExamination.AllergiesController({
-          element: $('#<?=$model_name?>_element')
-        });
+            allergyController = new OpenEyes.OphCiExamination.AllergiesController({
+                element: $('#<?=$model_name?>_element'),
+                allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>
+            });
       });
 
       new OpenEyes.UI.AdderDialog({
@@ -138,9 +139,9 @@ $required_allergy_ids = array_map(function ($r) {
             }, $element->getAllergyOptions())
         )?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
-          allergyController.addEntry(selectedItems);
-          allergyController.showTable();
-          return true;
+            allergyController.addEntry(selectedItems);
+            allergyController.showTable();
+            return true;
         }
       });
     });

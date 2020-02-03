@@ -120,7 +120,7 @@ class Patient extends BaseActiveRecordVersioned
         return array(
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
-            array('hos_num', 'required', 'on' => Yii::app()->params['institution_code'] !== 'CERA' ? 'pas' : '' ),
+            array('hos_num', 'required', 'on' => Yii::app()->params['pas_in_use'] === true ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
             array('gp_id', 'required', 'on' => 'referral'),
             array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
@@ -202,42 +202,27 @@ class Patient extends BaseActiveRecordVersioned
     public function hosNumValidator($attribute, $params)
     {
         // This condition does not work for CERA but leaving the code here as the functionality might break for UK. NEEDS TESTING before removal
-        if ($this->scenario === 'manual') {
             // Use the PatientSearch to sanitise and validate the hospital number
             $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
-            if ($hos_num) {
-                // Add an error if another patient with the same hos_num exists
-                $item_count = Patient::model()->count('hos_num = ? AND id != ?',
-                    array($hos_num, $this->id ?: -1));
-                if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this hospital number. The next available auto generated number is ' . $this->autoCompleteHosNum());
-                }
-            } elseif (!empty($this->hos_num)) {
-                $this->addError($attribute, 'Not a valid Hospital Number');
+        if ($hos_num) {
+            // Add an error if another patient with the same hos_num exists
+            $item_count = Patient::model()->count('hos_num = ? AND id != ?',
+                array($hos_num, $this->id ?: -1));
+            if ($item_count) {
+                $this->addError($attribute, 'A patient already exists with this number. The next available auto generated number is '.$this->autoCompleteHosNum());
             }
-        }
-
-        if (Yii::app()->params['institution_code'] === 'CERA') {
-            $cera_id = $this->hos_num;
-            if (strlen($cera_id)>0) {
-                // removing the leading 0's
-                $cera_id = ltrim($cera_id, '0');
-                $item_count = Patient::model()->count('hos_num = ? AND id != ?',
-                    array($cera_id,$this->id? $this->id : -1));
-                if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this CERA ID. The next unique number is '.$this->autoCompleteHosNum());
-                }
-            }
+        } elseif (!empty($this->hos_num)) {
+            $this->addError($attribute, 'Not a valid Hospital Number');
         }
     }
 
 
     public function nhsNumValidator($attribute, $params)
     {
-        // Validation only triggers for CERA
-        if (Yii::app()->params['institution_code'] == 'CERA') {
+        // Validation only triggers for Australia
+        if (Yii::app()->params['default_country'] === 'Australia') {
             // Throw validation warning message if user has entered non-numeric character
-            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num)>0) {
+            if (!ctype_digit($this->nhs_num) && strlen($this->nhs_num) > 0) {
                 $this->addError($attribute, 'Please enter only numbers.');
             }
 
@@ -245,14 +230,14 @@ class Patient extends BaseActiveRecordVersioned
 
             // Check for 11 digits
             $length = strlen($medicareNo);
-            if ($length>0) {
-                if ($length==11) {
+            if ($length > 0) {
+                if ($length == 11) {
                     // Unique check
                     $query = Yii::app()->db->createCommand()
                         ->select('p.id')
                         ->from('patient p')
                         ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
-                            array(':nhs_num'=> $this->nhs_num, ':patient_id' => $this->id))
+                            array(':nhs_num' => $this->nhs_num, ':patient_id' => $this->id))
                         ->queryAll();
 
                     if (count($query) !== 0) {
@@ -292,19 +277,17 @@ class Patient extends BaseActiveRecordVersioned
     //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum()
     {
-        if (Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
                     $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
                     $command = Yii::app()->db->createCommand($query);
                     $command->prepare();
                     $result = $command->queryColumn();
                     $default_hos_num = $result;
 //            Checks the admin setting for the starting number for auto increment
-            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
-                return $default_hos_num[0];
-            } else {
-                return ($default_hos_num[0] + 1);
-            }
+        if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
+            $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+            return $default_hos_num[0];
+        } else {
+            return ($default_hos_num[0] + 1);
         }
     }
 
@@ -376,7 +359,7 @@ class Patient extends BaseActiveRecordVersioned
      **/
     public function gpPracticeValidator($attribute)
     {
-        if (Yii::app()->params['institution_code'] === 'CERA' && empty($this->practice_id)) {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true && empty($this->practice_id)) {
             $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
         }
     }
@@ -486,8 +469,7 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['maiden_name'])) {
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
-
-        if (strlen($this->nhs_num) == (Yii::app()->params['default_country'] === 'Australia' ? 11 : 10) ) {
+        if (strlen($this->nhs_num) == (Yii::app()->params['nhs_num_length'] )) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);
