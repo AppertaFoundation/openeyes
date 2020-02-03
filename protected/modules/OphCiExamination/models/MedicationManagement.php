@@ -316,6 +316,7 @@ class MedicationManagement extends BaseMedicationElement
                         $changed = true;
                     }
                 } else {
+                    // management item was deleted
                     $prescription_Item->delete();
                     $changed = true;
                 }
