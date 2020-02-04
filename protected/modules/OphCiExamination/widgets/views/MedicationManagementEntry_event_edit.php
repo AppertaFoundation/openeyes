@@ -163,7 +163,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             </div>
             <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
                 echo 'style="display: none;"';
-                                                                }?>>
+                                                             }?>>
                     <div class="flex-meds-inputs textual-display">
                         <?php $entry_text_display = $entry->getAdministrationDisplay();
                         echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
@@ -234,7 +234,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     <label class="toggle-switch">
                         <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
                             echo "checked";
-                                        } ?> />
+                                     } ?> />
                         <span class="toggle-btn js-btn-prescribe"></span>
                     </label>
                 <?php } else { ?>
@@ -256,7 +256,9 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
     </tr>
     <tr class="no-line col-gap js-second-row <?= $entry->hidden === "1" ? ' hidden' : '' ?>" data-key="<?=$row_count?>">
         <td class="nowrap">
-            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>" style="<?php if ($entry->prescribe) { ?> display: none <?php } ?>">
+            <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>" style="<?php if ($entry->prescribe) {
+                ?> display: none <?php
+                                              } ?>">
                 <div class="alternative-display inline">
                     <div class="alternative-display-element textual">
                         <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" >
@@ -291,8 +293,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <div class="js-comment-container flex-layout flex-left"
                     id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                     style="<?php if (!$entry->comments) :
-                            ?>display: none;<?php
-                            endif; ?>"
+                        ?>display: none;<?php
+                           endif; ?>"
                     data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                 <?= CHtml::textArea($field_prefix . '[comments]', $entry->comments, [
                     'class' => 'js-comment-field autosize cols-full',
@@ -309,7 +311,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                             data-hide-method = "display"
                             style="<?php if ($entry->comments) :
                                 ?>display: none;<?php
-                                endif; ?>"
+                                   endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
             </button>
