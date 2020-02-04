@@ -817,7 +817,7 @@ class AdminController extends \ModuleAdminController
         models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $subspecialty_id);
         $tx->commit();
 
-        $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
+        $this->redirect(array('/OphCiExamination/admin/postOpComplications?subspecialty_id='. $subspecialty_id));
     }
 
     /*

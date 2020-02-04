@@ -181,7 +181,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function hasRisks()
     {
         foreach ($this->entries as $entry) {
-            if ($entry->hasRisk()) {
+            if (!$entry->isStopped() && $entry->hasRisk()) {
                 return true;
             }
         }
