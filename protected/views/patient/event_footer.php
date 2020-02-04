@@ -15,20 +15,20 @@ if (isset($this->event_actions)) {
   <i class="spinner" title="Loading..." style="display: none;"></i>
         <?php
             $print_actions = array();
-            foreach ($this->event_actions as $key => $action) {
-                if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
-                    $print_actions[] = $action;
-                } else {
-                    echo $action->toHtml();
-                }
+        foreach ($this->event_actions as $key => $action) {
+            if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
+                $print_actions[] = $action;
+            } else {
+                echo $action->toHtml();
             }
+        }
         
-            if (!empty($print_actions)) {
-                echo EventAction::printDropDownButtonAsHtml($print_actions);
-            }
+        if (!empty($print_actions)) {
+            echo EventAction::printDropDownButtonAsHtml($print_actions);
+        }
         
-            if (isset($delete_action)) {
-                echo $delete_action->toHtml();
-            }
+        if (isset($delete_action)) {
+            echo $delete_action->toHtml();
+        }
         ?>
 </nav>
