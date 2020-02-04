@@ -17,7 +17,7 @@ if (isset($this->event_actions)) {
             $print_actions = array();
         foreach ($this->event_actions as $key => $action) {
             // for the footer ids, update them so that they donot overlap
-            if(array_key_exists("id",$action->htmlOptions)){
+            if (array_key_exists("id", $action->htmlOptions)) {
                 $action->htmlOptions['id'] = $action->htmlOptions['id'] . "_footer";
             }
             if (isset($action->htmlOptions['name']) && strpos(strtolower($action->htmlOptions['name']), 'print') === 0) {
