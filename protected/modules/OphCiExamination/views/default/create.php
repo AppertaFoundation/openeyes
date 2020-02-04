@@ -48,11 +48,6 @@
         <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
         <?php $this->displayErrors($errors, true)?>
         
-        <?php
-        $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
-        $this->renderPartial('//patient/event_footer', array('form_id' => $form_id, 'cancel_url'=>$cancel_url));
-        ?>
-
     <?php $this->endWidget()?>
 <?php $this->endContent();?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>
