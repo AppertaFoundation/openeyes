@@ -33,8 +33,8 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         $this->update('episode_status', ['key' => 'discharged'], 'name = "Discharged"');
 
         //refresh event table schema
-        Yii::app()->db->schema->getTable('episode_status', true);
-        Yii::app()->db->schema->getTable('episode_status_version', true);
+        $this->dbConnection->schema->getTable('episode_status', true);
+        $this->dbConnection->schema->getTable('episode_status_version', true);
 
         $field_type_id = $this->dbConnection->createCommand("SELECT id FROM setting_field_type WHERE name = 'Text Field'")
             ->queryScalar();
