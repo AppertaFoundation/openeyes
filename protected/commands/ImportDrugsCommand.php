@@ -710,7 +710,7 @@ EOD;
 
             $values = [];
             $attribIndex = 0;
-
+            $row_count = count($rows);
             foreach ($rows as $key => $row) {
                 $queryForMedicationId = "SELECT id FROM medication
                         WHERE {$table_properties["medication_FK_column"]} = '{$row[$table_properties["id_column"]]}'";
@@ -735,7 +735,7 @@ EOD;
                     }
                 }
 
-                if (($attribIndex >= 500 || $key === count($rows) - 1) && $values) {
+                if (($attribIndex >= 500 || $key === $row_count - 1) && $values) {
                     $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) VALUES" .
                         implode(',', $values) . ";";
                     Yii::app()->db->createCommand($cmd)->execute();
@@ -806,6 +806,7 @@ EOD;
         $cmd[] = "UPDATE event_medication_use SET route_id = :new_route_id WHERE route_id = :old_route_id";
         $cmd[] = "UPDATE medication SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
         $cmd[] = "UPDATE medication_set_item SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
+        $cmd[] = "UPDATE medication_set_auto_rule_medication SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
         foreach ($this->route_mapping as $old_code => $new_code) {
             $old_route = MedicationRoute::model()->findByAttributes(['code' => $old_code]);
             $new_route = MedicationRoute::model()->findByAttributes(['code' => $new_code]);

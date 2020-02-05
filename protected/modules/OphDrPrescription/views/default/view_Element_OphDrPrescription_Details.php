@@ -70,7 +70,7 @@
                         </td>
                     </tr>
                     <?php foreach ($item->tapers as $taper) { ?>
-              <tr class="prescription-tapier <?php echo (($key % 2) === 0) ? 'even' : 'odd'; ?>">
+              <tr class="prescription-taper <?php echo (($key % 2) === 0) ? 'even' : 'odd'; ?>">
                             <td class="prescription-label">
                                 <i class="oe-i child-arrow small no-click pad"></i>
                                 <em class="fade">then</em>
