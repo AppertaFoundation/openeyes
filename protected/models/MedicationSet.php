@@ -442,6 +442,16 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
     }
 
+    private function consoleLog($string, $with_date = true)
+    {
+        if (Yii::app() instanceof CConsoleApplication) {
+            echo ($with_date ? "[" . (date('Y-m-d H:i:s')) . "] " : "") . $string;
+        }
+
+        //do nothing for now
+        if (Yii::app() instanceof CWebApplication) {}
+    }
+
     /**
      * Populate the automatic set with
      * all the relevant medications
@@ -453,13 +463,18 @@ class MedicationSet extends BaseActiveRecordVersioned
     public function populateAuto()
     {
         if (!$this->automatic || in_array($this->id, self::$_processed)) {
-            Yii::log("Skipping " . $this->name . " because it's already processed.");
+            $msg = "Skipping " . $this->name . " because it's already processed.\n";
+            Yii::log($msg);
+            $this->consoleLog($msg);
             return false;
         }
 
         self::$_processed[] = $this->id;
 
-        Yii::log("Started processing " . $this->name);
+        $this->consoleLog("\n", false);
+        $msg = "Started processing " . $this->name . "\n";
+        Yii::log($msg);
+        $this->consoleLog($msg);
 
         $cmd = Yii::app()->db->createCommand();
         $cmd->select('id', 'DISTINCT')->from('medication');
@@ -526,63 +541,129 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
 
         $medication_ids = $cmd->queryColumn();
+
         // empty the set
+        $cnt = MedicationSetItem::model()->countByAttributes(['medication_set_id' => $this->id]);
 
-        $items = MedicationSetItem::model()->findAllByAttributes(['medication_set_id' => $this->id]);
+        $batch = 500000;
+        $iteration = -1;
+        do {
+            $iteration++;
+            $item_ids_array = $this->dbConnection->createCommand()
+                ->select('id')
+                ->from('medication_set_item')
+                ->where('medication_set_id = :id', [':id' => $this->id])
+                ->offset($iteration * $batch)
+                ->limit($batch)
+                ->queryAll();
 
-        // delete MedicationSetItem with tapers
-        foreach ($items as $item) {
-            $item->deleteWithTapers()->delete();
-        }
+            $item_ids = [];
+            foreach ($item_ids_array as $i) {
+                $item_ids[] = $i['id'];
+            }
+
+            if ($item_ids) {
+                //deleting tapers
+                $this->dbConnection->createCommand()->delete(
+                    'medication_set_item_taper',
+                    'medication_set_item_id IN(:medication_set_item_id)',
+                    [':medication_set_item_id' => implode(", ", $item_ids)]
+                );
+
+                //deleting item
+                $this->dbConnection->createCommand()->delete(
+                    'medication_set_item',
+                    'id = :id',
+                    [':id' => implode(", ", $item_ids)]
+                );
+            }
+
+            $items = [];
+        } while(($iteration * $batch) <= $cnt);
 
         if (!$no_condition && !empty($medication_ids)) {
             // repopulate
 
-            foreach ($medication_ids as $id) {
+            $mk_count = count($medication_ids);
+            $this->consoleLog($mk_count . " medications to add to the set {$this->name} : " . str_pad(" ", 28));
+            $medication_queries = [];
+            foreach ($medication_ids as $mk => $id) {
+
+                $medication_queries[] = [
+                    'medication_set_id' => $this->id,
+                    'medication_id' => $id
+                ];
+            }
+            if ($medication_queries) {
+                $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('medication_set_item', $medication_queries)->execute();
+            }
+
+            foreach ($medication_ids as $mk => $id) {
                 $auto_set = MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_set_id' => $this->id, 'medication_id' => $id]);
 
-                $new_set_item = new MedicationSetItem();
-                $new_set_item->medication_set_id = $this->id;
-                $new_set_item->medication_id = $id;
-
                 if ($auto_set) {
+                    $q = [];
                     foreach ($auto_set->attributes as $attribute) {
                         if (strpos($attribute, 'default') === 0) {
-                            $new_set_item->$attribute = $auto_set->$attribute;
+                            //$new_set_item->$attribute = $auto_set->$attribute;
+                            $q[$attribute] = $auto_set->$attribute;
                         }
                     }
-                }
 
-                if ($new_set_item->save() && $auto_set && $auto_set->tapers) {
-                    // save tapers
-                    foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
-                        $new_taper = new MedicationSetItemTaper();
-                        $new_taper->medication_set_item_id = $new_set_item->id;
-                        $new_taper->dose = $taper->dose;
-                        $new_taper->frequency_id = $taper->frequency_id;
-                        $new_taper->duration_id = $taper->duration_id;
-
-                        $new_taper->save();
+                    if ($q) {
+                        $criteria = new \CDbCriteria();
+                        $criteria->addCondition('medication_set_id', $this->id);
+                        $criteria->addCondition('medication_id', $id);
+                        $this->dbConnection->getCommandBuilder()->createUpdateCommand('medication_set_item', $q, $criteria);
                     }
                 }
+
+                if ($auto_set && $auto_set->tapers) {
+                    // save tapers
+                    $medication_tapers_values = [];
+                    foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
+
+                        $medication_tapers_values[] =
+                        "((SELECT id FROM medication_set_item WHERE medication_set_id = {$this->id} AND medication_id = {$id} LIMIT 1), 
+                         {$taper->dose}, {$taper->frequency_id}, {$taper->duration_id})
+                        ";
+                    }
+
+                    if ($medication_tapers_values) {
+                        $insert_taper_query = "
+                        INSERT INTO medication_set_item_taper(medication_set_item_id, dose, frequency_id, duration_id)
+                        VALUES " . (implode(", ", $medication_tapers_values)) . ";";
+                        $this->dbConnection->getCommandBuilder()->createSqlCommand($insert_taper_query)->bindValues([
+                            ':medication_set_id' => $this->id,
+                            ':medication_id' => $id
+                        ])->execute();
+                    }
+                }
+                echo str_repeat("\x08", 28) . str_pad(($mk+1) . "/$mk_count", 28, " ", STR_PAD_LEFT);
             }
+            $this->consoleLog("\n", false);
         }
 
-        Yii::log("Processed non-auto rules in " . $this->name);
+        $msg = "Processed non-auto rules in " . $this->name . "\n";
+        Yii::log($msg);
+        $this->consoleLog($msg);
 
         // process auto sub sets recursively
         if (!empty($auto_set_ids)) {
+            $auto_count = count($auto_set_ids);
             foreach ($auto_set_ids as $auto_id) {
                 if (!in_array($auto_id, self::$_processed)) {
                     // Sub set is not already processed
                     $included_set = self::model()->findByPk($auto_id);
                     /** @var self $included_set */
+                    $this->consoleLog("Including set {$included_set->name}");
                     $included_set->populateAuto();
                 }
 
                 // Include items from sub set
-                $medicationSetItem = MedicationSetItem::model()->tableName();
-                Yii::log("Adding sub set items into ".$this->name);
+                $msg = "Adding sub set items into " . $this->name . " ";
+                Yii::log($msg);
+                $this->consoleLog($msg);
 
                 $criteria = new \CDbCriteria();
                 $criteria->addCondition('medication_set_id = :medication_auto_set_id');
@@ -590,24 +671,44 @@ class MedicationSet extends BaseActiveRecordVersioned
                 $criteria->params[':medication_auto_set_id'] = $auto_id;
                 $criteria->params[':medication_set_id'] = $this->id;
 
-                $items = MedicationSetItem::model()->findAll($criteria);
+                $item_count = MedicationSetItem::model()->count($criteria);
 
-                foreach ($items as $item) {
-                    $new_item = new MedicationSetItem();
-                    foreach ($item->attributes as $attribute) {
-                        if (strpos($attribute, 'default') === 0) {
-                            $new_item->$attribute = $item->$attribute;
+                if ($item_count) {
+                    $items = MedicationSetItem::model()->findAll($criteria);
+                    $this->consoleLog("Adding " . $item_count . " MedicationSetItems " . str_pad(" ", 28));
+                    $insert_queries = [];
+                    $index = 0;
+
+                    foreach ($items as $ik => $item) {
+                        $data = [];
+                        // $new_item = new MedicationSetItem();
+                        foreach ($item->attributes as $attribute) {
+                            if (strpos($attribute, 'default') === 0) {
+                                $data[$attribute] = $item->$attribute;
+                            }
+                            $data['medication_set_id'] = $this->id;
+                            $data['medication_id'] = $item->medication_id;
+
+                            // $new_item->save();
+                            $insert_queries[] = $data;
+                            $index++;
+                            if (($index >= 500 || $ik === $item_count - 1) && $insert_queries) {
+                                $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('medication_set_item', $insert_queries)->execute();
+                                $index = 0;
+                                $insert_queries = [];
+                            }
                         }
-                        $new_item->medication_set_id = $this->id;
-                        $new_item->medication_id = $item->medication_id;
-
-                        $new_item->save();
+                        echo str_repeat("\x08", 28) . str_pad(($ik+1) . "/$item_count", 28, " ", STR_PAD_LEFT);
                     }
                 }
+
+                $this->consoleLog("[OK]\n", false);
             }
         }
 
-        Yii::log("Done processing " . $this->name);
+        $msg = "Done processing " . $this->name . "\n";
+        Yii::log($msg);
+        $this->consoleLog($msg);
 
         return count($medication_ids);
     }
