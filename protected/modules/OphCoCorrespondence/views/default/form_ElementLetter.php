@@ -381,7 +381,9 @@ $creating = isset($creating) ? $creating : false;
             </tr>
             <tr>
                 <td colspan="2">
-                    <?php echo $form->textArea($element, 'body',
+                    <?php
+                    $element->body = str_replace("\n", "<br/>", $element->body);
+                        echo $form->textArea($element, 'body',
                         array('rows' => 20, 'label' => false, 'nowrapper' => true),
                         false, array('class' => 'address')) ?>
                 </td>
