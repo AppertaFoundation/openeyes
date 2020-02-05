@@ -449,7 +449,8 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
 
         //do nothing for now
-        if (Yii::app() instanceof CWebApplication) {}
+        if (Yii::app() instanceof CWebApplication) {
+        }
     }
 
     /**
@@ -579,7 +580,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             }
 
             $items = [];
-        } while(($iteration * $batch) <= $cnt);
+        } while (($iteration * $batch) <= $cnt);
 
         if (!$no_condition && !empty($medication_ids)) {
             // repopulate
@@ -588,7 +589,6 @@ class MedicationSet extends BaseActiveRecordVersioned
             $this->consoleLog($mk_count . " medications to add to the set {$this->name} : " . str_pad(" ", 28));
             $medication_queries = [];
             foreach ($medication_ids as $mk => $id) {
-
                 $medication_queries[] = [
                     'medication_set_id' => $this->id,
                     'medication_id' => $id
@@ -622,7 +622,6 @@ class MedicationSet extends BaseActiveRecordVersioned
                     // save tapers
                     $medication_tapers_values = [];
                     foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
-
                         $medication_tapers_values[] =
                         "((SELECT id FROM medication_set_item WHERE medication_set_id = {$this->id} AND medication_id = {$id} LIMIT 1), 
                          {$taper->dose}, {$taper->frequency_id}, {$taper->duration_id})
