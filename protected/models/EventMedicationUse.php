@@ -574,6 +574,11 @@ class EventMedicationUse extends BaseElement
         $this->initialiseFromPrescriptionItem();
     }
 
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+    }
+
     /**
      * When an entry is related to a prescription item, it's attributes should match,
      * and if not we need to set flags on it so that the user can be alerted as
