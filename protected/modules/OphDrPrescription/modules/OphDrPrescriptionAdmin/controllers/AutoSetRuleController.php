@@ -442,7 +442,6 @@ class AutoSetRuleController extends BaseAdminController
             } else {
                 $criteria->addSearchCondition('LOWER(t.preferred_term)', strtolower($search), true);
             }
-
         }
 
         $data_provider = new CActiveDataProvider('Medication', [
