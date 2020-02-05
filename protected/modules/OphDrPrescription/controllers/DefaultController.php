@@ -821,7 +821,7 @@ class DefaultController extends BaseEventTypeController
             $bound_medication_models = EventMedicationUse::model()->findAll(
                 ['condition' => "prescription_item_id = $prescription->id"]
             );
-            foreach($bound_medication_models as $bound_medication) {
+            foreach ($bound_medication_models as $bound_medication) {
                 if (!isset($bound_medication->end_date)) {
                     $bound_medication->end_date = $prescription->stopDateFromDuration()->format('Y-m-d');
                     $bound_medication->update();
