@@ -442,16 +442,6 @@ class MedicationSet extends BaseActiveRecordVersioned
         }
     }
 
-    private function consoleLog($string, $with_date = true)
-    {
-        if (Yii::app() instanceof CConsoleApplication) {
-            echo ($with_date ? "[" . (date('Y-m-d H:i:s')) . "] " : "") . $string;
-        }
-
-        //do nothing for now
-        if (Yii::app() instanceof CWebApplication) {}
-    }
-
     /**
      * Populate the automatic set with
      * all the relevant medications
@@ -465,16 +455,12 @@ class MedicationSet extends BaseActiveRecordVersioned
         if (!$this->automatic || in_array($this->id, self::$_processed)) {
             $msg = "Skipping " . $this->name . " because it's already processed.\n";
             Yii::log($msg);
-            $this->consoleLog($msg);
             return false;
         }
 
         self::$_processed[] = $this->id;
-
-        $this->consoleLog("\n", false);
         $msg = "Started processing " . $this->name . "\n";
         Yii::log($msg);
-        $this->consoleLog($msg);
 
         $cmd = Yii::app()->db->createCommand();
         $cmd->select('id', 'DISTINCT')->from('medication');
@@ -585,7 +571,6 @@ class MedicationSet extends BaseActiveRecordVersioned
             // repopulate
 
             $mk_count = count($medication_ids);
-            $this->consoleLog($mk_count . " medications to add to the set {$this->name} : " . str_pad(" ", 28));
             $medication_queries = [];
             foreach ($medication_ids as $mk => $id) {
 
@@ -639,14 +624,11 @@ class MedicationSet extends BaseActiveRecordVersioned
                         ])->execute();
                     }
                 }
-                echo str_repeat("\x08", 28) . str_pad(($mk+1) . "/$mk_count", 28, " ", STR_PAD_LEFT);
             }
-            $this->consoleLog("\n", false);
         }
 
         $msg = "Processed non-auto rules in " . $this->name . "\n";
         Yii::log($msg);
-        $this->consoleLog($msg);
 
         // process auto sub sets recursively
         if (!empty($auto_set_ids)) {
@@ -656,14 +638,12 @@ class MedicationSet extends BaseActiveRecordVersioned
                     // Sub set is not already processed
                     $included_set = self::model()->findByPk($auto_id);
                     /** @var self $included_set */
-                    $this->consoleLog("Including set {$included_set->name}");
                     $included_set->populateAuto();
                 }
 
                 // Include items from sub set
                 $msg = "Adding sub set items into " . $this->name . " ";
                 Yii::log($msg);
-                $this->consoleLog($msg);
 
                 $criteria = new \CDbCriteria();
                 $criteria->addCondition('medication_set_id = :medication_auto_set_id');
@@ -675,7 +655,6 @@ class MedicationSet extends BaseActiveRecordVersioned
 
                 if ($item_count) {
                     $items = MedicationSetItem::model()->findAll($criteria);
-                    $this->consoleLog("Adding " . $item_count . " MedicationSetItems " . str_pad(" ", 28));
                     $insert_queries = [];
                     $index = 0;
 
@@ -698,17 +677,13 @@ class MedicationSet extends BaseActiveRecordVersioned
                                 $insert_queries = [];
                             }
                         }
-                        echo str_repeat("\x08", 28) . str_pad(($ik+1) . "/$item_count", 28, " ", STR_PAD_LEFT);
                     }
                 }
-
-                $this->consoleLog("[OK]\n", false);
             }
         }
 
         $msg = "Done processing " . $this->name . "\n";
         Yii::log($msg);
-        $this->consoleLog($msg);
 
         return count($medication_ids);
     }
