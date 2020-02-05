@@ -115,7 +115,7 @@ $stop_fields_validation_error = array_intersect(
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]"
-                                     value="<?= $entry->dose ?>" placeholder="00"/>
+                                     value="<?= $entry->dose ?>" placeholder="Dose"/>
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
                         <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"
                                      class="dose_unit_term" <?= $show_unit ? 'disabled' : '' ?> />
