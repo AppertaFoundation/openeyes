@@ -103,11 +103,11 @@ class EventImage extends BaseActiveRecord
 
         /* @var Event[] $events */
         $events = Event::model()->findAllByPk($event_ids);
-        if($debug){
+        if ($debug) {
             echo "\n  Found " . count($events) ." events";
         }
         // restrict to only include events from modules that are loaded
-        return array_filter($events, function($event) {
+        return array_filter($events, function ($event) {
             /* @var Event $event */
             return Yii::app()->getModule($event->eventType->class_name);
         });
