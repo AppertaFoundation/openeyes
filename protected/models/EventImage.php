@@ -107,7 +107,7 @@ class EventImage extends BaseActiveRecord
         // restrict to only include events from modules that are loaded
         return array_filter($events, function($event) {
             /* @var Event $event */
-            return $event->eventType->getApi();
+            return Yii::app()->getModule($event->eventType->class_name);
         });
     }
 
