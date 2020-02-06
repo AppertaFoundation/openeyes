@@ -47,6 +47,7 @@
                         'MedicationManagementEntry_event_view',
                         [
                             'entry' => $entry,
+                            'patient' => $this->patient,
                             'entry_icon' => $entry_icon,
                             'row_count' => $key
                         ]
@@ -74,12 +75,14 @@
                     </colgroup>
 
                     <tbody>
-                    <?php foreach ($stoppedEntries as $entry) : ?>
+                    <?php foreach ($stoppedEntries as $key => $entry) : ?>
                         <?php echo $this->render(
                             'MedicationManagementEntry_event_view',
                             [
                                 'entry' => $entry,
+                                'patient' => $this->patient,
                                 'entry_icon' => 'stop',
+                                'row_count' => $key,
                                 'stopped' => true
                             ]
                         ); ?>

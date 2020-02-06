@@ -409,6 +409,28 @@ class EventMedicationUse extends BaseElement
         return implode(' ', $res);
     }
 
+    /**
+     * @throws Exception
+     * */
+    public function saveTapers()
+    {
+        // delete existing tapers
+        OphDrPrescription_ItemTaper::model()->deleteAllByAttributes(['item_id'=> $this->id]);
+
+        // add new ones
+        foreach ($this->tapers as $taper) {
+            $taper->item_id = $this->id;
+            if (!$taper->save()) {
+                foreach ($taper->getErrors() as $err) {
+                    $this->addError("tapers", $err);
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function getTooltipContent()
     {
         $data = [];

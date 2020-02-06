@@ -466,6 +466,7 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperationbooking' => 'i-TrOperation',
             'OphTrOperationnote' => 'i-TrOperationNotes',
             'OphCiDidNotAttend' => 'i-PatientDNA',
+            'OphOuCatprom5' => 'i-CoCatPROM5',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;

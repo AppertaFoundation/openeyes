@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<tr data-parent-med-id="<?=$set_item_medication_id?>" data-taper="<?= $taper_count ?>" class="prescription-tapier">
+<tr data-parent-med-id="<?=$set_item_medication_id?>" data-taper="<?= $taper_count ?>" class="prescription-taper">
     <td style="padding-left: 4%"><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
     <?= \CHtml::activeHiddenField($taper, 'id', ['class' => 'js-input']); ?>
     <?php if (!is_null($set_item_medication)) : ?>
@@ -23,18 +23,18 @@
     <?php else : ?>
         <input class="js-input" name="Medication[id]" id="Medication_id" type="hidden" value="<?= $set_item_medication_id ?>">
     <?php endif; ?>
-    <td>
+    <td class="js-input-wrapper">
         <span data-type="dose" data-id="<?= $taper->dose ? $taper->dose : ''; ?>" class="js-text"><?= $taper->dose ? $taper->dose : '-'; ?></span>
         <?= \CHtml::activeTextField($taper, 'dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
     </td>
     <td colspan="2"></td>
-    <td>
+    <td class="js-input-wrapper">
         <span data-type="frequency_id" data-id="<?= $taper->frequency ? $taper->frequency_id : ''; ?>" class="js-text"><?= $taper->frequency ? $taper->frequency->term : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'frequency_id',
             $frequency_options,
             ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
     </td>
-    <td>
+    <td class="js-input-wrapper">
         <span data-type="duration_id" data-id="<?= $taper->duration ? $taper->duration_id : ''; ?>" class="js-text"><?= $taper->duration ? $taper->duration->name : '-'; ?></span>
         <?= \CHtml::activeDropDownList($taper, 'duration_id',
             $duration_options,

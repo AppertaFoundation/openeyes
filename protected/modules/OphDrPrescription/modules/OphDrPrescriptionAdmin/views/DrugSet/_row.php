@@ -6,7 +6,7 @@
         <?php
         // because of the usage_code condition the string will not contain all the rules
         $alternate_set = MedicationSet::model()->findByPk($set->id);
-        echo($alternate_set ? $alternate_set->rulesString() : '-')
+        echo ($alternate_set ? $alternate_set->rulesString() : '-');
         ?>
     </td>
     <td><?= $set->itemsCount() ?></td>
