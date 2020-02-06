@@ -29,16 +29,21 @@ Following actions are available:
                                       (starting with the most recent event)
  - create --event=[event_id]...     : Creates an event image for the given event(s)
  - create --patient=[patient_id]... : Creates an event image for all the events for the given patients
+ - create --debug                   : Enables logging of output
  - clean                            : Removes all EventImage records that are not in the CREATED state 
                                       (i.e. those that failed to generate for some reason)
+ - clean  --debug                   : Enables logging of output
  - reset                            : Removes all EventImage records
  - help                             : Display this help and exit
  
 EOH;
     }
 
-    public function actionClean()
+    public function actionClean($debug=null)
     {
+        if($debug){
+            echo "Cleaning EventImages with invalid statuses.";
+        }
         EventImage::model()->deleteAll('status_id != ?',
             array(EventImageStatus::model()->find('name = "CREATED"')->id));
     }
@@ -50,34 +55,72 @@ EOH;
         }
     }
 
-    public function actionCreate($args, array $patient = null, array $event = null)
+    public function actionCreate($args, array $patient = null, array $event = null, $debug = null)
     {
+        if($debug){
+            echo "Creating EventImages, inputs are: debug,".
+            " patient = ".
+            (isset($patient)? array_reduce($patient, function($accumulator, $current) {return $current .",".$accumulator;}): "NULL")
+            ." event = ".
+            (isset($event)?  array_reduce($event, function($accumulator, $current) {return $current .",".$accumulator;}) : "NULL").".";
+        }
         $this->openCurlConnection();
         if (isset($patient)) {
+            $pCount = count($patient);   
+            $pDigits = $pCount !== 0 ? floor(log10($pCount) + 1) : 1; // how many digits in the count?
+            $pIndex = 1;
             foreach ($patient as $patient_id) {
                 $p = Patient::model()->findByPk($patient_id);
                 if (!$p) {
                     throw new Exception('Could not find patient with id: ' . $patient_id);
                 }
-
+                if($debug){
+                    echo "\nFound patient " . $patient_id . ", this is patient ". $pIndex." of ".$pCount.".";
+                } 
+                $epCount = count($p->episodes);   
+                $epDigits = $epCount !== 0 ? floor(log10($epCount) + 1) : 1; // how many digits in the count?
+                $epIndex = 1;               
                 foreach ($p->episodes as $episode) {
+                    if($debug){
+                        echo "\n  Found episode ".$episode->id. ", this is episode ". $epIndex." of ".$epCount.".";
+                    }
+                    $eCount = count($episode->events);   
+                    $eDigits = $eCount !== 0 ? floor(log10($eCount) + 1) : 1; // how many digits in the count?
+                    $eIndex = 1;  
                     foreach ($episode->events as $e) {
                         $this->createImageForEvent($e);
+                        if($debug){
+                            echo "\n    ".str_pad($eIndex,$eDigits,"0",STR_PAD_LEFT)." of ". $eCount." -> Creating EventImage for event ".$e->id.".";
+                        }
+                        $eIndex++;
                     }
+                    $epIndex++;
                 }
+                $pIndex++;
             }
         } elseif (isset($event)) {
             foreach ($event as $event_id) {
+                if($debug){
+                    echo "\nFinding event ".$event_id.".";
+                }
                 $e = Event::model()->findByPk($event_id);
                 $this->createImageForEvent($e);
+                if($debug){
+                    echo "\n    Created EventImage for event ".$e->id.".";
+                }
             }
         } else {
-            $this->actionClean();
+            $this->actionClean($debug);
             $count = isset($args[0]) ? (int)$args[0] : INF;
-            $this->createEventImages($count);
+            if($debug){
+                echo "\nCreating ".$count." EventImages.";
+            }
+            $this->createEventImages($count, $debug);
         }
         $this->closeCurlConnection();
-
+        if($debug){
+            echo "\nSuccessfully creating EventImages.\n";
+        }
     }
 
     public function openCurlConnection()
@@ -128,11 +171,21 @@ EOH;
         $this->curlConnection = null;
     }
 
-    public function createEventImages($imageCount)
+    public function createEventImages($imageCount, $debug = null)
     {
-        $events = EventImage::model()->getNextEventsToImage($imageCount);
+        $events = EventImage::model()->getNextEventsToImage($imageCount,$debug);
+        $eCount = count($events);
+        if($debug){
+            echo " and identified " . $eCount . " events that require generation.";
+        }
+        $eDigits = $eCount !== 0 ? floor(log10($eCount) + 1) : 1; // how many digits in the count?
+        $eIndex = 1;
         foreach ($events as $event) {
-            $this->createImageForEvent($event);
+            if($debug){
+                echo "\n    ".str_pad($eIndex,$eDigits,"0",STR_PAD_LEFT)." of ". $eCount." -> Creating image for event: ".$event->id.", eventType: ".$event->eventType->class_name;                
+            }
+                    $this->createImageForEvent($event);
+            $eIndex++;
         }
     }
 

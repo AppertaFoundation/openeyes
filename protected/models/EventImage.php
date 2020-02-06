@@ -81,7 +81,7 @@ class EventImage extends BaseActiveRecord
      *
      * @return Event[]
      */
-    public function getNextEventsToImage($event_count = 1)
+    public function getNextEventsToImage($event_count = 1, $debug = null)
     {
         $event_ids = Yii::app()->db->createCommand()
             ->select('event.id')
@@ -103,7 +103,9 @@ class EventImage extends BaseActiveRecord
 
         /* @var Event[] $events */
         $events = Event::model()->findAllByPk($event_ids);
-
+        if($debug){
+            echo "\n  Found " . count($events) ." events";
+        }
         // restrict to only include events from modules that are loaded
         return array_filter($events, function($event) {
             /* @var Event $event */
