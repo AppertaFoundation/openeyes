@@ -121,7 +121,7 @@ EOH;
         }
         $this->closeCurlConnection();
         if($debug){
-            echo "\nSuccessfully creating EventImages.\n";
+            echo "\nSuccessfully created EventImages.\n";
         }
     }
 
