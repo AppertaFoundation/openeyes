@@ -108,7 +108,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                 $dose_unit_term = '';
 
 
-                if (count($legacy_dose) == 1) {
+                if (count($legacy_dose) == 1 || preg_match("/[a-z]/i", $legacy_dose[0])) {
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
                         if (($char == '.') || ($char == '/') || (is_numeric($char))) {
@@ -122,15 +122,24 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     $dose_unit_term = $legacy_dose[1];
                 }
 
+                if ((strtolower($dose) == 'half') || ($dose == '1/2')) {
+                    $dose = '0.5';
+                }
+
+                $dose = str_replace(',', '.', $dose);
+
+                $dose = !$dose ? 'NULL' : "'$dose'";
+
                 $event['ref_duration_id'] = (!isset($event['ref_duration_id'])) ? null : $event['ref_duration_id'];
                 $event['ref_medication_form_id'] = (!isset($event['ref_medication_form_id'])) ? 'NULL' : $event['ref_medication_form_id'];
                 $event['end_date'] = (!isset($event['end_date'])) ? $end_date_string = 'NULL' : $end_date_string = "'" . $event['end_date'] . "'";
 
+                $ref_laterality_id = (!isset($event['ref_laterality_id']) || !is_numeric($event['ref_laterality_id'])) ? 'NULL' : $event['ref_laterality_id'];
                 $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
                 $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
                 $ref_duration_id = ($event['ref_duration_id'] == null) ? 'NULL' : $event['ref_duration_id'];
                 $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
-                $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : $event['prescription_item_id'];
+                $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : "'" . $event['prescription_item_id'] . "'";
 
                 $command = Yii::app()->db
                     ->createCommand("
@@ -156,14 +165,14 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                         'History',
                         " . $event['ref_medication_id'] . ",
                         " . $event['ref_medication_form_id'] . ", 
-                        '" . $event['ref_laterality_id'] . "', 
-                        '" . $dose . "', 
+                        " . $ref_laterality_id . ", 
+                        " . $dose . ", 
                         '" . $dose_unit_term . "', 
                         " . $ref_route_id . ",
                         " . $ref_frequency_id . ",
                         " . $ref_duration_id . ",
                         " . $stop_reason_id . ",
-                        '" . $prescription_item_id . "',
+                        " . $prescription_item_id . ",
                         '" . $event['event_date'] . "',"
                         . $end_date_string . ")
                 ");
