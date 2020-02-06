@@ -1030,10 +1030,20 @@ class AdminController extends \ModuleAdminController
             'OEModule\OphCiExamination\models\FamilyHistoryCondition');
     }
 
-    public function actionHistoryMedicationsStopReason()
+    public function actionMedicationManagementSets()
     {
-        $this->genericAdmin('Medication Stop Reason',
-            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
+        $this->genericAdmin(
+            'Medication Management drug sets',
+            models\MedicationManagementRefSet::class,
+            array(
+                'description' => 'Medications in these sets will be automatically be pulled into the medication management element.',
+                'label_field' => 'ref_set_id',
+                'extra_fields' => array(
+                    array('field' => 'ref_set_id', 'type' => 'lookup',
+                        'model' => \MedicationSet::class, ),
+                ),
+            )
+        );
     }
 
     public function actionChangeWorkflowStepActiveStatus(){

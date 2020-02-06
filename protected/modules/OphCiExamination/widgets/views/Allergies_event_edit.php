@@ -39,7 +39,7 @@ $required_allergy_ids = array_map(function ($r) {
         <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
             id="<?= $model_name ?>_no_allergies_wrapper">
             <td colspan="5" class="align-left">
-                <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
+                <label class="inline highlight" for="<?= $model_name ?>_no_allergies" id="<?= $model_name ?>_no_allergies">
                     <input type="hidden" name="<?=$model_name?>[no_allergies]" value="off">
                     <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
                     Confirm patient has no allergies
@@ -121,13 +121,14 @@ $required_allergy_ids = array_map(function ($r) {
 </script>
 
 <script type="text/javascript">
-    
+
     $(function () {
       var allergyController;
       $(document).ready(function () {
-        allergyController = new OpenEyes.OphCiExamination.AllergiesController({
-          element: $('#<?=$model_name?>_element')
-        });
+            allergyController = new OpenEyes.OphCiExamination.AllergiesController({
+                element: $('#<?=$model_name?>_element'),
+                allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>
+            });
       });
 
       new OpenEyes.UI.AdderDialog({
@@ -138,9 +139,9 @@ $required_allergy_ids = array_map(function ($r) {
             }, $element->getAllergyOptions())
         )?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
-          allergyController.addEntry(selectedItems);
-          allergyController.showTable();
-          return true;
+            allergyController.addEntry(selectedItems);
+            allergyController.showTable();
+            return true;
         }
       });
     });

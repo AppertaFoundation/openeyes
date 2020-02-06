@@ -114,11 +114,11 @@ class OptomPortalConnection
     protected function initClient()
     {
         $clientConfig = array();
-        if($this->yii->params['curl_proxy']){
+        if ($this->yii->params['curl_proxy']){
             $proxy = parse_url($this->yii->params['curl_proxy']);
             $clientConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
             $clientConfig['proxy_host'] = $proxy['host'];
-            if(array_key_exists('port', $proxy)){
+            if (array_key_exists('port', $proxy)){
                 $clientConfig['proxy_port'] = $proxy['port'];
             }
         }

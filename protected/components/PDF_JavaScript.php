@@ -5,7 +5,7 @@ class PDF_JavaScript extends FPDI {
 	protected $n_js;
 
 	function IncludeJS($script, $isUTF8=false) {
-		if(!$isUTF8)
+		if (!$isUTF8)
 			$script=utf8_encode($script);
 		$this->javascript=$script;
 	}

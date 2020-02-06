@@ -82,6 +82,12 @@ class BaseActiveRecord extends CActiveRecord
         return $this;
     }
 
+    public function autoValidateRelation($save = false)
+    {
+        $this->auto_validate_relations = $save;
+        return $this;
+    }
+
     public function canAutocomplete()
     {
         return false;
@@ -189,7 +195,7 @@ class BaseActiveRecord extends CActiveRecord
                     foreach ($value as $v) {
                         if (is_array($v)) {
                             // looks like a list of attribute values, try to find or instantiate the classes
-                            if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
+                            if (array_key_exists($pk_attr, $v) && $v[$pk_attr]) {
                                 $m = $rel_cls::model()->findByPk($v[$pk_attr]);
                             } else {
                                 $m = new $rel_cls();
@@ -794,10 +800,17 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @param $rel_name
      */
-    private function validateRelation($rel_name)
+    public function validateRelation($rel_name, $fk)
     {
         foreach ($this->$rel_name as $i => $rel_obj) {
-            if (!$rel_obj->validate()) {
+            $rel_obj->$fk = $this->id;
+
+            // if the model is a new record than there is no ID so we do not validate that fk field
+            $to_be_validated = array_keys($rel_obj->attributes);
+            if ($this->isNewRecord) {
+                $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) { return $i !== $fk; });
+            }
+            if (!$rel_obj->validate($to_be_validated)) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
                     $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
                 }
@@ -815,8 +828,11 @@ class BaseActiveRecord extends CActiveRecord
             $record_relations = $this->getMetaData()->relations;
             foreach ($record_relations as $rel_name => $rel) {
                 $rel_type = get_class($rel);
-                if ($rel_type == self::HAS_MANY) {
-                    $this->validateRelation($rel_name);
+                // !is_array because we can define HAS_MANY relations with 'through' key
+                // https://www.yiiframework.com/doc/guide/1.1/en/database.arr#relational-query-with-through
+                // and the foreignKey will be an array
+                if ($rel_type == self::HAS_MANY && !is_array($rel->foreignKey)) {
+                    $this->validateRelation($rel_name, $rel->foreignKey);
                 }
             }
         }

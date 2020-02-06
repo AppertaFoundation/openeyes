@@ -407,7 +407,11 @@ class BaseController extends Controller
 
     public function setPageTitle($pageTitle)
     {
-        parent::setPageTitle($pageTitle . ' - OE');
+        if ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
+            parent::setPageTitle($pageTitle . ' - OE');
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     public function sanitizeInput($input)

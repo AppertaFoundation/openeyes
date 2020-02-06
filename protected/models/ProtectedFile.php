@@ -390,7 +390,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
             case IMAGETYPE_GIF:
                 imagealphablending($thumbnail, false);
                 imagesavealpha($thumbnail, true);
-                $src_image = imagecreatefromgif($this->getPath());
+                $src_image = imagecreatefromgif ($this->getPath());
                 break;
             default:
                 return false;
@@ -410,7 +410,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
                 imagepng($thumbnail, $thumbnail_path, self::THUMBNAIL_QUALITY * 9 / 100);
                 break;
             case IMAGETYPE_GIF:
-                imagegif($thumbnail, $thumbnail_path);
+                imagegif ($thumbnail, $thumbnail_path);
                 break;
         }
 

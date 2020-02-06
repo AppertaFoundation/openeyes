@@ -107,7 +107,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->iol_power = 'None';
         $this->axial_length = 'Unknown';
         $this->acd = 'Unknown';
-        $this->predicted_refractive_outcome = 'Unknown';
+        $this->predicted_refractive_outcome = 0.0;
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 

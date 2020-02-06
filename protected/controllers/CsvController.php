@@ -745,7 +745,7 @@ class CsvController extends BaseController
         $errors = array();
         //trial
         $trial = null;
-        if(!empty($trial_patient['trial_name'])){
+        if (!empty($trial_patient['trial_name'])){
             $trial = Trial::model()->findByAttributes(array('name' => $trial_patient['trial_name']));
         }
         if ($trial === null){
@@ -755,7 +755,7 @@ class CsvController extends BaseController
 
         //patient
         $patient = null;
-        if(!empty($trial_patient['CERA_number'])){
+        if (!empty($trial_patient['CERA_number'])){
             $patient = Patient::model()->findByAttributes(array('hos_num' => $trial_patient['CERA_number']));
         }
         if ($patient === null){
@@ -787,7 +787,7 @@ class CsvController extends BaseController
         $new_trial_pat->patient_id = $patient->id;
         $new_trial_pat->trial_id = $trial->id;
 
-        if(!$new_trial_pat->save()){
+        if (!$new_trial_pat->save()){
             return $new_trial_pat->getErrors();
         }
 

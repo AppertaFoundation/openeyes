@@ -38,7 +38,7 @@ class FixFMESCommand extends CConsoleCommand
             $thumb = imagecreatetruecolor(776, 864);
             imagecopy($thumb, $image, 0, 0, 1328, 560, 776, 864);
             ob_start();
-            imagegif($thumb);
+            imagegif ($thumb);
             $thumb_data = base64_encode(ob_get_contents());
             ob_end_clean();
             imagedestroy($thumb);

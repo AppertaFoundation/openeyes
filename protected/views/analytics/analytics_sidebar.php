@@ -1,3 +1,4 @@
+            <div class="view-mode flex-layout">
     <div class="view-mode flex-layout">
         <?php $clinical_button_disable = true;
         if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {

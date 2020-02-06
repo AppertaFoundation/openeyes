@@ -2002,11 +2002,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Medications</PRIMARY_TERM>
+          <PRIMARY_TERM>Medication History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>PMH</TERM>
             <TERM>Medical History</TERM>
-            <TERM>Medication History</TERM>
+            <TERM>Medications</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
@@ -2046,7 +2046,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
@@ -2699,6 +2699,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <PRIMARY_TERM>Clinical Management</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Management</OPEN_ELEMENT_CLASS_NAME>
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Medication Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicationManagement</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_MedicationManagement</GOTO_ID>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Cataract Surgical Management</PRIMARY_TERM>

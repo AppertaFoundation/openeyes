@@ -16,19 +16,24 @@
  */
 
 /**
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $current
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $stopped
+ * @var \OEModule\OphCiExamination\models\HistoryMedications $element
+ * @var \EventMedicationUse[] $current
+ * @var \EventMedicationUse[] $stopped
  */
 
 $model_name = CHtml::modelName($element);
 
-$systemic_filter = function ($entry) {
-    return $entry['route_id'] != 1;
+$eye_filter = function($e) {
+	/** @var EventMedicationUse $e */
+	return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
-$eye_filter = function ($entry) {
-    return $entry['route_id'] == 1;
+$systemic_filter = function ($entry) use ($eye_filter){
+    return !$eye_filter($entry);
 };
+
+$current = $element->current_entries;
+$stopped = $element->closed_entries;
 
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
@@ -51,18 +56,31 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       <strong><?= $entry->getMedicationDisplay() ?></strong>
                     </td>
                     <td>
-                        <?php $laterality = $entry->getLateralityDisplay();
-                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                        ?>
+                        <i class="oe-i start small pad-right"></i>
+                        <?= $entry->getMedicationDisplay() ?>
                     </td>
                     <td>
-                        <?php if ($entry->getDoseAndFrequency()) { ?>
-                            <i class="oe-i info small pro-theme js-has-tooltip"
-                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                        <?php $tooltip_content = $entry->getTooltipContent();
+                        if (!empty($tooltip_content)) { ?>
+                            <i class="oe-i info small-icon js-has-tooltip"
+                               data-tooltip-content="<?= $tooltip_content ?>">
                             </i>
                         <?php } ?>
                     </td>
-                    <td class="date"><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
+                    <td class="nowrap">
+                        <?php $laterality = $entry->getLateralityDisplay();
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
+                        <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                    </td>
+                    <td>
+                        <?php if ($entry->usage_type === "OphDrPrescription") { ?>
+                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
+                                        <span class="js-has-tooltip fa oe-i eye small"
+                                              data-tooltip-content="View prescription"></span>
+                            </a>
+                        <?php } ?>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -72,7 +90,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             No current Eye Medications
         </div>
     <?php } ?>
-
     <?php if ($stopped_eye_meds) { ?>
         <div class="collapse-data">
             <div class="collapse-data-header-icon expand">
@@ -94,16 +111,28 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                       <strong><?= $entry->getMedicationDisplay() ?></strong>
                                     </td>
                                     <td>
-                                        <?php $laterality = $entry->getLateralityDisplay();
-                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                        ?>
+                                        <i class="oe-i stop small pad-right"></i>
+                                        <?= $entry->getMedicationDisplay() ?>
                                     </td>
-                                    <td class="date"><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
                                     <td>
-                                        <?php if ($entry->prescription_item) { ?>
-                                            <a href="<?= $this->getPrescriptionLink($entry) ?>">
-                                  <span class="js-has-tooltip fa oe-i eye small"
-                                        data-tooltip-content="View prescription"></span>
+                                        <?php $tooltip_content = $entry->getTooltipContent();
+                                        if (!empty($tooltip_content)) { ?>
+                                            <i class="oe-i info small-icon js-has-tooltip"
+                                               data-tooltip-content="<?= $tooltip_content ?>">
+                                            </i>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="nowrap">
+                                        <?php $laterality = $entry->getLateralityDisplay();
+                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
+                                        <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
+                                    </td>
+                                    <td>
+                                        <?php if ($entry->usage_type === "OphDrPrescription") { ?>
+                                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
+                                                <span class="js-has-tooltip fa oe-i eye small"
+                                                      data-tooltip-content="View prescription">
+                                                </span>
                                             </a>
                                         <?php } ?>
                                     </td>

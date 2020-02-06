@@ -20,6 +20,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\components\OphCiExamination_API;
 
 /**
  * @property OEModule\OphCiExamination\components\OphCiExamination_API $api
@@ -37,8 +38,8 @@ class OphCiExamination_APITest extends CDbTestCase
     {
         parent::setUp();
 
-        Yii::app()->session['selected_firm_id'] = 2;
-        $this->api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $dataContext = new DataContext(Yii::app(), ['subspecialties' => Subspecialty::model()->findByPk(2)]);
+        $this->api = new OphCiExamination_API(Yii::app(), $dataContext);
     }
 
     public $fixtures = array(
@@ -525,6 +526,7 @@ class OphCiExamination_APITest extends CDbTestCase
         if ($event_date) {
             $event->event_date = $event_date;
         }
+        $event->delete_pending = 0;
         $event->save(false);
 
         return $event;

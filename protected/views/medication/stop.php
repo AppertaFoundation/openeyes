@@ -27,7 +27,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
     <?php
 
     $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => date('Y-m-d'), 'class' => 'medication_end_date', 'label' => 'Date stopped'));
-    $this->renderPartial('/medication/stop_reason', array('form' => $form, 'medication' => new Medication()));
+    $this->renderPartial('/medication/stop_reason', array('form' => $form, 'medication' => new ArchiveMedication()));
 
     ?>
     <div class="buttons">

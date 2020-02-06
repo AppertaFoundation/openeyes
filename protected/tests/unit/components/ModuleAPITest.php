@@ -20,6 +20,7 @@ class ModuleAPITest extends CDbTestCase
     public $fixtures = array(
             'event_types' => 'EventType',
             'event_groups' => 'EventGroup',
+        'users' => 'User',
     );
 
     public function setUp()
@@ -34,6 +35,7 @@ class ModuleAPITest extends CDbTestCase
         $event_type->name = 'Test Module';
         $event_type->class_name = 'TestModule';
         $event_type->event_group_id = 1;
+        $event_type->last_modified_user_id = 1;
         $event_type->noVersion()->save();
         $this->test_event_type = $event_type;
     }
