@@ -188,7 +188,7 @@ class ElementLetter extends BaseEventTypeElement
     public function beforeValidate()
     {
         if (isset($_POST['ElementLetter'])) {
-            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify(str_replace("\n", "<br/>", $_POST['ElementLetter']['body']));
+            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify(preg_replace("/\n(?=<p><\/p>)/", "<br/>", $_POST['ElementLetter']['body']));
         }
         return parent::beforeValidate();
     }
@@ -777,7 +777,7 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
-        return (new CHtmlPurifier())->purify(str_replace("\n", "<br/>", $this->body));
+        return (new CHtmlPurifier())->purify(preg_replace("/\n(?=<p><\/p>)/", "<br>", $this->body));
     }
 
     public function getCreate_view()
