@@ -62,7 +62,7 @@ EOH;
             " patient = ".
             (isset($patient)? array_reduce($patient, function($accumulator, $current) {return $current .",".$accumulator;}): "NULL")
             ." event = ".
-            (isset($event)?  array_reduce($event, function($accumulator, $current) {return $current .",".$accumulator;}) : "NULL").".";
+            (isset($event)?  array_reduce($event, function($accumulator, $current) {return $current .",".$accumulator;}) : "NULL");
         }
         $this->openCurlConnection();
         if (isset($patient)) {
@@ -98,7 +98,8 @@ EOH;
                 }
                 $pIndex++;
             }
-        } elseif (isset($event)) {
+        } 
+        if (isset($event)) {
             foreach ($event as $event_id) {
                 if($debug){
                     echo "\nFinding event ".$event_id.".";
@@ -109,7 +110,8 @@ EOH;
                     echo "\n    Created EventImage for event ".$e->id.".";
                 }
             }
-        } else {
+        } 
+        if(!isset($patient)&&!isset($event)){
             $this->actionClean($debug);
             $count = isset($args[0]) ? (int)$args[0] : INF;
             if($debug){
