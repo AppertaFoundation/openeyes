@@ -25,8 +25,8 @@ $widget = $this;
             <table>
                 <colgroup>
                     <col>
-                    <col width="55px">
-                    <col width="85px">
+                    <col class="cols-fifth">
+                    <col class="cols-2">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
@@ -50,7 +50,7 @@ $widget = $this;
                             </span>
                         </td>
                         <td>
-                            <strong><?= $operation['object']->getDisplayHasOperation(); ?></strong>
+                            <strong><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayHasOperation() : ''; ?></strong>
                         </td>
                     </tr>
                         <?php }
