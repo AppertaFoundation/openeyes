@@ -1,5 +1,5 @@
 <?php
-$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.Genetics.Relationships.js');
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
 ?>

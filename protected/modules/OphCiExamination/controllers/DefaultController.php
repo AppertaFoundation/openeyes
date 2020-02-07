@@ -171,7 +171,7 @@ class DefaultController extends \BaseEventTypeController
 
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $assetManager->publish($baseAssetsPath, true);
 
         Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
     }
@@ -261,7 +261,7 @@ class DefaultController extends \BaseEventTypeController
         // add OpenEyes.UI.RestrictedData js
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $assetManager->publish($baseAssetsPath, true);
 
         \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 

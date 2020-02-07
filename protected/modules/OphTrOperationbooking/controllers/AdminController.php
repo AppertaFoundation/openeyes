@@ -1907,7 +1907,7 @@ class AdminController extends ModuleAdminController
     }
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'));
+        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true);
         Yii::app()->clientScript->registerCssFile($assetPath . '/components/jt.timepicker/jquery.timepicker.css');
 
         return parent::beforeAction($action);

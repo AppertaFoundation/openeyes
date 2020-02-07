@@ -73,7 +73,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionPreviewApplication()
     {
-        $this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        $this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         $service = new OphCoTherapyapplication_Processor($this->event);
         $service->generatePreviewPdf($this);

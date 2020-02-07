@@ -68,13 +68,13 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         // Test the published path matches the expected published path.
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS;
         $publishedPath = $instance->getPublishedPathOfAlias($alias);
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
         $this->assertEquals($publishedPath, $expectedPublishedPath,
             'The published path of specified alias should match the expected path');
 
         // Test the published path matches the expected published path *when no alias is specified*.
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
         $this->assertEquals($publishedPath, $expectedPublishedPath,
             'The published path should match the expected path when no alias is specified');
     }
