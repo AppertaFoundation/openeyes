@@ -64,6 +64,13 @@ $based_on = implode(', ', $based_on);
           </tbody>
       </table>
       <hr class="divider">
+      <h3>Search</h3>
+      <?php $this->renderPartial('//base/_search_bar', array(
+          'callback' => Yii::app()->createUrl('site/search'),
+          'context' => 'sidebar',
+      )); ?>
+      <hr class="divider">
+
   </nav>
   <div class="results-all">
         <?php $this->renderPartial('//base/_messages');
