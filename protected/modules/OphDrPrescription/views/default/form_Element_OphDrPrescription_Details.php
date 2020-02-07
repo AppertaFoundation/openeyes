@@ -175,7 +175,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
  * We need to decide which JS file need to be loaded regarding to the controller
  * Unfortunately jsVars[] won't work from here because processJsVars function already called
  */
-$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
+$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'), true);
 
 Yii::app()->getClientScript()->registerScript('scr_controllerName',
     "controllerName = '" . get_class(Yii::app()->getController()) . "';", CClientScript::POS_HEAD);

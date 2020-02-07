@@ -135,7 +135,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $publishedPath = $instance->getPublishedPath($path, $alias);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);
@@ -146,7 +146,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $publishedPath = $instance->getPublishedPath($path);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);
