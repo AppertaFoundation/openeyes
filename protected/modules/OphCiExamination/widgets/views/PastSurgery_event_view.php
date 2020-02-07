@@ -24,7 +24,9 @@ $widget = $this;
             <?php } else { ?>
             <table>
                 <colgroup>
-                    <col class="cols-7">
+                    <col>
+                    <col width="55px">
+                    <col width="85px">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
@@ -42,10 +44,13 @@ $widget = $this;
                             <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>
                         <td>
-                                                    <span class="oe-date">
-                                                        <?= array_key_exists('object', $operation) ?
-                                                            $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
-                                                    </span>
+                            <span class="oe-date">
+                                <?= array_key_exists('object', $operation) ?
+                                    $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <strong><?= $operation['object']->getDisplayHasOperation(); ?></strong>
                         </td>
                     </tr>
                         <?php }
