@@ -81,7 +81,9 @@ class m180510_093824_prescription_events_import extends CDbMigration
                             $dose_unit_term .= $char;
                         }
                     }
-                    //var_dump($dose.' : '.$dose_unit_term);
+                    if (count($legacy_dose) === 2) {
+                        $dose_unit_term .= ' ' . $legacy_dose[1];
+                    }
                 } else if (count($legacy_dose) == 2) {
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];

@@ -117,6 +117,9 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                             $dose_unit_term .= $char;
                         }
                     }
+                    if (count($legacy_dose) === 2) {
+                        $dose_unit_term .= ' ' . $legacy_dose[1];
+                    }
                 } else {
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];
