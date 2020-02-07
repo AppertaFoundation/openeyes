@@ -173,7 +173,7 @@ class DefaultController extends \BaseEventTypeController
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath, true);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
     }
 
     public function initActionStep()
@@ -263,7 +263,7 @@ class DefaultController extends \BaseEventTypeController
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath, true);
 
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');

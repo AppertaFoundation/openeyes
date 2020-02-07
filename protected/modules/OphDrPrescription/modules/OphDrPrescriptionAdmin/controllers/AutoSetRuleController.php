@@ -34,7 +34,7 @@ class AutoSetRuleController extends BaseAdminController
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
         $asset_manager->publish($base_assets_path, true);
 
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
 
         $model = new MedicationSet();
         $model->unsetAttributes();
@@ -245,9 +245,9 @@ class AutoSetRuleController extends BaseAdminController
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
         $asset_manager->publish($base_assets_path, true);
 
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
         $filters = \Yii::app()->request->getParam('search', []);
         $data = \Yii::app()->request->getParam('MedicationSet');

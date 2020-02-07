@@ -187,7 +187,7 @@ $assetManager = Yii::app()->getAssetManager();
 $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath . '/components/chosen/', true);
 
-Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
+Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/', true).'/chosen.jquery.min.js');
 ?>
 <script type="text/javascript">
     $(document).ready(function() {

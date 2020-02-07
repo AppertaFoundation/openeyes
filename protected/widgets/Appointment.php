@@ -33,7 +33,7 @@ class Appointment extends BaseCWidget
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
         $assetManager->publish($baseAssetsPath, true);
 
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true).'/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         $criteria = new \CDbCriteria();
         $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
