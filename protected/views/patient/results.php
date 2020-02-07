@@ -17,31 +17,54 @@
  */
 ?>
 <?php
+
 $based_on = array();
+$search_term = "";
 if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME: <p>"' . $search_terms['last_name'] . '"</p>';
+    $based_on[] = 'LAST NAME ' ;
+    $search_term = $search_terms['last_name'];
 }
 if ($search_terms['first_name']) {
-    $based_on[] = 'FIRST NAME: <p>"' . $search_terms['first_name'] . '"</p>';
+    $based_on[] = 'FIRST NAME';
+    $search_term = $search_terms['first_name'];
 }
 if ($search_terms['hos_num']) {
-    $based_on[] = 'HOSPITAL NUMBER: <p>' . $search_terms['hos_num'] . '</p>';
+    $based_on[] = 'HOSPITAL NUMBER';
+    $search_term = $search_terms['hos_num'];
 }
 $core_api = new CoreAPI();
 
 $based_on = implode(', ', $based_on);
 ?>
+<div class="oe-full-header flex-layout">
+    <div class="title wordcaps">Patient search</div>
+</div>
 
-<?php $this->renderPartial('//base/_search_bar', array(
-    'callback' => Yii::app()->createUrl('site/search'),
-)); ?>
-<div class="patient-search-results subgrid">
-  <div class="search-details">
-    <div class="title">Results</div>
-    <div class="found"><?php echo $total_items ?> patients found</div>
-    <div class="search-critera">based on <?php echo $based_on ?></div>
-    <button id="js-clear-search-btn" class="blue hint cols-full clear-search">Clear search results</button>
-  </div>
+<?php //$this->renderPartial('//base/_search_bar', array(
+//    'callback' => Yii::app()->createUrl('site/search'),
+//)); ?>
+<div class="oe-full-content subgrid oe-patient-search">
+  <nav class="oe-full-side-panel">
+    <h3>Results</h3>
+      <table class="standard">
+          <tbody>
+          <tr>
+              <th>Search</th>
+              <td>"<?php echo $search_term ?>"</td>
+          </tr>
+          <tr>
+              <th>Found</th>
+              <td><?php echo $total_items ?> patients</td>
+          </tr>
+          <tr>
+              <th>Based on</th>
+              <td><?php echo $based_on ?></td>
+          </tr>
+
+          </tbody>
+      </table>
+      <hr class="divider">
+  </nav>
   <div class="results-all">
         <?php $this->renderPartial('//base/_messages');
         $dataProvided = $data_provider->getData();
