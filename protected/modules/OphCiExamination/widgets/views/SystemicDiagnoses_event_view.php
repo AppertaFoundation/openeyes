@@ -57,7 +57,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                 </td>
                 <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
                 <td>
-                  <string>Not present</string>
+                  <strong>Not present</strong>
                 </td>
               </tr>
             <?php } ?>
