@@ -107,10 +107,9 @@ $based_on = implode(', ', $based_on);
                           $field,
                           Yii::app()->createUrl('patient/search',
                               array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
-                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? (($sort_dir == 0) ? 'sortable column-sort ascend ' : 'sortable column-sort descend '. 'active') : '')
                         );
                         ?>
-                      <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
                     <?php } else {
                         echo CHtml::link(
                           $field,
