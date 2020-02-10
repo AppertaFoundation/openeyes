@@ -31,7 +31,7 @@
                         <tr>
                             <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
                                 <?= $this->patient->contact->address->city ?><br/>
-                                <?= $this->patient->contact->address->county ?><br/><br/>
+                                <?= $this->patient->contact->address->county ?><br/><?= $form_css_class !== 'wpten' ? '<br/>' : null ?>
                                 <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/>' : null ?>
                                 <?= (!$this->patient->contact->address->county && $form_css_class !== 'wpten') ? '<br/>' : null ?>
                             </td>
