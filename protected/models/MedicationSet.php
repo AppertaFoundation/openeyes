@@ -557,7 +557,6 @@ class MedicationSet extends BaseActiveRecordVersioned
                 $delete_set_item_query = "DELETE FROM medication_set_item WHERE id IN (" . implode(", ", $item_ids) . ")";
                 $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_set_item_query)->execute();
             }
-
         } while (($iteration * $batch) <= $cnt);
 
         if (!$no_condition && !empty($medication_ids)) {
