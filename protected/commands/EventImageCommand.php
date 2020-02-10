@@ -67,7 +67,7 @@ EOH;
             (isset($event)?  array_reduce($event, function ($accumulator, $current) {
                 return $current .",".$accumulator;
 
-            }) : "NULL");
+            }) : "NULL")."\n";
         }
         $this->openCurlConnection();
         if (isset($patient)) {
@@ -183,7 +183,7 @@ EOH;
         $events = EventImage::model()->getNextEventsToImage($imageCount, $debug);
         $eCount = count($events);
         if ($debug) {
-            echo " and identified " . $eCount . " events that require generation.";
+            echo " and identified " . $eCount . " events in loaded modules that require generation.";
         }
         $eDigits = $eCount !== 0 ? floor(log10($eCount) + 1) : 1; // how many digits in the count?
         $eIndex = 1;

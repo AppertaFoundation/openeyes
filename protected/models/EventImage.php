@@ -104,7 +104,7 @@ class EventImage extends BaseActiveRecord
         /* @var Event[] $events */
         $events = Event::model()->findAllByPk($event_ids);
         if ($debug) {
-            echo "\n  Found " . count($events) ." events";
+            echo "\n  Found " . count($events) ." events without images";
         }
         // restrict to only include events from modules that are loaded
         return array_filter($events, function ($event) {
