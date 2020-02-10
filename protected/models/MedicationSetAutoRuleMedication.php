@@ -1,4 +1,19 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 /**
  * This is the model class for table "medication_set_auto_rule_medication".
@@ -22,6 +37,9 @@
  */
 class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 {
+    private $delete_with_tapers = false;
+    protected $auto_update_relations = true;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -44,6 +62,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
+            array('tapers', 'safe'), // auto update relation
 			array('id, medication_set_id, medication_id, include_parent, include_children, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
@@ -57,9 +76,16 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
+            'tapers' => array(self::HAS_MANY, 'MedicationSetAutoRuleMedicationTaper', 'medication_set_auto_rule_id'),
 			'medicationSet' => array(self::BELONGS_TO, MedicationSet::class, 'medication_set_id'),
 			'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'defaultDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'default_duration_id'),
+            'defaultDispenseCondition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'default_dispense_condition_id'),
+            'defaultDispenseLocation' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'default_dispense_location_id'),
+            'defaultFrequency' => array(self::BELONGS_TO, 'MedicationFrequency', 'default_frequency_id'),
+            'defaultForm' => array(self::BELONGS_TO, 'MedicationForm', 'default_form_id'),
+            'defaultRoute' => array(self::BELONGS_TO, 'MedicationRoute', 'default_route_id'),
 		);
 	}
 
@@ -80,6 +106,21 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
 			'created_date' => 'Created Date',
 		);
 	}
+
+    public function deleteWithTapers()
+    {
+        $this->delete_with_tapers = true;
+        return $this;
+    }
+
+    public function beforeDelete()
+    {
+        if ($this->delete_with_tapers === true) {
+            MedicationSetAutoRuleMedicationTaper::model()->deleteAllByAttributes(['medication_set_auto_rule_id' => $this->id]);
+        }
+
+        return parent::beforeDelete();
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

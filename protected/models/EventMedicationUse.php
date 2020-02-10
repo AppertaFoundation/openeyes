@@ -431,6 +431,11 @@ class EventMedicationUse extends BaseElement
         return true;
     }
 
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+    }
+
     public function getTooltipContent()
     {
         $data = [];
