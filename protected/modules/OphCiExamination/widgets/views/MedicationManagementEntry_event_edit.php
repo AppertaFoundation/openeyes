@@ -103,7 +103,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     echo 'style="display: none;"';
                 }?>>
 
-            <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="00" />
+            <input class="fixed-width-small js-dose" id="<?= $model_name."_entries_".$row_count."_dose"?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <?php if ($is_template) { ?>
                 {{#has_dose_unit_term}}
@@ -264,7 +264,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                 <i class="oe-i stop small pad"></i>
                                     <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
                                 <?php else : ?>
-                                    <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                                    <span><button type="button"><i class="oe-i stop small pad-right"></i> Stop</button></span>
                                 <?php endif; ?>
                         </a>
                     </div>

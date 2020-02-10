@@ -53,7 +53,6 @@ class RefMedicationAdminController extends BaseAdminController
             $admin->getSearch()->addSearchItem('source_type');
         }
 
-
         $admin->getSearch()->addSearchItem('source_subtype');
         $admin->getSearch()->addSearchItem('preferred_code');
         $admin->getSearch()->addSearchItem('preferred_term');

@@ -43,8 +43,11 @@ EOH;
 
     public function actionIndex()
     {
+        $t = microtime(true);
+        echo "\n[". (date("Y-m-d H:i:s")) ."] Old medication and drug deletion (oldmedicationanddrugdeletion) ... ";
         $this->deleteUnusedMedicationDrugs();
         $this->deleteOldDrugAndMedicationTables();
+        echo "OK - took: " . (microtime(true) -$t) . "s\n";
     }
 
     private function deleteUnusedMedicationDrugs()

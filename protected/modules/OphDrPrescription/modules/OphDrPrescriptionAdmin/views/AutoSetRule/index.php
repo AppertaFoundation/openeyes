@@ -22,37 +22,12 @@
 <?php endif; ?>
 
 <div class="row divider">
-    <h2>Automatic medication sets</h2>
+    <h2>Drug Sets Admin</h2>
 </div>
 
 <div class="row divider">
-    <form id="drug_set_search" method="post">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-
-            <table class="cols-8">
-                <colgroup>
-                    <col class="cols-6">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                    <col class="cols-2">
-                </colgroup>
-
-                <tbody>
-                <tr class="col-gap">
-                    <td>
-                        <?= \CHtml::textField(
-                            'search[query]',
-                            $search['query'],
-                            ['class' => 'cols-full', 'placeholder' => "Name"]
-                        ); ?>
-                    </td>
-                    <td>
-                        <button class="blue hint" type="button" id="et_search">Search</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-    </form>
+    <h2>Set type:</h2>
+    <?=$this->renderPartial('/AutoSetRule/_index_filter', ['search' => $search]);?>
 </div>
 
 <div class="cols-12">
@@ -62,8 +37,9 @@
                 <col style="width:3.33333%;">
                 <col style="width:3.33333%">
                 <col class="cols-3">
+                <col class="cols-3">
                 <col class="cols-1">
-                <col class="cols-4">
+                <col class="cols-1">
 
             </colgroup>
             <thead>
@@ -71,8 +47,9 @@
                 <th><?= \CHtml::checkBox('selectall'); ?></th>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Rule</th>
                 <th>Item Count</th>
-								<th></th>
+                <th>Hidden</th>
                 <th style="text-align:unset;width:12.1%">Actions</th>
             </tr>
             </thead>
@@ -114,12 +91,17 @@
         <td><input type="checkbox" value="{{id}}" name="delete-ids[]" /></td>
         <td>{{id}}</td>
         <td>{{name}}</td>
+        <td>{{rules}}</td>
         <td>{{count}}</td>
-				<td></td>
-				<td>
-					<a href="/OphDrPrescription/admin/autoSetRule/edit/{{id}}" class="button">Edit</a>
-					<a class="button js-list-medication" data-set_id="{{id}}">List medications</a>
-				</td>
+        <td>
+            {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
+            {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
+        </td>
+        <td></td>
+        <td>
+            <a href="/OphDrPrescription/admin/autoSetRule/edit/{{id}}" class="button">Edit</a>
+            <a href="/OphDrPrescription/admin/autoSetRule/listMedications?set_id={{id}}" class="button">List medications</a>
+        </td>
 
     </tr>
 </script>

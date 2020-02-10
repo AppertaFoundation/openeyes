@@ -17,7 +17,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         searchUrl: '/OphDrPrescription/admin/DrugSet/search',
         deleteUrl: '/OphDrPrescription/admin/drugSet/delete',
         templateSelector: '#medication_set_template',
-        deleteButtonSelector: '#delete_sets'
+        deleteButtonSelector: '#delete_sets',
+        rowLink: 'med_id'
     };
 
     DrugSetController.prototype.initTable = function () {
@@ -30,13 +31,11 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         });
 
         $(this.options.tableSelector).on('click', '.js-add-taper', function () {
-            const $row = $(this).closest('tr');
-            controller.addTaper($row);
-            const $tapers = $('#meds-list tr[data-parent-med-id="' + $row.attr('data-med_id') + '"]');
-            controller.showEditControls($row, $tapers);
-            controller.hideGeneralControls($row);
-            $row.find('.js-text').hide();
-            controller.showEditFields($row, $tapers);
+
+            const $tr = $(this).closest('tr');
+            const id = $tr.data(controller.options.rowLink);
+            controller.addTaper($tr);
+            $(`.js-row-of-${id}`).find('.js-edit-set-medication').trigger('click');
             return false;
         });
     };
@@ -50,32 +49,6 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             window.location.href = baseUrl + $(e.target).data('uri') + '?usage_code=' + this.selected_code_filter;
         });
     };
-
-    DrugSetController.prototype.showEditFields = function($row, $tapers) {
-        $row.find('.js-input').show();
-        $tapers.find('.js-input').show();
-        $tapers.find('.js-text').hide();
-
-        $.each($row.find('.js-text'), function(i, element) {
-            const $text = $(element);
-            const $td = $text.closest('td');
-            const $input = $td.find('.js-input');
-            if ($input.length && $input.prop('tagName') === 'SELECT') {
-                $input.val($text.data('id'));
-            }
-        });
-    };
-
-    DrugSetController.prototype.showEditControls = function($row, $tapers) {
-        $row.find('td.actions').find('a[data-action_type="save"], a[data-action_type="cancel"]').show();
-        $tapers.find('td.actions').find('a[data-action_type="remove"]').show();
-    };
-
-    DrugSetController.prototype.hideGeneralControls = function($row) {
-        $row.find('td.actions').find('a[data-action_type="edit"], a[data-action_type="delete"]').hide();
-    };
-
-
 
     DrugSetController.prototype.addTaper = function($row) {
         let data_med_id = $row.attr('data-med_id');

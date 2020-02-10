@@ -97,7 +97,7 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
         <tr>
             <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
         </tr>
-        <?php if (Yii::app()->params['institution_code']=='CERA') : ?>
+        <?php if (Yii::app()->params['use_contact_practice_associate_model']==true) : ?>
             <tr>
                 <td>
                     <label><?php echo $gp->getAttributeLabel('Practitioner'); ?></label>
