@@ -26,6 +26,11 @@ var analytics_cataract = (function () {
 			'OEModule_OphCiExamination_components_RefractiveOutcomeReport',
 			'#refractive-outcome-grid',
 			'RO',
+		],
+		'/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&mode=0&eye=0': [
+			'OEModule_OphOuCatprom5_components_Catprom5Report',
+			'#catprom5-grid',
+			'CP5',
 		]
 	};
 

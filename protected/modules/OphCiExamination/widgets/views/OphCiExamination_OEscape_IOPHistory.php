@@ -14,33 +14,6 @@
     let opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     let laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     let sides = ['left', 'right'];
-    const selectorOptions = {
-        buttons: [{
-            step: 'month',
-            stepmode: 'backward',
-            count: 1,
-            label: '1m'
-        }, {
-            step: 'month',
-            stepmode: 'backward',
-            count: 6,
-            label: '6m'
-        }, {
-            step: 'year',
-            stepmode: 'todate',
-            count: 1,
-            label: 'YTD'
-        }, {
-            step: 'year',
-            stepmode: 'backward',
-            count: 1,
-            label: '1y'
-        }, {
-            step: 'all',
-            label: 'All'
-        }],
-        yanchor: 'top'
-    };
 	//plotly
     let iop_plotly_data = <?= CJavaScript::encode($this->getPlotlyIOPData()); ?>;
 
@@ -50,9 +23,6 @@
 			layout_iop['annotations'] = [];
 			layout_iop['yaxis'] = setYAxis_IOP();
 			layout_iop['height'] = 400;
-            if(x_data.length){
-              layout_iop['xaxis']['rangeselector'] = selectorOptions;
-            }
 
 			setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, opnote_marking, side, 0, 70);
 			setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, laser_marking, side, 0, 70);
@@ -146,7 +116,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-          return item.toLocaleDateString("en-GB", "short")	+ '<br>' + display_data[index];
+          return item.getDate()+'/'+(item.getMonth()+1) +"/"+ item.getFullYear().toString().substring(2)+ '<br>' + display_data[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,
