@@ -67,6 +67,7 @@ $based_on = implode(', ', $based_on);
           'context' => 'sidebar',
       )); ?>
       <hr class="divider">
+      <h4>Use the <a href="<?= Yii::app()->createUrl('/OECaseSearch/caseSearch/index'); ?>" class="hint">advanced search</a></h4>
 
   </nav>
   <div class="results-all">

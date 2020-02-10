@@ -333,7 +333,7 @@ class PatientController extends BaseController
                 }
                 Yii::app()->user->setFlash('warning.no-results', $message);
             }
-            
+
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
             $this->fixedHotlist = false;
