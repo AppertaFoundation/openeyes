@@ -83,7 +83,7 @@ class EventImage extends BaseActiveRecord
      */
     public function getNextEventsToImage($event_count = 1, $debug = null)
     {
-        $event_ids = Yii::app()->db->createCommand()
+        $cmd = Yii::app()->db->createCommand()
             ->select('event.id')
             ->from('event')
             ->leftJoin('event_image', 'event_image.event_id = event.id')
@@ -96,9 +96,12 @@ class EventImage extends BaseActiveRecord
                     event_image_status.name IN ("NOT_CREATED", "GENERATED")
                   )
                 )')
-            ->order('event.last_modified_date DESC')
-            ->limit($event_count)
-            ->queryColumn();
+            ->order('event.last_modified_date DESC');
+           
+           if($event_count!==INF){
+            $cmd = $cmd->limit($event_count);
+           }
+            $event_ids  = $cmd->queryColumn();
 
 
         /* @var Event[] $events */
