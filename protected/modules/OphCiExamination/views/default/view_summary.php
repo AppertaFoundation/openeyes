@@ -113,7 +113,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               </tr>
                               </thead>
                               <tbody style="display: none;">
-                              <?php foreach ($stoppedEyeMedications as $entry) { ?>
+                              <?php foreach ($stopped_eye_medications as $entry) { ?>
                                   <tr>
                                       <td>
                                         <i class="oe-i stop small pad-right"></i>

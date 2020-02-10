@@ -402,7 +402,6 @@ class BaseController extends Controller
         if ($record) {
             return $record["id"];
         }
-
     }
 
     public function setPageTitle($pageTitle)
