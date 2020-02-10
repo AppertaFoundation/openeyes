@@ -13,7 +13,7 @@ class m190424_131625_add_type_to_lab_results_result_timed_numeric extends CDbMig
             'type',
             'int(11) unsigned NOT NULL DEFAULT ' . $default_result_type);
         $this->addForeignKey('lab_results_fk_lab_results_type', 'et_ophinlabresults_result_timed_numeric',
-            'type','ophinlabresults_type' , 'id');
+            'type', 'ophinlabresults_type', 'id');
     }
 
     public function down()

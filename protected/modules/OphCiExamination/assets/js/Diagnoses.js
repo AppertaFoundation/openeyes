@@ -473,6 +473,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $(this).find('.js-left-eye').prop('checked', side === 3 || side === 1);
                 $(this).find('.js-right-eye').prop('checked', side === 3 || side === 2);
 
+                listSide = $(this).find('input[type="radio"]:checked').val();
+                if (listSide !== side) {
+                    $(this).find('input[type="radio"][value=' + id + ']').prop('checked', true);
+                }
                 // stop iterating
                 return false;
             }

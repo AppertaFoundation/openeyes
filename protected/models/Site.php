@@ -81,7 +81,7 @@ class Site extends BaseActiveRecordVersioned
         return array(
             array('name, short_name, remote_id, telephone', 'required'),
             array('name', 'length', 'max' => 255),
-            array('institution_id, name, remote_id, short_name, location_code fax, telephone, contact_id, replyto_contact_id, source_id, active', 'safe'),
+            array('institution_id, name, remote_id, short_name, location_code, fax, telephone, contact_id, replyto_contact_id, source_id, active', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
