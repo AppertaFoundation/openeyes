@@ -296,38 +296,7 @@ class PatientController extends BaseController
         $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
         $search_terms = $patientSearch->getSearchTerms();
 
-        if ($itemCount == 0) {
-            Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
-
-            $message = 'Sorry, no results ';
-            if ($search_terms['hos_num']) {
-                $message .= 'for '.Yii::app()->params['hos_num_label'].' <strong>"'.$search_terms['hos_num'].'"</strong>';
-
-                // check if the record was merged into another record
-                $criteria = new CDbCriteria();
-                $criteria->compare('secondary_hos_num', $search_terms['hos_num']);
-                $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
-
-                $patientMergeRequest = PatientMergeRequest::model()->find($criteria);
-
-                if ($patientMergeRequest) {
-                    $message = 'Hospital Number <strong>'.$search_terms['hos_num'].'</strong> was merged into <strong>'.$patientMergeRequest->primary_hos_num.'</strong>';
-                }
-            } elseif ($search_terms['nhs_num']) {
-                $message .= 'for '. Yii::app()->params['nhs_num_label'].' <strong>"'.$search_terms['nhs_num'].'"</strong>';
-            } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
-                $message .= 'for Patient Name <strong>"'.$search_terms['first_name'].' '.$search_terms['last_name'].'"</strong>';
-            } else {
-                $message .= 'found for your search.';
-            }
-            Yii::app()->user->setFlash('warning.no-results', $message);
-
-
-            Yii::app()->session['search_term'] = $term;
-            Yii::app()->session->close();
-
-            $this->redirect(Yii::app()->homeUrl);
-        } elseif ($itemCount == 1) {
+        if ($itemCount == 1) {
             $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
 
@@ -338,6 +307,33 @@ class PatientController extends BaseController
 
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
         } else {
+            if ($itemCount == 0) {
+                Audit::add('search', 'search-results', implode(',', $search_terms) . ' : No results');
+
+                $message = 'Sorry, no results ';
+                if ($search_terms['hos_num']) {
+                    $message .= 'for ' . Yii::app()->params['hos_num_label'] . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
+
+                    // check if the record was merged into another record
+                    $criteria = new CDbCriteria();
+                    $criteria->compare('secondary_hos_num', $search_terms['hos_num']);
+                    $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
+
+                    $patientMergeRequest = PatientMergeRequest::model()->find($criteria);
+
+                    if ($patientMergeRequest) {
+                        $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
+                    }
+                } elseif ($search_terms['nhs_num']) {
+                    $message .= 'for ' . Yii::app()->params['nhs_num_label'] . ' <strong>"' . $search_terms['nhs_num'] . '"</strong>';
+                } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
+                    $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
+                } else {
+                    $message .= 'found for your search.';
+                }
+                Yii::app()->user->setFlash('warning.no-results', $message);
+            }
+            
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
             $this->fixedHotlist = false;

@@ -40,9 +40,6 @@ $based_on = implode(', ', $based_on);
     <div class="title wordcaps">Patient search</div>
 </div>
 
-<?php //$this->renderPartial('//base/_search_bar', array(
-//    'callback' => Yii::app()->createUrl('site/search'),
-//)); ?>
 <div class="oe-full-content subgrid oe-patient-search">
   <nav class="oe-full-side-panel">
     <h3>Results</h3>
