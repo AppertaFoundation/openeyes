@@ -27,7 +27,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
     private function runPrescriptionImport()
     {
-        $events = Yii::app()->db
+        $events = $this->dbConnection
             ->createCommand("
                     SELECT 
                         event.id                            AS event_id,
@@ -103,7 +103,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
                 $ref_dispense_condition_id = ($event['ref_dispense_condition_id'] == null) ? 'NULL' : $event['ref_dispense_condition_id'];
                 $ref_dispense_location_id = ($event['ref_dispense_location_id'] == null) ? 'NULL' : $event['ref_dispense_location_id'];
 
-                $command = Yii::app()->db
+                $command = $this->dbConnection
                     ->createCommand("
                     INSERT INTO event_medication_use(
                         event_id, 
@@ -143,9 +143,9 @@ class m180510_093824_prescription_events_import extends CDbMigration
                 $command->execute();
                 $command = null;
 
-                $last_id = Yii::app()->db->getLastInsertID();
+                $last_id = $this->dbConnection->getLastInsertID();
 
-                Yii::app()->db->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id WHERE item_id = :old_id")
+                $this->dbConnection->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id WHERE item_id = :old_id")
                     ->bindParam(":old_id", $event['temp_prescription_item_id'])
                     ->bindParam(":new_id", $last_id)
                     ->execute();

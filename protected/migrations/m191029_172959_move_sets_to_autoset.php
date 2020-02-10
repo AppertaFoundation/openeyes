@@ -2,68 +2,92 @@
 
 class m191029_172959_move_sets_to_autoset extends CDbMigration
 {
+    /**
+     * @return bool|void
+     * @throws CDbException
+     * @throws Exception
+     */
     public function safeUp()
     {
-        $data_provider = new CActiveDataProvider('MedicationSet', [
-            'criteria' => [
-                'condition' => 'automatic = 0'
-            ],
-        ]);
-        $iterator = new CDataProviderIterator($data_provider);
+        $db = $this->dbConnection;
+        $iterator = $db->createCommand('SELECT * FROM medication_set WHERE automatic = 0')
+            ->queryAll();
 
         foreach ($iterator as $set) {
-            // create new automatic set based on the non-automatic
-            $new_set = new MedicationSet();
-            $new_set->attributes = $set->attributes;
-            $new_set->id = null;
-            $new_set->automatic = 1;
-            $new_set->created_date = date('Y-m-d H:i:s');
+            $this->update(
+                'medication_set',
+                array('name' => $set['name'] . ' (manual)'),
+                'id = :id',
+                array(':id' => $set['id'])
+            );
 
-            // Cannot have a medication set with the name
-            $set->name = $set->name . " (manual)";
-            $set->update(['name']);
-            $set->refresh();
+            $this->insert(
+                'medication_set',
+                array(
+                    'name' => $set['name'],
+                    'deleted_date' => $set['deleted_date'],
+                    'last_modified_date' => $set['last_modified_date'],
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'automatic' => 1,
+                    'hidden' => $set['hidden'],
+                    'antecedent_medication_set_id' => $set['antecedent_medication_set_id'],
+                    'display_order' => $set['display_order'],
+                    'last_modified_user_id' => $set['last_modified_user_id'],
+                    'created_user_id' => $set['created_user_id'],
+                )
+            );
 
-            if (!$new_set->save()) {
-                \OELog::log(print_r($new_set->getErrors(), true));
-            }
+            $new_set_id = $db->getLastInsertID();
+
+            $medication_set_items = $db->createCommand('SELECT * FROM medication_set_item WHERE medication_set_id = :set_id')
+                ->bindValue(':set_id', $set['id'])
+                ->queryAll();
 
             // create entry in medication_set_auto_rule_medication for every medication set item in set
-            foreach ($set->medicationSetItems as $medication_item) {
-                $set_auto_rule = new MedicationSetAutoRuleMedication();
-                $set_auto_rule->medication_id = $medication_item->medication_id;
-                $set_auto_rule->medication_set_id = $new_set->id;
-                $set_auto_rule->include_children = 0;
-                $set_auto_rule->include_parent = 0;
-                $set_auto_rule->created_date = date('Y-m-d H:i:s');
-
-                // set all the defaults as well
-                foreach ($set_auto_rule->getAttributes() as $attribute) {
-                    // if attribute starts with 'default'
-                    if (strpos($attribute, 'default') === 0) {
-                        $set_auto_rule->{$attribute} = $medication_item->{$attribute};
-                    }
-                }
-
-                if (!$set_auto_rule->save() ) {
-                    \OELog::log(print_r($set_auto_rule->getErrors(), true));
-                }
+            foreach ($medication_set_items as $medication_item) {
+                $this->insert(
+                    'medication_set_auto_rule_medication',
+                    array(
+                        'medication_id' => $medication_item['medication_id'],
+                        'medication_set_id' => $new_set_id,
+                        'include_children' => 0,
+                        'include_parent' => 0,
+                        'created_date' => date('Y-m-d H:i:s'),
+                        'default_form_id' => $medication_item['default_form_id'],
+                        'default_dose' => $medication_item['default_dose'],
+                        'default_route_id' => $medication_item['default_route_id'],
+                        'default_dispense_location_id' => $medication_item['default_dispense_location_id'],
+                        'default_dispense_condition_id' => $medication_item['default_dispense_condition_id'],
+                        'default_frequency_id' => $medication_item['default_frequency_id'],
+                        'default_dose_unit_term' => $medication_item['default_dose_unit_term'],
+                        'default_duration_id' => $medication_item['default_duration_id'],
+                    )
+                );
             }
 
-            foreach ($set->medicationSetRules as $set_rule) {
-                $new_rule = new MedicationSetRule();
-                foreach (['subspecialty_id', 'site_id', 'usage_code', 'usage_code_id', 'deleted_date'] as $attr) {
-                    $new_rule->{$attr} = $set_rule->{$attr};
-                }
+            $medication_set_rules = $db->createCommand('SELECT * FROM medication_set_rule WHERE medication_set_id = :set_id')
+                ->bindValue(':set_id', $set['id'])
+                ->queryAll();
 
-                $new_rule->medication_set_id = $new_set->id;
-
-                if (!$new_rule->save()) {
-                    \OELog::log(print_r($new_rule->getErrors(), true));
-                }
+            foreach ($medication_set_rules as $set_rule) {
+                $this->insert(
+                    'medication_set_rule',
+                    array(
+                        'subspecialty_id' => $set_rule['subspecialty_id'],
+                        'site_id' => $set_rule['site_id'],
+                        'usage_code_id' => $set_rule['usage_code_id'],
+                        'deleted_date' => $set_rule['deleted_date'],
+                        'medication_set_id' => $new_set_id
+                    )
+                );
             }
 
-            Yii::app()->db->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $new_set->id . " WHERE medication_set_id = " . $set->id)->execute();
+            $this->update(
+                'ophciexamination_risk_tag',
+                array('medication_set_id' => $new_set_id),
+                'medication_set_id = :set_id',
+                array(':set_id' => $set['id'])
+            );
         }
     }
 

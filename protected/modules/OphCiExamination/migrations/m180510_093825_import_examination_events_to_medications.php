@@ -15,7 +15,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
         /*
          * Get Examination events with Drugs
          */
-        $eventsDrugs = Yii::app()->db
+        $eventsDrugs = $this->dbConnection
             ->createCommand("
                     SELECT 
                         event.id                            AS event_id,
@@ -61,7 +61,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
         /*
          * Get Examination events with Medication Drugs
          */
-        $eventMedDrugs = Yii::app()->db
+        $eventMedDrugs = $this->dbConnection
             ->createCommand("
                     SELECT 
                         event.id                            AS event_id,
@@ -132,7 +132,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                 $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
                 $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : $event['prescription_item_id'];
 
-                $command = Yii::app()->db
+                $command = $this->dbConnection
                     ->createCommand("
                     INSERT INTO event_medication_use (
                         event_id, 

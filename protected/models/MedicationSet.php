@@ -462,7 +462,7 @@ class MedicationSet extends BaseActiveRecordVersioned
         $msg = "Started processing " . $this->name . "\n";
         Yii::log($msg);
 
-        $cmd = Yii::app()->db->createCommand();
+        $cmd = $this->getDbConnection()->createCommand();
         $cmd->select('id', 'DISTINCT')->from('medication');
         $attribute_option_ids = array_map(function ($e) {
             return $e->id;

@@ -7,8 +7,8 @@
 class OphDrPrescription_ItemTaperTest extends CDbTestCase
 {
     protected $fixtures = array(
-        'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
-        'ophdrprescription_items' => OphDrPrescription_Item::class,
+        'item_tapers' => OphDrPrescription_ItemTaper::class,
+        'items' => OphDrPrescription_Item::class,
     );
         
     private $instance;
@@ -16,7 +16,7 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = $this->ophdrprescription_item_tapers('prescription_item_taper1');
+        $this->instance = $this->item_tapers('prescription_item_taper1');
     }
         
     public function tearDown()
@@ -49,12 +49,11 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
 
         $this->assertEquals($expected, $actual);
 
-        $this->instance = $this->ophdrprescription_item_tapers('prescription_item_taper8');
+        $this->instance = $this->item_tapers('prescription_item_taper8');
         $duration = strtolower($this->instance->duration->name);
         $expected = strtoupper("FREQUENCY: {$this->instance->frequency->long_name} {$duration}");
         $actual = $this->instance->fpTenFrequency();
 
         $this->assertEquals($expected, $actual);
-
     }
 }

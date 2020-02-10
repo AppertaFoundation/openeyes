@@ -4,7 +4,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
 {
 	public function up()
 	{
-        $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
+        $common_oph_id = $this->dbConnection->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
         $q = $this->getDbConnection()->createCommand("SELECT DISTINCT site_id, subspecialty_id, GROUP_CONCAT(drug_id) AS drug_ids
                                                       FROM site_subspecialty_drug GROUP BY site_id, subspecialty_id");
         foreach ($q->queryAll() as $ssd) {
@@ -35,7 +35,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
 
 	public function down()
 	{
-        $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
+        $common_oph_id = $this->dbConnection->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
 		$this->execute("DELETE FROM medication_set_rule WHERE usage_code_id = {$common_oph_id}");
 		$this->execute("DELETE FROM medication_set_item WHERE medication_set_id IN (SELECT id FROM medication_set WHERE `name` = 'Common subspecialty medications')");
 		$this->execute("DELETE FROM medication_set WHERE `name` = 'Common subspecialty medications'");
