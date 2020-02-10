@@ -550,27 +550,19 @@ class MedicationSet extends BaseActiveRecordVersioned
 
             if ($item_ids) {
                 //deleting tapers
-                $this->dbConnection->createCommand()->delete(
-                    'medication_set_item_taper',
-                    'medication_set_item_id IN(:medication_set_item_id)',
-                    [':medication_set_item_id' => implode(", ", $item_ids)]
-                );
+                $delete_taper_query = "DELETE FROM medication_set_item_taper WHERE medication_set_item_id IN (" . implode(", ", $item_ids) . ")";
+                $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_taper_query)->execute();
 
                 //deleting item
-                $this->dbConnection->createCommand()->delete(
-                    'medication_set_item',
-                    'id = :id',
-                    [':id' => implode(", ", $item_ids)]
-                );
+                $delete_set_item_query = "DELETE FROM medication_set_item WHERE id IN (" . implode(", ", $item_ids) . ")";
+                $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_set_item_query)->execute();
             }
 
-            $items = [];
         } while (($iteration * $batch) <= $cnt);
 
         if (!$no_condition && !empty($medication_ids)) {
             // repopulate
 
-            $mk_count = count($medication_ids);
             $medication_queries = [];
             foreach ($medication_ids as $mk => $id) {
                 $medication_queries[] = [
@@ -630,7 +622,6 @@ class MedicationSet extends BaseActiveRecordVersioned
 
         // process auto sub sets recursively
         if (!empty($auto_set_ids)) {
-            $auto_count = count($auto_set_ids);
             foreach ($auto_set_ids as $auto_id) {
                 if (!in_array($auto_id, self::$_processed)) {
                     // Sub set is not already processed
@@ -666,8 +657,7 @@ class MedicationSet extends BaseActiveRecordVersioned
                             $data['medication_set_id'] = $this->id;
                             $data['medication_id'] = $item->medication_id;
 
-                            // $new_item->save();
-                            $insert_queries[] = $data;
+                            $insert_queries[$this->id . $item->medication_id] = $data;
                             $index++;
                             if (($index >= 500 || $ik === $item_count - 1) && $insert_queries) {
                                 $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('medication_set_item', $insert_queries)->execute();
