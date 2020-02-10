@@ -289,7 +289,8 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function fpTenDose()
     {
         return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->dose_unit_term) : strtoupper($this->dose))
-            . ', ' . strtoupper($this->route->term);// . ($this->route_option ? ' (' . strtoupper($this->route_option->name) . ')' : null);
+            . ', ' . strtoupper($this->route->term)
+            . ($this->medicationLaterality ? ' (' . strtoupper($this->medicationLaterality->name) . ')' : null);
     }
 
     protected function beforeDelete()

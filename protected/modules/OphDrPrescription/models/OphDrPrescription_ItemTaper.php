@@ -144,6 +144,6 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
     public function fpTenDose()
     {
         return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->item->dose_unit) : strtoupper($this->dose))
-            . ', ' . strtoupper($this->item->route->term);// . ($this->item->route_option ? ' (' . strtoupper($this->item->route_option->name) . ')' : null);
+            . ', ' . strtoupper($this->item->route->term) . ($this->item->medicationLaterality ? ' (' . strtoupper($this->item->medicationLaterality->name) . ')' : null);
     }
 }

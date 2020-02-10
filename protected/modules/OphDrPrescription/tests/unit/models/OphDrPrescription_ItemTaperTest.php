@@ -35,8 +35,8 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
     {
         $expected = strtoupper('DOSE: '
             . (is_numeric($this->instance->dose) ? "{$this->instance->dose} {$this->instance->item->dose_unit_term}" : $this->instance->dose)
-            . ', ' . $this->instance->item->route->term);
-            //. ($this->instance->item->route_option ? ' (' . $this->instance->item->route_option->name . ')' : null));
+            . ', ' . $this->instance->item->route->term
+            . ($this->instance->item->medicationLaterality ? ' (' . $this->instance->item->medicationLaterality->name . ')' : null));
         $actual = $this->instance->fpTenDose();
 
         $this->assertEquals($expected, $actual);

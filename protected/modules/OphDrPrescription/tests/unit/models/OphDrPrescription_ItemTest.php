@@ -66,7 +66,7 @@ class OphDrPrescription_ItemTest extends CDbTestCase
         foreach ($this->items as $item) {
             $drug_label = $item->medication->label;
             $dose = 'Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->dose_unit_term}" : $item->dose)
-                . ', ' . $item->route->term;// . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+                . ', ' . $item->route->term . ($item->medicationLaterality ? ' (' . $item->medicationLaterality->name . ')' : null);
             $frequency = "Frequency: {$item->frequency->term} for {$item->drugDuration->name}";
 
             $item->fpTenLinesUsed();
@@ -81,7 +81,7 @@ class OphDrPrescription_ItemTest extends CDbTestCase
 
             foreach ($item->tapers as $index => $taper) {
                 $taper_dose = 'Dose: ' . (is_numeric($taper->dose) ? ($taper->dose . ' ' . $item->dose_unit_term) : $taper->dose)
-                    . ', ' . $item->route->term;// . ($item->route_option ? ' (' . $item->route_option->name . ')' : null);
+                    . ', ' . $item->route->term . ($item->medicationLaterality ? ' (' . $item->medicationLaterality->name . ')' : null);
                 $taper_frequency = "Frequency: {$taper->frequency->term} for {$taper->duration->name}";
                 $actual = $item->getAttrLength("taper{$index}_label");
                 $this->assertEquals(1, $actual, "Taper $index label has $actual lines, expected 1.");
@@ -117,7 +117,7 @@ class OphDrPrescription_ItemTest extends CDbTestCase
     {
         foreach ($this->items as $item) {
             $expected = strtoupper('Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->dose_unit_term}" : $item->dose)
-                . ', ' . $item->route->term);// . ($item->route_option ? ' (' . $item->route_option->name . ')' : null));
+                . ', ' . $item->route->term . ($item->medicationLaterality ? ' (' . $item->medicationLaterality->name . ')' : null));
 
             $actual = $item->fpTenDose();
 
