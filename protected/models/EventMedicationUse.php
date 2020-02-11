@@ -650,12 +650,12 @@ class EventMedicationUse extends BaseElement
      *
      * @return bool
      */
-    public function hasRecordableData($additional_attributes = [])
+    public function hasRecordableData()
     {
-        foreach (array_merge([
+        foreach ([
             'medication_id', 'route_id', 'option_id', 'dose',
             'units', 'frequency_id', 'end_date', 'stop_reason_id'
-        ], $additional_attributes) as $attr) {
+        ] as $attr) {
             if ($this->$attr) {
                 return true;
             }
