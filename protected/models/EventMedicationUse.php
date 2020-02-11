@@ -644,6 +644,28 @@ class EventMedicationUse extends BaseElement
         }
     }
 
+    /**
+     * Check element attributes to determine if anything has been set that would allow it to be recorded
+     * Can be used to remove entries from the containing element.
+     *
+     * @return bool
+     */
+    public function hasRecordableData($additional_attributes = [])
+    {
+        foreach (array_merge([
+            'medication_id', 'route_id', 'option_id', 'dose',
+            'units', 'frequency_id', 'end_date', 'stop_reason_id'
+        ], $additional_attributes) as $attr) {
+            if ($this->$attr) {
+                return true;
+            }
+        }
+        if ($this->start_date && \Helper::formatFuzzyDate($this->start_date) != date('Y')) {
+            return true;
+        }
+        return false;
+    }
+
     public function beforeValidate()
     {
         if ($this->medication_id == self::USER_MEDICATION_ID) {
