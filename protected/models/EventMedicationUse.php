@@ -683,6 +683,10 @@ class EventMedicationUse extends BaseElement
             }
         }
 
+        if (!$this->start_date) {
+            $this->start_date = date('Y-m-d');
+        }
+
         return parent::beforeValidate();
     }
 
