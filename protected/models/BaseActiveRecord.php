@@ -271,10 +271,8 @@ class BaseActiveRecord extends CActiveRecord
             if (array_key_exists($column->name, $this->tableSchema->foreignKeys)) {
                 continue;
             }
-            if (strpos($column->type, 'integer') !== false && !isset($column->defaultValue)) {
-                if (!isset($this->{$column->name})) {
-                    $this->{$column->name} = 0;
-                }
+            if (strpos($column->type, 'integer') !== false && !isset($column->defaultValue) && !isset($this->{$column->name})) {
+                $this->{$column->name} = 0;
             }
         }
 
