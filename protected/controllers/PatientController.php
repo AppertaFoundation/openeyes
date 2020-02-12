@@ -296,7 +296,7 @@ class PatientController extends BaseController
         $itemCount = $dataProvider->getTotalItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
         $search_terms = $patientSearch->getSearchTerms();
 
-        if ($itemCount == 1) {
+        if ($itemCount === '1') {
             $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
 
@@ -307,7 +307,7 @@ class PatientController extends BaseController
 
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
         } else {
-            if ($itemCount == 0) {
+            if ($itemCount === '0') {
                 Audit::add('search', 'search-results', implode(',', $search_terms) . ' : No results');
 
                 $message = 'Sorry, no results ';
