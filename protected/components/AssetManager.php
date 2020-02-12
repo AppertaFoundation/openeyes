@@ -177,7 +177,7 @@ class AssetManager extends CAssetManager
      */
     public function getPublishedPathOfAlias($alias = null)
     {
-        return $this->publish(Yii::getPathOfAlias($alias ?: static::BASE_PATH_ALIAS), false, -1);
+        return $this->publish(Yii::getPathOfAlias($alias ?: static::BASE_PATH_ALIAS), true, -1);
     }
 
     /**

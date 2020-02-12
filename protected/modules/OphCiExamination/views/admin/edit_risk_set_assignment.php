@@ -52,8 +52,7 @@ $active_sets = array_map(function ($e) {
         </tfoot>
     </table>
 
-    <script type="text/javascript"
-            src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
     <script>
         OpenEyes.UI.AutoCompleteSearch.init({
             input: $('#medication_set_id'),

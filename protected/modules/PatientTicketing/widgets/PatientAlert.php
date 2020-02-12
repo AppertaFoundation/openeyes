@@ -32,7 +32,7 @@ class PatientAlert extends \PatientAlertWidget
         $cls_name = explode('\\', get_class($this));
         $this->shortName = array_pop($cls_name);
         if (file_exists(dirname(__FILE__).'/js/'.$this->shortName.'.js')) {
-            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js/');
+            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/js/', true);
         }
         parent::init();
     }

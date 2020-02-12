@@ -175,7 +175,7 @@ class DefaultController extends BaseEventTypeController
     {
         if ($this->sub_type) {
             if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets')) . '/';
+                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
                 return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
             }
         }

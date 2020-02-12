@@ -35,7 +35,7 @@ class ReportController extends BaseReportController
 
     public function init()
     {
-        $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
+        $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'), true);
         Yii::app()->clientScript->registerScriptFile($modulePath.'/js/report.js', CClientScript::POS_HEAD);
 
         if (!$this->subspecialtyId) {
