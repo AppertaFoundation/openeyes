@@ -267,7 +267,7 @@ class BaseActiveRecord extends CActiveRecord
         }
 
         // Sets boolean values that don't have defaults to false to satisfy MariaDB10.4 strict constraints
-        foreach($this->tableSchema->columns as $column) {
+        foreach ($this->tableSchema->columns as $column) {
             if (array_key_exists($column->name, $this->tableSchema->foreignKeys)) {
                 continue;
             }
@@ -623,7 +623,7 @@ class BaseActiveRecord extends CActiveRecord
          * @return bool true if the model dirty
          */
     public function isModelDirty()
-        {
+    {
         $exclude = array(
             'last_modified_user_id',
             'last_modified_date',
@@ -820,7 +820,10 @@ class BaseActiveRecord extends CActiveRecord
             // if the model is a new record than there is no ID so we do not validate that fk field
             $to_be_validated = array_keys($rel_obj->attributes);
             if ($this->isNewRecord) {
-                $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) { return $i !== $fk; });
+                $to_be_validated = array_filter($to_be_validated, function ($i) use ($fk) {
+                    return $i !== $fk;
+
+                });
             }
             if (!$rel_obj->validate($to_be_validated)) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
