@@ -86,8 +86,8 @@ class DefaultController extends BaseEventTypeController
 
         $assetManager = Yii::app()->getAssetManager();
         $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
+        $assetManager->publish($baseAssetsPath, true);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
 
         $this->showAllergyWarning();
 

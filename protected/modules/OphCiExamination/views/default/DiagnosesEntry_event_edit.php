@@ -93,6 +93,6 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
 </tr>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
 ?>
