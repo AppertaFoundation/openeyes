@@ -65,6 +65,7 @@ migrateparams="-q"
 nofix=0
 dwservrunning=0
 restorefile="/tmp/openeyes_sample_data.sql"
+customfile=0
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -118,6 +119,7 @@ do
     	;;
 		-f|--custom-file) # use a custom database backup for the restore
 			restorefile="$2"
+			customfile="1"
 			shift
 		;;
 		--dmd) dmdimport="TRUE"
@@ -238,12 +240,15 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
-  # Extract or copy sample DB (since v3.2 db has been zipped)
-  rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
-  [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
 
-	echo "Re-importing database"
+	if [ $customfile = "0" ]; then
+		# Extract or copy sample DB (since v3.2 db has been zipped)
+		rm -f /tmp/openeyes_sample_data.sql >/dev/null
+		[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
+		[ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
+	fi
+
+	[ $customfile = "0" ] && echo "Re-importing database" || echo "Re-importing database from $restorefile"
 	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
