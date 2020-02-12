@@ -266,6 +266,18 @@ class BaseActiveRecord extends CActiveRecord
             }
         }
 
+        // Sets boolean values that don't have defaults to false to satisfy MariaDB10.4 strict constraints
+        foreach($this->tableSchema->columns as $column) {
+            if (array_key_exists($column->name, $this->tableSchema->foreignKeys)) {
+                continue;
+            }
+            if (strpos($column->type, 'integer') !== false && !isset($column->defaultValue)) {
+                if (!isset($this->{$column->name})) {
+                    $this->{$column->name} = 0;
+                }
+            }
+        }
+
         return parent::beforeSave();
     }
 
