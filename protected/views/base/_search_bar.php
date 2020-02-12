@@ -16,7 +16,7 @@ if ($context == "sidebar") { ?>
     <div id="oe-search-patient">
         <h4>Search by <?php echo (Yii::app()->params['hos_num_label']) . ', ' . (Yii::app()->params['nhs_num_label'])?>, Firstname Surname or Surname, Firstname.</h4>
         <div class="search-patient row">
-            <?=\CHtml::textField('query', isset($search_term) ? $search_term : '', [
+            <?=CHtml::textField('query', isset($search_term) ? $search_term : '', [
                 'autocomplete' => 'off',
                 'class' => 'search cols-full',
                 'placeholder' => 'Search',
@@ -29,7 +29,7 @@ if ($context == "sidebar") { ?>
 } else { ?>
 <div class="oe-search-patient" id="oe-search-patient">
     <div class="search-patient">
-        <?=\CHtml::textField('query', isset($search_term) ? $search_term : '', [
+        <?=CHtml::textField('query', isset($search_term) ? $search_term : '', [
                 'autocomplete' => 'off',
                 'class' => 'search',
                 'placeholder' => 'Search',
