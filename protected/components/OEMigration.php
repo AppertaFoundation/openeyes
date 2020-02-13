@@ -585,6 +585,13 @@ class OEMigration extends CDbMigration
         }
     }
 
+    public function alterVersionedColumn($tableName, $columnName, $columnType) {
+        $this->alterColumn($tableName, $columnName, $columnType);
+        if (Yii::app()->db->schema->getTable($tableName . '_version') !== null) {
+            $this->alterColumn($tableName . '_version', $columnName, $columnType);
+        }
+    }
+
     public function createArchiveTable($table)
     {
         $this->migrationEcho("Creating archive table for $table->name ...\n");
