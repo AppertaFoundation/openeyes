@@ -102,6 +102,17 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         );
     }
 
+    public function beforeSave()
+    {
+        foreach (['assistant_id', 'supervising_surgeon_id'] as $nullable_id) {
+            if ($this->$nullable_id === '') {
+                $this->$nullable_id = null;
+            }
+        }
+
+        return parent::beforeSave();
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
