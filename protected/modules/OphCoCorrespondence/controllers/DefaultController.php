@@ -913,7 +913,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }*/
 
-            return $errors;
+            //return $errors;
 
         }  else {
             $this->pdf_output->AddPage('P');
