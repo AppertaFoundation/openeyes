@@ -2,7 +2,7 @@
 
 class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigration
 {
-	public function up()
+    public function up()
     {
         // GENERAL EVENT
         $this->alterVersionedColumn('event', 'delete_pending', 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0');
@@ -40,10 +40,10 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         foreach ($tables_without_default_display_order as $table) {
             $this->alterVersionedColumn($table['TABLE_NAME'], 'display_order', 'INT(8) NOT NULL DEFAULT 0');
         }
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         // GENERAL EVENT
         $this->alterVersionedColumn('event', 'delete_pending', 'TINYINT(1) UNSIGNED NOT NULL');
 
@@ -80,5 +80,5 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         foreach ($tables_without_default_display_order as $table) {
             $this->alterVersionedColumn($table['TABLE_NAME'], 'display_order', 'INT(8) NOT NULL');
         }
-	}
+    }
 }
