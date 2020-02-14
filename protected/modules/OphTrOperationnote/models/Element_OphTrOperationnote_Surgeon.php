@@ -63,6 +63,7 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         return array(
             array('event_id, surgeon_id, assistant_id, supervising_surgeon_id', 'safe'),
             array('surgeon_id', 'required'),
+            array('assistant_id, supervising_surgeon_id', 'default', 'value' => null),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, surgeon_id, assistant_id, supervising_surgeon_id', 'safe', 'on' => 'search'),
@@ -100,17 +101,6 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
             'assistant_id' => 'Assistant',
             'supervising_surgeon_id' => 'Supervising surgeon',
         );
-    }
-
-    public function beforeSave()
-    {
-        foreach (['assistant_id', 'supervising_surgeon_id'] as $nullable_id) {
-            if ($this->$nullable_id === '') {
-                $this->$nullable_id = null;
-            }
-        }
-
-        return parent::beforeSave();
     }
 
     /**
