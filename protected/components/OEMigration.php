@@ -585,10 +585,14 @@ class OEMigration extends CDbMigration
         }
     }
 
-    public function alterVersionedColumn($tableName, $columnName, $columnType) {
+    public function alterOEColumn($tableName, $columnName, $columnType, $versioned = false) {
         $this->alterColumn($tableName, $columnName, $columnType);
-        if (Yii::app()->db->schema->getTable($tableName . '_version') !== null) {
+        if ($versioned && Yii::app()->db->schema->getTable($tableName . '_version') !== null) {
             $this->alterColumn($tableName . '_version', $columnName, $columnType);
+        } else if ($versioned) {
+            $this->migrationEcho(
+                "\nWarning: $tableName specified as versioned but the version table does not exist"
+            );
         }
     }
 

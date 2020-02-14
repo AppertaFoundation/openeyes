@@ -683,8 +683,8 @@ class EventMedicationUse extends BaseElement
             }
         }
 
-        if (!$this->start_date) {
-            $this->start_date = date('Y-m-d');
+        if ($this->start_date === '') {
+            $this->start_date = '0000-00-00';
         }
 
         return parent::beforeValidate();
