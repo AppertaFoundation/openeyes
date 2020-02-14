@@ -64,7 +64,7 @@ foreach ($dilation_drugs as $d_drug) {
                       array(
                           'rows' => 1,
                           'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
-                          'class' => 'cols-full js-comment-field',
+                          'class' => 'autosize cols-full js-comment-field',
                           'style' => 'overflow-wrap: break-word; height: 24px;',
                       )) ?>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
