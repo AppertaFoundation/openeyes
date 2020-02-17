@@ -36,6 +36,8 @@ var analytics_init = (function () {
 					$('#plot').html(data['dom']['drill'])
 					if (specialty.toLowerCase() === 'cataract') {
 						$('#js-analytics-spinner').hide();
+						// clear search criteria when navigate to cataract screen
+						analytics_dataCenter.cataract.clearCataractSearchForm();
 						analytics_cataract(data['data']);
 						return;
 					}

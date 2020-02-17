@@ -71,7 +71,7 @@ var layout_plotly = {
       color: '#fff',
     },
     tickangle: 'auto',
-    tickformat: '%b %d %Y',
+    tickformat: '%d/%m/%y',
     /*spike setting*/
     showspikes: true,
     spikecolor: '#3db0fb',
