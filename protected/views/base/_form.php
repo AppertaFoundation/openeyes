@@ -63,6 +63,8 @@ if (!Yii::app()->user->isGuest) {
                 </a>
             </li>
             <?= $menuHelper->render($navIconUrl) ?>
+<!--            The exclude admin structure parameter list has elements that can be excluded from the admin sidebar, if Worklist is excluded from that, then it can be removed from the home screen too-->
+            <?php if (!in_array( "Worklist", Yii::app()->params['exclude_admin_structure_param_list'])) :?>
             <li class="oe-nav-btn">
                 <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
                     <svg viewBox="0 0 80 40" class="icon clinic ">
@@ -70,13 +72,14 @@ if (!Yii::app()->user->isGuest) {
                     </svg>
                 </a>
             </li>
+            <?php endif; ?>
             <li class="oe-nav-btn js-hotlist-panel-wrapper">
-                <div class="nav-js-btn" id="js-nav-hotlist-btn"
+                <a class="nav-js-btn icon-btn" id="js-nav-hotlist-btn" onclick="return false;"
                      data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
                     <svg viewBox="0 0 80 40" class="icon hotlist">
                         <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
                     </svg>
-                </div>
+                </a>
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">

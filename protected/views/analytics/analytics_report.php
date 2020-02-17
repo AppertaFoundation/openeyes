@@ -90,6 +90,7 @@
                 <thead>
                 <tr>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
+                    <th class="drill_down_patient_list text-left" style="vertical-align: center;">NHS No</th>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
                     <th class="text-left" style="vertical-align: center;">DOB</th>
                     <th class="text-left" style="vertical-align: center;">Age</th>
@@ -107,9 +108,9 @@
     </main>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
-    <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_dataCenter.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_custom.js')?>"></script>

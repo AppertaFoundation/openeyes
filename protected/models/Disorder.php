@@ -88,7 +88,7 @@ class Disorder extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('fully_specified_name, term', 'required'),
-            array('id', 'length', 'max' => 10),
+            array('id', 'length', 'max' => 20),
             array('id', 'checkDisorderExists'),
             array('fully_specified_name, term , aliases , specialty_id', 'length', 'max' => 255),
             // The following rule is used by search().
@@ -160,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('fully_specified_name', $this->fully_specified_name, true);
-        $criteria->compare('term', $this->term, true);
+        $criteria->compare('lower(fully_specified_name)', strtolower($this->fully_specified_name), true);
+        $criteria->compare('lower(term)', strtolower($this->term), true);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }

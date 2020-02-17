@@ -112,9 +112,6 @@ class PatientTicketing_APITest extends CDbTestCase
             ->method('save')
             ->will($this->returnValue(true));
 
-        $assignment->expects($this->never())
-            ->method('replaceAssignmentCodes');
-
         $ticket->initial_queue_assignment = $assignment;
 
         $api = $this->getMockBuilder('OEModule\PatientTicketing\components\PatientTicketing_API')

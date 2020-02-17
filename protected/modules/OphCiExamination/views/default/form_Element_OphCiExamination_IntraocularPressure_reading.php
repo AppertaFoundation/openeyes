@@ -19,7 +19,10 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
         <?= CHtml::textField(
               "{$base_name}[reading_time]",
               $time,
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')
+              [
+                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'class' => 'cols-11 js-reading-time'
+              ]
       ) ?>
   </td>
   <td style="<?=(!$value_reading_id) ? "display: none":"" ?>">

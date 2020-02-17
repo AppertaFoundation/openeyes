@@ -91,12 +91,15 @@
         </tr>
         <tr>
             <td>Active</td>
-            <td><?= \CHtml::activeRadioButtonList(
+            <td>
+                <?php $user->active = $user->getUserActiveStatus($user)?>
+                <?= \CHtml::activeRadioButtonList(
                     $user,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?></td>
+                    ['separator' => ' ']);
+                ?>
+            </td>
         </tr>
         <tr>
             <td>Global firm rights</td>
@@ -113,12 +116,16 @@
             <td><?=Firm::contextLabel()?></td>
             <td>
                 <?php
+                $firm_label = [];
+                foreach (Firm::model()->findAll() as $firm) {
+                    $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "");
+                }
                 echo $form->multiSelectList(
                     $user,
                     'User[firms]',
                     'firms',
                     'id',
-                    CHtml::listData(Firm::model()->findAll(), 'id', 'name'),
+                    $firm_label,
                     null,
                     [
                         'class' => 'cols-full',

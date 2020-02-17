@@ -1,6 +1,6 @@
 var analytics_cataract = (function () {
 	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 100;
-	var throttleTIme = analytics_toolbox.getThrottleTime() || 1000;
+	var throttleTime = analytics_toolbox.getThrottleTime() || 1000;
 	var dict = {
 		'/report/ajaxReport?report=PcrRisk&template=analytics': [
 			'PcrRiskReport',
@@ -26,6 +26,11 @@ var analytics_cataract = (function () {
 			'OEModule_OphCiExamination_components_RefractiveOutcomeReport',
 			'#refractive-outcome-grid',
 			'RO',
+		],
+		'/report/ajaxReport?report=\\OEModule\\OphOuCatprom5\\components\\Catprom5&template=analytics&mode=0&eye=0': [
+			'OEModule_OphOuCatprom5_components_Catprom5Report',
+			'#catprom5-grid',
+			'CP5',
 		]
 	};
 
@@ -157,11 +162,22 @@ var analytics_cataract = (function () {
 		$(document).ajaxSuccess(function (event, request, settings) {
 			// flag for if the pdf is saved
 			var saved = false;
+			// due to the post url changes, need to use loop to match with equest url
+			var dict_key = '';
+
+			Object.keys(dict).forEach(function(key){
+				if(settings.url.includes(key)){
+					dict_key = key;
+				}
+			})
+			// prevent getting wrong things
+			if(!dict_key){
+				return
+			}
 			// only the events triggered by js-download-pdf will be captured
-			if (event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf' &&
-				dict[settings.url]) {
+			if (event.target.activeElement.id && event.target.activeElement.id === 'js-download-pdf') {
 				// get plot
-				var plot = document.getElementById(dict[settings.url][0]);
+				var plot = document.getElementById(dict[dict_key][0]);
 				// set plot color
 				configPlotPDF(plot, config);
 
@@ -185,8 +201,8 @@ var analytics_cataract = (function () {
 						// once the plot is added into pdf, it will be cleared out
 						// and show it (it is hidden before) to avoid crashing other
 						// functions
-						$(dict[settings.url][1]).html("");
-						$(dict[settings.url][1]).show();
+						$(dict[dict_key][1]).html("");
+						$(dict[dict_key][1]).show();
 
 						// the search form will be affected by initializing all the plots
 						// bring it back at this stage
@@ -227,10 +243,6 @@ var analytics_cataract = (function () {
 		e.stopPropagation();
 		e.preventDefault();
 
-		// reset all surgeons filter
-		$('#analytics_allsurgeons').val('');
-		$('#js-all-surgeons').removeClass('green hint');
-
 		analytics_toolbox.hideDrillDownShowChart();
 
 		var selected_item = getSelectedReportURL(this);
@@ -250,6 +262,12 @@ var analytics_cataract = (function () {
 
 	function updateChart(e) {
 		e.preventDefault();
+		// get current selected container
+		var selected_container = getSelectedReportURL()['selected_container'];
+		// to match the variable in Openeyes.Dash which is the second top level of the plot (under div#xxx-xxx-grid)
+		var wrapper = $(selected_container).children().closest('div').attr('id');
+		// deep copy the search elements for current plot (the part above "Filter by Date") in the search form 
+		analytics_dataCenter.cataract.setCataractSearchForm('#' + wrapper, $('#search-form #search-form-report-search-section').clone());
 		$('.report-search-form').trigger('submit');
 	}
 
@@ -263,7 +281,7 @@ var analytics_cataract = (function () {
 		$('#search-form').submit();
 	}
 
-	function clearDate() {
+	function clearDate(event_date) {
 		var date_from = analytics_toolbox.processDate(new Date(event_date['date_from']))
 		var date_to = analytics_toolbox.processDate(new Date(event_date['date_to']))
 		$('#analytics_datepicker_from').val(date_from);
@@ -284,7 +302,7 @@ var analytics_cataract = (function () {
 		}
 		$('.js-cataract-report-type').off('click').on('click', _.throttle(cataractPlotType, ajaxThrottleTime));
 
-		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTIme));
+		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate.bind(this, event_date), throttleTime));
 
 		$('#js-all-surgeons').off('click').on('click', _.throttle(toggleAllSurgeonOpt, ajaxThrottleTime));
 
@@ -292,7 +310,7 @@ var analytics_cataract = (function () {
 
 		var pdfDownloadBTN = document.getElementById('js-download-pdf');
 
-		pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), 2000, {
+		pdfDownloadBTN.addEventListener('click', _.throttle(reportPlotToPDF.bind(pdfDownloadBTN, event_date, current_user), ajaxThrottleTime, {
 			'trailing': false
 		}));
 
