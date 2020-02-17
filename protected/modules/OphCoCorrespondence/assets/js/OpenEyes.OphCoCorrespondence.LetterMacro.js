@@ -92,6 +92,18 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     });
 
                     /*
+                    Inserts input of type checkbox into the editor.
+                   */
+                    editor.addButton('inputcheckbox', {
+                        text: 'CheckBox',
+                        icon: false,
+                        tooltip: "",
+                        onclick: function () {
+                            editor.insertContent('<p><input type="checkbox"/>Input text here</p>');
+                        }
+                    });
+
+                    /*
                     Disable custom table creation within tables.
                     Limited use. User can create a <p> inside <td> by Enter.
                     Then they can add another table
@@ -103,6 +115,38 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                             btn.disabled(nodeName === 'td' || nodeName === 'th');
                         });
                     }
+
+                    // This function works for checkboxes
+                    editor.on('init', function() {
+                        // Get the content of the
+                        $(editor.getBody()).on("change", ":checkbox", function(el) {
+                            if (el.target.checked) {
+                                $(el.target).attr('checked', 'checked');
+                            } else {
+                                $(el.target).removeAttr('checked');
+                            }
+                        });
+                        // Selects
+                        $(editor.getBody()).on("change", "select", function(el) {
+                            $(el.target).children('option').each(function() {
+                                if(this.selected){
+                                    $( this ).attr('selected','selected');
+                                }else{
+                                    $( this ).removeAttr('selected');
+                                }
+                            });
+                        });
+                        // Radio button
+                        $(editor.getBody()).on("change", ":radio", function(el) {
+                            // On changing the state of the radio button,
+                            // First, remove the checked attribute from the radio group (i.e. all the radio buttons with the same name)
+                            // then add it back only to the radio button that was clicked.
+                            $(editor.dom.getRoot()).find('input[type=radio][name=' + el.target.name + ']').each(function() {
+                                $(this).attr('checked', false);
+                            });
+                            $(el.target).attr('checked', true);
+                        });
+                    });
                 }
             },
             options

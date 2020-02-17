@@ -33,11 +33,11 @@ class ContactTest extends CDbTestCase
     public function dataProvider_Search()
     {
         return array(
-                                     array(array('nick_name' => 'Aylward'), 1, array('contact1')),
-                                     array(array('nick_name' => 'Collin'), 1, array('contact2')),
-                                     array(array('nick_name' => 'Allan'), 1, array('contact3')),
-                                     array(array('nick_name' => 'Blah'), 0, array()),
-            );
+          array(array('nick_name' => 'Aylward'), 1, array('contact1')),
+          array(array('nick_name' => 'Collin'), 1, array('contact2')),
+          array(array('nick_name' => 'Allan'), 1, array('contact3')),
+          array(array('nick_name' => 'Blah'), 0, array()),
+        );
     }
 
       /**

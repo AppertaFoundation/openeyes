@@ -28,7 +28,7 @@ $model_name = CHtml::modelName($element);
 $missing_req_diagnoses = $this->getMissingRequiredSystemicDiagnoses();
 $required_diagnoses_ids = array_map(function ($r) {
     return $r->id;
-}, $this->getRequiredSystemicDiagnoses());
+}, $this->getRequiredSystemicDiagnoses($element->event ? $element->event->firm_id : null));
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">

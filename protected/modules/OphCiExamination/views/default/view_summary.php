@@ -62,7 +62,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               <tbody>
                               <?php foreach ($current_eye_medications as $entry) { ?>
                                   <tr>
-                                      <td><?= $entry->getMedicationDisplay() ?></td>
+                                      <td>
+                                        <i class="oe-i start small pad-right"></i>
+                                        <?= $entry->getMedicationDisplay() ?>
+                                      </td>
                                       <td>
                                         <?php
                                         $laterality = $entry->getLateralityDisplay();
@@ -110,9 +113,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                               </tr>
                               </thead>
                               <tbody style="display: none;">
-                              <?php foreach ($stoppedEyeMedications as $entry) { ?>
+                              <?php foreach ($stopped_eye_medications as $entry) { ?>
                                   <tr>
-                                      <td><?= $entry->getMedicationDisplay() ?></td>
+                                      <td>
+                                        <i class="oe-i stop small pad-right"></i>
+                                        <?= $entry->getMedicationDisplay() ?>
+                                      </td>
                                       <td>
                                           <?php
                                             $laterality = $entry->getLateralityDisplay();

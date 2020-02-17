@@ -285,11 +285,13 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                                     'eye' => $side,
                                     'instrument_name' => $reading->instrument->name,
                                     'dilated' => 'N/A',
-                                    'reading_date' => date('j M Y', strtotime($reading->reading_time)),
+                                    'reading_date' => date('d/m/y', strtotime($iop_element->event->event_date)),
                                     'reading_time' => date('G:i', strtotime($reading->reading_time)),
                                     'raw_value' => $reading->reading->value,
                                     'comments' => $iop_element->{$side . '_comments'}
                                 );
+                                
+                                OELog::log("reading_time: ".$reading->reading_time);
             }
         }
 
@@ -313,11 +315,13 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                         'eye' => $side,
                         'instrument_name' => $iop_element->{$side . '_instrument'}->name,
                         'dilated' => $iop_element->{$side . '_dilated'} === 1 ? 'Yes' : 'No',
-                        'reading_date' => date('j M Y', strtotime($reading->measurement_timestamp)),
+                        'reading_date' => date('d/m/y', strtotime($iop_element->event->event_date)),
                         'reading_time' => date('G:i', strtotime($reading->measurement_timestamp)),
                         'raw_value' => $reading->value,
                         'comments' => $iop_element->{$side . '_comments'}
                 );
+                
+                OELog::log("measurement_timestamp: ".$reading->measurement_timestamp);
         }
 
                 return $readings_array;

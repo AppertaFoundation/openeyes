@@ -1,10 +1,13 @@
 var analytics_csv_cataract = (function () {
 	function pcr_risk_to_csv() {
-		var data = $('#PcrRiskReport')[0].data[0];
+		// get a deep copy of x, y data from plot
+		// in case the further modification will affect the original data
+		var data_x = $('#PcrRiskReport')[0].data[0].x.slice();
+		var data_y = $('#PcrRiskReport')[0].data[0].y.slice();
 		var file_name = data.name;
-		data.x = data.x.concat($('#PcrRiskReport')[0].data[1].x);
-		data.y = data.y.concat($('#PcrRiskReport')[0].data[1].y);
-		csv_export_cataract(file_name, data);
+		data_x = data_x.concat($('#PcrRiskReport')[0].data[1].x);
+		data_y = data_y.concat($('#PcrRiskReport')[0].data[1].y);
+		csv_export_cataract(file_name, {x: data_x, y: data_y});
 	}
 
 	function complication_profile_to_csv() {
@@ -28,6 +31,11 @@ var analytics_csv_cataract = (function () {
 	function NOD_Audit_to_csv() {
 		var data = $('#NodAuditReport')[0].data[0];
 		var file_name = 'NODAuditReportCompletion';
+		csv_export_cataract(file_name, data);
+	}
+	function CATPROM5_to_csv() {
+		var data = $('#OEModule_OphOuCatprom5_components_Catprom5Report')[0].data[0];
+		var file_name = data.name;
 		csv_export_cataract(file_name, data);
 	}
 
@@ -71,6 +79,9 @@ var analytics_csv_cataract = (function () {
 				break;
 			case 'NOD':
 				NOD_Audit_to_csv();
+				break;
+			case 'CP5':
+				CATPROM5_to_csv();
 				break;
 		}
 	}
