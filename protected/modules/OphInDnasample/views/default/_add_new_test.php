@@ -22,7 +22,7 @@
 <ul class="events">
     <?php foreach ($children as $eventType) {
         if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img') . '/', true) . '/';
         } else {
             $assetpath = '/assets/';
         }

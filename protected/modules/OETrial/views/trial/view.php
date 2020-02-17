@@ -124,7 +124,7 @@
   </main>
 
     <?php
-    $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+    $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), true, -1);
     Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-section.js');
     ?>
 </div>

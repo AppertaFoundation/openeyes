@@ -434,7 +434,7 @@
                 data['INDICATION_FOR_SURGERY']['incomplete'],
                 data['E/I']['ineligible'],
             ];
-            if(data['CATPROM5'] != 'undefined'){
+            if(data['CATPROM5']){
                 completedData.push(
                     data['CATPROM5']['pre-complete'],
                     data['CATPROM5']['post-complete']

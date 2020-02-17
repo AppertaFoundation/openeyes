@@ -41,7 +41,7 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
     
     public function actionEdit($id = false)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/admin.js');
         
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Storage::model(), $this);

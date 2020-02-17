@@ -97,7 +97,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
             $this->redirect(Yii::app()->request->url);
         }
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         $criteria = new CDbCriteria();

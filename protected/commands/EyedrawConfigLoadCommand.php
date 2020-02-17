@@ -381,7 +381,7 @@ EOSQL;
             $path = $index->IMG_URL;
             $image_URL = '<?php
         if (file_exists(\'' . $path . '\')){
-          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\');
+          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\', true);
         } else {
           echo "";
         }
