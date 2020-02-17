@@ -78,10 +78,10 @@ class SearchController extends BaseController
             YiiSession::set('genetics_results_searchoptions', $_GET);
         }
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/module.js');
 
-        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
+        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'), true);
         Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
 
         $tests = array();

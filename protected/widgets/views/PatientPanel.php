@@ -19,7 +19,7 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 /***
  * @var $trialContext TrialContext
  */
@@ -156,7 +156,7 @@ $deceased = $this->patient->isDeceased();
 </div>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 ?>
 <script type="text/javascript">

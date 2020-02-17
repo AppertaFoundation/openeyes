@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $user = Yii::app()->session['user'];
-$asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
+$asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets'), true) . '/';
 $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : $default_folder;
 ?>
 <div class="home-messages subgrid">
