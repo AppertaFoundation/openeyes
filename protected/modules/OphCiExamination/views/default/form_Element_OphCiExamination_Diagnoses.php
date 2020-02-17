@@ -18,8 +18,11 @@
 ?>
 
 <?php
-$js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js',
-    false, -1);
+$js_path = Yii::app()->getAssetManager()->publish(
+    Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js',
+    true,
+    -1
+);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
 
 $firm = Firm::model()->with(array(

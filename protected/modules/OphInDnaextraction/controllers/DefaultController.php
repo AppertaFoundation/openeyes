@@ -240,7 +240,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionView($id)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
 
         parent::actionView($id);
@@ -248,7 +248,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionUpdate($id)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
 
         parent::actionUpdate($id);
@@ -256,7 +256,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionCreate()
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
 
         parent::actionCreate();

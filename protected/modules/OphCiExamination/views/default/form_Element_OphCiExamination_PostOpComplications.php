@@ -133,7 +133,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
     </div>
 
 <?php endif; ?>
-<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <script>
   OpenEyes.UI.AutoCompleteSearch.init({
           input: $('#right_complication_autocomplete_id'),
