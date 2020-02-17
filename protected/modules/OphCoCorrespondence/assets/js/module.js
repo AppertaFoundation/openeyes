@@ -136,8 +136,8 @@ function updateConsultantDropdown(subspecialty_id){
         data: {"subspecialty_id": subspecialty_id },
         dataType: "json",
         beforeSend: function(){
-            $('button#et_saveprint').prop('disabled', true);
-            $('button#et_savedraft').prop('disabled', true);
+            $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+            $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
         success: function(data){
             var options = [];
@@ -164,8 +164,8 @@ function updateConsultantDropdown(subspecialty_id){
             });
         },
         complete: function(){
-            $('button#et_saveprint').prop('disabled', false);
-            $('button#et_savedraft').prop('disabled', false);
+            $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+            $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
         }
 
     });
@@ -194,15 +194,15 @@ $(document).ready(function() {
             data: { firm_id: $('#ElementLetter_to_firm_id').val(), },
             dataType: "json",
             beforeSend: function(){
-                $('button#et_saveprint').prop('disabled', true);
-                $('button#et_savedraft').prop('disabled', true);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
             success: function(data){
                 updateSalutation(data);
             },
             complete: function(){
-                $('button#et_saveprint').prop('disabled', false);
-                $('button#et_savedraft').prop('disabled', false);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             }
         });
 
@@ -218,15 +218,15 @@ $(document).ready(function() {
 
                 // empty the value of the address textarea because if the ajax slow the user may save a wrong address
                 $('#Document_Target_Address_0').val('');
-                $('button#et_saveprint').prop('disabled', true);
-                $('button#et_savedraft').prop('disabled', true);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
             success: function(data){
                 $('#Document_Target_Address_0').val(data.correspondence_name);
             },
             complete: function(){
-                $('button#et_saveprint').prop('disabled', false);
-                $('button#et_savedraft').prop('disabled', false);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             }
         });
 
@@ -253,11 +253,11 @@ $(document).ready(function() {
 		}
 	});
 
-    $('#et_save').click(function(e){
+    $('#et_save, #et_save_footer').click(function(e){
 		$('#'+event_form ).submit();
     });
 
-    $('#et_saveprint').click(function(e){
+    $('#et_saveprint, #et_saveprint_footer').click(function(e){
         e.preventDefault();
 
         var event_button = $(this);
@@ -273,7 +273,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#et_savedraft').click(function(e){
+    $('#et_savedraft, #et_savedraft_footer').click(function(e){
         e.preventDefault();
 
         var event_button = $(this);
