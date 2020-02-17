@@ -807,11 +807,22 @@ class DefaultController extends BaseEventTypeController
             $eventID =  Yii::app()->request->getPost('event');
             $elementID = Yii::app()->request->getPost('element');
 
-            $model = Element_OphDrPrescription_Details::model()->findBySql('
-                SELECT * FROM et_ophdrprescription_details 
-                WHERE id = :id AND event_id = :event_id ',
-                [':event_id'=>$eventID , ':id' => $elementID]
+            $model = Element_OphDrPrescription_Details::model()->findByAttributes([
+                'event_id' => $eventID , 'id' => $elementID
+            ]);
+
+            $prescription_item = OphDrPrescription_Item::model()->findByAttributes([
+                'event_id' => $eventID
+            ]);
+            $prescribed_medication_models = EventMedicationUse::model()->findAll(
+                ['condition' => "prescription_item_id = $prescription_item->id"]
             );
+            foreach ($prescribed_medication_models as $prescribed_medication) {
+                if (!isset($prescribed_medication->end_date)) {
+                    $prescribed_medication->end_date = $prescription_item->stopDateFromDuration()->format('Y-m-d');
+                    $prescribed_medication->update();
+                }
+            }
 
             if ($model) {
                 $model->draft = 0;
