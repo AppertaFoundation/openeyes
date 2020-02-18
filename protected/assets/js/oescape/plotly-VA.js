@@ -21,6 +21,14 @@ function setYAxis_VA(options) {
     },
     showticklabels: true,
     tickvals: options['tickvals'],
-    ticktext: options['ticktext']
+    ticktext: options['ticktext'],
+    
+    /*spike setting aka Cursor*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'line',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   };
 }

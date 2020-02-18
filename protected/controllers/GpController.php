@@ -106,7 +106,7 @@ class GpController extends BaseController
         // to the else condition if it is called from the practitioners screen.
         if ($context === 'AJAX') {
             // manage_gp_role_req is used for CERA for validating roles as well.
-            $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
+            $contact = new Contact(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
 
             $contactPracticeAssociate = new ContactPracticeAssociate();
 
@@ -150,7 +150,7 @@ class GpController extends BaseController
             $gp = new Gp();
 
             // manage_gp_role_req is used for CERA for validating roles as well.
-            $contact = new Contact(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
+            $contact = new Contact(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
 
             if (isset($_POST['Contact'])) {
                 $contact->attributes = $_POST['Contact'];
@@ -185,7 +185,7 @@ class GpController extends BaseController
 
         $contact = $model->contact;
         $cpas = $model->contactPracticeAssociate;
-        $contact->setScenario(Yii::app()->params['institution_code'] === 'CERA' ? 'manage_gp_role_req' : 'manage_gp');
+        $contact->setScenario(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
         $this->performAjaxValidation($contact);
         $this->performAjaxValidation($model);
 

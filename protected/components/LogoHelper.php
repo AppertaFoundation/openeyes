@@ -53,11 +53,11 @@ class LogoHelper
 
         foreach($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {
-                Yii::app()->assetManager->publish($image_path);
+                Yii::app()->assetManager->publish($image_path, true);
                 $logo['headerLogo'] = $image_path;
             }
             if (strpos($image_path, 'secondary') !== false) {
-                Yii::app()->assetManager->publish($image_path);
+                Yii::app()->assetManager->publish($image_path, true);
                 $logo['secondaryLogo'] = $image_path;
             }
         }
@@ -73,7 +73,7 @@ class LogoHelper
     protected function getVersionedLogo()
     {
         $path = Yii::app()->basePath . '/assets/img/_print/';
-        $url = Yii::app()->assetManager->publish($path);
+        $url = Yii::app()->assetManager->publish($path, true);
         $logo['headerLogo'] = $url . '/letterhead_Moorfields_NHS.jpg';
         $logo['secondaryLogo'] = $url . '/letterhead_seal.jpg';
 

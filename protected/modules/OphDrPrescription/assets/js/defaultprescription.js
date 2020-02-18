@@ -90,6 +90,7 @@ $('#prescription_items').on('click', '.js-add-taper', function (event) {
   // Insert taper row
   let odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
   let new_row = $('<tr data-key="' + key + '" data-taper="' + taper_key + '" class="prescription-tapier ' + odd_even + '"></tr>');
+
   new_row.append(
     $('<td></td>'),
     $('<td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>'),

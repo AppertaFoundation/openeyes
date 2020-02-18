@@ -2,7 +2,7 @@
 
 if (Yii::app()->controller->action->getId() == 'ElementForm') {
     $assetManager = \Yii::app()->getAssetManager();
-    $asset_folder = $assetManager->publish('protected/widgets/js');
+    $asset_folder = $assetManager->publish('protected/widgets/js', true);
     echo '<script type="text/javascript" src="' . $asset_folder . '/MedicationBrowser.js"></script>';
 }
 

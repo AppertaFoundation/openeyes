@@ -26,13 +26,15 @@ class AutoSetRuleController extends BaseAdminController
 
     public $assetPath;
 
+    const FILTER_USAGE_CODE_ID_FOR_ALL = 'ALL';
+
     public function actionIndex()
     {
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $asset_manager->publish($base_assets_path);
+        $asset_manager->publish($base_assets_path, true);
 
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
 
         $model = new MedicationSet();
         $model->unsetAttributes();
@@ -65,14 +67,13 @@ class AutoSetRuleController extends BaseAdminController
             'query' => null,
             'subspecialty_id' => null,
             'site_id' => null,
-            'usage_code_ids' => [MedicationUsageCode::model()->find()->id], // default to start with
+            'usage_code_ids' => [self::FILTER_USAGE_CODE_ID_FOR_ALL],
         ];
 
         $filters = \Yii::app()->request->getParam('search');
 
         if (!$filters) {
             $filters = \Yii::app()->session->get('sets_filters');
-            $filters = $filters ? $filters : $default;
         } else {
             \Yii::app()->session['sets_filters'] = $filters;
         }
@@ -98,11 +99,29 @@ class AutoSetRuleController extends BaseAdminController
         $criteria->with = ['medicationSetRules'];
         $criteria->together = true;
 
+        if (isset($filters['usage_code_ids']) &&
+            $filters['usage_code_ids'] &&
+            !in_array(self::FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
+            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+        }
+
         if (isset($filters['query']) && $filters['query']) {
             $criteria->addSearchCondition('name', $filters['query']);
         }
 
         $criteria->addCondition("automatic = 1");
+
+        foreach (['site_id', 'subspecialty_id'] as $search_key) {
+            if (isset($filters[$search_key]) && $filters[$search_key]) {
+                $criteria->addCondition("medicationSetRules . {$search_key} = :$search_key");
+                $criteria->params[":$search_key"] = $filters[$search_key];
+            }
+        }
+
+        // just make sure usage_code_ids is set every time
+        if (!isset($filters['usage_code_ids']) || !is_array($filters['usage_code_ids'])) {
+            $filters['usage_code_ids'] = [];
+        }
 
         return $criteria;
     }
@@ -134,7 +153,6 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set) {
-
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
             $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
@@ -183,7 +201,7 @@ class AutoSetRuleController extends BaseAdminController
             $criteria->addSearchCondition('preferred_term', trim($filters['query']));
         }
 
-        $data_provider = new CActiveDataProvider('MedicationSetItem', [
+        $data_provider = new CActiveDataProvider('MedicationSetAutoRuleMedication', [
             'criteria' => $criteria,
         ]);
 
@@ -194,7 +212,6 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         foreach ($data_provider->getData() as $set_item) {
-
             $item = $set_item->attributes;
             $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
             $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
@@ -226,11 +243,13 @@ class AutoSetRuleController extends BaseAdminController
         $error = [];
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
-        $asset_manager->publish($base_assets_path);
+        $asset_manager->publish($base_assets_path, true);
 
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
-        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.OphDrPrescriptionAdmin.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true) . '/OpenEyes.UI.TableInlineEdit.js', \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile($asset_manager->getPublishedUrl($base_assets_path, true).'/OpenEyes.UI.TableInlineEdit.PrescriptionAdminMedicationSet.js', \CClientScript::POS_HEAD);
 
+        $filters = \Yii::app()->request->getParam('search', []);
         $data = \Yii::app()->request->getParam('MedicationSet');
 
         $set = MedicationSet::model()->findByPk($id);
@@ -243,8 +262,8 @@ class AutoSetRuleController extends BaseAdminController
         if (\Yii::app()->request->isPostRequest) {
             $set->tmp_attrs = \Yii::app()->request->getParam('MedicationAutoRuleAttributes', []);
             $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
-            $set->tmp_meds = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
             $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+            // $set->tmp_meds (MedicationSetAutoRuleMedication) are added via ajax
 
             $set->name = $data['name'];
             $set->hidden = $data['hidden'];
@@ -261,7 +280,30 @@ class AutoSetRuleController extends BaseAdminController
             }
         }
 
-        $this->render('/AutoSetRule/edit/edit', ['set' => $set, 'error' => $error]);
+        $criteria = new \CDbCriteria();
+        $criteria->with = ['medicationSetAutoRuleMedication'];
+        $criteria->together = true;
+        $criteria->addCondition('medicationSetAutoRuleMedication.medication_set_id = :set_id');
+        $criteria->params[':set_id'] = $set->id;
+
+        if (isset($filters['query']) && $filters['query']) {
+            $criteria->addSearchCondition('preferred_term', $filters['query']);
+        }
+
+        $data_provider = new CActiveDataProvider('Medication', [
+            'criteria' => $criteria,
+        ]);
+
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        $this->render('/AutoSetRule/edit/edit', [
+            'set' => $set, 'error' => $error,
+            'medication_data_provider' => $data_provider,
+        ]);
     }
 
     public function actionPopulateAll()
@@ -296,45 +338,111 @@ class AutoSetRuleController extends BaseAdminController
     public function actionUpdateMedicationDefaults()
     {
         $result['success'] = false;
-        if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $item_data = \Yii::app()->request->getParam('MedicationSetItem', []);
-            $medication_data = \Yii::app()->request->getParam('Medication', []);
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (\Yii::app()->request->isPostRequest) {
+                $set_id = \Yii::app()->request->getParam('set_id');
+                $item_data = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
+                $medication_data = \Yii::app()->request->getParam('Medication', []);
+                $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
 
-            if ($set_id && isset($medication_data['id']) && $medication_data['id'] && isset($item_data['id'])) {
+                if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
+                    $item = \MedicationSetAutoRuleMedication::model()->findByPk($item_data['id']);
 
-                $item = \MedicationSetItem::model()->findByPk($item_data['id']);
+                    if ($item) {
+                        $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
+                        $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
+                        $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
+                        $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                        $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_dispense_condition_id;
+                        $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
+                        $item->include_parent = isset($item_data['include_parent']) ? $item_data['include_parent'] : $item->include_parent;
+                        $item->include_children = isset($item_data['include_children']) ? $item_data['include_children'] : $item->include_children;
 
-                if ($item) {
-                    $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
-                    $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
-                    $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
-                    $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
+                        $item->tapers = array();
 
-                    $result['success'] = $item->save();
-                    $result['errors'] = $item->getErrors();
+
+                        if ($tapers) {
+                            $taper_array = array();
+                            foreach ($tapers as $taper) {
+                                $taper = json_decode($taper, true);
+                                $new_taper = new MedicationSetAutoRuleMedicationTaper();
+                                if (isset($taper['MedicationSetAutoRuleMedicationTaper[id]']) && $taper['MedicationSetAutoRuleMedicationTaper[id]'] !== "") {
+                                    $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['MedicationSetAutoRuleMedicationTaper[id]']);
+                                }
+                                $new_taper->medication_set_auto_rule_id = $item->id;
+                                $new_taper->dose = $taper['MedicationSetAutoRuleMedicationTaper[dose]'];
+                                $new_taper->duration_id = $taper['MedicationSetAutoRuleMedicationTaper[duration_id]'];
+                                $new_taper->frequency_id = $taper['MedicationSetAutoRuleMedicationTaper[frequency_id]'];
+                                $taper_array[] = $new_taper;
+                            }
+                            $item->tapers = $taper_array;
+                        }
+
+                        // auto relation update throws an error
+                        try {
+                            $result['success'] = $item->save();
+                        } catch (Exception $e) {
+                            $result['success'] = false;
+
+                            //interesting behaviour, after $item->save() fails the original relation is restored
+                            if ($tapers) {
+                                $item->tapers = $taper_array;
+                            }
+                        }
+
+                        $result['errors'] = [];
+                        foreach ($item->tapers as $taper) {
+                            if (!$taper->validate() && $taper->hasErrors()) {
+                                foreach ($taper->getErrors() as $key => $error) {
+                                    $result['errors'][$taper->id] = $error[0];
+                                }
+                            }
+                        }
+
+                        if ($result['success'] === true) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollback();
+                        }
+                    }
+                } else {
+                    $result['errorsMessage'] = 'Missing required parameters.';
                 }
             }
+        } catch (Exception $e) {
+                $transaction->rollback();
+                $result['errorsMessage'] = $e->getMessage();
+        } finally {
+            echo \CJSON::encode($result);
+            \Yii::app()->end();
         }
-
-        echo \CJSON::encode($result);
-        \Yii::app()->end();
     }
 
     public function actionListMedications()
     {
         $set_id = \Yii::app()->request->getParam('set_id');
+        $search = \Yii::app()->request->getParam('search');
         if (!$set_id) {
             \Yii::app()->user->setFlash('error', 'Set not found.');
             $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
         }
 
-        $medication_set_name = \MedicationSet::model()->findByPk($set_id)->name;
+        $medication_set = \MedicationSet::model()->findByPk($set_id);
 
         $criteria = new \CDbCriteria();
-        $criteria->with = ['medicationSets'];
-        $criteria->together = true;
-        $criteria->addSearchCondition('medication_set_id', $set_id);
+        $criteria->join = 'JOIN medication_set_item i ON t.id = i.medication_id ';
+        $criteria->join .= 'JOIN medication_set s ON s.id = i.medication_set_id';
+        $criteria->addCondition('s.id = :set_id');
+        $criteria->params[':set_id'] = $set_id;
+
+        if ($search) {
+            if (is_numeric($search)) {
+                $criteria->addSearchCondition('preferred_code', $search, true);
+            } else {
+                $criteria->addSearchCondition('LOWER(t.preferred_term)', strtolower($search), true);
+            }
+        }
 
         $data_provider = new CActiveDataProvider('Medication', [
             'criteria' => $criteria
@@ -347,9 +455,23 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider->pagination = $pagination;
 
         $this->render('/AutoSetRule/listMedications', [
-            'medication_set_name' => $medication_set_name,
+            'medication_set_name' => $medication_set->name,
             'data_provider' => $data_provider,
         ]);
+    }
+
+    private function addMedication($set_id, $medication_id)
+    {
+        $set_auto_rule_med = new MedicationSetAutoRuleMedication();
+        $set_auto_rule_med->medication_id = $medication_id;
+        $set_auto_rule_med->medication_set_id = $set_id;
+        $set_auto_rule_med->include_children = 1;
+        $set_auto_rule_med->include_parent = 1;
+        $set_auto_rule_med->created_date = date('Y-m-d H:i:s');
+
+        $set_auto_rule_med->save();
+
+        return $set_auto_rule_med;
     }
 
     public function actionAddMedicationToSet()
@@ -361,10 +483,22 @@ class AutoSetRuleController extends BaseAdminController
             $medication_id = \Yii::app()->request->getParam('medication_id');
 
             if ($set && $medication_id) {
-                $id = $set->addMedication($medication_id);
-                $result['success'] = (bool)$id;
-                $result['id'] = $id;
+                $med = $this->addMedication($set->id, $medication_id);
+
+                if (!$med->hasErrors()) {
+                    $result['success'] = true;
+                    $result['id'] = $med->id;
+                } else {
+                    $result['success'] = false;
+                    $result['id'] = null;
+                    $result['msg'] = $med->getErrors();
+                }
+            } else {
+                $result['msg'][] = !$set_id ? 'Set id is required. ' : '';
+                $result['msg'][] = ($set_id && !$set) ? 'Set not found' : '';
             }
+        } else {
+            $result['msg'][]= "Only POST request is supported";
         }
 
         echo \CJSON::encode($result);
@@ -375,11 +509,11 @@ class AutoSetRuleController extends BaseAdminController
     {
         $result['success'] = false;
         if (\Yii::app()->request->isPostRequest) {
-            $item = \Yii::app()->request->getParam('MedicationSetItem');
+            $item = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication');
 
             if (isset($item['id'])) {
-                $affected_rows = \MedicationSetItem::model()->deleteByPk($item['id']);
-                $result['success'] = (bool)$affected_rows;
+                $med = \MedicationSetAutoRuleMedication::model()->findByPk($item['id']);
+                $result['success'] = $med->deleteWithTapers()->delete();
             } else {
                 $result['success'] = false;
                 $result['error'] = "Missing ID.";

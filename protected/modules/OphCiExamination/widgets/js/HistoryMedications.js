@@ -251,18 +251,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
 		$full_row.on("click", ".js-btn-prescribe", function () {
-        let $input = $(this).closest(".toggle-switch").find("input");
-        let checked = !$input.prop("checked");
-        if(!checked) {
-        		let $data_key = $row.attr('data-key');
-						$(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
-					$full_row.find(".js-dispense-location option").empty();
-					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
-					$full_row.find(".js-add-taper").hide();
-        }
-        else {
-					$full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
-        }
+            let $input = $(this).closest(".toggle-switch").find("input");
+            let checked = !$input.prop("checked");
+            if(!checked) {
+                let $data_key = $row.attr('data-key');
+                $(".js-taper-row[data-parent-key='" + $data_key + "']").remove();
+                $full_row.find(".js-dispense-location option").empty();
+                $full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location").val("").hide();
+                $full_row.find(".js-add-taper").hide();
+                $second_part_of_row.find('.end-date-column, .js-meds-stop-btn').show();
+            }
+            else {
+                $full_row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
+                $second_part_of_row.find('.js-end-date, .js-stop-reason').val('');
+                $second_part_of_row.find(".js-end-date-wrapper, .js-stop-reason-select, .js-stop-reason-text, .js-meds-stop-btn, .end-date-column").hide();
+            }
       });
 
 		$full_row.on("change",controller.options.routeOptionWrapperSelector, function() {
@@ -733,6 +736,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                         matched_allergy_ids.push(parseInt(id));
                     }
                 }
+                intersection = controller.getIdsFromAllergiesElement(intersection, id);
+                matched_allergy_ids = controller.getIdsFromAllergiesElement(matched_allergy_ids, id);
             });
 
             $row.find(".js-allergy-warning").remove();
@@ -989,6 +994,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
       data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined';
+      data['allergy_ids'] = medications[i]['allergy_ids'];
 
       newRows.push(Mustache.render(
           template,
@@ -1010,6 +1016,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     return newRows;
   };
 
+    HistoryMedicationsController.prototype.getIdsFromAllergiesElement = function(intersect, med_allergy) {
+        let $allergies_rows = $('#OEModule_OphCiExamination_models_Allergies_entry_table').find('tr').not('#OEModule_OphCiExamination_models_Allergies_no_allergies_wrapper');
+
+        if ($allergies_rows) {
+            $allergies_rows.each(function (row_index, row) {
+                let name = 'OEModule_OphCiExamination_models_Allergies[entries][' + $(row).data('key') + '][allergy_id]';
+                let value = $(row).find('input[name="' + name + '"]').val();
+                if (value == med_allergy && !intersect.includes(value)) {
+                    intersect.push(value);
+                }
+            });
+        }
+
+        return intersect;
+    };
+
     HistoryMedicationsController.prototype.getAllergyWarning = function(medication)
     {
         if(typeof medication.allergy_ids === "undefined" || medication.allergy_ids.toString() === "") {
@@ -1028,6 +1050,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     intersect.push(k);
                 }
             }
+            intersect = controller.getIdsFromAllergiesElement(intersect, med_allergy);
         });
 
         if(intersect.length > 0) {

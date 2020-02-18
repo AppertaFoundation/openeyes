@@ -32,7 +32,7 @@ class DefaultController extends BaseEventTypeController
     protected function beforeAction($action)
     {
         //adding Anaestethic JS
-        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
             'AnaestheticController',
