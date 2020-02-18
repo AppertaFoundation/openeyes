@@ -242,10 +242,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <?php }
                                 } ?>
 
-                                <?php
-                                $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient);
-                                if ($examination_accessible_info_standards) {
-                                    ?>
+                                <?php $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient); ?>
                                     <tr>
                                         <td>
                                             <h2>Accessibility</h2>
@@ -253,9 +250,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                     </tr>
                                     <tr>
                                         <td>Large print:</td>
-                                        <td><span class="large-text"><?= $examination_accessible_info_standards->correspondence_in_large_letters ? 'Yes' : 'No' ?></span></td>
+                                        <td><span class="large-text"><?= ($examination_accessible_info_standards && $examination_accessible_info_standards->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
-                                <?php } ?>
                                 </tbody>
                         </table>
                     <?php } ?>
