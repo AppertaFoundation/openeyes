@@ -23,7 +23,7 @@ class ModuleAdminController extends BaseAdminController
     protected function beforeAction($action)
     {
         $this->modulePath = Yii::getPathOfAlias($this->getModule()->name) . '/assets';
-        $this->assetPath = Yii::app()->assetManager->publish($this->modulePath, false, -1);
+        $this->assetPath = Yii::app()->assetManager->publish($this->modulePath, true, -1);
 
         if (file_exists($this->modulePath . '/js/admin.js')) {
             $url = \Yii::app()->createUrl($this->assetPath . '/js/admin.js');

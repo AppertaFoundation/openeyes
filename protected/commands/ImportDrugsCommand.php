@@ -78,6 +78,11 @@ class ImportDrugsCommand extends CConsoleCommand
         'date' => 'date',
         'float' => 'float',
     ];
+    private $textCells = [
+        'desc',
+        'nm',
+        'nmprev'
+    ];
 
     public function run($params)
     {
@@ -335,7 +340,11 @@ EOD;
     {
         $cellsString = '';
         foreach ($cells as $cellName => $cellType) {
-            $cellsString .= "`$cellName` " . $this->getSqlColumnType($cellType) . ',';
+            if (in_array($cellName, $this->textCells)) {
+                $cellsString .= "`$cellName` " . 'TEXT,';
+            } else {
+                $cellsString .= "`$cellName` " . $this->getSqlColumnType($cellType) . ',';
+            }
         }
         $sqlCommand = sprintf($this->createTableTemplate, strtolower($tableName), trim($cellsString, ','));
         return $sqlCommand;
@@ -463,21 +472,25 @@ EOD;
                         break;
                     }
                     $values = '';
-                    foreach ($tablesData[$fullTableName] as $key => $filedType) {
+                    foreach ($tablesData[$fullTableName] as $key => $fieldType) {
                         if (isset($oneRow[strtoupper($key)])) {
                             $value = $oneRow[strtoupper($key)];
+                            if (getType($value) != 'array') {
+                                $value = '"' . str_replace('"', "'", $value) . '"';
+                            }
                         } else {
-                            if ($filedType == 'date') {
-                                $value = '0000-00-00';
+                            if ($fieldType == 'date') {
+                                $value = "'0000-00-00'";
+                            } else if ($fieldType == 'float') {
+                                $value = 'NULL';
                             } else {
-                                $value = '';
+                                $value = "''";
                             }
                         }
                         if (getType($value) == 'array' && empty($value)) {
-                            $value = '';
+                            $value = "''";
                         }
-                        $value = str_replace('"', "'", $value);
-                        $values .= '"' . $value . '",';
+                        $values .= $value . ',';
                     }
                     $values = "(" . trim($values, ',') . ")";
                     $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;

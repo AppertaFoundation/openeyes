@@ -81,7 +81,7 @@
                 <td>
                     <?php
                     if (!empty($headerLogo)) { ?>
-                        <img src="<?= Yii::app()->assetManager->getPublishedUrl($headerLogo) ?>"/>
+                        <img src="<?= Yii::app()->assetManager->getPublishedUrl($headerLogo, true) ?>"/>
                         <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
                     } ?>
                     <?php echo $form->fileField($model, 'header_logo'); ?>
@@ -91,7 +91,7 @@
                 <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (recommended dimensions is less than dimensions 120x100 pixels)</td>
                 <td><?php
                 if (!empty($secondaryLogo)) { ?>
-                    <img src="<?= Yii::app()->assetManager->getPublishedUrl($secondaryLogo) ?>">
+                    <img src="<?= Yii::app()->assetManager->getPublishedUrl($secondaryLogo, true) ?>">
                         <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
                         <?php echo '<br/><br/><br/>';
                 } ?> 

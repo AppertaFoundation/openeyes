@@ -42,7 +42,7 @@
 
 <?php
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
     $assetManager->registerScriptFile('components/jquery.tagsinput/src/jquery.tagsinput.js');
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/TagsInput.js');
 ?>

@@ -72,7 +72,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
                 $dose = '';
                 $dose_unit_term = '';
 
-                if (count($legacy_dose) == 1) {
+                if (count($legacy_dose) == 1 || preg_match("/[a-z]/i", $legacy_dose[0])) {
                     $array = str_split($legacy_dose[0]);
                     foreach ($array as $key => $char) {
                         if (($char == '.') || ($char == '/') || (is_numeric($char))) {
@@ -81,7 +81,9 @@ class m180510_093824_prescription_events_import extends CDbMigration
                             $dose_unit_term .= $char;
                         }
                     }
-                    //var_dump($dose.' : '.$dose_unit_term);
+                    if (count($legacy_dose) === 2) {
+                        $dose_unit_term .= ' ' . $legacy_dose[1];
+                    }
                 } else if (count($legacy_dose) == 2) {
                     $dose = $legacy_dose[0];
                     $dose_unit_term = $legacy_dose[1];
@@ -98,6 +100,9 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
                 $dose = str_replace(',', '.', $dose);
 
+                $dose = !$dose ? 'NULL' : "'$dose'";
+
+                $ref_laterality_id = (!isset($event['ref_laterality_id']) || !is_numeric($event['ref_laterality_id'])) ? 'NULL' : $event['ref_laterality_id'];
                 $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
                 $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
                 $ref_dispense_condition_id = ($event['ref_dispense_condition_id'] == null) ? 'NULL' : $event['ref_dispense_condition_id'];
@@ -126,8 +131,8 @@ class m180510_093824_prescription_events_import extends CDbMigration
                         '" . $event['class_name'] . "',
                         " . $event['ref_medication_id'] . ",
                         " . $event['ref_medication_form_id'] . ", 
-                        '" . $event['ref_laterality_id'] . "', 
-                        '" . $dose . "', 
+                        " . $ref_laterality_id . ",
+                        " . $dose . ", 
                         '" . $dose_unit_term . "', 
                         " . $ref_route_id . ",
                         " . $ref_frequency_id . ",
