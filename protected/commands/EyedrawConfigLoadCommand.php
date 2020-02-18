@@ -504,7 +504,11 @@ EOSQL;
         .$this->getIndexSearchResultsHTML($index_list, $event_name)
         .$this->getIndexSearchHiddenTerms($event_name);
         $html_string = $this->formatHTML($html_string);
-        $this->saveHTMLToFile($html_string, Yii::getPathOfAlias('application') . "/widgets/views/IndexSearch_{$event_name}.php");
+//        Saving the generated PHP and HTML content in the event_type table for event (Eg: Examination) under the index_search_content column
+        $cmd = $this->getDb()->createCommand('UPDATE event_type SET index_search_content =:html  WHERE name =:event_name');
+        $cmd->bindValue(':html', $html_string)
+        ->bindValue(':event_name',$event_name)
+        ->query();
     }
 
     private function getIndexSearchHeader() {
