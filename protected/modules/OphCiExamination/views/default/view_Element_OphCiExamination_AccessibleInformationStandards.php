@@ -16,9 +16,6 @@
  */
 ?>
 
-<?php
-if (!empty($element->correspondence_in_large_letters)) :
-    ?>
 <div class="element-data full-width">
     <table class="label-value last-left">
         <tbody>
@@ -28,12 +25,9 @@ if (!empty($element->correspondence_in_large_letters)) :
                 </div>
             </td>
             <td>
-                <div class="data-value"><span class="large-text">Yes</span></div>
+                <div class="data-value"><span class="large-text"><?= $element->correspondence_in_large_letters ? 'Yes' : 'No' ?></span></div>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-    <?php
-endif;
-?>
