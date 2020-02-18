@@ -28,7 +28,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
     <?php if ($this->patient->nhsNumberStatus) : ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
@@ -106,92 +106,92 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                 <div class="subtitle">&nbsp;</div>
                     <?php if (Yii::app()->params['use_contact_practice_associate_model'] === true) { ?>
                 <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
-                            <tbody>
-                                    <tr>
-                                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
-                                            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
-                                    </tr>
-                                    <tr>
-                                            <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
-                                            <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
-                                    </tr>
-                                    <tr>
-                                            <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
-                                            <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
-                                    </tr>
-                                    <?php if (($this->patient->gp_id)) {
-                                            $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
-                                            $practice = Practice::model()->findByPk(array('id' => $this->patient->practice_id));
-                                    }?>
-                                    <tr>
-                                            <td>Referring Practice Address</td>
-                                            <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
-                                    </tr>
-                                    <tr>
-                                            <td>Referring Practice Telephone</td>
-                                            <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
-                                    </tr>
-                                    <?php if (isset($this->referredTo)) { ?>
-                                        <tr>
-                                                <td><?php echo 'Referred to '?></td>
-                                                <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
-                                        </tr>
-                                    <?php }?>
-                            <?php
-                            if (isset($this->patient->patientContactAssociates)) {
-                                    $index = 1;
-                                foreach ($this->patient->patientContactAssociates as $pca) {
-                                    if ($index > 3) {
-                                            break;
-                                    }
-        //                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
-        //                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
-                                    if (isset($pca->gp)) {
-                                            $gp = $pca->gp; ?>
-                                                    <tr>
-                                                            <td>
-                                                                    Other Practitioner <br> Contact <?= $index; ?>
-                                                            </td>
-                                                            <td>
-                                                                    <div>
-                                                                    <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
-                                                                    </div>
-                                                                <?php
-                                                                if (isset($pca->practice)) {
-                                                                        $practice = $pca->practice;
-                                                                    if (isset($practice)) {
-                                                                            $address = $practice->contact->address;
-                                                                        ?>
-                                                                                    <div>
-                                                                                    <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
-                                                                                    </div>
-                                                                                <?php
-                                                                    }
-                                                                } ?>
-                                                            </td>
-                                                    </tr>
-                                                    <?php
-                                                    $index += 1;
-                                    }
-                                }
-                            }
-                            ?>
+                    <tbody>
                             <tr>
-                                    <td>
-                                            Created Date:
-                                    </td>
-                                    <td>
-        <!--                  Added a timestamp for create date and modified date -- CERA-490 -->
-                                            <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
-                                    </td>
+                                    <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                                    <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                             </tr>
                             <tr>
-                                    <td>
-                                            Last Modified Date:
-                                    </td>
-                                    <td>
-                                            <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->last_modified_date))?></label>
-                                    </td>
+                                    <td><?php echo Yii::app()->params['general_practitioner_label'].' Role' ?></td>
+                                    <td><?= ($this->patient->gp && $this->patient->gp->contact->label) ? $this->patient->gp->contact->label->name : 'Unknown'; ?></td>
+                            </tr>
+                            <tr>
+                                    <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
+                                    <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+                            </tr>
+                            <?php if (($this->patient->gp_id)) {
+                                    $gp = Gp::model()->findByPk(array('id' => $this->patient->gp_id));
+                                    $practice = Practice::model()->findByPk(array('id' => $this->patient->practice_id));
+                            }?>
+                            <tr>
+                                    <td>Referring Practice Address</td>
+                                    <td> <?= isset($practice) ? $practice->getAddresslines() : 'Unknown' ?></td>
+                            </tr>
+                            <tr>
+                                    <td>Referring Practice Telephone</td>
+                                    <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
+                            </tr>
+                            <?php if (isset($this->referredTo)) { ?>
+                                <tr>
+                                        <td><?php echo 'Referred to '?></td>
+                                        <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
+                                </tr>
+                            <?php }?>
+                    <?php
+                    if (isset($this->patient->patientContactAssociates)) {
+                            $index = 1;
+                        foreach ($this->patient->patientContactAssociates as $pca) {
+                            if ($index > 3) {
+                                    break;
+                            }
+//                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
+//                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
+                            if (isset($pca->gp)) {
+                                $gp = $pca->gp; ?>
+                                    <tr>
+                                        <td>
+                                                Other Practitioner <br> Contact <?= $index; ?>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
+                                            </div>
+                                            <?php
+                                            if (isset($pca->practice)) {
+                                                    $practice = $pca->practice;
+                                                if (isset($practice)) {
+                                                        $address = $practice->contact->address;
+                                                    ?>
+                                            <div>
+                                            <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                            </div>
+                                                            <?php
+                                                }
+                                            } ?>
+                                        </td>
+                                    </tr>
+                                        <?php
+                                        $index += 1;
+                            }
+                        }
+                    }
+                    ?>
+                    <tr>
+                            <td>
+                                    Created Date:
+                            </td>
+                            <td>
+<!--                  Added a timestamp for create date and modified date -- CERA-490 -->
+                                <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
+                            </td>
+                    </tr>
+                    <tr>
+                            <td>
+                                    Last Modified Date:
+                            </td>
+                            <td>
+                                <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->last_modified_date))?></label>
+                            </td>
                             </tr>
                             </tbody>
                         </table>
@@ -265,7 +265,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
     <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-    <div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
+    <div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
         <div class="situational-awareness flex-layout flex-left flex-top">
             <?php
             $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
@@ -463,7 +463,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- .flex-layout -->
 </div>
 
-    <div class="oe-patient-popup patient-popup-management" style="display: none;">
+    <div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
         <div class="flex-layout flex-top">
             <div class="cols-left">
                 <div class="popup-overflow">
@@ -498,12 +498,12 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             </div><!-- left -->
             <div class="cols-right">
                 <div class="popup-overflow">
-                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme']); ?>
+                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]); ?>
                 </div><!-- .popup-overflow -->
             </div>
         </div><!-- flex -->
     </div>
-<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
@@ -540,7 +540,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
 <?php if (Yii::app()->getModule('OETrial')) { ?>
-<div class="oe-patient-popup patient-popup-trials" style="display: none;">
+<div class="oe-patient-popup" id="patient-popup-trials" style="display: none;">
   <div class="flex-layout flex-top">
       <?php
         $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(

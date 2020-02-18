@@ -303,7 +303,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                             <h3 class="element-title">Problems &amp; Plans</h3>
                         </header>
                         <div class="element-data full-width">
-                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
+                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id, 'is_popup' => false]); ?>
                         </div>
                     </section>
                 </div>
