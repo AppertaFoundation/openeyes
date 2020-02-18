@@ -137,17 +137,17 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                         <td><?php echo $this->referredTo->getFullNameAndTitle();?></td>
                                 </tr>
                             <?php }?>
-                    <?php
-                    if (isset($this->patient->patientContactAssociates)) {
+                        <?php
+                        if (isset($this->patient->patientContactAssociates)) {
                             $index = 1;
-                        foreach ($this->patient->patientContactAssociates as $pca) {
-                            if ($index > 3) {
+                            foreach ($this->patient->patientContactAssociates as $pca) {
+                                if ($index > 3) {
                                     break;
-                            }
-//                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
-//                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
-                            if (isset($pca->gp)) {
-                                $gp = $pca->gp; ?>
+                                }
+    //                  Removed the check for other practitioner not being the same as a referring practitioner and a check for whether
+    //                  a  a ref prac id is set as this was causing no contacts to be displayed - CERA-504
+                                if (isset($pca->gp)) {
+                                    $gp = $pca->gp; ?>
                                     <tr>
                                         <td>
                                                 Other Practitioner <br> Contact <?= $index; ?>
@@ -156,26 +156,26 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                             <div>
                                                 <?= $gp->contact->fullName . (isset($gp->contact->label) ? ' - ' . $gp->contact->label->name : ''); ?>
                                             </div>
-                                            <?php
-                                            if (isset($pca->practice)) {
+                                                <?php
+                                                if (isset($pca->practice)) {
                                                     $practice = $pca->practice;
-                                                if (isset($practice)) {
+                                                    if (isset($practice)) {
                                                         $address = $practice->contact->address;
-                                                    ?>
+                                                        ?>
                                             <div>
-                                            <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
+                                                        <?= isset($address) ? $address->letterLine : 'Unknown address for this contact.'; ?>
                                             </div>
                                                             <?php
-                                                }
-                                            } ?>
+                                                    }
+                                                } ?>
                                         </td>
                                     </tr>
-                                        <?php
-                                        $index += 1;
+                                            <?php
+                                            $index += 1;
+                                }
                             }
                         }
-                    }
-                    ?>
+                        ?>
                     <tr>
                             <td>
                                     Created Date:
@@ -239,7 +239,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                                         <td>Telephone</td>
                                                         <td><?= $contact->primary_phone ?></td>
                                                 </tr>
-                                        <?php }
+                                    <?php }
                                 } ?>
 
                                 <?php
