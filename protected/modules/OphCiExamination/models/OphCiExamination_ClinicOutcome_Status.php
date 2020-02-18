@@ -133,4 +133,15 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 
         return $this;
     }
+
+    public function getPatientTicketIds() {
+        $element_ids = [];
+        $elements = $this->findAll('patientticket=:patientticket', [':patientticket' => 1]);
+
+        foreach ($elements as $element) {
+            $element_ids[] = $element->id;
+        }
+
+        return $element_ids;
+    }
 }

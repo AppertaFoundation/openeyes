@@ -21,7 +21,15 @@ function setYAxis_IOP() {
     },
     showticklabels: true,
     dtick: 5,
-    fixedrange: true
+    fixedrange: true,
+
+    /*spike setting aka Cursor*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'line',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   };
 }
 
