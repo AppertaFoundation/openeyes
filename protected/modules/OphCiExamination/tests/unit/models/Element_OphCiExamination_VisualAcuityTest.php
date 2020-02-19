@@ -16,8 +16,13 @@
  */
 use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
+class Element_OphCiExamination_VisualAcuityTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return models\Element_OphCiExamination_VisualAcuity::model();
+    }
+
     public function letter_stringProvider()
     {
         return array(

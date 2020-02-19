@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationbooking_Operation_SessionTest extends CDbTestCase
+class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'Patient',
@@ -26,6 +26,11 @@ class OphTrOperationbooking_Operation_SessionTest extends CDbTestCase
         'session' => 'OphTrOperationbooking_Operation_Session',
         'wards' => 'OphTrOperationbooking_Operation_Ward',
     );
+
+    public function getModel()
+    {
+        return OphTrOperationbooking_Operation_Session::model();
+    }
 
     public static function setupBeforeClass()
     {
