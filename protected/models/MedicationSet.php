@@ -736,6 +736,19 @@ class MedicationSet extends BaseActiveRecordVersioned
         return \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $this->id, $usage_code]);
     }
 
+    public function addUsageCode($usage_code)
+    {
+        $medication_set_rule = new MedicationSetRule();
+        $medication_set_rule->medication_set_id = $this->id;
+        $medication_set_rule->subspecialty_id = \Subspecialty::model()->find('name=?', array('Glaucoma'))->id;
+        $medication_set_rule->usage_code_id = $usage_code->id;
+
+        if ($medication_set_rule->save()) {
+            return true;
+        }
+        return false;
+    }
+
     public function isUnique($attribute, $params)
     {
         if (!$this->medicationSetRules) {
