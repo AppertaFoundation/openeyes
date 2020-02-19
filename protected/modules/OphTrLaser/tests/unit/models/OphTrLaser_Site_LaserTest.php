@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrLaser_Site_LaserTest extends CDbTestCase
+class OphTrLaser_Site_LaserTest extends ActiveRecordTestCase
 {
     /**
      * @var OphTrLaser_Site_Laser
@@ -25,6 +25,11 @@ class OphTrLaser_Site_LaserTest extends CDbTestCase
     public $fixtures = array(
         'ophtrlaser_site_laser' => 'OphTrLaser_Site_Laser',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.

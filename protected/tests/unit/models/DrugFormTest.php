@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugFormTest extends CDbTestCase
+class DrugFormTest extends ActiveRecordTestCase
 {
     /**
      * @var DrugForm
@@ -24,6 +24,11 @@ class DrugFormTest extends CDbTestCase
     public $fixtures = array(
         'drugforms' => 'DrugForm',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -53,9 +58,11 @@ class DrugFormTest extends CDbTestCase
 
     /**
      * @covers DrugForm::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->drugforms('drugform1')->validate());
         $this->assertEmpty($this->drugforms('drugform2')->errors);
     }

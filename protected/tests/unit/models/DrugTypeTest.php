@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugTypeTest extends CDbTestCase
+class DrugTypeTest extends ActiveRecordTestCase
 {
     /**
         * @var DrugType
@@ -25,6 +25,11 @@ class DrugTypeTest extends CDbTestCase
     public $fixtures = array(
             'drugtypes' => 'DrugType',
        );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
        /**
         * Sets up the fixture, for example, opens a network connection.
@@ -64,13 +69,15 @@ class DrugTypeTest extends CDbTestCase
         $this->assertEquals('drug_type', $this->model->tableName());
     }
 
-       /**
-        * @covers DrugForm::rules
-        *
-        * @todo   Implement testRules().
-        */
+    /**
+     * @covers DrugForm::rules
+     *
+     * @throws CException
+     * @todo   Implement testRules().
+     */
     public function testRules()
-       {
+    {
+        parent::testRules();
         $this->assertTrue($this->drugtypes('drugtype1')->validate());
         $this->assertEmpty($this->drugtypes('drugtype2')->errors);
     }

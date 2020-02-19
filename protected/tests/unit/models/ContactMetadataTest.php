@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactMetadataTest extends CDbTestCase
+class ContactMetadataTest extends ActiveRecordTestCase
 {
     /**
      * @var ContactMetadata
@@ -25,6 +25,11 @@ class ContactMetadataTest extends CDbTestCase
     public $fixtures = array(
         'contactmetadata' => 'ContactMetadata',
     );
+
+    public function getModel()
+    {
+        return ContactMetadata::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -62,9 +67,11 @@ class ContactMetadataTest extends CDbTestCase
 
     /**
      * @covers ContactMetadata::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->contactmetadata('contactmetadata3')->validate());
     }
 

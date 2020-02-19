@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class EpisodeStatusTest extends CDbTestCase
+class EpisodeStatusTest extends ActiveRecordTestCase
 {
     /**
      * @var EpisodeStatus
@@ -24,6 +24,11 @@ class EpisodeStatusTest extends CDbTestCase
     public $fixtures = array(
         'episodestatus' => 'EpisodeStatus',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -53,9 +58,11 @@ class EpisodeStatusTest extends CDbTestCase
 
     /**
      * @covers EpisodeStatus::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->episodestatus('episodestatus1')->validate());
         $this->assertEmpty($this->episodestatus('episodestatus1')->errors);
     }

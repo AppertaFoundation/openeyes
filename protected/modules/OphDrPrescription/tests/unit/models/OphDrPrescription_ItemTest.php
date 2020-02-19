@@ -4,7 +4,7 @@
      * Class OphDrPrescription_ItemTest
      * @property OphDrPrescription_Item $item
      */
-class OphDrPrescription_ItemTest extends CDbTestCase
+class OphDrPrescription_ItemTest extends ActiveRecordTestCase
 {
     private $items = array();
     protected $fixtures = array(
@@ -14,6 +14,11 @@ class OphDrPrescription_ItemTest extends CDbTestCase
         'drug_frequencys' => DrugFrequency::class,
         'drug_durations' => DrugDuration::class,
     );
+
+    public function getModel()
+    {
+        return OphDrPrescription_Item::model();
+    }
 
     public function setUp()
     {
