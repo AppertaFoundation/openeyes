@@ -142,6 +142,11 @@ EOH;
                     $current_set->delete();
                 }
 
+                if ($new_set->name === 'Glaucoma') {
+                    $oescape_usage_code = MedicationUsageCode::model()->find('usage_code=?', array('OEScape'));
+                    $new_set->addUsageCode($oescape_usage_code);
+                }
+
                 $trans->commit();
             } else {
                 echo '<pre>' . print_r($new_set->getErrors(), true) . '</pre>';
