@@ -13,13 +13,28 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         // Adding column to sites to save foreign key relationship
         $this->addColumn('site', 'logo_id', 'integer');
+        $this->addColumn('site_version', 'logo_id', 'integer');
 
         // Adding foreign key to sites
         $this->addForeignKey('site_logo_id_fk', 'site', 'logo_id', 'site_logo', 'id');
 
-        // Adding Default logo -- currently null but this could pull the current logo
-        $logo_helper = new LogoHelper();
-        $logos = $logo_helper->getLogo();
+        // finding current Default logo -- currently null but this could pull the current logo
+        $logos = array();
+
+        $directory = \Yii::getPathOfAlias('application.runtime');
+        $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
+
+        foreach($images as $image_path) {
+            if (strpos($image_path, 'header') !== false) {
+                Yii::app()->assetManager->publish($image_path);
+                $logos['headerLogo'] = $image_path;
+            }
+            if (strpos($image_path, 'secondary') !== false) {
+                Yii::app()->assetManager->publish($image_path);
+                $logos['secondaryLogo'] = $image_path;
+            }
+        }
+        
         $headerLogo = null;
         $secondaryLogo =null;
         if (array_key_exists('headerLogo', $logos)) {
@@ -28,9 +43,11 @@ class m200130_044814_add_logos_to_site extends OEMigration
         if (array_key_exists('secondaryLogo', $logos)) {
             $secondaryLogo = file_get_contents($logos['secondaryLogo']);
         }
+
+        // Adding Default logo to db
         $this->insert('site_logo',   array(
             'primary_logo' => $headerLogo, 
-        'secondary_logo' => $secondaryLogo));
+            'secondary_logo' => $secondaryLogo));
 
 	}
 
@@ -41,6 +58,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         // Dropping column from sites that save foreign key relationship
         $this->dropColumn('site', 'logo_id');
+        $this->dropColumn('site_version', 'logo_id');
         
         // Dropping Table
         $this->dropOETable('site_logo');
