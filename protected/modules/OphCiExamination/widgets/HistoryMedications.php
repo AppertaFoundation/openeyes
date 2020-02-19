@@ -34,6 +34,7 @@ class HistoryMedications extends \BaseEventElementWidget
     public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
     public $is_latest_element = null;
     public $missing_prescription_items = null;
+    public $pro_theme;
 
     protected $print_view = 'HistoryMedications_event_print';
 

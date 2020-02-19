@@ -421,6 +421,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                         [
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                            'pro_theme' => 'pro-theme',
                         ]
                     ); ?>
               </div>

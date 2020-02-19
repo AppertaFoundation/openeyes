@@ -57,12 +57,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td>
                         <?php if ($entry->getDoseAndFrequency()) { ?>
-                            <i class="oe-i info small pro-theme js-has-tooltip"
+                            <i class="oe-i info small js-has-tooltip"
                                data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                             </i>
                         <?php } ?>
                     </td>
-                    <td class="date"><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
+                    <td class="date"><span class="oe-date"><?= $entry->getStartDateDisplay(false) ?></span></td>
                 </tr>
             <?php } ?>
             </tbody>

@@ -375,9 +375,11 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
-    public function getStartDateDisplay()
+    public function getStartDateDisplay($pro_theme = true)
     {
-        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
+        $i_class = 'oe-i start small pad';
+        $i_class .= $pro_theme ? ' pro-theme' : '';
+        return '<div class="oe-date"><i class="' . $i_class . '"></i>' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
     public function getStopDateDisplay()

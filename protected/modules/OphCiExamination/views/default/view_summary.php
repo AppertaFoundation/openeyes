@@ -74,12 +74,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       </td>
                                       <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
-                                            <i class="oe-i info small pro-theme js-has-tooltip"
+                                            <i class="oe-i info small js-has-tooltip"
                                                data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                             </i>
                                         <?php } ?>
                                       </td>
-                                      <td><?= $entry->getStartDateDisplay() ?></td>
+                                      <td><?= $entry->getStartDateDisplay(false) ?></td>
                                   </tr>
                                 <?php } ?>
                               </tbody>
@@ -109,7 +109,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                   <th>Stopped</th>
                                   <th></th>
                                   <th></th>
-                                  <th><i class="oe-i small pro-theme js-patient-expand-btn pad expand"></i></th>
+                                  <th><i class="oe-i small js-patient-expand-btn pad expand"></i></th>
                               </tr>
                               </thead>
                               <tbody style="display: none;">
@@ -127,12 +127,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       </td>
                                       <td>
                                           <?php if ($entry->getDoseAndFrequency()) {?>
-                                              <i class="oe-i info small pro-theme js-has-tooltip"
+                                              <i class="oe-i info small js-has-tooltip"
                                                  data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                               </i>
                                             <?php } ?>
                                       </td>
-                                      <td><?= $entry->getStartDateDisplay() ?></td>
+                                      <td><?= $entry->getStartDateDisplay(false) ?></td>
                                   </tr>
                                 <?php } ?>
                               </tbody>
@@ -260,12 +260,12 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                             <td><?= $entry->getMedicationDisplay() ?></td>
                                             <td>
                                                 <?php if ($entry->getDoseAndFrequency()) {?>
-                                                    <i class="oe-i info small pro-theme js-has-tooltip"
+                                                    <i class="oe-i info small js-has-tooltip"
                                                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                     </i>
                                                 <?php } ?>
                                             </td>
-                                            <td><?= $entry->getStartDateDisplay() ?></td>
+                                            <td><?= $entry->getStartDateDisplay(false) ?></td>
                                         </tr>
                                     <?php } ?>
                                     </tbody>

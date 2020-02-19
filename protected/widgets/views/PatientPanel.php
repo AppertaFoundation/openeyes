@@ -58,7 +58,7 @@ $deceased = $this->patient->isDeceased();
         <div class="hospital-number">
 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
             <span><?php echo ( Yii::app()->params['hos_num_label_short'] ) ?> </span>
-                          <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
+                          <div class="js-copy-to-clipboard inline" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
         </div>
         <div class="nhs-number">
 <!--                Displaying only Medicare label (instead of Medicare ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
