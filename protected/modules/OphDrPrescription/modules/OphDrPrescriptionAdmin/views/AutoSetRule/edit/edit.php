@@ -79,10 +79,13 @@
     <div class="row divider">
         <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
-
-    <?= \CHtml::linkButton('Save',
+    <?php if ($set->id) {
+        \CHtml::linkButton('Save',
         array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll?set_id='. $set->id,
-            'class' => 'button large')); ?>
+            'class' => 'button large'));
+    } else {
+        echo \OEHtml::submitButton();
+    } ?>
     <?= \OEHtml::cancelButton("Cancel", [
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
     ]) ?>
