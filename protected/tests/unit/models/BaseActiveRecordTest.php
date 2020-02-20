@@ -1,5 +1,8 @@
 <?php
 
+use OEModule\BaseActiveRecordTest\models\BaseActiveRecordTest_NamespaceTestClass;
+use OEModule\BaseActiveRecordTest\models\NamespaceTestClass;
+
 /**
  * OpenEyes.
  *
@@ -44,13 +47,15 @@ class BaseActiveRecordTest extends CDbTestCase
     {
         return array(
             array('BaseActiveRecordTest_NonamespaceTestClass', 'BaseActiveRecordTest_NonamespaceTestClass'),
-            array('OEModule\BaseActiveRecordTest\models\BaseActiveRecordTest_NamespaceTestClass', 'BaseActiveRecordTest.NamespaceTestClass'),
-            array('OEModule\BaseActiveRecordTest\models\NamespaceTestClass', 'BaseActiveRecordTest.NamespaceTestClass'),
+            array(BaseActiveRecordTest_NamespaceTestClass::class, 'BaseActiveRecordTest.NamespaceTestClass'),
+            array(NamespaceTestClass::class, 'BaseActiveRecordTest.NamespaceTestClass'),
         );
     }
 
     /**
      * @dataProvider getShortModelNameDataProvider
+     * @param $class_name string
+     * @param $short_name string
      */
     public function testGetShortModelName($class_name, $short_name)
     {
@@ -70,14 +75,14 @@ class BaseActiveRecordTest extends CDbTestCase
 
         $testmodel->setAttributes(array('test_value' => 'new value'));
 
-        $testmodel->expects($this->any())
+        $testmodel
             ->method('getIsNewRecord')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         // Basically testing insert gets called to save the data
         $testmodel->expects($this->once())
             ->method('insert')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $testmodel->save();
     }
@@ -112,7 +117,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $this->assertEquals($expected, $result);
     }
 
-
+    /**
+     * @throws ReflectionException
+     */
     public function test__set_has_many()
     {
         $test = $this->getMockBuilder('BaseActiveRecord')
@@ -130,15 +137,15 @@ class BaseActiveRecordTest extends CDbTestCase
             'has_many' => $hm_cls,
         );
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
-        $test->expects($this->any())
+            ->willReturn($meta);
+        $test
             ->method('getPrimaryKey')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $test->__set('has_many', array('test'));
-        $this->assertTrue(is_array($test->has_many));
+        $this->assertInternalType('array', $test->has_many);
         $this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
 
         $r = new ReflectionClass($test);
@@ -147,7 +154,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $p->setValue($test, true);
 
         $test->__set('has_many', array('test2'));
-        $this->assertTrue(is_array($test->has_many));
+        $this->assertInternalType('array', $test->has_many);
         $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
 
         $rdp = $r->getProperty('relation_defaults');
@@ -155,12 +162,15 @@ class BaseActiveRecordTest extends CDbTestCase
         $rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
 
         $test->__set('has_many', array(array('test_value' => 'a string')));
-        $this->assertTrue(is_array($test->has_many));
+        $this->assertInternalType('array', $test->has_many);
         $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
         $this->assertEquals('a string', $test->has_many[0]->test_value);
         $this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function test__set_many_many()
     {
         $mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
@@ -178,7 +188,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->md = $meta;
 
         $test->many_many = array('test');
-        $this->assertTrue(is_array($test->many_many));
+        $this->assertInternalType('array', $test->many_many);
         $this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
 
         $r = new ReflectionClass($test);
@@ -187,7 +197,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $p->setValue($test, true);
 
         $test->many_many = array('test2');
-        $this->assertTrue(is_array($test->many_many));
+        $this->assertInternalType('array', $test->many_many);
         $this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
         $this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
     }
@@ -198,9 +208,9 @@ class BaseActiveRecordTest extends CDbTestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getPrimaryKey'))
             ->getMock();
-        $mock->expects($this->any())
+        $mock
             ->method('getPrimaryKey')
-            ->will($this->returnValue($pk));
+            ->willReturn($pk);
 
         return $mock;
     }
@@ -213,10 +223,10 @@ class BaseActiveRecordTest extends CDbTestCase
             ->getMock();
         $mock->expects($this->once())
             ->method('save')
-            ->will($this->returnValue(true));
-        $mock->expects($this->any())
+            ->willReturn(true);
+        $mock
             ->method('getPrimaryKey')
-            ->will($this->returnValue($pk));
+            ->willReturn($pk);
 
         return $mock;
     }
@@ -227,12 +237,12 @@ class BaseActiveRecordTest extends CDbTestCase
             ->disableOriginalConstructor()
             ->setMethods(array('delete', 'getPrimaryKey'))
             ->getMock();
-        $mock->expects($this->any())
+        $mock
             ->method('getPrimaryKey')
-            ->will($this->returnValue($pk));
+            ->willReturn($pk);
         $mock->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         return $mock;
     }
@@ -246,7 +256,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $mock->rel_id = $rel_id;
         $mock->expects($this->any())
             ->method('getPrimaryKey')
-            ->will($this->returnValue($pk));
+            ->willReturn($pk);
 
         return $mock;
     }
@@ -258,16 +268,19 @@ class BaseActiveRecordTest extends CDbTestCase
             ->setMethods(array('delete', 'getPrimaryKey'))
             ->getMock();
         $mock->rel_id = $rel_id;
-        $mock->expects($this->any())
+        $mock
             ->method('getPrimaryKey')
-            ->will($this->returnValue($pk));
+            ->willReturn($pk);
         $mock->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         return $mock;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testafterSave_hasMany()
     {
         $test = $this->getMockBuilder('RelationOwnerSaveClass')
@@ -289,13 +302,13 @@ class BaseActiveRecordTest extends CDbTestCase
 
         //   echo "<pre>" . print_r($meta, true) . "</pre>";die;
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
+            ->willReturn($meta);
 
         $test->expects($this->once())
             ->method('getSafeAttributeNames')
-            ->will($this->returnValue(array('has_many')));
+            ->willReturn(array('has_many'));
 
         $new_vals = array($this->getRelationMockForSave(5));
         $orig_vals = array($this->getRelationMockForDelete(3));
@@ -306,7 +319,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->expects($this->once())
             ->method('getRelated')
             ->with($this->equalTo('has_many'), $this->equalTo(true))
-            ->will($this->returnValue($orig_vals));
+            ->willReturn($orig_vals);
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -319,6 +332,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->invoke($test);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testafterSave_hasManyThru()
     {
         $test = $this->getMockBuilder('RelationOwnerSaveClass')
@@ -329,8 +345,8 @@ class BaseActiveRecordTest extends CDbTestCase
         $hmt_ass_cls = new CHasManyRelation('has_many_thru_ass', 'RelationTestAssClass', 'element_id');
         $hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'rel_id', array('through' => 'has_many_thru_ass'));
 
-        $meta = (new ComponentStubGenerator())->generate('CActiveRecordMetaData', array(
-            'tableSchema' => (new ComponentStubGenerator())->generate('CDbTableSchema', array(
+        $meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
                 'primaryKey' => 'the_pk',
             )),
             'relations' => array(
@@ -340,13 +356,13 @@ class BaseActiveRecordTest extends CDbTestCase
             'columns' => array(),
         ));
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
+            ->willReturn($meta);
 
         $test->expects($this->once())
             ->method('getSafeAttributeNames')
-            ->will($this->returnValue(array('has_many_thru')));
+            ->willReturn(array('has_many_thru'));
 
         $hmt = $this->getRelationMock(8);
         $test->has_many_thru = array($hmt);
@@ -354,13 +370,13 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->expects($this->at(2))
             ->method('getRelated')
             ->with($this->equalTo('has_many_thru'), $this->equalTo(true))
-            ->will($this->returnValue(array($this->getRelationMock(2), $hmt)));
+            ->willReturn(array($this->getRelationMock(2), $hmt));
 
         // consistent assignment objects with the getRelated call above
         $test->expects($this->at(3))
             ->method('getRelated')
             ->with($this->equalTo('has_many_thru_ass'), $this->equalTo(true))
-            ->will($this->returnValue(array($this->getRelationAssMockForDelete(1, 2), $this->getRelationAssMock(2, 8))));
+            ->willReturn(array($this->getRelationAssMockForDelete(1, 2), $this->getRelationAssMock(2, 8)));
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -373,6 +389,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->invoke($test);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testafterSave_manyMany()
     {
         $test = $this->getMockBuilder('RelationOwnerSaveClass')
@@ -392,13 +411,13 @@ class BaseActiveRecordTest extends CDbTestCase
             'columns' => array(),
         ));
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
+            ->willReturn($meta);
 
         $test->expects($this->once())
             ->method('getSafeAttributeNames')
-            ->will($this->returnValue(array('many_many')));
+            ->willReturn(array('many_many'));
 
         // many many relations will not use save/delete methods, as they use command builder,
         // so we want a bare bones relation mock
@@ -408,7 +427,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->expects($this->once())
             ->method('getRelated')
             ->with('many_many')
-            ->will($this->returnValue(array($this->getRelationMock(7), $mm)));
+            ->willReturn(array($this->getRelationMock(7), $mm));
 
         // many many uses command builder to update the assignment table
         $ins_cmd = $this->getMockBuilder('CDbCommand')
@@ -418,16 +437,16 @@ class BaseActiveRecordTest extends CDbTestCase
 
         $ins_cmd->expects($this->once())
             ->method('execute')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
             ->disableOriginalConstructor()
             ->setMethods(array('createInsertCommand', 'createDeleteCommand'))
             ->getMock();
 
-        $cmd_builder->expects($this->any())
+        $cmd_builder
             ->method('createInsertCommand')
-            ->will($this->returnValue($ins_cmd));
+            ->willReturn($ins_cmd);
 
         $del_cmd = $this->getMockBuilder('CDbCommand')
             ->disableOriginalConstructor()
@@ -435,15 +454,15 @@ class BaseActiveRecordTest extends CDbTestCase
             ->getMock();
         $del_cmd->expects($this->once())
             ->method('execute')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
-        $cmd_builder->expects($this->any())
+        $cmd_builder
             ->method('createDeleteCommand')
-            ->will($this->returnValue($del_cmd));
+            ->willReturn($del_cmd);
 
         $test->expects($this->any())
             ->method('getCommandBuilder')
-            ->will($this->returnValue($cmd_builder));
+            ->willReturn($cmd_builder);
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -456,6 +475,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->invoke($test);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testafterSave_setNull()
     {
         $test = $this->getMockBuilder('RelationOwnerSaveClass')
@@ -475,13 +497,13 @@ class BaseActiveRecordTest extends CDbTestCase
             'columns' => array(),
         ));
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
+            ->willReturn($meta);
 
-        $test->expects($this->any())
+        $test
             ->method('getSafeAttributeNames')
-            ->will($this->returnValue(array('has_many')));
+            ->willReturn(array('has_many'));
 
         $test->has_many = null;
 
@@ -489,7 +511,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->expects($this->once())
             ->method('getRelated')
             ->with('has_many')
-            ->will($this->returnValue(array($this->getRelationMockForDelete(3))));
+            ->willReturn(array($this->getRelationMockForDelete(3)));
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -502,6 +524,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->invoke($test);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testAfterSaveNewValues()
     {
         $test = $this->getMockBuilder('RelationOwnerSaveClass')
@@ -521,13 +546,13 @@ class BaseActiveRecordTest extends CDbTestCase
             'columns' => array(),
         ));
 
-        $test->expects($this->any())
+        $test
             ->method('getMetaData')
-            ->will($this->returnValue($meta));
+            ->willReturn($meta);
 
-        $test->expects($this->any())
+        $test
             ->method('getSafeAttributeNames')
-            ->will($this->returnValue(array('has_many')));
+            ->willReturn(array('has_many'));
 
         // fake the attribute having been set by __set
         $test->has_many = array($this->getRelationMockForSave(5), $this->getRelationMockForSave(6));
@@ -535,7 +560,7 @@ class BaseActiveRecordTest extends CDbTestCase
         $test->expects($this->once())
             ->method('getRelated')
             ->with('has_many')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $r = new ReflectionClass($test);
         $p = $r->getProperty('auto_update_relations');
@@ -556,14 +581,14 @@ class BaseActiveRecordTest extends CDbTestCase
 
         $testmodel->setAttributes(array('test_value' => 'new value'));
 
-        $testmodel->expects($this->any())
+        $testmodel
             ->method('getIsNewRecord')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         // Basically testing insert gets called to save the data
         $testmodel->expects($this->exactly(2))
             ->method('insert')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this->assertTrue($testmodel->saveOnlyIfDirty()->save());
 
@@ -592,6 +617,7 @@ class ManyManyOwnerTestClass extends BaseActiveRecord
 
     public function __construct()
     {
+        //parent::__construct();
     }
 
     public function getMetaData()
@@ -611,6 +637,7 @@ class SimpleBaseActiveRecordClass extends BaseActiveRecord
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     public function rules()
@@ -646,6 +673,7 @@ class RelationTestClass extends BaseActiveRecord
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     public function rules()
@@ -668,7 +696,7 @@ class RelationTestClass extends BaseActiveRecord
 
     public function find($condition = '', $params = array())
     {
-        return ComponentStubGenerator::generate(get_class(self), $params);
+        return ComponentStubGenerator::generate(self::class, $params);
     }
 
     public function findByPk($pk, $condition = '', $params = array())
@@ -688,6 +716,7 @@ class RelationTestAssClass extends BaseActiveRecord
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     public function rules()
@@ -708,7 +737,7 @@ class RelationTestAssClass extends BaseActiveRecord
 
     public function find($condition = '', $params = array())
     {
-        return ComponentStubGenerator::generate(get_class(self), $params);
+        return ComponentStubGenerator::generate(self::class, $params);
     }
 
     public function findByPk($pk, $condition = '', $params = array())
