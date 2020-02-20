@@ -77,8 +77,8 @@ class DocumentTarget extends BaseActiveRecord
 
     public function beforeSave()
     {
-        // This check is only for the internal referrals
-        if ( $this->contact_id == '' and ($this->contact_type == 'INTERNALREFERRAL' or $this->contact_type == 'OTHER') ) {
+        // This check is only for the other and internal referral letter types
+        if ( $this->contact_id === '' && ($this->contact_type === 'INTERNALREFERRAL' || $this->contact_type === 'OTHER') ) {
             $this->contact_id = null;
         }
 
