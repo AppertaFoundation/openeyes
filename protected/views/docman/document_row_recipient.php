@@ -34,7 +34,6 @@ if (!isset($element)) {
                 'row_index' => $row_index,
                 'address' => $address,
             ));
-            echo CHtml::hiddenField("DocumentTarget[$row_index][attributes][contact_id]", $contact_id);
             ?>
         </td>
     <td class="docman_delivery_method align-left">

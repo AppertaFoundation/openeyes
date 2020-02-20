@@ -74,4 +74,14 @@ class DocumentTarget extends BaseActiveRecord
     {
         return array();
     }
+
+    public function beforeSave()
+    {
+        // This check is only for the internal referrals
+        if ( $this->contact_id == '' and ($this->contact_type == 'INTERNALREFERRAL' or $this->contact_type == 'OTHER') ) {
+            $this->contact_id = null;
+        }
+
+        return parent::beforeSave();
+    }
 }
