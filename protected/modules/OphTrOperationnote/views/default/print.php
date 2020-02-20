@@ -33,14 +33,11 @@
 <!-- Per-operative drugs -->
 <?php
     $postdrugs_element = Element_OphTrOperationnote_PostOpDrugs::model()->find('event_id = ?', array($this->event->id));
-    $this->renderElement($postdrugs_element, 'print', false, false);
-?>
-
-<!-- Post-op instructions and Comments -->
-<?php
-    $comments_element = Element_OphTrOperationnote_Comments::model()->find('event_id = ?', array($this->event->id));
-    $this->renderElement($comments_element, 'print', false, false);
-?>
+    $this->renderPartial('view_Element_OphTrOperationnote_PostOpDrugs', array(
+            'element' => $postdrugs_element,
+            'is_print_view' => true
+    ));
+    ?>
 
 <!-- Metadata -->
 <?php
