@@ -72,7 +72,7 @@ foreach ($ethnic_list as $key => $item) {
     <table class="standard highlight-rows">
       <tbody>
       <tr>
-        <td>
+        <td class=<?= Yii::app()->params['add_patient_fields']['title'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'title') ?>
           <br/>
             <?= $form->error($contact, 'title') ?>
@@ -82,7 +82,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['first_name'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'first_name') ?>
           <br/>
             <?= $form->error($contact, 'first_name') ?>
@@ -94,7 +94,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['last_name'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'last_name') ?>
           <br/>
             <?= $form->error($contact, 'last_name') ?>
@@ -117,7 +117,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr class="patient-duplicate-check">
-        <td class="required">
+        <td class=<?= Yii::app()->params['add_patient_fields']['dob'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($patient, 'dob') ?>
           <br/>
             <?= $form->error($patient, 'dob') ?>
@@ -195,7 +195,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td>
+        <td class=<?= Yii::app()->params['add_patient_fields']['primary_phone'] === 'mandatory' ? 'required':'' ?>>
             <?= $form->label($contact, 'primary_phone') ?>
           <br/>
             <?= $form->error($contact, 'primary_phone') ?>
@@ -223,7 +223,7 @@ foreach ($ethnic_list as $key => $item) {
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td class=<?= Yii::app()->params['institution_code'] === 'CERA' ? 'required':'' ?>>
+          <td class=<?= Yii::app()->params['add_patient_fields']['hos_num'] === 'mandatory' ? 'required':'' ?>>
                 <?= $form->label($patient, 'hos_num') ?>
             <br/>
                 <?= $form->error($patient, 'hos_num') ?>
@@ -255,7 +255,7 @@ foreach ($ethnic_list as $key => $item) {
         </tr>
 <!--        Making the NHS number status to be visible only if use case is not for CERA as they dont want this- CERA-499 -->
         <?php
-        if (Yii::app()->params['institution_code']!=='CERA') {?>
+        if (Yii::app()->params['add_patient_fields']['nhs_num_status']!=='hidden') {?>
              <tr class="nhs-num-status" style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
               <td>
                   <?= $form->label($patient, 'nhs_num_status_id') ?>
@@ -353,7 +353,7 @@ foreach ($ethnic_list as $key => $item) {
                         <li>
                             <span class="js-name" style="text-align:justify; max-width: 90%;">
                                 <?php
-                                if (Yii::app()->params['institution_code'] === 'CERA') {
+                                if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
                                     if ($patient->gp_id && $patient->practice_id) {
                                         $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$patient->gp_id, 'practice_id'=>$patient->practice_id));
                                         $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
@@ -433,7 +433,7 @@ foreach ($ethnic_list as $key => $item) {
           </td>
         </tr>
 
-        <?php if (Yii::app()->params['institution_code']=='CERA') : ?>
+        <?php if (Yii::app()->params['use_contact_practice_associate_model']== true) : ?>
             <tr>
                 <td>
                     <label for="contact">Other Practitioner Contacts</label>

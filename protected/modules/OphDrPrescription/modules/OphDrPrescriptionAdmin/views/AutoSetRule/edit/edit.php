@@ -17,7 +17,7 @@
  */
 ?>
 
-<h2>Add Automatic Set Rules</h2>
+<h2>Add/Edit Drug Set</h2>
 
 <form id="medication-autoset-form" method="post">
 
@@ -29,6 +29,7 @@
     ); ?>
 
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+    <input type="hidden" class="js-search-data js-update-row-data js-medication-set-id" data-name="set_id" value="<?=$set->id;?>" />
     <div class="row divider flex-layout flex-top col-gap">
         <div class="cols-left">
             <table class="large">
@@ -36,11 +37,13 @@
                 <tr>
                     <td>Name</td>
                     <td>
-                        <?= \CHtml::activeTextField($set, 'name', [
-                            'class' => 'cols-full',
+                        <?= \CHtml::activeTextField(
+                            $set,
+                            'name',
+                            ['class' => 'cols-full',
                             'autocomplete' => \Yii::app()->params['html_autocomplete']
-                        ])
-                        ?>
+                            ]
+                        ) ?>
                     </td>
                 </tr>
                 </tbody>
@@ -74,7 +77,7 @@
     </div>
 
     <div class="row divider">
-        <?php $this->renderPartial('/AutoSetRule/edit/edit_individual_medications', ['set' => $set]); ?>
+        <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
 
     <?= \OEHtml::submitButton() ?>
@@ -82,3 +85,21 @@
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
     ]) ?>
 </form>
+<script>
+    let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
+            tableSelector: '#meds-list',
+            searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
+            templateSelector: '#medication_template'
+    });
+    $('#meds-list').data('drugSetController', drugSetController);
+
+        let tableInlineEditController = new OpenEyes.PrescriptionAdminMedicationSet({
+            tableSelector: '#meds-list',
+            templateSelector: '#medication_template',
+            updateUrl: '/OphDrPrescription/admin/autoSetRule/updateMedicationDefaults',
+            onAjaxError: function() {
+                drugSetController.refreshResult();
+            }
+    });
+    $('#meds-list').data('tableInlineEditController', tableInlineEditController);
+</script>

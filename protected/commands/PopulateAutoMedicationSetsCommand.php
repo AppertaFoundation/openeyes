@@ -27,6 +27,9 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
     public function run($args)
     {
+        $t = microtime(true);
+        echo "[" . (date("Y-m-d H:i:s")) . "] PopulateAutoMedicationSets ... ";
+
         $this->_pid = getmypid();
 
         if ($this->_isRunning()) {
@@ -36,6 +39,8 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
         $this->_savePid();
         MedicationSet::populateAutoSets();
+
+        echo "OK - took: " . (microtime(true) - $t) . "\n";
         exit(0);
     }
 
@@ -57,5 +62,13 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
     private function _savePid()
     {
         file_put_contents($this->_pidfile, $this->_pid);
+        chmod($this->_pidfile, 0777);
+    }
+
+    public function __destruct()
+    {
+        if (file_exists($this->_pidfile)) {
+            unlink($this->_pidfile);
+        }
     }
 }

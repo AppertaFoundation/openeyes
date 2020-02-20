@@ -272,7 +272,8 @@ class BaseEventElementWidget extends CWidget
         );
 
         return $this->getApp()->getAssetManager()->publish(
-            implode(DIRECTORY_SEPARATOR, $elements)
+            implode(DIRECTORY_SEPARATOR, $elements),
+            true
         );
     }
 

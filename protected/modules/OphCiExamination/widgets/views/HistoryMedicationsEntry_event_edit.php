@@ -38,7 +38,7 @@ $to_be_copied = !$entry->originallyStopped && isset($entry->medication) && $entr
 $is_posting = Yii::app()->request->getIsPostRequest();
 
 
-$allergy_ids = !is_null($entry->medication_id) ?
+$entry_allergy_ids = !is_null($entry->medication_id) ?
     implode(",", array_map(function ($e) {
         return $e->id;
     }, $entry->medication->allergies)) :
@@ -54,9 +54,11 @@ $stop_fields_validation_error = array_intersect(
     class="divider col-gap js-first-row <?= $stopped ? 'fade' : ''?> <?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $is_new ? "new" : "" ?>"
     data-key="<?= $row_count ?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    <?php if (!is_null($entry->medication_id)) :
+    <?php if (!is_null($entry->medication_id)) {
+        ?>data-allergy-ids="<?= $entry_allergy_ids ?>"<?php
+    } elseif ($allergy_ids) {
         ?>data-allergy-ids="<?= $allergy_ids ?>"<?php
-    endif; ?>
+    } ?>
 
     <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
@@ -68,8 +70,9 @@ $stop_fields_validation_error = array_intersect(
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
                     echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                 }
-                            $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             } else {
+                echo "{{& allergy_warning}}";
                 echo "{{& prepended_markup}}";
             } ?>
             </span>
@@ -112,13 +115,13 @@ $stop_fields_validation_error = array_intersect(
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]"
-                                     value="<?= $entry->dose ?>" placeholder="00"/>
+                                     value="<?= $entry->dose ?>" placeholder="Dose"/>
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
                         <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"
                                      class="dose_unit_term" <?= $show_unit ? 'disabled' : '' ?> />
                         <?php echo CHtml::dropDownList($field_prefix . '[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled' => $show_unit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:' . ($show_unit ? '' : 'none'))); ?>
-                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => 'Frequency', 'class' => 'js-frequency cols-4')) ?>
-                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => 'Route', 'class' => 'js-route cols-3')) ?>
+                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-4')) ?>
+                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Route-', 'class' => 'js-route cols-3')) ?>
                                                 <span class="oe-eye-lat-icons admin-route-options js-laterality" style="<?=$entry->routeOptions() ? "" :"display:none"?>" >
                                                                                                 <?php
                                                                                                     $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
@@ -152,7 +155,7 @@ $stop_fields_validation_error = array_intersect(
                 'rows' => '1',
                 'placeholder' => 'Comments',
                 'autocomplete' => 'off',
-            ]) ?>
+                        ]) ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </div>
         <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
@@ -174,6 +177,12 @@ $stop_fields_validation_error = array_intersect(
         <?php } ?>
     </td>
 </tr>
+<?php
+    $start_date_display = str_replace('-00', '', $entry->start_date);
+    $start_date_display = str_replace('0000', '', $start_date_display);
+    $end_date_display = str_replace('-00', '', $entry->end_date);
+    $end_date_display = str_replace('0000', '', $end_date_display);
+?>
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
@@ -182,7 +191,7 @@ $stop_fields_validation_error = array_intersect(
                         <?php if ($is_new) : ?>
                                                     <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
                                                                  name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $entry->start_date ?>"
+                                                                 value="<?= $start_date_display ?>"
                                                                  style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
                                                                  autocomplete="off">
 
@@ -196,9 +205,9 @@ $stop_fields_validation_error = array_intersect(
 
                     <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
+                <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
                     ?> style="display: none;"<?php
-                                                            }?>>
+                                                }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
                                             <i class="oe-i stop small pad"></i>
                                             <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
@@ -214,7 +223,7 @@ $stop_fields_validation_error = array_intersect(
                       }?> class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
                 <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
-                                             name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+                                             name="<?= $field_prefix ?>[end_date]" value="<?= $end_date_display ?>"
                                              data-default="<?= date('Y-m-d') ?>"
                                              style="width:80px" placeholder="yyyy-mm-dd"
                                              autocomplete="off">

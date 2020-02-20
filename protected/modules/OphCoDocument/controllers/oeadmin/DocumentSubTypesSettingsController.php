@@ -27,7 +27,7 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
     {
         $OphCoDocument_Sub_Types = OphCoDocument_Sub_Types::model();
         $path = Yii::getPathOfAlias('application.widgets.js');
-        $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
         //reorder and save
         if (Yii::app()->request->isPostRequest) {

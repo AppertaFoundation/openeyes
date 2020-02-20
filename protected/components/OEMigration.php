@@ -371,8 +371,8 @@ class OEMigration extends CDbMigration
             'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ', '', $name),
             'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
-            'default' => isset($params['default']) ? $params['default'] : false,
-            'required' => isset($params['required']) ? $params['required'] : false,
+            'default' => isset($params['default']) ? $params['default'] : 0,
+            'required' => isset($params['required']) ? $params['required'] : 0,
         );
 
         if (isset($params['group_name'])) {

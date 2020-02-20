@@ -21,7 +21,7 @@
         <table class="standard">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="checkall"  /></th>
+                    <th><input type="checkbox" id="checkall" style="min-width: 20px"  /></th>
                     <th>Name</th>
                     <th>Subspecialty</th>
                 </tr>

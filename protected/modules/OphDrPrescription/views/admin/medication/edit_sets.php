@@ -100,8 +100,7 @@ $medicationSetItems = $medication->medicationSetItems;
         $set_id = $assignment->medication_set_id;
         $id = is_null($assignment->id) ? -1 : $assignment->id;
         ?>
-        <tr data-key="<?= $rowkey ?>"
-            <?= $assignment->medicationSet->hidden ? ' style="display:none;"' : '' ?>>
+        <tr data-key="<?= $rowkey ?>">
             <td>
                 <input type="hidden" name="Medication[medicationSetItems][id][]" value="<?= $id ?>"/>
                 <input type="hidden" name="Medication[medicationSetItems][medication_set_id][]"

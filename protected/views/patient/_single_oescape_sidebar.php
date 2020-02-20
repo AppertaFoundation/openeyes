@@ -7,7 +7,7 @@
  * @var Episode[] $specialty_episodes
  **/
 
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.

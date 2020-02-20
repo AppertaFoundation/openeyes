@@ -33,63 +33,67 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
+$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<?php if ($read_only) {
+    \Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
+}?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table class="medications entries js-entry-table js-current-medications"
                              id="<?= $model_name ?>_entry_table">
-                    <colgroup>
-                        <col class="cols-2">
-                        <col class="cols-6">
-                        <col class="cols-3">
-                        <col class="cols-icon" span="2">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>Drug</th>
-                        <th>Dose/frequency/route/start/stop</th>
-                        <th>Duration/dispense/comments</th>
-                        <th><i class="oe-i drug-rx small no-click"></i></th>
-                        <th></th><!-- actions -->
-                    </tr>
-                    </thead>
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-6">
+                <col class="cols-3">
+                <col class="cols-icon" span="2">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th>Dose/frequency/route/start/stop</th>
+                    <th>Duration/dispense/comments</th>
+                    <th><i class="oe-i drug-rx small no-click"></i></th>
+                    <th><!-- actions --></th>
+                </tr>
+            </thead>
             <tbody>
                 <?php if ($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key => $entry) {
-                        if ($prescribe_access || $entry->prescribe == 0 ) {
-                                                $this->render(
-                                                    'MedicationManagementEntry_event_edit',
-                                                    array(
-                                                        'entry' => $entry,
-                                                        'form' => $form,
-                                                        'model_name' => $model_name,
-                                                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                                                        'row_count' => $row_count,
-                                                        'stop_reason_options' => $stop_reason_options,
-                                                        'laterality_options' => $laterality_options,
-                                                        'route_options' => $route_options,
-                                                        'frequency_options' => $frequency_options,
-                                                        'direct_edit' => false,
-                                                        'usage_type' => /* $entry->usage_type */ 'UTYPE',
-                                                        'row_type' => /*$entry->group */ 'group',
-                                                        'is_last' => ($row_count == $total_count - 1),
-                                                        'prescribe_access' => $prescribe_access,
-                                                        'patient' => $this->patient,
-                                                        'locked' => $entry->locked,
-                                                        'unit_options' => $unit_options,
-                                                        'has_dose_unit_term' => '{{has_dose_unit_term}}',
-                                                        'is_template' => false
-                                                    )
-                                                );
+                        if (($prescribe_access || $entry->prescribe == 0) && !$read_only) {
+                                $this->render(
+                                    'MedicationManagementEntry_event_edit',
+                                    array(
+                                        'entry' => $entry,
+                                        'form' => $form,
+                                        'model_name' => $model_name,
+                                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                                        'row_count' => $row_count,
+                                        'stop_reason_options' => $stop_reason_options,
+                                        'laterality_options' => $laterality_options,
+                                        'route_options' => $route_options,
+                                        'frequency_options' => $frequency_options,
+                                        'direct_edit' => false,
+                                        'usage_type' => /* $entry->usage_type */ 'UTYPE',
+                                        'row_type' => /*$entry->group */ 'group',
+                                        'is_last' => ($row_count == $total_count - 1),
+                                        'prescribe_access' => $prescribe_access,
+                                        'patient' => $this->patient,
+                                        'locked' => $entry->locked,
+                                        'unit_options' => $unit_options,
+                                        'has_dose_unit_term' => '{{has_dose_unit_term}}',
+                                        'is_template' => false
+                                    )
+                                );
                         } else {
                             $this->render(
-                            'MedicationManagementEntry_event_edit_read_only',
+                                'MedicationManagementEntry_event_edit_read_only',
                                 array(
                                     'entry' => $entry,
                                     'form' => $form,
@@ -120,8 +124,12 @@ $element_errors = $element->getErrors();
     </div>
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
-            <button id="mm-add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
-            <button class="button hint green js-add-select-search" id="mm-add-medication-btn" type="button">
+            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
+                ?>disabled<?php
+                                                                          } ?>" type="button">Add standard set</button>
+            <button class="button hint green js-add-select-search <?php if ($read_only) {
+                ?>disabled<?php
+                                                                  } ?>" id="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -204,6 +212,7 @@ $element_errors = $element->getErrors();
     $(document).ready(function () {
         let prescribed_medications = [];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
+        let prescription_event_exists = false;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -211,11 +220,18 @@ $element_errors = $element->getErrors();
             }
         });
 
-        if (prescribed_medications.length > 0) {
+        prescribed_medications.forEach(function (medication) {
+            if($(medication).find('[name*="prescription_item_id"]').val()){
+                prescription_event_exists = true;
+            }
+        });
+
+        if (prescription_event_exists) {
             let $save_button = $('#et_save');
             $save_button.before("<button class='button header-tab green' id='et_save_check_prescription_reason'>Save</button>");
             $save_button.hide();
         }
+
 
         $('#et_save_check_prescription_reason').on('click', function () {
             let prescription_modified = false;
@@ -237,10 +253,11 @@ $element_errors = $element->getErrors();
                         }
                     });
 
-                    if($previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
+                    if(typeof $previous_option !== 'undefined' && $previous_option.val() !== $select_field.val()) {
                         prescription_modified = true;
                     }
                 });
+
             });
 
             //check if new prescribed medications have been added
@@ -271,6 +288,7 @@ $element_errors = $element->getErrors();
             } else {
                 $('#et_save').trigger('click');
             }
+
         });
 
         $('#submit_reason').on('click', function () {
@@ -302,6 +320,8 @@ $element_errors = $element->getErrors();
                     }
                 });
             }
+            $('#et_save_check_prescription_reason').hide();
+            $('#et_save').show();
             delete window.MMController;
         });
 
@@ -388,11 +408,15 @@ $element_errors = $element->getErrors();
         new OpenEyes.UI.AdderDialog({
             openButton: $('#mm-add-medication-btn'),
             itemSets: [
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode($common_systemic) ?>,
+                    {'multiSelect': true, header: "Common Systemic"}
+                )
                 ,
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode($common_ophthalmic) ?>,
+                    {'multiSelect': true, header: "Common Ophthalmic"}
+                    )
             ],
             onReturn: function (adderDialog, selectedItems) {
                 window.MMController.addEntriesWithAllergyCheck(selectedItems);

@@ -46,7 +46,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         allergyNotCheckedValue: "-9",
         allergyNoValue: "0",
         allergyYesValue: "1",
-        allergyOtherValue: 17
+        allergyOtherValue: 17,
+        allAllergies: {}
     };
 
     AllergiesController.prototype.initialiseTriggers = function () {
@@ -82,6 +83,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.updateNoAllergiesState();
             controller.dedupeAllergySelectors();
             controller.notifyMedicationManagementController();
+            controller.notifyHistoryMedicationsController();
         });
 
         this.$noAllergiesFld.on('click', function () {
@@ -114,6 +116,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             medicationManagementController.updateAllergyStatuses(new_allergy_ids);
         }
     };
+
+    AllergiesController.prototype.notifyHistoryMedicationsController = function(new_allergy_ids) {
+        let $historyMedicationsElement = $('#OEModule_OphCiExamination_models_HistoryMedications_element');
+        if ($historyMedicationsElement.length > 0) {
+            let historyMedicationController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
+                element: $historyMedicationsElement,
+                allAllergies: this.options.allAllergies
+            });
+            historyMedicationController.updateAllergyStatuses(new_allergy_ids);
+        }
+    };
+
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
         var valueChecked = false;
@@ -214,6 +228,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         this.notifyMedicationManagementController(new_allergy_ids);
+        this.notifyHistoryMedicationsController(new_allergy_ids);
 
         autosize($('.autosize'));
     };

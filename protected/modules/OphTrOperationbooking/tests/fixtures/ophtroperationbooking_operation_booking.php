@@ -28,6 +28,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b2' => array(
         'element_id' => 7,
@@ -40,6 +41,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b3' => array(
         'element_id' => 8,
@@ -52,6 +54,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b4' => array(
         'element_id' => 9,
@@ -64,6 +67,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b5' => array(
         'element_id' => 10,
@@ -76,6 +80,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b6' => array(
         'element_id' => 11,
@@ -88,6 +93,7 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
     'b7' => array(
         'element_id' => 12,
@@ -101,6 +107,7 @@ return array(
         'session_theatre_id' => 1,
         'ward_id' => 1,
         'booking_cancellation_date' => '2014-01-01 13:13:00',
+        'cancellation_comment' => 'Cancelled',
     ),
     'b8' => array(
         'element_id' => 14,
@@ -113,5 +120,6 @@ return array(
         'session_end_time' => '13:00:00',
         'session_theatre_id' => 1,
         'ward_id' => 1,
+        'cancellation_comment' => 'None',
     ),
 );

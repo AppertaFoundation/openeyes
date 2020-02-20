@@ -52,9 +52,9 @@ if (!@$no_header) {?>
 ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
 <?php } else {
                                   if (Yii::app()->params['nhs_num_private'] == true) {
-                                        ?><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $element->event->episode->patient->hos_num?><?php
+                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?><?php
                                   } else {
-                                        ?><?php echo Yii::app()->params['hos_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label'].(Yii::app()->params['institution_code']==="CERA"? ': ':' No: '). $element->event->episode->patient->nhsnum?> <?php
+                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label'].': '. $element->event->episode->patient->nhsnum?> <?php
                                   }
 }?></strong></p>
 

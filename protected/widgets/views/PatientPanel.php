@@ -19,7 +19,7 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 /***
  * @var $trialContext TrialContext
  */
@@ -57,12 +57,12 @@ $deceased = $this->patient->isDeceased();
         <div class="patient-details">
             <div class="hospital-number">
 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['hos_num_label'])[1] : Yii::app()->params['hos_num_label'] ) ?> </span>
+                <span><?php echo ( Yii::app()->params['hos_num_label_short'] ) ?> </span>
                               <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;"> <?php echo $this->patient->hos_num ?></div>
             </div>
             <div class="nhs-number">
 <!--                Displaying only Medicare label (instead of Medicare ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <span><?php echo ( Yii::app()->params['institution_code'] === 'CERA' ? explode(" ", Yii::app()->params['nhs_num_label'])[0] : Yii::app()->params['nhs_num_label'] ) ?></span>
+                <span><?php echo ( Yii::app()->params['nhs_num_label_short'] ) ?></span>
                 <?php echo $this->patient->nhsnum ?>
                 <?php if ($this->patient->nhsNumberStatus) : ?>
                     <i class="oe-i <?= isset($this->patient->nhsNumberStatus->icon->class_name) ? $this->patient->nhsNumberStatus->icon->class_name : 'exclamation' ?> small"></i>
@@ -71,7 +71,7 @@ $deceased = $this->patient->isDeceased();
 
             <div class="patient-gender">
 <!--                Displaying Gen. (instead of Gender) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
-                <em><?php echo (Yii::app()->params['institution_code'] === 'CERA' ? 'Gen.' : 'Gender') ?></em>
+                <em><?php echo (Yii::app()->params['gender_short']) ?></em>
                 <?php echo $this->patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
@@ -156,7 +156,7 @@ $deceased = $this->patient->isDeceased();
 </div>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 ?>
 <script type="text/javascript">

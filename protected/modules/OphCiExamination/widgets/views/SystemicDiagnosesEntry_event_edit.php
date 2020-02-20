@@ -25,7 +25,7 @@ if (!isset($values)) {
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
         'is_diabetes' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'diabetes')) !== false : false,
-        'has_disorder' => $diagnosis->has_disorder,
+        'has_disorder' => (int) $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'N/A',
         'date' => $diagnosis->date,
@@ -53,26 +53,17 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
         <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
             <?php
             if ($removable) {
-                if ($values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT) { ?>
-                        <label class="inline highlight">
-                            <?php echo \CHtml::radioButton(
-                            $field_prefix . '[has_disorder]',
-                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
-                            array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
-                            ); ?>
-                            yes
+                if ($values['has_disorder'] === SystemicDiagnoses_Diagnosis::$NOT_PRESENT) { ?>
+                        <label class="inline cols-3">
+                            <strong>Not present</strong>
                         </label>
-                        <label class="inline highlight">
-                            <?php echo \CHtml::radioButton(
-                            $field_prefix . '[has_disorder]',
-                            $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
-                            array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
-                            ); ?>
-                            no
-                        </label>
-                <?php } else {
-                        echo CHtml::hiddenField($field_prefix . '[has_disorder]', (string)SystemicDiagnoses_Diagnosis::$PRESENT);
-                }
+                    <?= CHtml::hiddenField($field_prefix . '[has_disorder]', SystemicDiagnoses_Diagnosis::$NOT_PRESENT); ?>
+                <?php } else { ?>
+                    <label class="inline cols-3">
+                        <strong>Present</strong>
+                    </label>
+                    <?=  CHtml::hiddenField($field_prefix . '[has_disorder]', SystemicDiagnoses_Diagnosis::$PRESENT); ?>
+                <?php }
             } else {
                 ?>
                     <label class="inline highlight">
@@ -86,7 +77,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
                         $field_prefix . '[has_disorder]',
-                        $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$PRESENT,
+                        $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$PRESENT,
                         array('value' => SystemicDiagnoses_Diagnosis::$PRESENT)
                         ); ?>
                         yes
@@ -94,7 +85,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
                         $field_prefix . '[has_disorder]',
-                        $values['has_disorder'] === (string)SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
+                        $values['has_disorder'] === SystemicDiagnoses_Diagnosis::$NOT_PRESENT,
                         array('value' => SystemicDiagnoses_Diagnosis::$NOT_PRESENT)
                         ); ?>
                         no
@@ -131,6 +122,6 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
 
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
 ?>

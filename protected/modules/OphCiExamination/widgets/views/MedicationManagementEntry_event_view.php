@@ -16,9 +16,12 @@
  */
 ?>
 <?php /** @var EventMedicationUse $entry */ ?>
-<tr class="divider col-gap <?= isset($stopped) && $stopped ? "fade": ""; ?>">
+<tr data-key="<?= $row_count ?>" class="divider col-gap <?= isset($stopped) && $stopped ? "fade": ""; ?>">
     <td rowspan="2">
         <i class="oe-i <?= $entry_icon ?> small pad-right "></i>
+        <?php if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
+            echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
+        } ?>
         <?= $entry->getMedicationDisplay(true) ?>
         <?php if ($this->mode !== static::$EVENT_PRINT_MODE) {
             $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));

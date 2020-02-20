@@ -13,6 +13,7 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
+            'default_value' => 'CURRENT',
         ));
 
         $this->insert('ophtroperationbooking_whiteboard_settings', array(
@@ -23,6 +24,7 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
+            'default_value' => 'CURRENT',
         ));
 
         $refresh_setting = new OphTrOperationbooking_Whiteboard_Settings_Data();

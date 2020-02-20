@@ -165,7 +165,7 @@
     </div>
 </div>
 
-<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1); ?>
+<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', true, -1); ?>
 <script src="<?=$js_path; ?>"></script>
 
 <script type="text/template" id="new_risk_entry" class="hidden">
