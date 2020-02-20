@@ -454,7 +454,7 @@ $whiteboard_display_mode = SettingMetadata::model()->getSetting('opbooking_white
 
 if ($whiteboard_display_mode === 'CURRENT') {
     $this->event_actions[] = EventAction::link(
-        'Display Whiteboard',
+        'Whiteboard',
         '#',
         null,
         array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->event_id)
@@ -467,7 +467,7 @@ if ($whiteboard_display_mode === 'CURRENT') {
     );
 } else {
     $this->event_actions[] = EventAction::link(
-        'Display Whiteboard',
+        'Whiteboard',
         Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/whiteboard/view/' . $element->event_id),
         null,
         array('class' => 'small button', 'target' => '_blank')

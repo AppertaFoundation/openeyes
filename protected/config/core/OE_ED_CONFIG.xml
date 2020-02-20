@@ -149,7 +149,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Bleb</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Trabeculectomy bleb</TITLE>
+      <TITLE>Drainage bleb</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -403,6 +403,12 @@
       <TITLE>Freehand drawing</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>FreehandCopyForOE</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Freehand - permanent</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Fuchs</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Guttata</TITLE>
@@ -962,7 +968,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>VitreousOpacity</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Vitreous opacity</TITLE>
+      <TITLE>Vitreous haemorrhage</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -1848,6 +1854,28 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
     <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Freehand</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <INIT_ALWAYS_FLAG>false</INIT_ALWAYS_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>FreehandCopyForOE</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <INIT_ALWAYS_FLAG>false</INIT_ALWAYS_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>PCIOL</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
       <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
@@ -2166,6 +2194,18 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                   <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Cypass.png</IMG_URL>
                   <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
                   <GOTO_DOODLE_CLASS_NAME>Cypass</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Freehand - permanent</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Freehand.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>FreehandCopyForOE</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Freehand - temporary</PRIMARY_TERM>
+                  <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Freehand.png</IMG_URL>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Freehand</GOTO_DOODLE_CLASS_NAME>
                 </INDEX>
                 <INDEX>
                     <PRIMARY_TERM>BMI</PRIMARY_TERM>
@@ -3027,7 +3067,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>DiabeticNV</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Vitreous opacity</PRIMARY_TERM>
+              <PRIMARY_TERM>Vitreous haemorrhage</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Vitreous opacity</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/VitreousOpacity.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>VitreousOpacity</GOTO_DOODLE_CLASS_NAME>
@@ -3477,7 +3520,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               </INDEX_LIST>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Trabeculectomy bleb</PRIMARY_TERM>
+              <PRIMARY_TERM>Drainage bleb</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Trabeculectomy bleb</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Bleb.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>Bleb</GOTO_DOODLE_CLASS_NAME>

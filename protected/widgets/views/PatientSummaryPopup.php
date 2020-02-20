@@ -32,7 +32,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <?php if ($this->patient->nhsNumberStatus) : ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
-                <?php echo Yii::app()->params['nhs_num_label'] . ((Yii::app()->params['institution_code']==='CERA')? '' : ' Number') ?>: <?= $this->patient->nhsNumberStatus->description; ?></b>
+                <?php echo Yii::app()->params['nhs_num_label']?>: <?= $this->patient->nhsNumberStatus->description; ?></b>
         </div>
     <?php endif; ?>
     <?php if (count($this->patient->identifiers) > 0) { ?>
@@ -80,7 +80,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Telephone</td>
             <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
           </tr>
-            <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
+            <?php if (Yii::app()->params['demographics_content']['mobile'] === true) : ?>
               <tr>
                 <td>Mobile</td>
                 <td>Unknown</td>
@@ -90,7 +90,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>Email</td>
             <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
-            <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
+            <?php if (Yii::app()->params['demographics_content']['next_of_kin'] === true) : ?>
               <tr>
                 <td>Next of kin</td>
                 <td>Unknown</td>
@@ -104,7 +104,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         <div class="cols-right">
             <div class="popup-overflow">
                 <div class="subtitle">&nbsp;</div>
-                    <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
+                    <?php if (Yii::app()->params['use_contact_practice_associate_model'] === true) { ?>
                 <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
                             <tbody>
                                     <tr>
@@ -196,7 +196,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             </tbody>
                         </table>
                     <?php } ?>
-                    <?php if (Yii::app()->params['institution_code'] !== 'CERA') { ?>
+                    <?php if (Yii::app()->params['demographics_content']['pas'] === true) { ?>
                         <table class="patient-demographics" style="position: relative; right: 0;">
                                 <tbody>
                                 <tr>
@@ -241,6 +241,21 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                                                 </tr>
                                         <?php }
                                 } ?>
+
+                                <?php
+                                $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient);
+                                if (!empty($examination_accessible_info_standards->correspondence_in_large_letters)) :
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <h2>Accessible Information Standards</h2>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><?= $examination_accessible_info_standards->getAttributeLabel('correspondence_in_large_letters') ?></td>
+                                        <td><span class="large-text">Yes</span></td>
+                                    </tr>
+                                <?php endif; ?>
                                 </tbody>
                         </table>
                     <?php } ?>

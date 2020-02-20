@@ -19,21 +19,41 @@
     <div class="fpten-form-column">
         <div class="fpten-form-row">
             <div class="fpten-form-column <?= $form_css_class ?>-patient-details">
-                <?= $this->patient->fullname ?><br/>
-                <?= $this->patient->contact->address->address1 ?>
-                <?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
-                <?= $this->patient->contact->address->address2 ?><br/>
-                <?= $this->patient->contact->address->city ?>
-                <?= $this->patient->contact->address->county ? '<br/>' : null ?>
-                <?= $this->patient->contact->address->county ?>
-                <span class="fpten-postcode"><?= $this->patient->contact->address->postcode ?></span>
-            </div>
-        </div>
-        <div class="fpten-form-row">
-            <div class="fpten-form-column fpten-nhs">
-                <span class="<?= $form_css_class ?>-nhs-text">
-                    <?= ($form_css_class === 'wpten') ? 'NHS Number: ' . $this->patient->nhs_num : $this->patient->nhs_num ?>
-                </span>
+                <div class="fpten-form-row">
+                    <?= $this->patient->fullname ?><br/>
+                    <br/>
+                    <?= $this->patient->contact->address->address1 ?><br/>
+                    <?= $this->patient->contact->address->address2 ?><?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
+                </div>
+                <div class="fpten-form-row">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
+                                <?= $this->patient->contact->address->city ?><br/>
+                                <?= $this->patient->contact->address->county ?><br/><?= $form_css_class !== 'wpten' ? '<br/>' : null ?>
+                                <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/>' : null ?>
+                                <?= (!$this->patient->contact->address->county && $form_css_class !== 'wpten') ? '<br/>' : null ?>
+                            </td>
+                            <td>
+                                <?= $this->patient->contact->address->county ? '<br/>' : null ?>
+                                <?= $this->patient->contact->address->postcode ?>
+                            </td>
+                        </tr>
+                        <?php if ($form_css_class === 'wpten') : ?>
+                            <tr>
+                                <td>NHS Number:</td>
+                                <td><?= $this->patient->nhs_num ?></td>
+                            </tr>
+                        <?php else : ?>
+                        <tr>
+                            <td></td>
+                            <td><?= $this->patient->nhs_num ?></td>
+                        </tr>
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <?php if ($form_css_class === 'wpten') : ?>

@@ -47,6 +47,8 @@ use Yii;
  */
 class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
+
     public $service;
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
@@ -144,7 +146,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
 
-        if (array_key_exists($model, $_POST) || Yii::app()->params['institution_code'] !== 'CERA') {
+        if (array_key_exists($model, $_POST)) {
                     $va = $_POST[$model];
             foreach (array('left', 'right') as $side) {
                 if (!$this->eyeHasSide($side, $va['eye_id'])) {

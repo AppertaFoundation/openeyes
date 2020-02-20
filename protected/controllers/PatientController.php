@@ -167,7 +167,7 @@ class PatientController extends BaseController
         $criteria->limit = 3;
         $events = Event::model()->findAll($criteria);
 
-        $no_episodes = count($episodes) < 1 && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+        $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
@@ -301,7 +301,7 @@ class PatientController extends BaseController
 
             $message = 'Sorry, no results ';
             if ($search_terms['hos_num']) {
-                $message .= 'for '.Yii::app()->params['hos_num_label']. ((Yii::app()->params['institution_code']=='CERA')?' ':' Number').'<strong>"'.$search_terms['hos_num'].'"</strong>';
+                $message .= 'for '.Yii::app()->params['hos_num_label'].' <strong>"'.$search_terms['hos_num'].'"</strong>';
 
                 // check if the record was merged into another record
                 $criteria = new CDbCriteria();
@@ -314,7 +314,7 @@ class PatientController extends BaseController
                     $message = 'Hospital Number <strong>'.$search_terms['hos_num'].'</strong> was merged into <strong>'.$patientMergeRequest->primary_hos_num.'</strong>';
                 }
             } elseif ($search_terms['nhs_num']) {
-                $message .= 'for '. Yii::app()->params['nhs_num_label'].((Yii::app()->params['institution_code']==='CERA')? '' : ' Number').' <strong>"'.$search_terms['nhs_num'].'"</strong>';
+                $message .= 'for '. Yii::app()->params['nhs_num_label'].' <strong>"'.$search_terms['nhs_num'].'"</strong>';
             } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                 $message .= 'for Patient Name <strong>"'.$search_terms['first_name'].' '.$search_terms['last_name'].'"</strong>';
             } else {
@@ -1864,7 +1864,7 @@ class PatientController extends BaseController
                 $referral->attributes = $_POST['PatientReferral'];
             }
 
-            if (Yii::app()->params['institution_code'] === 'CERA') {
+            if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
                 if (isset($_POST['ExtraContact'])) {
                         $gp_ids = $_POST['ExtraContact']['gp_id'];
                     if (isset($_POST['ExtraContact']['practice_id'])) {
@@ -2348,7 +2348,7 @@ class PatientController extends BaseController
 
         $output = array();
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             foreach ($gps as $gp) {
                 $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
                 $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
@@ -2419,7 +2419,7 @@ class PatientController extends BaseController
 
         $output = array();
 
-        if (Yii::app()->params['institution_code'] === 'CERA') {
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
             foreach ($gps as $gp) {
                 $practice_contact_associates = ContactPracticeAssociate::model()->findAllByAttributes(array('gp_id' => $gp->id));
                 $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
