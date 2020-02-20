@@ -4,7 +4,7 @@ class m150514_093834_operationnoteBiometryElement extends CDbMigration
 {
     public function up()
     {
-        $findTable = Yii::app()->db->schema->getTable('ophtroperationnote_procedure_element');
+        $findTable = $this->dbConnection->schema->getTable('ophtroperationnote_procedure_element');
 
         if (!$findTable) {
             echo '**WARNING** Cannot run migration, because OphTrOperationnote modules tables are not presented! Please install OphTrOperationnote module, and run this migration manually!';

@@ -5,7 +5,9 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
 
     private function addSetting($field_type_id, $key, $name, $default_value)
     {
-        $this->insert('setting_metadata', [
+        $this->insert(
+            'setting_metadata',
+            [
                 'element_type_id' => null,
                 'field_type_id' => $field_type_id,
                 'key' => $key,
@@ -31,27 +33,34 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         $this->update('episode_status', ['key' => 'discharged'], 'name = "Discharged"');
 
         //refresh event table schema
-        Yii::app()->db->schema->getTable('episode_status', true);
-        Yii::app()->db->schema->getTable('episode_status_version', true);
+        $this->dbConnection->schema->getTable('episode_status', true);
+        $this->dbConnection->schema->getTable('episode_status_version', true);
 
-        $field_type_id = \SettingFieldType::model()->findByAttributes(['name' => 'Text Field'])->id;
+        $field_type_id = $this->dbConnection->createCommand("SELECT id FROM setting_field_type WHERE name = 'Text Field'")
+            ->queryScalar();
 
-        foreach (\EpisodeStatus::model()->findAll('name = :name', [':name' => 'Post-op']) as $status) {
+        $episode_statuses = $this->dbConnection->createCommand('SELECT * FROM episode_status WHERE name = :name')
+            ->bindValues(array(':name' => 'Post-op'))
+            ->queryAll();
+        foreach ($episode_statuses as $status) {
             foreach (['drug_set' => 'Drug Set', 'letter' => 'Letter'] as $type => $name) {
-                $this->addSetting($field_type_id, "default_{$status->key}_{$type}", "Default {$status->name} {$name} name", $status->name);
+                $this->addSetting($field_type_id, "default_{$status['key']}_{$type}", "Default {$status['name']} {$name} name", $status['name']);
             }
         }
         $this->addSetting(
             $field_type_id,
-            "default_optom_post_op_letter",
-            "Default Optom Post-op Letter name",
+            'default_optom_post_op_letter',
+            'Default Optom Post-op Letter name',
             'Community Optom'
         );
+
+        $radio_button = $this->dbConnection->createCommand("SELECT id FROM setting_field_type WHERE name = 'Radio buttons'")
+            ->queryScalar();
 
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'display_order' => 2,
-            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'field_type_id' => $radio_button,
             'key' => 'auto_generate_prescription_after_surgery',
             'name' => 'Auto generate default prescription after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
@@ -66,7 +75,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'display_order' => 2,
-            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'field_type_id' => $radio_button,
             'key' => 'auto_generate_gp_letter_after_surgery',
             'name' => 'Auto generate GP letter after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
@@ -81,7 +90,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         $this->insert('setting_metadata', array(
             'element_type_id' => null,
             'display_order' => 2,
-            'field_type_id' => \SettingFieldType::model()->findByAttributes(['name' => 'Radio buttons'])->id,
+            'field_type_id' => $radio_button,
             'key' => 'auto_generate_optom_post_op_letter_after_surgery',
             'name' => 'Auto generate Optom letter after surgery',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
@@ -94,11 +103,11 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
         ));
 
         // disable prescription and optom letter options for every subspecialty except cataract
-        foreach (\Subspecialty::model()->findAll() as $subspecialty) {
-            if ($subspecialty->name !== 'Cataract') {
+        foreach ($this->dbConnection->createCommand('SELECT id, name FROM subspecialty')->queryAll() as $subspecialty) {
+            if ($subspecialty['name'] !== 'Cataract') {
                 foreach (['auto_generate_prescription_after_surgery', 'auto_generate_optom_post_op_letter_after_surgery'] as $key) {
                     $this->insert('setting_subspecialty', [
-                        'subspecialty_id' => $subspecialty->id,
+                        'subspecialty_id' => $subspecialty['id'],
                         'element_type_id' => null,
                         'key' => $key,
                         'value' => 'off',
@@ -110,7 +119,7 @@ class m190514_162942_add_default_drugset_letter_settings extends CDbMigration
                 }
                 foreach (['default_post_op_drug_set', 'default_optom_post_op_letter'] as $key) {
                     $this->insert('setting_subspecialty', [
-                        'subspecialty_id' => $subspecialty->id,
+                        'subspecialty_id' => $subspecialty['id'],
                         'element_type_id' => null,
                         'key' => $key,
                         'value' => '',

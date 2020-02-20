@@ -28,7 +28,9 @@ class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigra
         $this->addColumn('ophcodocument_sub_types_version', 'sub_type_event_icon_id', 'int(10) unsigned');
 
         foreach ($sub_types as $sub_type => $icon) {  //set default values for document sub types
-            $event_icon = EventIcon::model()->find('name = ?', [$icon])->id;
+            $event_icon = $this->dbConnection->createCommand('SELECT id FROM event_icon WHERE name = :name')
+            ->bindValue(':name', $icon)
+            ->queryScalar();
             $this->update('ophcodocument_sub_types', ['sub_type_event_icon_id' => $event_icon], 'name="'.$sub_type .'"');
         }
     }

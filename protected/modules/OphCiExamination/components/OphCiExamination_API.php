@@ -2140,7 +2140,7 @@ class OphCiExamination_API extends \BaseAPI
         $str = '';
         $principal_eye = $this->getPrincipalEye($patient);
         $el = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_AnteriorSegment_CCT',
+            models\Element_OphCiExamination_AnteriorSegment_CCT::class,
             $patient,
             $use_context
         );
