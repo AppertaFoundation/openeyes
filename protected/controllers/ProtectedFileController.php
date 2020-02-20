@@ -30,13 +30,18 @@ class ProtectedFileController extends BaseController
         );
     }
 
+    /**
+     * @param $id
+     * @throws CException
+     * @throws CHttpException
+     */
     public function actionDownload($id)
     {
         if (!$file = ProtectedFile::model()->findByPk($id)) {
             throw new CHttpException(404, 'File not found');
         }
-        if (!file_exists($file->getPath())) {
-            throw new CException('File not found on filesystem: '.$file->getPath());
+        if (!$file->file_content) {
+            throw new CException('File not found in database');
         }
         header('Content-Description: File Transfer');
         header('Content-Type: '.$file->mimetype);
@@ -46,40 +51,46 @@ class ProtectedFileController extends BaseController
         header('Content-Length: '.$file->size);
         ob_clean();
         flush();
-        readfile($file->getPath());
+        echo $file->file_content;
     }
 
+    /**
+     * @param $id
+     * @param $name
+     * @param null $rotate
+     * @throws CException
+     * @throws CHttpException
+     */
     public function actionView($id, $name, $rotate = null)
     {
         if (!$file = ProtectedFile::model()->findByPk($id)) {
             throw new CHttpException(404, 'File not found');
         }
-        $filepath = $file->getPath();
 
-        if (!file_exists($file->getPath())) {
-            throw new CException('File not found on filesystem: '.$file->getPath());
+        if (!$file->file_content) {
+            throw new CException('File not found in database');
         }
         header('Content-Type: '.$file->mimetype);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
 
-        $image_size = getimagesize($filepath);
-        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
-        if ($mime && $mime == 'image/jpeg') {
-            if ($rotate) {
-                $original = imagecreatefromjpeg($filepath);
-                $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
-                ob_start();
-                imagejpeg($rotated);
-                $size = ob_get_length();
-                header("Content-length: " . $size);
-                ob_flush();
-            }
+        $image_size = getimagesize($file->getPath());
+        $mime = $image_size['mime'] ?? null;
+        if ($mime && $mime === 'image/jpeg' && $rotate) {
+            file_put_contents($file->getPath(), $file->file_contents);
+            $original = imagecreatefromjpeg($file->getPath());
+            $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
+            ob_start();
+            imagejpeg($rotated);
+            $size = ob_get_length();
+            header('Content-length: ' . $size);
+            ob_flush();
+            unlink($file->getPath());
         }
 
         ob_clean();
         flush();
-        readfile($filepath);
+        readfile($file->file_content);
     }
 
     public function actionThumbnail($id, $dimensions, $name)
@@ -99,6 +110,10 @@ class ProtectedFileController extends BaseController
         readfile($thumbnail['path']);
     }
 
+    /**
+     * @throws CException
+     * @throws Exception
+     */
     public function actionImport()
     {
         echo '<h1>Importing files:</h1>';

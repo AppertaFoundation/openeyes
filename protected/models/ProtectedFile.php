@@ -35,7 +35,6 @@ class ProtectedFile extends BaseActiveRecordVersioned
     // used in model creation
     protected $_source_path;
     // used in model delete
-    protected $_stored_path;
     protected $_thumbnail = array();
 
     /**
@@ -44,6 +43,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $path Path to file
      *
      * @return ProtectedFile
+     * @throws CException
      */
     public static function createFromFile($path)
     {
@@ -59,6 +59,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $name
      *
      * @return ProtectedFile
+     * @throws Exception
      */
     public static function createForWriting($name)
     {
@@ -67,19 +68,13 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $file->generateUID();
 
-        $path = $file->getFilePath();
-        if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true)) {
-                throw new Exception("$path could not be created: permission denied");
-            }
-        }
-
         return $file;
     }
 
     /**
      * Returns the static model of the specified AR class.
      *
+     * @param string $className
      * @return ProtectedFile the static model class
      */
     public static function model($className = __CLASS__)
@@ -131,8 +126,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function getFilePath()
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1);
+        return self::getBasePath().'/'. $this->uid[0]
+        .'/'. $this->uid[1] .'/'. $this->uid[2];
     }
 
     /**
@@ -186,46 +181,19 @@ class ProtectedFile extends BaseActiveRecordVersioned
     /**
      * (non-PHPdoc).
      *
+     * @throws Exception
      * @see BaseActiveRecord::beforeSave()
      */
     public function beforeSave()
     {
         if ($this->_source_path) {
-            if (!file_exists(dirname($this->getPath()))) {
-                mkdir(dirname($this->getPath()), 0777, true);
-            }
-            copy($this->_source_path, $this->getPath());
+            $this->file_content = readfile($this->_source_path);
             $this->_source_path = null;
-        } elseif (!file_exists($this->getPath())) {
+        } elseif (!$this->file_content) {
             throw new Exception('There has been an error with file storage');
         }
 
         return true;
-    }
-
-    /**
-     * ensure we keep track of path to file before deleting from database.
-     *
-     * @return bool
-     *              (non-PHPdoc)
-     *
-     * @see BaseActiveRecord::beforeDelete()
-     */
-    public function beforeDelete()
-    {
-        $this->_stored_path = $this->getPath();
-
-        return parent::beforeDelete();
-    }
-
-    /**
-     * ensures file is removed from filesystem when deleting.
-     */
-    public function afterDelete()
-    {
-        unlink($this->_stored_path);
-
-        return parent::afterDelete();
     }
 
     /**
@@ -241,9 +209,6 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         // Set UID
         $this->uid = sha1(microtime().$this->name);
-        while (file_exists($this->getPath())) {
-            $this->uid = sha1(microtime().$this->name);
-        }
     }
 
     /**
@@ -252,6 +217,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $path
      *
      * @throws CException
+     * @throws Exception
      */
     public function setSource($path)
     {
@@ -263,7 +229,6 @@ class ProtectedFile extends BaseActiveRecordVersioned
         $this->name = basename($path);
 
         // Set MIME type
-        $path_parts = pathinfo($this->name);
         $this->mimetype = $this->lookupMimetype($path);
 
         // Set size
@@ -306,9 +271,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
      *
      * @param string $dimensions
      *
+     * @param bool $regenerate
+     * @return bool|array
      * @throws CException
-     *
-     * @return bool|array:
      */
     public function getThumbnail($dimensions, $regenerate = false)
     {
@@ -341,8 +306,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     protected function getThumbnailPath($dimensions)
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1)
+        return self::getBasePath().'/'. $this->uid[0]
+        .'/'. $this->uid[1] .'/'. $this->uid[2]
         .'/'.$dimensions.'/'.$this->uid;
     }
 
@@ -363,6 +328,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
         $src_height = $image_info[1];
         $ratio = $src_width / $src_height;
         $image_type = $image_info[2];
+
+        file_put_contents($this->getPath(), $this->file_content);
 
         // Work out thumbnail width/height
         $dimensions_parts = explode('x', $dimensions);
@@ -390,7 +357,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
             case IMAGETYPE_GIF:
                 imagealphablending($thumbnail, false);
                 imagesavealpha($thumbnail, true);
-                $src_image = imagecreatefromgif ($this->getPath());
+                $src_image = imagecreatefromgif($this->getPath());
                 break;
             default:
                 return false;
@@ -400,7 +367,10 @@ class ProtectedFile extends BaseActiveRecordVersioned
         imagecopyresampled($thumbnail, $src_image, 0, 0, 0, 0, $width, $height, $src_width, $src_height);
         $thumbnail_path = $this->getThumbnailPath($dimensions);
         if (!file_exists(dirname($thumbnail_path))) {
-            mkdir(dirname($thumbnail_path), 0777, true);
+            $concurrent_directory = dirname($thumbnail_path);
+            if (!mkdir($concurrent_directory, 0777, true) && !is_dir($concurrent_directory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrent_directory));
+            }
         }
         switch ($image_type) {
             case IMAGETYPE_JPEG:
@@ -410,9 +380,11 @@ class ProtectedFile extends BaseActiveRecordVersioned
                 imagepng($thumbnail, $thumbnail_path, self::THUMBNAIL_QUALITY * 9 / 100);
                 break;
             case IMAGETYPE_GIF:
-                imagegif ($thumbnail, $thumbnail_path);
+                imagegif($thumbnail, $thumbnail_path);
                 break;
         }
+
+        unlink($this->getPath());
 
         return true;
     }
