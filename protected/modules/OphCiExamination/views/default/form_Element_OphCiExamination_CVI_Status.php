@@ -31,7 +31,7 @@ if (!is_string($last_cvi_date)) {
           <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>"
                  placeholder="dd Mmm yyyy"
                  name="<?= CHtml::modelName($element) . '[element_date]' ?>"
-                 value="<?= isset($element->element_date) ? $element->getFormatedDate() : $last_cvi_date ?>"
+                 value="<?= isset($element->element_date) && $element->element_date !== '0000-00-00' ? $element->getFormatedDate() : ($last_cvi_date !== 'Undated' ? $last_cvi_date : '') ?>"
                  autocomplete="off"/>
         </td>
       </tr>
