@@ -38,7 +38,16 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
         }
 
         $this->_savePid();
-        MedicationSet::populateAutoSets();
+
+        //populate whole set unless we are given specific set number to reduce time on rebuilding sets on admin page
+        if (empty($args)) {
+            MedicationSet::populateAutoSets();
+        } else {
+            $medication_set = MedicationSet::model()->findByPk($args[0]);
+            if ($medication_set->automatic) {
+                $medication_set->populateAuto();
+            }
+        }
 
         echo "OK - took: " . (microtime(true) - $t) . "\n";
         exit(0);

@@ -306,9 +306,9 @@ class AutoSetRuleController extends BaseAdminController
         ]);
     }
 
-    public function actionPopulateAll()
+    public function actionPopulateAll($set_id = '')
     {
-        shell_exec("php " . Yii::app()->basePath . "/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
+        shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
         Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
         $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
     }

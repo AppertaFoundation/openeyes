@@ -80,7 +80,9 @@
         <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
 
-    <?= \OEHtml::submitButton() ?>
+    <?= \CHtml::linkButton('Save',
+        array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll?set_id='. $set->id,
+            'class' => 'button large')); ?>
     <?= \OEHtml::cancelButton("Cancel", [
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
     ]) ?>
