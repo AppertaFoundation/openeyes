@@ -271,8 +271,8 @@ class AutoSetRuleController extends BaseAdminController
             //validate here so if tmp_rules are empty we can return these errors as well
             $set->validate();
 
-            if (!$set->tmp_rules && $set->name !== "medication_management") {
-                $set->addError('medicationSetRules', 'Usage rules must be set.');
+            if (!$set->tmp_rules && $set->name !== "medication_management" && !$set->hidden) {
+                $set->addError('medicationSetRules', 'Usage rules must be set for visible sets.');
             }
 
             if (!$set->hasErrors() && $set->save()) {
