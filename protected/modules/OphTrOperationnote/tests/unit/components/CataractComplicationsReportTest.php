@@ -18,27 +18,32 @@
  */
 class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Test the data set.
-     */
-    public function testDataSet()
+    protected function getEmptyReport()
     {
-        $report = $this->getMockBuilder('CataractComplicationsReport')
-            ->setMethods(array('queryData', 'allComplications'))
+        $report = $this->getMockBuilder('_WrapperCataractComplicationReport')
+            ->setMethods(['allComplications'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $report->setEmptyTest();
+
+        $report->expects($this->any())
+            ->method('allComplications')
+            ->will($this->returnValue(array()));
+
+        return $report;
+    }
+
+    protected function getReport()
+    {
+        $report = $this->getMockBuilder('_WrapperCataractComplicationReport')
+            ->setMethods(['allComplications', 'getTotalComplications', 'getTotalOperations'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $report->expects($this->any())
-            ->method('queryData')
-            ->will($this->returnValue(array(
-                array('name' => 'PC rupture with vitreous loss', 'complication_count' => '2'),
-                array('name' => 'Op Cancelled', 'complication_count' => '1'),
-                array('name' => 'PC rupture with vitreous loss', 'complication_count' => '1'),
-                array('name' => 'Decentered IOL', 'complication_count' => '4'),
-                array('name' => 'Vitreous loss', 'complication_count' => '8'),
-                array('name' => 'Hyphaema', 'complication_count' => '3'),
-                array('name' => 'Zonular dialysis', 'complication_count' => '1'),
-            )));
+            ->method('getTotalComplications')
+            ->will($this->returnValue(7));
 
         $report->expects($this->any())
             ->method('allComplications')
@@ -55,15 +60,39 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
                 array('name' => 'Phaco wound burn'),
             )));
 
-        $totalComplications = $report->getTotalComplications();
-        $this->assertEquals(20, $totalComplications); //test the total complications
+        $report->expects($this->any())
+            ->method('getTotalOperations')
+            ->will($this->returnValue(23));
+
+        return $report;
+    }
+
+    public function testGetTotalComplications()
+    {
+        $report = $this->getMockBuilder('_WrapperCataractComplicationReport')
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $totalComplications = $report->getTotalComplications('all');
+        $this->assertEquals(7, $totalComplications);
+
+        return $totalComplications;
+    }
+
+    /**
+     * Test the data set.
+     *
+     * @depends testGetTotalComplications
+     */
+    public function testDataSet()
+    {
+        $report = $this->getReport();
 
         $data = $report->dataSet();
-        $this->assertEquals(10, $data[0]);
-        $this->assertEquals(5, $data[1]);
-        $this->assertEquals(20, $data[2]);
-        $this->assertEquals(40, $data[3]);
-        $this->assertEquals(15, $data[4]);
+        $this->assertEquals(28.57, round($data[0]['y'], 2));
+        $this->assertEquals(2, $data[0]['total']);
+        $this->assertEquals([4289, 582], $data[0]['event_list']);
     }
 
     /**
@@ -71,31 +100,9 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
      */
     public function testEmptyDataSet()
     {
-        $report = $this->getMockBuilder('CataractComplicationsReport')
-            ->setMethods(array('queryData', 'allComplications'))
-            ->disableOriginalConstructor()
-            ->getMock();
+        $report = $this->getEmptyReport();
 
-        $report->expects($this->any())
-            ->method('queryData')
-            ->will($this->returnValue(array()));
-
-        $report->expects($this->any())
-            ->method('allComplications')
-            ->will($this->returnValue(array(
-                array('name' => 'PC rupture with vitreous loss'),
-                array('name' => 'Op Cancelled'),
-                array('name' => 'Decentered IOL'),
-                array('name' => 'Vitreous loss'),
-                array('name' => 'Hyphaema'),
-                array('name' => 'Zonule rupture no vitreous loss'),
-                array('name' => 'Lens fragments into vitreous'),
-                array('name' => 'Other'),
-                array('name' => 'Zonular dialysis'),
-                array('name' => 'Phaco wound burn'),
-            )));
-
-        $totalComplications = $report->getTotalComplications();
+        $totalComplications = $report->getTotalComplications('all');
         $this->assertEquals(0, $totalComplications);
         $data = $report->dataSet();
         $this->assertEmpty($data);
@@ -104,40 +111,89 @@ class CataractComplicationsReportTest extends PHPUnit_Framework_TestCase
     /**
      * Test the series generation for the graph.
      */
-    public function testSeries()
+    public function testTracesJson()
     {
-        $dataSet = array(0, 1);
+        $report = $this->getReport();
+        $this->assertInternalType('string', $report->tracesJson());
+    }
 
-        $report = $this->getMockBuilder('CataractComplicationsReport')
-            ->setMethods(array('dataSet'))
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $report->expects($this->any())
-            ->method('dataSet')
-            ->will($this->returnValue(array($dataSet)));
-
-        $seriesJson = $report->seriesJson();
-        $seriesDecoded = json_decode($seriesJson, true);
-
-        $this->assertInternalType('string', $seriesJson); //is a string
-        $this->assertCount(1, $seriesDecoded); //Has 1 series when decoded
-        $this->assertEquals('Complications', $seriesDecoded[0]['name']);
-        $this->assertEquals($dataSet, $seriesDecoded[0]['data'][0]); //First series is the PCR data
+    /**
+     * Test the series generation for the graph with an empty dataset.
+     */
+    public function testTracesJsonWithEmptyDataset()
+    {
+        $report = $this->getEmptyReport();
+        $this->assertInternalType('string', $report->tracesJson());
     }
 
     /**
      * Test the configuration for the graph.
      */
-    public function testConfig()
+    public function testPlotlyConfig()
     {
-        $report = new CataractComplicationsReport(Yii::app());
-        $config = $report->graphConfig();
-        $configDecoded = json_decode($config, true);
+        $report = $this->getReport();
 
-        $this->assertInternalType('string', $config); //is a string
-        $this->assertEquals('bar', $configDecoded['chart']['type']); // check it looks ok
-        $this->assertEquals(false, $configDecoded['credits']['enabled']); //check globabl config merge
-        $this->assertEquals('CataractComplicationsReport', $configDecoded['chart']['renderTo']);
+        $expected_config = json_encode(array(
+            'type' => 'bar',
+            'title' => 'Complication Profile<br><sub>Total Complications: 7 Total Operations: 23</sub>',
+            'showlegend' => false,
+            'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+            'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
+            'font' => array(
+                'family' => 'Roboto,Helvetica,Arial,sans-serif',
+            ),
+            'xaxis' => array(
+                'title' => 'Number of cases',
+                'showline' => true,
+                'showgrid' => true,
+                'ticks' => 'outside',
+            ),
+            'yaxis' => array(
+                'title' => 'Complication',
+                'tickvals' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                'ticktext' => array('PC rupture with vitreous loss', 'Op Cancelled', 'Decentered IOL', 'Vitreous loss', 'Hyphaema', 'Zonule rupture no vitreous loss', 'Lens fragments into vitreous', 'Other', 'Zonular dialysis', 'Phaco wound burn'),
+                'autorange' => 'reversed',
+                'automargin' => 'true',
+                'showline' => true,
+                'showgrid' => false,
+                'tickfont' => array(
+                    'size' => '9.5',
+                ),
+            ),
+            'margin' => array(
+                'l' => 150,
+            ),
+        ));
+
+        $config = $report->plotlyConfig();
+        $this->assertEquals($expected_config, $config);
+    }
+}
+
+class _WrapperCataractComplicationReport extends CataractComplicationsReport
+{
+    public $allSurgeons = true;
+    private $empty_test = false;
+
+    protected function queryDatas($surgeon, $dateFrom, $dateTo)
+    {
+        if (!$this->empty_test) {
+            return [
+                array('cataract_id' => '8509', 'name' => 'PC rupture with vitreous loss', 'event_id' => '4289'),
+                array('cataract_id' => '1234', 'name' => 'Op Cancelled', 'event_id' => '3958'),
+                array('cataract_id' => '123', 'name' => 'PC rupture with vitreous loss', 'event_id' => '582'),
+                array('cataract_id' => '12', 'name' => 'Decentered IOL', 'event_id' => '1497'),
+                array('cataract_id' => '2573', 'name' => 'Vitreous loss', 'event_id' => '1641'),
+                array('cataract_id' => '9344', 'name' => 'Hyphaema', 'event_id' => '1480'),
+                array('cataract_id' => '3246', 'name' => 'Zonular dialysis', 'event_id' => '45679'),
+            ];
+        }
+
+        return array();
+    }
+
+    public function setEmptyTest()
+    {
+        $this->empty_test = true;
     }
 }

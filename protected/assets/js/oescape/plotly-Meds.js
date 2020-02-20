@@ -3,7 +3,15 @@ var meds_yaxis = {
   showticklabels: false,
   showgrid: false,
   autorange: false,
-
+  fixedrange: true,
+  
+  /*spike setting aka Cursor*/
+  showspikes: true,
+  spikecolor: '#3db0fb',
+  spikethickness: 1,
+  spikedash:'line',
+  spikemode: 'across',
+  spikesnap: 'cursor',
 };
 
 var meds_xaxis = {
@@ -13,11 +21,11 @@ var meds_xaxis = {
   gridcolor: '#444',
   gridWidth: 0.25,
 
-  /*spike setting*/
+  /*spike setting aka Cursor*/
   showspikes: true,
   spikecolor: '#3db0fb',
   spikethickness: 1,
-  spikedash:'dash',
+  spikedash:'line',
   spikemode: 'across',
   spikesnap: 'cursor',
 };

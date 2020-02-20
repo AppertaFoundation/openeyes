@@ -32,6 +32,7 @@ use Yii;
  */
 class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     protected $auto_update_relations = true;

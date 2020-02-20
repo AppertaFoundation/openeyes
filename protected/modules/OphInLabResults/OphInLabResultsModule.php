@@ -28,6 +28,7 @@ class OphInLabResultsModule extends BaseEventTypeModule
             'OphInLabResults.models.*',
             'OphInLabResults.views.*',
             'OphInLabResults.controllers.*',
+            'OphInLabResults.components.*'
         ));
         
         $this->moduleShortSuffix = "Lab Results";

@@ -26,6 +26,8 @@ class DBProvider extends \SearchProvider
                 $pos++;
             }
         }
+        // Do not count the deleted patients.
+        $queryStr .= "AND p.deleted != 1";
 
         $command = Yii::app()->db->createCommand($queryStr)->bindValues($bindValues);
         $command->prepare();

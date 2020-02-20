@@ -16,40 +16,44 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
+<?php
+$row_count = 0;
+?>
+<div class="element-data full-width">
     <div class="data-group">
-      <span class="large-text">
-      <?php if ($element->status->name !== 'Follow-up') {
-          echo $element->status;
-      } ?>
-
-          <?php if ($element->status && $element->status->followup) { ?>
-              <?php if ($element->status->name !== 'Follow-up'): ?>in<?php endif; ?>
-              <?php echo $element->getFollowUp() ?>
-              with
-              <?php echo $element->role->name ?>
-              <?php if ($element->role_comments) { ?>
-                  (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
-              <?php } ?>
-          <?php } ?>
-          <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-              if ($element->status && $element->status->patientticket &&
-                  $ticket = $api->getTicketForEvent($this->event)
-              ) {
-                  ?>
-                  <div class="cols-7">
-                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
-            </div>
-                  <?php
-              }
-          } ?>
-      </span>
+        <table class="cols-full">
+            <tbody>
+            <?php foreach ($element->entries as $entry) { ?>
+                <tr>
+                    <td>
+                        <?= $row_count ? "AND" : "" ?>
+                    </td>
+                    <td class="large-text" style="text-align:left">
+                    <?php
+                    if ($entry->isPatientTicket()) {
+                        $api = Yii::app()->moduleAPI->get('PatientTicketing');
+                        $ticket = $api->getTicketForEvent($this->event);
+                        if ($ticket) { ?>
+                            <div class="cols-7">
+                                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+                            </div>
+                        <?php }
+                    } else {
+                        echo $entry->getInfos();
+                    }
+                    $row_count++;
+                    ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
     </div>
-    <?php if ($element->description) { ?>
+    <?php if ($element->comments) { ?>
         <div class="data-group">
             <span class="large-text">
-                <?= $element->getAttributeLabel('description') ?>:
-                <?= Yii::app()->format->Ntext($element->description); ?>
+                <?= $element->getAttributeLabel('comments') ?>:
+                <?= Yii::app()->format->Ntext($element->comments); ?>
             </span>
         </div>
     <?php } ?>

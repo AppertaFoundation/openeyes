@@ -255,7 +255,7 @@ class BaseActiveRecordTest extends CDbTestCase
     {
         $mock = $this->getMockBuilder('RelationTestAssClass')
             ->disableOriginalConstructor()
-            ->setMethods(array('delete'))
+            ->setMethods(array('delete', 'getPrimaryKey'))
             ->getMock();
         $mock->rel_id = $rel_id;
         $mock->expects($this->any())
@@ -329,8 +329,8 @@ class BaseActiveRecordTest extends CDbTestCase
         $hmt_ass_cls = new CHasManyRelation('has_many_thru_ass', 'RelationTestAssClass', 'element_id');
         $hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'rel_id', array('through' => 'has_many_thru_ass'));
 
-        $meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
-            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+        $meta = (new ComponentStubGenerator())->generate('CActiveRecordMetaData', array(
+            'tableSchema' => (new ComponentStubGenerator())->generate('CDbTableSchema', array(
                 'primaryKey' => 'the_pk',
             )),
             'relations' => array(

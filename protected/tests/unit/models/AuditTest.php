@@ -110,11 +110,27 @@ class AuditTest extends CDbTestCase
      */
     public function testGetColour()
     {
-        //test the error's color
+        //test the error color
         $audit = new Audit();
         $audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'search-error'));
         $result = $audit->getColour();
-        $expected = 'Red';
+        $expected = 'fail';
+
+        $this->assertEquals($expected, $result);
+
+        //test the success color
+        $audit = new Audit();
+        $audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'login-successful'));
+        $result = $audit->getColour();
+        $expected = 'success';
+
+        $this->assertEquals($expected, $result);
+
+        //test the warn color
+        $audit = new Audit();
+        $audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'create-failed'));
+        $result = $audit->getColour();
+        $expected = 'warn';
 
         $this->assertEquals($expected, $result);
     }

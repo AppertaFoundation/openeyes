@@ -86,17 +86,16 @@ class Examination extends EventPage {
                 'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Visual Acuity')]"
             ),
             'expandNearVisualAcuity' => array(
-                'xpath' => "//*[@id='side-element-Near-Visual-Acuity']"
+                'xpath' => "//*[@id='side-element-Near-Visual-Acuity']//a"
             ),
             'expandAllergies' => array(
-                'xpath' => "//*[@id='side-element-Allergies']"
+				'xpath' => "//*[@id='side-element-Allergies']//a"				
             ),
 
             'expandAnteriorSegment' => array(
                 'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Anterior Segment')]"
             ),
             'expandVisualFunction' => array(
-//			'xpath' => "//*[@class='collapse-group-header'][contains(text(),'Visual Function')]"
                 'css' => ".collapse-group-header:contains('Visual Function')"
             ),
             'expandHistory' => array(
@@ -1002,8 +1001,8 @@ class Examination extends EventPage {
 	}
 
 	public function openAllergies() {
+		$this->openHistory();
 		$element = $this->getElement ( 'expandAllergies' );
-
 		$element->click ();
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 	}

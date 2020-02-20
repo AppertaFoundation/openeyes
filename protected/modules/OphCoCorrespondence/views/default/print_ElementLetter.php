@@ -29,12 +29,12 @@ if (!@$no_header) {?>
     <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
-        
+
         $this->renderPartial('letter_start', array(
             'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
-            'clinicDate' => $element->clinic_date,
+            'clinicDate' => strtotime($element->clinic_date),
             'element' => $element,
         ))?>
     </header>
@@ -49,14 +49,14 @@ if (!@$no_header) {?>
     <?php echo $element->renderIntroduction()?>
 </p>
 <p class="accessible"><strong><?php if ($element->re) {
-    ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
-                                <?php } else {
+?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
+<?php } else {
                                   if (Yii::app()->params['nhs_num_private'] == true) {
-                                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?><?php
+                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?><?php
                                   } else {
-                                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label']?> No: <?php echo $element->event->episode->patient->nhsnum?> <?php
+                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label'].': '. $element->event->episode->patient->nhsnum?> <?php
                                   }
-                                }?></strong></p>
+}?></strong></p>
 
 <p class="accessible">
 <?php echo $element->renderBody() ?>

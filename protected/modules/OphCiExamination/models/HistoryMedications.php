@@ -31,6 +31,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryMedications extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 25;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -181,7 +184,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function hasRisks()
     {
         foreach ($this->entries as $entry) {
-            if ($entry->hasRisk()) {
+            if (!$entry->isStopped() && $entry->hasRisk()) {
                 return true;
             }
         }
@@ -209,10 +212,5 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 2 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 25 : parent::getDisplayOrder($action);
     }
 }
