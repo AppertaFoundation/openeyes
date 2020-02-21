@@ -260,9 +260,10 @@ class AutoSetRuleController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
-            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationAutoRuleAttributes', []);
+            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationSetAutoRuleAttributes', []);
             $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
             $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
+            $this->actionPopulateAll($set->id);
             // $set->tmp_meds (MedicationSetAutoRuleMedication) are added via ajax
 
             $set->name = $data['name'];
@@ -310,7 +311,9 @@ class AutoSetRuleController extends BaseAdminController
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
         Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
-        $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+        if ($set_id === 'null'){
+            $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+        }
     }
 
     public function actionDelete()
