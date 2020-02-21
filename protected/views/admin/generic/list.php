@@ -120,7 +120,7 @@ if (!isset($uniqueid)) {
                                 <td>
                                     <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color=''"
-                                           href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
+                                           href="/OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
                                     <?php endif; ?>
                                 </td>
                                 <?php
