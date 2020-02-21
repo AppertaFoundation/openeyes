@@ -749,6 +749,26 @@ class MedicationSet extends BaseActiveRecordVersioned
         return false;
     }
 
+    public function addMedicationAttribute($medication_attribute, $value)
+    {
+        $medication_set_auto_rule_attribute = new MedicationSetAutoRuleAttribute();
+        $medication_set_auto_rule_attribute->medication_set_id = $this->id;
+        $medication_set_auto_rule_attribute->medication_attribute_option_id = MedicationAttributeOption::model()->findByAttributes(
+            array(
+                'medication_attribute_id' => $medication_attribute->id,
+                'value' => $value
+            ))->id;
+        $this->tmp_attrs[] = array(
+            'id' => $this->id,
+            'medication_attribute_option_id' => $medication_set_auto_rule_attribute->medication_attribute_option_id
+        );
+
+        if ($medication_set_auto_rule_attribute->save()) {
+            return true;
+        }
+        return false;
+    }
+
     public function isUnique($attribute, $params)
     {
         if (!$this->medicationSetRules) {
