@@ -27,7 +27,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
         foreach($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {
                 Yii::app()->assetManager->publish($image_path);
-                $logos['headerLogo'] = $image_path;
+                $logos['primaryLogo'] = $image_path;
             }
             if (strpos($image_path, 'secondary') !== false) {
                 Yii::app()->assetManager->publish($image_path);
@@ -35,10 +35,10 @@ class m200130_044814_add_logos_to_site extends OEMigration
             }
         }
         
-        $headerLogo = null;
+        $primaryLogo = null;
         $secondaryLogo =null;
-        if (array_key_exists('headerLogo', $logos)) {
-            $headerLogo = file_get_contents($logos['headerLogo']);
+        if (array_key_exists('primaryLogo', $logos)) {
+            $primaryLogo = file_get_contents($logos['primaryLogo']);
         }
         if (array_key_exists('secondaryLogo', $logos)) {
             $secondaryLogo = file_get_contents($logos['secondaryLogo']);
@@ -46,7 +46,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         // Adding Default logo to db
         $this->insert('site_logo',   array(
-            'primary_logo' => $headerLogo, 
+            'primary_logo' => $primaryLogo, 
             'secondary_logo' => $secondaryLogo));
 
 	}

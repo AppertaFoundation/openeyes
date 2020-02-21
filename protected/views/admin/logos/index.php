@@ -13,39 +13,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<style>
-    .flash-success{
-
-        border:1px solid #1DDD50;
-        background: #C3FFD3;
-        text-align: center;
-        padding: 7px 15px ;
-        color: #000000;
-        margin-bottom: 20px;
-    }
-
-    .error{
-
-        border:1px solid #ff6666;
-        background: #ffe6e6;
-        text-align: center;
-        padding: 7px 15px ;
-        color: #000000;
-        margin-bottom: 20px;
-    }
-</style>
-<?php if (Yii::app()->user->hasFlash('success')) : ?>
-    <div class="flash-success">
-        <?php echo Yii::app()->user->getFlash('success'); ?>
-    </div>
-
-<?php endif; ?>
-<?php if (Yii::app()->user->hasFlash('error')) : ?>
-    <div class="error">
-        <?php echo Yii::app()->user->getFlash('error'); ?>
-    </div>
-
-<?php endif; ?>
 
 <div class="cols-7">
 
@@ -82,7 +49,9 @@
                     <th>Remote ID</th>
                     <th>Name</th>
                     <th>Address</th>
-                    <th>Logo</th>
+                    <th>Primary Logo</th>
+                    <th>Secondary Logo</th>                    
+                    <th>Edit Logos</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,7 +67,34 @@
                                 ['delimiter' => ', ']
                             )?>
                         </td>
-                        
+                        <td><?php
+                            if(isset($site->logo_id)){
+                                if(isset($site->logo->primary_logo))
+                                {
+                                    echo "<img src='". $site->logo->getImageUrl()."' height='42'>";
+                                }
+                                else{
+                                    echo "No Image Uploaded - Default Logo<br><img src='http://localhost/sitelogo/1' height='42'>";
+                                }
+                            }
+                            else{
+                                echo "Default Logo<br><img src='http://localhost/sitelogo/1' height='42'>";
+                            }?>
+                        </td>
+                        <td><?php
+                            if(isset($site->logo_id)){
+                                if(isset($site->logo->secondary_logo))
+                                {
+                                    echo "<img src='". $site->logo->getImageUrl(true)."' height='42'>";
+                                }
+                                else{
+                                    echo "No Image Uploaded - Default Logo<br><img src='http://localhost/sitelogo/1?secondary_logo=1' height='42'>";
+                                }
+                            }
+                            else{
+                                    echo "Default Logo<br><img src='http://localhost/sitelogo/1?secondary_logo=1' height='42'>";
+                            }?>
+                        </td>
                         <td class="notClickable">
                        
                             <?php
@@ -130,7 +126,7 @@
                             ]
                         ); ?>
                     </td>
-                    <td colspan="2">
+                    <td colspan="4">
                         <?php $this->widget(
                             'LinkPager',
                             ['pages' => $pagination]

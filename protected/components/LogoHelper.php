@@ -17,66 +17,133 @@ class LogoHelper
      */
     public function render($template = '//base/_logo', $size = 100)
     {
+        $site_id = Yii::app()->session['selected_site_id'];
+
         return Yii::app()->controller->renderPartial(
             $template,
             array(
-                'logo' => $this->getLogo(),
+                'logo' => $this->getLogoURLs($site_id),
                 'size' => $size
             ),
             true
         );
     }
 
-    /**
-     * Gets the logo from where it might be, either uploaded or locally versioned.
-     *
-     * @return array
-     */
-    protected function getLogo()
+    
+    public function getLogoURLs($site_id=null)
     {
-        if(isset(Yii::app()->params['letter_logo_upload']) && Yii::app()->params['letter_logo_upload']){
-            return $this->getUploadedLogo();
-        } else {
-            return $this->getVersionedLogo();
+        $site = Site::model()->findByPk($site_id);
+        if(isset($site->logo_id)){
+            // get logos for site
+            $logo_id = $site->logo_id;
         }
+        else{
+            // use default logo
+            $logo_id = 1;
+        }
+
+        $logoOut = array();
+        $url1 = 'sitelogo/primary/';
+        $url2 = 'sitelogo/secondary/';
+        
+        if(isset($site_id)){
+            $options = array('id' => $logo_id);
+        }
+
+        $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
+        $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
+        Yii::log(var_export($logoOut));
+        return $logoOut;
     }
 
     /**
      * @return array
      */
-    public function getUploadedLogo()
+    public function getLogo($site_id=null)
     {
-        $logo = array();
-
-        $directory = \Yii::getPathOfAlias('application.runtime');
-        $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
-
-        foreach($images as $image_path) {
-            if (strpos($image_path, 'header') !== false) {
-                Yii::app()->assetManager->publish($image_path);
-                $logo['headerLogo'] = $image_path;
-            }
-            if (strpos($image_path, 'secondary') !== false) {
-                Yii::app()->assetManager->publish($image_path);
-                $logo['secondaryLogo'] = $image_path;
-            }
+        $site = Site::model()->findByPk($site_id);
+        if(isset($site->logo_id)){
+            // get logos for site
+            $logo_id = $site->logo_id;
+        }
+        else{
+            // use default logo
+            $logo_id = 1;
         }
 
-        return $logo;
+        $logoOut = array();
+
+        $logoOut['primaryLogo'] = $this->getUploadedLogo($logo_id,null,true);
+        $logoOut['secondaryLogo'] = $this->getUploadedLogo($logo_id,true,true);
+
+        return $logoOut;
+    }
+    
+    public function getUploadedLogo($id=1, $secondary_logo = null,  $return_value = false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('id = :logo_id');
+        $criteria->params[':logo_id'] = $id;
+        $model = SiteLogo::model()->find($criteria);
+        if (isset($model)) {
+            // If we need to return the value
+            if($return_value){
+                if(!empty($secondary_logo)){
+                    $image_data = $model->secondary_logo;
+                }
+                else{                  
+                    $image_data = $model->primary_logo;
+                }
+                    return $image_data;
+            }
+            // If we need to echo the value for viewing with a browser
+            else{            
+                $fileModTime = strtotime($model->last_modified_date);
+                $headers = $this->getRequestHeaders();
+
+                header('Content-type: image/png');
+                header('Cache-Control: public');
+                header('Pragma:');
+                // Check if the client is validating his cache and if it is current.
+                if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $fileModTime)) {
+                    // Client's cache IS current, so we just respond '304 Not Modified'.
+                    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
+                } else {
+                    if(!empty($secondary_logo)){
+                        $image_data = $model->secondary_logo;
+                    }
+                    else{                  
+                        $image_data = $model->primary_logo;
+                        
+                    }
+                    // Image not cached or cache outdated, we respond '200 OK' and output the image.
+                    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
+
+                    header('Content-transfer-encoding: binary');
+                    header('Content-length: ' . strlen($image_data));
+                    echo $image_data;
+                }
+            }
+        }
     }
 
     /**
-     * Get the logo from the repo
-     *
-     * @return mixed
+     * @return array|false
      */
-    protected function getVersionedLogo()
+    private function getRequestHeaders()
     {
-        $path = Yii::app()->basePath . '/assets/img/_print/';
-        $url = Yii::app()->assetManager->publish($path);
-        $logo['headerLogo'] = $url . '/letterhead_Moorfields_NHS.jpg';
-        $logo['secondaryLogo'] = $url . '/letterhead_seal.jpg';
+        if (function_exists("apache_request_headers")) {
+            if ($headers = apache_request_headers()) {
+                return $headers;
+            }
+        }
 
-        return $logo;
+        $headers = array();
+        // Grab the IF_MODIFIED_SINCE header
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            $headers['If-Modified-Since'] = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
+        }
+
+        return $headers;
     }
 }
