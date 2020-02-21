@@ -10,6 +10,14 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         // PRESCRIPTION EVENT
         $this->alterOEColumn('et_ophdrprescription_details', 'print', 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0', true);
 
+        // EXAMINATION EVENT
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_unable_to_assess', 'TINYINT(1) UNSIGNED NULL DEFAULT NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_unable_to_assess', 'TINYINT(1) UNSIGNED NULL DEFAULT NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_eye_missing', 'TINYINT(1) UNSIGNED NULL DEFAULT NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_eye_missing', 'TINYINT(1) UNSIGNED NULL DEFAULT NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_notes', 'TEXT NOT NULL DEFAULT ""');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_notes', 'TEXT NOT NULL DEFAULT ""');
+
         // CORRESPONDENCE LETTER EVENT
         $this->alterOEColumn('et_ophcocorrespondence_letter', 'fax', 'VARCHAR(64) NOT NULL DEFAULT ""', true);
         $this->alterOEColumn('document_instance_data', 'start_datetime', 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"', true);
@@ -28,6 +36,16 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         // OPERATION BOOKING
         $this->alterOEColumn('et_ophtroperationbooking_operation', 'cancellation_comment', 'VARCHAR(200) NULL', true);
         $this->alterOEColumn('ophtroperationbooking_operation_booking', 'cancellation_comment', 'VARCHAR(200) NULL', true);
+
+        // TRIALS
+        $this->alterOEColumn('trial', 'is_open', 'INT(1) NOT NULL DEFAULT 1', true);
+
+        // THERAPY APPLICATION
+        $this->alterOEColumn('ophcotherapya_email', 'last_modified_date', 'DATETIME NOT NULL DEFAULT "1901-01-01 00:00:00"', true);
+        $this->alterOEColumn('ophcotherapya_email', 'created_date', 'DATETIME NOT NULL DEFAULT "1901-01-01 00:00:00"', true);
+
+        //CAT PROM5
+        $this->alterOEColumn('cat_prom5_question', 'mandatory', 'TINYINT(1) NOT NULL DEFAULT 0', false);
 
         // FIX DELETED DEFAULTS
         $tables_without_default_deleted = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'deleted' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL")->queryAll();
@@ -50,6 +68,14 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         // PRESCRIPTION EVENT
         $this->alterOEColumn('et_ophdrprescription_details', 'print', 'TINYINT(1) UNSIGNED NOT NULL', true);
 
+        // EXAMINATION EVENT
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_unable_to_assess', 'TINYINT(1) UNSIGNED NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_unable_to_assess', 'TINYINT(1) UNSIGNED NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_eye_missing', 'TINYINT(1) UNSIGNED NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_eye_missing', 'TINYINT(1) UNSIGNED NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'left_notes', 'TEXT NOT NULL');
+        $this->alterOEColumn('et_ophciexamination_visualacuity', 'right_notes', 'TEXT NOT NULL');
+
         // CORRESPONDENCE LETTER EVENT
         $this->alterOEColumn('et_ophcocorrespondence_letter', 'fax', 'VARCHAR(64) NOT NULL', true);
         $this->alterOEColumn('document_instance_data', 'start_datetime', 'DATETIME NOT NULL', true);
@@ -68,6 +94,16 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         // OPERATION BOOKING
         $this->alterOEColumn('et_ophtroperationbooking_operation', 'cancellation_comment', 'VARCHAR(200) NOT NULL', true);
         $this->alterOEColumn('ophtroperationbooking_operation_booking', 'cancellation_comment', 'VARCHAR(200) NOT NULL', true);
+
+        // TRIALS
+        $this->alterOEColumn('trial', 'is_open', 'INT(1) NOT NULL', true);
+
+        // THERAPY APPLICATION
+        $this->alterOEColumn('ophcotherapya_email', 'last_modified_date', 'DATETIME NOT NULL', true);
+        $this->alterOEColumn('ophcotherapya_email', 'created_date', 'DATETIME NOT NULL', true);
+
+        //CAT PROM5
+        $this->alterOEColumn('cat_prom5_question', 'mandatory', 'TINYINT(1) NOT NULL', false);
 
         // FIX DELETED DEFAULTS
         $tables_without_default_deleted = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'deleted' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL")->queryAll();
