@@ -27,7 +27,7 @@
                 for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
                     $item = $this->items[$j];
                     if ($this->isPrintable($item)) {
-                        $drug_label = strtoupper($item->drug->label);
+                        $drug_label = strtoupper($item->medication->label);
                         $total_tapers = count($item->tapers);
 
                         $current_item_copy = $this->current_item_index ?: $current_item_copy;
