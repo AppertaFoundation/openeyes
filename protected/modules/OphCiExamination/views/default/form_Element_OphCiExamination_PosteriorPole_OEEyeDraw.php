@@ -29,7 +29,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Drusen',
             'RPEAtrophy',
             'Geographic',
-            'CNV',
+            'Fovea',
             'RPEDetachment',
             'EpiretinalMembrane',
             'MacularHole',
@@ -68,6 +68,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'MacularGrid',
             'SectorPRPPostPole',
             'PRPPostPole',
+            'Freehand',
+            'FreehandCopyForOE'
         ),
     ),
     'onReadyCommandArray' => array(

@@ -70,7 +70,8 @@ var layout_plotly = {
     tickfont: {
       color: '#fff',
     },
-    tickformat: '%b %d %Y',
+    tickangle: 'auto',
+    tickformat: '%d/%m/%y',
     /*spike setting*/
     showspikes: true,
     spikecolor: '#3db0fb',

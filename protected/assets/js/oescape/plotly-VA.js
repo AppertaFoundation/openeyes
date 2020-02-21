@@ -1,7 +1,12 @@
 function setYAxis_VA(options) {
   return {
     side: 'right',
-    title: '',
+    title: {
+              text: 'VA Graph',
+              font: {
+                color: 'white'
+              }
+            },
     range: options['range'],
     /* Grid line settings of yaxis */
     showgrid: true,
@@ -16,6 +21,14 @@ function setYAxis_VA(options) {
     },
     showticklabels: true,
     tickvals: options['tickvals'],
-    ticktext: options['ticktext']
+    ticktext: options['ticktext'],
+    
+    /*spike setting aka Cursor*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'line',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   };
 }

@@ -176,7 +176,9 @@ $element_errors = $element->getErrors();
                 }, $contact_labels)) ?>, {'header': 'Contact Type', 'id': 'contact-type-filter'})],
             openButton: $('#add-contacts-btn'),
             onReturn: function (adderDialog, selectedItems) {
-                contactController.addEntry(selectedItems);
+                if (!contactController.isContactInTable(selectedItems)) {
+                    contactController.addEntry(selectedItems);
+                }
             },
             searchOptions: {
                 searchSource: "/OphCiExamination/contact/autocomplete"

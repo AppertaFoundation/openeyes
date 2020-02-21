@@ -93,7 +93,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
+                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
                                 OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
@@ -105,7 +105,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
+                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
                                 OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
                     ->group('e2.id');
                 break;
@@ -169,6 +169,20 @@ class NodAuditReport extends Report implements ReportInterface
                     ->andWhere('et_ophtroperationnote_surgeon.surgeon_id IS NOT NULL')
                     ->group('eoc.id');
                 break;
+            case 'CATPROM5':
+                if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                    $this->command->select('eoc.id as cataract_element_id,
+                                                eoc.event_id as cataract_event_id,
+                                                e1.event_date as cataract_date,
+                                                e2.event_date as other_date,
+                                                cp5er.event_id as catprom5_element_id,
+                                                cp5er.total_rasch_measure as rasch_score,
+                                                cp5er.total_raw_score as raw_score')
+                        ->leftJoin('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id')
+                        ->andWhere('cp5er.event_id is not null')
+                        ->group('e2.id, e1.id');
+                }
+                    break;
         }
 
         if ($dateFrom) {
@@ -254,11 +268,19 @@ class NodAuditReport extends Report implements ReportInterface
             } else {
                 $return_data['total'] += count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
             }
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                if (!isset($return_data['CATPROM5'])) {
+                    $return_data['CATPROM5'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']);
+                } else {
+                    $return_data['CATPROM5'] = array_merge_recursive($return_data['CATPROM5'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']));
+                }
+            }
         }
         return $return_data;
     }
 
-    public function InsertDataToArray($data, $surgeon_id){
+    public function InsertDataToArray($data, $surgeon_id)
+    {
         $return_data = array(
             'pre-complete'=>array(),
             'post-complete'=>array(),
@@ -290,7 +312,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function PCRRiskDataToArray($data){
+    public function PCRRiskDataToArray($data)
+    {
         $return_data = array(
             'known'=> array(),
             'not_known'=> array(),
@@ -305,7 +328,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function IndicationForSurgeryDataToArray($data){
+    public function IndicationForSurgeryDataToArray($data)
+    {
         $return_data=array(
             'complete'=>array(),
             'incomplete'=>array(),
@@ -319,7 +343,8 @@ class NodAuditReport extends Report implements ReportInterface
         }
         return $return_data;
     }
-    public function NodEligibilityDataToArray($data, $surgeon_id){
+    public function NodEligibilityDataToArray($data, $surgeon_id)
+    {
         $return_data=array(
             'eligible'=>array(),
             'ineligible'=>array(),
@@ -348,6 +373,44 @@ class NodAuditReport extends Report implements ReportInterface
     public function tracesJson()
     {
         $dataset = $this->dataSet();
+        $incomplete_y = array();
+        $complete_y = array();
+        if ($dataset['total'] !== 0) {
+            $incomplete_y = array(
+                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
+                count($dataset['VA']['post-incomplete'])/$dataset['total'],
+                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
+                count($dataset['RF']['post-incomplete'])/$dataset['total'],
+                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
+                count($dataset['E/I']['ineligible'])/$dataset['total'],
+            );
+            $complete_y = array(
+                count($dataset['VA']['pre-complete'])/$dataset['total'],
+                count($dataset['VA']['post-complete'])/$dataset['total'],
+                count($dataset['RF']['pre-complete'])/$dataset['total'],
+                count($dataset['RF']['post-complete'])/$dataset['total'],
+                count($dataset['BM']['pre-complete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
+                count($dataset['E/I']['eligible'])/$dataset['total'],
+            );
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                array_push($incomplete_y,
+                    count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
+                    count($dataset['CATPROM5']['post-incomplete'])/$dataset['total']
+                );
+                array_push($complete_y,
+                    count($dataset['CATPROM5']['pre-complete'])/$dataset['total'],
+                    count($dataset['CATPROM5']['post-complete'])/$dataset['total']
+                );
+            }
+        }
         $trace2 = array(
             'name'=>'Incomplete',
             'type' => 'bar',
@@ -361,20 +424,9 @@ class NodAuditReport extends Report implements ReportInterface
                 'Pre-operative Risk Factors',
                 'Post-op Complications',
                 'Indication For Surgery',
-                'Eligibility For NOD Audit'
+                'Eligibility For NOD Audit',
             ),
-            'y' => array(
-                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
-                count($dataset['VA']['post-incomplete'])/$dataset['total'],
-                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
-                count($dataset['RF']['post-incomplete'])/$dataset['total'],
-                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
-                count($dataset['E/I']['ineligible'])/$dataset['total'],
-            ),
+            'y' => $incomplete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-incomplete'],
                 $dataset['VA']['post-incomplete'],
@@ -388,6 +440,17 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['ineligible'],
             ),
         );
+
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            array_push($trace2['x'],
+                'CatProm5 Pre-op',
+                'CatProm5 Post-op'
+            );
+            array_push($trace2['customdata'],
+                $dataset['CATPROM5']['pre-incomplete'],
+                $dataset['CATPROM5']['post-incomplete']
+            );
+        }
         $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',
@@ -403,18 +466,7 @@ class NodAuditReport extends Report implements ReportInterface
                 'Indication For Surgery',
                 'Eligibility For NOD Audit',
             ),
-            'y' => array(
-                count($dataset['VA']['pre-complete'])/$dataset['total'],
-                count($dataset['VA']['post-complete'])/$dataset['total'],
-                count($dataset['RF']['pre-complete'])/$dataset['total'],
-                count($dataset['RF']['post-complete'])/$dataset['total'],
-                count($dataset['BM']['pre-complete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
-                count($dataset['E/I']['eligible'])/$dataset['total'],
-            ),
+            'y' => $complete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-complete'],
                 $dataset['VA']['post-complete'],
@@ -428,11 +480,22 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['E/I']['eligible'],
             ),
         );
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            array_push($trace1['x'],
+                'CatProm5 Pre-op',
+                'CatProm5 Post-op'
+            );
+            array_push($trace1['customdata'],
+                $dataset['CATPROM5']['pre-complete'],
+                $dataset['CATPROM5']['post-complete']
+            );
+        }
 
         return json_encode(array($trace1, $trace2));
     }
 
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         return json_encode($this->plotlyConfig);
     }
 

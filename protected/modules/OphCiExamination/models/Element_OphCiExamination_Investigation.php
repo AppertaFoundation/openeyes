@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**
