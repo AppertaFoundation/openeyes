@@ -23,10 +23,12 @@
  */
 
 $toAddressContactType = $element->getToAddressContactType();
-$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-$examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
-if ($examination_accessible_info_standards) {
-    $large_letters = $examination_accessible_info_standards->correspondence_in_large_letters && $toAddressContactType === "Patient";
+if ($toAddressContactType === "PATIENT"){
+    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+    $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
+    if ($examination_accessible_info_standards) {
+        $large_letters = $examination_accessible_info_standards->correspondence_in_large_letters === '1';
+    }
 }
 
 if (!@$no_header) { ?>
@@ -50,6 +52,7 @@ if (!@$no_header) { ?>
     )) ?>
 
 <?php } ?>
+
 <div <?= isset($large_letters) && $large_letters ? 'class="impaired-vision"' : '' ?>>
     <p class="accessible">
         <?php echo $element->renderIntroduction() ?>
