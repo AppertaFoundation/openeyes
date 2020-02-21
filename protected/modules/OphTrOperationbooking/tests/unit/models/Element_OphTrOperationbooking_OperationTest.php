@@ -35,6 +35,10 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         return Element_OphTrOperationbooking_Operation::model();
     }
 
+    protected $columns_to_skip = [
+        'total_duration'
+    ];
+
     public static function setUpBeforeClass()
     {
         date_default_timezone_set('UTC');

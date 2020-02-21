@@ -28,6 +28,10 @@ class UserTest extends ActiveRecordTestCase
         'UserServiceRights',
     );
 
+    protected $columns_to_skip = [
+        'title', 'qualifications', 'role', 'has_selected_firms'
+    ];
+
     public function getModel()
     {
         return User::model();

@@ -23,6 +23,10 @@ class Element_OphCiExamination_VisualAcuityTest extends ActiveRecordTestCase
         return models\Element_OphCiExamination_VisualAcuity::model();
     }
 
+    protected $columns_to_skip = [
+        'left_notes', 'right_notes'
+    ];
+
     public function letter_stringProvider()
     {
         return array(

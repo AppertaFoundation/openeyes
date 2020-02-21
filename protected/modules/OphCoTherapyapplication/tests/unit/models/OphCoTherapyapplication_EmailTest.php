@@ -32,6 +32,10 @@ class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
         return OphCoTherapyapplication_Email::model();
     }
 
+    protected $columns_to_skip = [
+        'eye_id'
+    ];
+
     public function setUp()
     {
         parent::setUp();

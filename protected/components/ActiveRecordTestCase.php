@@ -11,6 +11,9 @@ abstract class ActiveRecordTestCase extends CDbTestCase
      * @return CActiveRecord
      */
     abstract public function getModel();
+
+    protected $columns_to_skip = [];
+
     /**
      * @covers BaseActiveRecord::rules
      * @throws CException
@@ -48,13 +51,13 @@ abstract class ActiveRecordTestCase extends CDbTestCase
             'column_name'
         );
 
-        if(!empty($required_columns) && empty($rules)) {
+        if(!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
             $this->fail('The following mandatory columns do not possess a required validator rule: ' . var_export($required_columns, true));
         } elseif (!empty($rules) && !empty($required_columns)) {
             $columns = explode(', ', $rules[0]);
 
             // We use array_diff here because the rules may not be in the same order between the two arrays.
-            $diff = array_diff($required_columns, $columns);
+            $diff = array_diff($required_columns, array_merge($columns, $this->columns_to_skip));
             $this->assertEmpty(
                 $diff,
                 'The following mandatory columns do not possess a required validator rule: ' . var_export($diff, true)

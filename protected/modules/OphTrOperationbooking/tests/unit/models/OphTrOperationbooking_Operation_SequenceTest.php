@@ -24,6 +24,10 @@ class OphTrOperationbooking_Operation_SequenceTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Operation_Sequence::model();
     }
 
+    protected $columns_to_skip = [
+        'default_admission_time'
+    ];
+
     public static function setUpBeforeClass()
     {
         date_default_timezone_set('UTC');

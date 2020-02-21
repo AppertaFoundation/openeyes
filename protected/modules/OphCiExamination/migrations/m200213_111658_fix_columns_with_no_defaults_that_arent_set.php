@@ -45,7 +45,7 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         $this->alterOEColumn('ophcotherapya_email', 'created_date', 'DATETIME NOT NULL DEFAULT "1901-01-01 00:00:00"', true);
 
         //CAT PROM5
-        $this->alterOEColumn('cat_prom5_question', 'mandatory', 'TINYINT(1) NOT NULL DEFAULT 0', false);
+        $this->alterOEColumn('cat_prom5_questions', 'mandatory', 'TINYINT(1) NOT NULL DEFAULT 0', false);
 
         // FIX DELETED DEFAULTS
         $tables_without_default_deleted = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'deleted' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL")->queryAll();
@@ -103,7 +103,7 @@ class m200213_111658_fix_columns_with_no_defaults_that_arent_set extends OEMigra
         $this->alterOEColumn('ophcotherapya_email', 'created_date', 'DATETIME NOT NULL', true);
 
         //CAT PROM5
-        $this->alterOEColumn('cat_prom5_question', 'mandatory', 'TINYINT(1) NOT NULL', false);
+        $this->alterOEColumn('cat_prom5_questions', 'mandatory', 'TINYINT(1) NOT NULL', false);
 
         // FIX DELETED DEFAULTS
         $tables_without_default_deleted = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'deleted' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL")->queryAll();

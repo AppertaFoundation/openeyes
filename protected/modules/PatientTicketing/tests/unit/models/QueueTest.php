@@ -30,6 +30,10 @@ class QueueTest extends \ActiveRecordTestCase
         return models\Queue::model();
     }
 
+    protected $columns_to_skip = [
+        'is_initial'
+    ];
+
     public function dependentQueueIdsProvider()
     {
         return array(

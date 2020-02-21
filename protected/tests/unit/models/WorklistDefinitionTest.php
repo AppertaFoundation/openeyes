@@ -22,6 +22,10 @@ class WorklistDefinitionTest extends ActiveRecordTestCase
         return WorklistDefinition::model();
     }
 
+    protected $columns_to_skip = [
+        'active_from'
+    ];
+
     public function validateMappingKeyProvider()
     {
         return array(

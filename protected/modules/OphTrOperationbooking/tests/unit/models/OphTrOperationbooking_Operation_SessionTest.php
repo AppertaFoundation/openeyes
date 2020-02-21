@@ -32,6 +32,10 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Operation_Session::model();
     }
 
+    protected $columns_to_skip = [
+        'default_admission_time'
+    ];
+
     public static function setupBeforeClass()
     {
         Yii::import('application.modules.OphTrOperationbooking.helpers.*');

@@ -29,6 +29,10 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Whiteboard::model();
     }
 
+    protected $columns_to_skip = [
+        'date_of_birth'
+    ];
+
     public static function setUpBeforeClass()
     {
         Yii::app()->getModule('OphCiExamination');
