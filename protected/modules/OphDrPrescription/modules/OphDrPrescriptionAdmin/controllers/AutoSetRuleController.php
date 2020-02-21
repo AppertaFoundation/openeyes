@@ -311,7 +311,7 @@ class AutoSetRuleController extends BaseAdminController
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
         Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
-        if ($set_id === 'null'){
+        if ($set_id === 'null') {
             $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
         }
     }
