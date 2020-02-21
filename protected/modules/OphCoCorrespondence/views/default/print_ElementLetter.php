@@ -23,7 +23,10 @@
  */
 
 $toAddressContactType = $element->getToAddressContactType();
-if ($toAddressContactType === "PATIENT") {
+if (is_null($contact_type)) {
+    $contact_type = $toAddressContactType;
+}
+if ($contact_type === "PATIENT") {
     $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
     $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
     if ($examination_accessible_info_standards) {
