@@ -17,15 +17,18 @@
 ?>
 
 <div class="element-data full-width">
-    <table class="label-value last-left">
+    <table class="last-left">
+        <colgroup>
+            <col class="cols-3"/>
+            <col class="cols-8"/>
+        </colgroup>
         <tbody>
         <tr>
             <td>
-                <div class="data-label"><?= $element->getAttributeLabel('correspondence_in_large_letters') ?>
-                </div>
+                <span class="data-label fade"><?= $element->getAttributeLabel('correspondence_in_large_letters') ?></span>
             </td>
             <td>
-                <div class="data-value"><span class="large-text"><?= $element->correspondence_in_large_letters ? 'Yes' : 'No' ?></span></div>
+                <span class="data-value large-text"><?= $element->correspondence_in_large_letters ? 'Yes' : 'No' ?></span>
             </td>
         </tr>
         </tbody>
