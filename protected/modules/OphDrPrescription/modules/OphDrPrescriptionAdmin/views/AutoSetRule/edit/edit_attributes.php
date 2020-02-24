@@ -5,7 +5,7 @@ $attributes = array_map(function ($e) {
 }, MedicationAttribute::model()->findAll(array("order" => "name")));
 $options = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->description . " - " . $e->value, 'attr_id' => $e->medication_attribute_id];
-}, MedicationAttributeOption::model()->findAll(array("select" => array("id", "medication_attribute_id", "value", "description"), "order" => "value")));
+}, MedicationAttributeOption::model()->findAll(array("select" => array("id", "medication_attribute_id", "value", "description"), "order" => "description")));
 ?>
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
