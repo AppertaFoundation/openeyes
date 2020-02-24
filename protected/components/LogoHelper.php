@@ -30,16 +30,18 @@ class LogoHelper
     }
 
     
-    public function getLogoURLs($site_id=null)
+    public function getLogoURLs($site_id=null , $return_value = false)
     {
         $site = Site::model()->findByPk($site_id);
         if(isset($site->logo_id)){
             // get logos for site
             $logo_id = $site->logo_id;
+            $logo = $site->logo;
         }
         else{
             // use default logo
             $logo_id = 1;
+            $logo = SiteLogo::model()->findByPk(1);
         }
 
         $logoOut = array();
@@ -49,32 +51,12 @@ class LogoHelper
         if(isset($site_id)){
             $options = array('id' => $logo_id);
         }
-
-        $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
-        $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
-        return $logoOut;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLogo($site_id=null)
-    {
-        $site = Site::model()->findByPk($site_id);
-        if(isset($site->logo_id)){
-            // get logos for site
-            $logo_id = $site->logo_id;
+        if(isset($logo->primary_logo)){
+            $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
         }
-        else{
-            // use default logo
-            $logo_id = 1;
+        if(isset($log->secondary_logo)){
+            $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
         }
-
-        $logoOut = array();
-
-        $logoOut['primaryLogo'] = $this->getUploadedLogo($logo_id,null,true);
-        $logoOut['secondaryLogo'] = $this->getUploadedLogo($logo_id,true,true);
-
         return $logoOut;
     }
     

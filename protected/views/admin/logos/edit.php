@@ -95,36 +95,80 @@ $logoHelper = new LogoHelper();
             <td>Primary logo</td>
             <td>
                 <?php 
-                if(empty($logo->primary_logo)){
-                    echo "Currently using system default logo<br><br>";
-                }
-                echo "<img src='". $logo->getImageUrl()."' width='200'>";
+                    if(empty($logo->primary_logo)&&empty($site)){
+                        echo "<div class='alert-box info'>No default primary logo</div>";
+                    }
+                    else{
+                        if(empty($logo->primary_logo)){
+                            echo "<div class='alert-box info'>Currently using system default logo</div><br>";
+                        }
+                        echo "<img src='". $logo->getImageUrl()."' width='200'>";
+                    }
                 ?>
             </td>
             <td>
                 <?php echo $form->fileField($logo, 'primary_logo'); ?>
+            </td>
+            <td>
+                <?=\CHtml::link(
+                    'Remove',
+                    '#', 
+                    array('submit' => array('admin/deletelogo/'),                     
+                    'params' => array(
+                        'site_id' => $site?$site->id:null,
+                        'deletePrimaryLogo' => true,
+                    ),
+                    'csrf' => true, 
+                    'confirm' => 'Are you sure to delete the Primary logo?',
+                    'data-method'=>"POST", 
+                )); ?>
             </td>
         </tr>              
         <tr>
             <td>Secondary logo</td>
             <td>
                 <?php 
-                    if(empty($logo->secondary_logo)){                      
-                        echo "Currently Using system default logo<br><br>";     
-                    }                   
-                    echo "<img src='". $logo->getImageUrl('true')."' width='200'>";
+                    if(empty($logo->secondary_logo)&&empty($site)){
+                        echo "<div class='alert-box info'>No default secondary logo</div>";
+                    }
+                    else{
+                        if(empty($logo->secondary_logo)){                      
+                            echo "<div class='alert-box info'>Currently using system default logo</div><br>";     
+                        }                   
+                        echo "<img src='". $logo->getImageUrl('true')."' width='200'>";
+                    }
                 ?>
             </td>            
             <td>
                 <?php echo $form->fileField($logo, 'secondary_logo'); ?>
+            </td>
+            <td>
+            <?=\CHtml::link(
+                    'Remove',
+                    '#', 
+                    array('submit' => array('admin/deletelogo/'),                     
+                    'params' => array(
+                        'site_id' => $site?$site->id:null,
+                        'deleteSecondaryLogo' => true,
+                    ),
+                    'csrf' => true, 
+                    'confirm' => 'Are you sure to delete the Secondary logo?',
+                    'data-method'=>"POST", 
+                )); ?>
             </td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
-            <td colspan="3">            
-                <?php echo $form->formActions(array('cancel'=>'Back to Sites','cancel-uri' => '/admin/sites')); ?>
+            <td colspan="4">            
+                <?php
+                    if(isset($site))
+                        echo $form->formActions(array('cancel'=>'Back to Sites','cancel-uri' => '/admin/sites'));
+                    else
+                        echo CHtml::submitButton('Save');
+
+                ?>
             </td>
         </tr>
         </tfoot>

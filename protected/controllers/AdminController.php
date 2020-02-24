@@ -1049,8 +1049,6 @@ class AdminController extends BaseAdminController
         /*
          * Set default blank contact to fulfill the current relationship with a site
          */
-
-        // $logo->save();
         if (isset($_FILES['SiteLogo'])) {
             if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                 $primary_logo = CUploadedFile::getInstance($logo,'primary_logo');
@@ -1077,7 +1075,7 @@ class AdminController extends BaseAdminController
             }
             // Save Logo if possible
             if (!$errors) {
-                if (!$logo->save()||!isset($logo->primary_logo)) {
+                if (!$logo->save()) {
                     throw new Exception('Unable to save logo: ' . print_r($logo, true));
                 }
                 // revalidate site            
@@ -1106,10 +1104,10 @@ class AdminController extends BaseAdminController
 
     public function actionEditlogo()
     {
-        // go find lour logo
+        // go find our logo
         $site_id = @$_GET['site_id'] ; 
         $site = Site::model()->findByPk($site_id);
-        if (!isset($site_id)) {
+        if (empty($site_id)) {
             $logo = SiteLogo::model()->findByPk(1);
         }
         else{
@@ -1123,7 +1121,7 @@ class AdminController extends BaseAdminController
                 }
             }
             else{
-                throw new Exception('Unable to find logo for site:'.$site_id);
+                $logo = SiteLogo::model()->findByPk(1);
             }
         }
         //  We should now have our logo to display
@@ -1138,13 +1136,7 @@ class AdminController extends BaseAdminController
                 if(($_FILES['SiteLogo']['error']['primary_logo'])==0){
                     $logo->primary_logo = $pl_file;
                 }
-                else{
-                        $logo->primary_logo = SiteLogo::model()->findByPk($site->logo_id)->primary_logo;
-                    }                
             }
-            else{
-                    $logo->primary_logo = SiteLogo::model()->findByPk($site->logo_id)->primary_logo;
-                }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                 $secondary_logo = CUploadedFile::getInstance($logo,'secondary_logo');
                 $sl_file=file_get_contents($secondary_logo->getTempName());
@@ -1152,20 +1144,12 @@ class AdminController extends BaseAdminController
                 if(($_FILES['SiteLogo']['error']['secondary_logo'])==0){
                     $logo->secondary_logo = $sl_file;
                 } 
-                
-                else{
-                    $logo->secondary_logo =  SiteLogo::model()->findByPk($site->logo_id)->secondary_logo;
-                }
-            }
-            else{
-               
-                $logo->secondary_logo =  SiteLogo::model()->findByPk($site->logo_id)->secondary_logo;
             }
             if (!$logo->validate()) {
                 $errors = $logo->getErrors();
                 $logo = SiteLogo::model()->findByPk($site->logo_id);
             }
-            if (!empty($site_id)) {
+            if (isset($site)) {
                 if (!$site->validate()) {
                     $errors = $site->getErrors();
                 }
@@ -1174,20 +1158,19 @@ class AdminController extends BaseAdminController
                 if (!$logo->save()) {
                     throw new Exception('Unable to save Logo: ' . print_r($logo->getErrors(), true));
                 }
-                if (isset($site_id)) {
+                if (isset($site)) {
                     if (!$site->save()) {
                         throw new Exception('Unable to update site: ' . print_r($site->getErrors(), true));
                     }
                 }
                 Audit::add('admin-logo', 'edit', $logo->id);                
-                if (isset($site_id)) {
+                if (isset($site)) {
                     Yii::app()->user->setFlash('success', "Logo for {$site->name} updated.");
                 }
                 else
                 {
                     Yii::app()->user->setFlash('success', "Default Logo updated.");
                 }
-                // $this->redirect('/admin/sites/index');
             }
         } else {
             Audit::add('admin-Site', 'view', $logo->id);
@@ -1202,21 +1185,56 @@ class AdminController extends BaseAdminController
     
     public function actionDeleteLogo()
     {
-        $deletePrimaryLogo = @$_GET['primary_logo'];
-        $deleteSecondaryLogo = @$_GET['secondary_logo'];
+        $site_id = @$_POST['site_id'];
+        $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
+        $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
 
-        Yii::log("img 6". !empty($logo->primary_logo));
-        // if (!empty($deletePrimaryLogo)) {
-        //     @unlink($deletePrimaryLogo);
-        //     Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
-        //     $this->redirect(array('/admin/logo'));
-        // } elseif (!empty($deleteSecondaryLogo)) {
-        //     @unlink($deleteSecondaryLogo);
-        //     Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
-        //     $this->redirect(array('/admin/logo'));
-        // }
+         // go find our logos
+        $site = Site::model()->findByPk($site_id);
+        if (empty($site_id)) {
+            $logo = SiteLogo::model()->findByPk(1);
+        }
+        else{
+            if(isset($site)){
+                if(isset($site->logo_id)){
+                    // get logos for site
+                    $logo = SiteLogo::model()->findByPk($site->logo_id);
+                }
+                else{
+                    $this->redirect(array('/admin/addLogo?site_id=' . $site_id));
+                }
+            }
+            else{
+            $logo = SiteLogo::model()->findByPk(1);
+            }
+        }
+         //  We should now have our logos to delete from
+ 
+        $msg= 'Successfully deleted ';
+      
+        if($deletePrimaryLogo){
+            $logo->primary_logo = null;
+            $msg .= "primary logo ";
+        }
 
+        if($deleteSecondaryLogo){
+            $logo->secondary_logo = null;
+            $msg .= "secondary logo ";
 
+        }
+
+        if (!isset($site)) {
+            $msg .= "for System Default Logo.";
+        }
+        else{
+            $msg .= "for ".$site->name.".";
+        }
+
+        if (!$logo->save()) {
+            throw new Exception('Unable to save Logo: ' . print_r($logo->getErrors(), true));
+        }
+        Yii::app()->user->setFlash('success', $msg);
+        $this->redirect(array('/admin/editLogo?site_id=' . $site_id));
     }
 
     public function actionAddContact()
