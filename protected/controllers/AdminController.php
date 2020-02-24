@@ -1035,8 +1035,7 @@ class AdminController extends BaseAdminController
 
     public function actionAddLogo()
     {
-        $site_id = @$_GET['site_id'] ;        
-        Yii::log("site_id:".$site_id);
+        $site_id = @$_GET['site_id'] ; 
         $site = Site::model()->findByPk($site_id);
         if(!isset($site)){            
             $this->redirect(array('/admin/sites/index'));
@@ -1064,7 +1063,6 @@ class AdminController extends BaseAdminController
                 $secondary_logo = CUploadedFile::getInstance($logo,'secondary_logo');
                 $sl_file=file_get_contents($secondary_logo->getTempName());
                 if(!empty($sl_file)){
-                    // Yii::log(var_export($sl_file));
                     $logo->secondary_logo = $sl_file;
                 }
             }
@@ -1119,7 +1117,6 @@ class AdminController extends BaseAdminController
                 if(isset($site->logo_id)){
                     // get logos for site
                     $logo = SiteLogo::model()->findByPk($site->logo_id);
-                    // Yii::log('I have logo '.var_export($logo,true));
                 }
                 else{
                     $this->redirect(array('/admin/addLogo?site_id=' . $site_id));
@@ -1134,77 +1131,55 @@ class AdminController extends BaseAdminController
         $errors = array();
 
         if (isset($_FILES['SiteLogo'])) {
-            Yii::log("img 1". !empty($logo->primary_logo));
-
-            // Yii::log("_FILES =".var_export($_FILES['SiteLogo']['error'],true));
             if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                 $primary_logo = CUploadedFile::getInstance($logo,'primary_logo');
                 $pl_file = file_get_contents($primary_logo->getTempName());
                 // if no error uploading use uploaded image
-                if(($_FILES['SiteLogo']['error']['primary_logo'])==0){      
-                    Yii::log("p yess ".$logo->id);
-                    // Yii::log('$pl_file='.var_export($_FILES['SiteLogo']['error']['primary_logo'], true));
+                if(($_FILES['SiteLogo']['error']['primary_logo'])==0){
                     $logo->primary_logo = $pl_file;
                 }
                 else{
                         $logo->primary_logo = SiteLogo::model()->findByPk($site->logo_id)->primary_logo;
-    
-                    }
-                
+                    }                
             }
             else{
                     $logo->primary_logo = SiteLogo::model()->findByPk($site->logo_id)->primary_logo;
-
                 }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                 $secondary_logo = CUploadedFile::getInstance($logo,'secondary_logo');
                 $sl_file=file_get_contents($secondary_logo->getTempName());
                 // if no error uploading use uploaded image
                 if(($_FILES['SiteLogo']['error']['secondary_logo'])==0){
-                    // Yii::log('$sl_file='.var_export($_FILES['SiteLogo']['error']['secondary_logo'], true));
-                    Yii::log("s yess ".$logo->id);
                     $logo->secondary_logo = $sl_file;
                 } 
                 
                 else{
                     $logo->secondary_logo =  SiteLogo::model()->findByPk($site->logo_id)->secondary_logo;
-                }               
-                
+                }
             }
             else{
                
                 $logo->secondary_logo =  SiteLogo::model()->findByPk($site->logo_id)->secondary_logo;
             }
-            Yii::log('$err_test1='.var_export($logo->secondary_logo,true));
-
             if (!$logo->validate()) {
                 $errors = $logo->getErrors();
                 $logo = SiteLogo::model()->findByPk($site->logo_id);
             }
-            Yii::log('$err_test2='.var_export($logo->secondary_logo,true));
             if (!empty($site_id)) {
                 if (!$site->validate()) {
                     $errors = $site->getErrors();
                 }
             }
-
             if (empty($errors)) {
-                Yii::log('before save ='.var_export(!$logo->primary_logo, true));
-                
-                Yii::log("img 4". !empty($logo->primary_logo));
                 if (!$logo->save()) {
                     throw new Exception('Unable to save Logo: ' . print_r($logo->getErrors(), true));
                 }
-                Yii::log('mid save ='.var_export(!$logo->primary_logo, true));
-
                 if (isset($site_id)) {
                     if (!$site->save()) {
                         throw new Exception('Unable to update site: ' . print_r($site->getErrors(), true));
                     }
                 }
-                Audit::add('admin-logo', 'edit', $logo->id);
-                Yii::log('after save ='.var_export(!$logo->primary_logo, true));
-                
+                Audit::add('admin-logo', 'edit', $logo->id);                
                 if (isset($site_id)) {
                     Yii::app()->user->setFlash('success', "Logo for {$site->name} updated.");
                 }
@@ -1212,14 +1187,11 @@ class AdminController extends BaseAdminController
                 {
                     Yii::app()->user->setFlash('success', "Default Logo updated.");
                 }
-
-                Yii::log("img 6". !empty($logo->primary_logo));
                 // $this->redirect('/admin/sites/index');
             }
         } else {
             Audit::add('admin-Site', 'view', $logo->id);
         }
-
         $this->render('/admin/logos/edit', array(
             'logo' => $logo,
             'site' =>$site,

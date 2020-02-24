@@ -94,7 +94,6 @@ class SiteLogoController extends BaseController
      */
     public function actionView($id=1, $secondary_logo = false)
     {
-        // Yii::log("test". var_export($secondary_logo,true));
         // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
         $criteria = new CDbCriteria();
         $criteria->addCondition('id = :logo_id');
@@ -108,8 +107,6 @@ class SiteLogoController extends BaseController
                 $criteria->addCondition('id = :logo_id');
                 $criteria->params[':logo_id'] = 1;
                 $logo = SiteLogo::model()->find($criteria);
-                
-            Yii::log("test". !$logo->secondary_logo);
             }
         }
         else{

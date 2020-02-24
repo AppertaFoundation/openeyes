@@ -52,7 +52,6 @@ class LogoHelper
 
         $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
         $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
-        Yii::log(var_export($logoOut));
         return $logoOut;
     }
 

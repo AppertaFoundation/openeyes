@@ -50,9 +50,6 @@ $logoHelper = new LogoHelper();
 <?php endif; ?>
 
 <div class="cols-7">
-
-<?= $logoHelper->render() ?>
-
     <div class="row divider">
         <h2>
            <?php
@@ -70,9 +67,7 @@ $logoHelper = new LogoHelper();
             ?>
         </h2>
     </div>
-<!-- TODO: Remove this next line, as it is only used for testing it's function-->
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
