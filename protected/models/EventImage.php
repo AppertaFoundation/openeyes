@@ -81,9 +81,9 @@ class EventImage extends BaseActiveRecord
      *
      * @return Event[]
      */
-    public function getNextEventsToImage($event_count = 1)
+    public function getNextEventsToImage($event_count = 1, $debug = null)
     {
-        $event_ids = Yii::app()->db->createCommand()
+        $cmd = Yii::app()->db->createCommand()
             ->select('event.id')
             ->from('event')
             ->leftJoin('event_image', 'event_image.event_id = event.id')
@@ -96,18 +96,23 @@ class EventImage extends BaseActiveRecord
                     event_image_status.name IN ("NOT_CREATED", "GENERATED")
                   )
                 )')
-            ->order('event.last_modified_date DESC')
-            ->limit($event_count)
-            ->queryColumn();
+            ->order('event.last_modified_date DESC');
+           
+        if ($event_count!==INF) {
+            $cmd = $cmd->limit($event_count);
+        }
+            $event_ids  = $cmd->queryColumn();
 
 
         /* @var Event[] $events */
         $events = Event::model()->findAllByPk($event_ids);
-
+        if ($debug) {
+            echo "\n  Found " . count($events) ." events without images";
+        }
         // restrict to only include events from modules that are loaded
-        return array_filter($events, function($event) {
+        return array_filter($events, function ($event) {
             /* @var Event $event */
-            return $event->eventType->getApi();
+            return Yii::app()->getModule($event->eventType->class_name);
         });
     }
 

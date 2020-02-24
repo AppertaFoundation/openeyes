@@ -635,9 +635,9 @@ class CsvController extends BaseController
 
             $found_disorder_ids =
                 Yii::app()->db->createCommand(
-                    'SELECT id 
-								FROM  disorder 
-								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
+                    'SELECT id
+								FROM  disorder
+								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') =
 								REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
 
             if (count($found_disorder_ids) == 0) {
@@ -776,7 +776,7 @@ class CsvController extends BaseController
                 !empty($new_trial_pat[$col['var_name']]) ? $new_trial_pat[$col['var_name']] : $col['default'];
         }
 
-        if(strlen($trial_patient['study_identifier'] > 100)) {
+        if(strlen($trial_patient['study_identifier']) > 100) {
             $errors[] = 'Study Identifier accepts maximum of 100 characters.';
             return $errors;
         }
