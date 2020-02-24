@@ -389,7 +389,7 @@
                     // append duration of the procedure
                     $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
                         if ($(this).html() === name) {
-                            $(this).parents('td').after(data);
+                            $(this).parents('td.procedure').after(data);
                         }
                     });
                     $('#procedureList_' + identifier).css('visibility', 'visible');
@@ -445,10 +445,25 @@
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
+                    //on multiselect: sort selected items alphabetically as the list could have a different display order
+                    if (selectedItems.length > 1) {
+                        selectedItems.sort(function (a, b) {
+                            let label_a = a.label.toUpperCase();
+                            let label_b = b.label.toUpperCase();
+
+                            if (label_a > label_b) {
+                                return 1;
+                            } else if (label_a < label_b) {
+                                return -1;
+                            }
+
+                            return 0;
+                        });
+                    }
+
                     for (let index = 0; index < selectedItems.length; index++) {
                         // append selection into procedure list
-                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input type='hidden' id='Procedures_<?=$identifier?>[]' class='js-procedure' value='" + selectedItems[index]['id'] + "'><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
-                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
                     }
                     return true;
                 },
