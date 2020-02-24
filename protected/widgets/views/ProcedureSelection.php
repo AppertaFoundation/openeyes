@@ -168,7 +168,7 @@
             $projected_duration.text(adjustedTotalDuration);
         }
 
-        $('#typeProcedure').on('click', '.removeProcedure', function () {
+        $('td #typeProcedure').on('click', '.removeProcedure', function () {
             let $table = $(this).closest("[id^='procedureList_']");
             if ($table) {
                 let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
