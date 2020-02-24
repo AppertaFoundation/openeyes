@@ -1,4 +1,8 @@
 <?php
+
+use OEModule\OphCiExamination\models\OphCiExamination_Instrument;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure;
+use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
 /**
  * OpenEyes.
  *
@@ -18,6 +22,9 @@
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 
+/**
+ * @property OEModule\OphCiExamination\components\OphCiExamination_API $api
+ */
 class OphCiExamination_APITest extends CDbTestCase
 {
     private $api;
@@ -40,6 +47,7 @@ class OphCiExamination_APITest extends CDbTestCase
         'firm' => 'Firm',
         'patient' => 'Patient',
         'episode' => 'Episode',
+        'element_types' => 'ElementType',
         'event' => 'Event',
         'cct' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
         'cct_method' => '\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method',
@@ -48,9 +56,9 @@ class OphCiExamination_APITest extends CDbTestCase
         'iop_value' => '\OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value',
         'optic_disc' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc',
         'event_type' => 'EventType',
-        'et_iop' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',
-        'iop_values' => '\OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value',
-        'instrument' => '\OEModule\OphCiExamination\models\OphCiExamination_Instrument',
+        'et_iop' => Element_OphCiExamination_IntraocularPressure::class,
+        'iop_values' => OphCiExamination_IntraocularPressure_Value::class,
+        'instrument' => OphCiExamination_Instrument::class,
         'targetiop' => '\OEModule\OphCiExamination\models\OphCiExamination_TargetIop',
         'overallmanagementplan' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
         'va' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
@@ -142,13 +150,6 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetPrincipalCCT_NotLatestEvent()
     {
-        /**
-         * This test has been marked incomplete - it needs updating to work with latest models
-         */
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-
         $event1 = $this->createEvent(date('Y-m-d 23:59:58'));
         $element = $this->createCctElement($event1, Eye::BOTH);
 
@@ -507,7 +508,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
         $iopTable = $this->api->getIOPValuesAsTable($this->patient('patient1'));
         $expected = '<table class="borders"><colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><td>RE [50]</td><td>LE [50]</td></tr>'.
-            '<tr><td>2:</td><td>2:</td></tr></table>';
+            '<tr><td>2:Gold</td><td>2:Gold</td></tr></table>';
         $this->assertEquals($expected, $iopTable);
     }
 
@@ -525,6 +526,7 @@ class OphCiExamination_APITest extends CDbTestCase
         if ($event_date) {
             $event->event_date = $event_date;
         }
+        $event->delete_pending = 0;
         $event->save(false);
 
         return $event;
@@ -561,12 +563,23 @@ class OphCiExamination_APITest extends CDbTestCase
         return $element;
     }
 
+    /**
+     * @param Element_OphCiExamination_IntraocularPressure $element
+     * @param $eye_id
+     * @param $value
+     * @return OphCiExamination_IntraocularPressure_Value
+     * @throws CException
+     * @throws Exception
+     */
     private function addIopReading(models\Element_OphCiExamination_IntraocularPressure $element, $eye_id, $value)
     {
         $reading = new models\OphCiExamination_IntraocularPressure_Value();
         $reading->element_id = $element->id;
         $reading->eye_id = $eye_id;
-        $reading->reading_id = Yii::app()->db->createCommand('select id from ophciexamination_intraocularpressure_reading where value = ?')->queryScalar(array($value));
+        $reading->instrument_id = 1;
+        $reading->reading_id = Yii::app()->db->createCommand(
+            'select id from ophciexamination_intraocularpressure_reading where value = ?'
+        )->queryScalar(array($value));
         $reading->save(false);
 
         return $reading;

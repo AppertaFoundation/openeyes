@@ -25,24 +25,17 @@
  */
 class OphDrPrescription_Item extends EventMedicationUse
 {
-
-    /**
-     * @var int
-     *
-     * The item from which this item was copied
-     */
+    // Maximum characters per line on FP10 form is roughly 31.
+    // Maximum characters per line on WP10 form is roughly 30.
+    // Assuming the space left of the white margin can be used for printing, this could be expanded further.
+    const MAX_FPTEN_LINE_CHARS = 31;
+    const MAX_WPTEN_LINE_CHARS = 30;
 
     public $original_item_id;
 
     public $taper_support = true;
 
 		private $fpten_line_usage = array();
-
-		// Maximum characters per line on FP10 form is roughly 38.
-		// Maximum characters per line on WP10 form is roughly 32.
-		// Assuming the space left of the white margin can be used for printing, this could be expanded further.
-		const MAX_FPTEN_LINE_CHARS = 38;
-		const MAX_WPTEN_LINE_CHARS = 32;
     /**
      * Returns the static model of the specified AR class.
      */
@@ -282,37 +275,29 @@ class OphDrPrescription_Item extends EventMedicationUse
 
             $new_taper->save();
         }
-
     }
 
     public function fpTenFrequency()
     {
         if (preg_match("/^\d+/", $this->drugDuration->name)) {
-            return "Frequency: {$this->frequency->term} for {$this->drugDuration->name}";
+            return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' FOR ' . strtoupper($this->drugDuration->name);
         }
 
-        return 'Frequency: ' . $this->frequency->term . ' ' . strtolower($this->drugDuration->name);
+        return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' ' . strtoupper($this->drugDuration->name);
     }
 
     public function fpTenDose()
     {
-        return 'Dose: ' . (is_numeric($this->dose) ? "{$this->dose} {$this->dose_unit_term}" : $this->dose)
-            . ', ' . $this->route ? $this->route->term : "" . ($this->laterality ? ' (' . $this->laterality->name . ')' : null);
+        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->dose_unit_term) : strtoupper($this->dose))
+            . ', ' . strtoupper($this->route->term)
+            . ($this->medicationLaterality ? ' (' . strtoupper($this->medicationLaterality->name) . ')' : null);
     }
 
-    public function saveTapers()
+    protected function beforeDelete()
     {
         foreach ($this->tapers as $taper) {
-            $taper->item_id = $this->id;
-            $taper->save();
+            $taper->delete();
         }
-    }
-
-    public function beforeDelete()
-    {
-        \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->
-        bindValues(array(":item_id" => $this->id))->execute();
-
         return parent::beforeDelete();
     }
 }

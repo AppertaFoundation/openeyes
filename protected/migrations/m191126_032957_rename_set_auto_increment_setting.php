@@ -4,11 +4,15 @@ class m191126_032957_rename_set_auto_increment_setting extends CDbMigration
 {
     public function up()
     {
-        $set_auto_increment = SettingMetadata::model()->find('`key` = "set_auto_increment"');
+        $command = $this->dbConnection->createCommand('SELECT id FROM setting_metadata WHERE `key` = \'set_auto_increment\'');
+        $command->execute();
+        $id = $command->queryScalar();
 
-        $this->update('setting_metadata',
+        $this->update(
+            'setting_metadata',
             ['key' => 'set_auto_increment_hospital_no'],
-            'id = :id', [':id' => $set_auto_increment->id]
+            'id = :id',
+            [':id' => $id]
         );
     }
 

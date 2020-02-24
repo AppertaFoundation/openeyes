@@ -1,5 +1,5 @@
 <?php
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 ?>
 
 <nav class="oescape-header flex-layout">
@@ -8,7 +8,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
         <!-- note: no whitespace (gaps) in HTML, SVG is styled by CSS -->
         <?php
 
-        $selected_size = array_key_exists('oescape_chart_size', $_SESSION) ? $_SESSION['oescape_chart_size'] : 'full';
+        $selected_size = array_key_exists('oescape_chart_size', $_SESSION) ? $_SESSION['oescape_chart_size'] : 'medium';
         $area_sizes = [
             ['name' => 'small', 'width' => '8'],
             ['name' => 'medium', 'width' => '16'],

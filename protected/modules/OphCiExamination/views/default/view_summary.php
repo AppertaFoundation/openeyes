@@ -224,8 +224,11 @@ if ($historyElement) {
                                 <tbody>
                                 <?php foreach ($current_systemic_medications as $entry) { ?>
                                     <tr>
-                                        <td>
+                                        <td class="nowrap">
                                             <i class="oe-i start small pad-right"></i>
+                                            <?php if (isset($patient) && $this->patient->hasDrugAllergy($entry->medication_id)) {
+                                                echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
+                                            } ?>
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td>

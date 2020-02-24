@@ -67,7 +67,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function tableName()
     {
-        return 'ophciexamination_history_medications_entry';
+        return 'archive_ophciexamination_history_medications_entry';
     }
 
     /**
@@ -316,6 +316,11 @@ class HistoryMedicationsEntry extends \BaseElement
         return $this->medication_name ? :
             ($this->medication_drug ? (string) $this->medication_drug :
                 ($this->drug ? $this->drug->tallmanlabel : ''));
+    }
+
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
     }
 
     /**

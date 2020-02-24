@@ -47,7 +47,7 @@ class SearchController extends BaseController
         $results = array();
         $total_items = 0;
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js?v=20170408');
 
         if (@$_GET['search']) {

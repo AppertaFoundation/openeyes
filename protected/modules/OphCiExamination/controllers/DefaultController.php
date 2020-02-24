@@ -171,9 +171,9 @@ class DefaultController extends \BaseEventTypeController
 
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $assetManager->publish($baseAssetsPath, true);
 
-        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
     }
 
     public function initActionStep()
@@ -261,9 +261,9 @@ class DefaultController extends \BaseEventTypeController
         // add OpenEyes.UI.RestrictedData js
         $assetManager = \Yii::app()->getAssetManager();
         $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
-        $assetManager->publish($baseAssetsPath);
+        $assetManager->publish($baseAssetsPath, true);
 
-        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath, true) . '/OpenEyes.UI.RestrictData.js', \CClientScript::POS_END);
 
         /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
@@ -285,7 +285,7 @@ class DefaultController extends \BaseEventTypeController
             return;
         }
 
-        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
+        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date, 'patient' => $this->patient));
 
         $filteredElements = array_filter($elements, function ($element) {
             return !in_array(get_class($element), array(
@@ -1335,15 +1335,22 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function saveComplexAttributes_Element_OphCiExamination_ClinicOutcome($element, $data, $index)
     {
-        if ($element->status && $element->status->patientticket && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-            if (isset($data['patientticket_queue'])) {
-                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                $queue_data = $api->extractQueueData($queue, $data);
-                $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
-            } else {
-                $api->updateTicketForEvent($this->event);
+        $api = Yii::app()->moduleAPI->get('PatientTicketing');
+        $entries = isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries']) ? $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] : [];
+        $patient_ticket_ids = models\OphCiExamination_ClinicOutcome_Status::model()->getPatientTicketIds();
+
+        foreach ($entries as $entry) {
+            if (array_search($entry['status_id'], $patient_ticket_ids) !== false) {
+                if (isset($data['patientticket_queue'])) {
+                    $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                    $queue_data = $api->extractQueueData($queue, $data);
+                    $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
+                } else {
+                    $api->updateTicketForEvent($this->event);
+                }
             }
         }
+
     }
 
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
@@ -1433,6 +1440,32 @@ class DefaultController extends \BaseEventTypeController
                     }
                 }
             }
+        }
+    }
+
+    protected function saveComplexAttributes_MedicationManagement($element, $data, $index)
+    {
+        $data = $data['OEModule_OphCiExamination_models_MedicationManagement'];
+
+        if (!is_null($element->prescription_id) && isset($data['prescription_reason'])) {
+            $reason_other = \OphDrPrescriptionEditReasons::model()->find('caption=:caption', [':caption' => 'Other, please specify:']);
+            if ($reason_other) {
+                $reason_other_id = $reason_other->id ?: null;
+            }
+
+            $prescription = $element->prescription;
+            $edit_reason = \OphDrPrescriptionEditReasons::model()->findByPk($data['prescription_reason']);
+            $audit_prescription_edit_reason = $edit_reason ? $edit_reason->caption : '';
+            $prescription->edit_reason_id = $edit_reason ? $edit_reason->id : '';
+            if ($data['prescription_reason'] === $reason_other_id) {
+                $audit_prescription_edit_reason .= ' ' . $data['reason_other'];
+                $prescription->edit_reason_other .= ' - ' . $data['reason_other'];
+            }
+
+            if (!$prescription->save()) {
+                throw new \Exception("Error while saving prescription: ".print_r($prescription->getErrors(), true));
+            }
+            $prescription->event->audit('event', 'update', serialize(array_merge($prescription->attributes, ['prescription_edit_reason' => $audit_prescription_edit_reason])), null, array('module' => 'Prescription', 'model' => 'Element_OphDrPrescription_Details'));
         }
     }
 
@@ -1632,17 +1665,14 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidatePatientTicketingFromData($data, $errors, $api)
     {
-        $co_sid = $data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
-        $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
-        if ($status && $status->patientticket) {
-            $err = array();
-            $queue = null;
-            if (!$data['patientticket_queue']) {
-                $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
-            } elseif (!$queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue'])) {
+        $err = array();
+        if (!$data['patientticket_queue']) {
+            $err['patientticket_queue'] = 'You must select a valid Virtual Clinic for referral';
+        } else {
+            $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+            if (!$queue) {
                 $err['patientticket_queue'] = 'Virtual Clinic not found';
-            }
-            if ($queue) {
+            } else {
                 if (!$api->canAddPatientToQueue($this->patient, $queue)) {
                     $err['patientticket_queue'] = 'Cannot add Patient to Queue';
                 } else {
@@ -1650,10 +1680,12 @@ class DefaultController extends \BaseEventTypeController
                     $err = array_merge($err, $fld_errs);
                 }
             }
+        }
 
-            if (count($err)) {
-                $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-                if (isset($errors[$et_name]) && $errors[$et_name]) {
+        if (count($err)) {
+            $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
+            if (isset($errors[$et_name])) {
+                if ($errors[$et_name]) {
                     $errors[$et_name] = array_merge($errors[$et_name], $err);
                 } else {
                     $errors[$et_name] = $err;

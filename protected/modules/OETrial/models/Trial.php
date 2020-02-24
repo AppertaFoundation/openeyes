@@ -519,7 +519,7 @@ class Trial extends BaseActiveRecordVersioned
 
         $this->is_open = 0;
         if ($this->closed_date === null || $this->closed_date === '') {
-            $this->closed_date = date('d-m-Y');
+            $this->closed_date = date('Y-m-d');
         }
 
         if (!$this->save()) {

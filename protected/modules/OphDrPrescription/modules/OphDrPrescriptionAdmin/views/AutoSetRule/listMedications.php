@@ -21,21 +21,33 @@
 </div>
 
 <div class="cols-12">
+<form method="GET">
+    <input type="hidden" name="set_id" value="<?= Yii::app()->request->getParam('set_id') ?>"/>
+    <input type="text"
+           class="search cols-6"
+           autocomplete=""
+           name="search"
+           id="search_query"
+           value="<?= Yii::app()->request->getParam('search') ?>"
+           placeholder="Search medication in set..."
+    >
+</form>
+
     <table id="medicationset-medications-list" class="standard">
         <colgroup>
-            <col class="cols-1">
+            <col class="cols-2">
             <col class="cols-5">
         </colgroup>
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Preferred code</th>
                 <th>Name</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($data_provider->getData() as $medication) { ?>
-                <tr>
-                    <td><?=$medication->id?></td>
+                <tr data-url="/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/edit/<?=$medication->id;?>">
+                    <td><?=$medication->preferred_code ? $medication->preferred_code : '<i>(empty)</i>'?></td>
                     <td><?=$medication->preferred_term?></td>
                 </tr>
             <?php } ?>
@@ -54,3 +66,12 @@
         </tfoot>
     </table>
 </div>
+<script>
+    $('#medicationset-medications-list tbody tr').on({
+        mouseenter: function() { $(this).css({'background-color':'#286ee0', 'color':'white', 'cursor':'pointer'}).find('td').css({'color':'white'}) },
+        mouseleave: function() { $(this).css({"background-color":'inherit', 'color':'inherit'}).find('td').css({'color':'unset'}) }
+    });
+    $('#medicationset-medications-list').on('click', ' tbody tr', function() {
+        window.location.href = $(this).data('url');
+    });
+</script>

@@ -42,6 +42,7 @@ use PrescriptionCreator;
  */
 class MedicationManagement extends BaseMedicationElement
 {
+    use traits\CustomOrdering;
     public $do_not_save_entries = false;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';
@@ -338,7 +339,7 @@ class MedicationManagement extends BaseMedicationElement
                         'frequency_id' => $entry->frequency_id,
                         'duration_id' => $entry->duration_id,
                         'dose' => $entry->dose,
-                                                'dose_unit_term' => $entry->dose_unit_term,
+                        'dose_unit_term' => $entry->dose_unit_term,
                         'start_date' => $entry->start_date,
                         'dispense_location_id' => $entry->dispense_location_id,
                         'dispense_condition_id' => $entry->dispense_condition_id
@@ -426,6 +427,8 @@ class MedicationManagement extends BaseMedicationElement
         } else {
             $this->saveAttributes(['prescription_id']);
         }
+
+        $prescription_creator->elements['Element_OphDrPrescription_Details']->event->audit('event', 'create');
     }
 
     private function getPrescriptionItem(\EventMedicationUse $entry)

@@ -73,7 +73,7 @@ foreach ($legacyepisodes as $i => $episode) {?>
                             <span class="event-type<?php if ($event->hasIssue()) {
                                 ?> alert<?php
                                                    } ?>">
-                                <?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/'; ?>
+                                <?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'), true) . '/'; ?>
                                 <img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png') ?>" alt="op" width="19" height="19" />
                             </span>
                             <span class="event-date"> <?php echo $event->NHSDateAsHTML('event_date'); ?></span>
