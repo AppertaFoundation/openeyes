@@ -15,10 +15,11 @@ class LogoHelper
      *
      * @return mixed
      */
-    public function render($template = '//base/_logo', $size = 100)
+    public function render($template = '//base/_logo', $size = 100, $site_id=null)
     {
-        $site_id = Yii::app()->session['selected_site_id'];
-
+        if(!isset($site_id)){
+            $site_id = Yii::app()->session['selected_site_id'];
+        }
         return Yii::app()->controller->renderPartial(
             $template,
             array(

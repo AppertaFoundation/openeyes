@@ -19,7 +19,7 @@ $logoHelper = new LogoHelper();
 ?>
 <header class="print-header">
     <div class="logo">
-        <?= $logoHelper->render('//base/_logo', 70) ?>
+        <?=$logoHelper->render('//base/_logo', 70, $element->site->id); ?>
     </div>
 </header>
 
