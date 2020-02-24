@@ -300,7 +300,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             $this->_saveAutoAttrs();
             $this->_saveAutoSets();
             $this->_saveSetRules();
-            $this->_saveAutoMeds();
+            $this->saveAutoMeds();
         }
 
         return parent::afterSave();
@@ -382,7 +382,7 @@ class MedicationSet extends BaseActiveRecordVersioned
      * Applies to automatic sets only
      */
 
-    private function _saveAutoMeds()
+    public function saveAutoMeds()
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
