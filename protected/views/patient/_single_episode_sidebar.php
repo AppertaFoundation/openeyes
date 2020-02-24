@@ -34,7 +34,7 @@ if (count($legacyepisodes)) {
     }
 }
 
-use OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule; ?>
+?>
 
 <?php
 $subspecialty_labels = array();
@@ -80,81 +80,81 @@ $operation_status_to_css_class = [
                         $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
                         ?>
 
-                      <li id="js-sideEvent<?php echo $event->id ?>"
-                          class="event <?php if ($highlight) {
-                                ?> selected<?php
-                                       } ?>"
-                          data-event-id="<?= $event->id ?>"
-                          data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
-                          data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
-                          data-event-date-display="<?= $event->NHSDate('event_date') ?>"
-                          data-event-type="<?= $event_name ?>"
-                          data-subspecialty="<?= $subspecialty_name ?>"
-                          data-event-icon='<?= $event->getEventIcon('medium') ?>'
-                          <?php if ($event_image !== null && $event_image->status->name === 'CREATED') { ?>
-                            data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
+                        <li id="js-sideEvent<?php echo $event->id ?>"
+                                class="event <?php if ($highlight) {
+                                    ?> selected<?php
+                                             } ?>"
+                                data-event-id="<?= $event->id ?>"
+                                data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
+                                data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
+                                data-event-date-display="<?= $event->NHSDate('event_date') ?>"
+                                data-event-type="<?= $event_name ?>"
+                                data-subspecialty="<?= $subspecialty_name ?>"
+                                data-event-icon='<?= $event->getEventIcon('medium') ?>'
+                            <?php if ($event_image !== null && $event_image->status->name === 'CREATED') { ?>
+                                data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
                             <?php } ?>
-                      >
-                        <div class="tooltip quicklook" style="display: none; ">
-                          <div class="event-name"><?php echo $event_name ?></div>
-                          <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
-                            <?php $event_icon_class = '';
-                            $event_issue_text = $event->getIssueText();
-                            $event_issue_class = 'event-issue';
-                            if ($event->hasIssue()) {
-                                $event_issue_class .= ($event->hasIssue('ready') ? ' ready' : ' alert');
-                            }
-
-                            $operation = $event->getElementByClass('Element_OphTrOperationbooking_Operation');
-                            if ($operation) {
-                                $status_name = $operation->status->name;
-                                $css_class = $operation_status_to_css_class[$status_name];
-                                $event_icon_class .= ' ' . $css_class;
-                                if (!$event->hasIssue('Operation requires scheduling')) {
-                                    // this needs to be checked to avoid issue duplication, because the issue
-                                    // 'Operation requires scheduling' is saved to the database
-                                    // as an event issue, while the others are not
-                                    $event_issue_class .= ' ' . $css_class;
-                                    $event_issue_text .= 'Operation ' . $status_name . "\n";
+                        >
+                            <div class="tooltip quicklook" style="display: none; ">
+                                <div class="event-name"><?php echo $event_name ?></div>
+                                <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
+                                <?php $event_icon_class = '';
+                                $event_issue_text = $event->getIssueText();
+                                $event_issue_class = 'event-issue';
+                                if ($event->hasIssue()) {
+                                    $event_issue_class .= ($event->hasIssue('ready') ? ' ready' : ' alert');
                                 }
-                            }
 
-                            if (!empty($event_issue_text)) { ?>
-                              <div class="<?= $event_issue_class ?>">
-                                <?= $event_issue_text ?>
-                              </div>
-                            <?php } ?>
-                        </div>
-
-                        <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-                            <?php if ($event->hasIssue()) {
-                                if ($event->hasIssue('ready')) {
-                                    $event_icon_class .= ' ready';
-                                } else {
-                                    $event_icon_class .= ' alert';
+                                $operation = $event->getElementByClass('Element_OphTrOperationbooking_Operation');
+                                if ($operation) {
+                                    $status_name = $operation->status->name;
+                                    $css_class = $operation_status_to_css_class[$status_name];
+                                    $event_icon_class .= ' ' . $css_class;
+                                    if (!$event->hasIssue('Operation requires scheduling')) {
+                                        // this needs to be checked to avoid issue duplication, because the issue
+                                        // 'Operation requires scheduling' is saved to the database
+                                        // as an event issue, while the others are not
+                                        $event_issue_class .= ' ' . $css_class;
+                                        $event_issue_text .= 'Operation ' . $status_name . "\n";
+                                    }
                                 }
-                            }
-                            if ($virtual_clinic_event) {
-                                $event_icon_class .= ' virtual-clinic';
-                            }
-                            ?>
-                            <span class="event-type js-event-a<?=$event_icon_class?>">
+
+                                if (!empty($event_issue_text)) { ?>
+                                    <div class="<?= $event_issue_class ?>">
+                                        <?= $event_issue_text ?>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
+                                <?php if ($event->hasIssue()) {
+                                    if ($event->hasIssue('ready')) {
+                                        $event_icon_class .= ' ready';
+                                    } else {
+                                        $event_icon_class .= ' alert';
+                                    }
+                                    if ($event->hasIssue('draft')) {
+                                        $event_icon_class .= ' draft';
+                                    }
+                                }
+                                if ($virtual_clinic_event) {
+                                    $event_icon_class .= ' virtual-clinic';
+                                }
+                                ?>
+                                <span class="event-type js-event-a<?= $event_icon_class ?>">
                               <?= $event->getEventIcon() ?>
-                            </span>
-                            <span class="event-extra">
+                            </span><span class="event-extra">
                               <?php
-                                $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
+                                                            $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
                                 if (method_exists($api, 'getLaterality')) {
                                     $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
                                 } ?>
-                            </span>
-                            <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
+                            </span><span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
                             <?php echo $event->event_date
-                              ? $event->NHSDateAsHTML('event_date')
-                              : $event->NHSDateAsHTML('created_date');
+                                                            ? $event->NHSDateAsHTML('event_date')
+                                                            : $event->NHSDateAsHTML('created_date');
                             ?>
-                          </span>
-                          <span class="tag"><?= $tag ?></span>
+                            </span><span class="tag"><?= $tag ?></span>
                         </a>
                       </li>
                     <?php }
@@ -176,15 +176,15 @@ $this->renderPartial('//patient/add_new_event', array(
 ));
 if ($this->editable) {
     $this->renderPartial('//patient/change_event_context', array(
-      'button_selector' => '.js-change_context',
-      'view_subspecialty' => $current_subspecialty,
-      'episodes' => $active_episodes,
-      'context_firm' => $this->firm,
-      'patient_id' => $this->patient->id,
-      'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->episode->status->id),
-      'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : '' ),
-      'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str
-      'event_types' => $this->event->eventType->name
+        'button_selector' => '.js-change_context',
+        'view_subspecialty' => $current_subspecialty,
+        'episodes' => $active_episodes,
+        'context_firm' => $this->firm,
+        'patient_id' => $this->patient->id,
+        'workflowSteps' => OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps($this->event->episode->status->id),
+        'currentStep' => (isset($this->event->eventType->class_name) && $this->event->eventType->class_name == 'OphCiExamination' ? $this->getCurrentStep() : ''),
+        'currentFirm' => (isset($this->event->firm_id) ? $this->event->firm_id : '""'), // for some strange reason '' doesn't reslove to an empty str
+        'event_types' => $this->event->eventType->name
     ));
 }
 ?>
@@ -195,20 +195,20 @@ foreach ($subspecialty_labels as $id => $label) {
 }
 ?>
 <script type="text/javascript">
-  $(document).ready(function () {
-    new OpenEyes.UI.Sidebar(
-      $('.sidebar .oe-scroll-wrapper')
-    );
+    $(document).ready(function () {
+        new OpenEyes.UI.Sidebar(
+            $('.sidebar .oe-scroll-wrapper')
+        );
 
-    $('nav.sidebar').each(function () {
-      new OpenEyes.UI.EpisodeSidebar(this, {
-        patient_id: OE_patient_id,
-        user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
-        subspecialty_labels: {
-            <?= implode(",", $subspecialty_label_list); ?>
-        },
-        subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
-      });
+        $('nav.sidebar').each(function () {
+            new OpenEyes.UI.EpisodeSidebar(this, {
+                patient_id: OE_patient_id,
+                user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
+                subspecialty_labels: {
+                                    <?= implode(",", $subspecialty_label_list); ?>
+                },
+                subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
+            });
+        });
     });
-  });
 </script>

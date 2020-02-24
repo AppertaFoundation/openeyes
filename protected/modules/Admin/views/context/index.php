@@ -15,7 +15,7 @@
 ?>
 <div class="cols-12">
     <div class="row divider">
-        <form id="context-search-form" action="#" method="post">
+        <form id="context-search-form" action="/Admin/context/index" method="get">
             <table class="standard">
                 <colgroup>
                     <col class="cols-4">
@@ -24,29 +24,31 @@
 
                 </colgroup>
                 <tr>
-                    <td><?=CHtml::textField('search[query]', $search['query'], [
+                    <td><?=CHtml::textField('query', $search['query'], [
                             'placeholder' => 'Search Id, PAS Code, Cost Code, Name - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
                     <td>
-                        <select name="search[active]" id="search_active">
-                            <option value="" selected="selected">All</option>
-                            <option value="1">Only Active</option>
-                            <option value="0">Exclude Active</option>
-                        </select>
+                        <?= \CHtml::dropDownList(
+                            'active',
+                            $search['active'],
+                            [
+                                1 => 'Only Active',
+                                0 => 'Exclude Active',
+                            ],
+                            ['empty' => 'All']
+                        ); ?>
                     </td>
                     <td>
-                        <input type="hidden" name="YII_CSRF_TOKEN"
-                               value="<?=Yii::app()->request->csrfToken ?>"/>
-                        <button class="blue hint" id="search-button" formmethod="post" type="submit">Search</button>
+                        <button class="blue hint" id="search-button" type="submit">Search</button>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 
-    <form id="admin_firms">
+
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?=Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <thead>
@@ -98,5 +100,4 @@
             </tr>
             </tfoot>
         </table>
-    </form>
 </div>

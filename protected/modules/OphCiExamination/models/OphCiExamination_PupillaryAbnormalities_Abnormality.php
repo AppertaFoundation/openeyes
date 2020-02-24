@@ -45,6 +45,13 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
         return 'ophciexamination_pupillaryabnormalities_abnormality';
     }
 
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
@@ -56,8 +63,9 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
     public function rules()
     {
         return array(
-                array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+            array('name', 'required'),
+            array('id, name', 'safe', 'on' => 'search'),
+            array('display_order', 'safe'),
         );
     }
 
@@ -84,5 +92,10 @@ class OphCiExamination_PupillaryAbnormalities_Abnormality extends \BaseActiveRec
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
