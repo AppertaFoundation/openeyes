@@ -47,7 +47,7 @@ class LogoHelper
         $logoOut = array();
         $url1 = 'sitelogo/primary/';
         $url2 = 'sitelogo/secondary/';
-        
+        $options = array();
         if(isset($site_id)){
             $options = array('id' => $logo_id);
         }

@@ -14,6 +14,7 @@
  */
 
 $logoHelper = new LogoHelper();
+$defaultURLS = $logoHelper->getLogoURLs();
 ?>
 <style>
     .flash-success{
@@ -95,14 +96,24 @@ $logoHelper = new LogoHelper();
             <td>Primary logo</td>
             <td>
                 <?php 
-                    if(empty($logo->primary_logo)&&empty($site)){
-                        echo "<div class='alert-box info'>No default primary logo</div>";
+                    if(empty($site)){                        
+                        if(!empty($defaultURLS['primaryLogo'])){                            
+                            echo "<img src='". $defaultURLS['primaryLogo']."' width='200'>";
+                        }
+                        else{
+                            echo "<div class='alert-box info'>No default primary logo</div>";
+                        }
                     }
                     else{
-                        if(empty($logo->primary_logo)){
-                            echo "<div class='alert-box info'>Currently using system default logo</div><br>";
+                        if(empty($defaultURLS['primaryLogo']) && empty($logo->primary_logo)){
+                            echo "<div class='alert-box info'>No uploaded primary logo and no default logo</div>";
                         }
-                        echo "<img src='". $logo->getImageUrl()."' width='200'>";
+                        else{ 
+                            if(empty($logo->primary_logo)){
+                                echo "<div class='alert-box info'>Currently using system default logo</div><br>";
+                            }
+                            echo "<img src='". $logo->getImageUrl()."' width='200'>";
+                        }
                     }
                 ?>
             </td>
@@ -128,14 +139,24 @@ $logoHelper = new LogoHelper();
             <td>Secondary logo</td>
             <td>
                 <?php 
-                    if(empty($logo->secondary_logo)&&empty($site)){
+                    if(empty($site)){
+                        if(!empty($defaultURLS['secondaryLogo'])){
+                            echo "<img src='". $defaultURLS['secondaryLogo']."' width='200'>";
+                        }
+                        else{
                         echo "<div class='alert-box info'>No default secondary logo</div>";
+                        }
                     }
                     else{
-                        if(empty($logo->secondary_logo)){                      
-                            echo "<div class='alert-box info'>Currently using system default logo</div><br>";     
-                        }                   
-                        echo "<img src='". $logo->getImageUrl('true')."' width='200'>";
+                        if(empty($defaultURLS['secondaryLogo']) && empty($logo->secondary_logo)){
+                            echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                        }
+                        else{                            
+                            if(empty($logo->secondary_logo)){                      
+                                echo "<div class='alert-box info'>Currently using system default logo</div><br>";     
+                            }
+                            echo "<img src='". $logo->getImageUrl(true)."' width='200'>";
+                        }
                     }
                 ?>
             </td>            
