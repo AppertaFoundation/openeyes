@@ -155,7 +155,7 @@ class HistoryMedications extends BaseMedicationWidget
         $entries = array();
         foreach ($this->element->entries as $entry) {
             if ($entry->prescription_item_id) {
-                if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
+                if ($entry->prescription_event_deleted || !$entry->prescriptionItem || !$entry->prescriptionItem->start_date || !$entry->prescriptionItem->end_date) {
                     continue;
                 }
                 $entry->loadFromPrescriptionItem($entry->prescriptionItem);
