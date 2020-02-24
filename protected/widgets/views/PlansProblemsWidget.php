@@ -21,17 +21,7 @@
     <div class="subtitle">
         Problems &amp; Plans
     </div>
-    <?php }
-    $current_plans_problems = [];
-    $past_plans_problems = [];
-    foreach ($plans_problems as $plan_problem) {
-        if ($plan_problem->active) {
-            $current_plans_problems[] = $plan_problem;
-        } else {
-            $past_plans_problems[] = $plan_problem;
-        }
-    }
-    ?>
+    <?php } ?>
     <ul class="problems-plans-sortable" id="problems-plans-sortable">
         <?php foreach ($current_plans_problems as $plan_problem) { ?>
             <li>
