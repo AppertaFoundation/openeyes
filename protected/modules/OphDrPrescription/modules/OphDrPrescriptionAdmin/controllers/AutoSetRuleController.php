@@ -277,9 +277,7 @@ class AutoSetRuleController extends BaseAdminController
             }
 
             if (!$set->hasErrors() && $set->save()) {
-                if ($id) {
-                    $this->actionPopulateAll($id);
-                }
+                $this->actionPopulateAll($set->id);
                 $this->redirect('/OphDrPrescription/admin/autoSetRule/index');
             }
         }
