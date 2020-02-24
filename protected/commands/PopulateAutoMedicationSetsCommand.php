@@ -44,7 +44,7 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
             MedicationSet::populateAutoSets();
         } else {
             $medication_set = MedicationSet::model()->findByPk($args[0]);
-            if ($medication_set->automatic) {
+            if ($medication_set && $medication_set->automatic) {
                 $medication_set->populateAuto();
             }
         }

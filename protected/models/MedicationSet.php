@@ -419,7 +419,8 @@ class MedicationSet extends BaseActiveRecordVersioned
             if (isset($this->tmp_tapers[$key])) {
                 $new_tapers = [];
                 foreach ($this->tmp_tapers[$key] as $taper) {
-                    if (!$new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['id'])) {
+                    $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['id']);
+                    if (!$new_taper) {
                         $new_taper = new MedicationSetAutoRuleMedicationTaper();
                     }
                     $new_taper->dose = $taper['dose'];
