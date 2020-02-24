@@ -48,12 +48,12 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         $cmd->expects($this->once())
             ->method('getDateLimit')
             ->with($horizon)
-            ->will($this->returnValue($test_limit));
+            ->willReturn($test_limit);
 
         $manager->expects($this->once())
             ->method('generateAllAutomaticWorklists')
             ->with($test_limit)
-            ->will($this->returnValue(5));
+            ->willReturn(5);
 
         $cmd->actionGenerate(null, $horizon);
     }
@@ -76,7 +76,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         $cmd->expects($this->once())
             ->method('getDateLimit')
             ->with($horizon)
-            ->will($this->returnValue($test_limit));
+            ->willReturn($test_limit);
 
         $cmd->expects($this->exactly(count($fake_errs)))
             ->method('error');
@@ -87,11 +87,11 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         $manager->expects($this->once())
             ->method('generateAllAutomaticWorklists')
             ->with($test_limit)
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $manager->expects($this->once())
             ->method('getErrors')
-            ->will($this->returnValue($fake_errs));
+            ->willReturn($fake_errs);
 
         $cmd->actionGenerate(null, $horizon);
     }
@@ -101,7 +101,6 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         return array(
             array(null, (new DateTime())->format(self::$dateFormat)),
             array('6 months', (new DateTime())->add(DateInterval::createFromDateString('6 months'))->format(self::$dateFormat)),
-            array('nonsense', null),
         );
     }
 
@@ -124,7 +123,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
         } else {
             $manager->expects($this->once())
                 ->method('getGenerationTimeLimitDate')
-                ->will($this->returnValue(DateTime::createFromFormat(self::$dateFormat, $expected)));
+                ->willReturn(DateTime::createFromFormat(self::$dateFormat, $expected));
         }
 
         $cmd = $this->getMockCmd($manager, array('usageError'));
@@ -138,7 +137,7 @@ class GenerateWorklistsCommandTest extends PHPUnit_Framework_TestCase
                 ->method('usageError');
             $res = $cmd->getDateLimit($horizon);
 
-            $this->assertEquals('DateTime', get_class($res));
+            $this->assertInstanceOf(\DateTime::class, $res);
             $this->assertEquals($expected, $res->format(self::$dateFormat));
         }
     }

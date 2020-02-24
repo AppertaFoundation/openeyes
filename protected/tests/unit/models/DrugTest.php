@@ -102,6 +102,7 @@ class DrugTest extends ActiveRecordTestCase
      */
     public function testGetLabel()
     {
+        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
         $result = $this->drugs('drug1')->getLabel();
 
         if ($this->drugs('drug1')->preservative_free) {
@@ -119,7 +120,8 @@ class DrugTest extends ActiveRecordTestCase
       * @todo Implement testGetTallmanLabel().
       */
     public function testGetTallmanLabel()
-     {
+    {
+        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
         $result = $this->drugs('drug1')->getTallmanLabel();
 
         if ($this->drugs('drug1')->preservative_free) {
