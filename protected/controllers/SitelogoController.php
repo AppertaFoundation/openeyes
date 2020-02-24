@@ -25,7 +25,7 @@ class SiteLogoController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('index','view', 'getImageUrl'),
+                'actions' => array('index','view', 'getImageUrl', 'primary','secondary'),
                 'users' => array('@'),
             ),
             array(
