@@ -92,7 +92,7 @@ class CatProm5Questions extends CActiveRecord
         ];
 
         foreach ($search_terms as $search_term => $allow_partial) {
-            $criteria->compare($search_term, $this->{$search_term}, $allow_partial); 
+            $criteria->compare($search_term, $this->{$search_term}, $allow_partial);
         }
 
         return new CActiveDataProvider($this, array(
