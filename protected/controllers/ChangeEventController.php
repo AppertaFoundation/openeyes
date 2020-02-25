@@ -227,6 +227,21 @@ class ChangeEventController extends BaseController
                     $episode->last_modified_date = date('Y-m-d H:i:s');
                 }
 
+                $service_id = \Yii::app()->request->getPost('change_service');
+                if ($service_id && $service_id !== $episode->firm_id) {
+                    $current_service = \Firm::model()->findByPk($episode->firm_id);
+                    $new_service = \Firm::model()->findByPk($service_id);
+
+                    $episode = \Episode::model()->find('patient_id = ? AND firm_id = ?', [$episode->patient_id, $firm_id]);
+
+                    if ($episode) {
+                        $episode->firm_id = $new_service->id;
+                        $action = 'change-service';
+                        $data = 'Changed from ' . $current_service->name . ' to ' . $new_service->name;
+                    }
+                }
+
+
                 if ($episode->save()) {
                     Audit::add('episode', $action, $data, null, $properties);
 

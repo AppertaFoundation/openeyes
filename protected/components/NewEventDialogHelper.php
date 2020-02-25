@@ -36,9 +36,14 @@ class NewEventDialogHelper
      */
     public static function structureEpisode(Episode $episode)
     {
+        $services_available = array();
+
         if ($subspecialty = $episode->getSubspecialty()) {
             $structured_subspecialty = static::structureSubspecialty($subspecialty);
             $firm = static::structureFirm(\Firm::model()->findByPk($episode->firm_id));
+            foreach (Firm::model()->findAll('can_own_an_episode=1 AND id<>:firm_id AND service_subspecialty_assignment_id=:ssaid', [':firm_id' => $episode->firm_id, 'ssaid' => $episode->firm->service_subspecialty_assignment_id]) as $service) {
+                array_push($services_available, static::structureFirm($service));
+            }
         } else {
             $structured_subspecialty = static::$support_services_subspecialty;
             $firm = '';
@@ -47,7 +52,8 @@ class NewEventDialogHelper
             'id' => $episode->id,
             'service' => $episode->firm ? $episode->firm->name : '',
             'subspecialty' => $structured_subspecialty,
-            'firm' => $firm
+            'firm' => $firm,
+            'services_available' => $services_available
         );
     }
 

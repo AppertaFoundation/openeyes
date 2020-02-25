@@ -87,6 +87,9 @@
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
                 serviceName: self.options.currentSubspecialties[i].service,
                 serviceId: self.options.currentSubspecialties[i].firm.id,
+                single_service: self.options.currentSubspecialties[i].services_available.length === 0,
+                multiple_services: self.options.currentSubspecialties[i].services_available.length > 0,
+                services_available: self.options.currentSubspecialties[i].services_available
             });
             if (!inArray(self.options.currentSubspecialties[i].subspecialty.id, currentSubspecialtyIds)) {
                 currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
@@ -100,15 +103,7 @@
         self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
-            self.options.currentSubspecialties.forEach(function (currentSubspecialty) {
-                subspecialty.services.forEach(function (service) {
-                    if (service.name === currentSubspecialty.service) {
-                        subspecialty.services.splice(subspecialty.services.indexOf(service), 1);
-                    }
-                });
-            });
-
-            if (subspecialty.services.length !== 0) {
+            if (!inArray(subspecialty.id, currentSubspecialtyIds)) {
                 self.selectableSubspecialties.push(subspecialty);
             }
             self.subspecialtiesById[subspecialty.id] = subspecialty;
@@ -514,7 +509,8 @@
         const selectedSubspecialtyItem = $(selectors.subspecialtyItem).filter('.selected');
         const newSubspecialty = $(selectors.newSubspecialtyItem);
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
-        
+        const change_service = selectedSubspecialtyItem.find('.change-service');
+
         if(selectedContextItem.length !== 0){
          //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
                 let postData = {
@@ -529,6 +525,11 @@
                 if(newSubspecialty.length !== 0){
                     postData.selected_firm_id = newSubspecialty.data('service-id');
                 }
+
+                if (change_service.length > 0) {
+                    postData.change_service = change_service.children("option:selected"). val();
+                }
+
                 $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
 
                 if (postData !== undefined) {
