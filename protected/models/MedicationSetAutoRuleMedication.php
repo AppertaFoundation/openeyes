@@ -57,7 +57,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('medication_set_id, medication_id', 'required'),
-            array('medication_set_id, medication_id, include_parent, include_children', 'numerical', 'integerOnly'=>true),
+            array('medication_set_id, medication_id, include_parent, include_children, default_dose', 'numerical', 'integerOnly'=>true),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().

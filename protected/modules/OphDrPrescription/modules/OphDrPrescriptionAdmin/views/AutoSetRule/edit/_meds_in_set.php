@@ -73,12 +73,18 @@ if ($is_prescription_set) {
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
 
                             <?= $med->preferred_term; ?>
-                            <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input']); ?>
-                            <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input']); ?>
+                            <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][id]"]); ?>
+                            <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>
-                            <?= \CHtml::activeTextField($set_item, 'default_dose', ['class' => 'js-input cols-full', 'style' => 'display:none', 'id' => null]); ?>
+                            <?= \CHtml::activeTextField($set_item, 'default_dose',
+                                [
+                                    'class' => 'js-input cols-full',
+                                    'style' => 'display:none',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_dose]"
+                                ]); ?>
                         </td>
                         <td>
                             <span data-type="default_dose" data-id="<?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : ''; ?>"><?= $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : '-'; ?></span>
@@ -89,8 +95,13 @@ if ($is_prescription_set) {
                                 $set_item,
                                 'default_route_id',
                                 $route_options,
-                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
-                            ); ?>
+                                [
+                                    'class' => 'js-input cols-full',
+                                    'style' => 'display:none',
+                                    'empty' => '-- select --',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_route_id]"
+                                ]); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <span data-type="default_frequency" data-id="<?= $set_item->defaultFrequency ? $set_item->default_frequency_id : ''; ?>" class="js-text"><?= $set_item->defaultFrequency ? $set_item->defaultFrequency->term : '-'; ?></span>
@@ -98,8 +109,13 @@ if ($is_prescription_set) {
                                 $set_item,
                                 'default_frequency_id',
                                 $frequency_options,
-                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
-                            ); ?>
+                                [
+                                    'class' => 'js-input cols-full',
+                                    'style' => 'display:none',
+                                    'empty' => '-- select --',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_frequency_id]"
+                                ]); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <span data-type="default_duration" data-id="<?= $set_item->defaultDuration ? $set_item->default_duration_id : ''; ?>" class="js-text"><?= $set_item->defaultDuration ? $set_item->defaultDuration->name : '-'; ?></span>
@@ -107,7 +123,13 @@ if ($is_prescription_set) {
                                 $set_item,
                                 'default_duration_id',
                                 $duration_options,
-                                ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                                [
+                                    'class' => 'js-input cols-full',
+                                    'style' => 'display:none',
+                                    'empty' => '-- select --',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_duration_id]"
+                                ]
                             ); ?>
                         </td>
 
@@ -118,7 +140,13 @@ if ($is_prescription_set) {
                                     $set_item,
                                     'default_dispense_condition_id',
                                     $default_dispense_condition,
-                                    ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                                    [
+                                        'class' => 'js-input cols-full',
+                                        'style' => 'display:none',
+                                        'empty' => '-- select --',
+                                        'id' => null,
+                                        'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]"
+                                    ]
                                 ); ?>
                             </td>
                             <td class="js-input-wrapper">
@@ -127,7 +155,13 @@ if ($is_prescription_set) {
                                     $set_item,
                                     'default_dispense_location_id',
                                     $default_dispense_location,
-                                    ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]
+                                    [
+                                        'class' => 'js-input cols-full',
+                                        'style' => 'display:none',
+                                        'empty' => '-- select --',
+                                        'id' => null,
+                                        'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
+                                    ]
                                 ); ?>
                             </td>
                         <?php endif; ?>
@@ -137,6 +171,7 @@ if ($is_prescription_set) {
                                 <i class="oe-i child-arrow small"></i>
                             </button>
                         </td>
+                        <td></td>
                         <td>
                             <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
                         </td>
@@ -150,7 +185,7 @@ if ($is_prescription_set) {
                                 </span>
 
                                 <label class="inline highlight js-input" style="display: none">
-                                    <?=\CHtml::activeCheckBox($set_item, 'include_parent'); ?> Include Parent
+                                    <?=\CHtml::activeCheckBox($set_item, 'include_parent', ['name' => "MedicationSetAutoRuleMedication[$k][include_parent]"]); ?> Include Parent
                                 </label>
                             </div>
 
@@ -159,7 +194,7 @@ if ($is_prescription_set) {
                                     <?=$set_item->getAttributelabel('include_children') . ': ' . ($set_item->include_children ? 'yes' : 'no')?>
                                 </span>
                                 <label class="inline highlight js-input" style="display: none">
-                                    <?=\CHtml::activeCheckBox($set_item, 'include_children'); ?> Include Children
+                                    <?=\CHtml::activeCheckBox($set_item, 'include_children', ['name' => "MedicationSetAutoRuleMedication[$k][include_children]"]); ?> Include Children
                                 </label>
                             </div>
                             <span class="tabspace"></span>
@@ -178,6 +213,7 @@ if ($is_prescription_set) {
                         $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
                             "taper" => $taper,
                             "set_item_medication_id" => $med->id,
+                            "data_parent_key" => $k,
                             "set_item_medication" => $med,
                             "taper_count" => $count,
                             "frequency_options" => $frequency_options,
@@ -205,6 +241,7 @@ if ($is_prescription_set) {
         $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
             "taper" => $empty_entry,
             "set_item_medication_id" => "{{data_med_id}}",
+            "data_parent_key" => "{{data_parent_key}}",
             "set_item_medication" => null,
             "taper_count" => "{{taper_count}}",
             "frequency_options" => $frequency_options,
@@ -216,40 +253,40 @@ if ($is_prescription_set) {
 </script>
 
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr class="js-row-of-{{medication_id}}" data-id="{{medication_id}}" data-med_id="{{medication_id}}" data-key="0" style="cursor: default;">
+    <tr class="js-row-of-{{medication_id}}" data-id="{{medication_id}}" data-med_id="{{medication_id}}" data-key="{{key}}" style="cursor: default;">
         <td>
             {{preferred_term}}
-            <input class="js-input" name="MedicationSetAutoRuleMedication[id]" type="hidden" value="{{id}}">
-            <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
+            <input class="js-input" name="MedicationSetAutoRuleMedication[{{key}}][id]" type="hidden" value="{{id}}">
+            <input class="js-input" name="MedicationSetAutoRuleMedication[{{key}}][medication_id]" type="hidden" value="{{medication_id}}">
         </td>
         <td class="js-input-wrapper">
             <span data-type="default_dose" class="js-text" style="display: inline;">{{^default_dose}}-{{/default_dose}}{{#default_dose}}{{default_dose}}{{/default_dose}}</span>
-            <input class="js-input cols-full" style="display: none;" name="MedicationSetAutoRuleMedication[default_dose]" id="MedicationSetAutoRuleMedication" type="text" value="{{default_dose}}">
+            <input class="js-input cols-full" style="display: none;" name="MedicationSetAutoRuleMedication[{{key}}][default_dose]" id="MedicationSetAutoRuleMedication" type="text" value="{{default_dose}}">
         </td>
         <td class="js-input-wrapper">
             <span data-type="default_dose_unit_term">{{^default_dose_unit_term}}-{{/default_dose_unit_term}}{{#default_dose_unit_term}}{{default_dose_unit_term}}{{/default_dose_unit_term}}</span>
         </td>
         <td class="js-input-wrapper">
             <span data-id="{{#default_route_id}}{{default_route_id}}{{/default_route_id}}" data-type="default_route" class="js-text" style="display: inline;">{{^default_route}}-{{/default_route}}{{#default_route}}{{default_route}}{{/default_route}}</span>
-            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[default_route_id]', null, $route_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_route_id]', null, $route_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
         <td class="js-input-wrapper">
             <span data-id="{{#default_frequency_id}}{{default_frequency_id}}{{/default_frequency_id}}" data-type="default_frequency" class="js-text" style="display: inline;">{{^default_frequency}}-{{/default_frequency}}{{#default_frequency}}{{default_frequency}}{{/default_frequency}}</span>
-            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[default_frequency_id]', null, $frequency_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_frequency_id]', null, $frequency_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
         <td class="js-input-wrapper">
             <span data-id="{{#default_duration_id}}{{default_duration_id}}{{/default_duration_id}}" data-type="default_duration" class="js-text" style="display: inline;">{{^default_duration}}-{{/default_duration}}{{#default_duration}}{{default_duration}}{{/default_duration}}</span>
-            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
+            <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
 
         <?php if ($is_prescription_set) : ?>
         <td class="js-input-wrapper">
             <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
         <td class="js-input-wrapper">
             <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
         <?php endif; ?>
 
@@ -270,7 +307,7 @@ if ($is_prescription_set) {
                 </span>
 
                 <label class="inline highlight js-input" style="display: none">
-                    <?=\CHtml::checkBox('MedicationSetAutoRuleMedication[include_parent]', false); ?> Include Parent
+                    <?=\CHtml::checkBox('MedicationSetAutoRuleMedication[{{key}}][include_parent]', false); ?> Include Parent
                 </label>
             </div>
 
@@ -280,7 +317,7 @@ if ($is_prescription_set) {
                 </span>
 
                 <label class="inline highlight js-input" style="display: none">
-                    <?=\CHtml::checkBox('MedicationSetAutoRuleMedication[include_children]', false); ?> Include Children
+                    <?=\CHtml::checkBox('MedicationSetAutoRuleMedication[{{key}}][include_children]', false); ?> Include Children
                 </label>
             </div>
             <span class="tabspace"></span>
@@ -288,7 +325,7 @@ if ($is_prescription_set) {
             <a data-action_type="cancel" class="js-cross-set-medication" style="display:none"><i class="oe-i cancel pad"></i></a>
             <a data-action_type="edit" class="js-edit-set-medication"><i class="oe-i pencil pad"></i></a>
         </td>
-    </tr
+    </tr>
 </script>
 
 <script>
@@ -297,71 +334,32 @@ if ($is_prescription_set) {
         onReturn: function (adderDialog, selectedItems) {
             const $table = $(drugSetController.options.tableSelector + ' tbody');
             selectedItems.forEach(item => {
-
                 //how nice that filter is coming back as a selected item
                 if (item.label && item.label === 'Include branded drugs in search results') {
                     return;
                 }
 
-                $.ajax({
-                    'type': 'POST',
-                    'data': {
-                        set_id: $('.js-medication-set-id').val(),
-                        medication_id: item.id,
-                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                    },
-                    'url': '/OphDrPrescription/admin/autoSetRule/addMedicationToSet',
-                    'dataType': 'json',
-                    'beforeSend': function() {
+                $('.empty-set').hide();
+                $('#search_query').show();
+                $(drugSetController.options.tableSelector).show();
 
-                        if (!$('.oe-popup-wrap').length) {
-                            // load spinner
-                            let $overlay = $('<div>', {class: 'oe-popup-wrap'});
-                            let $spinner = $('<div>', {class: 'spinner'});
-                            $overlay.append($spinner);
-                            $('body').prepend($overlay);
-                        }
+                const medication_id = item.id;
+                let data = item;
 
-                    },
-                    'success': function (resp) {
-                    },
-                    'error': function(resp) {
-                        alert('Add medication to set FAILED. Please try again.');
-                        console.error(resp);
-                    },
-                    'complete': function(resp) {
-                        const result = JSON.parse(resp.responseText);
+                data.id = '';
+                data.medication_id = medication_id;
+                data.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
 
-                        if (result.success && result.success === true) {
-
-                            $('.empty-set').hide();
-                            $('#search_query').show();
-                            $(drugSetController.options.tableSelector).show();
-
-                            const medication_id = item.id;
-                            const set_item_id = result.id;
-                            let data = item;
-
-                            data.id = set_item_id;
-                            data.medication_id = medication_id;
-                            data.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
-
-                            const $tr_html = Mustache.render($('#medication_template').html(), data);
-                            $(drugSetController.options.tableSelector + ' tbody').prepend($tr_html);
-                            const $tr = $table.find('tr:first-child');
-                            $tr.css({'background-color': '#3ba93b'});
-                            $tr.next().css({'background-color': '#3ba93b'});
-                            setTimeout(() => {
-                                $tr.next().find('.js-edit-set-medication').trigger('click');
-                                $tr.animate({'background-color': 'transparent'}, 2000);
-                                $tr.next().animate({'background-color': 'transparent'}, 2000);
-                            },500);
-                        } else {
-                            alert('Add medication to set FAILED. Please try again.');
-                        }
-                        $('.oe-popup-wrap').remove();
-                    }
-                });
+                const $tr_html = Mustache.render($('#medication_template').html(), data);
+                $(drugSetController.options.tableSelector + ' tbody').append($tr_html);
+                const $tr = $table.find('tr.js-row-of-' + medication_id);
+                $tr.css({'background-color': '#3ba93b'});
+                $tr.next().css({'background-color': '#3ba93b'});
+                setTimeout(() => {
+                    $tr.next().find('.js-edit-set-medication').trigger('click');
+                    $tr.animate({'background-color': 'transparent'}, 2000);
+                    $tr.next().animate({'background-color': 'transparent'}, 2000);
+                },500);
             });
         },
         searchOptions: {
