@@ -120,7 +120,7 @@
                 url: '/OphDrPrescription/admin/AutoSetRule/CheckRebuildIsRunning',
                 dataType: "text",
                 success: function (is_running) {
-                    if (is_running === '1') {
+                    if (is_running) {
                         setTimeout(checkCommand, 5000);
                     } else {
                         $rebuild_button.removeClass('disabled');
