@@ -945,7 +945,7 @@ EOD;
                     ON mao.medication_attribute_id = ma.id
                 WHERE ma.name = \"UNIT_OF_MEASURE\"
             ) AS uom_table ON med.id = uom_table.med_id
-            SET med.default_dose_unit_term = uom_table.UOM"; 
+            SET med.default_dose_unit_term = uom_table.UOM";
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
