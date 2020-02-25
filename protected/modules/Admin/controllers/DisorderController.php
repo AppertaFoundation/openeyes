@@ -16,6 +16,7 @@
 class DisorderController extends BaseAdminController
 {
     public $items_per_page = 60;
+    public $group = 'Disorders';
 
     public function actionList()
     {
@@ -63,11 +64,15 @@ class DisorderController extends BaseAdminController
         }
         if ($request->getPost('Disorder')) {
             $model->attributes = $request->getPost('Disorder');
-            if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Disorder saved');
-                $this->redirect(array('List'));
-            } else {
+            if (!$model->validate()) {
                 $errors = $model->getErrors();
+            } else {
+                if ($model->save()) {
+                    Yii::app()->user->setFlash('success', 'Disorder saved');
+                    $this->redirect(array('List'));
+                } else {
+                    $errors = $model->getErrors();
+                }
             }
         }
 

@@ -177,12 +177,6 @@ $(document).ready(function(){
 
     if (!isCollapsedGroup) {
       $tileGroup.find('.element').each(function () {
-
-        // Skip titles that already have a count from Tile Data Overflow
-        if ($(this).find('small').length) {
-          return true;
-        }
-
         let rowCount = $(this).find('tr').length;
         let $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
         $(this).find('.element-title').append($countDisplay);
@@ -408,10 +402,22 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 
     if(addButtons !== null){
         addButtons.click(function closeAndAdd(){
-            adderDiv.hide();
-            if(typeof callback === 'function'){
-            	callback();
-            }
+        	var added = true;
+
+        	if (selectMode == 'single' && typeof callback === 'function'){
+				($(this).parent()).find('ul').each(function () {
+					if ($(this).children('li.selected').length == 0){
+						added = false;
+						return false;
+					}
+				});
+			}
+			if (added){
+				adderDiv.hide();
+				if(typeof callback === 'function'){
+					callback();
+				}
+			}
         });
     }
 

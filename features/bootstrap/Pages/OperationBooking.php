@@ -263,7 +263,7 @@ class OperationBooking extends OpenEyesPage
 
     public function addSelection($selection)
     {
-        foreach ($this->findAll('css', '.oe-add-select-search.auto-width') as $pop_up) {
+        foreach ($this->findAll('xpath', '//*[@id="add-operation-booking-diagnosis"]') as $pop_up) {
             if ($pop_up->isVisible()) {
                 $this->elements['pop_up_selection'] = array(
                     'css' => 'li[data-label=\'' . $selection . '\']'

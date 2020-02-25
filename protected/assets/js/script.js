@@ -307,10 +307,16 @@ $(document).ready(function () {
 			toolCSS = "oe-tooltip";
 		}
 
+		// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
+		let z_index;
+		if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
+			z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
+		}
+
 		// add, calculate height then show (remove 'hidden')
 		var tip = $( "<div></div>", {
 			"class": toolCSS,
-			"style":"left:"+leftPos+"px; top:0;"
+			"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
 		});
 		// add the tip (HTML as <br> could be in the string)
 		tip.html(text);
@@ -325,6 +331,25 @@ $(document).ready(function () {
 
 	});
 
+	let $header_print_dropdown = $('#js-header-print-dropdown');
+	let $header_print_dropdown_button = $('#js-header-print-dropdown-btn');
+	let $header_print_subnav = $('#js-header-print-subnav');
+
+	$header_print_dropdown.on({
+		mouseover: function() {
+			$header_print_dropdown_button.addClass('active');
+			$header_print_subnav.show();
+			},
+		mouseout: function() {
+			$header_print_dropdown_button.removeClass('active');
+			$header_print_subnav.hide();
+		}
+	});
+
+	$header_print_subnav.on({
+		mouseover: function() { $(this).show(); },
+		mouseout: function() { $(this).hide();}
+	});
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
@@ -384,8 +409,8 @@ function changeState(wb,sp) {
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
 function format_date(d) {
-	if (window["NHSDateFormat"] !== undefined) {
-		var date = window["NHSDateFormat"];
+	if (NHSDateFormat !== undefined) {
+		var date = NHSDateFormat;
 		var m = date.match(/[a-zA-Z]+/g);
 
 		for (var i in m) {

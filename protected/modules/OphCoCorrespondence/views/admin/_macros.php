@@ -28,8 +28,10 @@ if (!empty($macros)) {
                     echo 'Site: '.$macro->site->name;
                 } elseif ($macro->subspecialty) {
                     echo 'Subspecialty: '.$macro->subspecialty->name;
-                } else {
+                } else if ($macro->firm) {
                     echo Firm::contextLabel() . ': '.$macro->firm->getNameAndSubspecialty();
+                } else {
+                    echo 'No owner was specified for this macro.';
                 }?>
             </td>
             <td><?php echo $macro->name?></td>

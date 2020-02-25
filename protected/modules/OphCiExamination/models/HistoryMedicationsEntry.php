@@ -155,7 +155,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency = $item->frequency;
         $this->start_date = date('Y-m-d', strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
-            $end_date = $item->stopDateFromDuration();
+            $end_date = $item->stopDateFromDuration(false);
 
             if ($end_date !== null) {
                 if (strtotime($end_date->format('Y-m-d')) < time()) {
@@ -298,7 +298,7 @@ class HistoryMedicationsEntry extends \BaseElement
 
         if ($med) {
             return count(OphCiExaminationRisk::findForTagIds(array_map(
-                function($t) {
+                function ($t) {
                     return $t->id;
                 }, $med->tags
             ))) > 0;
@@ -315,6 +315,11 @@ class HistoryMedicationsEntry extends \BaseElement
         return $this->medication_name ? :
             ($this->medication_drug ? (string) $this->medication_drug :
                 ($this->drug ? $this->drug->tallmanlabel : ''));
+    }
+
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
     }
 
     /**
@@ -361,17 +366,27 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getTaperDateDisplay($currentDate, $taper_duration)
+    {
+        if ($taper_duration && $currentDate) {
+            return \Helper::formatFuzzyDate(date('Y-m-d', strtotime($currentDate. $taper_duration)));
+        } else {
+            return \Helper::formatFuzzyDate($this->end_date);
+        }
+    }
+
     public function getStartDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
+        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
+        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
-    public function getStopReasonDisplay(){
+    public function getStopReasonDisplay()
+    {
         $res = array();
         if ($this->stop_reason) {
             $res[] = "{$this->stop_reason}";
@@ -399,7 +414,8 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
-    public function getDoseAndFrequency(){
+    public function getDoseAndFrequency()
+    {
         $result = [];
 
         if ($this->dose) {

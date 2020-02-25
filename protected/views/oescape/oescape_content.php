@@ -16,10 +16,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->renderPartial('//patient/_patient_alerts') ?>
-<main class="oescape flex-layout flex-stretch"  id="oescape-layout">
+<?php $this->renderPartial('//patient/_patient_alerts'); // load the patient alerts
+
+// get Glaucoma or General Ophthalmology as an array
+$subspecialty_arr = Subspecialty::model()->findAllByAttributes(array('short_name' => ['Glaucoma','General']));
+
+// if on the Glaucoma or General Ophthalmology load the drill though for the IOP data
+foreach ($subspecialty_arr as $sub) {
+    if ($subspecialty->id === $sub->id) {
+        $this->renderPartial('//oescape/oescape_drill_down_list');
+    }
+}
+?>
+
+<div class="oescape flex-layout flex-stretch"  id="oescape-layout">
     <?php echo $content; ?>
-</main>
+</div>
 <script type="text/javascript">
   $('#oescape-layout').ready(function() {
     //Immediately set the size to the selected value

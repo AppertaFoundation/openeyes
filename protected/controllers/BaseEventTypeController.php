@@ -421,7 +421,7 @@ class BaseEventTypeController extends BaseModuleController
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
                 // disable buttons when clicking on save/save_draft/save_print
                 Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
-                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print", function () {
+                      $(document).on("click", "#et_save, #et_save_draft, #et_save_print, #et_save_print_form", function () {
                           disableButtons();
                       });
                 ', CClientScript::POS_HEAD);
@@ -433,6 +433,18 @@ class BaseEventTypeController extends BaseModuleController
         if (!isset($this->firm)) {
             // No firm selected, reject
             throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+        }
+
+        if ($_REQUEST) {
+            $_REQUEST = $this->sanitizeInput($_REQUEST);
+        }
+
+        if ($_POST) {
+            $_POST = $this->sanitizeInput($_POST);
+        }
+
+        if ($_GET) {
+            $_GET = $this->sanitizeInput($_GET);
         }
 
         $this->initAction($action->id);
@@ -1629,9 +1641,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
         //Find the groupings
-        for ($element_index = 0, $tile_index = 0, $row_index = 0;
-             $element_index < $element_count;
-             $element_index++) {
+        for ($element_index = 0, $tile_index = 0, $row_index = 0; $element_index < $element_count; $element_index++) {
             $element = $elements[$element_index];
 
             //if the tile size can't be determined assume a full row
@@ -1783,11 +1793,12 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $id
      * @param $inject_autoprint_js
+     * @param $print_footer
      * @return null
      * @throws CHttpException
      * @throws Exception
      */
-    public function setPDFprintData($id, $inject_autoprint_js)
+    public function setPDFprintData($id, $inject_autoprint_js, $print_footer = true)
     {
         if (!isset($id)) {
             throw new CHttpException(400, 'No ID provided');
@@ -1810,7 +1821,7 @@ class BaseEventTypeController extends BaseModuleController
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
-            $this->renderAndSavePDFFromHtml($this->pdf_print_html, $inject_autoprint_js);
+            $this->renderAndSavePDFFromHtml($this->pdf_print_html, $inject_autoprint_js, $print_footer);
         }
 
         $this->event->unlock();
@@ -1823,9 +1834,10 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $html
      * @param $inject_autoprint_js
+     * @param $print_footer
      * @return null
      */
-    public function renderAndSavePDFFromHtml($html, $inject_autoprint_js)
+    public function renderAndSavePDFFromHtml($html, $inject_autoprint_js, $print_footer = true)
     {
         $this->getPDFPrintSuffix();
 
@@ -1858,7 +1870,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'],
-            $inject_autoprint_js);
+            $inject_autoprint_js, $print_footer);
 
         return $this->pdf_print_suffix;
     }
@@ -1873,9 +1885,10 @@ class BaseEventTypeController extends BaseModuleController
     {
 
         $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $print_footer = Yii::app()->request->getParam('print_footer', 'true') === 'true';
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js, $print_footer);
         $pf = ProtectedFile::createFromFile($this->event->imageDirectory . '/event_' . $pdf_route . '.pdf');
         if ($pf->save()) {
             $result = array(
@@ -1907,9 +1920,11 @@ class BaseEventTypeController extends BaseModuleController
     public function actionPDFPrint($id)
     {
         $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $print_footer = Yii::app()->request->getParam('print_footer', 'true') === 'true';
+
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js, $print_footer);
         if (@$_GET['html']) {
             return Yii::app()->end();
         }
@@ -2307,7 +2322,8 @@ class BaseEventTypeController extends BaseModuleController
         echo 'ok';
     }
 
-    public function readInEventImageSettings(){
+    public function readInEventImageSettings()
+    {
         $this->event = Event::model()->findByPk($_GET['id']);
         if (!isset($this->event) || !isset($this->event->eventType)) {
             return;
@@ -2405,7 +2421,9 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->readInEventImageSettings();
         try {
+            Yii::app()->params['image_generation'] = true;      // Change the theme to dark for lightning viewer image
             $content = $this->getEventAsHtml();
+            Yii::app()->params['image_generation'] = false;     // Chane the theme back to normal
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
@@ -2455,7 +2473,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function getEventAsHtml()
     {
-        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
         ob_start();
 
         $this->setOpenElementsFromCurrentEvent('view');
@@ -2590,7 +2607,7 @@ class BaseEventTypeController extends BaseModuleController
         $result = $this->savePdfPreviewAsEventImage(null, $eye);
         if (!$result) {
             // If nothing was saved, then it has multiple pages
-            for ($page = 0; ; ++$page) {
+            for ($page = 0;; ++$page) {
                 $result = $this->savePdfPreviewAsEventImage($page, $eye);
                 if (!$result) {
                     break;
@@ -2622,7 +2639,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->whiteOutImageImagickBackground($imagickPage);
 
         $imagickPage->writeImage($pagePreviewPath);
-        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
+        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye_id' => $eye]);
 
         if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
             @unlink($pagePreviewPath);
@@ -2637,7 +2654,8 @@ class BaseEventTypeController extends BaseModuleController
      * @param $imagick Imagick
      * @throws Exception
      */
-    protected function whiteOutImageImagickBackground($imagick){
+    protected function whiteOutImageImagickBackground($imagick)
+    {
         if ($imagick->getImageAlphaChannel()) {
             // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
             $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);

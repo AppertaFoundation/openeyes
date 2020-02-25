@@ -29,7 +29,8 @@ class ComponentStubGenerator
      */
     public static function generate($class_name, array $properties = array())
     {
-        $stub = PHPUnit_Framework_MockObject_Generator::getMock($class_name, array(), array(), '', false, false, true, false);
+        $stub = (new PHPUnit_Framework_MockObject_Generator())->getMock($class_name, array(), array(), '', false, false, true, false);
+
 
         self::propertiesSetAndMatch($stub, $properties);
 

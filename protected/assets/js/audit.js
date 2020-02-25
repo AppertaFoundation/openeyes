@@ -42,13 +42,19 @@ AuditLog.prototype = {
             }
         });
 
-        var user_id = $('#previous_user_id').val();
+        let user_id = $('#previous_user_id').val();
+        let event_type_id = $('#previous_event_type_id').val();
 
         if(last_id){
             var audit;
             $.ajax({
                 'type': 'GET',
-                'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+user_id+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
+                'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+
+                    '&event_type_id='+event_type_id+
+                    '&firm_id='+$('#previous_firm_id').val()+'&oe-autocompletesearch='+user_id+
+                    '&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+
+                    '&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+
+                    '&hos_num='+$('#previous_hos_num').val(),
                 'success': function(html) {
                     if ($.trim(html).length >0) {
                         $(audit.data_selector).html(html + $(audit.data_selector).html());

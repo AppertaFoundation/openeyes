@@ -305,7 +305,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                 </td>
                 <td>
                     <?php echo $form->textArea($element, 'comments', array('rows' => 1, 'nowrapper' => true), '', array('placeholder' =>
-                        'Scheduling guidance for admissions team', 'class' => 'cols-full')) ?>
+                        'Scheduling guidance for admissions team', 'class' => 'cols-full autosize')) ?>
                 </td>
             </tr>
             <tr>
@@ -313,20 +313,20 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                     Add RTT comments:
                 </td>
                 <td>
-                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array(),
+                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array('class' => 'autosize'),
                         array_merge($form->layoutColumns, array('field' => 4))) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Doctor organizing admission
+                    Doctor organising admission
                 </td>
                 <td>
                     <input type="hidden" name="<?=\CHtml::modelName($element) ?>[organising_admission_user_id]"
                            id="<?=\CHtml::modelName($element) ?>_organising_admission_user_id"
                            value="<?php echo $element->organising_admission_user_id ?>"/>
                     <span class="organising_admission_user">
-                        <?php echo $element->organising_admission_user ? $element->organising_admission_user->reversedFullname . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>
+                        <?php echo $element->organising_admission_user ? $element->organising_admission_user->getReversedFullname() . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>
                     </span>
                 </td>
                 <td>

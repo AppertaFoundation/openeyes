@@ -21,7 +21,7 @@ function setDropDownWidth(id){
     var $option_obj;
     var option_width;
     var arrow_width = 30;
-    
+
     $option_obj = $("<span>").html($('#' + id +' option:selected').text());
     $option_obj.appendTo('body');
     option_width = $option_obj.width();
@@ -52,7 +52,7 @@ function updateCorrespondence(macro_id)
                 $('#cc_targets').html('');
                 correspondence_load_data(data);
                 obj.val('');
-                
+
                 //set letter type
                 $('.internal-referrer-wrapper').slideUp();
                 $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id).trigger('change');
@@ -88,7 +88,7 @@ function resetInternalReferralFields(){
 }
 
 function setRecipientToInternalReferral(){
-	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
+	$('#docman_recipient_0').attr('disabled', true);
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
 
@@ -508,7 +508,7 @@ $(document).ready(function() {
 				'type': 'GET',
 				'url': baseUrl+'/OphCoCorrespondence/Default/getString?patient_id='+OE_patient_id+'&string_type='+m[1]+'&string_id='+m[2],
 				'success': function(text) {
-					element_letter_controller.addAtCursor(text.replace(/\n/g, "<br>"));
+					element_letter_controller.addAtCursor(text.replace(/\n(?!<)/g, '<br>'));
 					obj.val('');
 				}
 			});
@@ -717,7 +717,7 @@ $(document).ready(function() {
 	});
 
 	var selected_recipient = $('#address_target').val();
-        
+
 	if( $('#dm_table').length > 0 ){
         // we have docman table here
         docman2 = docman;
