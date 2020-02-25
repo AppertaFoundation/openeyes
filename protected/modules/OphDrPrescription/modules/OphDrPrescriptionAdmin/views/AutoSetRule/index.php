@@ -119,12 +119,12 @@
             $.ajax({
                 url: '/OphDrPrescription/admin/AutoSetRule/CheckRebuildIsRunning',
                 dataType: "text",
-                success: function (data) {
-                    if (data === "success") {
+                success: function (is_running) {
+                    if (is_running === '1') {
+                        setTimeout(checkCommand, 5000);
+                    } else {
                         $rebuild_button.removeClass('disabled');
                         $rebuild_button.html('Rebuild all sets now');
-                    } else {
-                        setTimeout(checkCommand, 5000);
                     }
                 },
                 error: function (error) {

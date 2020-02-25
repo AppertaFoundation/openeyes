@@ -320,8 +320,10 @@ class AutoSetRuleController extends BaseAdminController
     public function actionCheckRebuildIsRunning()
     {
         $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
-        if (!$command->actionCheckRunning()) {
-            echo 'success';
+        if ($command->actionCheckRunning()) {
+            echo 1;
+        } else {
+            echo 0;
         }
     }
 
