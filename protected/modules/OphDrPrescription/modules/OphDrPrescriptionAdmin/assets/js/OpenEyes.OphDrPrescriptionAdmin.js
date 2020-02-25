@@ -51,7 +51,8 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
     };
 
     DrugSetController.prototype.addTaper = function($row) {
-        let data_med_id = $row.attr('data-med_id');
+        let data_med_id = $row.data('med_id');
+        let data_parent_key = $row.data('key');
         let next_taper_count = 0;
         let last_taper_count;
 
@@ -64,6 +65,7 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
         var markup = Mustache.render(
             $('#medication_item_taper_template').html(),
             {
+                'data_parent_key' : data_parent_key,
                 'data_med_id' : data_med_id,
                 'taper_count' : next_taper_count
             });
