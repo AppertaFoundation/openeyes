@@ -119,7 +119,7 @@ var analytics_drill_down = (function () {
 				additional_info = patient_total + ' ' + patient_str + hover_text + ' for ' + data.data.name;
 
 			} else {
-				additional_info = patient_total + ' ' + patient_str + data.x + ': ' + (data.y === 1 ? '100%' : data.y.toFixed(2) + '%') + ' for ' + selected_cataract.text().trim() + ' ' + data.data.name;
+				additional_info = patient_total + ' ' + patient_str + data.x + ': ' + (data.y === 1 ? '100%' : data.y.toFixed(2) * 100 + '%') + ' for ' + selected_cataract.text().trim() + ' ' + data.data.name;
 
 			}
 		}
