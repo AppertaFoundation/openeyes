@@ -61,6 +61,27 @@ class ImportDrugsCommand extends CConsoleCommand
         '16_drug_route' => '46713006',
         '17_drug_route' => '45890007'
     ];
+    private $uom_to_forms_mapping = [
+        'drop' => ['Drops', 'Modified-release drops', 'Homeopathic drops',
+                    'Eye drops', 'Ear drops', 'Nasal drops', 'Oral drops',
+                    'Ear/eye drops solution', 'Ear/eye/nose drops solution'],
+        
+        'tablet' => ['Tablets','Buccal tablet','Chewable tablet',
+                     'Dispersible tablet','Effervescent tablet',
+                     'Effervescent vaginal tablet','Gastro-resistant tablet',
+                     'Modified-release tablet','Muco-adhesive buccal tablet',
+                     'Orodispersible tablet','Soluble tablet','Sublingual tablet',
+                     'Homeopathic tablet','Modified-release muco-adhesive buccal tablet',
+                     'Tablet for cutaneous solution'],
+
+        'capsule' => ['Capsule', 'Gastro-resistant capsule', 'Modified-release capsule',
+                      'Chewable capsule'],
+
+        'sachet' => ['Sachet'],
+        'lozenge' => ['Lozenge'],
+        'pastille' => ['Pastille'],
+        'pessary' => ['Pessary'],
+     ];
     private $skip_XML_files_containing = [
         'f_ampp2',
         'f_vmpp2'
@@ -642,6 +663,8 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
 
+        $this->mapFormToUOM();
+
         $this->printMsg("Importing VMP route information", false);
 
         $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
@@ -780,6 +803,9 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
 
+        $this->convertMappedUOMsToPlural();
+        $this->applyUOMToMedications();
+
         $this->printMsg("Applying VMP attributes to AMPs", false);
 
         $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
@@ -846,6 +872,83 @@ EOD;
         @unlink('/tmp/ref_medication_set.csv');
 
         echo "Data imported to OE." . PHP_EOL;
+    }
+
+    private function mapFormToUOM()
+    {
+        $this->printMsg("Mapping form to unit of measurement attribute...");
+
+        foreach ($this->uom_to_forms_mapping as $uom => $forms) {
+            $this->printMsg("    Mapping: $uom", false);
+            $uom_value = Yii::app()->db->createCommand('SELECT id FROM medication_attribute_option WHERE BINARY description = "' . $uom . '"')->queryRow();
+            $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+                        SELECT 
+                            med.id,
+                            {$uom_value['id']}
+                            FROM medication AS med
+                            LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.preferred_code
+                            LEFT JOIN {$this->tablePrefix}vmp_drug_form AS df ON df.vpid = vmp.vpid
+                            LEFT JOIN medication_attribute_option AS mao ON mao.`value` = df.formcd
+                            LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+                            WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP' AND attr.`name` = 'FORM' AND (
+                    ";
+            foreach ($forms as $form) {
+                $cmd .= "mao.description = '$form' OR ";
+            }
+            $cmd = substr($cmd, 0, -4) . ")";
+
+            Yii::app()->db->createCommand($cmd)->execute();
+            echo " OK" . PHP_EOL;
+        }
+        $this->printMsg("Unit of measurement mapped.");
+
+    }
+
+    private function convertMappedUOMsToPlural()
+    {
+        $this->printMsg("Converting mapped UOMs to optional plural", false);
+
+        $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
+        foreach ($this->uom_to_forms_mapping as $uom => $forms) {
+            $cmd .= "(BINARY description = \"$uom\") OR ";
+        }
+        $cmd = substr($cmd, 0, -4);
+
+        Yii::app()->db->createCommand($cmd)->execute();
+        echo " OK" . PHP_EOL;
+    }
+
+    private function applyUOMToMedications()
+    {
+        $this->printMsg("Applying unit of measurement to medications", false);
+
+        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+					SELECT 
+						med.id,
+						mao.id
+						FROM medication AS med
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid = med.preferred_code
+						LEFT JOIN medication_attribute_option AS mao ON mao.`value` = vmp.udfs_uomcd
+						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+						WHERE med.source_type = 'DM+D' AND med.source_subtype = 'VMP' AND attr.`name` = 'UNIT_OF_MEASURE'
+                ";
+        Yii::app()->db->createCommand($cmd)->execute();
+
+
+        $cmd = "UPDATE medication as med 
+            JOIN ( 
+                SELECT maa.medication_id AS med_id, mao.description AS UOM
+                FROM medication_attribute_option mao
+                JOIN medication_attribute_assignment maa
+                    ON maa.medication_attribute_option_id = mao.id
+                JOIN medication_attribute ma
+                    ON mao.medication_attribute_id = ma.id
+                WHERE ma.name = \"UNIT_OF_MEASURE\"
+            ) AS uom_table ON med.id = uom_table.med_id
+            SET med.default_dose_unit_term = uom_table.UOM"; 
+
+        Yii::app()->db->createCommand($cmd)->execute();
+        echo " OK" . PHP_EOL;
     }
 
     public function bindImportedMedications()
