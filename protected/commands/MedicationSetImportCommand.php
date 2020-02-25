@@ -145,7 +145,7 @@ EOH;
 
                 if ($new_set->name === 'Glaucoma') {
                     $oescape_usage_code = MedicationUsageCode::model()->find('usage_code=?', array('OEScape'));
-                    $new_set->addUsageCode($oescape_usage_code);
+                    $new_set->addUsageCode($oescape_usage_code, 'Glaucoma');
                 }
 
                 $trans->commit();
@@ -185,9 +185,11 @@ EOH;
     private function addMedicationAttributeToMedicationSet($medication_set_name, $medication_attr_name, $value)
     {
         $medication_set = MedicationSet::model()->find('name=?', array($medication_set_name));
-        $medication_set->hidden = 1;
-        $medication_set->save();
         $medication_attribute = MedicationAttribute::model()->find('name=?', array($medication_attr_name));
-        $medication_set->addMedicationAttribute($medication_attribute, $value);
+        if ($medication_set && $medication_attribute) {
+            $medication_set->hidden = 1;
+            $medication_set->save();
+            $medication_set->addMedicationAttribute($medication_attribute, $value);
+        }
     }
 }

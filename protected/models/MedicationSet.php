@@ -736,11 +736,11 @@ class MedicationSet extends BaseActiveRecordVersioned
         return \MedicationSetRule::model()->deleteAllByAttributes(['medication_set_id' => $this->id, $usage_code]);
     }
 
-    public function addUsageCode($usage_code)
+    public function addUsageCode($usage_code, $subspecialty)
     {
         $medication_set_rule = new MedicationSetRule();
         $medication_set_rule->medication_set_id = $this->id;
-        $medication_set_rule->subspecialty_id = \Subspecialty::model()->find('name=?', array('Glaucoma'))->id;
+        $medication_set_rule->subspecialty_id = \Subspecialty::model()->find('name=?', array($subspecialty))->id;
         $medication_set_rule->usage_code_id = $usage_code->id;
 
         if ($medication_set_rule->save()) {
@@ -752,8 +752,7 @@ class MedicationSet extends BaseActiveRecordVersioned
     public function addMedicationAttribute($medication_attribute, $value)
     {
         $medication_set_auto_rule_attribute = new MedicationSetAutoRuleAttribute();
-        $medication_set_auto_rule_attribute->medication_set_id = $this->id;
-        $medication_set_auto_rule_attribute->medication_attribute_option_id = MedicationAttributeOption::model()->findByAttributes(
+        $medication_attribute_option = MedicationAttributeOption::model()->findByAttributes(
             array(
                 'medication_attribute_id' => $medication_attribute->id,
                 'value' => $value
@@ -762,9 +761,12 @@ class MedicationSet extends BaseActiveRecordVersioned
             'id' => $this->id,
             'medication_attribute_option_id' => $medication_set_auto_rule_attribute->medication_attribute_option_id
         );
-
-        if ($medication_set_auto_rule_attribute->save()) {
-            return true;
+        if ($medication_attribute_option) {
+            $medication_set_auto_rule_attribute->medication_set_id = $this->id;
+            $medication_set_auto_rule_attribute->medication_attribute_option_id = $medication_attribute_option;
+            if ($medication_set_auto_rule_attribute->save()) {
+                return true;
+            }
         }
         return false;
     }
