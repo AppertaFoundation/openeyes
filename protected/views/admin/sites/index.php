@@ -47,7 +47,7 @@
 
 <?php endif; ?>
 
-<div class="cols-7">
+<div class="cols-6">
 
     <?php if (!$sites) :?>
     <div class="row divider">
@@ -82,7 +82,8 @@
                     <th>Remote ID</th>
                     <th>Name</th>
                     <th>Address</th>
-                    <th>Logo</th>
+                    <th>Primary Logo</th>
+                    <th>Secondary Logo</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,23 +99,25 @@
                                 ['delimiter' => ', ']
                             )?>
                         </td>
-                        
                         <td class="notClickable">
-                       
                             <?php
-
-
-                                if($site->logo_id){
-                                    echo "<a href='".Yii::app()->createUrl('//admin/editLogo',array('site_id' => $site->id))."'>";
-                                    ?>Edit Logos<?php
+                                if(isset($site->logo)&&isset($site->logo->primary_logo)){
+                                    echo 'Custom';
                                 }
                                 else{
-                                    echo "<a href='".Yii::app()->createUrl('//admin/addLogo',array('site_id' => $site->id))."'>";
-
-                                    ?>Add Logos<?php
+                                    echo 'Default';
                                 }
                             ?>
-                            </a>
+                        </td>
+                        <td>
+                            <?php
+                                if(isset($site->logo)&&isset($site->logo->primary_logo)){
+                                    echo 'Custom';
+                                }
+                                else{
+                                    echo 'Default';
+                                }
+                            ?>
                         </td>
                     </tr>
                 <?php }?>
@@ -130,7 +133,7 @@
                             ]
                         ); ?>
                     </td>
-                    <td colspan="2">
+                    <td colspan="3">
                         <?php $this->widget(
                             'LinkPager',
                             ['pages' => $pagination]
