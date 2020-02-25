@@ -4,8 +4,7 @@
          convertNoticesToExceptions="false"
          convertWarningsToExceptions="true"
          stopOnFailure="false"
-         verbose="false"
-         >
+         verbose="false">
     <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>
         <testsuite name="all">
@@ -31,7 +30,6 @@
             <group>components</group>
         </exclude>
     </groups>
-
     <filter>
         <blacklist>
             <directory suffix=".php">../../../yii/</directory>
@@ -40,10 +38,13 @@
             <directory suffix=".php">../models</directory>
             <directory suffix=".php">../components</directory>
             <directory suffix=".php">../controllers</directory>
-            <directory suffix=".php">../modules/*/tests/unit/models</directory>
+            <directory suffix=".php">../modules/*/models</directory>
+            <directory suffix=".php">../modules/*/components</directory>
             <exclude>
                 <directory suffix=".php">../components/summaryWidgets/views</directory>
                 <directory suffix=".php">../components/views</directory>
+                <directory suffix=".php">../modules/*/components/views</directory>
+                <directory suffix=".php.sample">../modules/*/components/sample</directory>
             </exclude>
         </whitelist>
     </filter>
