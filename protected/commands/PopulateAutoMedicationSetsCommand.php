@@ -64,11 +64,4 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
         file_put_contents($this->_pidfile, $this->_pid);
         chmod($this->_pidfile, 0777);
     }
-
-    public function __destruct()
-    {
-        if (file_exists($this->_pidfile)) {
-            unlink($this->_pidfile);
-        }
-    }
 }
