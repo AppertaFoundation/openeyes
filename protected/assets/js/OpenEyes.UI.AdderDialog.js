@@ -214,7 +214,7 @@
                 dialog.runItemSearch(searchInputVal);
             },500);
 
-            clearTimeout(delaySearch-1);
+            clearTimeout(delaySearch-1); //stop previous search request
         });
 
         if (dialog.options.filter) {
