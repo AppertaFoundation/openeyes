@@ -56,7 +56,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
-            controller.saveRow($tr);
+            controller.updateRow($tr);
         });
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="remove"]', function () {
@@ -175,145 +175,44 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
-    TableInlineEdit.prototype.saveRow = function($tr)
+    TableInlineEdit.prototype.updateRow = function($tr)
     {
         let controller = this;
-        let data = {};
-        let json_tapers = {};
-        const $actionsTd = $tr.find('td:last-child');
 
-        const tr_id = $tr.data('med_id');
-        const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
-        $.each(trs, function(i, tr) {
+        let tr_id = $tr.data('med_id');
+        let $trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        let $tapers = $('#meds-list tr[data-parent-med-id="' + tr_id + '"]');
+
+        controller.updateRowValues($tr);
+        if ($tapers !== undefined) {
+            $.each($tapers, function (taperIndex, taper) {
+                controller.updateIndividualRowValues($(taper));
+            });
+        }
+
+        $.each($trs, function(i, tr) {
             const $tr = $(tr);
-            $.each( $tr.find('.js-input'), function(i, input) {
-                const $input = $(input);
-                let name, value;
-                if ($input.prop('tagName') === 'LABEL') {
-                    $checkbox = $input.find('[type="checkbox"]');
-                    name = $checkbox.attr('name');
-                    value = $checkbox.is(':checked') ? 1 : 0;
-                } else {
-                    name = $input.attr('name');
-                    value = $input.val();
-                }
-
-                data[name] = value;
-
-            });
+            $tr.find('.js-text').show();
+            $tr.find('.js-input').hide();
         });
 
-        data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
-
-        $.each($('.js-update-row-data'), function(i, input) {
-            const name = $(input).data('name');
-            const value = $(input).val();
-            data[name] = value;
-        });
-
-        const $tapers = $('#meds-list tr[data-parent-med-id="' + data['Medication[id]'] + '"]');
-
-        $.each($tapers, function (taperIndex, taper) {
-            let taper_data = {};
-            $.each( $(taper).find('.js-input'), function(inputIndex, input) {
-                taper_data[$(input).attr('name')] = $(input).val();
-            });
-            json_tapers[taperIndex] = JSON.stringify(taper_data);
-        });
-
-        data['tapers'] = JSON.stringify(json_tapers);
-
-        $.ajax({
-            'type': 'POST',
-            'data': data,
-            'url': controller.options.updateUrl,
-            'dataType': 'json',
-            'beforeSend': function() {
-                controller.hideEditControls($tr, $tapers);
-
-                const $spinner = '<div style="display:inline-block" class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
-                $actionsTd.append($spinner);
-            },
-            'success': function (resp) {
-                if (resp.success === true) {
-
-                    controller.updateRowValuesAfterSave($tr);
-                    if ($tapers !== undefined) {
-                        $.each($tapers, function (taperIndex, taper) {
-                            controller.updateIndividualRowValuesAfterSave($(taper));
-                        });
-                    }
-                    controller.showGeneralControls($tr);
-                }
-            },
-            'error': function(resp){
-                alert('Saving medication defaults FAILED. Please try again.');
-                console.error(resp);
-                controller.showGeneralControls($tr);
-                if (typeof controller.options.onAjaxError === 'function') {
-                    controller.options.onAjaxError();
-                }
-            },
-            'complete': function(resp) {
-
-                const result = JSON.parse(resp.responseText);
-
-                $actionsTd.find('.js-spinner-as-icon').remove();
-
-                if (result.success && result.success === true) {
-
-                    const trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
-                    $.each(trs, function(i, tr) {
-                        const $tr = $(tr);
-                        $tr.find('.js-text').show();
-                        $tr.find('.js-input').hide();
-                    });
-
-                    $tapers.find('.js-text').show();
-                    $tapers.find('.js-input').hide();
-                    if (typeof controller.options.onAjaxComplete === 'function') {
-                        controller.options.onAjaxComplete();
-                    }
-                } else if(result.errors) {
-                    const trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
-                    $.each(trs, function(i, tr) {
-                        const $tr = $(tr);
-                        $tr.find('.js-text').hide();
-                        $tr.find('.js-input').show();
-                    });
-
-                    $tapers.find('.js-text').hide();
-                    $tapers.find('.js-input').show();
-                    controller.showEditControls($tr, $tapers);
-                    let content = '';
-                    Object.keys(result.errors).forEach(function(key) {
-                        $input = $tr.find('input[name*="' + key + '"]').addClass('error');
-                        if (content.length) {
-                            content += '<br>';
-                        }
-
-                        content +=  `${result.errors[key]}`;
-                    });
-
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: content
-                    }).open();
-                }
-            }
-        });
+        $tapers.find('.js-text').show();
+        $tapers.find('.js-input').hide();
+        controller.showGeneralControls($tr);
+        controller.hideEditControls($tr);
     };
 
-    TableInlineEdit.prototype.updateRowValuesAfterSave = function($tr) {
+    TableInlineEdit.prototype.updateRowValues = function($tr) {
         const controller = this;
         const tr_id = $tr.data('med_id');
         const trs = $(this.options.tableSelector).find(`.js-row-of-${tr_id}`);
         $.each(trs, function(i, tr) {
             const $tr = $(tr);
-            controller.updateIndividualRowValuesAfterSave($tr);
+            controller.updateIndividualRowValues($tr);
         });
     };
 
-    TableInlineEdit.prototype.updateIndividualRowValuesAfterSave = function($tr) {
+    TableInlineEdit.prototype.updateIndividualRowValues= function($tr) {
         const controller = this;
         $.each($tr.find('.js-input-wrapper'), function(i, wrapper) {
             controller.setInputState($(wrapper), 'show', true);
@@ -349,48 +248,12 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         const $actionsTd = $tr.find('td.actions');
         const controller = this;
-        let data = {};
 
-        data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
-
-        $.each( $tr.find('.js-input'), function(i, input) {
-            const $input = $(input);
-            data[$input.attr('name')] = $input.val();
-        });
-
-        $.ajax({
-            'type': 'POST',
-            'data': data,
-            'url': controller.options.deleteUrl,
-            'dataType': 'json',
-            'beforeSend': function() {
-                controller.hideEditControls($tr, $tapers);
-                controller.hideGeneralControls($tr);
-
-                const $spinner = '<div class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
-                $actionsTd.append($spinner);
-            },
-            'success': function (resp) {
-                if (resp.success === true) {
-                    $actionsTd.append("<small style='color:red'>Deleted.</small>");
-                    $tr.fadeOut(1000, function(){ $(this).remove(); });
-                    $tapers.fadeOut(1000, function () { $(this).remove();});
-                }
-            },
-            'error': function(resp){
-                alert('Remove medication from set FAILED. Please try again.');
-                console.error(resp);
-                if (typeof controller.onAjaxError === 'function') {
-                    controller.onAjaxError();
-                }
-            },
-            'complete': function(){
-                $actionsTd.find('.js-spinner-as-icon').remove();
-                if (typeof controller.onAjaxComplete === 'function') {
-                    controller.onAjaxComplete();
-                }
-            }
-        });
+        controller.hideEditControls($tr, $tapers);
+        controller.hideGeneralControls($tr);
+        $actionsTd.append("<small style='color:red'>Deleted.</small>");
+        $tr.fadeOut(1000, function(){ $(this).remove(); });
+        $tapers.fadeOut(1000, function () { $(this).remove();});
     };
 
     exports.TableInlineEdit = TableInlineEdit;
