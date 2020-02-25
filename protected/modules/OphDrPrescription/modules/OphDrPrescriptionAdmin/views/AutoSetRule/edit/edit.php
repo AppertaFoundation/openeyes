@@ -79,7 +79,6 @@
     <div class="row divider">
         <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
-
     <?= \OEHtml::submitButton() ?>
     <?= \OEHtml::cancelButton("Cancel", [
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',

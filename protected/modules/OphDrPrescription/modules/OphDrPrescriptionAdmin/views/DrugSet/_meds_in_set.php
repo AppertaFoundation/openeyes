@@ -200,7 +200,6 @@ if ($is_prescription_set) {
                 <i class="oe-i child-arrow small"></i>
             </button>
             {{preferred_term}}
-            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{id}}">
             <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
         </td>
         <td>

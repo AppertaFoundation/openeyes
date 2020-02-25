@@ -260,10 +260,11 @@ class AutoSetRuleController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
-            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationAutoRuleAttributes', []);
+            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationSetAutoRuleAttributes', []);
             $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
             $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
-            // $set->tmp_meds (MedicationSetAutoRuleMedication) are added via ajax
+            $set->tmp_meds = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
+            $set->tmp_tapers = \Yii::app()->request->getParam('MedicationSetAutoRuleMedicationTaper', []);
 
             $set->name = $data['name'];
             $set->hidden = $data['hidden'];
@@ -276,6 +277,7 @@ class AutoSetRuleController extends BaseAdminController
             }
 
             if (!$set->hasErrors() && $set->save()) {
+                $this->actionPopulateAll($set->id);
                 $this->redirect('/OphDrPrescription/admin/autoSetRule/index');
             }
         }
@@ -306,11 +308,13 @@ class AutoSetRuleController extends BaseAdminController
         ]);
     }
 
-    public function actionPopulateAll()
+    public function actionPopulateAll($set_id = '')
     {
-        shell_exec("php " . Yii::app()->basePath . "/yiic populateAutoMedicationSets >/dev/null 2>&1 &");
+        shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
         Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
-        $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+        if ($set_id === '') {
+            $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+        }
     }
 
     public function actionDelete()
@@ -333,90 +337,6 @@ class AutoSetRuleController extends BaseAdminController
 
         echo 1;
         exit;
-    }
-
-    public function actionUpdateMedicationDefaults()
-    {
-        $result['success'] = false;
-        $transaction = Yii::app()->db->beginTransaction();
-        try {
-            if (\Yii::app()->request->isPostRequest) {
-                $set_id = \Yii::app()->request->getParam('set_id');
-                $item_data = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
-                $medication_data = \Yii::app()->request->getParam('Medication', []);
-                $tapers = json_decode(\Yii::app()->request->getParam('tapers', []), true);
-
-                if ($set_id && $medication_data['id'] && isset($item_data['id'])) {
-                    $item = \MedicationSetAutoRuleMedication::model()->findByPk($item_data['id']);
-
-                    if ($item) {
-                        $item->default_dose = isset($item_data['default_dose']) ? $item_data['default_dose'] : $item->default_dose;
-                        $item->default_route_id = isset($item_data['default_route_id']) ? $item_data['default_route_id'] : $item->default_route_id;
-                        $item->default_frequency_id = isset($item_data['default_frequency_id']) ? $item_data['default_frequency_id'] : $item->default_frequency_id;
-                        $item->default_duration_id = isset($item_data['default_duration_id']) ? $item_data['default_duration_id'] : $item->default_duration_id;
-                        $item->default_dispense_condition_id = isset($item_data['default_dispense_condition_id']) ? $item_data['default_dispense_condition_id'] : $item->default_dispense_condition_id;
-                        $item->default_dispense_location_id = isset($item_data['default_dispense_location_id']) ? $item_data['default_dispense_location_id'] : $item->default_dispense_location_id;
-                        $item->include_parent = isset($item_data['include_parent']) ? $item_data['include_parent'] : $item->include_parent;
-                        $item->include_children = isset($item_data['include_children']) ? $item_data['include_children'] : $item->include_children;
-
-                        $item->tapers = array();
-
-
-                        if ($tapers) {
-                            $taper_array = array();
-                            foreach ($tapers as $taper) {
-                                $taper = json_decode($taper, true);
-                                $new_taper = new MedicationSetAutoRuleMedicationTaper();
-                                if (isset($taper['MedicationSetAutoRuleMedicationTaper[id]']) && $taper['MedicationSetAutoRuleMedicationTaper[id]'] !== "") {
-                                    $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['MedicationSetAutoRuleMedicationTaper[id]']);
-                                }
-                                $new_taper->medication_set_auto_rule_id = $item->id;
-                                $new_taper->dose = $taper['MedicationSetAutoRuleMedicationTaper[dose]'];
-                                $new_taper->duration_id = $taper['MedicationSetAutoRuleMedicationTaper[duration_id]'];
-                                $new_taper->frequency_id = $taper['MedicationSetAutoRuleMedicationTaper[frequency_id]'];
-                                $taper_array[] = $new_taper;
-                            }
-                            $item->tapers = $taper_array;
-                        }
-
-                        // auto relation update throws an error
-                        try {
-                            $result['success'] = $item->save();
-                        } catch (Exception $e) {
-                            $result['success'] = false;
-
-                            //interesting behaviour, after $item->save() fails the original relation is restored
-                            if ($tapers) {
-                                $item->tapers = $taper_array;
-                            }
-                        }
-
-                        $result['errors'] = [];
-                        foreach ($item->tapers as $taper) {
-                            if (!$taper->validate() && $taper->hasErrors()) {
-                                foreach ($taper->getErrors() as $key => $error) {
-                                    $result['errors'][$taper->id] = $error[0];
-                                }
-                            }
-                        }
-
-                        if ($result['success'] === true) {
-                            $transaction->commit();
-                        } else {
-                            $transaction->rollback();
-                        }
-                    }
-                } else {
-                    $result['errorsMessage'] = 'Missing required parameters.';
-                }
-            }
-        } catch (Exception $e) {
-                $transaction->rollback();
-                $result['errorsMessage'] = $e->getMessage();
-        } finally {
-            echo \CJSON::encode($result);
-            \Yii::app()->end();
-        }
     }
 
     public function actionListMedications()
@@ -472,37 +392,6 @@ class AutoSetRuleController extends BaseAdminController
         $set_auto_rule_med->save();
 
         return $set_auto_rule_med;
-    }
-
-    public function actionAddMedicationToSet()
-    {
-        $result['success'] = false;
-        if (\Yii::app()->request->isPostRequest) {
-            $set_id = \Yii::app()->request->getParam('set_id');
-            $set = \MedicationSet::model()->findByPk($set_id);
-            $medication_id = \Yii::app()->request->getParam('medication_id');
-
-            if ($set && $medication_id) {
-                $med = $this->addMedication($set->id, $medication_id);
-
-                if (!$med->hasErrors()) {
-                    $result['success'] = true;
-                    $result['id'] = $med->id;
-                } else {
-                    $result['success'] = false;
-                    $result['id'] = null;
-                    $result['msg'] = $med->getErrors();
-                }
-            } else {
-                $result['msg'][] = !$set_id ? 'Set id is required. ' : '';
-                $result['msg'][] = ($set_id && !$set) ? 'Set not found' : '';
-            }
-        } else {
-            $result['msg'][]= "Only POST request is supported";
-        }
-
-        echo \CJSON::encode($result);
-        \Yii::app()->end();
     }
 
     public function actionRemoveMedicationFromSet()
