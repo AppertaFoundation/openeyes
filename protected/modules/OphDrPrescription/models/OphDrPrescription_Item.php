@@ -275,22 +275,22 @@ class OphDrPrescription_Item extends EventMedicationUse
 
             $new_taper->save();
         }
-
     }
 
     public function fpTenFrequency()
     {
-        if (preg_match("/^\d+/", $this->duration->name)) {
-            return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' FOR ' . strtoupper($this->duration->name);
+        if (preg_match("/^\d+/", $this->drugDuration->name)) {
+            return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' FOR ' . strtoupper($this->drugDuration->name);
         }
 
-        return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' ' . strtoupper($this->duration->name);
+        return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' ' . strtoupper($this->drugDuration->name);
     }
 
     public function fpTenDose()
     {
-        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->drug->dose_unit) : strtoupper($this->dose))
-            . ', ' . strtoupper($this->route->name) . ($this->route_option ? ' (' . strtoupper($this->route_option->name) . ')' : null);
+        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->dose_unit_term) : strtoupper($this->dose))
+            . ', ' . strtoupper($this->route->term)
+            . ($this->medicationLaterality ? ' (' . strtoupper($this->medicationLaterality->name) . ')' : null);
     }
 
     protected function beforeDelete()

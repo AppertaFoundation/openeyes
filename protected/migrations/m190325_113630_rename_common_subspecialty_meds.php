@@ -2,24 +2,38 @@
 
 class m190325_113630_rename_common_subspecialty_meds extends CDbMigration
 {
+    /**
+     * @return bool|void
+     * @throws CException
+     */
     public function up()
     {
         /** @var CDbTransaction $transaction */
-        $transaction = Yii::app()->db->beginTransaction();
+        $transaction = $this->dbConnection->beginTransaction();
         try {
-            $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
-            $rules = MedicationSetRule::model()->findAll("usage_code_id='{$common_oph_id}'");
+            $common_oph_id = $this->dbConnection->createCommand()
+                ->select('id')
+                ->from('medication_usage_code')
+                ->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])
+                ->queryScalar();
+            $rules = $this->dbConnection->createCommand('SELECT * FROM medication_set_rule WHERE usage_code_id = :usage_code_id')
+                ->bindValue(':usage_code_id', $common_oph_id)
+                ->queryAll();
             foreach ($rules as $rule) {
                 /** @var MedicationSetRule $rule */
-                $set = $rule->medicationSet;
-                $site = $rule->site->name;
-                $subspec = $rule->subspecialty->name;
+                $site = $this->dbConnection->createCommand('SELECT name FROM site WHERE id = :id')
+                    ->bindValue(':id', $rule['site_id'])
+                    ->queryScalar();
+                $subspec = $this->dbConnection->createCommand('SELECT name FROM subspecialty WHERE id = :id')
+                    ->bindValue(':id', $rule['subspecialty_id'])
+                    ->queryScalar();
 
-                $set->name = "Common $site $subspec medications";
-                if (!$set->save()) {
-                    $transaction->rollback();
-                    return false;
-                }
+                $this->update(
+                    'medication_set',
+                    array('name' => "Common $site $subspec medications"),
+                    'id = :id',
+                    array(':id' => $rule['medication_set_id'])
+                );
             }
         } catch (Exception $e) {
             $transaction->rollback();
@@ -33,17 +47,23 @@ class m190325_113630_rename_common_subspecialty_meds extends CDbMigration
     public function down()
     {
         /** @var CDbTransaction $transaction */
-        $transaction = Yii::app()->db->beginTransaction();
+        $transaction = $this->dbConnection->beginTransaction();
         try {
-            $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
-            $rules = MedicationSetRule::model()->findAll("usage_code_id='{$common_oph_id}'");
+            $common_oph_id = $this->dbConnection->createCommand()
+                ->select('id')
+                ->from('medication_usage_code')
+                ->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])
+                ->queryScalar();
+            $rules = $this->dbConnection->createCommand('SELECT * FROM medication_set_rule WHERE usage_code_id = :usage_code_id')
+                ->bindValue(':usage_code_id', $common_oph_id)
+                ->queryAll();
             foreach ($rules as $rule) {
-                $set = $rule->medicationSet;
-                $set->name = "Common subspecialty medications";
-                if (!$set->save()) {
-                    $transaction->rollback();
-                    return false;
-                }
+                $this->update(
+                    'medication_set',
+                    array('name' => 'Common subspecialty medications'),
+                    'id = :id',
+                    array(':id', $rule['medication_set_id'])
+                );
             }
         } catch (Exception $e) {
             $transaction->rollback();

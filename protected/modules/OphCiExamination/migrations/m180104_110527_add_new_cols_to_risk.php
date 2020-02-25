@@ -33,7 +33,7 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $this->addForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set', 'firm_id', 'firm', 'id');
 
-        $ophciexamination_risk = Yii::app()->db->schema->getTable('ophciexamination_risk');
+        $ophciexamination_risk = $this->dbConnection->schema->getTable('ophciexamination_risk');
         if (isset($ophciexamination_risk->columns['required'])) {
             $this->dropColumn("ophciexamination_risk", "required");
             $this->dropColumn("ophciexamination_risk_version", "required");

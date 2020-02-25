@@ -626,7 +626,7 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'start_date'];
+                  'dose','dose_unit_term', 'frequency_id', 'frequency'];
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }

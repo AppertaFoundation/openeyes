@@ -63,16 +63,17 @@ class Element_OphTrOperationbooking_ScheduleOperationTest extends CDbTestCase
 
     public function testIsPatientUnavailable()
     {
-        $this->markTestIncomplete('Unknown issue regarding a potential null start date. Needs further investigation.');
         $unavailables_data = array(
-                array(
-                        'start_date' => '2014-04-03',
-                        'end_date' => '2014-04-03',
-                ),
-                array(
-                        'start_date' => '2014-04-12',
-                        'end_date' => '2014-05-03',
-                ),
+            array(
+                'start_date' => '2014-04-03',
+                'end_date' => '2014-04-03',
+                'reason_id' => 1,
+            ),
+            array(
+                'start_date' => '2014-04-12',
+                'end_date' => '2014-05-03',
+                'reason_id' => 1,
+            ),
         );
 
         $unavailables = array();
@@ -84,11 +85,17 @@ class Element_OphTrOperationbooking_ScheduleOperationTest extends CDbTestCase
 
         $test1 = new Element_OphTrOperationbooking_ScheduleOperation();
         $test1->patient_unavailables = array($unavailables[0]);
+        $test1->schedule_options_id = 1;
+        $test1->event_id = 1;
+        $test1->save();
         $this->assertFalse($test1->isPatientAvailable('2014-04-03'));
         $this->assertTrue($test1->isPatientAvailable('2014-04-04'));
 
         $test2 = new Element_OphTrOperationbooking_ScheduleOperation();
         $test2->patient_unavailables = array($unavailables[0], $unavailables[1]);
+        $test2->schedule_options_id = 1;
+        $test2->event_id = 1;
+        $test2->save();
         $this->assertTrue($test2->isPatientAvailable('2014-04-02'));
         $this->assertFalse($test2->isPatientAvailable('2014-04-03'));
         $this->assertTrue($test2->isPatientAvailable('2014-04-09'));

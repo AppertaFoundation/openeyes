@@ -81,7 +81,7 @@ select event_date, event.created_date, event_id, patient_id from et_ophciexamina
 join event on et.event_id = event.id
 join episode on event.episode_id = episode.id
 EOSQL
-);
+        );
         $this->createView('latest_allergy_examination_events', <<<EOSQL
 select t1.event_id, t1.patient_id from allergy_examination_events t1
 left outer join allergy_examination_events t2
@@ -90,7 +90,7 @@ on t1.patient_id = t2.patient_id
    		or (t1.event_date = t2.event_date and t1.created_date < t2.created_date))
 where t2.patient_id is null
 EOSQL
-);
+        );
         $this->createView('patient_allergy_assignment', <<<EOSQL
 select aa.id, latest.patient_id as patient_id, aa.allergy_id, aa.other, aa.comments, aa.last_modified_user_id,
 aa.last_modified_date,
@@ -99,7 +99,7 @@ aa.created_date from ophciexamination_allergy_entry as aa
 	join et_ophciexamination_allergies element on aa.element_id = element.id
 	join latest_allergy_examination_events latest on element.event_id = latest.event_id
 EOSQL
-);
+        );
         $this->createView('allergy', 'select * from ophciexamination_allergy');
     }
 
