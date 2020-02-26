@@ -120,6 +120,26 @@
                 ?>
             </tr>
             <tr>
+                <td>Risk/s</td>
+                <?php
+                    $this->widget('application.widgets.MultiSelectDropDownList', [
+                        'options' => [
+                            'label' => 'risks',
+                            'dropDown' => [
+                                'name' => null,
+                                'id' => '$risks',
+                                'data' => \CHtml::listData($risks, 'id', 'name'),
+                                'htmlOptions' => ['empty' => 'Add a Risk', 'class' => 'cols-full'],
+                                'selectedItemsInputName' => 'risks[]',
+                                'selectedItems' => array_map(function ($sub) {
+                                    return $sub->id;
+                                }, $procedure->risks),
+                            ],],
+                        'template' => "<td class='js-multiselect-dropdown-wrapper'>{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div></td>"
+                    ]);
+                    ?>
+            </tr>
+            <tr>
                 <td>Operation Note Element</td>
                 <?php
                 $this->widget('application.widgets.MultiSelectDropDownList', [

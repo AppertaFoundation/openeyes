@@ -57,7 +57,7 @@ $episodes = $this->episode->patient->episodes
               <tr>
                 <td>
                     <?= $episode->diagnosis->term ?>
-                  <span class="js-$episode-tooltip oe-i info small"
+                  <span class="js-has-tooltip oe-i info small"
                         data-tooltip-content="Principal diagnosis for <?= $episode->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
@@ -73,7 +73,7 @@ $episodes = $this->episode->patient->episodes
                 <?php }
             }
             $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->findAll('element_diagnoses_id=? and principal=0 ', array($element->id));
+            ->findAll(["condition" => "element_diagnoses_id=:id and principal=0", "order" => "date desc", "params" => [":id"=>$element->id] ]);
             foreach ($diagnoses as $diagnosis) { ?>
           <tr>
             <td>
