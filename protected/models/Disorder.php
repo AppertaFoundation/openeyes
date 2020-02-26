@@ -88,7 +88,7 @@ class Disorder extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('fully_specified_name, term', 'required'),
-            array('id', 'length', 'max' => 10),
+            array('id', 'length', 'max' => 20),
             array('id', 'checkDisorderExists'),
             array('fully_specified_name, term , aliases , specialty_id', 'length', 'max' => 255),
             // The following rule is used by search().
@@ -214,5 +214,15 @@ class Disorder extends BaseActiveRecordVersioned
             return true;
         }
             return false;
+    }
+
+    public function getPatientDisorders($patient_id) {
+        $criteria = new CDbCriteria();
+        $criteria->join = "LEFT JOIN episode ep ON ep.disorder_id = t.id AND ep.patient_id = :patient_id ";
+        $criteria->join .= "LEFT JOIN secondary_diagnosis sd ON sd.disorder_id = t.id AND sd.patient_id = :patient_id";
+        $criteria->condition = "ep.id IS NOT NULL OR sd.id IS NOT NULL";
+        $criteria->params[':patient_id'] = $patient_id;
+
+        return Disorder::model()->findAll($criteria);
     }
 }

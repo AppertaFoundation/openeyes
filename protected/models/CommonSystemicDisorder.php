@@ -56,7 +56,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('disorder_id', 'required'),
-            array('disorder_id', 'length', 'max' => 10),
+            array('disorder_id', 'length', 'max' => 20),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, disorder_id', 'safe', 'on' => 'search'),

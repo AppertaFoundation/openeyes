@@ -18,6 +18,7 @@
 <div class="cvi-alert alert-box issue flex-layout"
      data-alert="CVI may be applicable"
      data-threshold="<?= $threshold ?>"
+     data-hascvi="<?= $has_cvi ?>"
      style="<?php if (!$visible) :
             ?>display: none;<?php
             endif; ?>">

@@ -29,7 +29,7 @@
                         <td>
                             Not recorded
                             <?php if ($element->{$eye_side . '_unable_to_assess'}) { ?>
-                                (Unable to assess <?php if ($element->{$eye_side . '_eye_missing'}) {
+                                (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}) {
                                     ?>, eye missing<?php
                                                   } ?>)
                             <?php } elseif ($element->{$eye_side . '_eye_missing'}) { ?>

@@ -2,26 +2,29 @@
 
 class ContextController extends BaseAdminController
 {
-   // public $defaultAction = 'firms';
+    // public $defaultAction = 'firms';
 
     public function actionIndex()
     {
         Audit::add('admin-Firm', 'list');
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+
         $criteria = new \CDbCriteria();
+        $search = [];
+        $search['query'] = \Yii::app()->request->getQuery('query');
+        $search['active'] = \Yii::app()->request->getQuery('active');
 
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :id');
-                    $criteria->params[':id'] = $search['query'];
-                } else {
-                    $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('cost_code', $search['query'], true, 'OR');
-                    $criteria->addSearchCondition('name', $search['query'], true, 'OR');
-                }
+        if (isset($search['query'])) {
+            if (is_numeric($search['query'])) {
+                $criteria->addCondition('id = :id');
+                $criteria->params[':id'] = $search['query'];
+            } else {
+                $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
+                $criteria->addSearchCondition('cost_code', $search['query'], true, 'OR');
+                $criteria->addSearchCondition('name', $search['query'], true, 'OR');
             }
+        }
 
+        if (isset($search['active'])) {
             if ($search['active'] == 1) {
                 $criteria->addCondition('active = 1');
             } elseif ($search['active'] !== '') {
