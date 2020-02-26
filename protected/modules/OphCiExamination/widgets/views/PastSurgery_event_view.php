@@ -37,7 +37,7 @@ $widget = $this;
                                 <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>
                             <?php } ?>
                         </td>
-                        <td>
+                        <td class="nowrap">
                             <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
                             <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>

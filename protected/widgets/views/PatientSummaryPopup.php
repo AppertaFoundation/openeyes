@@ -26,7 +26,8 @@
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-?>
+
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
     <?php if ($this->patient->nhsNumberStatus) : ?>
@@ -352,6 +353,10 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <div class="label">Eye diagnoses</div>
                     <div class="data">
                         <table>
+                            <colgroup>
+                                <col class="cols-8">
+                                <col>
+                            </colgroup>
                             <tbody>
                             <?php
                             $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
@@ -364,14 +369,18 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <?php } ?>
 
                             <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
+                                list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis); ?>
                                 <tr>
                                     <td><?= $name ?></td>
-                                    <td>
-                                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                    <td><i class="oe-i"></i></td>
+                                    <td class="nowrap">
+                                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side, 'pad' => '')) ?>
+                                        <span class="oe-date"><?= $date ?></span>
                                     </td>
                                     <td>
-                                        <span class="oe-date"><?= $date ?></span>
+                                        <?php if (isset($event_id) && $event_id) { ?>
+                                            <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -384,6 +393,10 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <div class="label">Systemic Diagnoses</div>
                     <div class="data">
                         <table>
+                            <colgroup>
+                                <col class="cols-8">
+                                <col>
+                            </colgroup>
                             <tbody>
                             <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
                                 <tr>
@@ -395,10 +408,17 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                             <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
                                 <tr>
                                     <td> <?= $diagnosis->disorder->term ?></td>
-                                    <td>
-                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
+                                    <td><i class="oe-i"></i></td>
+                                    <td class="nowrap">
+                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye, 'pad' => '')) ?>
+                                        <div class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></div>
                                     </td>
-                                    <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
+                                    <td>
+                                        <?php $event_id = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($diagnosis->id))->element->event_id;
+                                        if (isset($event_id) && $event_id) { ?>
+                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                             <?php } ?>
                             </tbody>

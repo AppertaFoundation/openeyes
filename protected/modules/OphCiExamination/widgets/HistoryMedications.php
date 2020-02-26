@@ -276,10 +276,6 @@ class HistoryMedications extends \BaseEventElementWidget
      * @param $entry
      * @return string
      */
-    public function getPrescriptionLink($entry)
-    {
-        return '/OphDrPrescription/Default/view/' . $entry->prescription_item->prescription->event_id;
-    }
 
     /**
      * @return string

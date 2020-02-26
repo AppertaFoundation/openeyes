@@ -204,6 +204,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                         <table>
                             <colgroup>
                                 <col class="cols-8">
+                                <col>
                             </colgroup>
                             <tbody>
                             <?php
@@ -220,10 +221,8 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                 list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
                                     <td><strong><?= $name ?></strong></td>
-                                    <td>
+                                    <td class="nowrap">
                                         <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                                    </td>
-                                    <td class="date">
                                         <span class="oe-date"><?= $date ?></span>
                                     </td>
                                     <td>
