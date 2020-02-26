@@ -13,7 +13,6 @@
     'permission' => $permission,
 )); ?>
 
-
 <div class="oe-full-content subgrid oe-worklists">
 
     <?php $this->renderPartial('_trialActions', array(
@@ -86,7 +85,7 @@
           <tr class="col-gap">
             <td>Description</td>
             <td colspan="3">
-                <?= CHtml::encode($trial->description) ?>
+                <?= nl2br(CHtml::encode($trial->description)) ?>
             </td>
           </tr>
         <?php endif; ?>
@@ -145,9 +144,12 @@
         window.location.reload(false);
       },
       error: function (response) {
+        //  Changed to meet requirements of CERA-583, there was no popup box shown earlier because content:response throws an error
+        var displayError = response.responseText;
+        displayError = displayError.substring(displayError.search('<p>'),displayError.indexOf('(') ) + '</p>';
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: response
+          content: displayError
         }).open();
       },
     });
@@ -243,6 +245,7 @@
 
     $(document).on('click', '.js-save-comment-trial-patient', function () {
         var $container=$(this).closest('.js-trial-patient-comment-tr');
+        var $containerAttrVal = $(this).closest('.js-trial-patient-comment-tr').attr('data-trial-patient-id');
         var $actions = $(this).closest('.js-comment-trial-patient-actions');
         var trialPatientId = $(this).closest('.js-trial-patient-comment-tr').data('trial-patient-id');
         var comment = $container.find('.js-comment-trial-patient').val();
@@ -259,6 +262,13 @@
             success: function (response) {
                 $container.find('.js-hidden-comment-trial-patient').val(comment);
                 $actions.hide();
+                // Make the comment button green when there is a comment.
+                if (comment != '') {
+                    $($("[data-trial-patient-id="+$containerAttrVal+"]")[0]).find("#trial_patient_comment_button").addClass("hint green");
+                }
+                else {
+                    $($("[data-trial-patient-id="+$containerAttrVal+"]")[0]).find("#trial_patient_comment_button").removeClass("hint green");
+                }
             },
             error: function (response) {
                 new OpenEyes.UI.Dialog.Alert({

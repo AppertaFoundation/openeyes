@@ -24,11 +24,6 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 <header class="element-header">
     <h3 class="element-title">Select theatre time</h3>
 </header>
-<div class="element-actions">
-    <span class="js-remove-element">
-        <i class="oe-i remove-circle"></i>
-    </span>
-</div>
 
 <div class="element-fields full-width">
     <div class="cols-full theatre-sessions">

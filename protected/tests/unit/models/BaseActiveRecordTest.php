@@ -255,7 +255,7 @@ class BaseActiveRecordTest extends CDbTestCase
     {
         $mock = $this->getMockBuilder('RelationTestAssClass')
             ->disableOriginalConstructor()
-            ->setMethods(array('delete'))
+            ->setMethods(array('delete', 'getPrimaryKey'))
             ->getMock();
         $mock->rel_id = $rel_id;
         $mock->expects($this->any())

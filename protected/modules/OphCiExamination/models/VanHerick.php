@@ -34,11 +34,11 @@ namespace OEModule\OphCiExamination\models;
  */
 class VanHerick extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\VanHerick';
-    protected $default_from_previous = true;
 
     public function tableName()
     {

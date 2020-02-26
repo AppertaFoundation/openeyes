@@ -33,8 +33,13 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
+    protected $errorExceptions = array(
+    'OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_values.reading_id' => 'OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values',
+    'OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_values.reading_id' => 'OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values',
+    );
     /**
      * Returns the static model of the specified AR class.
      *
@@ -173,9 +178,27 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
         return false;
     }
 
+    public function getReadings($side)
+    {
+        $return_readings = array();
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
+            return;
+        }
+
+        foreach ($values as $value) {
+            if ($value->reading) {
+                $return_readings[] = $value->reading->value;
+            }
+        }
+
+        return $return_readings;
+    }
+
     public function getReading($side)
     {
-        if (!$values = $this->{"{$side}_integer_values"}) {
+        $values = $this->{"{$side}_integer_values"};
+        if (!$values) {
             return;
         }
 

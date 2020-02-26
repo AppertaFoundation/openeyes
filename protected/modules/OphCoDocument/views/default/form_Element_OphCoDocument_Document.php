@@ -17,6 +17,7 @@
  */
 ?>
 <div class="element-fields full-width flex-layout">
+    <input type="hidden" id="removed-docs" name="removed-docs" value="">
     <div class="cols-11">
         <table class="cols-6 last-left">
             <tbody>
@@ -37,17 +38,17 @@
                 <td>Upload</td>
                 <td>
                     <label class="inline highlight ">
-                        <input type="radio" value="single"
+                        <input type="radio" value="single" id="upload_single"
                                name="upload_mode"
                             <?= $element->single_document_id || (!$element->right_document_id && !$element->left_document_id) ? "checked" : ""; ?>
-                            <?= ($element->left_document_id || $element->right_document_id ? ' disabled' : '') ?>
-                               } ?> Single file
+                            <?= ($element->left_document_id || $element->right_document_id ? ' disabled' : '') ?>>
+                               Single file
                     </label> <label class="inline highlight ">
                         <input type="radio" name="upload_mode"
                                value="double"
                             <?= ($element->left_document_id || $element->right_document_id ? "checked" : ""); ?>
-                            <?= ($element->single_document_id ? " disabled" : ""); ?>
-                               } ?> Right/Left sides
+                            <?= ($element->single_document_id ? " disabled" : ""); ?>>
+                               Right/Left sides
                     </label></td>
             </tr>
             </tbody>
@@ -56,7 +57,9 @@
             <div class="cols-11">
                 <div id="document-comments" data-comment-button="#document_comment_button"
                      class="cols-full js-comment-container "
-                     style="<?php if ($element->comment == null) echo 'display:none' ?>">
+                     style="<?php if ($element->comment == null) {
+                            echo 'display:none';
+                            } ?>">
                     <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                         <?php
                         echo $form->textArea($element,
@@ -75,7 +78,9 @@
                             class="button js-add-comments"
                             data-comment-container="#document-comments"
                             type="button"
-                            style="visibility:<?php if ($element->comment != null) echo 'hidden' ?>">
+                            style="visibility:<?php if ($element->comment != null) {
+                                echo 'hidden';
+                                              } ?>">
 
                         <i class="oe-i comments small-icon"></i>
                     </button>
@@ -86,9 +91,8 @@
         <hr class="divider">
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
-            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>
-        >
-            <div>
+            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>>
+            <div id="single-rotate-actions" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
                 <label>Rotate Single Image:</label>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'single');"></i>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
@@ -116,12 +120,16 @@
                                    id="Document_single_document_row_id"
                                    style="display:none;"
                                    class="js-document-file-input"
+                                   data-side="single"
                             >
                         </div>
 
                         <?php $this->generateFileField($element, 'single_document'); ?>
 
                         <div class="flex-layout flex-right js-remove-document-wrapper" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
+                            <?php if ($element->single_document_id) : ?>
+                            <input type="hidden" id="original-doc" name="original-doc" value="<?= $element->single_document_id ?>">
+                            <?php endif; ?>
                             <button class="hint red" data-side="single">remove uploaded file</button>
                         </div>
 
@@ -154,7 +162,7 @@
                         $document_id = $side.'_document_id';
                         ?>
                     <td>
-                        <div>
+                        <div id="<?=$side?>-rotate-actions" <?= (!$element->{$side . '_document_id'} ? 'style="display:none"' : ''); ?>>
                             <label>Rotate <?=$side?> Image:</label>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, '<?=$side?>');"></i>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, '<?=$side?>');" style="transform: scale(-1, 1);"></i>
@@ -174,12 +182,14 @@
                                    id="Document_<?=$side?>_document_row_id"
                                    style="display:none;"
                                    class="js-document-file-input"
+                                   data-side="<?=$side?>"
                             >
                         </div>
                         <?php $this->generateFileField($element, $side.'_document'); ?>
 
                         <div class="flex-layout flex-<?=$side?> js-remove-document-wrapper"
                             <?= ($element->{$side."_document_id"} ? '' : 'style="display:none"'); ?> >
+                            <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side."_document_id"} ?>">
                             <button class="hint red" data-side="<?=$side?>">remove uploaded file</button>
                         </div>
                         <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
@@ -196,7 +206,6 @@
             size: <?= $this->getMaxDocumentSize(); ?> MB)
         </div>
     </div>
-
 
     <script type="text/template" id="side-selector-popup">
         <table>
@@ -219,7 +228,6 @@
             </tbody>
         </table>
     </script>
-
     <script>
         function rotateImage(degree, type) {
             let document_rotate = $('#'+type+'_document_rotate').val();
@@ -238,5 +246,49 @@
                 }
             });
         }
-    </script>
 
+        window.addEventListener("unload", function () {
+            let documents = [];
+            let controller = $('.js-document-upload-wrapper').data('controller');
+            let removed_docs = $('#removed-docs');
+
+            if (controller.options.action === 'cancel' || controller.options.action === '') {
+                $('.js-document-id').each(function () {
+                    if ($(this).val() !== "") {
+                        $(this).parents('td').find(controller.options.removeButtonSelector).trigger('click');
+                    }
+                });
+
+                documents = removed_docs.data('documents');
+
+                if (window.location.href.includes('update')) {
+                    if ($('#upload_single').prop('checked')) {
+                        let original_doc = $('#original-doc').val();
+                        documents = documents.filter(function (document) {
+                            return document !== original_doc;
+                        });
+                        removed_docs.data('documents', documents);
+                    } else {
+                        for (let side of ['left', 'right']) {
+                            documents = documents.filter(function (document) {
+                                return document !== $('#original-' + side + '-doc').val();
+                            });
+                            removed_docs.data('documents', documents);
+                        }
+                    }
+                }
+            }
+
+            documents = removed_docs.data('documents');
+
+            if (documents.length !== 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/OphCoDocument/Default/removeDocuments',
+                    data: {doc_ids: documents,
+                        YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                    async: false
+                });
+            }
+        });
+    </script>
