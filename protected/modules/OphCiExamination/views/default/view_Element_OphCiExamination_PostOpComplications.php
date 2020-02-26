@@ -32,18 +32,18 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
                         $eye_abbr = $eye_side == 'right' ? 'R' : 'L';
                         $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                         ?>
-                        <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="<?= $eye_abbr ?>">
+                        <table id="<?=$eye_side?>-complication-list" class="recorded-postop-complications" data-sideletter="<?= $eye_abbr ?>">
                             <tr>
                                 <td colspan="2">
-                                        <?php if ($eye_side === 'right') {
-                                                echo $operationNoteList[$operation_note_id];
-                                        } ?>
+                                    <?php if ($eye_side === 'right') {
+                                            echo $operationNoteList[$operation_note_id];
+                                    } ?>
                                 </td>
                             </tr>
                             <?php foreach ($element->getFullComplicationList($eye_macro) as $value) : ?>
                                 <tr>
-                                        <td class=postop-complication-name><?php echo $value['name']; ?></td>
-                                        <td></td>
+                                    <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                                    <td></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
