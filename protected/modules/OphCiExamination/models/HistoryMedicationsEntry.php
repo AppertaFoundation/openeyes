@@ -387,6 +387,7 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function getStartDateDisplay()
     {
+
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
