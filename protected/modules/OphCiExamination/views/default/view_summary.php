@@ -69,7 +69,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       <td></td>
                                       <td>
                                         <?php if ($entry->getDoseAndFrequency()) { ?>
-                                            <i class="oe-i info small pro-theme js-has-tooltip"
+                                            <i class="oe-i info small js-has-tooltip"
                                                data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                             </i>
                                         <?php } ?>
@@ -114,7 +114,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                       </td>
                                       <td>
                                           <?php if ($entry->getDoseAndFrequency()) {?>
-                                              <i class="oe-i info small pro-theme js-has-tooltip"
+                                              <i class="oe-i info small js-has-tooltip"
                                                  data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                               </i>
                                           <?php } ?>
@@ -260,7 +260,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                             </td>
                                             <td>
                                                 <?php if ($entry->getDoseAndFrequency()) {?>
-                                                    <i class="oe-i info small pro-theme js-has-tooltip"
+                                                    <i class="oe-i info small js-has-tooltip"
                                                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                                                     </i>
                                                 <?php } ?>
