@@ -81,29 +81,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         ));
     }
 
-    public function renderParameter($id)
-    {
-        ?>
-        <div class="flex-layout flex-left">
-            <?= $this->getDisplayTitle() ?>
-            <div class="parameter-option">
-                <?php echo CHtml::activeDropDownList(
-                    $this,
-                    "[$id]code",
-                    $this->getAllCodes(),
-                    array('onchange' => 'refreshValues(this)','prompt' => 'Select One...', 'class' => 'js-code')
-                ); ?>
-                <?php echo CHtml::error($this, "[$id]code"); ?>
-            </div>
-
-            <div class="parameter-option">
-                <?php echo CHtml::activeTextField($this, "[$id]number"); ?>
-                <?php echo CHtml::error($this, "[$id]number"); ?>
-            </div>
-        </div>
-        <?php
-    }
-
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.

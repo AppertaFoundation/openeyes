@@ -52,43 +52,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         );
     }
 
-    public function renderParameter($id)
-    {
-        $ops = array(
-            'HAS_HAD' => 'Has had a',
-            'HAS_NOT_HAD' => 'Has not had a',
-        );
-        ?>
-
-      <div class="flex-layout flex-left js-case-search-param">
-            <div class="parameter-option">
-                <?= $this->getDisplayTitle() ?>
-            </div>
-                <div style="padding-right: 15px;">
-                    <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-                    <?php echo CHtml::error($this, "[$id]operation"); ?>
-                </div>
-
-            <div>
-                <?php
-                $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => $this->name . $this->id,
-                    'model' => $this,
-                    'attribute' => "[$id]textValue",
-                    'source' => Yii::app()->controller->createUrl('AutoComplete/commonProcedures'),
-                    'options' => array(
-                        'minLength' => 2,
-                    ),
-                ), true);
-                Yii::app()->clientScript->render($html);
-                echo $html;
-                ?>
-                <?php echo CHtml::error($this, "[$id]textValue"); ?>
-            </div>
-        </div>
-        <?php
-    }
-
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.

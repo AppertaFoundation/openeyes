@@ -67,125 +67,17 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
+        return array_merge(
+            parent::rules(),
+            array(
                 array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
             )
         );
     }
 
-    public function renderParameter($id)
+    public function getViewPath()
     {
-        $ops = array(
-            '=' => 'Is',
-            '!=' => 'Is not',
-        );
-
-        $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
-
-        $statusList = array(
-            TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
-            TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
-            TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
-        );
-
-        ?>
-        <div class="flex-layout flex-left js-case-search-param">
-            <div class="parameter-option">
-                <?= $this->getDisplayTitle()?>
-            </div>
-            <div class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
-                    array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]operation"); ?>
-            </div>
-            <div class="parameter-option">
-                <?php echo CHtml::activeDropDownList(
-                    $this,
-                    "[$id]status",
-                    $statusList,
-                    array('empty' => 'Involved with'));
-                ?>
-            </div>
-            <div class="js-trial-type parameter-option">
-            <?php echo CHtml::activeDropDownList($this, "[$id]trialTypeId", TrialType::getOptions(),
-                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this)")); ?>
-            </div>
-            <div class="js-trial-list parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
-                    array('empty' => 'Any')); ?>
-            </div>
-            <span class="js-treatment-type-container flex-layout flex-left"
-                style="<?= $this->trialType && $this->trialType->code = TrialType::NON_INTERVENTION_CODE ? 'display:none;':''?>"
-            >
-                <p class="parameter-option" style="margin-bottom: 0px;">with</p>
-                <div class="parameter-option">
-                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentTypeId", TreatmentType::getOptions(),
-                        array('empty' => 'Any')); ?>
-                </div>
-                <p class="parameter-option">treatment</p>
-            </span>
-        </div>
-
-        <script type="text/javascript">
-
-            let DOMStrings = {
-                parameterClass: '.parameter',
-                trialType: '.js-trial-type',
-                trialList: '.js-trial-list select',
-                treatmentType: '.js-treatment-type-container'
-            };
-
-            function getDOM() {
-                return DOMStrings;
-            }
-
-            // populateTrialList argument receives a boolean to specify whether we need to get the trial list or not.
-            function init(target, populateTrialList = true) {
-                let DOM = getDOM();
-                var parameterNode = $(DOM.parameterClass + '#' + <?= $this->id ?>);
-
-                var trialType = $(target).val();
-                var trialList = parameterNode.find(DOM.trialList);
-                var treatmentTypeContainer = parameterNode.find(DOM.treatmentType);
-
-                // If user has selected Any Trial as Trial type then hide the trial list
-                treatmentTypeContainer.toggle(
-                    !trialType ||
-                    trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
-                );
-
-                if (!trialType) {
-                    trialList.empty();
-                    trialList.hide();
-                } else {
-                    if(populateTrialList) {
-                        $.ajax({
-                            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/getTrialList'); ?>',
-                            type: 'GET',
-                            data: {type: trialType},
-                            success: function (response) {
-                                trialList.empty();
-                                trialList.append(response);
-                                trialList.show();
-                            }
-                        });
-                    }
-                }
-            }
-
-            // Execute the function on loading the page.
-            jQuery(document).ready(function(){
-                var DOM = getDOM();
-                init($(DOM.trialType).children(), false);
-            });
-
-            function getTrialList(target) {
-                init(target);
-            }
-
-        </script>
-
-        <?php
+        return 'application.modules.OETrial.views.caseSearch.' . parent::getViewPath();
     }
 
     /**
@@ -226,7 +118,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
         }
         switch ($this->operation) {
-            case '=':
+            case 'IS':
                 $query = "SELECT p.id 
                         FROM patient p 
                         $joinCondition trial_patient t_p 
@@ -236,7 +128,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                         WHERE $condition";
 
                 break;
-            case '!=':
+            case 'IS NOT':
                 $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id 
                             FROM patient p 
                             $joinCondition trial_patient t_p 

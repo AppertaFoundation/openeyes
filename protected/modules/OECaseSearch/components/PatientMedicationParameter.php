@@ -32,7 +32,9 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'textValue',
             )
         );
@@ -44,47 +46,12 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
+        return array_merge(
+            parent::rules(),
+            array(
                 array('textValue', 'required'),
             )
         );
-    }
-
-    public function renderParameter($id)
-    {
-        $ops = array(
-            'LIKE' => 'Has taken ',
-            'NOT LIKE' => 'Has not taken',
-        );
-        ?>
-
-      <div class="flex-layout flex-left js-case-search-param">
-        <div class="parameter-option">
-            <?= $this->getDisplayTitle() ?>
-        </div>
-            <div style="padding-right: 15px;">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]operation"); ?>
-            </div>
-
-            <div>
-                <?php
-                $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => $this->name . $this->id,
-                    'model' => $this,
-                    'attribute' => "[$id]textValue",
-                    'source' => Yii::app()->controller->createUrl('AutoComplete/commonMedicines'),
-                    'options' => array(
-                        'minLength' => 2,
-                    ),
-                ), true);
-                Yii::app()->clientScript->render($html);
-                echo $html;
-                ?>
-                <?php echo CHtml::error($this, "[$id]textValue"); ?>
-            </div>
-        </div>
-        <?php
     }
 
     /**
@@ -95,12 +62,11 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
      */
     public function query($searchProvider)
     {
-        switch ($this->operation) {
-            case 'LIKE':
-                $op = 'LIKE';
-                $wildcard = '%';
+        if ($this->operation) {
+            $op = 'LIKE';
+            $wildcard = '%';
 
-                return "
+            return "
 SELECT p.id
 FROM patient p
 JOIN patient_medication_assignment m
@@ -109,30 +75,25 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard'  :p_m_value_$this->id  '$wildcard'
-  OR md.name $op '$wildcard'  :p_m_value_$this->id  '$wildcard'";
-                break;
-            case 'NOT LIKE':
-                $op = 'NOT LIKE';
-                $wildcard = '%';
+WHERE d.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
+  OR md.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'";
+        }
 
-                return "
+        $op = 'NOT LIKE';
+        $wildcard = '%';
+
+        return "
 SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
-  ON m.patient_id = p.id
+ON m.patient_id = p.id
 LEFT JOIN drug d
-  ON d.id = m.drug_id
+ON d.id = m.drug_id
 LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard'  :p_m_value_$this->id  '$wildcard'
-  OR md.name $op '$wildcard'  :p_m_value_$this->id  '$wildcard'
-  OR m.id IS NULL";
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
-        }
+ON md.id = m.medication_drug_id
+WHERE d.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
+OR md.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
+OR m.id IS NULL";
     }
 
     /**

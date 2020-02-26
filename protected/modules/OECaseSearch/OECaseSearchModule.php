@@ -71,7 +71,7 @@ class OECaseSearchModule extends BaseModule
                  * @var $obj CaseSearchParameter
                  */
                 $obj = new $className;
-                $keys[$className] = $obj->getLabel();
+                $keys[] = array('type' => $className, 'label' => $obj->getLabel(), 'id' => $className);
             }
         }
 

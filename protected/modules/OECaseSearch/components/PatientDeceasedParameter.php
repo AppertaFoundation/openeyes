@@ -42,21 +42,6 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         ));
     }
 
-    public function renderParameter($id)
-    {
-        // Initialise any rendering variables here.
-        ?>
-      <!-- Place screen-rendering code here. -->
-
-        <div class="flex-layout flex-left">
-            <?= $this->getDisplayTitle() ?>
-            <div>
-                <?php echo CHtml::activeCheckBox($this, "[$id]operation"); ?>
-            </div>
-        </div>
-        <?php
-    }
-
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.

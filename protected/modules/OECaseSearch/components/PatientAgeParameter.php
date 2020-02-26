@@ -96,51 +96,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     }
 
     /**
-     * @param $id integer ID of the parameter for rendering purposes.
-     */
-    public function renderParameter($id)
-    {
-        $ops = array(
-            '<' => 'Younger than',
-            '>' => 'Older than',
-            'BETWEEN' => 'Between',
-        );
-        ?>
-      <div class="flex-layout flex-left js-case-search-param">
-        <div class="parameter-option">
-            <?= $this->getDisplayTitle() ?>
-        </div>
-        <div class="parameter-option">
-            <?php echo CHtml::activeDropDownList(
-                    $this,
-                    "[$id]operation",
-                    $ops,
-                    array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...', 'class' => 'js-age-operation')
-            ); ?>
-            <?php echo CHtml::error($this, "[$id]operation"); ?>
-        </div>
-        <div class="dual-value parameter-option"
-             style="<?php echo $this->operation === 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>"
-        >
-              <?php echo CHtml::activeTextField($this, "[$id]minValue", array('placeholder' => 'min', 'class' => 'js-age-min')); ?>
-              <?php echo CHtml::error($this, "[$id]minValue"); ?>
-              <?php echo CHtml::activeTextField($this, "[$id]maxValue", array('placeholder' => 'max', 'class' => 'js-age-max')); ?>
-              <?php echo CHtml::error($this, "[$id]maxValue"); ?>
-        </div>
-        <div class="single-value parameter-option"
-             style="<?php echo $this->operation !== 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>"
-        >
-            <?php echo CHtml::activeTextField($this, "[$id]textValue", array('class' => 'js-age-value')); ?>
-            <?php echo CHtml::error($this, "[$id]textValue"); ?>
-        </div>
-        <div class="parameter-option">
-          <p>years old</p>
-        </div>
-      </div>
-        <?php
-    }
-
-    /**
      * Generate the SQL query for patient age.
      * @param $searchProvider DBProvider The search provider building the query.
      * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.

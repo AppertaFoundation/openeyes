@@ -123,7 +123,8 @@ class CaseSearchController extends BaseModuleController
                     if (!empty($this->resultOrder)) {
                         $this->resultOrder .= ',';
                     }
-                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''.$param->patient_name.'\'))';
+                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''
+                        .$param->patient_name.'\'))';
                 }
             }
         }
@@ -185,8 +186,7 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionClear()
     {
-        unset($_SESSION['last_search']);
-        unset($_SESSION['last_search_params']);
+        unset($_SESSION['last_search'], $_SESSION['last_search_params']);
     }
 
     public function beforeAction($action)

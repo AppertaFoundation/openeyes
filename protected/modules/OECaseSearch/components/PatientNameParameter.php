@@ -54,21 +54,6 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         ));
     }
 
-    public function renderParameter($id)
-    {
-        ?>
-      <div class="flex-layout flex-left js-case-search-param">
-        <div class="parameter-option">
-            <?= $this->getDisplayTitle() ?>
-        </div>
-        <div class="parameter-option">
-            <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
-            <?php echo CHtml::error($this, "[$id]patient_name"); ?>
-        </div>
-      </div>
-        <?php
-    }
-
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.

@@ -27,6 +27,16 @@ abstract class CaseSearchParameter extends CFormModel
     abstract public function getLabel();
 
     /**
+     * Get the path of the view to use when rendering the search parameter. Override this function if the parameter is within a different module.
+     * By default, the view name is just the class name.
+     * @return string
+     */
+    public function getViewPath()
+    {
+        return get_class($this);
+    }
+
+    /**
      * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
      * @return string[] An array of attribute names.
      */
@@ -48,12 +58,6 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Render the parameter on-screen.
-     * @param $id integer The position of the parameter in the list of parameters.
-     */
-    abstract public function renderParameter($id);
-
-    /**
      * Override this function to customise the output within the audit table. Generally it should be something like "name: < val".
      * @return string|null The audit string.
      */
@@ -62,13 +66,8 @@ abstract class CaseSearchParameter extends CFormModel
         return null;
     }
 
-    protected function getDisplayTitle(){
-        ob_start();
-        ?>
-        <div style="padding-right: 15px;">
-            <p><?= $this->getLabel()?></p>
-        </div>
-        <?php
-        return ob_get_clean();
+    public function getDisplayTitle()
+    {
+        return $this->getLabel();
     }
 }

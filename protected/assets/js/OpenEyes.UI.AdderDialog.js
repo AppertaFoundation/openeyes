@@ -91,7 +91,7 @@
         this.setCloseButton($(content).find('.close-icon-btn'));
         this.setAddButton($addButton);
 
-        content.insertAfter(this.options.openButton);
+        content.appendTo($('body'));
         this.popup = content;
         this.generateContent();
 

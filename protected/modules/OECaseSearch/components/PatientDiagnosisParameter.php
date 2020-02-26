@@ -28,7 +28,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     {
         parent::__construct($scenario);
         $this->name = 'diagnosis';
-        $this->operation = 'LIKE';
         $this->only_latest_event = false;
     }
 
@@ -52,74 +51,13 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
+        return array_merge(
+            parent::rules(),
+            array(
                 array('term', 'required'),
                 array('term, firm_id, only_latest_event', 'safe'),
             )
         );
-    }
-
-    public function renderParameter($id)
-    {
-        $ops = array(
-            'LIKE' => 'Diagnosed with',
-            'NOT LIKE' => 'Not diagnosed with',
-        );
-
-        $firms = Firm::model()->getListWithSpecialties()
-        ?>
-      <div class="flex-layout flex-left js-case-search-param">
-        <div class="parameter-option">
-
-            <?= $this->getDisplayTitle()?>
-        </div>
-        <div class="parameter-option">
-            <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-            <?php echo CHtml::error($this, "[$id]operation"); ?>
-        </div>
-        <div class="parameter-option">
-            <?php
-            $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => $this->name . $this->id,
-                'model' => $this,
-                'attribute' => "[$id]term",
-                'source' => Yii::app()->controller->createUrl('AutoComplete/commonDiagnoses'),
-                'options' => array(
-                    'minLength' => 2,
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'Type to search for a diagnosis',
-                ),
-            ), true);
-            Yii::app()->clientScript->render($html);
-            echo $html;
-            ?>
-            <?php echo CHtml::error($this, "[$id]term"); ?>
-        </div>
-        <div class="" style="padding-right: 15px;">
-          <div class="flex-layout flex-left">
-            <div style="padding-right: 15px;">
-              <p>by</p>
-            </div>
-            <div class="flex-right cols-6">
-                <?php echo CHtml::activeDropDownList(
-                        $this,
-                        "[$id]firm_id",
-                        $firms,
-                        array('empty' => 'Any ' . Firm::contextLabel(), 'style'=>'width: 100%;')
-                ); ?>
-            </div>
-          </div>
-        </div>
-        <div class="cols-5 ">
-          <p style="float: right; margin: 5px">only include patient's latest event</p>
-        </div>
-        <div class="cols-1 flex-right">
-            <?php echo CHtml::activeCheckBox($this, "[$id]only_latest_event"); ?>
-        </div>
-      </div>
-
-        <?php
     }
 
     /**
@@ -170,7 +108,7 @@ AND (:p_d_only_latest_event_$this->id = 0 OR
     AND later_event.event_date > event.event_date OR (later_event.event_date = event.event_date AND later_event.created_date > event.created_date)
   )
 )";
-        if (($this->firm_id === '' || $this->firm_id === null) && $this->only_latest_event == 0) {
+        if (($this->firm_id === '' || $this->firm_id === null) && $this->only_latest_event === 0) {
             $query .= ' UNION ';
             $query .= "SELECT p3.id
 FROM patient p3 
@@ -183,21 +121,13 @@ AND :p_d_firm_$this->id IS NULL
 AND :p_d_only_latest_event_$this->id = 0";
         }
 
-        switch ($this->operation) {
-            case 'LIKE':
-                // Do nothing extra.
-                break;
-            case 'NOT LIKE':
+        if (!$this->operation) {
                 $query = "
 SELECT DISTINCT p1.id
 FROM patient p1
 WHERE p1.id NOT IN (
   $query
 )";
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
         }
 
         return $query;

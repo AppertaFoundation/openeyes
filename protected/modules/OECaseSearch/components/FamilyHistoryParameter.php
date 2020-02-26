@@ -42,7 +42,9 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'relative',
                 'side',
                 'condition',
@@ -56,50 +58,13 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
+        return array_merge(
+            parent::rules(),
+            array(
                 array('condition', 'required'),
                 array('relative, side, condition', 'safe'),
             )
         );
-    }
-
-    public function renderParameter($id)
-    {
-        $ops = array(
-            '=' => 'has',
-            '!=' => 'does not have',
-        );
-
-        $relatives = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll(), 'id',
-            'name');
-        $sides = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistorySide::model()->findAll(), 'id', 'name');
-        $conditions = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll(), 'id',
-            'name');
-
-        ?>
-      <div class="flex-layout flex-left js-case-search-param">
-        <div class="parameter-option">
-            <?= $this->getDisplayTitle() ?>
-        </div>
-            <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]side", $sides, array('empty' => 'Any side')); ?>
-            </span>
-            <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]relative", $relatives,
-                    array('empty' => 'Any relative')); ?>
-            </span>
-            <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]operation"); ?>
-            </span>
-            <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]condition", $conditions,
-                    array('prompt' => 'Select One...')); ?>
-                <?php echo CHtml::error($this, "[$id]condition"); ?>
-            </span>
-        </div>
-
-        <?php
     }
 
     /**
@@ -125,7 +90,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 $query_relative = " AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
             }
         }
-        if ( $this->condition != '') {
+        if ($this->condition != '') {
             if ($query_side =="" && $query_relative=="") {
                 $query_condition = ":f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
             } else {
@@ -133,27 +98,19 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             }
         }
 
-        $queryStr = "
+        $queryStr = '
 SELECT DISTINCT p.id 
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (".$query_side.$query_relative.$query_condition;
-        switch ($this->operation) {
-            case '=':
-                // Do nothing.
-                break;
-            case '!=':
-                $queryStr = "
+WHERE (' .$query_side.$query_relative.$query_condition;
+        if (!$this->operation) {
+            $queryStr = "
 SELECT id
 FROM patient
 WHERE id NOT IN (
   $queryStr
 )";
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-              break;
         }
 
         return $queryStr;
