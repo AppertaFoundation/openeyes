@@ -14,7 +14,7 @@ $(document).ready(function () {
 
         // If the user clicked on an input element, or if this cell contains an input
         // element then do nothing.
-        if (target.is(':input') || (target.is('td') && target.find('input, button').length))) {
+        if (target.is(':input') || (target.is('td') && target.find('input, button').length)) {
             return;
         }
 

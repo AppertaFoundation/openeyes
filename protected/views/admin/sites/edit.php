@@ -12,12 +12,57 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$logoHelper = new LogoHelper();
+$defaultURLS = $logoHelper->getLogoURLs();
 ?>
+<style>
+    .flash-success{
+
+        border:1px solid #1DDD50;
+        background: #C3FFD3;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .error{
+
+        border:1px solid #ff6666;
+        background: #ffe6e6;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+</style>
+<?php if (Yii::app()->user->hasFlash('success')) : ?>
+    <div class="flash-success">
+        <?php echo Yii::app()->user->getFlash('success'); ?>
+    </div>
+
+<?php endif; ?>
+<?php if (Yii::app()->user->hasFlash('error')) : ?>
+    <div class="error">
+        <?php echo Yii::app()->user->getFlash('error'); ?>
+    </div>
+
+<?php endif; ?>
 
 <div class="cols-5">
 
     <div class="row divider">
-        <h2>Edit site</h2>
+        <h2>
+            <?php
+            if(!empty($site->id)){
+                echo "Edit site: ".$site->name;
+            }
+            else{
+                echo "Add Site";
+            }
+            ?>
+        </h2>
     </div>
 
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
@@ -32,6 +77,8 @@
                 'label' => 2,
                 'field' => 5,
             ),
+            'method'=> "POST",
+            'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]
     ) ?>
 
@@ -111,30 +158,106 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Primary logo<br>
+                
+            </td>
+            <td>
+                <?php echo $form->fileField($logo, 'primary_logo');
+                if(empty($site)){
+                    if(!empty($defaultURLS['primaryLogo'])){
+                        echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";
+                    }
+                    else{
+                    echo "<div class='alert-box info'>No default secondary logo</div>";
+                    }
+                }
+                else{
+                    if(empty($defaultURLS['primaryLogo']) && empty($site->logo->primary_logo)){
+                        echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                    }
+                    else{                            
+                        if(!isset($site->logo)||!isset($site->logo->primary_logo)){                      
+                            echo "<div class='alert-box info'>Currently using system default logo</div>";
+                            echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";  
+                        }
+                        else{
+                            echo '<div style=" margin-top: 5px; position: relative; ">';
+                            echo "<img src='". $site->logo->getImageUrl()."' style='width:100%;'>";
+                            echo '<br>'.CHtml::button( '',
+                                array('submit' => array('admin/deletelogo/'),                     
+                                'params' => array(
+                                    'site_id' => $site->id,
+                                    'deletePrimaryLogo' => true,
+                                ),
+                                'csrf' => true, 
+                                'class' =>'oe-i remove-circle small',
+                                'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
+                                'data-method'=>"POST", 
+                                'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            ));
+                            echo '</div>';
+                        }
+                    }
+                } ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Secondary logo <br>
+            </td>
+            <td>            
+                <?php echo $form->fileField($logo, 'secondary_logo');
+                if(empty($site)){
+                    if(!empty($defaultURLS['secondaryLogo'])){
+                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";
+                    }
+                    else{
+                    echo "<div class='alert-box info'>No default secondary logo</div>";
+                    }
+                }
+                else{
+                    if(empty($defaultURLS['secondaryLogo']) && empty($site->logo->secondary_logo)){
+                        echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                    }
+                    else{                            
+                        if(!isset($site->logo)||!isset($site->logo->secondary_logo)){                      
+                            echo "<div class='alert-box info'>Currently using system default logo</div>";
+                            echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";  
+                        }
+                        else{
+                            echo '<div style="
+                            margin-top: 5px;
+                            position: relative;
+                        ">';
+                            echo "<img src='". $site->logo->getImageUrl(true)."' style='width:100%;'>";
+                            echo '<br>'.CHtml::button(
+                                '',
+                                array('submit' => array('admin/deletelogo/'),                     
+                                'params' => array(
+                                    'site_id' => $site->id,
+                                    'deleteSecondaryLogo' => true,
+                                ),
+                                'csrf' => true, 
+                                'class' =>'oe-i remove-circle small',
+                                'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
+                                'data-method'=>"POST", 
+                                'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            ));
+                            echo '</div>';
+                        }
+                    }
+                }?>
+            </td>
+        </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="2">
-                <?= \CHtml::submitButton(
-                    'Save',
-                    [
-                        'class' => 'button large',
-                        'name' => 'save',
-                        'id' => 'et_save'
-                    ]
-                ); ?>
-                <?= \CHtml::submitButton(
-                    'Cancel',
-                    [
-                        'class' => 'button large',
-                        'data-uri' => '/admin/sites',
-                        'name' => 'cancel',
-                        'id' => 'et_cancel'
-                    ]
-                ); ?>
+            <?= $form->formActions(array('cancel'=>'Back to Sites','cancel-uri' => '/admin/sites'));?>
             </td>
         </tr>
+        
         </tfoot>
     </table>
 

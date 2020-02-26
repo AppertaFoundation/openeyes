@@ -99,7 +99,7 @@
                                 ['delimiter' => ', ']
                             )?>
                         </td>
-                        <td class="notClickable">
+                        <td>
                             <?php
                                 if(isset($site->logo)&&isset($site->logo->primary_logo)){
                                     echo 'Custom';
@@ -111,7 +111,7 @@
                         </td>
                         <td>
                             <?php
-                                if(isset($site->logo)&&isset($site->logo->primary_logo)){
+                                if(isset($site->logo)&&isset($site->logo->secondary_logo)){
                                     echo 'Custom';
                                 }
                                 else{
