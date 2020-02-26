@@ -379,7 +379,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     </td>
                                     <td>
                                         <?php if (isset($event_id) && $event_id) { ?>
-                                            <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                            <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i pro-theme direction-right-circle small pad"></i></a>
                                         <?php } ?>
                                     </td>
                                 </tr>

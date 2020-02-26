@@ -61,7 +61,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <?php $laterality = $entry->getLateralityDisplay();
                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                         ?>
-                        <span class="oe-date"><?= $entry->getStartDateDisplay(false) ?></span>
+                        <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                     </td>
                     <td>
                         <?php

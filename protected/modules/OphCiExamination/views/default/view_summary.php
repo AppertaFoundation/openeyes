@@ -80,7 +80,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                             ?>
                                       </td>
-                                      <td><?= $entry->getStartDateDisplay(false) ?></td>
+                                      <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
                               <?php } ?>
                               </tbody>
@@ -125,7 +125,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                             ?>
                                       </td>
-                                      <td><?= $entry->getStartDateDisplay(false) ?></td>
+                                      <td><?= $entry->getStartDateDisplay() ?></td>
                                   </tr>
                               <?php } ?>
                               </tbody>
@@ -265,7 +265,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                                                     </i>
                                                 <?php } ?>
                                             </td>
-                                            <td><?= $entry->getStartDateDisplay(false) ?></td>
+                                            <td><?= $entry->getStartDateDisplay() ?></td>
                                         </tr>
                                     <?php } ?>
                                     </tbody>
