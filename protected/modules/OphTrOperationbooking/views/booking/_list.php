@@ -31,11 +31,6 @@ if (!$reschedule) {
         } ?>)
     </h3>
 </header>
-<div class="element-actions">
-    <span class="js-remove-element">
-        <i class="oe-i remove-circle"></i>
-    </span>
-</div>
 
 <div class="element-fields full-width">
     <table class="standard" id="appointment_list">

@@ -41,41 +41,48 @@ class AnalyticsController extends BaseController
             ),
         );
     }
-    public function actionDownLoadCSV()
+    public function actionDownloadCSV()
     {
         $ret = null;
-        if (Yii::app()->request->getParam('csv_data')) {
-            $ids = json_decode(Yii::app()->request->getParam('csv_data'));
-            $ret = $this->getPatientList($ids);
-        }
+        $params = Yii::app()->request->getParam('params');
+        $ret = $this->getPatientList($params);
         echo (json_encode($ret));
         Yii::app()->end();
     }
     public function actionGetDrillDown($specialty = null)
     {
         $ret = null;
-        $event_list = array();
-        $patient_list = array();
-        $specialty = Yii::app()->request->getParam('specialty');
- 
-        if (Yii::app()->request->getParam('drill') && Yii::app()->request->getParam('ids')) {
-            $ids = json_decode(Yii::app()->request->getParam('ids'));
-            if (count($ids) <= 0) {
-                echo (json_encode('reachedMax'));
-                Yii::app()->end();
+        if (Yii::app()->request->getParam('drill')) {
+            $specialty = Yii::app()->request->getParam('specialty');
+            $params = Yii::app()->request->getParam('params');
+            if (isset($params['ids'])) {
+                // $params['ids'] = json_decode($params['ids']);
+                if ($specialty === 'Cataract') {
+                    $event_list = $this->queryCataractEventList($params);
+                    $ret['event_list'] = $event_list;
+                } else {
+                    $patient_list = $this->getPatientList($params);
+                }
+            } else if (isset($params['diagnosis'])) {
+                $patient_list = $this->getPatientList($params);
             }
-            if ($specialty === 'Cataract') {
-                $event_list = $this->queryCataractEventList($ids);
-            } else {
-                $patient_list = $this->getPatientList($ids);
+            if (isset($patient_list)) {
+                $ret['patient_list'] = $patient_list;
             }
-            $ret['event_list'] = $event_list;
-            $ret['patient_list'] = $patient_list;
-            if (count($patient_list) > 0 || count($event_list) > 0) {
-                $ret = $this->renderPartial('/analytics/analytics_drill_down_list', array(
+            $data = isset($event_list) ? count($event_list) : count($patient_list);
+            if ($data > 0) {
+                $dom = $this->renderPartial('/analytics/analytics_drill_down_list', array(
                     'data' => $ret,
                 ), true);
-                echo (json_encode($ret));
+                echo (json_encode(
+                    array(
+                        'dom' => $dom,
+                        'count' => $data
+                    )
+                ));
+                Yii::app()->end();
+            } else {
+                echo (json_encode('reachedMax'));
                 Yii::app()->end();
             }
         }
@@ -92,7 +99,9 @@ class AnalyticsController extends BaseController
         $this->checkAuth();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
-        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        // different user and different subspecialty
+        // should have different result
+        $follow_patient_list = $this->getFollowUps($subspecialty_id, null, null, null, $this->surgeon);
         if (Yii::app()->request->getParam('report')) {
             $this->renderJSON(array(
                 'plot_data'=>$follow_patient_list['plot_data'],
@@ -100,7 +109,7 @@ class AnalyticsController extends BaseController
             ));
             return;
         }
-        $disorder_data = $this->getDisorders($subspecialty_id);
+        $disorder_data = $this->getDisorders($subspecialty_id, $this->surgeon);
         if (!isset($this->current_user)) {
             $this->current_user = User::model()->findByPk(Yii::app()->user->id);
         }
@@ -110,7 +119,6 @@ class AnalyticsController extends BaseController
             'y' => $disorder_data['y'],
             'text' => $disorder_data['text'],
             'customdata' =>$disorder_data['customdata'],
-            'csv_data'=>$disorder_data['csv_data'],
         );
         $this->filters = array(
             'date_from' => 0,
@@ -301,60 +309,141 @@ class AnalyticsController extends BaseController
         $custom_data['csv_data'] = $this->custom_csv_data;
         return $custom_data;
     }
-    private function getPatientList($ids = null)
+    private function getPatientList($params = null)
     {
-        $paitent_list_command = Yii::app()->db->createCommand()->select('DISTINCT p.hos_num as hos_num,
-      p.nhs_num as nhs_num,
-      p.id AS patient_id,
-      CONCAT(c.first_name, \' \', c.last_name) AS name,
-      p.dob as dob,
-      IF(p.date_of_death IS NOT NULL,
-         YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
-         YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age,
-      p.gender as gender,
-      patient_diagnoses.diagnoses AS diagnoses,
-      patient_procedures.procedures AS procedures')
-          ->from('patient p')->leftJoin('contact c', 'p.contact_id = c.id')
-          ->leftJoin('(SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
-                  FROM (
-                         SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
-                         FROM episode ep
-                                LEFT JOIN disorder d ON ep.disorder_id = d.id
-                         WHERE d.term IS NOT NULL
-                         GROUP BY ep.patient_id
-                         UNION
-                         SELECT sd.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
-                         FROM secondary_diagnosis sd
-                                LEFT JOIN disorder d ON sd.disorder_id = d.id
-                         WHERE d.term IS NOT NULL
-                         GROUP BY sd.patient_id
-                       ) t2
-                  GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')
-            ->leftJoin('(SELECT e2.patient_id, GROUP_CONCAT(p.short_format) AS procedures
-                  FROM et_ophtroperationnote_procedurelist eop
-                         LEFT JOIN ophtroperationnote_procedurelist_procedure_assignment oppa
-                                   ON eop.id = oppa.procedurelist_id
-                         LEFT JOIN proc p ON oppa.proc_id = p.id
-                         LEFT JOIN event e ON eop.event_id = e.id
-                         LEFT JOIN episode e2 ON e.episode_id = e2.id
-                  WHERE p.short_format IS NOT NULL
-                  GROUP BY e2.patient_id) patient_procedures', 'patient_procedures.patient_id = p.id');
-        if (isset($ids)&&count($ids)) {
-            $paitent_list_command->where('p.id IN (' . implode(', ', $ids) . ')');
+        // Future implementation:
+        // - use pagination instead of id for service page
+        $this->checkAuth();
+        $params['from'] = empty($params['from']) ? null : $params['from'];
+        $params['to'] = empty($params['to']) ? null : $params['to'];
+
+        $specialty = Yii::app()->request->getParam('specialty');
+        $subspecialty_id = isset($specialty) ?
+        (
+            $specialty === 'All' ? null : $this->getSubspecialtyID($specialty)
+        ) : null;
+        // if there is surgeon id passed in, use that
+        // but if logged in user has surgeon id, which means
+        // he/she is not a service manager, overwrite the $surgeon_id
+        $surgeon_id = isset($params['clinical_surgeon']) ? $params['clinical_surgeon'] : null;
+        if ($this->surgeon) {
+            $surgeon_id = $this->surgeon;
         }
-        $res = $paitent_list_command->queryAll();
+        // one of the field in select statement at the end of this function
+        // used to switch between no diagnosis and with diagnosis
+        $diagnosis_term = 'GROUP_CONCAT(DISTINCT diagnosis.term)';
+
+        // prepare diagnoses list from existing function
+        $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, strtotime($params['from']), strtotime($params['to']))
+        ->select('
+            t.disorder_id disorder_id,
+            t.term term,
+            t.patient_id
+        ');
+        $paitent_list_command = Yii::app()->db->createCommand()
+            ->from('patient p')
+            ->leftJoin('contact c', 'p.contact_id = c.id')
+            ->leftJoin('episode e', 'p.id = e.patient_id')
+            ->leftJoin('(
+                SELECT
+                    e2.patient_id,
+                    GROUP_CONCAT(p.short_format) AS procedures
+                FROM et_ophtroperationnote_procedurelist eop
+                LEFT JOIN ophtroperationnote_procedurelist_procedure_assignment oppa
+                ON eop.id = oppa.procedurelist_id
+                LEFT JOIN proc p ON oppa.proc_id = p.id
+                LEFT JOIN event e ON eop.event_id = e.id
+                LEFT JOIN episode e2 ON e.episode_id = e2.id
+                WHERE p.short_format IS NOT NULL
+                GROUP BY e2.patient_id
+            ) proc', 'proc.patient_id = p.id')
+            ->group('p.id');
+        // triggered from clinical screen
+        if (isset($params['diagnosis'])) {
+            if ($params['diagnosis'] === "No Diagnoses") {
+                $diagnosis_term = 'NULL';
+                $no_diagnosis = $this->getPatientWithoutDisorders($subspecialty_id, $surgeon_id, strtotime($params['from']), strtotime($params['to']))
+                    ->select('
+                        p.id patient_id
+                    ', 'DISTINCT');
+                $paitent_list_command
+                    ->join('(' . $no_diagnosis->getText() . ') patient_without_diagnosis', 'p.id = patient_without_diagnosis.patient_id');
+            } else {
+                $paitent_list_command
+                    ->join('(' .
+                    $diagnoses
+                    ->where("LOWER(t.term) = '" . strtolower($params['diagnosis']) . "'")
+                    ->getText()
+                    . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+            }
+            $paitent_list_command->limit($params['limit'])->offset($params['offset']);
+        }
+        // triggered by download csv
+        if (isset($params['diagnoses_csv'])) {
+            $paitent_list_command
+                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+            $paitent_list_command->where("diagnosis.term IS NOT NULL");
+        }
+        // triggered from service screen
+
+        if (isset($params['ids'])&&((is_array($params['ids']) && count($params['ids'])) || $params['ids'])) {
+            $params['ids'] = json_decode($params['ids']);
+            $paitent_list_command
+                ->leftJoin('(' . $diagnoses->getText() . ') diagnosis', 'e.disorder_id = diagnosis.disorder_id AND e.patient_id = diagnosis.patient_id');
+            $paitent_list_command->where('p.id IN (' . implode(', ', $params['ids']) . ')');
+        }
+
+        $res = $paitent_list_command
+            ->select("
+                p.hos_num as hos_num,
+                p.nhs_num as nhs_num,
+                p.id AS patient_id,
+                CONCAT(c.first_name, ' ', c.last_name) AS name,
+                p.dob as dob,
+                IF(p.date_of_death IS NOT NULL,
+                YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0),
+                YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),'%m-%d') < DATE_FORMAT(p.dob,'%m-%d'), 1, 0)) as age,
+                p.gender as gender,
+                $diagnosis_term diagnoses,
+                proc.procedures
+            ", 'DISTINCT')
+            ->group('p.id')
+            ->queryAll();
         return $res;
     }
 
     private function getEventDate()
     {
-        $event_date_command = Yii::app()->db->createCommand()
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            $event_date_command = Yii::app()->db->createCommand()
             ->select('
-                MAX(e.event_date) as date_to
-              , MIN(e.event_date) as date_from
+                MAX(t.date_to) as date_to,
+                MIN(t.date_from) as date_from
+            ')
+            ->from('
+                (
+                    SELECT
+                        MAX(e.event_date) as date_to,
+                        MIN(e.event_date) as date_from
+                    FROM et_ophtroperationnote_cataract eoc
+                    JOIN event e on e.id = eoc.event_id
+                    UNION 
+                    SELECT
+                        MAX(e2.event_date) as date_to,
+                        MIN(e2.event_date) as date_from
+                    FROM cat_prom5_event_result cat
+                    JOIN event e2 on e2.id = cat.event_id
+                ) t'
+            );
+        } else {
+            $event_date_command = Yii::app()->db->createCommand()
+            ->select('
+                MAX(e.event_date) as date_to,
+                MIN(e.event_date) as date_from
             ')
             ->from('et_ophtroperationnote_cataract eoc')
             ->join('event e', 'e.id = eoc.event_id');
+        }
         $event_date = $event_date_command->queryAll();
         return $event_date;
     }
@@ -498,7 +587,6 @@ class AnalyticsController extends BaseController
         if ($this->filters['date_from'] && $return_value) {
             $return_value = ($date > $this->filters['date_from']);
         }
-        // Yii::log(var_export($return_value, true));
         return $return_value;
     }
 
@@ -560,8 +648,8 @@ class AnalyticsController extends BaseController
             ->andWhere('dp.patient_id in ('.$command_va_patients->getText().')');
         $bestReadingSQL = Yii::app()->db->createCommand()
             ->select('
-              eor.element_id as eoi_id
-            , MAX(eor.value) AS reading
+                eor.element_id as eoi_id,
+                MAX(eor.value) AS reading
             ')
             ->from('ophciexamination_visualacuity_reading eor')
             ->where('eor.side = ' . $vaEyeId)
@@ -578,12 +666,12 @@ class AnalyticsController extends BaseController
         // to get patient age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                va_info.patient_id as patient_id
-            ,   va_info.event_date as event_date
-            ,   va_info.value as value
-            ,   va_info.name as name
-            ,   va_info.reading as reading
-            ,   IF(p.date_of_death IS NOT NULL,
+                va_info.patient_id as patient_id,
+                va_info.event_date as event_date,
+                va_info.value as value,
+                va_info.name as name,
+                va_info.reading as reading,
+                IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
@@ -630,9 +718,9 @@ class AnalyticsController extends BaseController
         // get iop reading data, instead of getting it from model
         $readingSQL = Yii::app()->db->createCommand()
             ->select('
-              eoi.id AS eoi_id
-            , e.name AS side
-            , eor.value AS reading
+                eoi.id AS eoi_id,
+                e.name AS side,
+                eor.value AS reading
             ')
             ->from('et_ophciexamination_intraocularpressure eoi')
             ->join('ophciexamination_intraocularpressure_value eov', 'eoi.id = eov.element_id')
@@ -650,12 +738,12 @@ class AnalyticsController extends BaseController
         // to get age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                iop_info.patient_id as patient_id
-            ,   iop_info.event_date as event_date
-            ,   iop_info.value as value
-            ,   iop_info.name as name
-            ,   iop_info.reading as reading
-            ,   IF(p.date_of_death IS NOT NULL,
+                iop_info.patient_id as patient_id,
+                iop_info.event_date as event_date,
+                iop_info.value as value,
+                iop_info.name as name,
+                iop_info.reading as reading,
+                IF(p.date_of_death IS NOT NULL,
             YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
             YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
@@ -711,13 +799,13 @@ class AnalyticsController extends BaseController
         // to get age, instead of getting it from model
         $command_final_table_withAge = Yii::app()->db->createCommand()
             ->select('
-                crt_new.patient_id as patient_id
-            ,   crt_new.event_date as event_date
-            ,   crt_new.value as value
-            ,   crt_new.name as name
-            ,   IF(p.date_of_death IS NOT NULL,
-            YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
-            YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
+                crt_new.patient_id as patient_id,
+                crt_new.event_date as event_date,
+                crt_new.value as value,
+                crt_new.name as name,
+                IF(p.date_of_death IS NOT NULL,
+                YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
+                YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age
             ')
             ->from('(' . $command_final_table->getText() . ') AS crt_new')
             ->leftJoin('patient p', 'crt_new.patient_id = p.id');
@@ -739,7 +827,6 @@ class AnalyticsController extends BaseController
             ->leftJoin('patient p', 'p.id = e.patient_id')
             ->andWhere('e.deleted = 0')
             ->andWhere('p.deleted = 0');
-
 
         $command_secondary = Yii::app()->db->createCommand()
             ->select('sd.patient_id as patient_id', 'DISTINCT')
@@ -822,7 +909,6 @@ class AnalyticsController extends BaseController
                     $current_time = isset($initial_reading[$element['patient_id']]['event_date'])? $initial_reading[$element['patient_id']]['event_date']:null;
                 }
 
-
                 if (!isset($treatment[$element['patient_id']])) {
                     $initial_reading[$element['patient_id']]['value'] = $reading;
                     $initial_reading[$element['patient_id']]['event_date'] = $current_time;
@@ -840,7 +926,6 @@ class AnalyticsController extends BaseController
                     if (!array_key_exists($element['patient_id'], $patient_list)) {
                         $patient_list[$element['patient_id']] = array();
                     }
-
 
                     if (!array_key_exists($element['patient_id'], $this->custom_csv_data) && (isset($reading))) {
                         $this->custom_csv_data[$element['patient_id']] = array(
@@ -905,12 +990,13 @@ class AnalyticsController extends BaseController
      * Get all the cataract elements in operation note event
      * Used for the drill down list.
      */
-    public function queryCataractEventList($ids)
+    public function queryCataractEventList($params = mull)
     {
         $return_data = array();
         $command = Yii::app()->db->createCommand()
             ->select('
                 p.hos_num as hos_num,
+                p.nhs_num as nhs_num,
                 eoc.event_id as event_id,
                 e.event_date as event_date,
                 eye.name as eye_side,
@@ -936,22 +1022,23 @@ class AnalyticsController extends BaseController
             ->leftJoin('(
                 SELECT patient_id AS patient_id, GROUP_CONCAT(diagnoses) AS diagnoses
                 FROM (
-                   SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
-                   FROM episode ep
-                          LEFT JOIN disorder d ON ep.disorder_id = d.id
-                   WHERE d.term IS NOT NULL
-                   GROUP BY ep.patient_id
-                   UNION
-                   SELECT sd.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
-                   FROM secondary_diagnosis sd
-                          LEFT JOIN disorder d ON sd.disorder_id = d.id
-                   WHERE d.term IS NOT NULL
-                   GROUP BY sd.patient_id
+                    SELECT ep.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
+                    FROM episode ep
+                        LEFT JOIN disorder d ON ep.disorder_id = d.id
+                    WHERE d.term IS NOT NULL
+                    GROUP BY ep.patient_id
+                    UNION
+                    SELECT sd.patient_id AS patient_id, GROUP_CONCAT(d.term) AS diagnoses
+                    FROM secondary_diagnosis sd
+                        LEFT JOIN disorder d ON sd.disorder_id = d.id
+                    WHERE d.term IS NOT NULL
+                    GROUP BY sd.patient_id
                  ) t2
                 GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
             );
-        if (isset($ids)&&count($ids > 0)) {
-            $command->where('e.id IN (' . implode(', ', $ids) . ')');
+        if (isset($params['ids'])&&count($params['ids'] > 0)) {
+            $params['ids'] = json_decode($params['ids']);
+            $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
         }
         $return_data = $command->queryAll();
         return $return_data;
@@ -1008,8 +1095,8 @@ class AnalyticsController extends BaseController
         } else {
             $sql = "
                 SELECT DISTINCT
-                    cod.id
-                  , cod.disorder_id
+                    cod.id,
+                    cod.disorder_id
                 FROM common_ophthalmic_disorder cod
                 WHERE cod.disorder_id IS NOT NULL
             ";
@@ -1046,169 +1133,210 @@ class AnalyticsController extends BaseController
     public function queryDiagnosis($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
     {
         $command_principal = Yii::app()->db->createCommand()
-            ->select('e.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, e.disorder_id as disorder_id, d.term, d.fully_specified_name', 'DISTINCT')
+            ->select('
+                e.patient_id patient_id,
+                e.disorder_id disorder_id,
+                d.term term,
+                d.fully_specified_name fully_specified_name,
+                cod.id disorder_type
+            ')
             ->from('episode e')
             ->leftJoin('disorder d', 'd.id = e.disorder_id')
-            ->join('patient p', 'p.id = e.patient_id')
-            ->join('contact c', 'c.id = p.contact_id')
+            ->leftJoin('common_ophthalmic_disorder cod', 'd.id = cod.disorder_id')
             ->leftJoin('firm f', 'e.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
             ->where('e.disorder_id IS NOT NULL')
             ->andWhere('e.deleted = 0');
 
         $command_secondary = Yii::app()->db->createCommand()
-            ->select('sd.patient_id as patient_id, c.first_name, c.last_name, p.hos_num, p.dob, p.date_of_death, sd.disorder_id as disorder_id, d.term, d.fully_specified_name', 'DISTINCT')
+            ->select('
+                sd.patient_id patient_id,
+                sd.disorder_id disorder_id,
+                d.term term,
+                d.fully_specified_name fully_specified_name,
+                cod.id disorder_type
+            ')
             ->from('secondary_diagnosis sd')
             ->leftJoin('disorder d', 'd.id = sd.disorder_id')
-            ->join('patient p', 'p.id = sd.patient_id')
-            ->join('contact c', 'c.id = p.contact_id')
+            ->leftJoin('common_ophthalmic_disorder cod', 'sd.disorder_id = cod.disorder_id')
             ->leftJoin('episode e', 'e.patient_id = sd.patient_id')
             ->leftJoin('firm f', 'e.firm_id = f.id')
             ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
             ->where('sd.disorder_id IS NOT NULL');
         if (isset($subspecialty_id)) {
-            $command_principal->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
-            $command_secondary->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
+            $command_principal->andWhere('ssa.subspecialty_id = ' . $subspecialty_id);
+            $command_secondary->andWhere('ssa.subspecialty_id = ' . $subspecialty_id);
         }
         if (isset($surgeon_id)) {
-            $command_principal->andWhere('e.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
-            $command_secondary->andWhere('sd.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+            $command_principal->andWhere('e.created_user_id = ' . $surgeon_id);
+            $command_secondary->andWhere('sd.created_user_id = ' . $surgeon_id);
         }
-        if (isset($start_date) && $start_date !== 0) {
+        if (isset($start_date) && $start_date !== 0 && $start_date) {
             $command_principal->andWhere('UNIX_TIMESTAMP(e.created_date) > '.$start_date);
             $command_secondary->andWhere('UNIX_TIMESTAMP(sd.created_date) > '.$start_date);
         }
-        if (isset($end_date)) {
+        if (isset($end_date) && $end_date) {
             $command_principal->andWhere('UNIX_TIMESTAMP(e.created_date) < '.$end_date);
             $command_secondary->andWhere('UNIX_TIMESTAMP(sd.created_date) < '.$end_date);
         }
-        $principal_diagnoses = $command_principal->queryAll();
-        $secondary_diagnoses = $command_secondary->queryAll();
-        return array_merge_recursive($principal_diagnoses, $secondary_diagnoses);
+        $return_command = Yii::app()->db->createCommand()
+            ->from('(' . $command_principal->getText() .
+            ' UNION ALL ' . $command_secondary->getText() . ') t');
+        return $return_command;
     }
 
-    public function getPatientWithoutDisorders()
+    public function getPatientWithoutDisorders($subspecialty_id = null, $surgeon_id = null)
     {
-        $command_disorder_patient = Yii::app()->db->createCommand()
-            ->select('patient.id', 'DISTINCT')
-            ->from('patient')
-            ->leftJoin('episode', 'patient.id = episode.patient_id')
-            ->where('episode.disorder_id IS NOT NULL');
-        $patient_with_disorder = $command_disorder_patient->queryAll();
-
-
-        $command_secondary_disorder_patient = Yii::app()->db->createCommand()
-            ->select('patient_id', 'DISTINCT')
-            ->from('secondary_diagnosis')
-            ->where(array('not in', 'patient_id', array_column($patient_with_disorder, 'id')));
-        $patient_with_secondary_disorder = $command_secondary_disorder_patient->queryAll();
-
-
+        $queryConditions = array('and');
+        $outterQueryConditions = array('and');
+        $params = array();
+        $secondary_diagnosis_command = Yii::app()->db->createCommand()
+            ->select('
+                sd.patient_id,
+                sd.disorder_id,
+                sd.created_user_id,
+                ssa.subspecialty_id,
+                sd.created_date
+            ')
+            ->from('secondary_diagnosis sd')
+            ->leftJoin('episode ep', 'ep.patient_id = sd.patient_id')
+            ->leftJoin('firm f', 'ep.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id');
+        $episode_diagnosis_command = Yii::app()->db->createCommand()
+            ->select('
+                ep2.patient_id,
+                ep2.disorder_id,
+                ep2.created_user_id,
+                ssa.subspecialty_id,
+                ep2.created_date
+            ')
+            ->from('episode ep2')
+            ->leftJoin('firm f', 'ep2.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
+            ->where('ep2.disorder_id is not null');
+        if ($subspecialty_id) {
+            $queryConditions[] = 't.subspecialty_id = ' . $subspecialty_id;
+            $outterQueryConditions[] = 'ssa.subspecialty_id = ' . $subspecialty_id;
+        }
+        if ($surgeon_id) {
+            $queryConditions[] = 't.created_user_id = '. $surgeon_id;
+            $outterQueryConditions[] = 'ep3.created_user_id = ' . $surgeon_id;
+        }
+        $patient_with_disorder_command = Yii::app()->db->createCommand()
+            ->select('
+                patient_id,
+                disorder_id,
+                created_user_id,
+                subspecialty_id,
+                created_date
+            ')
+            ->from('
+                (' .
+                $secondary_diagnosis_command->getText() .
+                ' UNION ALL ' .
+                $episode_diagnosis_command->getText() .
+            ') t')
+            ->where($queryConditions);
         $command_no_disorder_patient = Yii::app()->db->createCommand()
-            ->select('id', 'DISTINCT')
-            ->from('patient')
-            ->where(array('not in', 'id', array_merge_recursive(array_column($patient_with_secondary_disorder, 'patient_id'), array_column($patient_with_disorder, 'id'))));
-        return $command_no_disorder_patient->queryAll();
+            ->from('patient p')
+            ->leftJoin('episode ep3', 'p.id = ep3.patient_id')
+            ->leftJoin('firm f', 'ep3.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
+            ->leftJoin('
+                (' .
+                    $patient_with_disorder_command->getText()
+                . ') t2', 'p.id = t2.patient_id')
+            ->where('t2.disorder_id is null')
+            ->andWhere($outterQueryConditions);
+        return $command_no_disorder_patient;
     }
 
     public function getDisorders($subspecialty_id = null, $surgeon_id = null, $start_date = null, $end_date = null)
     {
         $disorder_list = array(
-          'x'=> array(),
-          'y'=>array(),
-          'text' => array(),
-          'customdata' => array(),
-        );
-        $other_drill_down_list = array(
-          'x'=> array(),
-          'y'=>array(),
-          'text' => array(),
-          'customdata' => array(),
-        );
-        $patient_without_disorder = array_column($this->getPatientWithoutDisorders(), 'id');
-        $disorder_patient_list = array();
-        $other_patient_list = array();
-        $other_disorder_list = array();
-        $disorder_list_csv = array();
-        //get common ophthalmic disorders for given subspecialty
-        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id);
+            'x'=> array(),
+            'y'=>array(),
+            'text' => array(),
+            'customdata' => array(),
+          );
+          $patient_without_disorder = $this->getPatientWithoutDisorders($subspecialty_id, $surgeon_id, $start_date, $end_date)
+              ->select('COUNT(DISTINCT p.id) total_patients')
+              ->queryAll();
 
-        // for performance purpose, get all the disorder data first
-        // instead of querying them within a loop
-        $disorder_id_list = array();
-        foreach ($common_ophthalmic_disorders as $disorder) {
-            array_push($disorder_id_list, $disorder['disorder_id']);
-        }
-        $disorder_list_command = "SELECT * FROM disorder WHERE id IN (" . implode(', ', $disorder_id_list) . ') ORDER BY id';
-        $disorder_list = Disorder::model()->findAllBySql($disorder_list_command);
-        foreach ($disorder_list as $disorder) {
-            $disorder_patient_list[$disorder['id']]= array(
-                'full_name' => $disorder['fully_specified_name'],
-                'short_name' => $disorder['term'],
-                'patient_list' => array(),
-            );
-        }
-        $diagnoses = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date);
-        foreach ($diagnoses as $current_diagnosis) {
-            $disorder_id = $current_diagnosis['disorder_id'];
-            $disorder_list_csv[$current_diagnosis['term'].$current_diagnosis['patient_id']] = array($current_diagnosis['first_name'],$current_diagnosis['last_name'],$current_diagnosis['hos_num'],$current_diagnosis['dob'],Helper::getAge($current_diagnosis['dob'], $current_diagnosis['date_of_death']),$current_diagnosis['term']);
-            if (array_key_exists($disorder_id, $disorder_patient_list)) {
-                if (!in_array($current_diagnosis['patient_id'], $disorder_patient_list[$disorder_id]['patient_list'])) {
-                    $disorder_patient_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
-                }
-            } else {
-                if (!array_key_exists($disorder_id, $other_disorder_list)) {
-                    $other_disorder_list[$disorder_id]= array(
-                      'full_name' => $current_diagnosis['fully_specified_name'],
-                      'short_name' => $current_diagnosis['term'],
-                      'patient_list' => array(),
-                    );
-                }
-                if (!in_array($current_diagnosis['patient_id'], $other_disorder_list[$disorder_id]['patient_list'])) {
-                    $other_disorder_list[$disorder_id]['patient_list'][] = $current_diagnosis['patient_id'];
-                }
-                if (!in_array($current_diagnosis['patient_id'], $other_patient_list)) {
-                    $other_patient_list[] = $current_diagnosis['patient_id'];
-                }
-            }
-        }
-        $i=0;
-        foreach ($disorder_patient_list as $key => $value) {
-            if (count($disorder_patient_list[$key]['patient_list'])) {
-                $disorder_list['y'][] = $i;
-                $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
-                $disorder_list['text'][] = $disorder_patient_list[$key]['short_name'];
-                $disorder_list['customdata'][] = $disorder_patient_list[$key]['patient_list'];
-                $i++;
-            }
-        }
+          $other_disorder_total = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
+              ->select('COUNT(DISTINCT t.patient_id) total_patients')
+              ->where('t.disorder_type IS NULL')
+              ->queryAll();
 
-        $j=0;
-        foreach ($other_disorder_list as $key => $value) {
-            $other_drill_down_list['y'][] = $j;
-            $other_drill_down_list['x'][] = count($other_disorder_list[$key]['patient_list']);
-            $other_drill_down_list['text'][] = $other_disorder_list[$key]['short_name'];
-            $other_drill_down_list['customdata'][] = $other_disorder_list[$key]['patient_list'];
-            $j++;
-        }
+          $other_disorders = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
+              ->select('
+                    COUNT(DISTINCT t.patient_id) total_patients,
+                    t.disorder_id disorder_id,
+                    t.term term,
+                    t.fully_specified_name fully_specified_name
+              ')
+              ->where('t.disorder_type IS NULL')
+              ->group('
+                    t.disorder_id,
+                    t.term,
+                    t.fully_specified_name
+              ')
+              ->queryAll();
 
-        if (count($other_patient_list)) {
-            $disorder_list['y'][] = $i;
-            $disorder_list['x'][] = count($other_patient_list);
-            $disorder_list['text'][] = 'Other';
-            $disorder_list['customdata'][] = $other_drill_down_list;
-            $i++;
-        }
+          $common_disorders = $this->queryDiagnosis($subspecialty_id, $surgeon_id, $start_date, $end_date)
+              ->select('
+                    COUNT(DISTINCT t.patient_id) total_patients,
+                    t.disorder_id disorder_id,
+                    t.term term,
+                    t.fully_specified_name fully_specified_name
+              ')
+              ->where('t.disorder_type IS NOT NULL')
+              ->group('
+                    t.disorder_id,
+                    t.term,
+                    t.fully_specified_name
+              ')
+              ->queryAll();
+          // $i for y axis in first level of plot
+          $i = 0;
+          // $j for y axis in second level of plot
+          $j = 0;
+          $other_disorder = array(
+              'x'=> array(),
+              'y'=>array(),
+              'text' => array(),
+              'customdata' => array(),
+          );
+          foreach ($common_disorders as $common_disorder) {
+              $disorder_list['y'][] = $i;
+              $disorder_list['x'][] = $common_disorder['total_patients'];
+              $disorder_list['text'][] = $common_disorder['term'];
+              $disorder_list['customdata'][] = array($common_disorder['term']);
+              $i++;
+          }
+          foreach ($other_disorders as $row) {
+              $other_disorder['y'][] = $j;
+              $other_disorder['x'][] = $row['total_patients'];
+              $other_disorder['text'][] = $row['term'];
+              $other_disorder['customdata'][] = array($row['term']);
+              $j++;
+          }
+          if ($other_disorder_total[0]['total_patients'] != 0) {
+              $disorder_list['y'][] = $i;
+              $disorder_list['x'][] = $other_disorder_total[0]['total_patients'];
+              $disorder_list['text'][] = 'Other';
+              $disorder_list['customdata'][] = $other_disorder;
+              $i++;
+          }
+          if ($patient_without_disorder[0]['total_patients'] != 0) {
+              $disorder_list['y'][] = $i;
+              $disorder_list['x'][] = $patient_without_disorder[0]['total_patients'];
+              $disorder_list['text'][] = 'No Diagnoses';
+              $disorder_list['customdata'][] = array('No Diagnoses');
+              $i++;
+          }
 
-        if (count($patient_without_disorder)) {
-            $disorder_list['y'][] = $i;
-            $disorder_list['x'][] = count($patient_without_disorder);
-            $disorder_list['text'][] = 'No Diagnoses';
-            $disorder_list['customdata'][] = $patient_without_disorder;
-        }
-        $disorder_list_csv = array_values($disorder_list_csv);
-        $disorder_list['csv_data'] = $disorder_list_csv;
-        return $disorder_list;
+          return $disorder_list;
     }
 
     /**
@@ -1414,7 +1542,6 @@ class AnalyticsController extends BaseController
           'y' => $disorder_data['y'],
           'text' => $disorder_data['text'],
           'customdata' =>$disorder_data['customdata'],
-          'csv_data' => $disorder_data['csv_data'],
         );
         $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis']);
         $this->renderJSON(array($clinical_data, $service_data, $custom_data));
@@ -1447,7 +1574,7 @@ class AnalyticsController extends BaseController
         }
         return $period;
     }
-    public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis = null)
+    public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis = null, $surgeon_id = null)
     {
         $followup_patient_list = array(
             'overdue' => array(),
@@ -1465,12 +1592,12 @@ class AnalyticsController extends BaseController
         // use the column value instead the object from findByPk within the loop
         $followup_elements_command = Yii::app()->db->createCommand()
             ->select("
-                e.id as event_id
-                , p.id as patient_id
-                , UNIX_TIMESTAMP(e.event_date) as event_date
-                , UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY)) as due_date
-                , CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc.followup_quantity DAY),current_date())/7 AS INT) as weeks
-                , MAX(UNIX_TIMESTAMP(w.start)) as start
+                e.id as event_id,
+                p.id as patient_id,
+                UNIX_TIMESTAMP(e.event_date) as event_date,
+                UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date,
+                CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks,
+                MAX(UNIX_TIMESTAMP(w.start)) as start
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1479,7 +1606,8 @@ class AnalyticsController extends BaseController
             ->leftjoin("firm f", "e2.firm_id = f.id")
             ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
             ->leftjoin("et_ophciexamination_clinicoutcome eoc", "eoc.event_id = e.id")
-            ->leftjoin("period", "period.id = eoc.followup_period_id")
+            ->leftjoin("ophciexamination_clinicoutcome_entry eoc_entry", "eoc_entry.element_id = eoc.id")
+            ->leftjoin("period", "period.id = eoc_entry.followup_period_id")
             ->leftjoin("worklist_patient wp", "p.id = wp.patient_id")
             ->leftjoin("worklist w", "wp.worklist_id = w.id")
             ->where("p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1")
@@ -1495,18 +1623,17 @@ class AnalyticsController extends BaseController
                 )
             ")
             ->andWhere("eoc.id is not null")
-            ->andWhere("eoc.followup_period_id is not null")
+            ->andWhere("eoc_entry.followup_period_id is not null")
             ->group("p.id");
-
         // extract out the query in the foreach loop
         // and integrate them into the following query
         // use the column value instead the object from findByPk within the loop
         $referral_document_command = Yii::app()->db->createCommand()
             ->select("
-                e.id as event_id
-                , p.id as patient_id
-                , UNIX_TIMESTAMP(e.event_date) as event_date
-                , MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
+                e.id as event_id,
+                p.id as patient_id,
+                UNIX_TIMESTAMP(e.event_date) as event_date,
+                MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
             ")
             ->from("event e")
             ->leftjoin("episode e2", "e.episode_id = e2.id")
@@ -1532,14 +1659,23 @@ class AnalyticsController extends BaseController
                 )
             ")
             ->group('p.id');
+        $queryConditions = array('and');
+        $params = array();
         if ($diagnosis) {
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
                 ->select('dp.patient_id', 'distinct')
                 ->from('('.$this->queryDiagnosesFilteredPatientListCommand(null, 'followup')->getText().') AS dp');
-            $referral_document_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
-            $followup_elements_command->andWhere('p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')');
+            $queryConditions[] = 'p.id IN ('.$command_filtered_patients_by_diagnosis->getText().')';
         }
-        $followup_elements = $followup_elements_command->queryAll();
+        if ($surgeon_id) {
+            $queryConditions[] = 'e.created_user_id = :surgeon_id';
+            $params['surgeon_id'] = $surgeon_id;
+        }
+        if ($subspecialty_id) {
+            $queryConditions[] = 'ssa.subspecialty_id = :subspecialty_id';
+            $params['subspecialty_id'] = $subspecialty_id;
+        }
+        $followup_elements = $followup_elements_command->andWhere($queryConditions, $params)->queryAll();
         $current_time = time();
         foreach ($followup_elements as $followup_item) {
             /* Calculate the coming and overdue followups */
@@ -1602,28 +1738,32 @@ class AnalyticsController extends BaseController
         */
         $tickets_command = Yii::app()->db->createCommand()
             ->select('
-                ptt.id ticket_id
-              , ptt.patient_id patient_id
-              , ptt.event_id event_id
-              , e.created_user_id event_owner
-              , MAX(e.event_date) event_date
-              , MAX(w.start) worklist_date
+                ptt.id ticket_id,
+                ptt.patient_id patient_id,
+                ptt.event_id event_id,
+                e.created_user_id event_owner,
+                MAX(e.event_date) event_date,
+                MAX(w.start) worklist_date
             ')
             ->from('patientticketing_ticket ptt')
             ->join('event e', 'e.id = ptt.event_id')
-            ->join('event_type et', 'e.event_type_id = et.id')
+            ->leftjoin("episode e2", "e.episode_id = e2.id")
+            ->leftjoin("patient p", "p.id = e2.patient_id")
+            ->leftjoin("event_type et", "et.id = e.event_type_id")
+            ->leftjoin("firm f", "e2.firm_id = f.id")
+            ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
             ->leftjoin('worklist_patient wp', 'ptt.patient_id = wp.patient_id')
             ->leftjoin('worklist w', 'wp.worklist_id = w.id')
             ->where('LOWER(et.name) = :examination', array('examination' => 'examination'))
             ->group('ptt.patient_id, ptt.event_id');
-        $tickets = $tickets_command->queryAll();
+        $tickets = $tickets_command->andWhere($queryConditions, $params)->queryAll();
         $ticket_ids = array_column($tickets, 'ticket_id');
         $ticket_assignments_command = Yii::app()->db->createCommand()
             ->select('
-                ptt.id ticket_id
-              , pta.id assignment_id
-              , pta.assignment_date assignment_date
-              , pta.details details
+                ptt.id ticket_id,
+                pta.id assignment_id,
+                pta.assignment_date assignment_date,
+                pta.details details
             ')
             ->from('patientticketing_ticket ptt')
             ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
@@ -1756,7 +1896,7 @@ class AnalyticsController extends BaseController
         }
         /* Get the waiting follow up data, uses Document event with referral letter type and worklist time
         To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
-        $referral_document_elements = $referral_document_command->queryAll();
+        $referral_document_elements = $referral_document_command->andWhere($queryConditions, $params)->queryAll();
         foreach ($referral_document_elements as $referral_element) {
             $current_referral_date = $referral_element['event_date'];
             if ( ($start_date && $current_referral_date < $start_date) ||
@@ -1821,14 +1961,14 @@ class AnalyticsController extends BaseController
     protected function queryAllDiagnosisForPatient($patient_id)
     {
         $command = Yii::app()->db->createCommand()
-          ->select('od.disorder_id AS disorder_id')
-          ->from('episode e')
-          ->leftJoin('event e2', 'e2.episode_id = e.id')
-          ->leftJoin('et_ophciexamination_diagnoses eod', 'eod.event_id = e2.id')
-          ->leftJoin('ophciexamination_diagnosis od', 'eod.id = od.element_diagnoses_id')
-          ->where('od.id IS NOT NULL')
-          ->andWhere('e.patient_id =:patient_id', array(':patient_id'=>$patient_id))
-          ->group('od.id');
+            ->select('od.disorder_id AS disorder_id')
+            ->from('episode e')
+            ->leftJoin('event e2', 'e2.episode_id = e.id')
+            ->leftJoin('et_ophciexamination_diagnoses eod', 'eod.event_id = e2.id')
+            ->leftJoin('ophciexamination_diagnosis od', 'eod.id = od.element_diagnoses_id')
+            ->where('od.id IS NOT NULL')
+            ->andWhere('e.patient_id =:patient_id', array(':patient_id'=>$patient_id))
+            ->group('od.id');
         $diagnoses = $command->queryAll();
         $return_data = array();
         foreach ($diagnoses as $diagnosis) {

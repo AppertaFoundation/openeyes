@@ -1,67 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    var confirm_exit = function(e){
-        e = e || window.event;
-        var message = "You have unsaved changes. Are you sure you want to leave this page?";
-        if (e)
-        {
-            e.returnValue = message;
-        }
+  $('#js-wb3-openclose-actions').click(function() {
+      $(this).toggleClass('up close');
+      $('.wb3-actions').toggleClass('down up');
+  });
 
-        return message;
-    };
-
-    window.onbeforeunload = null;
-
-  OpenEyes.Dialog.init(
-    document.getElementById('dialog-container'),
-    document.getElementById('refresh-button'),
-    'Are you sure?',
-    'This will update the record to match the current status of the patient. If you are unsure do not continue.'
-  );
-
-  $('#exit-button').on('click', function (event) {
+  $('#exit-button').click(function (event) {
     event.preventDefault();
     window.close();
   });
 
-  $('.editable').find('.material-icons').on('click', function () {
-    var icon = this;
-    var $cardContent = $(icon).parents('.editable').find('.mdl-card__supporting-text');
-    var whiteboardEventId = icon.dataset.whiteboardEventId;
-    var textArea;
-    var data = {};
-    var contentId;
-    var text;
+  function toggleEdit(card) {
+      $(card).find('.edit-widget-btn i').toggleClass('pencil tick');
+      let $wbData = $(card).children('.wb-data');
+      $wbData.find('ul').toggle();
+      $wbData.find('.edit-widget').toggle();
+  }
 
-    if (icon.textContent !== 'done') {
-      textArea = $('<textarea />');
-      icon.textContent = 'done';
-      textArea[0].value = $cardContent.get(0).textContent.trim();
-      $cardContent.html(textArea);
-      window.onbeforeunload = confirm_exit;
-    } else {
-      contentId = $cardContent.get(0).id;
-      text = $cardContent.find('textarea').val();
-      data[contentId] = text;
-      data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
-      $.ajax({
-        'type': 'POST',
-        'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
-        'data':data,
-        'success': function () {
-          $cardContent.text(text);
-          icon.textContent = 'create';
-          window.onbeforeunload = null;
-        },
-        'error': function () {
-          alert('Something went wrong, please try again.');
-        }
-      });
-    }
+  $('.edit-widget-btn').on('click', function() {
+      let $card = $(this).parent().parent();
+      if ($('.oe-i',this).hasClass('tick')) {
+          let cardTitle = $(this).parent().text().trim();
+          let $cardContent = $($card).find('.wb-data');
+          let whiteboardEventId = this.dataset.whiteboardEventId;
+          let data = {};
+          let contentId;
+          let whiteboardComment;
+
+          contentId = (cardTitle === 'Equipment') ? 'predicted_additional_equipment' : cardTitle.toLowerCase();
+          whiteboardComment = $cardContent.find('textarea').val();
+          data[contentId] = whiteboardComment;
+          data.YII_CSRF_TOKEN = YII_CSRF_TOKEN;
+          // Save the changes made.
+          $.ajax({
+              'type': 'POST',
+              'url': '/OphTrOperationbooking/whiteboard/saveComment/' + whiteboardEventId,
+              'data': data,
+              'success': function () {
+                  let newContent = whiteboardComment.split("\n");
+                  $cardContent.find('ul').empty();
+                  newContent.forEach(function(item) {
+                      $cardContent.find('ul').append('<li>' + item + '</li>');
+                  });
+                  toggleEdit($card);
+                  window.onbeforeunload = null;
+              },
+              'error': function () {
+                  alert('Something went wrong, please try again.');
+              }
+          });
+      } else {
+          toggleEdit($card);
+      }
   });
 
-    var toolTip = new OpenEyes.UI.Tooltip({
+    let toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',
         offset: {
             x: 10,
@@ -75,10 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
     $(this).on('mouseover', '.has-tooltip', function() {
         if ($(this).data('tooltip-content') && $(this).data('tooltip-content').length) {
             toolTip.setContent($(this).data('tooltip-content'));
-            var offsets = $(this).offset();
+            let offsets = $(this).offset();
             toolTip.show(offsets.left, offsets.top);
         }
-    }).mouseout(function (e) {
+    }).mouseout(function () {
         toolTip.hide();
     });
 

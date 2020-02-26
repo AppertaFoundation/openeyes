@@ -116,7 +116,7 @@
 					color: (side == 'right') ? '#9fec6d' : '#fe6767',
 				},
 				text: x.map(function (item, index) {
-          return item.toLocaleDateString("en-GB", "short")	+ '<br>' + display_data[index];
+          return item.getDate()+'/'+(item.getMonth()+1) +"/"+ item.getFullYear().toString().substring(2)+ '<br>' + display_data[index];
 				}),
 				hoverinfo: 'text',
 				hoverlabel: trace_hoverlabel,

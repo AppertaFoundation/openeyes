@@ -1,7 +1,12 @@
 function setYAxis_IOP() {
   return {
     side: 'right',
-    title: '',
+    title: {
+              text: 'IOP Graph',
+              font: {
+                color: 'white'
+              }
+            },
     range: [0,75],
     /* Grid line settings of yaxis */
     showgrid: true,
@@ -16,7 +21,15 @@ function setYAxis_IOP() {
     },
     showticklabels: true,
     dtick: 5,
-    fixedrange: true
+    fixedrange: true,
+
+    /*spike setting aka Cursor*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'line',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   };
 }
 
