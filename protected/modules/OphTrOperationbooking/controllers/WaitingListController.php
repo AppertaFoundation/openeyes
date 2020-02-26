@@ -456,7 +456,7 @@ class WaitingListController extends BaseModuleController
 
         return $this->render('../letters/reminder_letter', array(
                 'to' => $patient->salutationname,
-                'consultantName' => $operation->event->episode->firm->consultant->fullName,
+                'consultantName' => isset($operation->event->episode->firm->consultant) ? $operation->event->episode->firm->consultant->fullName : "the eye service",
                 'overnightStay' => $operation->overnight_stay,
                 'patient' => $patient,
                 'changeContact' => $operation->waitingListContact,
