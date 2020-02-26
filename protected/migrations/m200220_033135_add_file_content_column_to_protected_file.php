@@ -9,7 +9,29 @@ class m200220_033135_add_file_content_column_to_protected_file extends OEMigrati
     public function safeUp()
     {
         $this->addOEColumn('protected_file', 'file_content', 'blob');
-        $this->addOEColumn('protected_file', 'thumbnail_content', 'blob');
+        $this->addOEColumn('protected_file', 'thumbnail', 'blob');
+
+        $this->createOETable(
+            'protected_file_thumbnail',
+            array(
+                'id' => 'pk',
+                'file_id' => 'int(10) unsigned NOT NULL',
+                'width' => 'int unsigned NOT NULL',
+                'height' => 'int unsigned NOT NULL',
+                'size' => 'bigint unsigned NOT NULL',
+                'thumbnail_content' => 'blob NOT NULL',
+            ),
+            true
+        );
+
+        $this->addForeignKey(
+            'protected_file_thumbnail_file_id_fk',
+            'protected_file_thumbnail',
+            'file_id',
+            'protected_file',
+            'id',
+            'CASCADE',
+        );
 
         $all_files = $this->dbConnection->createCommand()
             ->select('id, uid')
@@ -34,6 +56,12 @@ class m200220_033135_add_file_content_column_to_protected_file extends OEMigrati
 
     public function safeDown()
     {
+        $this->dropForeignKey(
+            'protected_file_thumbnail_file_id_fk',
+            'protected_file_thumbnail'
+        );
+        $this->dropOETable('protected_file_thumbnail', true);
         $this->dropOEColumn('protected_file', 'file_content');
+        $this->dropOEColumn('protected_file', 'thumbnail');
     }
 }

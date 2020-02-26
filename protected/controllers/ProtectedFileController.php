@@ -60,6 +60,7 @@ class ProtectedFileController extends BaseController
      * @param null $rotate
      * @throws CException
      * @throws CHttpException
+     * @throws Exception
      */
     public function actionView($id, $name, $rotate = null)
     {
@@ -73,11 +74,16 @@ class ProtectedFileController extends BaseController
         header('Content-Type: '.$file->mimetype);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
+        if (!file_exists($file->getFilePath())) {
+            if (!@mkdir($file->getFilePath(), 0755, true)) {
+                throw new Exception("{$file->getPath()} could not be created: permission denied");
+            }
+        }
+        file_put_contents($file->getPath(), $file->file_content);
 
         $image_size = getimagesize($file->getPath());
         $mime = $image_size['mime'] ?? null;
         if ($mime && $mime === 'image/jpeg' && $rotate) {
-            file_put_contents($file->getPath(), $file->file_contents);
             $original = imagecreatefromjpeg($file->getPath());
             $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
             ob_start();
@@ -85,12 +91,12 @@ class ProtectedFileController extends BaseController
             $size = ob_get_length();
             header('Content-length: ' . $size);
             ob_flush();
-            unlink($file->getPath());
         }
+        unlink($file->getPath());
 
         ob_clean();
         flush();
-        readfile($file->file_content);
+        echo $file->file_content;
     }
 
     public function actionThumbnail($id, $dimensions, $name)
@@ -104,10 +110,10 @@ class ProtectedFileController extends BaseController
         header('Content-Type: '.$file->mimetype);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
-        header('Content-Length: '.$thumbnail['size']);
+        header('Content-Length: '.$thumbnail->size);
         ob_clean();
         flush();
-        readfile($thumbnail['path']);
+        echo $thumbnail->thumbnail_content;
     }
 
     /**
