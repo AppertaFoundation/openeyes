@@ -967,7 +967,6 @@ class AdminController extends BaseAdminController
                     }
                 }
             }
-            Yii::log("t1".var_export($_FILES,true));
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
@@ -982,19 +981,19 @@ class AdminController extends BaseAdminController
                 $errors = array_merge($errors, $logo->getErrors());
             }
 
-            if (!($errors)) {
+            if (empty($errors)) {
                 // Save the logo, and if sucsessful, add the logo ID to the site, so that the relation is established.
                 if (!$logo->save()) {
                     throw new Exception('Unable to save Logo: ' . print_r($logo->getErrors(), true));
                 }
                 $site->logo_id = $logo->id;
-                $logo=$site->logo;
+                
                 // revalidate site
                 if (!$site->validate()) {
                     $errors = $site->getErrors();
                 }
             }
-            if (!$errors) {
+            if (empty($errors)) {
                 if (!$site->save()) {
                     throw new Exception('Unable to save contact: ' . print_r($site->getErrors(), true));
                 }
@@ -1037,6 +1036,7 @@ class AdminController extends BaseAdminController
 
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
+
             if (isset($_FILES['SiteLogo'])) {
                 if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                     $primary_logo = CUploadedFile::getInstance($logo,'primary_logo');
@@ -1098,7 +1098,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', "{$site->name} updated.");
             }
         } else {
-            Audit::add('admin-Site', 'view', $id);
+            Audit::add('admin-Site', 'view', @$_GET['site_id']);
         }
 
         $this->render('/admin/sites/edit', array(

@@ -76,17 +76,17 @@ $defaultURLS = $logoHelper->getLogoURLs();
             <col class="cols-5">
         </colgroup>
 
-        <tbody>              
+        <tbody>
         <tr>
             <td>Primary logo</td>
             <td>
                 <?php 
-                    echo $form->fileField($logo, 'primary_logo');                
+                    echo $form->fileField($logo, 'primary_logo');
                     if(!empty($defaultURLS['primaryLogo'])){
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                             echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";
                             echo '<br>'.CHtml::button( '',
-                                array('submit' => array('admin/deletelogo/'),                     
+                                array('submit' => array('admin/deletelogo/'),
                                 'params' => array(
                                     'deletePrimaryLogo' => true,
                                 ),
@@ -104,7 +104,7 @@ $defaultURLS = $logoHelper->getLogoURLs();
                     
                 ?>
             </td>
-        </tr>              
+        </tr>
         <tr>
             <td>Secondary logo</td>
             <td>
@@ -114,7 +114,7 @@ $defaultURLS = $logoHelper->getLogoURLs();
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                             echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";
                             echo '<br>'.CHtml::button( '',
-                                array('submit' => array('admin/deletelogo/'),                     
+                                array('submit' => array('admin/deletelogo/'),
                                 'params' => array(
                                     'deleteSecondaryLogo' => true,
                                 ),
@@ -136,7 +136,7 @@ $defaultURLS = $logoHelper->getLogoURLs();
 
         <tfoot>
         <tr>
-            <td colspan="4">            
+            <td colspan="4">
                 <?= CHtml::submitButton('Save')?>
             </td>
         </tr>

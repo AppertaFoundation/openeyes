@@ -135,8 +135,7 @@ class SiteLogoController extends BaseController
             header('Content-transfer-encoding: binary');
             header('Content-length: ' . strlen($image_data));
             echo $image_data;
-        }
-        
+        }   
     }
 
     /**

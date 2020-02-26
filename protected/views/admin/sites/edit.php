@@ -159,94 +159,75 @@ $defaultURLS = $logoHelper->getLogoURLs();
             </td>
         </tr>
         <tr>
-            <td>Primary logo<br>
-                
-            </td>
+            <td>Primary logo</td>
             <td>
-                <?php echo $form->fileField($logo, 'primary_logo');
-                if(empty($site)){
-                    if(!empty($defaultURLS['primaryLogo'])){
+                <?php
+                echo $form->fileField($logo, 'primary_logo');
+                if(empty($defaultURLS['primaryLogo']) && !isset($logo->primary_logo)){
+                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                }
+                else{
+                    if(!isset($logo)||!isset($logo->primary_logo)){                      
+                        echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";
                     }
                     else{
-                    echo "<div class='alert-box info'>No default secondary logo</div>";
+                        echo '<div style=" margin-top: 5px; position: relative; ">';
+                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
+                        echo '<br>'.CHtml::button( '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'site_id' => $site->id,
+                                'deletePrimaryLogo' => true,
+                            ),
+                            'csrf' => true,
+                            'class' =>'oe-i remove-circle small',
+                            'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
+                            'data-method'=>"POST",
+                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                        ));
+                        echo '</div>';
                     }
                 }
-                else{
-                    if(empty($defaultURLS['primaryLogo']) && empty($site->logo->primary_logo)){
-                        echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
-                    }
-                    else{                            
-                        if(!isset($site->logo)||!isset($site->logo->primary_logo)){                      
-                            echo "<div class='alert-box info'>Currently using system default logo</div>";
-                            echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";  
-                        }
-                        else{
-                            echo '<div style=" margin-top: 5px; position: relative; ">';
-                            echo "<img src='". $site->logo->getImageUrl()."' style='width:100%;'>";
-                            echo '<br>'.CHtml::button( '',
-                                array('submit' => array('admin/deletelogo/'),                     
-                                'params' => array(
-                                    'site_id' => $site->id,
-                                    'deletePrimaryLogo' => true,
-                                ),
-                                'csrf' => true, 
-                                'class' =>'oe-i remove-circle small',
-                                'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
-                                'data-method'=>"POST", 
-                                'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
-                            ));
-                            echo '</div>';
-                        }
-                    }
-                } ?>
+                ?>
             </td>
         </tr>
         <tr>
-            <td>Secondary logo <br>
-            </td>
-            <td>            
-                <?php echo $form->fileField($logo, 'secondary_logo');
-                if(empty($site)){
-                    if(!empty($defaultURLS['secondaryLogo'])){
-                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";
-                    }
-                    else{
-                    echo "<div class='alert-box info'>No default secondary logo</div>";
-                    }
+            <td>Secondary logo</td>
+            <td>
+                <?php
+                echo $form->fileField($logo, 'secondary_logo');
+                if(empty($defaultURLS['secondaryLogo']) && empty($logo->secondary_logo)){
+                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 }
                 else{
-                    if(empty($defaultURLS['secondaryLogo']) && empty($site->logo->secondary_logo)){
-                        echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                    if(!isset($logo)||!isset($logo->secondary_logo)){
+                        echo "<div class='alert-box info'>Currently using system default logo</div>";
+                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";  
                     }
-                    else{                            
-                        if(!isset($site->logo)||!isset($site->logo->secondary_logo)){                      
-                            echo "<div class='alert-box info'>Currently using system default logo</div>";
-                            echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";  
-                        }
-                        else{
-                            echo '<div style="
-                            margin-top: 5px;
-                            position: relative;
-                        ">';
-                            echo "<img src='". $site->logo->getImageUrl(true)."' style='width:100%;'>";
-                            echo '<br>'.CHtml::button(
-                                '',
-                                array('submit' => array('admin/deletelogo/'),                     
-                                'params' => array(
-                                    'site_id' => $site->id,
-                                    'deleteSecondaryLogo' => true,
-                                ),
-                                'csrf' => true, 
-                                'class' =>'oe-i remove-circle small',
-                                'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
-                                'data-method'=>"POST", 
-                                'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
-                            ));
-                            echo '</div>';
-                        }
+                    else{
+                        echo '<div style="
+                        margin-top: 5px;
+                        position: relative;
+                    ">';
+                        echo "<img src='". $logo->getImageUrl(true)."' style='width:100%;'>";
+                        echo '<br>'.CHtml::button(
+                            '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'site_id' => $site->id,
+                                'deleteSecondaryLogo' => true,
+                            ),
+                            'csrf' => true, 
+                            'class' =>'oe-i remove-circle small',
+                            'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
+                            'data-method'=>"POST",
+                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                        ));
+                        echo '</div>';
                     }
-                }?>
+                }
+                ?>
             </td>
         </tr>
         </tbody>
