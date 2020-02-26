@@ -22,12 +22,7 @@
 if (!is_null($controller->module)) {
     switch ($controller->module->id) {
         case 'OphCoCorrespondence':
-            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-            $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
-            if ($examination_accessible_info_standards) {
-                $large_letters = $examination_accessible_info_standards->correspondence_in_large_letters;
-            }
-            $printHelperClass = 'OphCoCorrespondence '.(isset($large_letters) && $large_letters ? 'impaired-vision' : 'large-font');
+            $printHelperClass = 'OphCoCorrespondence large-font';
             $printHelperStyles = 'margin: 0 80px';
             break;
         case 'OphTrConsent':

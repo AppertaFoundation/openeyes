@@ -39,6 +39,11 @@
                                 </td>
                             </tr>
                         <?php } ?>
+                        <?php if ($element->{$eye_side . '_comments'}) {?>
+                            <tr>
+                                <td><?= Yii::app()->format->Ntext($element->{$eye_side . '_comments'}) ?></td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             <?php } else { ?>
