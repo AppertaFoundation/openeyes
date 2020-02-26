@@ -145,18 +145,20 @@
             let adjustedTotalDuration = 0;
             $('#procedureList_' + identifier).find('.item').map(function () {
                 let $span = $(this).find('.duration span');
-                let duration = parseInt($span.data('default-duration'));
-                let adjustedDuration;
+                if ($span.length > 0) {
+                    let duration = parseInt($span.data('default-duration'));
+                    let adjustedDuration;
 
-                if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
-                    totalDuration *= 2;
+                    if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
+                        totalDuration *= 2;
+                    }
+                    adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
+
+                    totalDuration += duration;
+                    adjustedTotalDuration += adjustedDuration;
+
+                    $span.text(adjustedDuration);
                 }
-                adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
-
-                totalDuration += duration;
-                adjustedTotalDuration += adjustedDuration;
-
-                $span.text(adjustedDuration);
             });
 
             if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())
@@ -167,7 +169,7 @@
             $projected_duration.text(adjustedTotalDuration);
         }
 
-        $('#typeProcedure').on('click', '.removeProcedure', function () {
+        $('td #typeProcedure').on('click', '.removeProcedure', function () {
             let $table = $(this).closest("[id^='procedureList_']");
             if ($table) {
                 let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
@@ -381,10 +383,14 @@
                 'type': 'GET',
                 'data': {'name': name},
                 'success': function (data) {
-                    var enableDurations = <?php echo $durations ? 'true' : 'false'?>;
+                    let enableDurations = <?php echo $durations ? 'true' : 'false'?>;
 
-                    // append selection onto procedure list
-                    $('#procedureList_' + identifier).find('.body').append(data);
+                    // append duration of the procedure
+                    $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
+                        if ($(this).html() === name) {
+                            $(this).parents('td.procedure').after(data);
+                        }
+                    });
                     $('#procedureList_' + identifier).css('visibility', 'visible');
 
                     if (enableDurations) {
@@ -401,8 +407,8 @@
 
                         $('ul.add-options.js-search-results').children().each(function () {
                             if ($(this).text() == m[1]) {
-                                var id = $(this).val();
-                                var name = $(this).text();
+                                let id = $(this).val();
+                                let name = $(this).text();
 
                                 removed_stack_<?php echo $identifier?>.push({name: name, id: id});
 
@@ -438,9 +444,25 @@
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
-                    var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
-                    for (i in selectedItems) {
-                        ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
+                    //on multiselect: sort selected items alphabetically as the list could have a different display order
+                    if (selectedItems.length > 1) {
+                        selectedItems.sort(function (a, b) {
+                            let label_a = a.label.toUpperCase();
+                            let label_b = b.label.toUpperCase();
+
+                            if (label_a > label_b) {
+                                return 1;
+                            } else if (label_a < label_b) {
+                                return -1;
+                            }
+
+                            return 0;
+                        });
+                    }
+
+                    for (let index = 0; index < selectedItems.length; index++) {
+                        // append selection into procedure list
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
                     }
                     return true;
                 },
