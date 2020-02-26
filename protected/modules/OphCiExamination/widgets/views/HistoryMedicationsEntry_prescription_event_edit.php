@@ -105,3 +105,13 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         "This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></i>
     </td>
 </tr>
+
+<script>
+    <?php
+    if (!$entry->isStopped() && $entry->hasRisk()) { ?>
+        if($('.' + OE_MODEL_PREFIX + 'HistoryRisks').length === 0){
+            let sidebar = $('#episodes-and-events').data('patient-sidebar');
+            sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks');
+        }
+    <?php } ?>
+</script>

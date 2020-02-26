@@ -18,8 +18,7 @@
 
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-    'doodleToolBarArray' => array(
-    ),
+    'doodleToolBarArray' => array('Freehand', 'FreehandCopyForOE'),
     'onReadyCommandArray' => array(
         array('addDoodle', array('Eyeball')),
         array('addDoodle', array('Lids')),

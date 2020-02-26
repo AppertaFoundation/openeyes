@@ -91,12 +91,15 @@
         </tr>
         <tr>
             <td>Active</td>
-            <td><?= \CHtml::activeRadioButtonList(
+            <td>
+                <?php $user->active = $user->getUserActiveStatus($user)?>
+                <?= \CHtml::activeRadioButtonList(
                     $user,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?></td>
+                    ['separator' => ' ']);
+                ?>
+            </td>
         </tr>
         <tr>
             <td>Global firm rights</td>

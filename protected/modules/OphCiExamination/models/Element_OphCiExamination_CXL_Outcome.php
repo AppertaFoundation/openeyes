@@ -33,6 +33,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     public $service;
 
     /**

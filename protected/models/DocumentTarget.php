@@ -74,4 +74,14 @@ class DocumentTarget extends BaseActiveRecord
     {
         return array();
     }
+
+    public function beforeSave()
+    {
+        // This check is only for the other and internal referral letter types
+        if ( $this->contact_id === '' && ($this->contact_type === 'INTERNALREFERRAL' || $this->contact_type === 'OTHER') ) {
+            $this->contact_id = null;
+        }
+
+        return parent::beforeSave();
+    }
 }

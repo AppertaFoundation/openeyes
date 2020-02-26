@@ -15,6 +15,37 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+if ($element->booking_event_id) {
+    $whiteboard_display_mode = SettingMetadata::model()->getSetting('opnote_whiteboard_display_mode');
+
+    if ($whiteboard_display_mode === 'CURRENT') {
+        array_unshift(
+            $this->event_actions,
+            EventAction::link(
+                'Display Whiteboard',
+                '#',
+                null,
+                array('class' => 'small button', 'id' => 'js-display-whiteboard', 'data-id' => $element->booking_event_id)
+            ),
+            EventAction::link(
+                'Close Whiteboard',
+                '#',
+                null,
+                array('class' => 'small button', 'id' => 'js-close-whiteboard', 'data-id' => $element->booking_event_id)
+            )
+        );
+    } else {
+        array_unshift(
+            $this->event_actions,
+            EventAction::link(
+                'Display Whiteboard',
+                $this->createUrl('default/whiteboard/' . $element->booking_event_id),
+                null,
+                array('class' => 'small button', 'target' => '_blank')
+            )
+        );
+    }
+}
 ?>
 <section class="element edit full edit-procedures  <?php echo $element->elementType->class_name ?>"
          data-element-type-id="<?php echo $element->elementType->id ?>"

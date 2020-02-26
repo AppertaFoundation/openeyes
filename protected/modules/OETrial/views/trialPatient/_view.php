@@ -58,8 +58,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
               )
             ) ?>
         <div class="js-external-trial-identifier-actions" style="display: none;">
-          <a class="js-save-external-trial-identifier">Save</a>
-          <a class="js-cancel-external-trial-identifier">Cancel</a>
+          <a class="js-save-external-trial-identifier button">Save</a>
+          <a class="js-cancel-external-trial-identifier button">Cancel</a>
           <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
         </div>
             <?php
@@ -99,14 +99,15 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
     <td> <!-- Comment -->
         <div class="add-data-actions">
-            <button id="trial_patient_comment_button" type="button">
+            <button id="trial_patient_comment_button" type="button" <?php if ($data->comment != null) echo 'class="hint green"'; ?> >
                 <i class="oe-i comments small-icon"></i>
             </button>
         </div>
     </td>
     <td> <!-- Accept/Reject/Shortlist actions -->
         <?php if ($permission->can_edit && $data->trial->is_open) : ?>
-            <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE) : ?>
+<!--          disable the button if the patient is deleted so that it cannot be accepted into the trial.-->
+            <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE && !$data->patient->isDeleted()) : ?>
             <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
                class="accept-patient-button button hint green"
@@ -126,12 +127,14 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
             <?php endif; ?>
 
             <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE) : ?>
-          <span>
-            <button href="javascript:void(0)"
-               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-               class="accept-patient-button button hint blue">Re-Shortlist
-            </button>
-          </span>
+                <?php if (!$data->patient->isDeleted()) : ?>
+                <span>
+                    <button href="javascript:void(0)"
+                       onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
+                       class="accept-patient-button button hint blue">Re-Shortlist
+                    </button>
+                </span>
+                <?php endif; ?>
 
             <button href="javascript:void(0)"
                     class="accept-patient-button button hint red"
