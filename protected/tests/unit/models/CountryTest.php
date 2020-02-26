@@ -16,12 +16,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class CountryTest extends CDbTestCase
+class CountryTest extends ActiveRecordTestCase
 {
     public $model;
     public $fixtures = array(
         'countries' => 'Country',
     );
+
+    public function getModel()
+    {
+        return Country::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -63,9 +68,11 @@ class CountryTest extends CDbTestCase
 
     /**
      * @covers Country::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->countries('us')->validate());
         $this->assertEmpty($this->countries('us')->errors);
     }

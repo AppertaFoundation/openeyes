@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCoTherapyapplication_EmailTest extends CDbTestCase
+class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
 {
     public static function setupBeforeClass()
     {
@@ -26,6 +26,15 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
     );
 
     private $event_type;
+
+    public function getModel()
+    {
+        return OphCoTherapyapplication_Email::model();
+    }
+
+    protected $columns_to_skip = [
+        'eye_id'
+    ];
 
     public function setUp()
     {

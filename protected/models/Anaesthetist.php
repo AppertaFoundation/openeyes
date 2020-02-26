@@ -56,6 +56,7 @@ class Anaesthetist extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            ['name', 'required'],
         );
     }
 

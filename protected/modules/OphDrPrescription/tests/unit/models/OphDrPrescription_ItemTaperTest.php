@@ -4,7 +4,7 @@
      * Class OphDrPrescription_ItemTaperTest
      * @property OphDrPrescription_ItemTaper $instance
      */
-class OphDrPrescription_ItemTaperTest extends CDbTestCase
+class OphDrPrescription_ItemTaperTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'item_tapers' => OphDrPrescription_ItemTaper::class,
@@ -15,6 +15,11 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
     );
         
     private $instance;
+
+    public function getModel()
+    {
+        return $this->instance;
+    }
         
     public function setUp()
     {

@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCiExamination_BlebAssessment_Height_Test extends CDbTestCase
+class OphCiExamination_BlebAssessment_Height_Test extends ActiveRecordTestCase
 {
     /**
      * @var OphCiExamination_BlebAssessment_Height
@@ -23,6 +23,11 @@ class OphCiExamination_BlebAssessment_Height_Test extends CDbTestCase
     protected $model;
     public $fixtures = array(
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
