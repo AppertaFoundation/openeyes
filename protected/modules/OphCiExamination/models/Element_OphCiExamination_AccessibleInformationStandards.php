@@ -90,7 +90,7 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'correspondence_in_large_letters' => 'Correspondence in large letters',
+                'correspondence_in_large_letters' => 'Large print for correspondence',
         );
     }
 
@@ -126,7 +126,7 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
 
     public function getLetter_string()
     {
-        return "Correspondence in large letters: $this->correspondence_in_large_letters\n";
+        return "Large print for correspondence: $this->correspondence_in_large_letters\n";
     }
 
     public function canCopy()
