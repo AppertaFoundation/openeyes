@@ -2,8 +2,8 @@
 
 class m200130_044814_add_logos_to_site extends OEMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         // Creating Table
         $this->createOETable('site_logo', array(
             'id' => 'pk',
@@ -24,7 +24,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
         $directory = \Yii::getPathOfAlias('application.runtime');
         $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
 
-        foreach($images as $image_path) {
+        foreach ($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {
                 Yii::app()->assetManager->publish($image_path);
                 $logos['primaryLogo'] = $image_path;
@@ -45,14 +45,14 @@ class m200130_044814_add_logos_to_site extends OEMigration
         }
 
         // Adding Default logo to db
-        $this->insert('site_logo',   array(
-            'primary_logo' => $primaryLogo, 
+        $this->insert('site_logo', array(
+            'primary_logo' => $primaryLogo,
             'secondary_logo' => $secondaryLogo));
 
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         // Dropping foreign key from sites
         $this->dropForeignKey('site_logo_id_fk', 'site');
 
@@ -62,5 +62,5 @@ class m200130_044814_add_logos_to_site extends OEMigration
         
         // Dropping Table
         $this->dropOETable('site_logo');
-	}
+    }
 }

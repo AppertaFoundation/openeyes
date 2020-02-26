@@ -55,10 +55,9 @@ $defaultURLS = $logoHelper->getLogoURLs();
     <div class="row divider">
         <h2>
             <?php
-            if(!empty($site->id)){
+            if (!empty($site->id)) {
                 echo "Edit site: ".$site->name;
-            }
-            else{
+            } else {
                 echo "Add Site";
             }
             ?>
@@ -163,15 +162,13 @@ $defaultURLS = $logoHelper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
-                if(empty($defaultURLS['primaryLogo']) && !isset($logo->primary_logo)){
+                if (empty($defaultURLS['primaryLogo']) && !isset($logo->primary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
-                }
-                else{
-                    if(!isset($logo)||!isset($logo->primary_logo)){                      
+                } else {
+                    if (!isset($logo)||!isset($logo->primary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";
-                    }
-                    else{
+                    } else {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
                         echo '<br>'.CHtml::button( '',
@@ -197,15 +194,13 @@ $defaultURLS = $logoHelper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'secondary_logo');
-                if(empty($defaultURLS['secondaryLogo']) && empty($logo->secondary_logo)){
+                if (empty($defaultURLS['secondaryLogo']) && empty($logo->secondary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
-                }
-                else{
-                    if(!isset($logo)||!isset($logo->secondary_logo)){
+                } else {
+                    if (!isset($logo)||!isset($logo->secondary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
-                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";  
-                    }
-                    else{
+                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";
+                    } else {
                         echo '<div style="
                         margin-top: 5px;
                         position: relative;
@@ -218,7 +213,7 @@ $defaultURLS = $logoHelper->getLogoURLs();
                                 'site_id' => $site->id,
                                 'deleteSecondaryLogo' => true,
                             ),
-                            'csrf' => true, 
+                            'csrf' => true,
                             'class' =>'oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
                             'data-method'=>"POST",

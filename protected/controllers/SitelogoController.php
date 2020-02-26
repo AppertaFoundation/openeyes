@@ -38,16 +38,14 @@ class SiteLogoController extends BaseController
     public function actionGetImageUrl($site_id, $logo_type = null, $return_value = false)
     {
         $site = Site::model()->findByPk($site_id);
-        if(isset($site)){
-            if(isset($site->logo_id)){
+        if (isset($site)) {
+            if (isset($site->logo_id)) {
                 // get logos for site
                 $logo = SiteLogo::model()->findByPk($site->logo_id);
-            }
-            else{
+            } else {
                 $logo = SiteLogo::model()->findByPk(1);
             }
-        }
-        else{
+        } else {
             $logo = SiteLogo::model()->findByPk(1);
         }
         
@@ -59,8 +57,7 @@ class SiteLogoController extends BaseController
             } else {
                 echo $url;
             }
-        }
-        else{
+        } else {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         return '';
@@ -69,17 +66,17 @@ class SiteLogoController extends BaseController
     public function actionIndex($secondary_logo = null)
     {
         // Navigate to the default logo
-        $this->actionView(1,$secondary_logo);
+        $this->actionView(1, $secondary_logo);
     }
 
-    public function actionPrimary($id=1)
+    public function actionPrimary($id = 1)
     {
         $this->actionView($id);
     }
 
-    public function actionSecondary($id=1)
+    public function actionSecondary($id = 1)
     {
-        $this->actionView($id,true);
+        $this->actionView($id, true);
     }
 
     /**
@@ -87,7 +84,7 @@ class SiteLogoController extends BaseController
      * @param integer $id the ID of the logo to be displayed
      * @param integer $page The page number for multi image events
      */
-    public function actionView($id=1, $secondary_logo = false)
+    public function actionView($id = 1, $secondary_logo = false)
     {
         // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
         $criteria = new CDbCriteria();
@@ -95,22 +92,20 @@ class SiteLogoController extends BaseController
         $criteria->params[':logo_id'] = $id;
         $logo = SiteLogo::model()->find($criteria);
         
-        if($secondary_logo){
-            
-            if(!$logo->secondary_logo){
+        if ($secondary_logo) {
+            if (!$logo->secondary_logo) {
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id = :logo_id');
                 $criteria->params[':logo_id'] = 1;
                 $logo = SiteLogo::model()->find($criteria);
             }
-        }
-        else{
-            if(!$logo->primary_logo){
+        } else {
+            if (!$logo->primary_logo) {
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id = 1');
                 $logo = SiteLogo::model()->find($criteria);
             }
-        }            
+        }
 
         $fileModTime = strtotime($logo->last_modified_date);
         $headers = $this->getRequestHeaders();
@@ -123,10 +118,9 @@ class SiteLogoController extends BaseController
             // Client's cache IS current, so we just respond '304 Not Modified'.
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
         } else {
-            if($secondary_logo){
+            if ($secondary_logo) {
                 $image_data = $logo->secondary_logo;
-            }
-            else{                  
+            } else {
                 $image_data = $logo->primary_logo;
             }
             // Image not cached or cache outdated, we respond '200 OK' and output the image.
@@ -135,7 +129,7 @@ class SiteLogoController extends BaseController
             header('Content-transfer-encoding: binary');
             header('Content-length: ' . strlen($image_data));
             echo $image_data;
-        }   
+        }
     }
 
     /**

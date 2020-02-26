@@ -101,22 +101,20 @@
                         </td>
                         <td>
                             <?php
-                                if(isset($site->logo)&&isset($site->logo->primary_logo)){
-                                    echo 'Custom';
-                                }
-                                else{
-                                    echo 'Default';
-                                }
+                            if (isset($site->logo)&&isset($site->logo->primary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
                             ?>
                         </td>
                         <td>
                             <?php
-                                if(isset($site->logo)&&isset($site->logo->secondary_logo)){
-                                    echo 'Custom';
-                                }
-                                else{
-                                    echo 'Default';
-                                }
+                            if (isset($site->logo)&&isset($site->logo->secondary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
                             ?>
                         </td>
                     </tr>
