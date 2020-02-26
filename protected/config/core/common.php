@@ -82,7 +82,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201909131608',
+            'time' => '202002261802',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -211,7 +211,7 @@ return array(
                 'services\PatientService',
             ),
         ),
-        'session' => array(
+        /*'session' => array(
             'class' => 'OESession',
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
@@ -219,7 +219,7 @@ return array(
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
-        ),
+        /*),*/
         'urlManager' => array(
             'urlFormat' => 'path',
             'showScriptName' => false,
