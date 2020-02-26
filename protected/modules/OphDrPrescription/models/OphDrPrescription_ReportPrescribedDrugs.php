@@ -22,6 +22,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public $end_date;
     public $items;
     public $user_id;
+    public $dispense_condition;
 
     public function attributeLabels()
     {
@@ -35,15 +36,15 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public function rules()
     {
         return array(
-            array('start_date, end_date, drugs, user_id', 'safe'),
+            array('start_date, end_date, drugs, user_id, dispense_condition', 'safe'),
             array('drugs', 'requiredIfNoUser'),
         );
     }
 
     public function requiredIfNoUser($attributes, $params)
     {
-        if (!$this->user_id && !$this->drugs) {
-            $this->addError('drugs', 'Either user or drugs must be selected.');
+        if (!$this->user_id && !$this->drugs && !$this->dispense_condition) {
+            $this->addError('drugs', 'Either user, drugs or dispense condition must be selected.');
         }
     }
 
@@ -81,6 +82,10 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
         if (is_numeric($this->user_id)) {
             $command->andWhere('d.created_user_id = :user_id', array(':user_id' => $this->user_id));
+        }
+
+        if (is_numeric($this->dispense_condition)) {
+            $command->andWhere('i.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
         }
 
         $this->items = $command->queryAll();

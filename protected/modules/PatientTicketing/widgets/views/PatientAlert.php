@@ -71,7 +71,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
             <div data-ticket-id="<?= $ticket->id ?>">
                 <?php if ($ticket->priority) { ?>
                   <div class="priority">
-                    <i class="oe-i circle-<?= $ticket->priority->name ?> medium"></i>
+                      <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
                   </div>
                 <?php } ?>
 

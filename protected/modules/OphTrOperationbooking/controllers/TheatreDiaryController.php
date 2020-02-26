@@ -72,7 +72,7 @@ class TheatreDiaryController extends BaseModuleController
             $theatre_searchoptions = Yii::app()->session['theatre_searchoptions'];
 
             if (!empty($theatre_searchoptions)) {
-                foreach (Yii::app()->session['theatre_searchoptions'] as $key => $value) {
+                foreach ($theatre_searchoptions as $key => $value) {
                     $_POST[$key] = $value;
                 }
 

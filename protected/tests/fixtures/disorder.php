@@ -61,4 +61,15 @@ return array(
         'fully_specified_name' => 'Myocardial infarction (disorder)',
         'term' => 'Myocardial infarction',
     ),
+    // Diabetes SnoMED codes are hard-coded, so the following two fixtures are required for tests that check diabetes risks for patients.
+    'disorder9' => array(
+        'id' => 73211009,
+        'fully_specified_name' => 'Diabetes mellitus (disorder)',
+        'term' => 'Diabetes mellitus',
+    ),
+    'disorder10' => array(
+        'id' => 74627003,
+        'fully_specified_name' => 'Diabetic complication (disorder)',
+        'term' => 'Diabetic complication',
+    ),
 );

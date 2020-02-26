@@ -42,7 +42,7 @@
                 <td><?php echo $this->patient->NHSDate('dob') ?></td>
             </tr>
             <tr>
-                <th>Hospital no</th>
+                <th><?php echo Yii::app()->params['hos_num_label'].': '?></th>
                 <td><?php echo $this->patient->hos_num ?></td>
             </tr>
             <tr>

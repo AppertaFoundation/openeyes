@@ -120,4 +120,19 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
 
         return $return;
     }
+
+    public function fpTenFrequency()
+    {
+        if (preg_match("/^\d+/", $this->duration->name)) {
+            return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' FOR ' . strtoupper($this->duration->name);
+        }
+
+        return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' ' . strtoupper($this->duration->name);
+    }
+
+    public function fpTenDose()
+    {
+        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->item->drug->dose_unit) : strtoupper($this->dose))
+            . ', ' . strtoupper($this->item->route->name) . ($this->item->route_option ? ' (' . strtoupper($this->item->route_option->name) . ')' : null);
+    }
 }

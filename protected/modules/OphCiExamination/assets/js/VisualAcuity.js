@@ -65,11 +65,6 @@ $(document).ready(function () {
       if ($('.va_readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
       }
-      else {
-        // VA can affect DR
-        var side = getSplitElementSide($(this));
-        OphCiExamination_DRGrading_update(side);
-      }
       e.preventDefault();
     });
 
@@ -82,11 +77,6 @@ $(document).ready(function () {
       if ($('.near-va-readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
       }
-      else {
-        // VA can affect DR
-        var side = getSplitElementSide($(this));
-        OphCiExamination_DRGrading_update(side);
-      }
       e.preventDefault();
     });
 
@@ -97,8 +87,6 @@ $(document).ready(function () {
     } else {
       OphCiExamination_VisualAcuity_addReading(side);
     }
-    // VA can affect DR
-    OphCiExamination_DRGrading_update(side);
     e.preventDefault();
   });
 
@@ -129,13 +117,14 @@ $(document).ready(function () {
   $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
     var $section =  $(this).closest('section');
     var $cviAlert = $('.cvi-alert');
+    var hasCvi = parseInt($cviAlert.data('hascvi')) === 1;
     var threshold = parseInt($cviAlert.data('threshold'));
 
     if( $section.find('.cvi_alert_dismissed').val() !== "1"){
       var show_alert = null;
       $section.find('.va-selector').each(function(){
         var val = parseInt($(this).val());
-        if (val < threshold) {
+        if (val < threshold && !hasCvi) {
           show_alert = (show_alert === null) ? true : show_alert;
         } else {
           show_alert = false;

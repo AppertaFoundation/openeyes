@@ -76,9 +76,18 @@
           }
   });
     <?php }?>
-  var side_bar_inner_filter =  $('#search-form-report-search-section');
-  var search_form = $('#search-form-to-side-bar').html();
+  // get current search form in sidebar
+  var side_bar_inner_filter = $('#search-form-report-search-section');
+  // get the hidden form on the plot
+  var search_form = $('#search-form-to-side-bar').html() ? $('#search-form-to-side-bar').html() : '';
+  // to get plot wrapper which is under div#xxx-xxx-grid
+  var report_ctn = $('#<?=$report->graphId();?>_container').parent().attr('id');
   side_bar_inner_filter.html("");
+  // try to get the saved search form. if there is none, get new one
+  var saved_search_form = analytics_dataCenter.cataract.getCataractSearchForm()['#' + report_ctn];
+  if(saved_search_form){
+    search_form = saved_search_form.html();
+  }
   side_bar_inner_filter.html(search_form);
   $('#search-form-to-side-bar').html("");
 
@@ -86,12 +95,12 @@
     if ($report->graphId() === 'OEModule_OphCiExamination_components_RefractiveOutcomeReport') {?>
     $('#refractive-outcome-proc-all').change(function(){
         if (this.checked){
-            $(".refractive_outcome_specific_procedure").prop("checked", false);
+            $(".refractive_outcome_specific_procedure").removeAttr("checked");
         }
     });
     $('.refractive_outcome_specific_procedure').change(function(){
         if (this.checked){
-            $("#refractive-outcome-proc-all").prop("checked", false);
+            $("#refractive-outcome-proc-all").removeAttr("checked");
         }
     });
     <?php }?>

@@ -69,12 +69,14 @@ $nothing_selected_text = "Nothing selected.";
       <td>
           <div id="textField_driving_statuses" class="cols-8">
               <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
-                  echo $nothing_selected_text;
+                    echo $nothing_selected_text;
               } else {
-                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
+                  $driving_statuses = array_map(function ($driving_status) {
+                    return trim($driving_status->name);
+                  },
                       is_array($element->driving_statuses) ? $element->driving_statuses : []);
                     echo implode(', ', $driving_statuses);
-                } ?>
+              } ?>
           </div>
 
       </td>
@@ -194,6 +196,30 @@ $nothing_selected_text = "Nothing selected.";
 </div>
 
 <script type="text/javascript">
+
+  var disabledSocialHistoryFields = [
+    $('#<?= $model_name ?>_occupation_id'),
+    $('#<?= $model_name ?>_smoking_status_id'),
+    $('#<?= $model_name ?>_alcohol_intake'),
+    $('#<?= $model_name ?>_substance_misuse_id'),
+    $('#<?= $model_name ?>_driving_statuses'),
+    $('#<?= $model_name ?>_accommodation_id'),
+    $('#<?= $model_name ?>_carer_id'),
+  ];
+
+  // Disable all form fields
+  disabledSocialHistoryFields.forEach(function (field) {
+    field.attr('disabled', 'disabled');
+  });
+
+  // Re-enable all fields on form submit (otherwise the data isn't sent)
+  // Note: document.currentScript relies on this being run outside of $(document).ready
+  $('#<?= $model_name ?>_entry_table').closest('form').submit(function () {
+      disabledSocialHistoryFields.forEach(function (field) {
+          field.removeAttr('disabled');
+      });
+  });
+
   $(document).ready(function () {
     // hide the driving status select
     $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();
@@ -211,7 +237,7 @@ $nothing_selected_text = "Nothing selected.";
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
-                }, $element->occupation_options, [])
+            }, $element->occupation_options, [])
             ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
@@ -226,7 +252,7 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => in_array($item->id, $selected_driving_statuses),
                     ];
-                }, $element->driving_statuses_options, [])
+            }, $element->driving_statuses_options, [])
             ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
@@ -236,7 +262,7 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->smoking_status_id === $item->id,
                     ];
-                }, $element->smoking_status_options, [])
+            }, $element->smoking_status_options, [])
             ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
@@ -246,13 +272,13 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->accommodation_id === $item->id,
                     ];
-                }, $element->accommodation_options, [])
+            }, $element->accommodation_options, [])
             ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
-                }, $element->carer_options, [])
+            }, $element->carer_options, [])
             ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
@@ -262,14 +288,14 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->substance_misuse_id === $item->id,
                     ];
-                }, $element->substance_misuse_options, [])
+            }, $element->substance_misuse_options, [])
             ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
                 return ['label' => $item, 'id' => $item,
                     'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
-            }, array_merge(range(0, 15, 5),range(20, 100, 10),[150],range(200, 400, 100)))
+            }, array_merge(range(0, 15, 5), range(20, 100, 10), [150], range(200, 400, 100)))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
       ],
       onReturn: function (adderDialog, selectedItems) {
@@ -278,4 +304,5 @@ $nothing_selected_text = "Nothing selected.";
       }
     });
   });
+
 </script>
