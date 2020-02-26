@@ -282,7 +282,7 @@ class AutoSetRuleController extends BaseAdminController
             }
 
             if (!$set->hasErrors() && $set->save()) {
-                $this->redirect('/OphDrPrescription/admin/autoSetRule/index');
+                $this->actionPopulateAll($set->id);
             }
         }
 
@@ -315,9 +315,7 @@ class AutoSetRuleController extends BaseAdminController
     public function actionPopulateAll($set_id = '')
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
-        if ($set_id === '') {
-            $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
-        }
+        $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
     }
 
     public function actionCheckRebuildIsRunning()
