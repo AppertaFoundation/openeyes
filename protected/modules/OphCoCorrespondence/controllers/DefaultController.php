@@ -1060,6 +1060,7 @@ class DefaultController extends BaseEventTypeController
 
             return $errors;
         }
+        return $errors;
     }
 
     /**
