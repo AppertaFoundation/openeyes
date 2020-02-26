@@ -1,6 +1,6 @@
 <?php
 
-class TrialPatientTest extends CDbTestCase
+class TrialPatientTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'user' => 'User',
@@ -13,6 +13,11 @@ class TrialPatientTest extends CDbTestCase
         'trial_permission' => 'TrialPermission',
         'user_trial_assignment' => 'UserTrialAssignment',
     );
+
+    public function getModel()
+    {
+        return TrialPatient::model();
+    }
 
     public static function setupBeforeClass()
     {

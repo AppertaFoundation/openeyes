@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class Element_OphCiExamination_FurtherFindingsTest extends CDbTestCase
+class Element_OphCiExamination_FurtherFindingsTest extends ActiveRecordTestCase
 {
     /**
      * @var Element_OphCiExamination_FurtherFindings
@@ -26,6 +26,11 @@ class Element_OphCiExamination_FurtherFindingsTest extends CDbTestCase
         'elFurtherFindings' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings',
         'furtherFindingsAssignment' => 'OEModule\OphCiExamination\models\OphCiExamination_FurtherFindings_Assignment',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.

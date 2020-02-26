@@ -14,11 +14,18 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class Element_OphCiExamination_ColourVisionTest extends CDbTestCase
+use OEModule\OphCiExamination\models;
+
+class Element_OphCiExamination_ColourVisionTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
             'methods' => 'OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method',
     );
+
+    public function getModel()
+    {
+        return models\OphCiExamination_ColourVision_Method::model();
+    }
 
     public function testValidation_validatesReadings()
     {

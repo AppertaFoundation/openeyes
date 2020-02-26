@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCiExamination_ClinicOutcome_StatusTest extends CDbTestCase
+class OphCiExamination_ClinicOutcome_StatusTest extends ActiveRecordTestCase
 {
     protected $model;
     public $fixtures = array(
@@ -22,6 +22,11 @@ class OphCiExamination_ClinicOutcome_StatusTest extends CDbTestCase
         'clinicOutcomeStatusOptions' => ':ophciexamination_clinicoutcome_status_options',
         'subspecialty' => '\Subspecialty',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     protected function setUp()
     {

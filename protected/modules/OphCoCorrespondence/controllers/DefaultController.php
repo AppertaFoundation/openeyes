@@ -913,8 +913,6 @@ class DefaultController extends BaseEventTypeController
                 }
             }*/
 
-            return $errors;
-
         }  else {
             $this->pdf_output->AddPage('P');
             $this->pdf_output->SetFont('Arial', 'B', 16);

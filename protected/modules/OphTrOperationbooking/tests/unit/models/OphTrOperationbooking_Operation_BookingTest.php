@@ -12,8 +12,17 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationbooking_Operation_BookingTest  extends CDbTestCase
+class OphTrOperationbooking_Operation_BookingTest  extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return OphTrOperationbooking_Operation_Booking::model();
+    }
+
+    protected $columns_to_skip = [
+        'admission_time', 'session_date', 'session_start_time', 'session_end_time'
+    ];
+
     public function testgetProcedureCount()
     {
         $test = new OphTrOperationbooking_Operation_Booking();

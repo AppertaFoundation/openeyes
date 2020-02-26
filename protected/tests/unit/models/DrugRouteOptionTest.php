@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugRouteOptionTest extends CDbTestCase
+class DrugRouteOptionTest extends ActiveRecordTestCase
 {
     /**
      * @var DrugRouteOption
@@ -25,6 +25,11 @@ class DrugRouteOptionTest extends CDbTestCase
     public $fixtures = array(
         'drugrouteoptions' => 'DrugRouteOption',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -54,9 +59,11 @@ class DrugRouteOptionTest extends CDbTestCase
 
     /**
      * @covers DrugForm::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->drugrouteoptions('drugrouteoption1')->validate());
         $this->assertEmpty($this->drugrouteoptions('drugrouteoption2')->errors);
     }
