@@ -72,9 +72,9 @@
                         'id' => 'delete_sets',
                         'class' => 'button large',
                     ]); ?>
-                    <?=\CHtml::linkButton('Rebuild all sets now',
+                    <?=\CHtml::linkButton($button_name,
                         array('href' => '/OphDrPrescription/admin/AutoSetRule/populateAll',
-                            'class' => 'button large')); ?>
+                            'class' => 'button large ' . $button_status)); ?>
 
                 </td>
                 <td colspan="4">
@@ -111,4 +111,28 @@
         searchUrl: '/OphDrPrescription/admin/autoSetRule/search',
         deleteUrl: '/OphDrPrescription/admin/autoSetRule/delete'
     });
+
+    let $rebuild_button = $('#yt2');
+
+    (function checkCommand() {
+        if ($rebuild_button.hasClass('disabled')) {
+            $.ajax({
+                url: '/OphDrPrescription/admin/AutoSetRule/CheckRebuildIsRunning',
+                dataType: "text",
+                success: function (is_running) {
+                    if (is_running) {
+                        setTimeout(checkCommand, 5000);
+                    } else {
+                        $rebuild_button.removeClass('disabled');
+                        $rebuild_button.html('Rebuild all sets now');
+                    }
+                },
+                error: function (error) {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Something went wrong while rebuilding the sets, please try later."
+                    }).open();
+                }
+            });
+        }
+    })();
 </script>

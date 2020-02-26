@@ -55,9 +55,14 @@ class AutoSetRuleController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
+        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command_is_running = $command->actionCheckRunning();
+
         $this->render('/AutoSetRule/index', [
             'data_provider' => $data_provider,
-            'search' => $filters
+            'search' => $filters,
+            'button_name' => $command_is_running ? 'Processing, may take a few minutes' : 'Rebuild all sets now',
+            'button_status' => $command_is_running ? 'disabled' : '',
         ]);
     }
 
@@ -278,7 +283,6 @@ class AutoSetRuleController extends BaseAdminController
 
             if (!$set->hasErrors() && $set->save()) {
                 $this->actionPopulateAll($set->id);
-                $this->redirect('/OphDrPrescription/admin/autoSetRule/index');
             }
         }
 
@@ -311,10 +315,13 @@ class AutoSetRuleController extends BaseAdminController
     public function actionPopulateAll($set_id = '')
     {
         shell_exec("php " . Yii::app()->basePath . "/yiic populateautomedicationsets ". $set_id ." >/dev/null 2>&1 &");
-        Yii::app()->user->setFlash('success', "Rebuild process started at " . date('H:i') . ".");
-        if ($set_id === '') {
-            $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
-        }
+        $this->redirect('/OphDrPrescription/admin/AutoSetRule/index');
+    }
+
+    public function actionCheckRebuildIsRunning()
+    {
+        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        echo $command->actionCheckRunning();
     }
 
     public function actionDelete()
