@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DisorderTest extends CDbTestCase
+class DisorderTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'disorders' => 'Disorder',
@@ -26,6 +26,11 @@ class DisorderTest extends CDbTestCase
      * @var Disorder
      */
     protected $model;
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     public function dataProvider_Search()
     {
@@ -63,9 +68,11 @@ class DisorderTest extends CDbTestCase
 
     /**
      * @covers Disorder::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->disorders('disorder1')->validate());
         $this->assertEmpty($this->disorders('disorder1')->errors);
     }

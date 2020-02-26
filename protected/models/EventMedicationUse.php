@@ -136,6 +136,7 @@ class EventMedicationUse extends BaseElement
             array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('start_date', 'default', 'value' => '0000-00-00'),
             array('last_modified_date, created_date, event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),

@@ -1,10 +1,15 @@
 <?php
-class CatProm5AnswersTest extends CDbTestCase {
+class CatProm5AnswersTest extends ActiveRecordTestCase {
     public $model;
 
     public $fixtures = array(
         'cat_prom5_answers' => 'CatProm5Answers',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     public function dataProvider_Search()
     {
@@ -90,14 +95,6 @@ class CatProm5AnswersTest extends CDbTestCase {
     public function testTableName()
     {
         $this->assertEquals('cat_prom5_answers', $this->model->tableName());
-    }
-
-  /**
-   * @covers CatProm5Answers::rules
-   */
-    public function testRules()
-    {
-
     }
 
   /**

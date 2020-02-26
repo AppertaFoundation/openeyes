@@ -360,7 +360,7 @@ class Document //extends BaseActiveRecord
         $doc_output->document_target_id = $doc_target->id;
         $doc_output->document_instance_data_id = $doc_instance_version->id;
         $doc_output->output_type = $data['output_type'];
-        $doc_output->requestor_id = 'OE';
+        $doc_output->requestor_id = 0;
 
         if ( isset($data['output_status']) && $doc_output->output_type != "COMPLETE") {
             $doc_output->output_status = $data['output_status'];

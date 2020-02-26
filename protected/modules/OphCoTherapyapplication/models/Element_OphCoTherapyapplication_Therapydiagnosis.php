@@ -249,11 +249,11 @@ class Element_OphCoTherapyapplication_Therapydiagnosis extends SplitEventTypeEle
     public function requiredIfSecondary($attribute, $params)
     {
         if (($params['side'] == 'left' && $this->eye_id != Eye::RIGHT) || ($params['side'] == 'right' && $this->eye_id != Eye::LEFT)) {
-            if ($this->$params['dependent'] && !$this->$attribute) {
+            if ($this->{$params['dependent']} && !$this->$attribute) {
                 $criteria = new CDbCriteria();
                 // FIXME: mysql dependent NULL check
                 $criteria->condition = 'disorder_id = :did AND parent_id IS NULL';
-                $criteria->params = array(':did' => $this->$params['dependent']);
+                $criteria->params = array(':did' => $this->{$params['dependent']});
                 if ($td = OphCoTherapyapplication_TherapyDisorder::model()->with('disorder')->find($criteria)) {
                     if ($td->getLevel2Disorders()) {
                         $this->addError($attribute, $td->disorder->term.' must be secondary to another diagnosis');

@@ -14,6 +14,13 @@
  */
 class CatProm5Questions extends CActiveRecord
 {
+    public function init()
+    {
+        $this->mandatory = 1;
+        $this->display_order = null;
+        parent::init();
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -77,11 +84,16 @@ class CatProm5Questions extends CActiveRecord
     public function search()
     {
         $criteria=new CDbCriteria;
+        $search_terms = [
+            'id' => false,
+            'mandatory' => false,
+            'question' => true,
+            'display_order' => false
+        ];
 
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('question', $this->question, true);
-        $criteria->compare('mandatory', $this->mandatory);
-        $criteria->compare('display_order', $this->display_order);
+        foreach ($search_terms as $search_term => $allow_partial) {
+            $criteria->compare($search_term, $this->{$search_term}, $allow_partial);
+        }
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
