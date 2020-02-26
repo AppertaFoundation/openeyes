@@ -42,7 +42,7 @@
                         <tr>
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $entry->getPrescriptionLink() ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
@@ -58,7 +58,7 @@
                         <tr class="stopped-kind" style="display: none;">
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $entry->getPrescriptionLink() ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
