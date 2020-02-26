@@ -18,7 +18,8 @@
 
     scratchpadButtonSelector: '#js-vc-scratchpad',
     scratchpadPopupSelector: '#oe-vc-scratchpad',
-    scratchpadInputSelector: '#oe-vc-scratchpad textarea'
+    scratchpadInputSelector: '#oe-vc-scratchpad textarea',
+    currentDate: new Date().setHours(0, 0, 0, 0) / 1000,
   };
 
   /**
@@ -211,19 +212,47 @@
     }
   };
 
+  // Basic JSON string check
+  TicketMoveController.prototype.isJSONString = function (str) {
+    try{
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   TicketMoveController.prototype.loadScratchpadData = function () {
     var storageKey = this.getScratchpadStorageKey() + '-value';
+
+    // get position key for removing old position data
+    var positionMasterKey = this.getScratchpadStorageKey() + '-position';
+
     var oldScratchValue = window.localStorage.getItem(storageKey);
+
     var $scratchInput = $(this.options.scratchpadInputSelector);
-    if (oldScratchValue) {
-      $scratchInput.val(oldScratchValue);
+
+    // In case the local storage data is modified to invalid JSON string
+    if (oldScratchValue && this.isJSONString(oldScratchValue)) {
+
+      oldScratchValue = JSON.parse(oldScratchValue);
+      // further prevention
+      if(typeof oldScratchValue !== 'object' || !oldScratchValue.date || oldScratchValue.date !== this.options.currentDate){
+        // remove invalid or old data
+        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(positionMasterKey + '-top');
+        window.localStorage.removeItem(positionMasterKey + '-left');
+        return
+      }
+
+      $scratchInput.val(oldScratchValue.notes);
       this.showScratchpad();
     }
   };
 
   TicketMoveController.prototype.saveScratchpadData = function (data) {
     var storageKey = this.getScratchpadStorageKey() + '-value';
-    window.localStorage.setItem(storageKey, data);
+    window.localStorage.setItem(storageKey, JSON.stringify(data));
   };
 
   TicketMoveController.prototype.saveScratchpadPosition = function (position) {
@@ -241,7 +270,11 @@
   };
 
   TicketMoveController.prototype.getScratchpadStorageKey = function () {
-    return 'sratchpad_' + OE_patient_id;
+    // getting ticket_id from hidden input
+    var form = this.options.formClass;
+    var ticket_id = $(form).find('input[name="ticket_id"]').val();
+    
+    return 'sratchpad_' + '_' + user_id + '_' + ticket_id;
   };
 
     //This is set when document is ready
@@ -305,7 +338,12 @@
     });
 
     $(this).on('change', ticketMoveController.options.scratchpadInputSelector, function () {
-      ticketMoveController.saveScratchpadData($(this).val());
+      ticketMoveController.saveScratchpadData(
+        {
+          notes: $(this).val(),
+          date: ticketMoveController.options.currentDate
+        }
+      );
     });
 
     $(this).on('click', ticketMoveController.options.scratchpadButtonSelector, function () {
