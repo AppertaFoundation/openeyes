@@ -895,7 +895,9 @@ EOD;
             foreach ($forms as $form) {
                 $cmd .= "mao.description = '$form' OR ";
             }
-            $cmd = substr($cmd, 0, -4) . ")";
+            if (count($forms) > 0) {
+                $cmd = substr($cmd, 0, -4) . ")";
+            }
 
             Yii::app()->db->createCommand($cmd)->execute();
             echo " OK" . PHP_EOL;
@@ -912,7 +914,9 @@ EOD;
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
             $cmd .= "(BINARY description = \"$uom\") OR ";
         }
-        $cmd = substr($cmd, 0, -4);
+        if (count($this->uom_to_forms_mapping) > 0) {
+            $cmd = substr($cmd, 0, -4);
+        }
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
