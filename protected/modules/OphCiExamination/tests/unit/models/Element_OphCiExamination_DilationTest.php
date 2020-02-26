@@ -16,7 +16,7 @@
  */
 use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_DilationTest extends CDbTestCase
+class Element_OphCiExamination_DilationTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'ep' => 'Episode',
@@ -25,6 +25,11 @@ class Element_OphCiExamination_DilationTest extends CDbTestCase
     );
 
     public $delete_element_ids = array();
+
+    public function getModel()
+    {
+        return models\Element_OphCiExamination_Dilation::model();
+    }
 
     public function setUp()
     {
