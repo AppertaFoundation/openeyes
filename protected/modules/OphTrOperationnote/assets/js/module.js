@@ -23,7 +23,18 @@ $( document ).ready(function() {
 
     $(document).on('eyedrawAfterReset', loadBiometryElementData);
     autosize($('textarea'));
-});
+
+    $('#js-display-whiteboard').click(function(e) {
+        e.preventDefault();
+        oeWindow = window.open('/OphTrOperationbooking/whiteboard/view/' + $(this).data('id'), 'whiteboard', 'fullscreen=yes');
+    });
+
+    $('#js-close-whiteboard').click(function(e) {
+        e.preventDefault();
+        let oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
+        oeWindow.close();
+    });
+})
 
 async function callbackAddProcedure(procedure_id) {
     var eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();

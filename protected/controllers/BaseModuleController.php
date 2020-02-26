@@ -118,7 +118,7 @@ class BaseModuleController extends BaseController
             $controller_name = Helper::getNSShortname($this);
             // Register print css
             $newblue_path = 'application.assets.newblue';
-            $assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
+            $assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
             foreach ($paths as $p) {
                 $asset_path_alias = 'application.modules.'.$p.'.assets';
                 // Register module js

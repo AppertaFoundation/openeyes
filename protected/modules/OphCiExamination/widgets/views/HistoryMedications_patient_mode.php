@@ -114,7 +114,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <tbody>
                         <?php foreach ($current_eye_meds as $entry) { ?>
                             <tr>
-                                <td><?= $entry->getMedicationDisplay() ?></td>
+                                <td>
+                                  <i class="oe-i start small pro-theme pad-right"></i>
+                                  <?= $entry->getMedicationDisplay() ?>
+                                </td>
                                 <td>
                                     <?php $laterality = $entry->getLateralityDisplay();
                                     $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
@@ -149,7 +152,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <tbody>
                                 <?php foreach ($stopped_eye_meds as $entry) { ?>
                                     <tr>
-                                        <td><?= $entry->getMedicationDisplay() ?></td>
+                                        <td>
+                                          <i class="oe-i stop small pro-theme pad-right"></i>
+                                          <?= $entry->getMedicationDisplay() ?>
+                                        </td>
                                         <td>
                                             <?php $laterality = $entry->getLateralityDisplay();
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
