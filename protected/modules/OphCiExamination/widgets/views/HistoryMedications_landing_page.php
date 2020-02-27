@@ -56,10 +56,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <?= $entry->getMedicationDisplay() ?>
                     </td>
                     <td>
-                        <?php if ($entry->getTooltipContent()) { ?>
+                        <?php $tooltip_content = $entry->getTooltipContent();
+                        if (!empty($tooltip_content)) { ?>
                             <i class="oe-i info small js-has-tooltip"
-                               data-tooltip-content="<?= $entry->getTooltipContent() ?>"
-                            </i>
+                               data-tooltip-content="<?= $tooltip_content ?>">
                         <?php } ?>
                     </td>
                     <td class="nowrap">
@@ -70,7 +70,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td>
                         <?php
-                        $link = $entry->prescription_item ? $entry->getPrescriptionLink() : $entry->getExaminationLink();
+                        $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
                         $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                         <a href="<?= $link ?>">
                               <i class="js-has-tooltip fa oe-i direction-right-circle small pad"
@@ -106,6 +106,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <td>
                                         <i class="oe-i stop small pad-right"></i>
                                         <?= $entry->getMedicationDisplay() ?>
+                                    </td>
+                                    <td>
+                                        <?php $tooltip_content = $entry->getTooltipContent();
+                                        if (!empty($tooltip_content)) { ?>
+                                            <i class="oe-i info small js-has-tooltip"
+                                               data-tooltip-content="<?= $tooltip_content ?>">
+                                        <?php } ?>
                                     </td>
                                     <td class="nowrap">
                                         <?php $laterality = $entry->getLateralityDisplay();

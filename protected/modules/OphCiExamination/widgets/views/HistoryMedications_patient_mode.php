@@ -52,9 +52,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <?= $entry->getMedicationDisplay() ?>
                             </td>
                             <td>
-                                <?php if ($entry->getTooltipContent()) { ?>
+                                <?php $tooltip_content = $entry->getTooltipContent();
+                                if (!empty($tooltip_content)) { ?>
                                     <i class="oe-i info small pro-theme js-has-tooltip"
-                                       data-tooltip-content="<?= $entry->getTooltipContent() ?>">
+                                       data-tooltip-content="<?= $tooltip_content ?>">
                                     </i>
                                 <?php } ?>
                                 <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
@@ -85,9 +86,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
-                                        <?php if ($entry->getDoseAndFrequency()) { ?>
+                                        <?php $tooltip_content = $entry->getTooltipContent();
+                                        if (!empty($tooltip_content)) { ?>
                                             <i class="oe-i info small pro-theme js-has-tooltip"
-                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                               data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
                                         <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
@@ -133,9 +135,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
-                                    <?php if ($entry->getTooltipContent()) { ?>
+                                    <?php $tooltip_content = $entry->getTooltipContent();
+                                    if (!empty($tooltip_content)) { ?>
                                         <i class="oe-i info small pro-theme js-has-tooltip"
-                                           data-tooltip-content="<?= $entry->getTooltipContent() ?>">
+                                           data-tooltip-content="<?= $tooltip_content ?>">
                                         </i>
                                     <?php } ?>
                                 </td>
@@ -147,7 +150,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 </td>
                                 <td>
                                     <?php
-                                    $link = $entry->prescription_item ? $entry->getPrescriptionLink() : $entry->getExaminationLink();
+                                    $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
                                     $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                                     <a href="<?= $link ?>">
                                         <i class="js-has-tooltip fa pro-theme oe-i direction-right-circle small pad"
@@ -180,9 +183,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         </td>
                                         <td></td>
                                         <td>
-                                            <?php if ($entry->getDoseAndFrequency()) { ?>
+                                            <?php $tooltip_content = $entry->getTooltipContent();
+                                            if (!empty($tooltip_content)) { ?>
                                                 <i class="oe-i info small pro-theme js-has-tooltip"
-                                                   data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                                   data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>
                                         </td>

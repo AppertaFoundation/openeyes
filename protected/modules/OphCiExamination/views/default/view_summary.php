@@ -59,9 +59,10 @@ if ($historyElement) {
                                       </td>
                                       <td></td>
                                       <td>
-                                        <?php if ($entry->getDoseAndFrequency()) { ?>
+                                        <?php $tooltip_content = $entry->getTooltipContent();
+                                        if (!empty($tooltip_content)) { ?>
                                             <i class="oe-i info small js-has-tooltip"
-                                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
+                                               data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
                                       </td>
@@ -104,9 +105,10 @@ if ($historyElement) {
                                           <?= $entry->getMedicationDisplay() ?>
                                       </td>
                                       <td>
-                                          <?php if ($entry->getDoseAndFrequency()) {?>
+                                          <?php $tooltip_content = $entry->getTooltipContent();
+                                          if ($tooltip_content) {?>
                                               <i class="oe-i info small js-has-tooltip"
-                                                 data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                                                 data-tooltip-content="<?= $tooltip_content ?>"
                                               </i>
                                           <?php } ?>
                                       </td>
@@ -254,9 +256,10 @@ if ($historyElement) {
                                                 <?= $entry->getMedicationDisplay() ?>
                                             </td>
                                             <td>
-                                                <?php if ($entry->getDoseAndFrequency()) {?>
+                                                <?php $tooltip_content = $entry->getTooltipContent();
+                                                if (!empty($tooltip_content)) {?>
                                                     <i class="oe-i info small js-has-tooltip"
-                                                       data-tooltip-content="<?= $entry->getTooltipContent() ?>">
+                                                       data-tooltip-content="<?= $tooltip_content ?>">
                                                     </i>
                                                 <?php } ?>
                                             </td>
