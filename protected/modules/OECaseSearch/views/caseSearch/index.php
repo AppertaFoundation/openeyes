@@ -71,8 +71,16 @@ $this->pageTitle = 'Case Search';
                     'viewData' => array(
                         'trial' => $this->trialContext
                     ),
+                    'enableSorting' => true,
+                    'sortableAttributes' => array(
+                        'last_name',
+                        'first_name',
+                        'age',
+                        'gender',
+                    )
                 )
             );
+            $sort = $patients->getSort();
             $pager = $this->createWidget(
                 'LinkPager',
                 array(
@@ -86,11 +94,19 @@ $this->pageTitle = 'Case Search';
                     ),
                 )
             );
+            $sort_fields = array();
+            $sort_field_options = array();
+            foreach ($sort->attributes as $key => $attribute) {
+                $sort_fields[$key] = $attribute['label'];
+                $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
+                $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
+            }
             ?>
         <div class="table-sort-order">
             <div class="sort-by">
                 Sort by:
                 <span class="sort-options">
+                    <?= CHtml::dropDownList('sort', null, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
                     <span class="direction">
                         <label class="inline highlight">
                             <?= CHtml::radioButton('sort-options', true, array('value' => 'ascend'))?>
@@ -175,6 +191,17 @@ $this->pageTitle = 'Case Search';
       return id_max;
     }
 
+    function performSort(field) {
+        let $field = $('#sort-field option[value=' + field +']');
+        console.log($($field).text());
+        let direction = $("input[name='sort-options']").filter("input[checked='checked']").val();
+        if (direction === 'ascend') {
+            window.location.href = $($field).data('sort-ascend');
+        } else if (direction === 'descend') {
+            window.location.href =  $($field).data('sort-descend');
+        }
+    }
+
 
     $(document).ready(function () {
         //null coalesce the id of the last parameter
@@ -198,7 +225,8 @@ $this->pageTitle = 'Case Search';
                         },
                         type: 'GET',
                         success: function (response) {
-                            $('#param-list tbody').append(response);
+                            // Append the dynamic parameter HTML before the first fixed parameter.
+                            $('#param-list tbody tr.fixed-parameter:first').before(response);
                         }
                     });
                 });
@@ -207,6 +235,16 @@ $this->pageTitle = 'Case Search';
 
         $('.oe-full-side-panel').on('click', '#param-list tbody td .remove-circle', function () {
             this.closest('tr').remove();
+        });
+
+        $('#sort-field').change(function() {
+            let value = $('#sort-field').val();
+            performSort(value)
+        });
+
+        $("input[name='sort-options']").change(function() {
+            let value = $('#sort-field').val();
+            performSort(value);
         });
 
         $('#clear-search').click(function () {

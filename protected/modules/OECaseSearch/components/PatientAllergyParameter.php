@@ -32,7 +32,9 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'textValue',
             )
         );
@@ -44,7 +46,9 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
+        return array_merge(
+            parent::rules(),
+            array(
                 array('textValue', 'required'),
             )
         );
@@ -65,21 +69,15 @@ LEFT JOIN patient_allergy_assignment paa
 LEFT JOIN allergy a
   ON a.id = paa.allergy_id
 WHERE a.name = :p_al_textValue_$this->id";
-        switch ($this->operation) {
-            case '=':
-                return $query;
-                break;
-            case '!=':
-                return "SELECT DISTINCT p1.id
+        if ($this->operation) {
+            return $query;
+        }
+
+        return "SELECT DISTINCT p1.id
 FROM patient p1
 WHERE p1.id NOT IN (
-  $query
+$query
 )";
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
-        }
     }
 
     /**
@@ -99,6 +97,10 @@ WHERE p1.id NOT IN (
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation \"$this->textValue\"";
+        $op = 'LIKE';
+        if (!$this->operation) {
+            $op = 'NOT LIKE';
+        }
+        return "$this->name: $op \"$this->textValue\"";
     }
 }

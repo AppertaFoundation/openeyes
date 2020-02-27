@@ -1,13 +1,13 @@
 <?php
 
+/**
+ * Class CaseSearchController
+ *
+ * @property null|Trial $trialContext
+ */
 class CaseSearchController extends BaseModuleController
 {
-    /**
-     * @var null|Trial $trialContext
-     */
     public $trialContext;
-
-    public $resultOrder;
 
     public function filters()
     {
@@ -32,6 +32,7 @@ class CaseSearchController extends BaseModuleController
     /**
      * Primary case search action.
      * @param $trial_id integer The Trial that this case search is in context of
+     * @throws Exception
      */
     public function actionIndex($trial_id = null)
     {
@@ -54,13 +55,15 @@ class CaseSearchController extends BaseModuleController
         }
 
         $criteria = new CDbCriteria();
-        $this->resultOrder = '';
         foreach ($this->module->getConfigParam('parameters') as $group) {
             foreach ($group as $parameter) {
                 $paramName = $parameter . 'Parameter';
-                array_push($parameterList, $paramName);
+                $parameterList[] = $paramName;
                 if (isset($_POST[$paramName])) {
                     foreach ($_POST[$paramName] as $id => $param) {
+                        /**
+                         * @var $newParam CaseSearchParameter
+                         */
                         $newParam = new $paramName;
                         $newParam->attributes = $_POST[$paramName][$id];
                         if (!$newParam->validate()) {
@@ -72,6 +75,9 @@ class CaseSearchController extends BaseModuleController
             }
         }
         foreach ($fixedParameters as $parameter) {
+            /**
+             * @var $parameter CaseSearchParameter
+             */
             if (isset($_POST[get_class($parameter)])) {
                 foreach ($_POST[get_class($parameter)] as $id => $param) {
                     $parameter->attributes = $_POST[get_class($parameter)][$id];
@@ -116,26 +122,9 @@ class CaseSearchController extends BaseModuleController
             $_SESSION['last_search_params'] = $parameters;
             $pagination['currentPage'] = 0;
         }
-
-        if (isset($_SESSION['last_search_params'])) {
-            foreach ($_SESSION['last_search_params'] as $key => $param) {
-                if ($param->name == "patient_name") {
-                    if (!empty($this->resultOrder)) {
-                        $this->resultOrder .= ',';
-                    }
-                    $this->resultOrder .= '(levenshtein_ratio(last_name, \''.$param->patient_name.'\')+levenshtein_ratio(first_name, \''
-                        .$param->patient_name.'\'))';
-                }
-            }
-        }
-
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
         $criteria->with = 'contact';
-        if ($this->resultOrder == '') {
-            $this->resultOrder = 'last_name, first_name';
-        }
-        $criteria->order = $this->resultOrder.' DESC';
         $criteria->compare('t.deleted', 0);
 
         // A data provider is used here to allow faster search times. Results are iterated through using the data provider's pagination functionality and the CListView widget's pager.
@@ -143,6 +132,33 @@ class CaseSearchController extends BaseModuleController
             'criteria' => $criteria,
             'totalItemCount' => count($ids),
             'pagination' => $pagination,
+            'sort' => array(
+                'attributes' => array(
+                    'last_name' => array(
+                        'asc' => 'last_name',
+                        'desc' => 'last_name DESC',
+                        'label' => 'Surname',
+                    ),
+                    'first_name' => array(
+                        'asc' => 'first_name',
+                        'desc' => 'first_name DESC',
+                        'label' => 'First name',
+                    ),
+                    'age' => array(
+                        'asc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))',
+                        'desc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) DESC',
+                        'label' => 'Age',
+                    ),
+                    'gender' => array(
+                        'asc' => 'gender',
+                        'desc' => 'gender DESC',
+                        'label' => 'Gender',
+                    ),
+                ),
+                'defaultOrder' => array(
+                    'last_name' => CSort::SORT_ASC,
+                ),
+            ),
         ));
 
 
@@ -151,7 +167,7 @@ class CaseSearchController extends BaseModuleController
         if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
             foreach ($_SESSION['last_search_params'] as $key => $last_search_param) {
                 $last_search_param_name = get_class($last_search_param);
-                if (!in_array($last_search_param_name, $parameterList)) {
+                if (!in_array($last_search_param_name, $parameterList, true)) {
                     unset($_SESSION['last_search_params'][$key]);
                 }
             }
@@ -167,6 +183,7 @@ class CaseSearchController extends BaseModuleController
 
     /**
      * Add a parameter to the case search. This is executed through an AJAX request.
+     * @throws CException
      */
     public function actionAddParameter()
     {

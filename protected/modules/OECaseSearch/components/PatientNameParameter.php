@@ -63,16 +63,6 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     public function query($searchProvider)
     {
         $op = 'LIKE';
-        /*
-         // Reimplement this code if other operations are added to this parameter type.
-         switch ($this->operation) {
-            case 'LIKE':
-                $op = 'LIKE';
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
-        }*/
 
         return "SELECT DISTINCT p.id 
 FROM patient p 

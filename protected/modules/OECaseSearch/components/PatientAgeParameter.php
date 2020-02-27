@@ -103,20 +103,17 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
      */
     public function query($searchProvider)
     {
-        switch ($this->operation) {
-            case 'BETWEEN':
-                $op = 'BETWEEN';
-                break;
-            case '>':
-                $op = '>';
-                break;
-            case '<':
-                $op = '<';
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
+        if ($this->minValue && !$this->maxValue) {
+            $this->operation = '>=';
+        } elseif ($this->maxValue && !$this->minValue) {
+            $this->operation = '<=';
+        } elseif ($this->maxValue && $this->minValue) {
+            $this->operation = 'BETWEEN';
+        } else {
+            throw new CHttpException(400, 'Please specify either a minimum or maximum value');
         }
+
+        $op = $this->operation;
 
         $queryStr = 'SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))';
         if ($op === 'BETWEEN') {
@@ -136,8 +133,10 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         if ($this->operation === 'BETWEEN') {
             $bindValues["p_a_min_$this->id"] = (int)$this->minValue;
             $bindValues["p_a_max_$this->id"] = (int)$this->maxValue;
-        } else {
-            $bindValues["p_a_value_$this->id"] = (int)$this->textValue;
+        } elseif ($this->operation === '<=') {
+            $bindValues["p_a_value_$this->id"] = (int)$this->maxValue;
+        } elseif ($this->operation === '>=') {
+            $bindValues["p_a_value_$this->id"] = (int)$this->minValue;
         }
 
         return $bindValues;

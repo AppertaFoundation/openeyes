@@ -153,7 +153,12 @@ WHERE p1.id NOT IN (
      */
     public function getAuditData()
     {
-        $result = "$this->name: $this->operation \"$this->term\"";
+        $op = 'LIKE';
+        $result = null;
+        if (!$this->operation) {
+            $op = 'NOT LIKE';
+        }
+        $result = "$this->name: $op \"$this->term\"";
 
         if ($this->firm_id !== '' && $this->firm_id !== null) {
             $firm = Firm::model()->findByPk($this->firm_id);

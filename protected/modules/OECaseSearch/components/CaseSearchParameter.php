@@ -11,12 +11,12 @@ abstract class CaseSearchParameter extends CFormModel
     public $name;
 
     /**
-     * @var string $operator .
+     * @var bool|string $operation
      */
     public $operation;
 
     /**
-     * @var integer $id .
+     * @var integer $id
      */
     public $id;
 
@@ -52,8 +52,7 @@ abstract class CaseSearchParameter extends CFormModel
     public function rules()
     {
         return array(
-            array('operation', 'required', 'message' => 'The search operator cannot be blank'),
-            array('id', 'safe'),
+            array('id, operation, name', 'safe'),
         );
     }
 

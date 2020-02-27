@@ -49,7 +49,9 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'code',
                 'number',
             )
@@ -115,10 +117,13 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
     {
         return "$this->name: $this->operation $this->code $this->number";
     }
+
     /**
      * @return array contains all identifier codes
+     * @throws CException
      */
-    public function getAllCodes(){
+    public function getAllCodes()
+    {
         $command = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier');
         $all_codes = $command->queryAll();
         $codes = array();

@@ -113,6 +113,10 @@ OR m.id IS NULL";
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation \"$this->textValue\"";
+        $op = 'LIKE';
+        if (!$this->operation) {
+            $op = 'NOT LIKE';
+        }
+        return "$this->name: $op \"$this->textValue\"";
     }
 }

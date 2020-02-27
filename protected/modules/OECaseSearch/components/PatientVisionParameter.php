@@ -111,19 +111,18 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function query($searchProvider)
     {
         $second_operation = 'OR';
-        switch ($this->operation) {
-            case 'BETWEEN':
-                $op = 'BETWEEN';
-                break;
-            case '>':
-                $op = '>';
-                break;
-            case '<':
-                $op = '<';
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
+
+        if ($this->minValue && !$this->maxValue) {
+            $this->operation = '>=';
+        } elseif ($this->maxValue && !$this->minValue) {
+            $this->operation = '<=';
+        } elseif ($this->maxValue && $this->minValue) {
+            $this->operation = 'BETWEEN';
+        } else {
+            throw new CHttpException(400, 'Please specify either a minimum or maximum value');
         }
+
+        $op = $this->operation;
 
         if ($this->bothEyesIndicator) {
             $second_operation = 'AND';
@@ -195,8 +194,10 @@ FROM (
             }
             $bindValues["p_v_min_$this->id"] = $this->minValue;
             $bindValues["p_v_max_$this->id"] = $this->maxValue;
-        } else {
-            $bindValues["p_v_value_$this->id"] = (int)$this->textValue;
+        } elseif ($this->operation === '<=') {
+            $bindValues["p_v_value_$this->id"] = (int)$this->maxValue;
+        } elseif ($this->operation === '>=') {
+            $bindValues["p_v_value_$this->id"] = (int)$this->minValue;
         }
 
         return $bindValues;

@@ -61,10 +61,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      */
     public function query($searchProvider)
     {
-        if (!in_array($this->operation, array('HAS_HAD', 'HAS_NOT_HAD'))) {
-            throw new CHttpException(400, 'Invalid operator specified.');
-        }
-
         $query = "
             SELECT pa.id
             FROM patient pa
@@ -85,7 +81,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             JOIN ophciexamination_pastsurgery_op o3 on eop2.id = o3.element_id
                AND o3.operation = :p_p_value_$this->id";
 
-        if ($this->operation === 'HAS_NOT_HAD') {
+        if (!$this->operation) {
             $query = "
                 SELECT outer_pat.id
                 FROM patient outer_pat 
