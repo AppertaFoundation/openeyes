@@ -208,8 +208,14 @@
         $searchInput.appendTo($filterDiv);
         this.searchingSpinnerWrapper.appendTo($filterDiv);
 
+        let delaySearch = 0;
         $searchInput.on('keyup', function () {
-            dialog.runItemSearch($(this).val());
+            let searchInputVal = $(this).val();            
+            clearTimeout(delaySearch); //stop previous search request
+
+            delaySearch = setTimeout(function(){
+                dialog.runItemSearch(searchInputVal);
+            },500);
         });
 
         if (dialog.options.filter) {

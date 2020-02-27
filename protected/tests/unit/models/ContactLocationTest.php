@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactLocationTest extends CDbTestCase
+class ContactLocationTest extends ActiveRecordTestCase
 {
     /**
      * @var ContactLocation
@@ -29,6 +29,11 @@ class ContactLocationTest extends CDbTestCase
         'Site',
         'contactlocations' => 'ContactLocation',
     );
+
+    public function getModel()
+    {
+        return ContactLocation::model();
+    }
 
     public $expectedLetterAddress;
 
@@ -86,9 +91,11 @@ class ContactLocationTest extends CDbTestCase
 
     /**
      * @covers ContactLocation::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->contactlocations('contactlocation1')->validate());
         $this->assertEmpty($this->contactlocations('contactlocation2')->errors);
     }

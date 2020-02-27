@@ -79,6 +79,7 @@ class Referral extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            ['refno, received_date, referrer', 'required'],
         );
     }
 

@@ -12,11 +12,16 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationbooking_ScheduleOperation_PatientUnavailableTest extends CDbTestCase
+class OphTrOperationbooking_ScheduleOperation_PatientUnavailableTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
             'reasons' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason',
     );
+
+    public function getModel()
+    {
+        return OphTrOperationbooking_ScheduleOperation_PatientUnavailable::model();
+    }
 
     public static function setUpBeforeClass()
     {
