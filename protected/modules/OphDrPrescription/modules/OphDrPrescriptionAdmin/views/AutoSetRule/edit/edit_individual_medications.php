@@ -90,9 +90,9 @@
                                 row.medication = Object.assign({}, e);
                                 return;
                             }
-                            if (e.itemSet.options.id == "inc_parents") {
+                            if (e.itemSet.options.id === "inc_parents") {
                                 row.include_parents = e.id
-                            } else if (e.itemSet.options.id == "inc_children") {
+                            } else if (e.itemSet.options.id === "inc_children") {
                                 row.include_children = e.id;
                             }
                         });
