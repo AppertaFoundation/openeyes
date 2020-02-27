@@ -25,14 +25,15 @@ class PatientMedicationParameterTest extends CDbTestCase
 
     /**
      * @covers PatientMedicationParameter::query()
+     * @throws CHttpException
      */
     public function testQuery()
     {
         $this->object->textValue = 5;
 
         $correctOps = array(
-            'LIKE',
-            'NOT LIKE',
+            false,
+            true
         );
         $invalidOps = array(
             '=',
@@ -52,11 +53,11 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
-  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'
+WHERE d.name NOT LIKE '$wildcard' :p_m_value_0 '$wildcard'
+  OR md.name NOT LIKE '$wildcard' :p_m_value_0 '$wildcard'
   OR m.id IS NULL";
 
-            if ($operator === 'LIKE') {
+            if (!$operator) {
                 $sqlValue = "
 SELECT p.id
 FROM patient p
@@ -66,21 +67,14 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $operator '$wildcard' :p_m_value_0 '$wildcard'
-  OR md.name $operator '$wildcard' :p_m_value_0 '$wildcard'";
+WHERE d.name LIKE '$wildcard' :p_m_value_0 '$wildcard'
+  OR md.name LIKE '$wildcard' :p_m_value_0 '$wildcard'";
             }
 
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
                 trim(preg_replace('/\s+/', ' ', $this->object->query($this->searchProvider)))
             );
-        }
-
-        // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
-        foreach ($invalidOps as $operator) {
-            $this->object->operation = $operator;
-            $this->object->query($this->searchProvider);
         }
     }
 

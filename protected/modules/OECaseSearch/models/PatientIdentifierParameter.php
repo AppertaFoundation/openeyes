@@ -115,7 +115,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation $this->code $this->number";
+        return "$this->name: = $this->code $this->number";
     }
 
     /**

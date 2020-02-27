@@ -4,7 +4,7 @@
 /* @var $model CaseSearchParameter */
 /* @var $form CActiveForm */
 ?>
-<tr class="parameter" id="<?php echo $id; ?>">
+<tr class="parameter" id="<?= $id ?>">
     <td>
         <?php $this->renderPartial($model->getViewPath(), array(
             'model' => $model,

@@ -1,14 +1,11 @@
 <?php
 
 /**
- * Class PatientAllergyParameter
+ * Class PatientNameParameter
  */
-class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
+class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    /**
-     * @var string $textValue
-     */
-    public $textValue;
+    public $patient_name;
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -17,13 +14,14 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = 'allergy';
-        $this->operation = '=';
+        $this->name = 'patient_name';
+        $this->operation = 'LIKE'; // Remove if more operations are added.
     }
 
     public function getLabel()
     {
-        return 'Patient Allergy';
+        // This is a human-readable value, so feel free to change this as required.
+        return 'Patient Name';
     }
 
     /**
@@ -32,12 +30,17 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
      */
     public function attributeNames()
     {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'textValue',
+        return array_merge(parent::attributeNames(), array(
+                'patient_name',
             )
         );
+    }
+
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), array(
+            'patient_name' => 'Patient Name',
+        ));
     }
 
     /**
@@ -46,38 +49,28 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
      */
     public function rules()
     {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('textValue', 'required'),
-            )
-        );
+        return array_merge(parent::rules(), array(
+            array('patient_name', 'required'),
+        ));
     }
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
-        $query = "SELECT DISTINCT p.id 
-FROM patient p 
-LEFT JOIN patient_allergy_assignment paa
-  ON paa.patient_id = p.id
-LEFT JOIN allergy a
-  ON a.id = paa.allergy_id
-WHERE a.name = :p_al_textValue_$this->id";
-        if ($this->operation) {
-            return $query;
-        }
+        $op = 'LIKE';
 
-        return "SELECT DISTINCT p1.id
-FROM patient p1
-WHERE p1.id NOT IN (
-$query
-)";
+        return "SELECT DISTINCT p.id 
+FROM patient p 
+JOIN contact c 
+  ON c.id = p.contact_id
+WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$this->id)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) $op LOWER(:p_n_name_like_$this->id)) OR
+     SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id)
+      OR SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id)
+";
     }
 
     /**
@@ -88,7 +81,8 @@ $query
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_al_textValue_$this->id" => $this->textValue,
+            "p_n_name_like_$this->id" => '%' . $this->patient_name . '%',
+            "p_n_name_$this->id" => $this->patient_name,
         );
     }
 
@@ -97,10 +91,6 @@ $query
      */
     public function getAuditData()
     {
-        $op = 'LIKE';
-        if (!$this->operation) {
-            $op = 'NOT LIKE';
-        }
-        return "$this->name: $op \"$this->textValue\"";
+        return "$this->name: = \"$this->patient_name\"";
     }
 }

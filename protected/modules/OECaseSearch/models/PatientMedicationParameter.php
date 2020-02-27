@@ -62,7 +62,7 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
      */
     public function query($searchProvider)
     {
-        if ($this->operation) {
+        if (!$this->operation) {
             $op = 'LIKE';
             $wildcard = '%';
 
@@ -114,7 +114,7 @@ OR m.id IS NULL";
     public function getAuditData()
     {
         $op = 'LIKE';
-        if (!$this->operation) {
+        if ($this->operation) {
             $op = 'NOT LIKE';
         }
         return "$this->name: $op \"$this->textValue\"";

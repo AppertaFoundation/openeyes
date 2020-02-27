@@ -7,7 +7,7 @@
 abstract class SearchProvider
 {
     /**
-     * @var mixed Unique provider ID
+     * @var string|int Unique provider ID
      */
     protected $_providerID;
 
@@ -23,7 +23,7 @@ abstract class SearchProvider
     /**
      * Magic get method to get the provider ID without a getter while also preventing setting it directly.
      * @param $name string The property name
-     * @return null|mixed The value of the given property (if it exists).
+     * @return string|int The value of the given property (if it exists).
      */
     final public function __get($name)
     {

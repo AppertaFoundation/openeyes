@@ -75,7 +75,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $expected[] = $this->patient("patient$patientNum");
         }
 
-        $this->parameter->operation = 'LIKE';
+        $this->parameter->operation = false;
         $this->parameter->term = 'Myopia';
         $this->parameter->firm_id = '';
 
@@ -94,11 +94,8 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function testFirmEqualitySearch()
     {
         $expected = array();
-        /*foreach (array(3) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
-        }*/
 
-        $this->parameter->operation = 'LIKE';
+        $this->parameter->operation = false;
         $this->parameter->term = 'Myopia';
         $this->parameter->firm_id = 2;
 

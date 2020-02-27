@@ -71,27 +71,26 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
 //        Changed query conditions because family history search in Advanced serch was working correctly for ANY values - CERA-538
-        $query_side = "";
-        $query_relative = "";
-        $query_condition = "";
+        $query_side = '';
+        $query_relative = '';
+        $query_condition = '';
 
-        if ($this->side !='') {
+        if ($this->side !=='') {
             $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
         }
-        if ($this->relative != '') {
-            if ($query_side == "") {
+        if ($this->relative !== '') {
+            if ($query_side === '') {
                 $query_relative = ":f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
             } else {
                 $query_relative = " AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
             }
         }
-        if ($this->condition != '') {
-            if ($query_side =="" && $query_relative=="") {
+        if ($this->condition !== '') {
+            if ($query_side === '' && $query_relative === '') {
                 $query_condition = ":f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
             } else {
                 $query_condition = " AND (:f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
@@ -104,7 +103,7 @@ FROM patient p
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
 WHERE (' .$query_side.$query_relative.$query_condition;
-        if (!$this->operation) {
+        if ($this->operation) {
             $queryStr = "
 SELECT id
 FROM patient
@@ -123,15 +122,15 @@ WHERE id NOT IN (
     public function bindValues()
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
-//        Matched bind parameter numbers to those on the query - CERA-538
+        // Matched bind parameter numbers to those on the query - CERA-538
         $binds = array();
-        if ($this->relative !='' || $this->relative != null) {
+        if ($this->relative !== '' || $this->relative !== null) {
             $binds["f_h_relative_$this->id"] = $this->relative;
         }
-        if ($this->side !='' || $this->side != null) {
+        if ($this->side !== '' || $this->side !== null) {
             $binds["f_h_side_$this->id"] = $this->side;
         }
-        if ($this->condition !='' || $this->condition != null) {
+        if ($this->condition !== '' || $this->condition !== null) {
             $binds["f_h_condition_$this->id"] = $this->condition;
         }
         return $binds;

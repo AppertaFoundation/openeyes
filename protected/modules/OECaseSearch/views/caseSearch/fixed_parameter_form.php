@@ -5,7 +5,7 @@
 /* @var $form CActiveForm */
 ?>
 
-<tr id="<?php echo $id; ?>" class="fixed-parameter">
+<tr id="<?= $id ?>" class="fixed-parameter">
     <td>
         <?php $this->renderPartial($model->getViewPath(), array(
             'model' => $model,

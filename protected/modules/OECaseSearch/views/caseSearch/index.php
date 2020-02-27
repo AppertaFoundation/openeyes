@@ -7,7 +7,17 @@
  * @var $trial Trial
  * @var $form CActiveForm
  */
-$this->pageTitle = 'Case Search';
+$this->pageTitle = 'Advanced Search';
+$sort_field = 'last_name';
+$sort_direction = 'ascend';
+if (isset($_GET['Patient_sort'])) {
+    if (!strpos($_GET['Patient_sort'], '.desc')) {
+        $sort_direction = 'ascend';
+    } else {
+        $sort_direction = 'descend';
+    }
+    $sort_field = str_replace('.desc', '', $_GET['Patient_sort']);
+}
 ?>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
@@ -59,7 +69,7 @@ $this->pageTitle = 'Case Search';
         <?php $this->endWidget('search-form'); ?>
     </nav>
     <main class="oe-full-main">
-        <?php if ($patients->itemCount > 0) :
+        <?php if ($patients->itemCount > 0) {
             //Just create the widget here so we can render it's parts separately
             /** @var $searchResults CListView */
             $searchResults = $this->createWidget(
@@ -94,6 +104,7 @@ $this->pageTitle = 'Case Search';
                     ),
                 )
             );
+            // Build up the list of sort fields and the relevant ascending/descending sort URLs for each option.
             $sort_fields = array();
             $sort_field_options = array();
             foreach ($sort->attributes as $key => $attribute) {
@@ -106,67 +117,69 @@ $this->pageTitle = 'Case Search';
             <div class="sort-by">
                 Sort by:
                 <span class="sort-options">
-                    <?= CHtml::dropDownList('sort', null, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
+                    <?= CHtml::dropDownList('sort', $sort_field, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
                     <span class="direction">
                         <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', true, array('value' => 'ascend'))?>
+                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend'))?>
                             <i class="oe-i direction-up medium"></i>
                         </label>
                         <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', false, array('value' => 'descend'))?>
+                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend'))?>
                             <i class="oe-i direction-down medium"></i>
                         </label>
                     </span>
                 </span>
             </div>
-            <?php $pager->run()?>
+            <?php $pager->run(); ?>
         </div>
             <table id="case-search-results" class="standard last-right">
                 <tbody>
                 <?= $searchResults->renderItems() ?>
                 </tbody>
-                <tfoot><tr><td colspan="3"><?php $pager->run()?></td></tr></tfoot>
+                <tfoot><tr><td colspan="3"><?php $pager->run(); ?></td></tr></tfoot>
             </table>
-        <?php endif; ?>
+        <?php } ?>
     </main>
 </div>
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
-        var addSelector = '#add-to-trial-link-' + patient_id;
-        var removeSelector = '#remove-from-trial-link-' + patient_id;
+        const addSelector = '#add-to-trial-link-' + patient_id;
+        const removeSelector = '#remove-from-trial-link-' + patient_id;
         $.ajax({
             url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
             data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val()},
             type: 'POST',
-            success: function (response) {
+            success: function () {
                 $(addSelector).hide();
                 $(removeSelector).show();
                 $(removeSelector).parent('.result').css('background-color', '#fafad2');
             },
-            error: function (response) {
+            error: function () {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: "Sorry, an internal error occurred and we were unable to add the patient to the trial.\n\nPlease contact support for assistance."
+                    content: "Sorry, an internal error occurred and we were unable to add the patient to the trial." +
+                        "\n\nPlease contact support for assistance."
                 }).open();
             },
         });
     }
 
     function removePatientFromTrial(patient_id, trial_id) {
-        var addSelector = '#add-to-trial-link-' + patient_id;
-        var removeSelector = '#remove-from-trial-link-' + patient_id;
+        let addSelector = '#add-to-trial-link-' + patient_id;
+        let removeSelector = '#remove-from-trial-link-' + patient_id;
         $.ajax({
             url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
             data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val()},
             type: 'POST',
-            success: function (response) {
+            success: function () {
                 $(removeSelector).hide();
                 $(addSelector).show();
                 $(addSelector).parent('.result').css('background-color', '#fafafa');
             },
-            error: function (response) {
+            error: function () {
                 new OpenEyes.UI.Dialog.Alert({
-                    content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial.\n\nPlease contact support for assistance."
+                    content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial." +
+                        "\n\nPlease contact support for assistance."
                 }).open();
             }
         });
@@ -182,18 +195,17 @@ $this->pageTitle = 'Case Search';
     }
 
     function getMaxId(){
-      var id_max = -1;
-      $('#param-list tbody tr').each(function () {
-        if ($(this)[0].id > id_max){
-          id_max = $(this)[0].id;
-        }
-      });
-      return id_max;
+        let id_max = -1;
+        $('#param-list tbody tr.parameter').each(function () {
+            if ($(this)[0].id > id_max){
+                id_max = $(this)[0].id;
+            }
+        });
+        return id_max;
     }
 
     function performSort(field) {
         let $field = $('#sort-field option[value=' + field +']');
-        console.log($($field).text());
         let direction = $("input[name='sort-options']").filter("input[checked='checked']").val();
         if (direction === 'ascend') {
             window.location.href = $($field).data('sort-ascend');
@@ -205,7 +217,7 @@ $this->pageTitle = 'Case Search';
 
     $(document).ready(function () {
         //null coalesce the id of the last parameter
-        var parameter_id_counter = getMaxId();
+        let parameter_id_counter = getMaxId();
         new OpenEyes.UI.AdderDialog({
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -253,7 +265,7 @@ $this->pageTitle = 'Case Search';
                 type: 'GET',
                 success: function () {
                     $('#case-search-results').children().remove();
-                    $('#param-list tbody').children().remove();
+                    $('#param-list tbody tr.parameter').remove();
                 }
             });
         });
@@ -264,32 +276,35 @@ $this->pageTitle = 'Case Search';
   <script type="text/javascript">
 
     $(document).on('click', '.js-add-to-trial', function () {
-      var addLink = this;
-      var $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
-      var trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function() {return this.nodeType == Node.TEXT_NODE;}).text());
-      var trialShortListElement = $(this).closest('.js-oe-patient').find('.trial-shortlist');
-      var patientId = $(this).closest('.js-oe-patient').data('patient-id');
+        const addLink = this;
+        const $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
+        let trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function () {
+            return this.nodeType === Node.TEXT_NODE;
+        }).text());
+        const trialShortListElement = $(this).closest('.js-oe-patient').find('.trial-shortlist');
+        const patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
-      $.ajax({
-        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
-        data: {
-          id: <?= $this->trialContext->id?>,
-          patient_id: patientId,
-        },
-        success: function (response) {
-          $(addLink).hide();
-          trialShortlist += 1;
-          trialShortListElement.text(' ' + trialShortlist);
-          trialShortListElement.prepend('<em>Shortlisted</em>');
-          trialShortListElement.show();
+        $.ajax({
+            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
+            data: {
+              id: <?= $this->trialContext->id?>,
+              patient_id: patientId,
+            },
+            success: function () {
+              $(addLink).hide();
+              trialShortlist += 1;
+              trialShortListElement.text(' ' + trialShortlist);
+              trialShortListElement.prepend('<em>Shortlisted</em>');
+              trialShortListElement.show();
 
-        },
-        error: function (response) {
-          new OpenEyes.UI.Dialog.Alert({
-            content: "Sorry, an internal error occurred and we were unable to add the patient to the trial.\n\nPlease contact support for assistance."
-          }).open();
-        }
-      });
+            },
+            error: function () {
+              new OpenEyes.UI.Dialog.Alert({
+                content: "Sorry, an internal error occurred and we were unable to add the patient to the trial." +
+                    "\n\nPlease contact support for assistance."
+              }).open();
+            }
+        });
     });
   </script>
 <?php } ?>

@@ -8,6 +8,8 @@ class DBProvider extends \SearchProvider
     /**
      * @param array $criteria The parameters to search with. The parameters must implement the DBProviderInterface interface.
      * @return array The returned data from the search.
+     * @throws CDbException
+     * @throws CException
      */
     protected function executeSearch($criteria)
     {
@@ -27,8 +29,11 @@ class DBProvider extends \SearchProvider
             }
         }
         // Do not count the deleted patients.
-        $queryStr .= "AND p.deleted != 1";
+        $queryStr .= 'AND p.deleted != 1';
 
+        /**
+         * @var CDbCommand $command
+         */
         $command = Yii::app()->db->createCommand($queryStr)->bindValues($bindValues);
         $command->prepare();
 

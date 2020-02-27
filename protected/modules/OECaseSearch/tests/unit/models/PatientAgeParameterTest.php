@@ -35,40 +35,43 @@ class PatientAgeParameterTest extends CDbTestCase
 
     /**
      * @covers PatientAgeParameter::query()
+     * @throws CHttpException
      */
     public function testQuery()
     {
-        $this->parameter->textValue = 5;
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
         $correctOps = array(
-            '>',
-            '<',
+            '>=',
+            '<=',
             'BETWEEN',
-        );
-        $invalidOps = array(
-            'LIKE',
-            'NOT LIKE',
         );
 
         // Ensure the query is correct for each operator.
-        foreach ($correctOps as $operator) {
+        foreach ($correctOps as $id => $operator) {
+            switch ($id) {
+                case 0:
+                    $this->parameter->minValue = 5;
+                    $this->parameter->maxValue = null;
+                    break;
+                case 1:
+                    $this->parameter->minValue = null;
+                    $this->parameter->maxValue = 80;
+                    break;
+                case 2:
+                    $this->parameter->minValue = 5;
+                    $this->parameter->maxValue = 80;
+                    break;
+            }
             $this->parameter->operation = $operator;
             if ($operator === 'BETWEEN') {
-                $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_min_0 AND :p_a_max_0";
+                $sqlValue = "SELECT id FROM patient
+WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_min_0 AND :p_a_max_0";
             } else {
                 $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_value_0";
             }
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider))));
-        }
-
-        // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
-        foreach ($invalidOps as $operator) {
-            $this->parameter->operation = $operator;
-            $this->parameter->query($this->searchProvider);
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+            );
         }
     }
 
@@ -77,7 +80,6 @@ class PatientAgeParameterTest extends CDbTestCase
      */
     public function testBindValues()
     {
-        $this->parameter->textValue = 5;
         $this->parameter->operation = 'BETWEEN';
         $this->parameter->minValue = 5;
         $this->parameter->maxValue = 80;
@@ -93,9 +95,17 @@ class PatientAgeParameterTest extends CDbTestCase
         // Ensure that all bind values are integers.
         $this->assertTrue(is_int($actual['p_a_min_0']) and is_int($actual['p_a_max_0']));
 
-        // Ensure that only attributes with values are returned from the bindValues list.
-        unset($expected['p_a_value_0']);
-        $this->parameter->textValue = null;
+        $this->parameter->operation = '<=';
+        $expected = array(
+            'p_a_value_0' => $this->parameter->maxValue,
+        );
+
+        $this->assertEquals($expected, $this->parameter->bindValues());
+
+        $this->parameter->operation = '>=';
+        $expected = array(
+            'p_a_value_0' => $this->parameter->minValue,
+        );
 
         $this->assertEquals($expected, $this->parameter->bindValues());
     }
@@ -103,6 +113,7 @@ class PatientAgeParameterTest extends CDbTestCase
     /**
      * @covers DBProvider::search()
      * @covers PatientAgeParameter::query()
+     * @throws Exception
      */
     public function testSearchSingleInput()
     {

@@ -121,7 +121,7 @@ AND :p_d_firm_$this->id IS NULL
 AND :p_d_only_latest_event_$this->id = 0";
         }
 
-        if (!$this->operation) {
+        if ($this->operation) {
                 $query = "
 SELECT DISTINCT p1.id
 FROM patient p1
@@ -155,7 +155,7 @@ WHERE p1.id NOT IN (
     {
         $op = 'LIKE';
         $result = null;
-        if (!$this->operation) {
+        if ($this->operation) {
             $op = 'NOT LIKE';
         }
         $result = "$this->name: $op \"$this->term\"";

@@ -30,7 +30,9 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'number',
             )
         );
@@ -49,28 +51,23 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function rules()
     {
-        return array_merge(parent::rules(), array(
-            array('number', 'required'),
-            array('number', 'numerical'),
-        ));
+        return array_merge(
+            parent::rules(),
+            array(
+                array('number', 'required'),
+                array('number', 'numerical'),
+            )
+        );
     }
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
         $op = '=';
-        /*
-        // Reimplement this code if more operation choices are added to this parameter type.
-         if ($this->operation === '=') {
-            $op = '=';
-        } else {
-            throw new CHttpException(400, 'Invalid operator specified.');
-        }*/
 
         return "SELECT DISTINCT p.id 
 FROM patient p
@@ -94,6 +91,6 @@ WHERE p.hos_num $op :p_num_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: $this->operation $this->number";
+        return "$this->name: = $this->number";
     }
 }

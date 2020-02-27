@@ -6,11 +6,6 @@
 class PatientVisionParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var integer $textValue Represents a single value
-     */
-    public $textValue;
-
-    /**
      * @var integer $minValue Represents a minimum value.
      */
     public $minValue;
@@ -54,7 +49,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeNames()
     {
         return array_merge(parent::attributeNames(), array(
-            'textValue',
             'minValue',
             'maxValue',
             'bothEyesIndicator',
@@ -208,10 +202,15 @@ FROM (
      */
     public function getAuditData()
     {
+        $bothEyes = $this->bothEyesIndicator ? ' searching both eyes' : '';
         if ($this->operation === 'BETWEEN') {
-            return "$this->name: BETWEEN $this->minValue and $this->maxValue";
+            return "$this->name: BETWEEN $this->minValue and $this->maxValue" . $bothEyes;
         }
 
-        return "$this->name: $this->operation $this->textValue";
+        if ($this->operation === '<=') {
+            return "$this->name: $this->operation $this->maxValue" . $bothEyes;
+        }
+
+        return "$this->name: $this->operation $this->minValue" . $bothEyes;
     }
 }

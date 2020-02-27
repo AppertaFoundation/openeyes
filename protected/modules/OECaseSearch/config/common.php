@@ -18,7 +18,7 @@ return array(
         ),
         'CaseSearch' => array(
             'parameters' => array(
-                'core' => array(
+                'OECaseSearch' => array(
                     'PatientAge',
                     'PatientDiagnosis',
                     'PatientMedication',
@@ -32,7 +32,7 @@ return array(
                 ),
             ),
             'fixedParameters' => array(
-                'core' => array(
+                'OECaseSearch' => array(
                     'PatientDeceased',
                 ),
             ),

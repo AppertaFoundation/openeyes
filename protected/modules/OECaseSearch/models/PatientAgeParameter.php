@@ -6,11 +6,6 @@
 class PatientAgeParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var integer $textValue Represents a single value
-     */
-    public $textValue;
-
-    /**
      * @var integer $minValue Represents a minimum value.
      */
     public $minValue;
@@ -37,8 +32,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('textValue, minValue, maxValue', 'numerical', 'min' => 0),
-            array('textValue, minValue, maxValue', 'values'),
+            array('minValue, maxValue', 'numerical', 'min' => 0),
         ));
     }
 
@@ -67,24 +61,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
             'maxValue' => 'Maximum Value',
             'id' => 'ID',
         );
-    }
-
-    /**
-     * Validator to validate parameter values for specific operators.
-     * @param $attribute string Attribute being validated.
-     */
-    public function values($attribute)
-    {
-        $label = $this->attributeLabels()[$attribute];
-        if ($attribute === 'minValue' || $attribute === 'maxValue') {
-            if ($this->operation === 'BETWEEN' && $this->$attribute === '') {
-                $this->addError($attribute, "$label must be specified.");
-            }
-        } else {
-            if ($this->operation !== 'BETWEEN' && $this->$attribute === '') {
-                $this->addError($attribute, "$label must be specified.");
-            }
-        }
     }
 
     /**
@@ -151,6 +127,10 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
             return "$this->name: BETWEEN $this->minValue and $this->maxValue";
         }
 
-        return "$this->name: $this->operation $this->textValue";
+        if ($this->operation === '<=') {
+            return "$this->name: $this->operation $this->maxValue";
+        }
+
+        return "$this->name: $this->operation $this->minValue";
     }
 }

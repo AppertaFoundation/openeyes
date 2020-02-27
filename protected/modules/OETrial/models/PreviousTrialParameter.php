@@ -52,7 +52,9 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'trial',
                 'trialType',
                 'status',

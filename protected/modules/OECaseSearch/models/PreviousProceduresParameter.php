@@ -81,7 +81,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             JOIN ophciexamination_pastsurgery_op o3 on eop2.id = o3.element_id
                AND o3.operation = :p_p_value_$this->id";
 
-        if (!$this->operation) {
+        if ($this->operation) {
             $query = "
                 SELECT outer_pat.id
                 FROM patient outer_pat 
