@@ -58,9 +58,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <td>
                         <?php $tooltip_content = $entry->getTooltipContent();
                         if (!empty($tooltip_content)) { ?>
-                            <i class="oe-i info small-icon js-has-tooltip"
+                            <i class="oe-i info small js-has-tooltip"
                                data-tooltip-content="<?= $tooltip_content ?>">
-                            </i>
                         <?php } ?>
                     </td>
                     <td class="nowrap">
@@ -70,12 +69,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                     </td>
                     <td>
-                        <?php if ($entry->usage_type === "OphDrPrescription") { ?>
-                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
-                                        <span class="js-has-tooltip fa oe-i eye small"
-                                              data-tooltip-content="View prescription"></span>
-                            </a>
-                        <?php } ?>
+                        <?php
+                        $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
+                        $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
+                        <a href="<?= $link ?>">
+                              <i class="js-has-tooltip fa oe-i direction-right-circle small pad"
+                                    data-tooltip-content="<?= $tooltip_content ?>"></i>
+                        </a>
                     </td>
                 </tr>
             <?php } ?>
@@ -97,7 +97,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <div class="restrict-data-content rows-10">
                         <table>
                             <colgroup>
-                                <col class="cols-7">
+                                <col class="cols-8">
+                                <col>
                             </colgroup>
                             <tbody>
                             <?php foreach ($stopped_eye_meds as $entry) { ?>
@@ -109,25 +110,17 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <td>
                                         <?php $tooltip_content = $entry->getTooltipContent();
                                         if (!empty($tooltip_content)) { ?>
-                                            <i class="oe-i info small-icon js-has-tooltip"
+                                            <i class="oe-i info small js-has-tooltip"
                                                data-tooltip-content="<?= $tooltip_content ?>">
-                                            </i>
                                         <?php } ?>
                                     </td>
                                     <td class="nowrap">
                                         <?php $laterality = $entry->getLateralityDisplay();
-                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
-                                        <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
+                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                        ?>
+                                        <span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span>
                                     </td>
-                                    <td>
-                                        <?php if ($entry->usage_type === "OphDrPrescription") { ?>
-                                            <a href="<?= $this->getPrescriptionLink($entry); ?>">
-                                                <span class="js-has-tooltip fa oe-i eye small"
-                                                      data-tooltip-content="View prescription">
-                                                </span>
-                                            </a>
-                                        <?php } ?>
-                                    </td>
+                                    <td><i class="oe-i"></i></td>
                                 </tr>
                             <?php } ?>
                             </tbody>

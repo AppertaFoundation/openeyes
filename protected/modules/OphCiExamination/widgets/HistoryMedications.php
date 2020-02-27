@@ -27,8 +27,18 @@ use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagemen
  */
 class HistoryMedications extends BaseMedicationWidget
 {
+    public static $INLINE_EVENT_VIEW = 256;
+    public static $PRESCRIPTION_PRINT_VIEW = 512;
+
     protected static $elementClass = HistoryMedicationsElement::class;
     protected $print_view = 'HistoryMedications_event_print';
+
+    public static $moduleName = 'OphCiExamination';
+    public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
+    public $is_latest_element = null;
+    public $missing_prescription_items = null;
+    public $pro_theme;
+
 
     /**
      * @return bool
@@ -229,6 +239,11 @@ class HistoryMedications extends BaseMedicationWidget
     public function getPrescriptionLink($entry)
     {
         return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
+    }
+
+    public function getExaminationLink()
+    {
+        return '/OphCiExamination/Default/view/' . $this->element->event_id;
     }
 
     /**

@@ -154,7 +154,7 @@ class OphDrPrescription_Item extends EventMedicationUse
                 if (in_array($taper->duration->name, array('Other', 'Until review'))) {
                     return null;
                 }
-                $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+                $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
             }
         }
         return $end_date;

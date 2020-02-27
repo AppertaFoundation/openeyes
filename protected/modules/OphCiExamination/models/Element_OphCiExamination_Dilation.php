@@ -67,7 +67,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id', 'safe'),
+                array('eye_id, left_comments, right_comments', 'safe'),
                 array('id, event_id, eye_id', 'safe', 'on' => 'search'),
                 array('left_treatments', 'requiredIfSide', 'side' => 'left'),
                 array('right_treatments', 'requiredIfSide', 'side' => 'right'),
@@ -104,6 +104,8 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
             'eye_id' => 'Eye',
             'left_treatments' => 'Treatments',
             'right_treatments' => 'Treatments',
+            'left_comments' => 'Comments',
+            'right_comments' => 'Comments'
         );
     }
 

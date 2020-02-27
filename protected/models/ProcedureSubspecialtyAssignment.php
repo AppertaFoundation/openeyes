@@ -89,6 +89,12 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
         );
     }
 
+    public function scopes() {
+        return array(
+            'byDisplayOrder' => array('order' => 'display_order'),
+        );
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -110,14 +116,12 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
      */
     public function getProcedureListFromSubspecialty($id)
     {
-        $list = self::model()->with('subspecialty')->with('procedure')->findAll('subspecialty.id = :id', array(':id' => $id));
+        $list = self::model()->byDisplayOrder()->with('subspecialty')->with('procedure')->findAll('subspecialty.id = :id', array(':id' => $id));
         $result = array();
 
         foreach ($list as $subspecialty) {
             $result[$subspecialty->procedure->id] = $subspecialty->procedure->term;
         }
-        
-        asort($result);
         
         return $result;
     }

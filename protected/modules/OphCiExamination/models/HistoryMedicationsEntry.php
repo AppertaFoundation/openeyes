@@ -143,7 +143,7 @@ class HistoryMedicationsEntry extends \BaseElement
      *
      * @param $item
      */
-    private function clonefromPrescriptionItem($item)
+    private function cloneFromPrescriptionItem($item)
     {
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
@@ -244,6 +244,16 @@ class HistoryMedicationsEntry extends \BaseElement
                 }
             }
         }
+    }
+
+    public function getPrescriptionLink()
+    {
+        return '/OphDrPrescription/Default/view/' . $this->prescription_item->prescription->event_id;
+    }
+
+    public function getExaminationLink()
+    {
+        return '/OphCiExamination/Default/view/' . $this->element->event_id;
     }
 
     /**
@@ -378,12 +388,13 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function getStartDateDisplay()
     {
-        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
+
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date"><i class="oe-i start small pad"></i>' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getStopReasonDisplay()
