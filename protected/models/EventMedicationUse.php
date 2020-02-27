@@ -501,7 +501,7 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date){
+        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
             return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
         return "";
