@@ -94,7 +94,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
                     ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
+                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days' => 180))
                     ->group('e2.id');
                 break;
             //refraction

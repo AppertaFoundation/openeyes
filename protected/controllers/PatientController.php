@@ -152,7 +152,7 @@ class PatientController extends BaseController
     public function actionSummary($id)
     {
         $this->layout = '//layouts/events_and_episodes';
-        $this->patient = Patient::model()->findByPk($id);
+        $this->patient = $this->loadModel($id);
         $this->pageTitle = "Patient Summary";
 
         $episodes = $this->patient->episodes;

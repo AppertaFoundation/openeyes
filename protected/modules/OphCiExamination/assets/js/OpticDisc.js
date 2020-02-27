@@ -4,21 +4,27 @@ var leftCdSelector = '#OEModule_OphCiExamination_models_Element_OphCiExamination
 function OphCiExamination_OpticDisc_updateCDRatio(field) {
     var cdratio_field = $(field).closest('.eyedraw-fields').find('.cd-ratio');
     var _drawing = ED.getInstance($(field).closest('.js-element-eye').find('canvas').first().attr('data-drawing-name'));
-    $(field).closest('.eyedraw-fields').find('.cd-ratio-readonly').remove();
+    let data_side = $(field).closest('.js-element-eye').data('side');
+    let cd_ratio_readonly_id = 'cd-ratio-readonly-' + data_side;
+    $('#' + cd_ratio_readonly_id).remove();
     if($(field).val() == 'Basic') {
         _drawing.unRegisterForNotifications(this);
         cdratio_field.show();
     } else {
         cdratio_field.hide();
-        var readonly = $('<span class="cd-ratio-readonly"></span>');
+        let readonly = $('<span id="' + cd_ratio_readonly_id + '"></span>');
         readonly.html($('option:selected', cdratio_field).attr('data-value'));
         cdratio_field.after(readonly);
         _drawing.registerForNotifications(this, 'handler', ['parameterChanged']);
         this.handler = function(_messageArray) {
             if(_messageArray.eventName == 'parameterChanged' && _messageArray.object.parameter == 'cdRatio') {
-                readonly.html(_messageArray.object.value);
+                if (_messageArray.object.doodle.drawing.drawingName.includes('left')) {
+                    $('#cd-ratio-readonly-left').html(_messageArray.object.value);
+                } else {
+                    $('#cd-ratio-readonly-right').html(_messageArray.object.value);
+                }
             }
-        }
+        };
     }
 }
 
