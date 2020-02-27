@@ -106,11 +106,11 @@ if ($historyElement) {
                                       </td>
                                       <td>
                                           <?php $tooltip_content = $entry->getTooltipContent();
-                                          if ($tooltip_content) {?>
+                                            if ($tooltip_content) {?>
                                               <i class="oe-i info small js-has-tooltip"
                                                  data-tooltip-content="<?= $tooltip_content ?>"
                                               </i>
-                                          <?php } ?>
+                                            <?php } ?>
                                       </td>
                                       <td>
                                           <?php
@@ -229,13 +229,13 @@ if ($historyElement) {
                         </div>
                     </div>
                 </div>
-            <?php } else { ?>
+                <?php } else { ?>
                 <div class="data-value none">
                     No current Systemic Medications
                 </div>
-            <?php } ?>
+                <?php } ?>
 
-            <?php if ($stopped_systemic_medications) { ?>
+                <?php if ($stopped_systemic_medications) { ?>
                 <div class="collapse-data">
                     <div class="collapse-data-header-icon expand">
                         Stopped
