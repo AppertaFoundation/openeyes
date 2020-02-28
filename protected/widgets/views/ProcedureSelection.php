@@ -168,7 +168,14 @@
             $projected_duration.text(adjustedTotalDuration);
         }
 
-        $('#typeProcedure').on('click', '.removeProcedure', function () {
+        let list_selector = '';
+        if (moduleName === "OphTrConsent") {
+            list_selector = 'td #typeProcedure'
+        } else {
+            list_selector = '#typeProcedure'
+        }
+
+        $(list_selector).on('click', '.removeProcedure', function () {
             let $table = $(this).closest("[id^='procedureList_']");
             if ($table) {
                 let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
