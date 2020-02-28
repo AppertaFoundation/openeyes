@@ -1511,15 +1511,13 @@ class Patient extends BaseActiveRecordVersioned
 
     public function removeDiagnosis($diagnosis_id)
     {
-        if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
+        if (!$sd = SecondaryToCommonOphthalmicDisorder::model()->findByPk($diagnosis_id)) {
             throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
         }
 
         if (!$disorder = Disorder::model()->findByPk($sd->disorder_id)) {
             throw new Exception('Unable to find disorder: '.$sd->disorder_id);
         }
-
-        $patient = $sd->patient;
 
         if ($disorder->specialty_id) {
             $type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
@@ -1531,7 +1529,7 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(), true));
         }
 
-        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$patient, 'diagnosis' => $sd));
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$this, 'diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }

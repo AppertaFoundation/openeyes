@@ -217,11 +217,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         //delete and update ophciexamination_diagnosis entries
         foreach ($current_diagnoses as $cd) {
             if (!array_key_exists($cd->id, $disorder_to_update)) {
-                $secondary_diagnosis = \SecondaryDiagnosis::model()->find('disorder_id = :disorder_id', [':disorder_id' => $cd->disorder_id]);
-                if (!$secondary_diagnosis) {
-                    throw new \Exception("Unable to find secondary disorder linked to disorder $cd->disorder_id");
+                $current_disorder = \Disorder::model()->findByPk($cd->disorder_id);
+                foreach ($current_disorder->commonOphthalmicDisorders as $common_oph_disorder) {
+                    $secondary_diagnoses = \SecondaryToCommonOphthalmicDisorder::model()->findAll('parent_id = :parent_id', [':parent_id' => $common_oph_disorder->id]);
+                    foreach ($secondary_diagnoses as $secondary_diagnosis) {
+                        $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
+                    }
                 }
-                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
                 if (!$cd->delete()) {
                     throw new \Exception('Unable to remove old disorder');
                 }
