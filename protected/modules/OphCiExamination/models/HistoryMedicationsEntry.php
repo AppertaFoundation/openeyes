@@ -142,7 +142,7 @@ class HistoryMedicationsEntry extends \BaseElement
      *
      * @param $item
      */
-    private function clonefromPrescriptionItem($item)
+    private function cloneFromPrescriptionItem($item)
     {
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
