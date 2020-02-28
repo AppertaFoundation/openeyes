@@ -993,7 +993,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
-      data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined';
+      data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined' && medications[i]['dose_unit_term'] !== "" ;
       data['allergy_ids'] = medications[i]['allergy_ids'];
 
       newRows.push(Mustache.render(

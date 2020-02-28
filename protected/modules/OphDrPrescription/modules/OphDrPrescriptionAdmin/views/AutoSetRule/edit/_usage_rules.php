@@ -40,19 +40,19 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
             </tr>
             </thead>
             <tbody class='js-usage-rule-table'>
-            <?php foreach ($medication_set->medicationSetRules as $k => $rule): ?>
+            <?php foreach ($medication_set->medicationSetRules as $k => $rule) : ?>
                 <tr data-key="<?= $k; ?>">
                     <td>
-                        <input type="hidden" name="MedicationSetRule[<?=$k?>][id]"  value="<?=$rule->id?>"/>
-                        <input type="hidden" name="MedicationSetRule[<?=$k?>][site_id]"  value="<?=$rule->site_id?>"/>
+                        <?= \CHtml::activeHiddenField($rule, "[{$k}]id"); ?>
+                        <?= \CHtml::activeHiddenField($rule, "[{$k}]site_id"); ?>
                         <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
                     </td>
                     <td>
-                        <input type="hidden" name="MedicationSetRule[<?=$k?>][subspecialty_id]"  value="<?=$rule->subspecialty_id?>"/>
+                        <?= \CHtml::activeHiddenField($rule, "[{$k}]subspecialty_id"); ?>
                         <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("MedicationSetRule[{$k}][usage_code_id]", $rule->usage_code_id, CHtml::listData($all_usage_codes, 'id', 'name')); ?>
+                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData($all_usage_codes, 'id', 'name')); ?>
                     </td>
                     <td>
                         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -140,6 +140,7 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
             $('.js-usage-rule-table tr:last select option[value=' + selObj['usage_code'].id + ']').attr('selected', 'selected');
 
 
+            togglePrescriptionExtraInputs();
             return true;
         },
         enableCustomSearchEntries: true,
@@ -147,5 +148,6 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
 
     $(document).on("click", ".js-delete-rule", function (e) {
         $(e.target).closest("tr").remove();
+        togglePrescriptionExtraInputs();
     });
 </script>
