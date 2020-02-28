@@ -22,22 +22,28 @@
                 <div class="fpten-form-row">
                     <?= $this->patient->fullname ?><br/>
                     <br/>
+                    <?php if(isset($this->patient->contact->address)) { ?>
                     <?= $this->patient->contact->address->address1 ?><br/>
                     <?= $this->patient->contact->address->address2 ?><?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
+                    <?php } ?>
                 </div>
                 <div class="fpten-form-row">
                     <table>
                         <tbody>
                         <tr>
                             <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
+                                <?php if(isset($this->patient->contact->address)) { ?>
                                 <?= $this->patient->contact->address->city ?><br/>
                                 <?= $this->patient->contact->address->county ?><br/><?= $form_css_class !== 'wpten' ? '<br/>' : null ?>
                                 <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/>' : null ?>
                                 <?= (!$this->patient->contact->address->county && $form_css_class !== 'wpten') ? '<br/>' : null ?>
+                                <?php } ?>
                             </td>
                             <td>
+                                <?php if(isset($this->patient->contact->address)) { ?>
                                 <?= $this->patient->contact->address->county ? '<br/>' : null ?>
                                 <?= $this->patient->contact->address->postcode ?>
+                                <?php } ?>
                             </td>
                         </tr>
                         <?php if ($form_css_class === 'wpten') : ?>
