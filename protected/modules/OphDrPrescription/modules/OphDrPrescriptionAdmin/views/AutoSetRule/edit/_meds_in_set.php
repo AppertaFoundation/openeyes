@@ -19,6 +19,15 @@ $is_prescription_set = $medication_set->hasUsageCode("PRESCRIPTION_SET");
 $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
 $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
 
+// FP10 settings
+$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+
+$dispense_condition_options = array(
+    $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+);
+// End of FP10 settings
 ?>
 
 <h2>Medications in set</h2>
@@ -134,18 +143,38 @@ $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondit
 
                         <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text">
-                                <?= $set_item->defaultDispenseCondition ? $set_item->defaultDispenseCondition->name : '-'; ?>
+                                <?php if ($set_item->default_dispense_condition_id) {
+                                    if ($set_item->defaultDispenseCondition->name === 'Print to {form_type}') {
+                                        echo str_replace(
+                                                '{form_type}',
+                                                $fpten_setting,
+                                                $set_item->defaultDispenseCondition->name
+                                            );
+                                    } else {
+                                       echo  $set_item->defaultDispenseCondition->name;
+                                    }
+                                } else {
+                                    echo '-';
+                                } ?>
+
                             </span>
                             <?= \CHtml::activeDropDownList(
                                 $set_item,
                                 'default_dispense_condition_id',
-                                $default_dispense_condition,
+                                CHtml::listData(
+                                    OphDrPrescription_DispenseCondition::model()->findAll(array(
+                                        'condition' => '(active'
+                                            . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
+                                            . ") or id='" . $set_item->default_dispense_condition_id . "'",
+                                        'order' => 'display_order',
+                                    )), 'id', 'name'),
                                 [
                                     'class' => 'js-input cols-full',
                                     'style' => 'display:none',
                                     'empty' => '-- select --',
                                     'id' => null,
-                                    'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]"
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]",
+                                    'options' => $dispense_condition_options
                                 ]
                             ); ?>
                         </td>
