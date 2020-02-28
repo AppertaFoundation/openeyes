@@ -47,7 +47,7 @@
                         $form_setting,
                         $entry->dispense_condition->name
                     ) . " / {$entry->dispense_location->name}";
-                } else {
+            } else {
                 echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
             }
         } ?>

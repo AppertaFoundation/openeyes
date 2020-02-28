@@ -151,7 +151,7 @@ $dispense_condition_options = array(
                                                 $set_item->defaultDispenseCondition->name
                                             );
                                     } else {
-                                       echo  $set_item->defaultDispenseCondition->name;
+                                        echo  $set_item->defaultDispenseCondition->name;
                                     }
                                 } else {
                                     echo '-';
