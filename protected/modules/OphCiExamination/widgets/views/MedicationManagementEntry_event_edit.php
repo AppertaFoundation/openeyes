@@ -26,7 +26,6 @@ if (isset($entry->start_date)) {
     $start_date = date('Y-m-d');
 }
 
-
 if (isset($entry->end_date)) {
     list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
 } else {
@@ -193,16 +192,13 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     $field_prefix.'[dispense_condition_id]',
                     $entry->dispense_condition_id,
                     CHtml::listData(
-                        OphDrPrescription_DispenseCondition::model()->findAll(
-                            array(
-                            'condition' => "active or id='" . $entry->dispense_condition_id . "'",
+                        OphDrPrescription_DispenseCondition::model()->findAll(array(
+                            'condition' => '(active'
+                                . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
+                                . ") or id='" . $entry->dispense_condition_id . "'",
                             'order' => 'display_order',
-                            )
-                        ),
-                        'id',
-                        'name'
-                    ),
-                    array('class' => 'js-dispense-condition cols-5', 'empty' => '- Select -', 'style' => $prescribe_hide_style)
+                        )), 'id', 'name'),
+                    array('class' => 'js-dispense-condition cols-5','style' => $prescribe_hide_style, 'empty' => 'Select', 'options' => $dispense_condition_options)
                 ); ?>
 
                 <?php
