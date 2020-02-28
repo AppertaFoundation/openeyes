@@ -3,6 +3,7 @@
      * @var string $form_css_class
      */
 ?>
+<?php $patient_has_address = isset($this->patient->contact->address); ?>
 <div class="fpten-form-row">
     <div class="fpten-form-column">
         <div class="fpten-form-row">
@@ -22,7 +23,7 @@
                 <div class="fpten-form-row">
                     <?= $this->patient->fullname ?><br/>
                     <br/>
-                    <?php if(isset($this->patient->contact->address)) { ?>
+                    <?php if($patient_has_address) { ?>
                     <?= $this->patient->contact->address->address1 ?><br/>
                     <?= $this->patient->contact->address->address2 ?><?= $this->patient->contact->address->address2 ? '<br/>' : null ?>
                     <?php } ?>
@@ -32,7 +33,7 @@
                         <tbody>
                         <tr>
                             <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
-                                <?php if(isset($this->patient->contact->address)) { ?>
+                                <?php if($patient_has_address) { ?>
                                 <?= $this->patient->contact->address->city ?><br/>
                                 <?= $this->patient->contact->address->county ?><br/><?= $form_css_class !== 'wpten' ? '<br/>' : null ?>
                                 <?= (!$this->patient->contact->address->address2 && $form_css_class !== 'wpten') ? '<br/>' : null ?>
@@ -40,7 +41,7 @@
                                 <?php } ?>
                             </td>
                             <td>
-                                <?php if(isset($this->patient->contact->address)) { ?>
+                                <?php if($patient_has_address) { ?>
                                 <?= $this->patient->contact->address->county ? '<br/>' : null ?>
                                 <?= $this->patient->contact->address->postcode ?>
                                 <?php } ?>
