@@ -42,17 +42,16 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
             <tbody class='js-usage-rule-table'>
             <?php foreach ($medication_set->medicationSetRules as $k => $rule) : ?>
                 <tr data-key="<?= $k; ?>">
-                    <td>
-                        <?= \CHtml::activeHiddenField($rule, "[{$k}]id"); ?>
-                        <?= \CHtml::activeHiddenField($rule, "[{$k}]site_id"); ?>
-                        <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
+                    <input type="hidden" name="MedicationSetRule[<?=$k?>][id]"  value="<?=$rule->id?>"/>
+                    <input type="hidden" name="MedicationSetRule[<?=$k?>][site_id]"  value="<?=$rule->site_id?>"/>
+                    <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
                     </td>
                     <td>
-                        <?= \CHtml::activeHiddenField($rule, "[{$k}]subspecialty_id"); ?>
+                        <input type="hidden" name="MedicationSetRule[<?=$k?>][subspecialty_id]"  value="<?=$rule->subspecialty_id?>"/>
                         <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                     </td>
                     <td>
-                        <?= CHtml::activeDropDownList($rule, "[{$k}]usage_code_id", CHtml::listData($all_usage_codes, 'id', 'name')); ?>
+                        <?= CHtml::dropDownList("MedicationSetRule[{$k}][usage_code_id]", $rule->usage_code_id, CHtml::listData($all_usage_codes, 'id', 'name')); ?>
                     </td>
                     <td>
                         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
