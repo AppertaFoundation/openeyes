@@ -141,7 +141,8 @@ $dispense_condition_options = array(
                             ); ?>
                         </td>
 
-                        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                        <td class="js-input-wrapper">
+                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text">
                                 <?php if ($set_item->default_dispense_condition_id) {
                                     if ($set_item->defaultDispenseCondition->name === 'Print to {form_type}') {
@@ -177,8 +178,10 @@ $dispense_condition_options = array(
                                     'options' => $dispense_condition_options
                                 ]
                             ); ?>
+                            </div>
                         </td>
-                        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                        <td class="js-input-wrapper" >
+                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
@@ -194,6 +197,7 @@ $dispense_condition_options = array(
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
                                 ]
                             ); ?>
+                            </div>
                         </td>
 
                         <td class="actions" style="text-align:center">
