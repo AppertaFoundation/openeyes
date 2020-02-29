@@ -132,7 +132,8 @@ $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondit
                             ); ?>
                         </td>
 
-                        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                        <td class="js-input-wrapper">
+                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseCondition ? $set_item->defaultDispenseCondition->name : '-'; ?>
                             </span>
@@ -148,8 +149,10 @@ $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondit
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]"
                                 ]
                             ); ?>
+                            </div>
                         </td>
-                        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                        <td class="js-input-wrapper" >
+                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
@@ -165,6 +168,7 @@ $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondit
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
                                 ]
                             ); ?>
+                            </div>
                         </td>
 
                         <td class="actions" style="text-align:center">
