@@ -36,8 +36,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('textValue, minValue, maxValue', 'numerical', 'min' => 0),
-            array('textValue, minValue, maxValue', 'values'),
+            array('minValue, maxValue', 'numerical', 'min' => 0),
+            array('minValue, maxValue', 'values'),
             array('bothEyesIndicator','safe'),
         ));
     }
@@ -62,7 +62,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeLabels()
     {
         return array(
-            'textValue' => 'Value',
             'minValue' => 'Minimum Value',
             'maxValue' => 'Maximum Value',
             'id' => 'ID',
