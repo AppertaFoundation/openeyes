@@ -43,7 +43,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     public function attributeNames()
     {
         return array_merge(parent::attributeNames(), array(
-            'textValue',
             'minValue',
             'maxValue',
         ));
@@ -56,7 +55,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     public function attributeLabels()
     {
         return array(
-            'textValue' => 'Value',
             'minValue' => 'Minimum Value',
             'maxValue' => 'Maximum Value',
             'id' => 'ID',
