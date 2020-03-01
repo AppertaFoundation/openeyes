@@ -133,4 +133,15 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
 
         return "$this->name: $this->operation $this->minValue";
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'minValue' => $this->minValue,
+                'maxValue' => $this->maxValue,
+            )
+        );
+    }
 }

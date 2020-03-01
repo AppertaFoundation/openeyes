@@ -93,4 +93,14 @@ WHERE p.hos_num $op :p_num_number_$this->id";
     {
         return "$this->name: = $this->number";
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'number' => $this->number,
+            )
+        );
+    }
 }

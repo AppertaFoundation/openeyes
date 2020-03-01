@@ -171,4 +171,16 @@ WHERE p1.id NOT IN (
 
         return $result;
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'term' => $this->term,
+                'firm_id' => $this->firm_id,
+                'only_latest_event' => $this->only_latest_event,
+            )
+        );
+    }
 }

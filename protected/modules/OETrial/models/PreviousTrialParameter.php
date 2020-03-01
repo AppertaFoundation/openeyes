@@ -197,4 +197,17 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
         return "$this->name: $this->operation $status $type $trial $treatment";
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'trial' => $this->trial,
+                'trialTypeId' => $this->trialTypeId,
+                'status' => $this->status,
+                'treatmentTypeId' => $this->treatmentTypeId,
+            )
+        );
+    }
 }

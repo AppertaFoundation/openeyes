@@ -33,7 +33,9 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'textValue',
             )
         );
@@ -45,7 +47,8 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      */
     public function rules()
     {
-        return array_merge(parent::rules(),
+        return array_merge(
+            parent::rules(),
             array(
                 array('textValue', 'required')
             )
@@ -57,7 +60,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
      *
-     * @throws CHttpException when operator is invalid
      */
     public function query($searchProvider)
     {
@@ -103,6 +105,16 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
             "p_p_value_$this->id" => $this->textValue,
+        );
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'textValue' => $this->textValue,
+            )
         );
     }
 }

@@ -30,7 +30,9 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array(
+        return array_merge(
+            parent::attributeNames(),
+            array(
                 'patient_name',
             )
         );
@@ -38,9 +40,12 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
 
     public function attributeLabels()
     {
-        return array_merge(parent::attributeLabels(), array(
-            'patient_name' => 'Patient Name',
-        ));
+        return array_merge(
+            parent::attributeLabels(),
+            array(
+                'patient_name' => 'Patient Name',
+            )
+        );
     }
 
     /**
@@ -92,5 +97,15 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
     public function getAuditData()
     {
         return "$this->name: = \"$this->patient_name\"";
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'patient_name' => $this->patient_name,
+            )
+        );
     }
 }

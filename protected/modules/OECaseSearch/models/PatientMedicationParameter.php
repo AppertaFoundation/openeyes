@@ -119,4 +119,14 @@ OR m.id IS NULL";
         }
         return "$this->name: $op \"$this->textValue\"";
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'textValue' => $this->textValue,
+            )
+        );
+    }
 }

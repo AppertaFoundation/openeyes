@@ -143,4 +143,16 @@ WHERE id NOT IN (
     {
         return "$this->name: $this->side $this->relative $this->operation \"$this->condition\"";
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'relative' => $this->relative,
+                'side' => $this->side,
+                'condition' => $this->condition,
+            )
+        );
+    }
 }

@@ -132,4 +132,15 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
         }
         return $codes;
     }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'number' => $this->number,
+                'code' => $this->code,
+            )
+        );
+    }
 }

@@ -2,21 +2,15 @@
 
 /**
  * Class PatientVisionParameter
+ *
+ * @property int $minValue Represents a minimum value.
+ * @property int $maxValue Represents a maximum value.
+ * @property bool $bothEyesIndicator
  */
 class PatientVisionParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    /**
-     * @var integer $minValue Represents a minimum value.
-     */
     public $minValue;
-
-    /**
-     * @var integer $maxValue Represents a maximum value.
-     */
     public $maxValue;
-    /**
-     * @var boolean $bothEyesIndicator Indicate searching for either eyes or both eyes.
-     */
     public $bothEyesIndicator;
 
     /**
@@ -159,13 +153,13 @@ FROM (
                                       WHERE t2.patient_id = t1.patient_id
                                         AND t1.va_side = t2.va_side)
                    ) t3) t4
-       GROUP BY patient_id) t5
- WHERE';
+       GROUP BY patient_id) t5';
 
-        $subQueryStr = " (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
+        $subQueryStr = " WHERE (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
 
         if ($op === 'BETWEEN') {
-            $subQueryStr = " (t5.left_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id) $second_operation (t5.right_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id)";
+            $subQueryStr = " WHERE (t5.left_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id) 
+            $second_operation (t5.right_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id)";
         }
 
         return $queryStr.$subQueryStr;
@@ -212,5 +206,17 @@ FROM (
         }
 
         return "$this->name: $this->operation $this->minValue" . $bothEyes;
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'minValue' => $this->minValue,
+                'maxValue' => $this->maxValue,
+                'bothEyesIndicator' => $this->bothEyesIndicator
+            )
+        );
     }
 }
