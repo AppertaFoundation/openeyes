@@ -152,7 +152,7 @@ $deceased = $this->patient->isDeceased();
         </div>
     <?php } ?>
 <?php if ($this->list_mode) {?>
-    </div>
+        </div></div>
 <?php } ?>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
