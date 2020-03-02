@@ -44,6 +44,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
         <?php } else { ?>
             <?php if ($current_systemic_meds) { ?>
                 <table id="<?= $model_name ?>_systemic_current_entry_table">
+                    <thead style="display:none;">
+                        <th>Drug</th>
+                        <th>Date</th>
+                        <th>Link</th>
+                    </thead>
                     <tbody>
                     <?php foreach ($current_systemic_meds as $entry) : ?>
                         <tr>
@@ -59,6 +64,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </i>
                                 <?php } ?>
                                 <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
+                            </td>
+                            <td>
+                                <?php if ($entry->prescription_item_id) { ?>
+                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
+                                            class="js-has-tooltip fa oe-i eye small pro-theme"
+                                            data-tooltip-content="View prescription"></span></a>
+                                    <?php } ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -77,7 +89,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <small>(<?= sizeof($stopped_systemic_meds) ?>)</small>
                     </div>
                     <div class="collapse-data-content">
-                        <table>
+                        <table id="<?= $model_name ?>_systemic_stopped_entry_table">
+                        <thead style="display:none;">
+                            <th>Drug</th>
+                            <th>Date</th>
+                            <th>Link</th>
+                        </thead>
                             <tbody>
                             <?php foreach ($stopped_systemic_meds as $entry) : ?>
                                 <tr>
@@ -94,13 +111,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         <?php } ?>
                                         <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
                                     </td>
+                                    <td>
                                     <?php if ($entry->prescription_item_id) { ?>
-                                        <td>
                                         <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                                    class="js-has-tooltip fa oe-i eye small pro-theme"
-                                                    data-tooltip-content="View prescription"></span></a>
-                                         </td>
-                                    <?php } ?>
+                                                class="js-has-tooltip fa oe-i eye small pro-theme"
+                                                data-tooltip-content="View prescription"></span></a>
+                                        <?php } ?>
+                                    </td>
+                                    
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>
@@ -122,11 +140,17 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <div class="nil-recorded">Nil recorded.</div>
             <?php } else { ?>
                 <?php if ($current_eye_meds) { ?>
-                    <table id="<?= $model_name ?>_entry_table">
+                    <table id="<?= $model_name ?>_eye_current_entry_table">
                         <colgroup>
                             <col class="cols-8">
                             <col>
                         </colgroup>
+                        <thead style="display:none;">
+                            <th>Drug</th>
+                            <th>Tooltip</th>
+                            <th>Date</th>
+                            <th>Link</th>
+                        </thead>
                         <tbody>
                         <?php foreach ($current_eye_meds as $entry) : ?>
                             <tr>
@@ -169,11 +193,18 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <small>(<?= sizeof($stopped_eye_meds) ?>)</small>
                         </div>
                         <div class="collapse-data-content">
-                            <table>
+                            <table id="<?= $model_name ?>_eye_stopped_entry_table">
                                 <colgroup>
                                     <col class="cols-8">
                                     <col>
                                 </colgroup>
+                                <thead style="display:none;">
+                                    <th>Drug</th>
+                                    <th></th>
+                                    <th>Tooltip</th>
+                                    <th>Date</th>
+                                    <th>Link</th>
+                                </thead>
                                 <tbody>
                                 <?php foreach ($stopped_eye_meds as $entry) { ?>
                                     <tr>

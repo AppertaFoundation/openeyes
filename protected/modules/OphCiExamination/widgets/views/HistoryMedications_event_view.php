@@ -25,7 +25,7 @@
          data-element-type-name="Eye Medications"
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <header class=" element-header">
-        <h3 class="element-title">Eye Medications</h3>
+        <h3 class="element-title">Eye Medications EVENT</h3>
     </header>
     <?php foreach ($visible_sections as $key => $section_name) : ?>
         <?php $entries = array_filter($element->$key, function ($e) {
