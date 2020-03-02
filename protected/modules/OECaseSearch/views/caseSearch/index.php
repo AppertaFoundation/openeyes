@@ -58,7 +58,7 @@ $user_searches = array_map(
                     'id' => $id
                 ));
             endforeach;?>
-            <tr>
+            <tr id="search-label-row">
                 <td><?= CHtml::textField('search_name', null, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
             </tr>
             </tbody>

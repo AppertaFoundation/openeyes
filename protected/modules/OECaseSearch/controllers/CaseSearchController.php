@@ -277,16 +277,22 @@ class CaseSearchController extends BaseModuleController
                     $preview_list[] = $instance->getDisplayString();
                 }
 
+            } elseif (!$instance->isFixed) {
+                $this->renderPartial(
+                    'parameter_form',
+                    array(
+                        'model' => $instance,
+                        'id' => $instance->id,
+                    )
+                );
             } else {
-                if (!$instance->isFixed) {
-                    $this->renderPartial(
-                        'parameter_form',
-                        array(
-                            'model' => $instance,
-                            'id' => $instance->id,
-                        )
-                    );
-                }
+                $this->renderPartial(
+                    'fixed_parameter_form',
+                    array(
+                        'model' => $instance,
+                        'id' => $instance->id,
+                    )
+                );
             }
         }
         if ($preview) {

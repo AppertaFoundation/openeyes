@@ -132,7 +132,13 @@
                 type: 'GET',
                 success: function (response) {
                     // Append the dynamic parameter HTML before the first fixed parameter.
-                    $('#param-list tbody tr.fixed-parameter:first').before(response);
+                    let $tableBody = $('#param-list tbody');
+                    let $fixedParams = $(response + 'tr.fixed-parameter');
+                    let $params = $(response).find('.parameter');
+                    $($tableBody).find('tr.parameter').remove();
+                    $($tableBody).find('tr.fixed-parameter').remove();
+                    $($tableBody).find('tr#search-label-row').before($fixedParams);
+                    $('#param-list tbody tr.fixed-parameter:first').before($params);
                 },
                 complete: $('.oe-popup-wrap').remove()
             });
