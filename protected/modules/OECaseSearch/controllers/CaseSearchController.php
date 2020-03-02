@@ -264,6 +264,10 @@ class CaseSearchController extends BaseModuleController
         }
         $this->actionClear();
         $params = unserialize($search->search_criteria, array('allowed_classes' => true));
+        if (!$preview) {
+            echo '<tbody>';
+        }
+
         foreach ($params as $param) {
             $class_name = $param['class_name'];
             /**
@@ -297,6 +301,9 @@ class CaseSearchController extends BaseModuleController
         }
         if ($preview) {
             echo json_encode($preview_list);
+        } else {
+            echo '<tr id="search-label-row"><td>' . $search->name . '</td></tr>';
+            echo '</tbody>';
         }
     }
 
