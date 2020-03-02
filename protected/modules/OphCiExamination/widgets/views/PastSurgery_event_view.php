@@ -34,7 +34,7 @@ $widget = $this;
                         </td>
                         <td>
                             <?php if (array_key_exists('link', $operation)) { ?>
-                                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
+                                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>
                             <?php } ?>
                         </td>
                         <td class="nowrap">
@@ -43,7 +43,8 @@ $widget = $this;
                         </td>
                         <td>
                             <span class="oe-date">
-                                <?= array_key_exists('object', $operation) ? $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+                                <?= array_key_exists('object', $operation) ?
+                                    $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
                             </span>
                         </td>
                     </tr>
