@@ -28,11 +28,9 @@
         data-service-id="{{serviceId}}">
         {{name}}
         <div class="tag">{{shortName}}</div>
-            {{#single_service}}
             <span class="service">{{serviceName}}</span>
-            {{/single_service}}
             {{#multiple_services}}
-            <select class="change-service">
+            <select class="change-service pro-theme cols-full" style="display: none;">
                 <option value="{{serviceId}}">{{serviceName}}</option>
                 {{#services_available}}
                 <option value="{{id}}">{{name}} ({{shortName}})</option>

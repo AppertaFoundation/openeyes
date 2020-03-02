@@ -87,7 +87,6 @@
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
                 serviceName: self.options.currentSubspecialties[i].service,
                 serviceId: self.options.currentSubspecialties[i].firm.id,
-                single_service: self.options.currentSubspecialties[i].services_available.length === 0,
                 multiple_services: self.options.currentSubspecialties[i].services_available.length > 0,
                 services_available: self.options.currentSubspecialties[i].services_available
             });
@@ -156,13 +155,29 @@
         var self = this;
 
         self.content.on('click', selectors.subspecialtyItem, function (e) {
-            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            let selected_subspecialty = self.content.find(selectors.subspecialtyItem + '.selected');
+            let multiple_services = selected_subspecialty.find('.change-service');
+            if (multiple_services.length !== 0) {
+                multiple_services.hide();
+                selected_subspecialty.find('.service').show();
+            }
+            selected_subspecialty.removeClass('selected');
+
             $(this).addClass('selected');
+            let selected_multiple_services = $(this).find('.change-service');
+            if (selected_multiple_services.length !== 0) {
+                $(this).find('.service').hide();
+                selected_multiple_services.show();
+            }
             // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
             if (!$(this).hasClass('new')) {
                 self.removeNewSubspecialty();
             }
             self.updateContextList();
+        });
+
+        self.content.on('click', 'select.change-service', function (e) {
+            e.stopPropagation();
         });
 
         // change of the new subspecialty
@@ -210,7 +225,6 @@
         self.content.on('click', selectors.confirmChangeBtn, function () {
             self.changeEventContext();
         });
-
     };
 
     NewEventDialog.prototype.setDefaultSelections = function () {
