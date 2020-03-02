@@ -130,7 +130,7 @@ if ($historyElement) {
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                             ?>
                                       </td>
-                                      <td><?= $entry->getEndDateDisplayy() ?></td>
+                                      <td><?= $entry->getEndDateDisplay() ?></td>
                                   </tr>
                               <?php } ?>
                               </tbody>
