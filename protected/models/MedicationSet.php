@@ -48,6 +48,9 @@
  * @property MedicationSetAutoRuleSetMembership[] $medicationSetAutoRuleSetMemberships
  * @property MedicationSetAutoRuleMedication[] $medicationSetAutoRuleMedications
  */
+
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 class MedicationSet extends BaseActiveRecordVersioned
 {
     /*
@@ -111,9 +114,12 @@ class MedicationSet extends BaseActiveRecordVersioned
             'medicationAutoRuleAttributes' => array(self::HAS_MANY, MedicationSetAutoRuleAttribute::class, 'medication_set_id'),
             'autoRuleAttributes' => array(self::MANY_MANY, MedicationAttributeOption::class, 'medication_set_auto_rule_attribute(medication_set_id, medication_attribute_option_id)'),
             'medicationSetAutoRuleSetMemberships' => array(self::HAS_MANY, MedicationSetAutoRuleSetMembership::class, 'target_medication_set_id'),
+            'sourceMedicationSetAutoRuleSetMemberships' => array(self::HAS_MANY, MedicationSetAutoRuleSetMembership::class, 'source_medication_set_id'),
             'autoRuleSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_auto_rule_set_membership(target_medication_set_id,source_medication_set_id)'),
             'medicationSetAutoRuleMedications' => array(self::HAS_MANY, MedicationSetAutoRuleMedication::class, 'medication_set_id'),
             'autoRuleMedications' => array(self::MANY_MANY, Medication::class, 'medication_set_auto_rule_medication(medication_set_id, medication_id)'),
+            'medicationSetAllergyItems' => array(self::HAS_MANY, OphCiExaminationAllergy::class, 'medication_set_id'),
+            'medicationSetRiskItems' => array(self::HAS_MANY, OphCiExaminationRiskTag::class, 'medication_set_id'),
         );
     }
 
@@ -721,21 +727,37 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function beforeDelete()
     {
-        if ($this->automatic) {
-            foreach ($this->medicationSetAutoRuleSetMemberships as $set_m) {
-                $set_m->delete();
-            }
-            foreach ($this->medicationSetAutoRuleMedications as $med) {
-                $med->delete();
-            }
-            foreach ($this->medicationAutoRuleAttributes as $attribute) {
-                $attribute->delete();
-            }
-        } else {
-            foreach ($this->medicationSetItems as $item) {
-                $item->delete();
-            }
+        foreach ($this->medicationSetAutoRuleSetMemberships as $set_m) {
+            $set_m->delete();
         }
+        foreach ($this->medicationSetAutoRuleMedications as $med) {
+            $med->delete();
+        }
+        foreach ($this->medicationAutoRuleAttributes as $attribute) {
+            $attribute->delete();
+        }
+
+        foreach ($this->medicationSetRules as $medicationSetRule) {
+            $medicationSetRule->delete();
+        }
+
+        foreach ($this->sourceMedicationSetAutoRuleSetMemberships as $sourceMedicationSetAutoRuleSetMembership) {
+            $sourceMedicationSetAutoRuleSetMembership->delete();
+        }
+        foreach ($this->medicationSetItems as $item) {
+            $item->delete();
+        }
+
+        foreach ($this->medicationSetAllergyItems as $medicationSetAllergyItem) {
+            $medicationSetAllergyItem->medication_set_id = null;
+            $medicationSetAllergyItem->save();
+        }
+
+        foreach ($this->medicationSetRiskItems as $medicationSetRiskItem) {
+            $medicationSetRiskItem->medication_set_id = null;
+            $medicationSetRiskItem->save();
+        }
+
 
         return true;
     }
