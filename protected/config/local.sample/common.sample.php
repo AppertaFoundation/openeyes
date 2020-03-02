@@ -48,9 +48,6 @@ $config = array(
             //'divert' => array('foo@example.org', 'bar@example.org')
         ),
         /*
-        'cacheBuster' => array(
-            'time' => '2013062101',
-        ),
         'log' => array(
             'routes' => array(
                  // SQL logging
