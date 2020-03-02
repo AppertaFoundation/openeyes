@@ -9,86 +9,70 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
      */
     public function safeUp()
     {
-        $db = $this->dbConnection;
-        $iterator = $db->createCommand('SELECT * FROM medication_set WHERE automatic = 0')
-            ->queryAll();
 
-        foreach ($iterator as $set) {
-            $this->update(
-                'medication_set',
-                array('name' => $set['name'] . ' (manual)'),
-                'id = :id',
-                array(':id' => $set['id'])
-            );
-
-            $this->insert(
-                'medication_set',
-                array(
-                    'name' => $set['name'],
-                    'deleted_date' => $set['deleted_date'],
-                    'last_modified_date' => $set['last_modified_date'],
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'automatic' => 1,
-                    'hidden' => $set['hidden'],
-                    'antecedent_medication_set_id' => $set['antecedent_medication_set_id'],
-                    'display_order' => $set['display_order'],
-                    'last_modified_user_id' => $set['last_modified_user_id'],
-                    'created_user_id' => $set['created_user_id'],
+            // convert medication set items to auto rules
+            $this->execute("INSERT INTO medication_set_auto_rule_medication (
+                medication_id,
+                medication_set_id,
+                include_children,
+                include_parent,
+                created_date,
+                default_form_id,
+                default_dose,
+                default_route_id,
+                default_dispense_location_id,
+                default_dispense_condition_id,
+                default_frequency_id,
+                default_dose_unit_term,
+                default_duration_id
                 )
-            );
+            SELECT 
+                i.medication_id,
+                i.medication_set_id,
+                0 AS include_children,
+                0 AS include_parent,
+                i.created_date,
+                i.default_form_id,
+                i.default_dose,
+                i.default_route_id,
+                i.default_dispense_location_id,
+                i.default_dispense_condition_id,
+                i.default_frequency_id,
+                i.default_dose_unit_term,
+                i.default_duration_id
+            FROM medication_set_item i INNER JOIN medication_set s ON i.medication_set_id = s.id
+            WHERE s.`automatic` = 0");
 
-            $new_set_id = $db->getLastInsertID();
+            // switch to automatic
+            $this->execute("UPDATE medication_set SET `automatic` = 1 WHERE `automatic` = 0");
 
-            $medication_set_items = $db->createCommand('SELECT * FROM medication_set_item WHERE medication_set_id = :set_id')
-                ->bindValue(':set_id', $set['id'])
-                ->queryAll();
+            // copy tapers to auto rules
+            $this->execute("INSERT INTO medication_set_auto_rule_medication_taper (
+                medication_set_auto_rule_id,
+                dose,
+                frequency_id,
+                duration_id
+                )
+                SELECT 
+                    msr.id AS medication_set_auto_rule_id,
+                    t.dose,
+                    t.frequency_id,
+                    t.duration_id
+                FROM drug_set_item_taper AS t
+                    INNER JOIN drug_set_item AS i ON i.id = t.item_id
+                        INNER JOIN drug_set AS s ON i.drug_set_id = s.id
+                            INNER JOIN medication_set ms ON ms.`name` = s.`name`
+                                INNER JOIN medication_set_rule msu ON ms.id = msu.medication_set_id
+                                INNER JOIN medication_set_auto_rule_medication msr ON msr.medication_set_id = ms.id
+                            INNER JOIN medication m on m.id = msr.medication_id
+                WHERE m.source_subtype = 'drug'
+                    AND msu.usage_code_id = (SELECT id from medication_usage_code WHERE usage_code = 'PRESCRIPTION_SET')
+                    AND m.source_old_id = i.drug_id
+                    AND msu.subspecialty_id = s.subspecialty_id
+                ORDER BY t.id, ms.id, medication_set_auto_rule_id");
 
-            // create entry in medication_set_auto_rule_medication for every medication set item in set
-            foreach ($medication_set_items as $medication_item) {
-                $this->insert(
-                    'medication_set_auto_rule_medication',
-                    array(
-                        'medication_id' => $medication_item['medication_id'],
-                        'medication_set_id' => $new_set_id,
-                        'include_children' => 0,
-                        'include_parent' => 0,
-                        'created_date' => date('Y-m-d H:i:s'),
-                        'default_form_id' => $medication_item['default_form_id'],
-                        'default_dose' => $medication_item['default_dose'],
-                        'default_route_id' => $medication_item['default_route_id'],
-                        'default_dispense_location_id' => $medication_item['default_dispense_location_id'],
-                        'default_dispense_condition_id' => $medication_item['default_dispense_condition_id'],
-                        'default_frequency_id' => $medication_item['default_frequency_id'],
-                        'default_dose_unit_term' => $medication_item['default_dose_unit_term'],
-                        'default_duration_id' => $medication_item['default_duration_id'],
-                    )
-                );
-            }
-
-            $medication_set_rules = $db->createCommand('SELECT * FROM medication_set_rule WHERE medication_set_id = :set_id')
-                ->bindValue(':set_id', $set['id'])
-                ->queryAll();
-
-            foreach ($medication_set_rules as $set_rule) {
-                $this->insert(
-                    'medication_set_rule',
-                    array(
-                        'subspecialty_id' => $set_rule['subspecialty_id'],
-                        'site_id' => $set_rule['site_id'],
-                        'usage_code_id' => $set_rule['usage_code_id'],
-                        'deleted_date' => $set_rule['deleted_date'],
-                        'medication_set_id' => $new_set_id
-                    )
-                );
-            }
-
-            $this->update(
-                'ophciexamination_risk_tag',
-                array('medication_set_id' => $new_set_id),
-                'medication_set_id = :set_id',
-                array(':set_id' => $set['id'])
-            );
-        }
+            // Delete old manual entries (this will get regenerated later)
+            $this->execute("TRUNCATE TABLE medication_set_item");
     }
 
     public function safeDown()
