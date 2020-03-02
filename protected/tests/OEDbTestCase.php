@@ -4,12 +4,13 @@
 class OEDbTestCase extends CDbTestCase
 {
     public $test_tables = [];
+    protected $_fixture_manager;
     protected $tear_down_callbacks = [];
+    protected $can_create_tables = true;
 
     public function setUp()
     {
         parent::setUp();
-
         $this->setUpTraits();
     }
 
@@ -22,6 +23,7 @@ class OEDbTestCase extends CDbTestCase
         }
 
         if (isset($uses[WithTransactions::class])) {
+            $this->can_create_tables = false;
             $this->beginDatabaseTransaction();
         }
     }
@@ -33,15 +35,16 @@ class OEDbTestCase extends CDbTestCase
 
     public function tearDown()
     {
-        foreach ($this->test_tables as $table) {
-            $this->dropTable($table);
-        }
-
         foreach ($this->tear_down_callbacks as $callback) {
             $callback();
+            $this->can_create_tables = true;
         }
 
         $this->tear_down_callbacks = [];
+
+        foreach ($this->test_tables as $table) {
+            $this->dropTable($table);
+        }
 
         parent::tearDown();
     }
@@ -84,8 +87,20 @@ class OEDbTestCase extends CDbTestCase
         return array_unique($results);
     }
 
+    public function getFixtureManager()
+    {
+        if (!$this->_fixture_manager) {
+            $this->_fixture_manager = Yii::app()->getComponent('fixture');
+        }
+        return $this->_fixture_manager;
+    }
+
     protected function createTestTable($table, $fields, $foreign_keys = null)
     {
+        if (!$this->can_create_tables) {
+            $this->fail('Attempting to create a table inside a test transaction will cause an implicit commit');
+        }
+
         $fields['id'] = 'int(11) NOT NULL AUTO_INCREMENT';
         $fields['created_user_id'] = 'int(10) unsigned NOT NULL default 1';
         $fields['last_modified_user_id'] = 'int(10) unsigned NOT NULL default 1';
@@ -111,6 +126,9 @@ class OEDbTestCase extends CDbTestCase
 
     protected function dropTable($table)
     {
+        if (!$this->can_create_tables) {
+            $this->fail('Attempting to drop table inside a test transaction will cause an implicit commit');
+        }
         $this->getFixtureManager()->dbConnection->createCommand(
             $this->getFixtureManager()->dbConnection->schema->dropTable($table)
         )->execute();
