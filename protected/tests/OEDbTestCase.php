@@ -1,37 +1,143 @@
 <?php
 
+
 class OEDbTestCase extends CDbTestCase
 {
-    public $test_tables = array();
+    public $test_tables = [];
+    protected $tear_down_callbacks = [];
 
-    protected static function createTestTable($table, $fields, $foreign_keys = null)
+    public function setUp()
     {
+        parent::setUp();
+
+        $this->setUpTraits();
+    }
+
+    public function setUpTraits()
+    {
+        $uses = array_flip(static::class_uses_recursive(static::class));
+
+        if (isset($uses[WithFaker::class])) {
+            $this->setUpFaker();
+        }
+
+        if (isset($uses[WithTransactions::class])) {
+            $this->beginDatabaseTransaction();
+        }
+    }
+
+    public function tearDownCallbacks($callback)
+    {
+        $this->tear_down_callbacks[] = $callback;
+    }
+
+    public function tearDown()
+    {
+        foreach ($this->test_tables as $table) {
+            $this->dropTable($table);
+        }
+
+        foreach ($this->tear_down_callbacks as $callback) {
+            $callback();
+        }
+
+        $this->tear_down_callbacks = [];
+
+        parent::tearDown();
+    }
+
+    /**
+     * Taken from laravel to borrow the approach for setting up testing traits
+     *
+     * @param $trait
+     * @return array
+     */
+    public static function trait_uses_recursive($trait)
+    {
+        $traits = class_uses($trait);
+
+        foreach ($traits as $trait) {
+            $traits += static::trait_uses_recursive($trait);
+        }
+
+        return $traits;
+    }
+
+    /**
+     * Taken from laravel to borrow the approach for setting up testing traits
+     *
+     * @param $class
+     * @return array
+     */
+    public static function class_uses_recursive($class)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        $results = [];
+
+        foreach (array_merge([$class => $class], class_parents($class)) as $class) {
+            $results += static::trait_uses_recursive($class);
+        }
+
+        return array_unique($results);
+    }
+
+    protected function createTestTable($table, $fields, $foreign_keys = null)
+    {
+        $fields['id'] = 'int(11) NOT NULL AUTO_INCREMENT';
         $fields['created_user_id'] = 'int(10) unsigned NOT NULL default 1';
         $fields['last_modified_user_id'] = 'int(10) unsigned NOT NULL default 1';
         $fields['created_date'] = "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'";
         $fields['last_modified_date'] = "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'";
         $fields[] = 'PRIMARY KEY (id)';
 
-        if (Yii::app()->testdb->schema->getTable($table)) {
-            echo "Warning: test table '$table' already exists!\n";
+        $connection = $this->getFixtureManager()->dbConnection;
 
-            return;
-        }
-
-        Yii::app()->testdb->createCommand(Yii::app()->testdb->schema->createTable($table, $fields, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'))->execute();
+        $connection->createCommand($connection->schema->createTable($table, $fields, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'))->execute();
 
         if (!empty($foreign_keys)) {
             foreach ($foreign_keys as $key_name => $def) {
-                Yii::app()->testdb->createCommand(Yii::app()->testdb->schema->addForeignKey($key_name, $table, $def[0], $def[1], $def[2]))->execute();
+                $connection->createCommand($connection->schema->addForeignKey($key_name, $table, $def[0], $def[1], $def[2]))->execute();
             }
         }
 
-        Yii::app()->testdb->createCommand(Yii::app()->testdb->schema->addForeignKey($table.'_cui_fk', $table, 'created_user_id', 'user', 'id'))->execute();
-        Yii::app()->testdb->createCommand(Yii::app()->testdb->schema->addForeignKey($table.'_lmui_fk', $table, 'last_modified_user_id', 'user', 'id'))->execute();
+        $connection->createCommand($connection->schema->addForeignKey($table.'_cui_fk', $table, 'created_user_id', 'user', 'id'))->execute();
+        $connection->createCommand($connection->schema->addForeignKey($table.'_lmui_fk', $table, 'last_modified_user_id', 'user', 'id'))->execute();
+
+        $this->test_tables[] = $table;
     }
 
-    protected static function dropTable($table)
+    protected function dropTable($table)
     {
-        Yii::app()->testdb->createCommand(Yii::app()->testdb->schema->dropTable($table))->execute();
+        $this->getFixtureManager()->dbConnection->createCommand(
+            $this->getFixtureManager()->dbConnection->schema->dropTable($table)
+        )->execute();
+    }
+
+    /**
+     * Helper method to retrieve a random lookup option
+     *
+     * @param $cls
+     * @param int $count
+     * @return mixed
+     */
+    protected function getRandomLookup($cls, $count = 1)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->limit = 5 * $count;
+        $all = $cls::model()->findAll($criteria);
+
+        if ($count === 1) {
+            return $all[array_rand($all)];
+        }
+
+        $result = [];
+        foreach (array_rand($all, $count) as $i) {
+            $result[] = $all[$i];
+        }
+
+        return $result;
     }
 }
