@@ -187,15 +187,17 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionAddParameter()
     {
-        $id = $_GET['id'];
-        $param = $_GET['param'];
-        $parameter = new $param;
-        $parameter->id = $id;
+        $params = $_GET['parameters'];
+        foreach ($params as $param) {
+            $parameter = new $param['param'];
+            $parameter->id = $param['id'];
 
-        $this->renderPartial('parameter_form', array(
-            'model' => $parameter,
-            'id' => $id,
-        ));
+            $this->renderPartial('parameter_form', array(
+                'model' => $parameter,
+                'id' => $parameter->id,
+            ));
+        }
+        Yii::app()->end();
     }
 
     /**
