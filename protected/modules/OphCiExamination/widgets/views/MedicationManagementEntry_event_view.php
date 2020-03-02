@@ -41,7 +41,15 @@
 
         <?php echo $entry->duration_id ? $entry->drugDuration->name : '' ?>
         <?php if ($entry->dispense_condition_id) {
-            echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
+            if ($entry->dispense_condition->name === 'Print to {form_type}') {
+                echo str_replace(
+                        '{form_type}',
+                        $form_setting,
+                        $entry->dispense_condition->name
+                    ) . " / {$entry->dispense_location->name}";
+            } else {
+                echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
+            }
         } ?>
     </td>
     <td>

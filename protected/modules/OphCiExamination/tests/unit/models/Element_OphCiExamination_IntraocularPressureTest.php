@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class Element_OphCiExamination_IntraocularPressureTest extends CDbTestCase
+class Element_OphCiExamination_IntraocularPressureTest extends ActiveRecordTestCase
 {
     /**
      * @var Element_OphCiExamination_BlebAssessment
@@ -28,6 +28,11 @@ class Element_OphCiExamination_IntraocularPressureTest extends CDbTestCase
         'et_iop' => '\OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',
         'iop_values' => '\OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.

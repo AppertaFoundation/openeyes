@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
+class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
 {
     public $model;
     public $fixtures = array(
@@ -25,6 +25,11 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
             'subsections' => 'SubspecialtySubsection',
             'assignments' => 'ProcedureSubspecialtySubsectionAssignment',
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.

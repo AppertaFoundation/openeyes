@@ -21,6 +21,15 @@
 /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
 $model_name = CHtml::modelName($element);
 
+// FP10 settings
+$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+
+$dispense_condition_options = array(
+    $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+);
+// End of FP10 settings
 
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
 $frequency_options = array();
@@ -88,7 +97,11 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                         'locked' => $entry->locked,
                                         'unit_options' => $unit_options,
                                         'has_dose_unit_term' => '{{has_dose_unit_term}}',
-                                        'is_template' => false
+                                        'is_template' => false,
+                                        'fpten_setting' => $fpten_setting,
+                                        'overprint_setting' => $overprint_setting,
+                                        'fpten_dispense_condition' => $fpten_dispense_condition,
+                                        'dispense_condition_options' => $dispense_condition_options
                                     )
                                 );
                         } else {
@@ -112,6 +125,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                     'patient' => $this->patient,
                                     'locked' => $entry->locked,
                                     'unit_options' => $unit_options,
+                                    'form_setting'=> $fpten_setting
                                 )
                             );
                         }
@@ -185,7 +199,11 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                 'source_subtype' => '{{source_subtype}}',
                 'unit_options' => $unit_options,
                 'has_dose_unit_term' => '{{has_dose_unit_term}}',
-                'is_template' => true
+                'is_template' => true,
+                'fpten_setting' => $fpten_setting,
+                'overprint_setting' => $overprint_setting,
+                'fpten_dispense_condition' => $fpten_dispense_condition,
+                'dispense_condition_options' => $dispense_condition_options
             )
         );
         ?>

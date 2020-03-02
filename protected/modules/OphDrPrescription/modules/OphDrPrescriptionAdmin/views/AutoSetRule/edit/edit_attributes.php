@@ -5,17 +5,17 @@ $attributes = array_map(function ($e) {
 }, MedicationAttribute::model()->findAll(array("order" => "name")));
 $options = array_map(function ($e) {
     return ['id' => $e->id, 'label' => $e->description . " - " . $e->value, 'attr_id' => $e->medication_attribute_id];
-}, MedicationAttributeOption::model()->findAll(array("select" => array("id", "medication_attribute_id", "value", "description"), "order" => "value")));
+}, MedicationAttributeOption::model()->findAll(array("select" => array("id", "medication_attribute_id", "value", "description"), "order" => "description")));
 ?>
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-            <input type="hidden" name="MedicationAutoRuleAttributes[{{ key }}][id]" value="-1" />
-            <input class="js-attribute" type="hidden" name="MedicationAutoRuleAttributes[{{ key }}][medication_attribute_id]" value="{{attribute_id}}" />
+            <input type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][id]" value="-1" />
+            <input class="js-attribute" type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][medication_attribute_id]" value="{{attribute_id}}" />
             {{attribute_name}}
         </td>
         <td>
-            <input class="js-option" type="hidden" name="MedicationAutoRuleAttributes[{{ key }}][medication_attribute_option_id]" value={{option_id}} />
+            <input class="js-option" type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][medication_attribute_option_id]" value={{option_id}} />
             {{option_name}}
         </td>
         <td>
@@ -49,12 +49,12 @@ $options = array_map(function ($e) {
             ?>
             <tr data-key="<?= $row_key ?>">
                 <td>
-                    <?= \CHtml::activeHiddenField($assignment, "[{$row_key}]id");?>
-                    <?= \CHtml::activeHiddenField($assignment->medicationAttributeOption, "[{$row_key}]medication_attribute_id");?>
+                    <?= \CHtml::hiddenField("MedicationSetAutoRuleAttributes[{$row_key}][id]", $assignment->id);?>
+                    <?= \CHtml::hiddenField("MedicationSetAutoRuleAttributes[{$row_key}][medication_attribute_id]", $attr_id);?>
                     <?= \CHtml::encode($attr_name); ?>
                 </td>
                 <td>
-                    <?= \CHtml::activeHiddenField($assignment->medicationAttributeOption, "[{$row_key}]id");?>
+                    <?= \CHtml::hiddenField("MedicationSetAutoRuleAttributes[{$row_key}][medication_attribute_option_id]", $option_id);?>
                     <?= \CHtml::encode($option_name); ?>
                 </td>
                 <td>

@@ -27,6 +27,7 @@
 
     -->
     <exclude-pattern>/protected/data/*</exclude-pattern>
+    <exclude-pattern>/protected/yii/*</exclude-pattern>
     <exclude-pattern>/protected/components</exclude-pattern>
     <exclude-pattern>/assets/*</exclude-pattern>
     <exclude-pattern>*/*.js</exclude-pattern>

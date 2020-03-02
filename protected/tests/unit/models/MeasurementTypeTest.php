@@ -12,11 +12,16 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class MeasurementTypeTest extends CDbTestCase
+class MeasurementTypeTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'measurement_type' => 'MeasurementType',
     );
+
+    public function getModel()
+    {
+        return MeasurementType::model();
+    }
 
     public function testfindByClassName()
     {

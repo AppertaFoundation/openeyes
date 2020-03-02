@@ -21,5 +21,8 @@
         <img style="position: absolute; z-index: -1000;width:100%" src="<?php echo Yii::app()->assetManager->createUrl('img/bg_draft.png', 'application.modules.OphCoCorrespondence.assets') ?>" />
     <?php endif; ?>
     <?php $letter_address = isset($letter_address) ? $letter_address : null; ?>
-    <?php echo $this->renderPartial('print_ElementLetter', array('element' => $element, 'letter_address' => $letter_address))?>
+    <?php echo $this->renderPartial('print_ElementLetter', array(
+        'element' => $element,
+        'letter_address' => $letter_address,
+        'contact_type' => $contact_type ?: null)) ?>
 </div>

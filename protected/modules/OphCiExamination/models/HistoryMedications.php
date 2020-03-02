@@ -102,6 +102,14 @@ class HistoryMedications extends BaseMedicationElement
             $new->loadFromExisting($entry);
             $new->usage_type = \EventMedicationUse::getUsageType();
             $new->usage_subtype = \EventMedicationUse::getUsageSubtype();
+            $prescription_end_date = isset($entry->prescription_item_id) ? $entry->prescriptionItem->stopDateFromDuration() : null;
+            if (!isset($new->end_date) && $prescription_end_date) {
+                $new->end_date = $prescription_end_date->format('Y-m-d');
+                $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes([
+                    'name' => 'Course complete'
+                ]);
+                $new->stop_reason_id = $course_complete_model ? $course_complete_model->id : null;
+            }
             $entries[] = $new;
         }
         $this->entries = $entries;

@@ -155,6 +155,7 @@ if ($is_prescription_set) {
                     foreach ($set_item->tapers as $count => $taper) {
                         $this->renderPartial('/DrugSet/MedicationSetItemTaper_edit', array(
                             "taper" => $taper,
+                            "data_parent_key" => $k,
                             "set_item_medication_id" => $med->id,
                             "set_item_medication" => $med,
                             "taper_count" => $count,
@@ -184,6 +185,7 @@ if ($is_prescription_set) {
             "taper" => $empty_entry,
             "set_item_medication_id" => "{{data_med_id}}",
             "set_item_medication" => null,
+            "data_parent_key" => $k,
             "taper_count" => "{{taper_count}}",
             "frequency_options" => $frequency_options,
             "duration_options" => $duration_options,
@@ -200,7 +202,6 @@ if ($is_prescription_set) {
                 <i class="oe-i child-arrow small"></i>
             </button>
             {{preferred_term}}
-            <input class="js-input" name="MedicationSetItem[id]" type="hidden" value="{{id}}">
             <input class="js-input" name="Medication[id]" type="hidden" value="{{medication_id}}">
         </td>
         <td>

@@ -17,13 +17,22 @@
  */
 use OEModule\PatientTicketing\models;
 
-class QueueTest extends \CDbTestCase
+class QueueTest extends \ActiveRecordTestCase
 {
     public $fixtures = array(
             'queues' => 'OEModule\PatientTicketing\models\Queue',
             'queue_outcomes' => 'OEModule\PatientTicketing\models\QueueOutcome',
             'queuesets' => 'OEModule\PatientTicketing\models\QueueSet',
     );
+
+    public function getModel()
+    {
+        return models\Queue::model();
+    }
+
+    protected $columns_to_skip = [
+        'is_initial'
+    ];
 
     public function dependentQueueIdsProvider()
     {

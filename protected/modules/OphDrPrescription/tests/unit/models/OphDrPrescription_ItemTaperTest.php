@@ -4,19 +4,27 @@
      * Class OphDrPrescription_ItemTaperTest
      * @property OphDrPrescription_ItemTaper $instance
      */
-class OphDrPrescription_ItemTaperTest extends CDbTestCase
+class OphDrPrescription_ItemTaperTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
-        'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
-        'ophdrprescription_items' => OphDrPrescription_Item::class,
+        'item_tapers' => OphDrPrescription_ItemTaper::class,
+        'items' => OphDrPrescription_Item::class,
+        'durations' => MedicationDuration::class,
+        'frequencys' => MedicationFrequency::class,
+        'routes' => MedicationRoute::class,
     );
         
     private $instance;
+
+    public function getModel()
+    {
+        return $this->instance;
+    }
         
     public function setUp()
     {
         parent::setUp();
-        $this->instance = $this->ophdrprescription_item_tapers('prescription_item_taper1');
+        $this->instance = $this->item_tapers('prescription_item_taper1');
     }
         
     public function tearDown()
@@ -31,9 +39,9 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
     public function testFpTenDose()
     {
         $expected = strtoupper('DOSE: '
-            . (is_numeric($this->instance->dose) ? "{$this->instance->dose} {$this->instance->item->drug->dose_unit}" : $this->instance->dose)
-            . ', ' . $this->instance->item->route->name
-            . ($this->instance->item->route_option ? ' (' . $this->instance->item->route_option->name . ')' : null));
+            . (is_numeric($this->instance->dose) ? "{$this->instance->dose} {$this->instance->item->dose_unit_term}" : $this->instance->dose)
+            . ', ' . $this->instance->item->route->term
+            . ($this->instance->item->medicationLaterality ? ' (' . $this->instance->item->medicationLaterality->name . ')' : null));
         $actual = $this->instance->fpTenDose();
 
         $this->assertEquals($expected, $actual);
@@ -44,17 +52,16 @@ class OphDrPrescription_ItemTaperTest extends CDbTestCase
      */
     public function testFpTenFrequency()
     {
-        $expected = strtoupper("FREQUENCY: {$this->instance->frequency->long_name} FOR {$this->instance->duration->name}");
+        $expected = strtoupper("FREQUENCY: {$this->instance->frequency->term} FOR {$this->instance->duration->name}");
         $actual = $this->instance->fpTenFrequency();
 
         $this->assertEquals($expected, $actual);
 
-        $this->instance = $this->ophdrprescription_item_tapers('prescription_item_taper8');
+        $this->instance = $this->item_tapers('prescription_item_taper8');
         $duration = strtolower($this->instance->duration->name);
-        $expected = strtoupper("FREQUENCY: {$this->instance->frequency->long_name} {$duration}");
+        $expected = strtoupper("FREQUENCY: {$this->instance->frequency->term} {$duration}");
         $actual = $this->instance->fpTenFrequency();
 
         $this->assertEquals($expected, $actual);
-
     }
 }

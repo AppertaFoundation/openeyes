@@ -2,69 +2,77 @@
 
 class m191029_172959_move_sets_to_autoset extends CDbMigration
 {
+    /**
+     * @return bool|void
+     * @throws CDbException
+     * @throws Exception
+     */
     public function safeUp()
     {
-        $data_provider = new CActiveDataProvider('MedicationSet', [
-            'criteria' => [
-                'condition' => 'automatic = 0'
-            ],
-        ]);
-        $iterator = new CDataProviderIterator($data_provider);
 
-        foreach ($iterator as $set) {
-            // create new automatic set based on the non-automatic
-            $new_set = new MedicationSet();
-            $new_set->attributes = $set->attributes;
-            $new_set->id = null;
-            $new_set->automatic = 1;
-            $new_set->created_date = date('Y-m-d H:i:s');
+            // convert medication set items to auto rules
+            $this->execute("INSERT INTO medication_set_auto_rule_medication (
+                medication_id,
+                medication_set_id,
+                include_children,
+                include_parent,
+                created_date,
+                default_form_id,
+                default_dose,
+                default_route_id,
+                default_dispense_location_id,
+                default_dispense_condition_id,
+                default_frequency_id,
+                default_dose_unit_term,
+                default_duration_id
+                )
+            SELECT 
+                i.medication_id,
+                i.medication_set_id,
+                0 AS include_children,
+                0 AS include_parent,
+                i.created_date,
+                i.default_form_id,
+                i.default_dose,
+                i.default_route_id,
+                i.default_dispense_location_id,
+                i.default_dispense_condition_id,
+                i.default_frequency_id,
+                i.default_dose_unit_term,
+                i.default_duration_id
+            FROM medication_set_item i INNER JOIN medication_set s ON i.medication_set_id = s.id
+            WHERE s.`automatic` = 0");
 
-            // Cannot have a medication set with the name
-            $set->name = $set->name . " (manual)";
-            $set->update(['name']);
-            $set->refresh();
+            // switch to automatic
+            $this->execute("UPDATE medication_set SET `automatic` = 1 WHERE `automatic` = 0");
 
-            if (!$new_set->save()) {
-                \OELog::log(print_r($new_set->getErrors(), true));
-            }
+            // copy tapers to auto rules
+            $this->execute("INSERT INTO medication_set_auto_rule_medication_taper (
+                medication_set_auto_rule_id,
+                dose,
+                frequency_id,
+                duration_id
+                )
+                SELECT 
+                    msr.id AS medication_set_auto_rule_id,
+                    t.dose,
+                    t.frequency_id,
+                    t.duration_id
+                FROM drug_set_item_taper AS t
+                    INNER JOIN drug_set_item AS i ON i.id = t.item_id
+                        INNER JOIN drug_set AS s ON i.drug_set_id = s.id
+                            INNER JOIN medication_set ms ON ms.`name` = s.`name`
+                                INNER JOIN medication_set_rule msu ON ms.id = msu.medication_set_id
+                                INNER JOIN medication_set_auto_rule_medication msr ON msr.medication_set_id = ms.id
+                            INNER JOIN medication m on m.id = msr.medication_id
+                WHERE m.source_subtype = 'drug'
+                    AND msu.usage_code_id = (SELECT id from medication_usage_code WHERE usage_code = 'PRESCRIPTION_SET')
+                    AND m.source_old_id = i.drug_id
+                    AND msu.subspecialty_id = s.subspecialty_id
+                ORDER BY t.id, ms.id, medication_set_auto_rule_id");
 
-            // create entry in medication_set_auto_rule_medication for every medication set item in set
-            foreach ($set->medicationSetItems as $medication_item) {
-                $set_auto_rule = new MedicationSetAutoRuleMedication();
-                $set_auto_rule->medication_id = $medication_item->medication_id;
-                $set_auto_rule->medication_set_id = $new_set->id;
-                $set_auto_rule->include_children = 0;
-                $set_auto_rule->include_parent = 0;
-                $set_auto_rule->created_date = date('Y-m-d H:i:s');
-
-                // set all the defaults as well
-                foreach ($set_auto_rule->getAttributes() as $attribute) {
-                    // if attribute starts with 'default'
-                    if (strpos($attribute, 'default') === 0) {
-                        $set_auto_rule->{$attribute} = $medication_item->{$attribute};
-                    }
-                }
-
-                if (!$set_auto_rule->save() ) {
-                    \OELog::log(print_r($set_auto_rule->getErrors(), true));
-                }
-            }
-
-            foreach ($set->medicationSetRules as $set_rule) {
-                $new_rule = new MedicationSetRule();
-                foreach (['subspecialty_id', 'site_id', 'usage_code', 'usage_code_id', 'deleted_date'] as $attr) {
-                    $new_rule->{$attr} = $set_rule->{$attr};
-                }
-
-                $new_rule->medication_set_id = $new_set->id;
-
-                if (!$new_rule->save()) {
-                    \OELog::log(print_r($new_rule->getErrors(), true));
-                }
-            }
-
-            Yii::app()->db->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $new_set->id . " WHERE medication_set_id = " . $set->id)->execute();
-        }
+            // Delete old manual entries (this will get regenerated later)
+            $this->execute("TRUNCATE TABLE medication_set_item");
     }
 
     public function safeDown()

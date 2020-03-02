@@ -47,6 +47,7 @@ EOH;
         $t = microtime(true);
         echo "\n[" . (date("Y-m-d H:i:s")) ."] MedicationSetImport started ... \n";
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
+        $this->addMedicationAttributeToMedicationSet('Preservative free', 'PRESERVATIVE_FREE', '0001');
 
         for ($i = 0; $i < $this->spreadsheet->getSheetCount(); $i++) {
             $worksheet = $this->spreadsheet->getSheet($i);
@@ -142,6 +143,11 @@ EOH;
                     $current_set->delete();
                 }
 
+                if ($new_set->name === 'Glaucoma') {
+                    $oescape_usage_code = MedicationUsageCode::model()->find('usage_code=?', array('OEScape'));
+                    $new_set->addUsageCode($oescape_usage_code, 'Glaucoma');
+                }
+
                 $trans->commit();
             } else {
                 echo '<pre>' . print_r($new_set->getErrors(), true) . '</pre>';
@@ -174,5 +180,16 @@ EOH;
             }
         }
         return $cells;
+    }
+
+    private function addMedicationAttributeToMedicationSet($medication_set_name, $medication_attr_name, $value)
+    {
+        $medication_set = MedicationSet::model()->find('name=?', array($medication_set_name));
+        $medication_attribute = MedicationAttribute::model()->find('name=?', array($medication_attr_name));
+        if ($medication_set && $medication_attribute) {
+            $medication_set->hidden = 1;
+            $medication_set->save();
+            $medication_set->addMedicationAttribute($medication_attribute, $value);
+        }
     }
 }

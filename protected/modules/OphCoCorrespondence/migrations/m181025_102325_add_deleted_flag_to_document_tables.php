@@ -4,6 +4,8 @@ class m181025_102325_add_deleted_flag_to_document_tables extends CDbMigration
 {
     public function up()
     {
+        ElementLetter::$db = $this->dbConnection;
+        DocumentOutput::$db = $this->dbConnection;
         $this->addColumn('document_set', 'deleted', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
         $this->addColumn('document_set_version', 'deleted', "tinyint(1) unsigned NOT NULL DEFAULT '0'");
 
@@ -22,9 +24,9 @@ class m181025_102325_add_deleted_flag_to_document_tables extends CDbMigration
         // loop over all the events to check if they are deleted
         // get all correspondence where the status is not COMPLETED - completed document cannot be deleted
         $criteria = new CDbCriteria();
-        $criteria->join = "JOIN document_target dt ON t.document_target_id = dt.id ";
-        $criteria->join .= "JOIN document_instance di ON dt.document_instance_id = di.id ";
-        $criteria->join .= "JOIN event ON di.correspondence_event_id = event.id";
+        $criteria->join = 'JOIN document_target dt ON t.document_target_id = dt.id ';
+        $criteria->join .= 'JOIN document_instance di ON dt.document_instance_id = di.id ';
+        $criteria->join .= 'JOIN event ON di.correspondence_event_id = event.id';
         $criteria->addCondition('event.deleted = 1 AND output_status != "COMPLETE"');
 
         $dataProvider = new CActiveDataProvider('DocumentOutput');

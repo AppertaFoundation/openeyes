@@ -19,7 +19,7 @@
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('PalpebralConjunctivitis', 'STFB'),
+        array('PalpebralConjunctivitis', 'STFB', 'Freehand', 'FreehandCopyForOE'),
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('TarsalPlates')),

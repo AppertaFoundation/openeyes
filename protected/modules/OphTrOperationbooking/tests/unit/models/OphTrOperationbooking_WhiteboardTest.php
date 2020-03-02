@@ -3,7 +3,7 @@
 use OEModule\OphCiExamination\models\HistoryRisks;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 
-class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
+class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
@@ -23,6 +23,15 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         'history_risks' => HistoryRisks::class,
         'history_risk_entry' => HistoryRisksEntry::class,
     );
+
+    public function getModel()
+    {
+        return OphTrOperationbooking_Whiteboard::model();
+    }
+
+    protected $columns_to_skip = [
+        'date_of_birth'
+    ];
 
     public static function setUpBeforeClass()
     {

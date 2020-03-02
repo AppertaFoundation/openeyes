@@ -67,7 +67,7 @@
             </table>
         </div>
     </div>
-    <?= $this->renderPartial('/DrugSet/_usage_rules', ['medication_set' => $set]); ?>
+    <?= $this->renderPartial('/AutoSetRule/edit/_usage_rules', ['medication_set' => $set]); ?>
     <div class="row divider">
         <?php $this->renderPartial('/AutoSetRule/edit/edit_attributes', ['set' => $set]); ?>
     </div>
@@ -79,13 +79,13 @@
     <div class="row divider">
         <?php $this->renderPartial('/AutoSetRule/edit/_meds_in_set', ['medication_set' => $set, 'medication_data_provider' => $medication_data_provider]); ?>
     </div>
-
     <?= \OEHtml::submitButton() ?>
     <?= \OEHtml::cancelButton("Cancel", [
         'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
     ]) ?>
 </form>
 <script>
+    let prescriptionUsageRuleId = <?= MedicationUsageCode::model()->find('usage_code = ?', ["PRESCRIPTION_SET"])->id;?>;
     let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
             tableSelector: '#meds-list',
             searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
@@ -102,4 +102,23 @@
             }
     });
     $('#meds-list').data('tableInlineEditController', tableInlineEditController);
+
+    function togglePrescriptionExtraInputs() {
+        const usage_codes = $("select[id$='_usage_code_id']");
+        let prescriptionFound = false;
+        usage_codes.each(function(i, el) {
+            if ($(el).val() == prescriptionUsageRuleId) {
+                prescriptionFound = true;
+            }
+        });
+
+        // hide dropdowns
+        $('.js-prescription-extra').toggle(prescriptionFound);
+
+        // set dropdowns to default position
+        if (!prescriptionFound) {
+            $("select[id$='_default_dispense_condition_id']").val(null);
+            $("select[id$='_default_dispense_location_id']").val(null);
+        }
+    }
 </script>

@@ -136,6 +136,7 @@ class EventMedicationUse extends BaseElement
             array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('start_date', 'default', 'value' => '0000-00-00'),
             array('last_modified_date, created_date, event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -500,9 +501,10 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        } else {
-            return "";
+        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
+            return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
+        return "";
     }
 
     public function getStopDateDisplay()
@@ -626,7 +628,11 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'start_date'];
+                  'dose','dose_unit_term', 'frequency_id', 'frequency'];
+
+        if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
+            $attrs[] = 'start_date';
+        }
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
