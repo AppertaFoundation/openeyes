@@ -53,7 +53,7 @@ $deceased = $this->patient->isDeceased();
         </a>
     </div>
 
-
+    <?php if ($this->list_mode) {?><div class="flex-layout"> <?php } ?>
     <div class="patient-details">
         <div class="hospital-number">
 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
@@ -85,7 +85,8 @@ $deceased = $this->patient->isDeceased();
             echo $trialContext->renderAddToTrial();
         } ?>
     </div>
-    <?php if (!$deceased) { ?>
+    <?php if ($this->list_mode) {?><div class="flex-layout flex-right"> <?php }
+     if (!$deceased) { ?>
         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
             <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
                 <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
@@ -144,8 +145,9 @@ $deceased = $this->patient->isDeceased();
             </svg>
         </div>
     <?php } ?>
-
-
+<?php if ($this->list_mode) {?>
+    </div>
+</div><?php } ?>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
         <?php foreach ($this->widgets as $widget) {
