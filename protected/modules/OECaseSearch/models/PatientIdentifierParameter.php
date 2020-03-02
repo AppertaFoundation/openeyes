@@ -143,4 +143,14 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Identifier $op = $this->number $this->code";
+    }
 }

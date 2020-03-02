@@ -113,4 +113,14 @@ $query
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Allergy $op = $this->textValue";
+    }
 }

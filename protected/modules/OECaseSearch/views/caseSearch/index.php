@@ -6,6 +6,8 @@
  * @var $patients CActiveDataProvider
  * @var $trial Trial
  * @var $form CActiveForm
+ * @var $saved_searches array
+ * @var $user_list array
  */
 $this->pageTitle = 'Advanced Search';
 $sort_field = 'last_name';
@@ -18,6 +20,13 @@ if (isset($_GET['Patient_sort'])) {
     }
     $sort_field = str_replace('.desc', '', $_GET['Patient_sort']);
 }
+
+$user_searches = array_map(
+    static function ($item) {
+        return array('id' => $item->id, 'name' => $item->name);
+    },
+    $saved_searches
+)
 ?>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
@@ -48,17 +57,23 @@ if (isset($_GET['Patient_sort'])) {
                     'model' => $param,
                     'id' => $id
                 ));
-            endforeach; ?>
+            endforeach;?>
+            <tr>
+                <td><?= CHtml::textField('search_name', null, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
+            </tr>
             </tbody>
         </table>
         <div class="row align-right">
+            <a href="#" id="load-saved-search">Load saved search</a>
             <button id="add-to-advanced-search-filters" class="button hint green thin js-add-select-btn" data-popup="add-to-advanced-search-filters">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
         <div class="button-stack">
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
+            <?= CHtml::htmlButton('Save search', array('class' => 'cols-full green hint js-save-search-btn', 'type' => 'submit', 'formaction' => $this->createUrl('caseSearch/saveSearch'))) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-basic-csv', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-advanced-csv', 'class' => 'cols-full')) ?>
@@ -141,6 +156,56 @@ if (isset($_GET['Patient_sort'])) {
         <?php } ?>
     </main>
 </div>
+<script type="text/html" id="load-saved-search-template">
+    <table style="width: 100%;">
+        <tbody>
+        <tr>
+            <td style="width: 25%;">
+                <h3>My searches</h3>
+                <ul id="current-user-search-list">
+                    {{#currentUserSearches}}
+                    <li data-id="{{id}}">{{name}}</li>
+                    {{/currentUserSearches}}
+                </ul>
+            </td>
+            <td style="width: 25%;">
+                <h3>Searches by user</h3>
+                <ul id="other-user-list">
+                    {{#otherUsers}}
+                    <li data-id="{{id}}">{{name}}</li>
+                    {{/otherUsers}}
+                </ul>
+            </td>
+            <td style="width: 25%;">
+                <h3>Selected user search</h3>
+                <ul id="other-user-search-list">
+                    {{#otherUserSearches}}
+                    <li data-id="{{>id}}">{{>name}}</li>
+                    {{/otherUserSearches}}
+                </ul>
+            </td>
+            <td style="width: 25%;">
+                <h3>Search contents</h3>
+                <ul id="search-contents-list">
+                    {{#searchContents}}
+                    <li>{{.}}</li>
+                    {{/searchContents}}
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <hr class="divider"/>
+    <button id="load-selected-search">Load</button>
+</script>
+<script type="text/html" id="search-contents-template">
+    <ul>
+        {{#searchContents}}
+        <li>{{.}}</li>
+        {{/searchContents}}
+    </ul>
+
+</script>
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
@@ -247,6 +312,29 @@ if (isset($_GET['Patient_sort'])) {
 
         $('.oe-full-side-panel').on('click', '#param-list tbody td .remove-circle', function () {
             this.closest('tr').remove();
+        });
+
+        $('#load-saved-search').click(function() {
+            var savedSearchDialog = new OpenEyes.UI.Dialog.LoadSavedSearch({
+                id: 'load-saved-search-dialog',
+                user_id: <?= Yii::app()->user->id ?>,
+                user_searches: <?= json_encode($user_searches) ?>,
+                users: <?= json_encode($user_list) ?>
+            }).open();
+        });
+
+        $('.js-save-search-btn').click(function(e) {
+            /*$.ajax({
+                url: '<?= $this->createUrl('caseSearch/saveSearch') ?>',
+                method: 'POST',
+                error: function () {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Sorry, an internal error occurred and we were unable to save the search criteria." +
+                            "\n\nPlease contact support for assistance."
+                    }).open();
+                }
+            });*/
+            //e.preventDefault();
         });
 
         $('#sort-field').change(function() {

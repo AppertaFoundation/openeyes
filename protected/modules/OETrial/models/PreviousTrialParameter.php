@@ -210,4 +210,23 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        $status = TrialPatientStatus::model()->findbyPk($this->status)->name;
+
+        $trialType = $this->trialType ? $this->trialType->name : 'any trial type';
+
+        $trial = Trial::model()->findByPk($this->trial);
+        $trialStr = $trial ? $trial->name : 'for any trial';
+        $treatment_type = $this->getTreatmentType();
+        $treatment_str = $treatment_type ? $treatment_type->name : 'any';
+
+        return "$op $status $trialType $trialStr with $treatment_str treatment";
+    }
 }

@@ -14,6 +14,9 @@ class CaseSearchController extends BaseModuleController
         return array(
             'accessControl',
             'ajaxOnly + addParameter',
+            'ajaxOnly + getSearchesByUser',
+            'ajaxOnly + otherSearchUsers',
+            'ajaxOnly + loadSearch',
             'ajaxOnly + clear',
         );
     }
@@ -23,7 +26,7 @@ class CaseSearchController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'addParameter', 'clear'),
+                'actions' => array('index', 'addParameter', 'otherSearchUsers', 'getSearchesByUser', 'loadSearch', 'saveSearch', 'clear'),
                 'users' => array('@'),
             ),
         );
@@ -66,6 +69,7 @@ class CaseSearchController extends BaseModuleController
                          */
                         $newParam = new $paramName;
                         $newParam->attributes = $_POST[$paramName][$id];
+                        $newParam->isFixed = false;
                         if (!$newParam->validate()) {
                             $valid = false;
                         }
@@ -81,6 +85,7 @@ class CaseSearchController extends BaseModuleController
             if (isset($_POST[get_class($parameter)])) {
                 foreach ($_POST[get_class($parameter)] as $id => $param) {
                     $parameter->attributes = $_POST[get_class($parameter)][$id];
+                    $parameter->isFixed = true;
                     if (!$parameter->validate()) {
                         $valid = false;
                     }
@@ -161,6 +166,13 @@ class CaseSearchController extends BaseModuleController
             ),
         ));
 
+        $current_user_searches = SavedSearch::model()->findAllByAttributes(array('created_user_id' => Yii::app()->user->id));
+        $query = Yii::app()->db->createCommand()
+            ->select('created_user_id')
+            ->from('case_search_saved_search')
+            ->where('created_user_id != :user_id', array(':user_id' => Yii::app()->user->id));
+        $query->distinct = true;
+        $all_users = $query->queryAll();
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
@@ -178,6 +190,13 @@ class CaseSearchController extends BaseModuleController
             'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
             'fixedParams' => $fixedParameters,
             'patients' => $patientData,
+            'saved_searches' => $current_user_searches,
+            'user_list' => array_map(
+                static function ($item) {
+                    return array('id' => $item['id'], 'name' => $item['name']);
+                },
+                $all_users
+            )
         ));
     }
 
@@ -196,6 +215,146 @@ class CaseSearchController extends BaseModuleController
             'model' => $parameter,
             'id' => $id,
         ));
+    }
+
+    /**
+     * @param $id
+     * @return false|string
+     * @throws CException
+     */
+    public function actionGetSearchesByUser($id)
+    {
+        $searches = Yii::app()->db->createCommand()
+            ->select('id, name')
+            ->from('case_search_saved_search')
+            ->where('created_user_id = :user_id', array(':user_id' => $id))
+            ->queryAll();
+        echo json_encode($searches);
+    }
+
+    /**
+     * @param $id
+     * @return false|string
+     * @throws CException
+     */
+    public function actionOtherSearchUsers($id)
+    {
+        $searches = Yii::app()->db->createCommand()
+            ->select('DISTINCT created_user_id')
+            ->from('case_search_saved_search')
+            ->where('created_user_id != :user_id', array(':user_id' => $id))
+            ->queryAll();
+        echo json_encode($searches);
+    }
+
+    /**
+     * Load the selected search criteria.
+     * @param $id
+     * @throws CHttpException
+     * @throws CException
+     */
+    public function actionLoadSearch($id)
+    {
+        $preview = isset($_GET['preview']) ? $_GET['preview'] : null;
+        $preview_list = array();
+
+        $search = SavedSearch::model()->findByPk($id);
+        if (!$search) {
+            throw new CHttpException(404, 'Saved search not found');
+        }
+        $this->actionClear();
+        $params = unserialize($search->search_criteria, array('allowed_classes' => true));
+        foreach ($params as $param) {
+            $class_name = $param['class_name'];
+            /**
+             * @var $instance CaseSearchParameter
+             */
+            $instance = new $class_name();
+            $instance->loadSearch($param);
+            if ($preview) {
+                // Get the human-readable string representing the full parameter.
+                if ($instance->getDisplayString()) {
+                    $preview_list[] = $instance->getDisplayString();
+                }
+
+            } else {
+                if (!$instance->isFixed) {
+                    $this->renderPartial(
+                        'parameter_form',
+                        array(
+                            'model' => $instance,
+                            'id' => $instance->id,
+                        )
+                    );
+                }
+            }
+        }
+        if ($preview) {
+            echo json_encode($preview_list);
+        }
+    }
+
+    /**
+     * Save the search criteria.
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionSaveSearch()
+    {
+        $criteria_list = array();
+        $parameters = array();
+        $fixedParameters = $this->module->getFixedParams();
+        $search = new SavedSearch();
+        $valid = true;
+        foreach ($this->module->getConfigParam('parameters') as $group) {
+            foreach ($group as $parameter) {
+                $paramName = $parameter . 'Parameter';
+                if (isset($_POST[$paramName])) {
+                    foreach ($_POST[$paramName] as $id => $param) {
+                        /**
+                         * @var $newParam CaseSearchParameter
+                         */
+                        $newParam = new $paramName;
+                        $newParam->attributes = $_POST[$paramName][$id];
+                        if (!$newParam->validate()) {
+                            $valid = false;
+                        }
+                        $parameters[$id] = $newParam;
+                    }
+                }
+            }
+        }
+        foreach ($fixedParameters as $parameter) {
+            /**
+             * @var $parameter CaseSearchParameter
+             */
+            if (isset($_POST[get_class($parameter)])) {
+                foreach ($_POST[get_class($parameter)] as $id => $param) {
+                    $parameter->attributes = $_POST[get_class($parameter)][$id];
+                    if (!$parameter->validate()) {
+                        $valid = false;
+                    }
+                }
+            }
+        }
+        if (!empty($parameters) && $valid) {
+            $mergedParams = array_merge($parameters, $fixedParameters);
+            foreach ($mergedParams as $mergedParam) {
+                /**
+                 * @var $mergedParam CaseSearchParameter
+                 */
+                $criteria_list[] = $mergedParam->saveSearch();
+            }
+            $search_criteria = serialize($criteria_list);
+            $search->search_criteria = $search_criteria;
+            $search->name = $_POST['search_name'];
+
+            if (!$search->save()) {
+                throw new CHttpException(500, 'Unable to save search');
+            }
+            Yii::app()->user->setFlash('success', 'Search saved successfully.');
+        }
+        $this->redirect('/OECaseSearch/caseSearch/index');
     }
 
     /**
@@ -219,7 +378,9 @@ class CaseSearchController extends BaseModuleController
 
         // This is required when the search results return any records.
         $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
-        Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        //Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);
     }

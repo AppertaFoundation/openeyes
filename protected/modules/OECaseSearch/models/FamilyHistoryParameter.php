@@ -155,4 +155,9 @@ WHERE id NOT IN (
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        return "{$this->side} {$this->relative} {$this->operation} {$this->condition}";
+    }
 }

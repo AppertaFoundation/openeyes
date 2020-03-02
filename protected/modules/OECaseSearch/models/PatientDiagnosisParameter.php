@@ -183,4 +183,24 @@ WHERE p1.id NOT IN (
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        $only_latest_event = ' for all events';
+        $firm = '';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        if ($this->firm_id) {
+            $firm = ' for ' . Firm::model()->findByPk($this->firm_id)->name;
+        }
+
+        if ($this->only_latest_event) {
+            $only_latest_event = ' for latest event only';
+        }
+
+        return "Diagnosis $op = {$this->term}{$firm}{$only_latest_event}";
+    }
 }

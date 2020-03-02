@@ -83,4 +83,13 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         $value = $this->operation === false ? 'False' : 'True';
         return "$this->name: $value";
     }
+
+    public function getDisplayString()
+    {
+        if ($this->operation) {
+            return 'Patient IS deceased';
+        }
+
+        return null;
+    }
 }

@@ -108,4 +108,11 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+
+        return "Name $op = $this->patient_name";
+    }
 }

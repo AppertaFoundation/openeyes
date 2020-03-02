@@ -218,4 +218,18 @@ FROM (
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $bothEyes = $this->bothEyesIndicator ? ' for both eyes' : null;
+        if ($this->operation === 'BETWEEN') {
+            return "Vision IS between $this->minValue and {$this->maxValue}{$bothEyes}";
+        }
+
+        if ($this->operation === '<=') {
+            return "Vision IS $this->operation {$this->maxValue}{$bothEyes}";
+        }
+
+        return "Vision IS $this->operation {$this->minValue}{$bothEyes}";
+    }
 }

@@ -21,6 +21,11 @@ abstract class CaseSearchParameter extends CFormModel
     public $id;
 
     /**
+     * @var bool $isFixed
+     */
+    public $isFixed = false;
+
+    /**
      * Get the parameter identifier (usually the name).
      * @return string The human-readable name of the parameter (for display purposes).
      */
@@ -82,6 +87,7 @@ abstract class CaseSearchParameter extends CFormModel
             'name' => $this->name,
             'operation' => $this->operation,
             'id' => $this->id,
+            'isFixed' => $this->isFixed,
         );
     }
 
@@ -97,4 +103,6 @@ abstract class CaseSearchParameter extends CFormModel
             }
         }
     }
+
+    abstract public function getDisplayString();
 }

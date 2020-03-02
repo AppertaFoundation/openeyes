@@ -9,6 +9,7 @@ class m200227_230457_create_saved_search_table extends OEMigration
             'case_search_saved_search',
             array(
                 'id' => 'pk',
+                'name' => 'varchar(50) NOT NULL',
                 'search_criteria' => 'text NOT NULL',
             ),
             true

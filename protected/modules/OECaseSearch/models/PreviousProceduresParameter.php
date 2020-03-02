@@ -117,4 +117,14 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Previous procedure $op = $this->textValue";
+    }
 }

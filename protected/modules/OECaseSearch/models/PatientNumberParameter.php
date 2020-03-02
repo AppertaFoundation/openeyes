@@ -103,4 +103,14 @@ WHERE p.hos_num $op :p_num_number_$this->id";
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Number $op = $this->number";
+    }
 }

@@ -129,4 +129,14 @@ OR m.id IS NULL";
             )
         );
     }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Medication $op = $this->textValue";
+    }
 }
