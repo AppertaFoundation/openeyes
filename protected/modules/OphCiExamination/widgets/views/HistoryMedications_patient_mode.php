@@ -50,8 +50,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <th>Link</th>
                     </thead>
                     <tbody>
+                    <?php $index = 0; ?>
                     <?php foreach ($current_systemic_meds as $entry) : ?>
-                        <tr>
+                        <tr data-key="<?= $index ?>">
                             <td>
                                 <i class="oe-i start small pad-right pro-theme"></i>
                                 <?= $entry->getMedicationDisplay() ?>
@@ -73,6 +74,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <?php } ?>
                             </td>
                         </tr>
+                        <?php $index++; ?>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -96,8 +98,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <th>Link</th>
                         </thead>
                             <tbody>
+                            <?php $index = 0; ?>
                             <?php foreach ($stopped_systemic_meds as $entry) : ?>
-                                <tr>
+                                <tr data-key="<?= $index ?>">
                                     <td>
                                         <i class="oe-i stop small pad-right pro-theme"></i>
                                         <?= $entry->getMedicationDisplay() ?>
@@ -120,6 +123,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </td>
                                     
                                 </tr>
+                                <?php $index++; ?>
                             <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -152,8 +156,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <th>Link</th>
                         </thead>
                         <tbody>
+                        <?php $index = 0; ?>
                         <?php foreach ($current_eye_meds as $entry) : ?>
-                            <tr>
+                            <tr data-key="<?= $index ?>">
                                 <td>
                                     <i class="oe-i start small pad-right pro-theme"></i>
                                     <?= $entry->getMedicationDisplay() ?>
@@ -182,6 +187,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     </a>
                                 </td>
                             </tr>
+                            <?php $index++; ?>
                         <?php endforeach; ?>
                         </tbody>
                     </table>
@@ -206,8 +212,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <th>Link</th>
                                 </thead>
                                 <tbody>
+                                <?php $index = 0; ?>
                                 <?php foreach ($stopped_eye_meds as $entry) { ?>
-                                    <tr>
+                                    <tr data-key="<?= $index ?>">
                                         <td>
                                             <i class="oe-i stop small pad-right pro-theme"></i>
                                             <?= $entry->getMedicationDisplay() ?>
@@ -229,6 +236,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         </td>
                                         <td><i class="oe-i"></i></td>
                                     </tr>
+                                    <?php $index++; ?>
                                 <?php } ?>
                                 </tbody>
                             </table>
