@@ -313,13 +313,17 @@ $dispense_condition_options = array(
             <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
 
-        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-condition" style="display:<?=$is_prescription_set ? 'block':'none';?>">
-            <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full dispense-condition', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+        <td class="js-input-wrapper">
+            <div class="js-prescription-extra js-prescription-dispense-condition" style="display:none;?>">
+                <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
+                <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full dispense-condition', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            </div>
         </td>
-        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
-            <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+        <td class="js-input-wrapper">
+            <div class="js-prescription-extra js-prescription-dispense-location" style="display:none;">
+                <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
+                <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            </div>
         </td>
 
         <td class="actions" style="text-align:center">
@@ -335,7 +339,7 @@ $dispense_condition_options = array(
         <td class="right" colspan="99">
             <div class="js-input-wrapper" style="display: inline-block;">
                 <span data-type="include_parent" data-id="{{#include_parent}}{{include_parent}}{{/include_parent}}" class="js-text" data-display-label="Include Parent: ">
-                    Include parent: {{^include_parent}}-{{/include_parent}}{{#include_parent}}{{include_parent}}{{/include_parent}}
+                    Include Parent: {{^include_parent}}-{{/include_parent}}{{#include_parent}}{{include_parent}}{{/include_parent}}
                 </span>
 
                 <label class="inline highlight js-input" style="display: none">
@@ -345,7 +349,7 @@ $dispense_condition_options = array(
 
             <div class="js-input-wrapper" style="display: inline-block;">
                 <span data-type="include_children" data-id="{{#include_children}}{{include_children}}{{/include_children}}" class="js-text" data-display-label="Include Children: ">
-                    Include parent: {{^include_children}}-{{/include_children}}{{#include_children}}{{include_children}}{{/include_children}}
+                    Include Children: {{^include_children}}-{{/include_children}}{{#include_children}}{{include_children}}{{/include_children}}
                 </span>
 
                 <label class="inline highlight js-input" style="display: none">

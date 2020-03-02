@@ -43,6 +43,10 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.showGeneralControls($tr);
 
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
+                $tapers.each(function (i, taper) {
+                    trs.push(taper);
+                });
+
                 $.each(trs, function(i, tr) {
                     const $tr = $(tr);
                     let $tds = $tr.find('.js-input-wrapper');
@@ -55,9 +59,9 @@ OpenEyes.UI = OpenEyes.UI || {};
                         if ($option.length === 0) { // if input is not a select tag
                             if ($input.prop('tagName') === 'LABEL') { //for includes parent and includes child checkboxes
                                 $input = $(td).find('input[type="checkbox"]');
-                                value = text.includes('no') ? 0 : 1;
+                                value = text.includes('yes') ? 1 : 0;
                             } else {
-                                value = text; // handles input is just a text field
+                                value = $input.attr('type') === 'text' ? text : [];  // handles input is just a text field or dispense location
                             }
                         }
                         $input.val(value);
