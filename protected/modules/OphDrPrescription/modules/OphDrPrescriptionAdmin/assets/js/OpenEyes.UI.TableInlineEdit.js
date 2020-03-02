@@ -45,6 +45,23 @@ OpenEyes.UI = OpenEyes.UI || {};
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
                 $.each(trs, function(i, tr) {
                     const $tr = $(tr);
+                    let $tds = $tr.find('.js-input-wrapper');
+                    $tds.each(function (j, td) {
+                        let text = $(td).find('.js-text').text().trim();
+                        let $input = $(td).find('.js-input');
+                        text = (text === '-' ? $input.attr('type') === 'text' ? '' : '-- select --' : text); //handles if text is empty, matches to input empty text value
+                        let $option = $input.find('option:contains("' + text + '")');
+                        let value = $option.val();
+                        if ($option.length === 0) { // if input is not a select tag
+                            if ($input.prop('tagName') === 'LABEL') { //for includes parent and includes child checkboxes
+                                $input = $(td).find('input[type="checkbox"]');
+                                value = text.includes('no') ? 0 : 1;
+                            } else {
+                                value = text; // handles input is just a text field
+                            }
+                        }
+                        $input.val(value);
+                    });
                     $tr.find('.js-text').show();
                     $tr.find('.js-input').hide();
                 });
