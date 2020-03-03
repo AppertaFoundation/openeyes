@@ -323,20 +323,6 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('.js-save-search-btn').click(function(e) {
-            /*$.ajax({
-                url: '<?= $this->createUrl('caseSearch/saveSearch') ?>',
-                method: 'POST',
-                error: function () {
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: "Sorry, an internal error occurred and we were unable to save the search criteria." +
-                            "\n\nPlease contact support for assistance."
-                    }).open();
-                }
-            });*/
-            //e.preventDefault();
-        });
-
         $('#sort-field').change(function() {
             let value = $('#sort-field').val();
             performSort(value)
@@ -354,6 +340,11 @@ $user_searches = array_map(
                 success: function () {
                     $('#case-search-results').children().remove();
                     $('#param-list tbody tr.parameter').remove();
+                },
+                error: function() {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: 'Unable to clear search results.'
+                    }).open();
                 }
             });
         });

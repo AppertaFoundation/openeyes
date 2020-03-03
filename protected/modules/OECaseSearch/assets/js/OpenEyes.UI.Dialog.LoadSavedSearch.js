@@ -136,11 +136,20 @@
                     let $fixedParams = $(response).find('tr.fixed-parameter');
                     let $params = $(response).find('tr.parameter');
                     let $searchLabel = $(response).find('tr#search-label-row');
+
                     $($tableBody).find('.parameter').remove();
                     $($tableBody).find('.fixed-parameter').remove();
                     $($tableBody).find('tr#search-label-row').before($fixedParams);
                     $('#param-list tbody tr.fixed-parameter:first').before($params);
                     $('#search-label-row input').val($($searchLabel).text());
+
+                    // Execute the search.
+                    $('form').submit();
+                },
+                error: function() {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: 'Unable to load saved search criteria.'
+                    }).open();
                 },
                 complete: $('.oe-popup-wrap').remove()
             });
@@ -163,6 +172,11 @@
                         }
                     })
                 );
+            },
+            error: function() {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Unable to fetch saved search content.'
+                }).open();
             }
         });
     };
@@ -182,6 +196,11 @@
                         }
                     })
                 );
+            },
+            error: function() {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Unable to fetch saved searches for selected user.'
+                }).open();
             }
         });
     };
