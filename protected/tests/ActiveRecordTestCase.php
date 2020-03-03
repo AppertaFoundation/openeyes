@@ -51,7 +51,7 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
             'column_name'
         );
 
-        if(!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
+        if (!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
             $this->fail('The following mandatory columns do not possess a required validator rule: ' . var_export($required_columns, true));
         } elseif (!empty($rules) && !empty($required_columns)) {
             $columns = explode(', ', $rules[0]);
