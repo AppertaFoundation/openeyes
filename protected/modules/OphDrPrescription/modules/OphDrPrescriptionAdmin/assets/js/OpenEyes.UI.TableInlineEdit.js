@@ -30,9 +30,15 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.showEditControls($tr, $tapers);
 
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
+
+                $tapers.each(function (i, taper) {
+                    trs.push(taper);
+                });
+
                 $.each(trs, function(i, tr) {
                     const $tr = $(tr);
                     $tr.find('.js-text').hide();
+                    controller.setInputValues($tr);
                 });
 
                 $tapers.find('.js-text').hide();
@@ -49,29 +55,17 @@ OpenEyes.UI = OpenEyes.UI || {};
 
                 $.each(trs, function(i, tr) {
                     const $tr = $(tr);
-                    let $tds = $tr.find('.js-input-wrapper');
-                    $tds.each(function (j, td) {
-                        let text = $(td).find('.js-text').text().trim();
-                        let $input = $(td).find('.js-input');
-                        text = (text === '-' ? $input.attr('type') === 'text' ? '' : '-- select --' : text); //handles if text is empty, matches to input empty text value
-                        let $option = $input.find('option:contains("' + text + '")');
-                        let value = $option.val();
-                        if ($option.length === 0) { // if input is not a select tag
-                            if ($input.prop('tagName') === 'LABEL') { //for includes parent and includes child checkboxes
-                                $input = $(td).find('input[type="checkbox"]');
-                                value = text.includes('yes') ? 1 : 0;
-                            } else {
-                                value = $input.attr('type') === 'text' ? text : [];  // handles input is just a text field or dispense location
-                            }
-                        }
-                        $input.val(value);
-                    });
+                    controller.setInputValues($tr);
+                    let $dispense_condition = $tr.find('.js-prescription-dispense-condition');
+                    if ($dispense_condition) {
+                        let $dispense_location = $dispense_condition.closest('tr').find('.js-prescription-dispense-location');
+                        let $dispense_condition_text = $dispense_condition.find('.js-text');
+                        $dispense_location.toggle($dispense_condition_text.data('id') !== '');
+                    }
                     $tr.find('.js-text').show();
                     $tr.find('.js-input').hide();
                 });
 
-                $tapers.find('.js-text').show();
-                $tapers.find('.js-input').hide();
             }
         });
 
@@ -152,6 +146,30 @@ OpenEyes.UI = OpenEyes.UI || {};
             $tapers.find('.js-input').show();
         }
     };
+
+    TableInlineEdit.prototype.setInputValues = function($tr) {
+        let $tds = $tr.find('.js-input-wrapper');
+        $tds.each(function (j, td) {
+            let text = $(td).find('.js-text').text().trim();
+            let $input = $(td).find('.js-input');
+            if (text === '-') { //handles if text is empty, matches to input empty text value
+                text = $input.attr('type') === 'text' ? '' : '-- select --';
+            } else if (text.includes('Print to')) {
+                text = 'Print to {form_type}';
+            }
+            let $option = $input.find('option:contains("' + text + '")');
+            let value = $option.val();
+            if ($option.length === 0) { // if input is not a select tag
+                if ($input.prop('tagName') === 'LABEL') { //for includes parent and includes child checkboxes
+                    $input = $(td).find('input[type="checkbox"]');
+                    value = text.includes('yes') ? 1 : 0;
+                } else {
+                    value = $input.attr('type') === 'text' ? text : [];  // handles input is just a text field or dispense location
+                }
+            }
+            $input.val(value);
+        });
+    }
 
     TableInlineEdit.prototype.showEditControls = function($tr, $tapers)
     {

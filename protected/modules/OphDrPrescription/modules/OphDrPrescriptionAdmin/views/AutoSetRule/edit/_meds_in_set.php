@@ -185,6 +185,7 @@ $dispense_condition_options = array(
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
+                            <?php $default_dispense_location = $set_item->default_dispense_condition_id ? CHtml::listData(OphDrPrescription_DispenseCondition::model()->findByPk($set_item->default_dispense_condition_id)->locations, 'id', 'name') : []; ?>
                             <?= \CHtml::activeDropDownList(
                                 $set_item,
                                 'default_dispense_location_id',
@@ -192,7 +193,6 @@ $dispense_condition_options = array(
                                 [
                                     'class' => 'js-input cols-full dispense-location',
                                     'style' => 'display:none',
-                                    'empty' => '-- select --',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
                                 ]
@@ -414,16 +414,20 @@ $dispense_condition_options = array(
 
     $('#meds-list').delegate('select.dispense-condition', 'change', function () {
         let $dispense_condition = $(this);
+        let $dispense_location = $dispense_condition.closest('tr').find('.js-prescription-dispense-location');
+        let $dispense_location_dropdown = $dispense_location.find('.dispense-location');
+
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
             condition_id: $dispense_condition.val(),
         }, function (data) {
-            let $dispense_location = $dispense_condition.closest('tr').find('.dispense-location');
-            $dispense_location.find('option').remove();
-            if (data) {
-                $dispense_location.append(data);
-                $('.js-prescription-dispense-location').show();
-            } else {
-                $('.js-prescription-dispense-location').hide();
+            if ($dispense_condition.is(':visible')) { //check if still visible otherwise ignore the request
+                if (data) {
+                    $dispense_location.find('option').remove();
+                    $dispense_location_dropdown.append(data);
+                    $dispense_location.show();
+                } else {
+                    $dispense_location.hide();
+                }
             }
         });
     });
