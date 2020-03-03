@@ -1,24 +1,24 @@
 <?php
 /**
-* OpenEyes
-*
-* (C) OpenEyes Foundation, 2019
-* This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-*
-* @package OpenEyes
-* @link http://www.openeyes.org.uk
-* @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2019, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-*/
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 /**
-* Class EyedrawConfigLoadCommand
-*
-* Loader command for handling the eyedraw doodle configuration for object persistence.
-*/
+ * Class EyedrawConfigLoadCommand
+ *
+ * Loader command for handling the eyedraw doodle configuration for object persistence.
+ */
 
 // TODO: Change IMG_URL to IMAGE_CLASS and place in DOODLE_USAGE_LIST????
 
@@ -29,33 +29,30 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
     private $searchable_terms = [];
 
-    private $index_count = 0;
-    private $sqlInsertStatement = [];
-
     public function getName() {
         return 'Load eyedraw configuration';
     }
 
     public function getHelp() {
         return "yiic eyedrawconfigload --filename=<filename>\n\n".
-        "load/update the eyedraw configuration from the definition file <filename>";
+            "load/update the eyedraw configuration from the definition file <filename>";
     }
 
-  /**
-  * Abstraction to the db connection
-  * @return mixed
-  */
+    /**
+     * Abstraction to the db connection
+     * @return mixed
+     */
     protected function getDb()
     {
-      // TODO: stop using the static Yii call here
+        // TODO: stop using the static Yii call here
         return Yii::app()->db;
     }
 
-  /**
-  * Default action to process the given configuration file.
-  *
-  * @param $filename
-  */
+    /**
+     * Default action to process the given configuration file.
+     *
+     * @param $filename
+     */
     public function actionLoad($filename)
     {
         if (!$filename) {
@@ -73,7 +70,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         }
 
 
-      // iterate through the data structure, performing update/insert statements as appropriate
+        // iterate through the data structure, performing update/insert statements as appropriate
 
         foreach ($data->CANVAS_LIST->CANVAS as $canvas) {
             $this->processCanvasDefinition($canvas);
@@ -89,174 +86,175 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         $this->refreshTuples();
 
 
-      // iterate through the data structure, updating (IndexSearch_{{event}})view files as appropriate
-
-        foreach ($data->EVENT_LIST->EVENT as $event) {
+        // Get the events list from the indexsearch table
+        $cmd = $this->getDb()->createCommand('SELECT DISTINCT event_type FROM index_search');
+        $event_types = $cmd ->queryColumn();
+        foreach ($event_types as $event) {
             $this->processEventDefinition($event);
         }
-        Yii::log(CVarDumper::dumpAsString($this->sqlInsertStatement));
 
     }
 
-  /**
-  * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
-  * correctly for each doodle.
-  */
+    /**
+     * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
+     * correctly for each doodle.
+     */
     private function refreshTuples() {
         $query_string = $this->getRefreshTuplesQuery();
         Yii::app()->db->createCommand(
-        $query_string
+            $query_string
         )->query();
     }
 
     /**
-    * @param $canvas
-    * @param $element_type
-    */
+     * @param $canvas
+     * @param $element_type
+     */
     private function insertOrUpdateCanvas($canvas, $element_type) {
         $current = $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL . ' WHERE container_element_type_id = :eid')
-        ->bindValue(':eid', $element_type->id)
-        ->queryScalar();
+            ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL . ' WHERE container_element_type_id = :eid')
+            ->bindValue(':eid', $element_type->id)
+            ->queryScalar();
         if ($current) {
             $cmd = $this->getDb()
-            ->createCommand('UPDATE '
-            . static::CANVS_TBL .
-            ' SET canvas_mnemonic = :cvmn, canvas_name = :cvname where container_element_type_id = :eid');
+                ->createCommand('UPDATE '
+                    . static::CANVS_TBL .
+                    ' SET canvas_mnemonic = :cvmn, canvas_name = :cvname where container_element_type_id = :eid');
         } else {
             $cmd = $this->getDb()
-            ->createCommand('INSERT INTO ' . static::CANVS_TBL .
-            '(canvas_mnemonic, canvas_name, container_element_type_id) VALUES (:cvmn, :cvname, :eid)');
+                ->createCommand('INSERT INTO ' . static::CANVS_TBL .
+                    '(canvas_mnemonic, canvas_name, container_element_type_id) VALUES (:cvmn, :cvname, :eid)');
         }
         $cmd->bindValue(':cvmn', $canvas->CANVAS_MNEMONIC)
-        ->bindValue(':cvname', $canvas->CANVAS_NAME)
-        ->bindValue(':eid', $element_type->id)
-        ->query();
+            ->bindValue(':cvname', $canvas->CANVAS_NAME)
+            ->bindValue(':eid', $element_type->id)
+            ->query();
     }
 
     /**
-    * Create or update a doodle definition
-    *
-    * @param $doodle
-    */
+     * Create or update a doodle definition
+     *
+     * @param $doodle
+     */
     private function insertOrUpdateDoodle($doodle) {
         $current = $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::DOODLE_TBL . ' WHERE eyedraw_class_mnemonic = :mnm')
-        ->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->queryScalar();
+            ->createCommand('SELECT count(*) FROM ' . static::DOODLE_TBL . ' WHERE eyedraw_class_mnemonic = :mnm')
+            ->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
+            ->queryScalar();
         if ($current) {
             $cmd = $this->getDb()->createCommand('UPDATE ' . static::DOODLE_TBL . ' SET init_doodle_json = :init '
-            . 'WHERE eyedraw_class_mnemonic = :mnm');
+                . 'WHERE eyedraw_class_mnemonic = :mnm');
         } else {
             $cmd = $this->getDb()->createCommand('INSERT INTO '
-            . static::DOODLE_TBL .
-            '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)');
+                . static::DOODLE_TBL .
+                '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)');
         }
         $cmd->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':init', $doodle->INIT_DOODLE_JSON)
-        ->query();
+            ->bindValue(':init', $doodle->INIT_DOODLE_JSON)
+            ->query();
     }
 
     /**
-    * @param $mnemonic
-    * @return bool
-    */
+     * @param $mnemonic
+     * @return bool
+     */
     protected function isCanvasDefined($mnemonic) {
         return $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
-        . ' WHERE canvas_mnemonic = :cvmn')
-        ->bindValue(':cvmn', $mnemonic)
-        ->queryScalar() > 0;
+                ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
+                    . ' WHERE canvas_mnemonic = :cvmn')
+                ->bindValue(':cvmn', $mnemonic)
+                ->queryScalar() > 0;
     }
     /**
-    * @param $canvas_doodle
-    */
+     * @param $canvas_doodle
+     */
     private function insertOrUpdateCanvasDoodle($canvas_doodle) {
         if (!$this->isCanvasDefined($canvas_doodle->CANVAS_MNEMONIC)) {
-          // if the element is not part of the configuration (module not included)
-          // then we don't load the canvas, and therefore don't load the canvas doodle
+            // if the element is not part of the configuration (module not included)
+            // then we don't load the canvas, and therefore don't load the canvas doodle
             return;
         }
 
         $current = $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
-        . ' WHERE eyedraw_class_mnemonic = :ecmm'
-        . ' AND canvas_mnemonic = :cmm')
-        ->bindValue(':ecmm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':cmm', $canvas_doodle->CANVAS_MNEMONIC)
-        ->queryScalar();
+            ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
+                . ' WHERE eyedraw_class_mnemonic = :ecmm'
+                . ' AND canvas_mnemonic = :cmm')
+            ->bindValue(':ecmm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
+            ->bindValue(':cmm', $canvas_doodle->CANVAS_MNEMONIC)
+            ->queryScalar();
         if ($current) {
             $cmd = $this->getDb()
-            ->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL
-            . ' SET eyedraw_on_canvas_toolbar_location = :eoctl, '
-            . 'eyedraw_on_canvas_toolbar_order = :eocto, '
-            . 'eyedraw_no_tuple_init_canvas_flag = :enticf, '
-            . 'eyedraw_carry_forward_canvas_flag = :ecfcf, '
-            . 'eyedraw_always_init_canvas_flag = :eaicf '
-            . 'WHERE eyedraw_class_mnemonic = :ecm '
-            . 'AND canvas_mnemonic = :cm');
+                ->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL
+                    . ' SET eyedraw_on_canvas_toolbar_location = :eoctl, '
+                    . 'eyedraw_on_canvas_toolbar_order = :eocto, '
+                    . 'eyedraw_no_tuple_init_canvas_flag = :enticf, '
+                    . 'eyedraw_carry_forward_canvas_flag = :ecfcf, '
+                    . 'eyedraw_always_init_canvas_flag = :eaicf '
+                    . 'WHERE eyedraw_class_mnemonic = :ecm '
+                    . 'AND canvas_mnemonic = :cm');
         } else {
             $cmd = $this->getDb()
-            ->createCommand('INSERT INTO ' . static::CANVAS_DOODLE_TBL . ' ('
-            . 'eyedraw_class_mnemonic, '
-            . 'canvas_mnemonic, '
-            . 'eyedraw_on_canvas_toolbar_location, '
-            . 'eyedraw_on_canvas_toolbar_order, '
-            . 'eyedraw_no_tuple_init_canvas_flag, '
-            . 'eyedraw_carry_forward_canvas_flag, '
-            . 'eyedraw_always_init_canvas_flag)'
-            . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf, :eaicf)');
+                ->createCommand('INSERT INTO ' . static::CANVAS_DOODLE_TBL . ' ('
+                    . 'eyedraw_class_mnemonic, '
+                    . 'canvas_mnemonic, '
+                    . 'eyedraw_on_canvas_toolbar_location, '
+                    . 'eyedraw_on_canvas_toolbar_order, '
+                    . 'eyedraw_no_tuple_init_canvas_flag, '
+                    . 'eyedraw_carry_forward_canvas_flag, '
+                    . 'eyedraw_always_init_canvas_flag)'
+                    . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf, :eaicf)');
         }
 
         $cmd->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
-        ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
-        ->bindValue(':eocto', $canvas_doodle->ON_TOOLBAR_ORDER)
-        ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
-        ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
-        ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
-        ->query();
+            ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
+            ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
+            ->bindValue(':eocto', $canvas_doodle->ON_TOOLBAR_ORDER)
+            ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
+            ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
+            ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
+            ->query();
     }
 
     /**
-    *
-    * @param $canvas
-    */
+     *
+     * @param $canvas
+     */
     protected function processCanvasDefinition($canvas) {
-      // verify that the element type exists for this definition
+        // verify that the element type exists for this definition
         if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $canvas->OE_ELEMENT_CLASS_NAME))) {
             $this->insertOrUpdateCanvas($canvas, $element_type);
         }
     }
 
     /**
-    * @param $doodle
-    */
+     * @param $doodle
+     */
     protected function processDoodleDefinition($doodle) {
         $this->insertOrUpdateDoodle($doodle);
     }
 
     /**
-    * @param $canvas_doodle
-    */
+     * @param $canvas_doodle
+     */
     protected function processCanvasDoodleDefinition($canvas_doodle) {
-      //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
+        //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
         $this->insertOrUpdateCanvasDoodle($canvas_doodle);
     }
 
     /**
-    * @param $event
-    */
+     * @param $event
+     */
     protected function processEventDefinition($event) {
-        $index_list = $event->INDEX_LIST;
-        $event_name = $event->EVENT_NAME;
+        $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search');
+        $index_list = $cmd ->queryAll();
+        $event_name = $event;
         $this->searchable_terms["$event_name"] = [];
         $this->updateEventIndexSearchHTML($index_list, $event_name);
     }
 
     /**
-    * @return string
-    */
+     * @return string
+     */
     private function getRefreshTuplesQuery() {
         $doodle_tbl = static::DOODLE_TBL;
         $doodle_canvas_tbl = static::CANVAS_DOODLE_TBL;
@@ -308,106 +306,16 @@ EOSQL;
     }
 
     /**
-    * This method generates a string that represents the HTML (with hidden data) of
-    * an INDEX and all of its descendant.
-    * Due to the recursive definition of INDEX a recursive approach has been taken
-    * as the method returns the string HTML of INDEXES nested inside of it.
-    * @param $index
-    * @param $lvl
-    * @return string
-    */
-    private function generateIndexHTML($index, $event_name, $lvl = 1,$parentKey = null) {
-
-        $primary_key = $this->index_count += 1;
-
-        $parent = $parentKey;
-        if ($index->PRIMARY_TERM){
-            $tempArray=[];
-            foreach ($index->PRIMARY_TERM as $term) {
-                array_push($tempArray, $term);
-            }
-            $primary_term = implode(", ",$tempArray);
-        }else {
-            $primary_term = null;
-        }
-
-        if ($index->SECONDARY_TERM_LIST){
-            $tempArray=[];
-            foreach ($index->SECONDARY_TERM_LIST->TERM as $term) {
-                array_push($tempArray, $term);
-            }
-            $secondary_term_list = implode(", ",$tempArray);
-        }else {
-            $secondary_term_list = null;
-        }
-
-        if ($index->DESCRIPTION){
-            $tempArray=[];
-            foreach ($index->DESCRIPTION as $term) {
-                array_push($tempArray, $term);
-            }
-            $description = implode(", ",$tempArray);
-        }else {
-            $description = null;
-        }
-
-        if ($index->GENERAL_NOTE){
-            $tempArray=[];
-            foreach ($index->GENERAL_NOTE as $term) {
-                array_push($tempArray, $term);
-            }
-            $general_note = implode(", ",$tempArray);
-        }else {
-            $general_note = null;
-        }
-
-        if ($index->OPEN_ELEMENT_CLASS_NAME){
-            $tempArray=[];
-            foreach ($index->OPEN_ELEMENT_CLASS_NAME as $term) {
-                array_push($tempArray, $term);
-            }
-            $open_element_class_name = implode(", ",$tempArray);
-        }else {
-            $open_element_class_name = null;
-        }
-
-        if ($index->GOTO_ID){
-            $tempArray=[];
-            foreach ($index->GOTO_ID as $term) {
-                array_push($tempArray, $term);
-            }
-            $goto_id = implode(", ",$tempArray);
-        }else {
-            $goto_id = null;
-        }
-
-        if ($index->GOTO_TAG){
-            $tempArray=[];
-            foreach ($index->GOTO_TAG as $term) {
-                array_push($tempArray, $term);
-            }
-            $goto_tag = implode(", ",$tempArray);
-        }else {
-            $goto_tag = null;
-        }
-
-        if ($index->GOTO_TEXT){
-            $tempArray=[];
-            foreach ($index->GOTO_TEXT as $term) {
-                array_push($tempArray, $term);
-            }
-            $goto_text = implode(", ",$tempArray);
-        }else {
-            $goto_text = null;
-        }
-
-        array_push( $this->sqlInsertStatement, [$primary_key,"Examination",$parent, $primary_term,$secondary_term_list,$description,$general_note,
-                    $open_element_class_name,$goto_id,$goto_tag,$goto_text]);
-//        array_push($this->sqlInsertStatement,"$primary_key,Examination,$parent, $primary_term,$secondary_term_list,$description,$general_note,
-//                  $open_element_class_name,$goto_id,$goto_tag,$goto_text");
-
-
-        $this->addEventSearchableTerms($event_name, $index->PRIMARY_TERM, $index->SECONDARY_TERM_LIST->TERM);
+     * This method generates a string that represents the HTML (with hidden data) of
+     * an INDEX and all of its descendant.
+     * Due to the recursive definition of INDEX a recursive approach has been taken
+     * as the method returns the string HTML of INDEXES nested inside of it.
+     * @param $index
+     * @param $lvl
+     * @return string
+     */
+    private function generateIndexHTML($index, $event_name, $lvl = 1) {
+        $this->addEventSearchableTerms($event_name, $index['primary_term'], $index['secondary_term_list']);
         return
             "<li style>"
             .$this->generateIndexMainDiv($index, $lvl)
@@ -417,7 +325,7 @@ EOSQL;
     }
 
     private function addEventSearchableTerms($event_name, $primary_term, $secondary_term_list) {
-        $secondary_term_array = (array) $secondary_term_list;
+        $secondary_term_array = explode(",", $secondary_term_list);
         array_push($this->searchable_terms["$event_name"], $primary_term);
         foreach ($secondary_term_array as $term) {
             array_push($this->searchable_terms["$event_name"], $term);
@@ -426,18 +334,18 @@ EOSQL;
 
     private function getIndexMainDiv($div_attr, $span_attr, $primary_term) {
         return
-        "<div $div_attr>"
-        ."<span $span_attr>"
-        ."$primary_term"
-        ."</span>"
-        ."</div>";
+            "<div $div_attr>"
+            ."<span $span_attr>"
+            ."$primary_term"
+            ."</span>"
+            ."</div>";
     }
 
     private function getDataAttributes($map, $index) {
         $attrs = array();
         foreach ($map as $data_key => $index_attr) {
-            if ($index->$index_attr) {
-                $attrs[$data_key] = $index->$index_attr;
+            if ($index[$index_attr] !== null) {
+                $attrs[$data_key] = $index[$index_attr];
             }
         }
         return implode(' ', array_map(function($k, $v) { return "data-{$k}='{$v}'";
@@ -446,20 +354,20 @@ EOSQL;
 
     private function getMainDivDivData($index) {
         $data_map_attrs = array(
-        'goto-id' => 'GOTO_ID',
-        'goto-subcontainer' => 'GOTO_SUBCONTAINER_CLASS',
-        'goto-tag' => 'GOTO_TAG',
-        'goto-text' => 'GOTO_TEXT',
-        'element-class-name' => 'OPEN_ELEMENT_CLASS_NAME',
-        'doodle-class-name' => 'GOTO_DOODLE_CLASS_NAME',
-        'property' => 'GOTO_PROPERTY'
+            'goto-id' => 'goto_id',
+            'goto-subcontainer' => 'goto_subcontainer_class',
+            'goto-tag' => 'goto_tag',
+            'goto-text' => 'goto_text',
+            'element-class-name' => 'open_element_class_name',
+            'doodle-class-name' => 'goto_doodle_class_name',
+            'property' => 'goto_property'
         );
         $computed_data = "";
-        $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
+        $open_element_class_name = $index['open_element_class_name'];
         if ($open_element_class_name) {
             $computed_data =
-            "data-element-id=\"{$this->getElementId($open_element_class_name)}\" "
-            ."data-element-name=\"{$this->getElementName($open_element_class_name)}\" ";
+                "data-element-id=\"{$this->getElementId($open_element_class_name)}\" "
+                ."data-element-name=\"{$this->getElementName($open_element_class_name)}\" ";
         }
         return $computed_data.$this->getDataAttributes($data_map_attrs, $index);
     }
@@ -471,8 +379,8 @@ EOSQL;
     private function getMainDivDivImage($index)
     {
         $result = "";
-        if ($index->IMG_URL) {
-            $path = $index->IMG_URL;
+        if ($index['img_url'] !== null) {
+            $path = $index['img_url'];
             $image_URL = '<?php
         if (file_exists(\'' . $path . '\')){
           echo Yii::app()->getAssetManager()->publish(\'' . $path . '\');
@@ -488,7 +396,7 @@ EOSQL;
 
     private function getMainDivDivClass($index)
     {
-        if ($index->IMG_URL) {
+        if ($index['img_url'] !== null) {
             return "class=\"result_item result_item_with_icon\"";
         } else {
             return "class=\"result_item\"";
@@ -496,9 +404,8 @@ EOSQL;
     }
 
     private function getMainDivSpanAttr($index, $lvl) {
-        $primary_term = $index->PRIMARY_TERM;
-        $secondary_terms_array = (array) $index->SECONDARY_TERM_LIST->TERM;
-        $secondary_terms_string = implode(",", $secondary_terms_array);
+        $primary_term = $index['primary_term'];
+        $secondary_terms_string = $index['secondary_term_list'];
         $complete_term_list = $secondary_terms_string ? $primary_term.",".$secondary_terms_string : $primary_term;
         return "data-alias=\"{$complete_term_list}\" class=\"lvl{$lvl}\"";
     }
@@ -506,28 +413,27 @@ EOSQL;
     private function generateIndexMainDiv($index, $lvl) {
         $div_attr = $this->getMainDivDivAttr($index);
         $span_attr = $this->getMainDivSpanAttr($index, $lvl);
-        $primary_term = $index->PRIMARY_TERM;
+        $primary_term = $index['primary_term'];
         return $this->getIndexMainDiv($div_attr, $span_attr, $primary_term);
     }
 
     private function getAdditionalInfoLeftCol($secondary_term_list, $lvl) {
-        $secondary_terms = (array)$secondary_term_list;
         return
-        "<div class=\"index_row row\">"
-        ."<div class=\"index_col_left"."_lvl{$lvl}\">"
-        ."<span class=\"alias\">"
-        .($secondary_terms ? (implode(", ", $secondary_terms)) : (""))
-        ."</span>"
-        ."</div>";
+            "<div class=\"index_row row\">"
+            ."<div class=\"index_col_left"."_lvl{$lvl}\">"
+            ."<span class=\"alias\">"
+            .($secondary_term_list !== null ? ($secondary_term_list) : (""))
+            ."</span>"
+            ."</div>";
     }
 
     private function getAdditionalInfoRightCol($description, $warning, $info) {
         return
-        "<div class=\"index_col_right\">"
-        .$this->generateIndexDescription($description, $warning, $info)
-        .$this->generateIndexWarning($warning)
-        .$this->generateIndexInfo($info)
-        ."</div></div>";
+            "<div class=\"index_col_right\">"
+            .$this->generateIndexDescription($description, $warning, $info)
+            .$this->generateIndexWarning($warning)
+            .$this->generateIndexInfo($info)
+            ."</div></div>";
     }
 
     private function generateIndexDescription($description, $warning, $info) {
@@ -542,8 +448,8 @@ EOSQL;
         $result = "";
         if ($warning) {
             $result =
-            "<span class=\"warning_icon\"></span>"
-            ."<span class=\"warning_note\">{$warning}</span>";
+                "<span class=\"warning_icon\"></span>"
+                ."<span class=\"warning_note\">{$warning}</span>";
         }
         return $result;
     }
@@ -552,18 +458,18 @@ EOSQL;
         $result = "";
         if ($info) {
             $result =
-            "<span class=\"info_icon\"></span>"
-            ."<p class=\"info_note\">{$info}</p>";
+                "<span class=\"info_icon\"></span>"
+                ."<p class=\"info_note\">{$info}</p>";
         }
         return $result;
     }
 
     private function generateAdditionalInfoDiv($index, $lvl) {
         $result = "";
-        $secondary_term_list = $index->SECONDARY_TERM_LIST->TERM;
-        $description = $index->DESCRIPTION;
-        $warning = $index->WARNING_NOTE;
-        $info = $index->GENERAL_NOTE;
+        $secondary_term_list = $index['secondary_term_list'];
+        $description = $index['description'];
+        $warning = $index['warning_note'];
+        $info = $index['general_note'];
         if ($secondary_term_list || $description || $warning || $info) {
             $result .= $this->getAdditionalInfoLeftCol($secondary_term_list, $lvl); //opens row tag
             $result .= $this->getAdditionalInfoRightCol($description, $warning, $info); //closes row tag
@@ -574,11 +480,13 @@ EOSQL;
     private function generateChildren($index, $event_name, $lvl) {
         $result = "";
         $children = $index->INDEX_LIST;
+        $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search WHERE parent =:parent_key');
+        $cmd->bindValue(':parent_key', $index['id']);
+        $children = $cmd ->queryAll();
         if ($children) {
             $result .= "<ul class='results_list'>";
-            $parentKey = $this->index_count;
-            foreach ($children->INDEX as $child) {
-                $result .= $this->generateIndexHTML($child, $event_name, $lvl+1, $parentKey);
+            foreach ($children as $child) {
+                $result .= $this->generateIndexHTML($child, $event_name, $lvl+1);
             }
             $result .= "</ul>";
         }
@@ -586,18 +494,18 @@ EOSQL;
     }
 
     /**
-    * Method uses INDEX_LIST section of xml to update
-    * the IndexSearch_{{event_type_name}} view files
-    * for the IndexSearch widget used in some events,
-    * for examaple Examination events).
-    * @param $index_list
-    * @param $event_name
-    */
+     * Method uses INDEX_LIST section of xml to update
+     * the IndexSearch_{{event_type_name}} view files
+     * for the IndexSearch widget used in some events,
+     * for examaple Examination events).
+     * @param $index_list
+     * @param $event_name
+     */
     private function updateEventIndexSearchHTML($index_list, $event_name) {
         $html_string =
-        $this->getIndexSearchHeader()
-        .$this->getIndexSearchResultsHTML($index_list, $event_name)
-        .$this->getIndexSearchHiddenTerms($event_name);
+            $this->getIndexSearchHeader()
+            .$this->getIndexSearchResultsHTML($index_list, $event_name)
+            .$this->getIndexSearchHiddenTerms($event_name);
         $html_string = $this->formatHTML($html_string);
         Yii::app()->params['index_search_examination'] = $html_string;
 ////        Saving the generated PHP and HTML content in the event_type table for event (Eg: Examination) under the index_search_content column
@@ -609,10 +517,10 @@ EOSQL;
 
     private function getIndexSearchHeader() {
         return
-        "<?php \$this->render('IndexSearch_header'); ?>"
-        ."<div id=\"elements-search-results\" class=\"elements-search-results search-results\" style=\"display:none;\">"
-        ."<div class=\"close-icon-btn\"><i class=\"oe-i remove-circle\"></i></div>"
-        ."<ul class='results_list'>";
+            "<?php \$this->render('IndexSearch_header'); ?>"
+            ."<div id=\"elements-search-results\" class=\"elements-search-results search-results\" style=\"display:none;\">"
+            ."<div class=\"close-icon-btn\"><i class=\"oe-i remove-circle\"></i></div>"
+            ."<ul class='results_list'>";
     }
 
     private function getIndexSearchHiddenTerms($event_name) {
@@ -620,7 +528,7 @@ EOSQL;
         $unique = array_unique($this->searchable_terms["$event_name"]);
         foreach ($unique as $search_term) {
             $words = explode(" ", $search_term);
-          //inserts full term and each word in appropriate searchable_terms array
+            //inserts full term and each word in appropriate searchable_terms array
             if (sizeof($words) > 1) {
                 $searchable_terms_JSON .= "\"".strtolower($search_term)."\",";
             }
@@ -647,8 +555,8 @@ EOSQL;
 
     private function getIndexSearchResultsHTML($index_list, $event_name) {
         $results = "";
-        foreach ($index_list->INDEX as $index) {
-          //appends HTML for the index and all of its descendants
+        foreach ($index_list as $index) {
+            //appends HTML for the index and all of its descendants
             $results .= $this->generateIndexHTML($index, $event_name);
         }
         $results .= "</ul></div></div>";
@@ -793,9 +701,9 @@ class Format
     private function is_comment()
     {
         if ($this->input[$this->input_index] == '<'
-        AND $this->input[$this->input_index + 1] == '!'
-        AND $this->input[$this->input_index + 2] == '-'
-        AND $this->input[$this->input_index + 3] == '-') {
+            AND $this->input[$this->input_index + 1] == '!'
+            AND $this->input[$this->input_index + 2] == '-'
+            AND $this->input[$this->input_index + 3] == '-') {
             return true;
         } else {
             return false;
@@ -805,8 +713,8 @@ class Format
     private function is_end_comment()
     {
         if ($this->input[$this->input_index] == '-'
-        AND $this->input[$this->input_index + 1] == '-'
-        AND $this->input[$this->input_index + 2] == '>') {
+            AND $this->input[$this->input_index + 1] == '-'
+            AND $this->input[$this->input_index + 2] == '>') {
             return TRUE;
         } else {
             return FALSE;
