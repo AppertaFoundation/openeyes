@@ -221,6 +221,14 @@ FROM (
 
     public function getDisplayString()
     {
+        if ($this->minValue && !$this->maxValue) {
+            $this->operation = '>=';
+        } elseif ($this->maxValue && !$this->minValue) {
+            $this->operation = '<=';
+        } elseif ($this->maxValue && $this->minValue) {
+            $this->operation = 'BETWEEN';
+        }
+
         $bothEyes = $this->bothEyesIndicator ? ' for both eyes' : null;
         if ($this->operation === 'BETWEEN') {
             return "Vision IS between $this->minValue and {$this->maxValue}{$bothEyes}";

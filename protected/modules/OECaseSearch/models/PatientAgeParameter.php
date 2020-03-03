@@ -145,6 +145,14 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
 
     public function getDisplayString()
     {
+        if ($this->minValue && !$this->maxValue) {
+            $this->operation = '>=';
+        } elseif ($this->maxValue && !$this->minValue) {
+            $this->operation = '<=';
+        } elseif ($this->maxValue && $this->minValue) {
+            $this->operation = 'BETWEEN';
+        }
+
         if ($this->operation === 'BETWEEN') {
             return "Age IS between $this->minValue and $this->maxValue";
         }

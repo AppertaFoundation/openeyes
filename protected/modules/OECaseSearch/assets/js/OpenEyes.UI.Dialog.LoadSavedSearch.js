@@ -149,7 +149,7 @@
                     $('#search-label-row input').val($($searchLabel).text());
 
                     // Execute the search.
-                    $('form').submit();
+                    $('form#search-form').submit();
                 },
                 error: function() {
                     new OpenEyes.UI.Dialog.Alert({
