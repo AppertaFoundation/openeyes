@@ -8,6 +8,7 @@
  * @var $form CActiveForm
  * @var $saved_searches array
  * @var $user_list array
+ * @var $search_label string
  */
 $this->pageTitle = 'Advanced Search';
 $sort_field = 'last_name';
@@ -59,7 +60,7 @@ $user_searches = array_map(
                 ));
             endforeach;?>
             <tr id="search-label-row">
-                <td><?= CHtml::textField('search_name', null, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
+                <td><?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
             </tr>
             </tbody>
         </table>

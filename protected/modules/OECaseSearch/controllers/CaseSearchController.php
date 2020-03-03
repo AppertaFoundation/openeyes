@@ -197,7 +197,8 @@ class CaseSearchController extends BaseModuleController
                     return array('id' => $item['id'], 'name' => $item['name']);
                 },
                 $all_users
-            )
+            ),
+            'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
         ));
     }
 
