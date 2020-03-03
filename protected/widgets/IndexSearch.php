@@ -33,7 +33,6 @@ class IndexSearch extends BaseCWidget
                   $args = array('yiic', 'eyedrawconfigload', '--filename=' . Yii::app()->getBasePath() . '/config/core/OE_ED_CONFIG.xml');
                   ob_start();
                   $runner->run($args);
-                  Yii::log('here');
               }
               $render_content = Yii::app()->params['index_search_examination'] ;
               return eval("?>$render_content");

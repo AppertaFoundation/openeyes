@@ -29,6 +29,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
     private $searchable_terms = [];
 
+    private $index_count = 0;
+    private $sqlInsertStatement = [];
+
     public function getName() {
         return 'Load eyedraw configuration';
     }
@@ -91,6 +94,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         foreach ($data->EVENT_LIST->EVENT as $event) {
             $this->processEventDefinition($event);
         }
+        Yii::log(CVarDumper::dumpAsString($this->sqlInsertStatement));
 
     }
 
@@ -312,14 +316,104 @@ EOSQL;
     * @param $lvl
     * @return string
     */
-    private function generateIndexHTML($index, $event_name, $lvl = 1) {
+    private function generateIndexHTML($index, $event_name, $lvl = 1,$parentKey = null) {
+
+        $primary_key = $this->index_count += 1;
+
+        $parent = $parentKey;
+        if ($index->PRIMARY_TERM){
+            $tempArray=[];
+            foreach ($index->PRIMARY_TERM as $term) {
+                array_push($tempArray, $term);
+            }
+            $primary_term = implode(", ",$tempArray);
+        }else {
+            $primary_term = null;
+        }
+
+        if ($index->SECONDARY_TERM_LIST){
+            $tempArray=[];
+            foreach ($index->SECONDARY_TERM_LIST->TERM as $term) {
+                array_push($tempArray, $term);
+            }
+            $secondary_term_list = implode(", ",$tempArray);
+        }else {
+            $secondary_term_list = null;
+        }
+
+        if ($index->DESCRIPTION){
+            $tempArray=[];
+            foreach ($index->DESCRIPTION as $term) {
+                array_push($tempArray, $term);
+            }
+            $description = implode(", ",$tempArray);
+        }else {
+            $description = null;
+        }
+
+        if ($index->GENERAL_NOTE){
+            $tempArray=[];
+            foreach ($index->GENERAL_NOTE as $term) {
+                array_push($tempArray, $term);
+            }
+            $general_note = implode(", ",$tempArray);
+        }else {
+            $general_note = null;
+        }
+
+        if ($index->OPEN_ELEMENT_CLASS_NAME){
+            $tempArray=[];
+            foreach ($index->OPEN_ELEMENT_CLASS_NAME as $term) {
+                array_push($tempArray, $term);
+            }
+            $open_element_class_name = implode(", ",$tempArray);
+        }else {
+            $open_element_class_name = null;
+        }
+
+        if ($index->GOTO_ID){
+            $tempArray=[];
+            foreach ($index->GOTO_ID as $term) {
+                array_push($tempArray, $term);
+            }
+            $goto_id = implode(", ",$tempArray);
+        }else {
+            $goto_id = null;
+        }
+
+        if ($index->GOTO_TAG){
+            $tempArray=[];
+            foreach ($index->GOTO_TAG as $term) {
+                array_push($tempArray, $term);
+            }
+            $goto_tag = implode(", ",$tempArray);
+        }else {
+            $goto_tag = null;
+        }
+
+        if ($index->GOTO_TEXT){
+            $tempArray=[];
+            foreach ($index->GOTO_TEXT as $term) {
+                array_push($tempArray, $term);
+            }
+            $goto_text = implode(", ",$tempArray);
+        }else {
+            $goto_text = null;
+        }
+
+        array_push( $this->sqlInsertStatement, [$primary_key,"Examination",$parent, $primary_term,$secondary_term_list,$description,$general_note,
+                    $open_element_class_name,$goto_id,$goto_tag,$goto_text]);
+//        array_push($this->sqlInsertStatement,"$primary_key,Examination,$parent, $primary_term,$secondary_term_list,$description,$general_note,
+//                  $open_element_class_name,$goto_id,$goto_tag,$goto_text");
+
+
         $this->addEventSearchableTerms($event_name, $index->PRIMARY_TERM, $index->SECONDARY_TERM_LIST->TERM);
         return
-        "<li style>"
-        .$this->generateIndexMainDiv($index, $lvl)
-        .$this->generateAdditionalInfoDiv($index, $lvl)
-        .$this->generateChildren($index, $event_name, $lvl)
-        ."</li>";
+            "<li style>"
+            .$this->generateIndexMainDiv($index, $lvl)
+            .$this->generateAdditionalInfoDiv($index, $lvl)
+            .$this->generateChildren($index, $event_name, $lvl)
+            ."</li>";
     }
 
     private function addEventSearchableTerms($event_name, $primary_term, $secondary_term_list) {
@@ -482,8 +576,9 @@ EOSQL;
         $children = $index->INDEX_LIST;
         if ($children) {
             $result .= "<ul class='results_list'>";
+            $parentKey = $this->index_count;
             foreach ($children->INDEX as $child) {
-                $result .= $this->generateIndexHTML($child, $event_name, $lvl+1);
+                $result .= $this->generateIndexHTML($child, $event_name, $lvl+1, $parentKey);
             }
             $result .= "</ul>";
         }
