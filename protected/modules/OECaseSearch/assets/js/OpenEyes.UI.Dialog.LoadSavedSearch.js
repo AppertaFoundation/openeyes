@@ -31,7 +31,6 @@
 
     Util.inherits(Dialog, LoadSavedSearchDialog);
 
-    //TODO: ensure support for OprnCreateEpisode checking (i.e. only allow new 'episode' creation where appropriate)
     LoadSavedSearchDialog._defaultOptions = {
         destroyOnClose: false,
         title: '',
@@ -49,11 +48,12 @@
         currentUserSearchTemplate: '#current-user-search-template',
         searchContentTemplate: '#search-contents-template',
         otherUserTemplate: '#other-user-item-template',
-        otherUserSearchItem: '#other-user-search-item-template',
+        otherUserSearchTemplate: '#other-user-search-item-template',
+        otherUserSearchItem: '#other-user-search-list li',
         searchContentItem: '#search-content-template',
         currentUserSearchList: '#current-user-search-list li',
         otherUserList: '#other-user-list li',
-        otherUserSearchList: '#other-user-search-list li',
+        otherUserSearchList: '#other-user-search-list',
         searchContentsList: '#search-contents-list',
         loadSearchButton: '#load-selected-search'
     };
@@ -102,30 +102,35 @@
     LoadSavedSearchDialog.prototype.setupEventHandlers = function () {
         var self = this;
 
-        self.content.on('click', selectors.currentUserSearchList, function (e) {
+        self.content.on('click', selectors.currentUserSearchList, function () {
             self.content.find(selectors.currentUserSearchList).removeClass('selected');
-            self.content.find(selectors.otherUserSearchList).removeClass('selected');
+            self.content.find(selectors.otherUserSearchItem).removeClass('selected');
+            self.content.find(selectors.otherUserList).removeClass('selected');
+            self.content.find(selectors.otherUserSearchList).empty();
             $(this).addClass('selected');
             self.selectedSearchId = $(this).data('id');
             self.updateSearchContentsList();
         });
 
-        self.content.on('click', selectors.otherUserList, function (e) {
+        self.content.on('click', selectors.otherUserList, function () {
+            self.content.find(selectors.currentUserSearchList).removeClass('selected');
             self.content.find(selectors.otherUserList).removeClass('selected');
+            self.content.find(selectors.searchContentsList).empty();
+            self.content.find(selectors.otherUserSearchList).empty();
             $(this).addClass('selected');
             self.selectedUserId = $(this).data('id');
             self.updateOtherUserSearchesList();
         });
 
-        self.content.on('click', selectors.otherUserSearchItem, function (e) {
+        self.content.on('click', selectors.otherUserSearchItem, function () {
             self.content.find(selectors.currentUserSearchList).removeClass('selected');
-            self.content.find(selectors.otherUserSearchList).removeClass('selected');
+            self.content.find(selectors.otherUserSearchItem).removeClass('selected');
             $(this).addClass('selected');
             self.selectedSearchId = $(this).data('id');
             self.updateSearchContentsList();
         });
 
-        self.content.on('click', selectors.loadSearchButton, function(e) {
+        self.content.on('click', selectors.loadSearchButton, function() {
             // Add the search parameters to the screen.
             $.ajax({
                 url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId,
@@ -187,12 +192,12 @@
             url: '/OECaseSearch/caseSearch/getSearchesByUser/' + self.selectedUserId,
             type: 'GET',
             success: function (response) {
-                this.otherUserSearchItems = JSON.parse(response);
+                self.otherUserSearchItems = JSON.parse(response);
                 $(selectors.otherUserSearchList).append(
-                    this.compileTemplate({
-                        selector: this.otherUserSearchItem,
+                    self.compileTemplate({
+                        selector: selectors.otherUserSearchTemplate,
                         data: {
-                            otherUserSearches: this.otherUserSearchItems,
+                            otherUserSearches: self.otherUserSearchItems,
                         }
                     })
                 );

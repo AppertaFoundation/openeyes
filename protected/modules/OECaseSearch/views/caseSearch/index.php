@@ -180,7 +180,7 @@ $user_searches = array_map(
                 <h3>Selected user search</h3>
                 <ul id="other-user-search-list">
                     {{#otherUserSearches}}
-                    <li data-id="{{>id}}">{{>name}}</li>
+                    <li data-id="{{id}}">{{name}}</li>
                     {{/otherUserSearches}}
                 </ul>
             </td>
@@ -204,7 +204,13 @@ $user_searches = array_map(
         <li>{{.}}</li>
         {{/searchContents}}
     </ul>
-
+</script>
+<script type="text/html" id="other-user-search-item-template">
+    <ul>
+        {{#otherUserSearches}}
+        <li data-id="{{id}}">{{name}}</li>
+        {{/otherUserSearches}}
+    </ul>
 </script>
 
 <script type="text/javascript">

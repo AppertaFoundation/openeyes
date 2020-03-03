@@ -168,9 +168,10 @@ class CaseSearchController extends BaseModuleController
 
         $current_user_searches = SavedSearch::model()->findAllByAttributes(array('created_user_id' => Yii::app()->user->id));
         $query = Yii::app()->db->createCommand()
-            ->select('created_user_id')
-            ->from('case_search_saved_search')
-            ->where('created_user_id != :user_id', array(':user_id' => Yii::app()->user->id));
+            ->select('cs.created_user_id id, CONCAT(u.first_name, " ", u.last_name) name')
+            ->from('case_search_saved_search cs')
+            ->join('user u', 'u.id = cs.created_user_id')
+            ->where('cs.created_user_id != :user_id', array(':user_id' => Yii::app()->user->id));
         $query->distinct = true;
         $all_users = $query->queryAll();
 
@@ -219,7 +220,6 @@ class CaseSearchController extends BaseModuleController
 
     /**
      * @param $id
-     * @return false|string
      * @throws CException
      */
     public function actionGetSearchesByUser($id)
@@ -228,21 +228,6 @@ class CaseSearchController extends BaseModuleController
             ->select('id, name')
             ->from('case_search_saved_search')
             ->where('created_user_id = :user_id', array(':user_id' => $id))
-            ->queryAll();
-        echo json_encode($searches);
-    }
-
-    /**
-     * @param $id
-     * @return false|string
-     * @throws CException
-     */
-    public function actionOtherSearchUsers($id)
-    {
-        $searches = Yii::app()->db->createCommand()
-            ->select('DISTINCT created_user_id')
-            ->from('case_search_saved_search')
-            ->where('created_user_id != :user_id', array(':user_id' => $id))
             ->queryAll();
         echo json_encode($searches);
     }
@@ -280,7 +265,6 @@ class CaseSearchController extends BaseModuleController
                 if ($instance->getDisplayString()) {
                     $preview_list[] = $instance->getDisplayString();
                 }
-
             } elseif (!$instance->isFixed) {
                 $this->renderPartial(
                     'parameter_form',
@@ -302,6 +286,7 @@ class CaseSearchController extends BaseModuleController
         if ($preview) {
             echo json_encode($preview_list);
         } else {
+            // Output the search label content.
             echo '<tr id="search-label-row"><td>' . $search->name . '</td></tr>';
             echo '</tbody>';
         }
@@ -390,10 +375,9 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->clientScript->registerCoreScript('cookie');
 
         // This is required when the search results return any records.
-        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
+        Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
-        //Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);
     }
