@@ -25,7 +25,7 @@ EOSQL
 
     public function down()
     {
-        $this->dropOEColumn('ophciexamination_risk', 'display_on_whiteboard');
+        $this->dropOEColumn('ophciexamination_risk', 'display_on_whiteboard', true);
         $this->alterView('patient_risk_assignment', <<<EOSQL
 select ra.id, latest.patient_id as patient_id, ra.risk_id, ra.other, ra.comments, ra.last_modified_user_id,
 ra.last_modified_date,
