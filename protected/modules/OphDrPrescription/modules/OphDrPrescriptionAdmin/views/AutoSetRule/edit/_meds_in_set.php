@@ -404,10 +404,6 @@ $dispense_condition_options = array(
         booleanSearchFilterURLparam: 'include_branded'
     });
 
-    $('body').on('change', "select[id$='_usage_code_id']", function() {
-        togglePrescriptionExtraInputs();
-    });
-
     $('#meds-list').delegate('select.dispense-condition', 'change', function () {
         let $dispense_condition = $(this);
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
