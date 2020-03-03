@@ -68,20 +68,19 @@ EOH;
 
     private function deleteOldDrugAndMedicationTables()
     {
-
-        foreach (['drug', 'drug_allergy_assignment', 'drug_set_item',
-                     'ophciexamination_history_medications_entry',
+        ## Find & archive old tables (+ version tables)
+        $drugTableSuffix = 'drug_';
+        $tables_to_rename = ['drug', 'ophciexamination_history_medications_entry',
                      'ophdrprescription_item',
                      'site_subspecialty_drug',
                      'medication_drug',
-                     'drug_set',
-                     'drug_set_item_taper'
-                 ] as $table_to_rename) {
-            Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
-            $version_table_to_rename = $table_to_rename . "_version";
-            Yii::app()->db->createCommand("RENAME TABLE " . $version_table_to_rename . " TO archive_" . $version_table_to_rename)->execute();
+                 ];
+        $tables_to_ignore = ['drug_duration'];
+        foreach (Yii::app()->db->getSchema()->getTableNames() as $table_to_rename) {
+            if (((substr($table_to_rename, 0, strlen($drugTableSuffix)) === $drugTableSuffix) || in_array($table_to_rename, $tables_to_rename)) && !in_array($table_to_rename, $tables_to_ignore)) {
+                Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
+            }
         }
-
     }
 
     private function deleteMedication($medication_drug)

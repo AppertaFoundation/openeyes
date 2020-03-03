@@ -142,7 +142,7 @@ $dispense_condition_options = array(
                         </td>
 
                         <td class="js-input-wrapper">
-                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <div class="js-prescription-extra js-prescription-dispense-condition" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text">
                                 <?php if ($set_item->default_dispense_condition_id) {
                                     if ($set_item->defaultDispenseCondition->name === 'Print to {form_type}') {
@@ -170,7 +170,7 @@ $dispense_condition_options = array(
                                         'order' => 'display_order',
                                     )), 'id', 'name'),
                                 [
-                                    'class' => 'js-input cols-full',
+                                    'class' => 'js-input cols-full dispense-condition',
                                     'style' => 'display:none',
                                     'empty' => '-- select --',
                                     'id' => null,
@@ -181,7 +181,7 @@ $dispense_condition_options = array(
                             </div>
                         </td>
                         <td class="js-input-wrapper" >
-                            <div class="js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <div class="js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
@@ -190,7 +190,7 @@ $dispense_condition_options = array(
                                 'default_dispense_location_id',
                                 $default_dispense_location,
                                 [
-                                    'class' => 'js-input cols-full',
+                                    'class' => 'js-input cols-full dispense-location',
                                     'style' => 'display:none',
                                     'empty' => '-- select --',
                                     'id' => null,
@@ -313,13 +313,13 @@ $dispense_condition_options = array(
             <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
 
-        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-condition" style="display:<?=$is_prescription_set ? 'block':'none';?>">
             <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full dispense-condition', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
-        <td class="js-input-wrapper js-prescription-extra" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
             <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
 
         <td class="actions" style="text-align:center">
@@ -406,6 +406,22 @@ $dispense_condition_options = array(
 
     $('body').on('change', "select[id$='_usage_code_id']", function() {
         togglePrescriptionExtraInputs();
+    });
+
+    $('#meds-list').delegate('select.dispense-condition', 'change', function () {
+        let $dispense_condition = $(this);
+        $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
+            condition_id: $dispense_condition.val(),
+        }, function (data) {
+            let $dispense_location = $dispense_condition.closest('tr').find('.dispense-location');
+            $dispense_location.find('option').remove();
+            if (data) {
+                $dispense_location.append(data);
+                $('.js-prescription-dispense-location').show();
+            } else {
+                $('.js-prescription-dispense-location').hide();
+            }
+        });
     });
 
 </script>

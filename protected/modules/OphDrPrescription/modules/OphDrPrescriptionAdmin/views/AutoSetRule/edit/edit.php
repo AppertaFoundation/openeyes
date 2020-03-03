@@ -113,10 +113,11 @@
         });
 
         // hide dropdowns
-        $('.js-prescription-extra').toggle(prescriptionFound);
-
-        // set dropdowns to default position
-        if (!prescriptionFound) {
+        if (prescriptionFound) {
+            $('.js-prescription-dispense-condition').show();
+        } else {
+            // set dropdowns to default position
+            $('.js-prescription-extra').hide();
             $("select[id$='_default_dispense_condition_id']").val(null);
             $("select[id$='_default_dispense_location_id']").val(null);
         }
