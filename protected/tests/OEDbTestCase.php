@@ -42,7 +42,7 @@ class OEDbTestCase extends CDbTestCase
 
         $this->tear_down_callbacks = [];
 
-        foreach ($this->test_tables as $table) {
+        foreach (array_reverse($this->test_tables) as $table) {
             $this->dropTable($table);
         }
 
