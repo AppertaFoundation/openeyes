@@ -19,7 +19,7 @@ class PatientAgeParameterTest extends CDbTestCase
         'patient' => 'Patient',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientAgeParameter();
@@ -27,7 +27,7 @@ class PatientAgeParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProvider);

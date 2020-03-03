@@ -17,14 +17,14 @@ class PreviousTrialParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    protected function setUp()
+    public function setUp()
     {
         $this->object = new PreviousTrialParameter();
         $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->object, $this->searchProvider); // start from scratch for each test.
     }

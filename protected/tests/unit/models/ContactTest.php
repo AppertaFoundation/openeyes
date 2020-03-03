@@ -49,7 +49,7 @@ class ContactTest extends ActiveRecordTestCase
        * Sets up the fixture, for example, opens a network connection.
        * This method is called before a test is executed.
        */
-    protected function setUp()
+    public function setUp()
       {
         parent::setUp();
         $this->model = new Contact();
@@ -61,7 +61,7 @@ class ContactTest extends ActiveRecordTestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    public function tearDown()
     {
     }
 

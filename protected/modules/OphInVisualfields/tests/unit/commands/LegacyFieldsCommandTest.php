@@ -153,7 +153,7 @@ class LegacyFieldsCommandTest extends CDbTestCase
     /**
      * Delete temporary files and directories.
      */
-    protected function tearDown()
+    public function tearDown()
     {
         $this->cleanDirectories();
     }

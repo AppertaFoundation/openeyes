@@ -12,7 +12,7 @@ class GenericTestCase extends CTestCase
      * Sets up before each test method runs.
      * This mainly sets the base URL for the test application.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
     }

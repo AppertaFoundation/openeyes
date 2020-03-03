@@ -38,12 +38,12 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
         Yii::app()->getModule('OphCiExamination');
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->whiteboard);
         parent::tearDown();
