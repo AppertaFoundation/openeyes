@@ -322,8 +322,9 @@ function getDispenseLocation(dispense_condition) {
     if (data) {
         dispense_location.append(data);
         dispense_location.show();
+    } else {
+        dispense_location.hide();
     }
-    dispense_location.hide();
   });
 }
 
