@@ -76,7 +76,7 @@ $dispense_condition_options = array(
             <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
                 <?php $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
                 <?php if ($set_item) : ?>
-                    <tr class="js-row-of-<?=$med->id?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
+                    <tr class="js-row-of-<?=$med->id?>" id="medication_set_item_<?=$k?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                         <td>
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
 
@@ -210,7 +210,7 @@ $dispense_condition_options = array(
                             <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
                         </td>
                     </tr>
-                    <tr class="js-row-of-<?=$med->id?> no-line js-addition-line" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>">
+                    <tr class="js-row-of-<?=$med->id?> no-line js-addition-line" id="medication_set_item_<?=$k?>_addition_line" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>">
                         <td class="right" colspan="99">
 
                             <div class="js-input-wrapper" style="display: inline-block;">
@@ -287,7 +287,7 @@ $dispense_condition_options = array(
 </script>
 
 <script type="x-tmpl-mustache" id="medication_template" style="display:none">
-    <tr class="js-row-of-{{medication_id}}" data-id="{{medication_id}}" data-med_id="{{medication_id}}" data-key="{{key}}" style="cursor: default;">
+    <tr class="js-row-of-{{medication_id}} new" id="medication_set_item_{{key}}" data-id="{{medication_id}}" data-med_id="{{medication_id}}" data-key="{{key}}" style="cursor: default;">
         <td>
             {{preferred_term}}
             <input class="js-input" name="MedicationSetAutoRuleMedication[{{key}}][id]" type="hidden" value="{{id}}">
@@ -331,11 +331,12 @@ $dispense_condition_options = array(
                 <i class="oe-i child-arrow small"></i>
             </button>
         </td>
+        <td></td>
         <td>
             <a data-action_type="delete" class="js-delete-set-medication"><i class="oe-i trash"></i></a>
         </td>
     </tr>
-    <tr class="js-row-of-{{medication_id}} no-line js-addition-line" data-id="{{medication_id}}" data-med_id="{{medication_id}}">
+    <tr class="js-row-of-{{medication_id}} no-line js-addition-line new" id="medication_set_item_{{key}}_addition_line" data-id="{{medication_id}}" data-med_id="{{medication_id}}">
         <td class="right" colspan="99">
             <div class="js-input-wrapper" style="display: inline-block;">
                 <span data-type="include_parent" data-id="{{#include_parent}}{{include_parent}}{{/include_parent}}" class="js-text" data-display-label="Include Parent: ">
@@ -388,6 +389,7 @@ $dispense_condition_options = array(
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);
                 $(drugSetController.options.tableSelector + ' tbody').append($tr_html);
+                $('#meds-list').trigger('medicationAdded');
                 const $tr = $table.find('tr.js-row-of-' + medication_id);
                 $tr.css({'background-color': '#3ba93b'});
                 $tr.next().css({'background-color': '#3ba93b'});
@@ -421,12 +423,15 @@ $dispense_condition_options = array(
             condition_id: $dispense_condition.val(),
         }, function (data) {
             if ($dispense_condition.is(':visible')) { //check if still visible otherwise ignore the request
+                $dispense_location.find('option').remove();
                 if (data) {
-                    $dispense_location.find('option').remove();
                     $dispense_location_dropdown.append(data);
                     $dispense_location.show();
+                    $dispense_location.removeClass('hidden');
                 } else {
+                    $dispense_location_dropdown.append('<option value>-- select --</option>');
                     $dispense_location.hide();
+                    $dispense_location.addClass('hidden');
                 }
             }
         });
