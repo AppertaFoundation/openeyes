@@ -108,8 +108,17 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <?php $drug_duration = DrugDuration::model()->findByPK($entry->duration_id); ?>
             <?= isset($drug_duration) ? $drug_duration->name : ""?>
 
-            <?= isset($entry->dispenseCondition) ? $entry->dispenseCondition->name : "" ?>
-            <?= isset($entry->dispenseLocation) ? $entry->dispenseLocation->name : "" ?>
+            <?php if ($entry->dispense_condition_id) {
+                if ($entry->dispense_condition->name === 'Print to {form_type}') {
+                    echo str_replace(
+                            '{form_type}',
+                            $form_setting,
+                            $entry->dispense_condition->name
+                        ) . " / {$entry->dispense_location->name}";
+                } else {
+                    echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
+                }
+            } ?>
         </td>
         <td>
                 <i class="oe-i no-permissions medium-icon js-has-tooltip" data-tooltip-content="You do not have permissions"></i>

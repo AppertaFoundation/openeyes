@@ -230,7 +230,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (showEditValue === true) {
 
             if ($input.prop('tagName') === 'SELECT' && $input.val() && $input.val() !== '') {
-                selectedText = $input.find('option:selected').text();
+                let $selectedOption = $input.find('option:selected');
+                if(typeof $selectedOption.attr('label') != "undefined") {
+                    selectedText = $selectedOption.attr('label');
+                } else {
+                    selectedText = $input.find('option:selected').text();
+                }
             } else if ($input.prop('tagName') === 'LABEL') {
                 const $first = $input.find('[type="checkbox"]');
                 selectedText = $first.is(':checked') ? 'yes' : 'no';

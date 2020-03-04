@@ -501,9 +501,10 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        } else {
-            return "";
+        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
+            return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
+        return "";
     }
 
     public function getStopDateDisplay()
@@ -628,6 +629,10 @@ class EventMedicationUse extends BaseElement
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
                   'dose','dose_unit_term', 'frequency_id', 'frequency'];
+
+        if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
+            $attrs[] = 'start_date';
+        }
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
