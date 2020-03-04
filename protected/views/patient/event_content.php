@@ -95,6 +95,9 @@
     <?php if ($this->action->id === 'view') {
         $this->renderEventMetadata();
     } ?>
+    <?php
+    $this->renderPartial('//patient/event_footer', array('form_id' => $form_id));
+    ?>
 </main>
 
 <?php if ($this->action->id === 'view') : ?>

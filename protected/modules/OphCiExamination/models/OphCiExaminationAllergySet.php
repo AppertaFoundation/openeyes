@@ -18,6 +18,26 @@
 
 namespace OEModule\OphCiExamination\models;
 
+/**
+ * This is the model class for table "ophciexamination_allergy_set.
+ *
+ * The followings are the available columns in table 'ophciexamination_allergy_set':
+ * @property integer $id
+ * @property string $name
+ * @property integer $firm_id
+ * @property integer $subspecialty_id
+ * @property string $last_modified_user_id
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $created_date
+ *
+ * The followings are the available model relations:
+ * @property OphCiExaminationAllergySetEntry[] $entries
+ * @property Firm $firm
+ * @property \User $createdUser
+ * @property \User $lastModifiedUser
+ * @property Subspecialty $subspecialty
+ */
 
 class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
 {
@@ -134,11 +154,7 @@ class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
 
     public function beforeDelete()
     {
-        foreach ($this->allergy_set_assignments as $allergy_set_assignment) {
-            $allergy_set_assignment->delete();
-        }
-
-        foreach ($this->allergy_set_entries as $allergy_set_entry) {
+        foreach ($this->entries as $allergy_set_entry) {
             $allergy_set_entry->delete();
         }
 

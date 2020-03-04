@@ -1,4 +1,4 @@
-<?PHP Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
+<?php Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
     <style>
         .download-csv-container{
             position: relative;
@@ -40,7 +40,9 @@
             <li><a href="#" data-container="#visual-acuity-grid" data-report="VA" class="js-cataract-report-type">Visual Acuity</a></li>
             <li><a href="#" data-container="#refractive-outcome-grid" data-report="RO" class="js-cataract-report-type">Refractive Outcome</a></li>
             <li><a href="#" data-container="#nod-audit-grid" data-report="NOD" class="js-cataract-report-type">NOD Audit</a></li>
-            <li><a href="#" data-container="#catprom5-grid" data-report="CP5" class="js-cataract-report-type">Cat-PROM5</a></li>
+            <?php if (isset(Yii::app()->modules['OphOuCatprom5'])) { ?>
+                <li><a href="#" data-container="#catprom5-grid" data-report="CP5" class="js-cataract-report-type">Cat-PROM5</a></li>
+            <?php } ?>
         </ul>
         <form id="search-form" autocomplete="off">
             <div id="search-form-report-search-section"></div>
@@ -63,11 +65,11 @@
                         name="allsurgeons">
             </div>
             <div class="row">
-                <button id="js-clear-date-range" class="pro-theme" type="button" onclick="viewAllDates()">View all dates</button>
+                <button id="js-clear-date-range" class="pro-theme" type="button">View all dates</button>
             </div>
             <!-- only the user with service manager role can view all surgeons -->
             <div class="row">
-                <button id="js-all-surgeons" <?=$isServiceMgr ? '' : 'style="display:none;"'?> class="pro-theme" type="button" onclick="viewAllSurgeons()">View all surgeons</button>
+                <button id="js-all-surgeons" <?=$isServiceMgr ? '' : 'style="display:none;"'?> class="pro-theme" type="button">View all surgeons</button>
             </div>
             <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
         </form>
