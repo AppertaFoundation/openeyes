@@ -92,22 +92,11 @@ class OECaseSearchModule extends BaseModule
     }
 
     /**
-     * @param $providerID mixed The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
+     * @param $providerID string|int The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
      * @return SearchProvider The search provider identified by $providerID
      */
     public function getSearchProvider($providerID)
     {
         return $this->searchProviders[$providerID];
-    }
-
-    public function beforeControllerAction($controller, $action)
-    {
-        if (parent::beforeControllerAction($controller, $action)) {
-            // this method is called before any module controller action is performed
-            // you may place customized code here
-            return true;
-        }
-
-        return false;
     }
 }

@@ -2,6 +2,7 @@
 
 /**
  * Class PatientNumberParameterTest
+ * @method patient($fixtureId)
  */
 class PatientNumberParameterTest extends CDbTestCase
 {

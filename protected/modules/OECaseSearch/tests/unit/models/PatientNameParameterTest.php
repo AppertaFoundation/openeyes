@@ -2,6 +2,8 @@
 
 /**
  * Class PatientNameParameterTest
+ * @method patient($fixtureId)
+ * @method contact($fixtureId)
  */
 class PatientNameParameterTest extends CDbTestCase
 {

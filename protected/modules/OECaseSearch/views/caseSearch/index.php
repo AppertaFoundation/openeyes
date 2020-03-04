@@ -74,7 +74,14 @@ $user_searches = array_map(
         <hr class="divider"/>
         <div class="button-stack">
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
-            <?= CHtml::htmlButton('Save search', array('class' => 'cols-full green hint js-save-search-btn', 'type' => 'submit', 'formaction' => $this->createUrl('caseSearch/saveSearch'))) ?>
+            <?= CHtml::htmlButton(
+                'Save search',
+                array(
+                    'class' => 'cols-full green hint js-save-search-btn',
+                    'type' => 'submit',
+                    'formaction' => $this->createUrl('caseSearch/saveSearch')
+                )
+            ) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-basic-csv', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-advanced-csv', 'class' => 'cols-full')) ?>

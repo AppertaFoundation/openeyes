@@ -32,7 +32,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(parent::rules(), array(
             array('minValue, maxValue', 'numerical', 'min' => 0),
             array('minValue, maxValue', 'values'),
-            array('bothEyesIndicator','safe'),
+            array('bothEyesIndicator', 'safe'),
         ));
     }
 
@@ -59,7 +59,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
             'minValue' => 'Minimum Value',
             'maxValue' => 'Maximum Value',
             'id' => 'ID',
-            'bothEyesIndicator'=>'Both Eyes',
+            'bothEyesIndicator' => 'Both Eyes',
         );
     }
 
@@ -161,7 +161,7 @@ FROM (
             $second_operation (t5.right_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id)";
         }
 
-        return $queryStr.$subQueryStr;
+        return $queryStr . $subQueryStr;
     }
 
     /**

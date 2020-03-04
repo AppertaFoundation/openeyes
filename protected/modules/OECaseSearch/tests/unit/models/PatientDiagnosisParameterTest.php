@@ -2,6 +2,12 @@
 
 /**
  * Class PatientDiagnosisParameterTest
+ * @method patient($fixtureId)
+ * @method ophciexamination_diagnosis($fixtureId)
+ * @method et_ophciexamination_diagnoses($fixtureId)
+ * @method disorder($fixtureId)
+ * @method episode($fixtureId)
+ * @method event($fixtureId)
  */
 class PatientDiagnosisParameterTest extends CDbTestCase
 {

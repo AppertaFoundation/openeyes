@@ -57,6 +57,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
             )
         );
     }
+
     /**
      * Attribute labels for display purposes.
      * @return array Attribute key/value pairs.
@@ -77,9 +78,9 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     {
         return array_merge(parent::rules(), array(
             array('number', 'required'),
-            array('number','numerical'),
+            array('number', 'numerical'),
             array('code', 'required'),
-            array('code','safe')
+            array('code', 'safe')
         ));
     }
 
@@ -87,7 +88,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
@@ -120,12 +120,10 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
 
     /**
      * @return array contains all identifier codes
-     * @throws CException
      */
     public function getAllCodes()
     {
-        $command = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier');
-        $all_codes = $command->queryAll();
+        $all_codes = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier')->queryAll();
         $codes = array();
         foreach ($all_codes as $code) {
             $codes[$code['code']] = $code['code'];

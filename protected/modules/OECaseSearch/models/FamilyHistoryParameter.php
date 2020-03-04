@@ -79,7 +79,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $query_relative = '';
         $query_condition = '';
 
-        if ($this->side !=='') {
+        if ($this->side !== '') {
             $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
         }
         if ($this->relative !== '') {
@@ -102,7 +102,7 @@ SELECT DISTINCT p.id
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (' .$query_side.$query_relative.$query_condition;
+WHERE (' . $query_side . $query_relative . $query_condition;
         if ($this->operation) {
             $queryStr = "
 SELECT id
