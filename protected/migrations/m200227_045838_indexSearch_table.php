@@ -1,3 +1,6 @@
+<!--This migration creates a table, index_search, that replaces OE_ED_CONFIG.xml for the generation of index search files, currently for the examination event.
+Then updates the table with contents from the aforementioned xml file, and the indexSearch function in the examination event uses this ta ble to generate HTML on the fly for display.
+-->
 <?php
 
 class m200227_045838_indexSearch_table extends CDbMigration
