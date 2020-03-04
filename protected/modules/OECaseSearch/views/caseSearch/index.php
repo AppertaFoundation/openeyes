@@ -306,20 +306,21 @@ $user_searches = array_map(
             ],
             openButton: $('#add-to-advanced-search-filters'),
             onReturn: function(dialog, selectedValues) {
+                let parameters = [];
                 $.each(selectedValues, function(index, item) {
                     parameter_id_counter++;
-                    $.ajax({
-                        url: '<?= $this->createUrl('caseSearch/addParameter') ?>',
-                        data: {
-                            param: item.type,
-                            id: parameter_id_counter
-                        },
-                        type: 'GET',
-                        success: function (response) {
-                            // Append the dynamic parameter HTML before the first fixed parameter.
-                            $('#param-list tbody tr.fixed-parameter:first').before(response);
-                        }
-                    });
+                    parameters.push({param: item.type, id: parameter_id_counter});
+                });
+                $.ajax({
+                    url: '<?= $this->createUrl('caseSearch/addParameter') ?>',
+                    data: {
+                        parameters: parameters
+                    },
+                    type: 'GET',
+                    success: function (response) {
+                        // Append the dynamic parameter HTML before the first fixed parameter.
+                        $('#param-list tbody tr.fixed-parameter:first').before(response);
+                    }
                 });
             }
         });

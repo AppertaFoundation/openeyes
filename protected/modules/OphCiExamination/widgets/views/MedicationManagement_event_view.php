@@ -16,7 +16,9 @@
  */
 ?>
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
-<?php $el_id = CHtml::modelName($element) . '_element'; ?>
+<?php $el_id = CHtml::modelName($element) . '_element';
+$form_format = SettingMetadata::model()->getSetting('prescription_form_format');
+?>
 <div class="element-data full-width">
     <table class="medications" id="Medication_Management_medication_current_entries">
         <colgroup>
@@ -49,7 +51,8 @@
                             'entry' => $entry,
                             'patient' => $this->patient,
                             'entry_icon' => $entry_icon,
-                            'row_count' => $key
+                            'row_count' => $key,
+                            'form_setting' => $form_format
                         ]
                     ); ?>
                 <?php endforeach; ?>

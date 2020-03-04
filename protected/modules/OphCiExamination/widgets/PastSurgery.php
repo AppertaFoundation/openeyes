@@ -22,6 +22,9 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 
 class PastSurgery extends \BaseEventElementWidget
 {
+
+    public $pro_theme;
+
     /**
      * @return PastSurgeryElement
      */

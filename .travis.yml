@@ -7,10 +7,10 @@ services:
 
 jobs:
   include:
-    - # PR builds - behat
-      if: type = pull_request
-      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
-      name: "Behat"
+   # - # PR builds - behat
+   #   if: type = pull_request
+   #   script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH behat
+   #   name: "Behat"
     - # PR builds - phpunit
       if: type = pull_request
       script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH phpunit

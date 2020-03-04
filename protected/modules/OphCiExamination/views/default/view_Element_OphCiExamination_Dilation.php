@@ -45,6 +45,11 @@
             <span class="large-text">None given</span>
           </div>
         <?php } ?>
+        <div>
+            <?php if ($element->{$eye_side . '_comments'}) : ?>
+                <?= $element->textWithLineBreaks($eye_side . '_comments') ?>
+            <?php endif; ?>
+        </div>
     </div>
     <?php endforeach; ?>
 </div>
