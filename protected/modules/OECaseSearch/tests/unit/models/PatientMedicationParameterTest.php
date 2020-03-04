@@ -13,6 +13,7 @@ class PatientMedicationParameterTest extends CDbTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new PatientMedicationParameter();
         $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
@@ -21,6 +22,7 @@ class PatientMedicationParameterTest extends CDbTestCase
     public function tearDown()
     {
         unset($this->object, $this->searchProvider);
+        parent::tearDown();
     }
 
     /**

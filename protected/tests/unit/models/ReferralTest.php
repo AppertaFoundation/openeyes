@@ -21,14 +21,7 @@ class ReferralTest extends ActiveRecordTestCase
     public function setUp()
     {
         $this->object = new Referral();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    public function tearDown()
-    {
+        parent::setUp();
     }
 
     public function testgetActiveRTT_noneActive()

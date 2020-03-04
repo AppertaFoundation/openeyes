@@ -76,10 +76,6 @@ class CatProm5AnswersTest extends ActiveRecordTestCase {
         $this->model = new CatProm5Answers();
     }
 
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
 
   /**
    * @covers CatProm5Answers::model

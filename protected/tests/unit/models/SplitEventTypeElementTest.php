@@ -48,14 +48,6 @@ class SplitEventTypeElementTest extends CDbTestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    public function tearDown()
-    {
-    }
-
-    /**
      * @covers SplitEventTypeElement::hasLeft
      */
     public function testHasLeft()

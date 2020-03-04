@@ -52,6 +52,7 @@ class CatProm5QuestionsTest extends ActiveRecordTestCase
     public function tearDown()
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
+        parent::tearDown();
     }
 
 

@@ -156,6 +156,7 @@ class LegacyFieldsCommandTest extends CDbTestCase
     public function tearDown()
     {
         $this->cleanDirectories();
+        parent::tearDown();
     }
 
     protected function cleanDirectories()

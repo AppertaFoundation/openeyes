@@ -19,6 +19,7 @@ class PreviousTrialParameterTest extends CDbTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->object = new PreviousTrialParameter();
         $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
@@ -27,6 +28,7 @@ class PreviousTrialParameterTest extends CDbTestCase
     public function tearDown()
     {
         unset($this->object, $this->searchProvider); // start from scratch for each test.
+        parent::tearDown();
     }
 
     /**

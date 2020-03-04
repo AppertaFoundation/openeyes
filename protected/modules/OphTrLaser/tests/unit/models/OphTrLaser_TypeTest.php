@@ -49,6 +49,7 @@ class OphTrLaser_TypeTest extends ActiveRecordTestCase
     public function tearDown()
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.ophtrlaser.tests.fixtures');
+        parent::tearDown();
     }
 
     /**
