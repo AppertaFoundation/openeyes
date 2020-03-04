@@ -479,7 +479,6 @@ EOSQL;
 
     private function generateChildren($index, $event_name, $lvl) {
         $result = "";
-        $children = $index->INDEX_LIST;
         $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search WHERE parent =:parent_key');
         $cmd->bindValue(':parent_key', $index['id']);
         $children = $cmd ->queryAll();
@@ -508,11 +507,7 @@ EOSQL;
             .$this->getIndexSearchHiddenTerms($event_name);
         $html_string = $this->formatHTML($html_string);
         Yii::app()->params['index_search_examination'] = $html_string;
-////        Saving the generated PHP and HTML content in the event_type table for event (Eg: Examination) under the index_search_content column
-//        $cmd = $this->getDb()->createCommand('UPDATE event_type SET index_search_content =:html  WHERE name =:event_name');
-//        $cmd->bindValue(':html', $html_string)
-//        ->bindValue(':event_name',$event_name)
-//        ->query();
+        Yii::log($html_string);
     }
 
     private function getIndexSearchHeader() {
