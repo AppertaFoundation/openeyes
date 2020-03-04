@@ -42,16 +42,18 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
             <tbody class='js-usage-rule-table'>
             <?php foreach ($medication_set->medicationSetRules as $k => $rule) : ?>
                 <tr data-key="<?= $k; ?>">
-                    <input type="hidden" name="MedicationSetRule[<?=$k?>][id]"  value="<?=$rule->id?>"/>
-                    <input type="hidden" name="MedicationSetRule[<?=$k?>][site_id]"  value="<?=$rule->site_id?>"/>
-                    <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
+                    <td>
+                        <input type="hidden" name="MedicationSetRule[<?=$k?>][id]"  value="<?=$rule->id?>"/>
+                        <input type="hidden" name="MedicationSetRule[<?=$k?>][site_id]"  value="<?=$rule->site_id?>"/>
+                        <?= ($rule->site_id ? CHtml::encode($rule->site->name) : "") ?>
                     </td>
                     <td>
                         <input type="hidden" name="MedicationSetRule[<?=$k?>][subspecialty_id]"  value="<?=$rule->subspecialty_id?>"/>
                         <?= ($rule->subspecialty_id ? CHtml::encode($rule->subspecialty->name) : "") ?>
                     </td>
                     <td>
-                        <?= CHtml::dropDownList("MedicationSetRule[{$k}][usage_code_id]", $rule->usage_code_id, CHtml::listData($all_usage_codes, 'id', 'name')); ?>
+                        <input type="hidden" name="MedicationSetRule[<?=$k?>][usage_code_id]" value="<?= $rule->usage_code_id ?>" />
+                        <?= ($rule->usage_code_id ? CHtml::encode($rule->usageCode->name) : "") ?>
                     </td>
                     <td>
                         <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>
@@ -85,7 +87,8 @@ $usage_codes = array_map(function ($e) use ($filtered_usage_code_id) {
             {{subspecialty.label}}
         </td>
         <td>
-            <?= CHtml::dropDownList('MedicationSetRule[{{key}}][usage_code_id]', null, CHtml::listData($all_usage_codes, 'id', 'name')); ?>
+            <input type="hidden" name="MedicationSetRule[{{key}}][usage_code_id]" value="{{usage_code.id}}" />
+            {{usage_code.label}}
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-rule"><i class="oe-i trash"></i></a>

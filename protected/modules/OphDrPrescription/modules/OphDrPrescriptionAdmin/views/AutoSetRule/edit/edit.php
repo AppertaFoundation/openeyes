@@ -104,7 +104,7 @@
     $('#meds-list').data('tableInlineEditController', tableInlineEditController);
 
     function togglePrescriptionExtraInputs() {
-        const usage_codes = $("select[id$='_usage_code_id']");
+        const usage_codes = $("input[name*='usage_code_id']");
         let prescriptionFound = false;
         usage_codes.each(function(i, el) {
             if ($(el).val() == prescriptionUsageRuleId) {
