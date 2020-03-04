@@ -562,35 +562,14 @@ class MedicationSet extends BaseActiveRecordVersioned
         $medication_ids = $cmd->queryColumn();
 
         // empty the set
-        $cnt = MedicationSetItem::model()->countByAttributes(['medication_set_id' => $this->id]);
+        $delete_taper_query = "DELETE medication_set_item_taper
+                                FROM medication_set_item_taper 
+                                INNER JOIN medication_set_item ON medication_set_item.id = medication_set_item_taper.`medication_set_item_id`
+                                WHERE medication_set_id = {$this->id};";
 
-        $batch = 500000;
-        $iteration = -1;
-        do {
-            $iteration++;
-            $item_ids_array = $this->dbConnection->createCommand()
-                ->select('id')
-                ->from('medication_set_item')
-                ->where('medication_set_id = :id', [':id' => $this->id])
-                ->offset($iteration * $batch)
-                ->limit($batch)
-                ->queryAll();
+        $delete_taper_item = "DELETE FROM medication_set_item WHERE id = {$this->id}";
 
-            $item_ids = [];
-            foreach ($item_ids_array as $i) {
-                $item_ids[] = $i['id'];
-            }
-
-            if ($item_ids) {
-                //deleting tapers
-                $delete_taper_query = "DELETE FROM medication_set_item_taper WHERE medication_set_item_id IN (" . implode(", ", $item_ids) . ")";
-                $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_taper_query)->execute();
-
-                //deleting item
-                $delete_set_item_query = "DELETE FROM medication_set_item WHERE id IN (" . implode(", ", $item_ids) . ")";
-                $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_set_item_query)->execute();
-            }
-        } while (($iteration * $batch) <= $cnt);
+        $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_taper_query . $delete_taper_item)->execute();
 
         if (!$no_condition && !empty($medication_ids)) {
             // repopulate

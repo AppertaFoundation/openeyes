@@ -181,9 +181,8 @@ $dispense_condition_options = array(
         <td>
             <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][frequency_id]',
                 $taper->frequency_id,
-                /* TODO figure out if this should be replaced by MedicationFrequency */
-                CHtml::listData(DrugFrequency::model()->activeOrPk($taper->frequency_id)->findAll(array('order' => 'display_order asc')),
-                    'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
+                CHtml::listData(MedicationFrequency::model()->activeOrPk([$taper->frequency_id])->findAll(array()),
+                    'id', 'term'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
         </td>
         <td>
             <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][duration_id]',
