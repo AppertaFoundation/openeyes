@@ -2,7 +2,7 @@
 
 /**
  * Class PatientDeceasedParameterTest
- * @method patient($fixtureId)
+ * @method Patient patient($fixtureId)
  */
 class PatientDeceasedParameterTest extends CDbTestCase
 {
