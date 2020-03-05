@@ -64,8 +64,18 @@ $user_searches = array_map(
             </tr>
             </tbody>
         </table>
-        <div class="row align-right">
-            <a href="#" id="load-saved-search">Load saved search</a>
+        <div class="flex-layout row">
+            <div>
+                <button id="load-saved-search">All searches</button>
+                <?= CHtml::htmlButton(
+                    'Save/Share',
+                    array(
+                        'class' => 'js-save-search-btn',
+                        'type' => 'submit',
+                        'formaction' => $this->createUrl('caseSearch/saveSearch')
+                    )
+                ) ?>
+            </div>
             <button id="add-to-advanced-search-filters" class="button hint green thin js-add-select-btn" data-popup="add-to-advanced-search-filters">
                 <i class="oe-i plus pro-theme"></i>
             </button>
@@ -74,14 +84,6 @@ $user_searches = array_map(
         <hr class="divider"/>
         <div class="button-stack">
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
-            <?= CHtml::htmlButton(
-                'Save search',
-                array(
-                    'class' => 'cols-full green hint js-save-search-btn',
-                    'type' => 'submit',
-                    'formaction' => $this->createUrl('caseSearch/saveSearch')
-                )
-            ) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-basic-csv', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-advanced-csv', 'class' => 'cols-full')) ?>
@@ -165,61 +167,33 @@ $user_searches = array_map(
     </main>
 </div>
 <script type="text/html" id="load-saved-search-template">
-    <table style="width: 100%;">
-        <tbody>
-        <tr>
-            <td style="width: 25%;">
-                <h3>My searches</h3>
-                <ul id="current-user-search-list">
-                    {{#currentUserSearches}}
-                    <li data-id="{{id}}">{{name}}</li>
-                    {{/currentUserSearches}}
-                </ul>
-            </td>
-            <td style="width: 25%;">
-                <h3>Searches by user</h3>
-                <ul id="other-user-list">
-                    {{#otherUsers}}
-                    <li data-id="{{id}}">{{name}}</li>
-                    {{/otherUsers}}
-                </ul>
-            </td>
-            <td style="width: 25%;">
-                <h3>Selected user search</h3>
-                <ul id="other-user-search-list">
-                    {{#otherUserSearches}}
-                    <li data-id="{{id}}">{{name}}</li>
-                    {{/otherUserSearches}}
-                </ul>
-            </td>
-            <td style="width: 25%;">
-                <h3>Search contents</h3>
-                <ul id="search-contents-list">
-                    {{#searchContents}}
-                    <li>{{.}}</li>
-                    {{/searchContents}}
-                </ul>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <hr class="divider"/>
-    <button id="load-selected-search">Load</button>
+    <div class="flex-layout flex-top">
+        <div class="search-query">
+            <table>
+                <tbody>
+                {{#allSearches}}
+                <tr>
+                    <td>
+                        <button data-id="{{id}}">{{name}}</button>
+                    </td>
+                    <td>
+                        <i class="oe-i trash"></i>
+                    </td>
+                </tr>
+                {{/allSearches}}
+                </tbody>
+            </table>
+        </div>
+        <div class="save-query">
+            <h3>Import search queries</h3>
+            <textarea rows="2" name="search_content" id="search-content" class="cols-full"></textarea>
+            <div class="row align-right">
+                <button id="load-selected-search">Import new search</button>
+            </div>
+        </div>
+    </div>
 </script>
-<script type="text/html" id="search-contents-template">
-    <ul>
-        {{#searchContents}}
-        <li>{{.}}</li>
-        {{/searchContents}}
-    </ul>
-</script>
-<script type="text/html" id="other-user-search-item-template">
-    <ul>
-        {{#otherUserSearches}}
-        <li data-id="{{id}}">{{name}}</li>
-        {{/otherUserSearches}}
-    </ul>
-</script>
+<script type="text/html" id="search-contents-template">{{#searchContents}}[{{.}}], {{/searchContents}}</script>
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
@@ -332,9 +306,9 @@ $user_searches = array_map(
         $('#load-saved-search').click(function() {
             var savedSearchDialog = new OpenEyes.UI.Dialog.LoadSavedSearch({
                 id: 'load-saved-search-dialog',
+                title: 'All searches',
                 user_id: <?= Yii::app()->user->id ?>,
-                user_searches: <?= json_encode($user_searches) ?>,
-                users: <?= json_encode($user_list) ?>
+                all_searches: <?= json_encode($user_searches) ?>
             }).open();
         });
 

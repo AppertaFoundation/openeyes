@@ -24,8 +24,7 @@
         options = $.extend(true, {}, LoadSavedSearchDialog._defaultOptions, options);
 
         this.userId = options.user_id;
-        this.userSearches = options.user_searches;
-        this.users = options.users;
+        this.userSearches = options.all_searches;
         Dialog.call(this, options);
     }
 
@@ -34,9 +33,9 @@
     LoadSavedSearchDialog._defaultOptions = {
         destroyOnClose: false,
         title: '',
-        popupClass: 'oe-create-event-popup',
+        popupContentClass: 'oe-popup-content popup-search-query',
         modal: true,
-        width: 1000,
+        width: null,
         minHeight: 400,
         maxHeight: 400,
         dialogClass: 'dialog oe-load-saved-search-popup',
@@ -45,20 +44,18 @@
 
     // selectors for finding and hooking into various of the key elements.
     var selectors = {
-        currentUserSearchTemplate: '#current-user-search-template',
+        currentUserSearchTemplate: '#all-search-template',
         searchContentTemplate: '#search-contents-template',
         otherUserTemplate: '#other-user-item-template',
         otherUserSearchTemplate: '#other-user-search-item-template',
         otherUserSearchItem: '#other-user-search-list li',
         searchContentItem: '#search-content-template',
-        currentUserSearchList: '#current-user-search-list li',
+        currentUserSearchList: '.search-query td button',
         otherUserList: '#other-user-list li',
         otherUserSearchList: '#other-user-search-list',
-        searchContentsList: '#search-contents-list',
+        searchContentsList: '#search-content',
         loadSearchButton: '#load-selected-search'
     };
-
-    LoadSavedSearchDialog.prototype.selectedUserId = 0;
     LoadSavedSearchDialog.prototype.selectedSearchId = 0;
 
     /**
@@ -77,10 +74,6 @@
         return this.userSearches;
     };
 
-    LoadSavedSearchDialog.prototype.getUsers = function() {
-        return this.users;
-    };
-
     /**
      *
      * @param options
@@ -90,8 +83,7 @@
         return this.compileTemplate({
             selector: options.selector,
             data: {
-                currentUserSearches: this.getCurrentUserSearchesList(),
-                otherUsers: this.getUsers(),
+                allSearches: this.getCurrentUserSearchesList(),
             }
         });
     };
@@ -104,27 +96,6 @@
 
         self.content.on('click', selectors.currentUserSearchList, function () {
             self.content.find(selectors.currentUserSearchList).removeClass('selected');
-            self.content.find(selectors.otherUserSearchItem).removeClass('selected');
-            self.content.find(selectors.otherUserList).removeClass('selected');
-            self.content.find(selectors.otherUserSearchList).empty();
-            $(this).addClass('selected');
-            self.selectedSearchId = $(this).data('id');
-            self.updateSearchContentsList();
-        });
-
-        self.content.on('click', selectors.otherUserList, function () {
-            self.content.find(selectors.currentUserSearchList).removeClass('selected');
-            self.content.find(selectors.otherUserList).removeClass('selected');
-            self.content.find(selectors.searchContentsList).empty();
-            self.content.find(selectors.otherUserSearchList).empty();
-            $(this).addClass('selected');
-            self.selectedUserId = $(this).data('id');
-            self.updateOtherUserSearchesList();
-        });
-
-        self.content.on('click', selectors.otherUserSearchItem, function () {
-            self.content.find(selectors.currentUserSearchList).removeClass('selected');
-            self.content.find(selectors.otherUserSearchItem).removeClass('selected');
             $(this).addClass('selected');
             self.selectedSearchId = $(this).data('id');
             self.updateSearchContentsList();
@@ -169,7 +140,7 @@
             success: function (response) {
                 self.searchContentList = JSON.parse(response);
                 $(selectors.searchContentsList).empty();
-                $(selectors.searchContentsList).append(
+                $(selectors.searchContentsList).val(
                     self.compileTemplate({
                         selector: selectors.searchContentTemplate,
                         data: {

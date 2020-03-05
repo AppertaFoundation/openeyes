@@ -166,14 +166,7 @@ class CaseSearchController extends BaseModuleController
             ),
         ));
 
-        $current_user_searches = SavedSearch::model()->findAllByAttributes(array('created_user_id' => Yii::app()->user->id));
-        $query = Yii::app()->db->createCommand()
-            ->select('cs.created_user_id id, CONCAT(u.first_name, " ", u.last_name) name')
-            ->from('case_search_saved_search cs')
-            ->join('user u', 'u.id = cs.created_user_id')
-            ->where('cs.created_user_id != :user_id', array(':user_id' => Yii::app()->user->id));
-        $query->distinct = true;
-        $all_users = $query->queryAll();
+        $all_searches = SavedSearch::model()->findAll();
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
@@ -191,13 +184,7 @@ class CaseSearchController extends BaseModuleController
             'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
             'fixedParams' => $fixedParameters,
             'patients' => $patientData,
-            'saved_searches' => $current_user_searches,
-            'user_list' => array_map(
-                static function ($item) {
-                    return array('id' => $item['id'], 'name' => $item['name']);
-                },
-                $all_users
-            ),
+            'saved_searches' => $all_searches,
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
         ));
     }
