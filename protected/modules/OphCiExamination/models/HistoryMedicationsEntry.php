@@ -142,7 +142,7 @@ class HistoryMedicationsEntry extends \BaseElement
      *
      * @param $item
      */
-    private function clonefromPrescriptionItem($item)
+    private function cloneFromPrescriptionItem($item)
     {
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
@@ -245,6 +245,16 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getPrescriptionLink()
+    {
+        return '/OphDrPrescription/Default/view/' . $this->prescription_item->prescription->event_id;
+    }
+
+    public function getExaminationLink()
+    {
+        return '/OphCiExamination/Default/view/' . $this->element->event_id;
+    }
+
     /**
      * Check element attributes to determine if anything has been set that would allow it to be recorded
      * Can be used to remove entries from the containing element.
@@ -317,6 +327,11 @@ class HistoryMedicationsEntry extends \BaseElement
                 ($this->drug ? $this->drug->tallmanlabel : ''));
     }
 
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
+    }
+
     /**
      * @return string
      */
@@ -372,6 +387,7 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function getStartDateDisplay()
     {
+
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 

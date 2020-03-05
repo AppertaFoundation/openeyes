@@ -44,20 +44,21 @@ class LogoHelper
     /**
      * @return array
      */
-    protected function getUploadedLogo()
+    public function getUploadedLogo()
     {
         $logo = array();
 
-        $path = Yii::app()->basePath . '/runtime/';
-        $yourImageUrl = Yii::app()->assetManager->publish($path);
-        $imageLists = scandir($path, 1);
+        $directory = \Yii::getPathOfAlias('application.runtime');
+        $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
 
-        foreach ($imageLists as $imageList) {
-            if (strpos($imageList, 'header') !== false) {
-                $logo['headerLogo'] = $yourImageUrl . '/' . $imageList;
+        foreach($images as $image_path) {
+            if (strpos($image_path, 'header') !== false) {
+                Yii::app()->assetManager->publish($image_path);
+                $logo['headerLogo'] = $image_path;
             }
-            if (strpos($imageList, 'secondary') !== false) {
-                $logo['secondaryLogo'] = $yourImageUrl . '/' . $imageList;
+            if (strpos($image_path, 'secondary') !== false) {
+                Yii::app()->assetManager->publish($image_path);
+                $logo['secondaryLogo'] = $image_path;
             }
         }
 

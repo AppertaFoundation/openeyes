@@ -23,6 +23,10 @@ class SubspecialtySubsectionsController extends BaseAdminController {
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         $model_list = $subspecialty_id ? $model->findAll('subspecialty_id = :subspecialty_id', [':subspecialty_id' => $subspecialty_id]) : [];
 
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('/js/oeadmin/list.js');
+
         $this->render('/oeadmin/subspecialty_subsections/index', [
             'model' => $model,
             'model_list' => $model_list,
@@ -121,4 +125,15 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             echo '0';
         }
     }
+
+    public function actions() {
+        return [
+            'sortConditions' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => SubspecialtySubsection::model(),
+                'modelName' => 'SubspecialtySubsection',
+            ],
+        ];
+    }
+
 }

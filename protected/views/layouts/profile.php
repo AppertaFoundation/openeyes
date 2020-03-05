@@ -42,7 +42,7 @@
     </b>
   </div>
 </div>
-    <div class="oe-full-content oe-user-profile flex-layout flex-top">
+    <div class="oe-full-content oe-user-profile subgrid">
       <nav class="oe-full-side-panel">
             <?php $this->renderPartial('//profile/sidebar'); ?>
       </nav>

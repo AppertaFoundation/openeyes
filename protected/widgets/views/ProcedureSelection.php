@@ -42,37 +42,36 @@
         </thead>
         <tbody class="body">
         <?php
-        if (!empty($selected_procedures)) {
-            foreach ($selected_procedures as $procedure) {
+        if (isset($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) :
                 $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+
                 <tr class="item">
                     <td class="procedure">
-                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                                $procedure->id,
-                                ['class' => 'js-procedure']); ?>
-                        </span>
+                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id, ['class' => 'js-procedure']); ?></span>
                         <span class="value"><?= $procedure->term; ?></span>
                     </td>
 
                     <?php if ($durations) { ?>
                         <td class="duration">
-                        <span data-default-duration="<?= $procedure->default_duration ?>">
+                    <span data-default-duration="<?= $procedure->default_duration ?>">
                         <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
-                        </span> mins
+                    </span> mins
                         </td>
                     <?php } ?>
                     <td>
-                        <span class="removeProcedure">
-                            <i class="oe-i trash"></i>
-                        </span>
+                        <span class="removeProcedure"><i class="oe-i trash"></i></span>
                     </td>
                 </tr>
 
-            <?php }
-            if (isset($_POST[$class]['total_duration_' . $identifier])) {
-                $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
-            }
+            <?php endforeach;
         } ?>
+
+        <?php
+        if (isset($_POST[$class]['total_duration_' . $identifier])) {
+            $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
+        }
+        ?>
         </tbody>
 
         <?php if ($durations) { ?>
@@ -146,18 +145,20 @@
             let adjustedTotalDuration = 0;
             $('#procedureList_' + identifier).find('.item').map(function () {
                 let $span = $(this).find('.duration span');
-                let duration = parseInt($span.data('default-duration'));
-                let adjustedDuration;
+                if ($span.length > 0) {
+                    let duration = parseInt($span.data('default-duration'));
+                    let adjustedDuration;
 
-                if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
-                    totalDuration *= 2;
+                    if ($('input[name=\"<?=$class?>[eye_id]\"]:checked').val() == 3) {
+                        totalDuration *= 2;
+                    }
+                    adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
+
+                    totalDuration += duration;
+                    adjustedTotalDuration += adjustedDuration;
+
+                    $span.text(adjustedDuration);
                 }
-                adjustedDuration = calculateDurationByComplexity(duration, getComplexity());
-
-                totalDuration += duration;
-                adjustedTotalDuration += adjustedDuration;
-
-                $span.text(adjustedDuration);
             });
 
             if (parseInt($projected_duration.text()) === parseInt($('#<?php echo $class?>_total_duration_' + identifier).val())
@@ -168,7 +169,14 @@
             $projected_duration.text(adjustedTotalDuration);
         }
 
-        $('#typeProcedure').on('click', '.removeProcedure', function () {
+        let list_selector = '';
+        if (moduleName === "OphTrConsent") {
+            list_selector = 'td #typeProcedure'
+        } else {
+            list_selector = '#typeProcedure'
+        }
+
+        $(list_selector).on('click', '.removeProcedure', function () {
             let $table = $(this).closest("[id^='procedureList_']");
             if ($table) {
                 let identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
@@ -255,7 +263,8 @@
 
         function initialiseProcedureAdder() {
             $('.add-options[data-id="subsections"]').on('click', 'li', function () {
-                updateProcedureDialog($(this).data('id'));
+                let id = $(this).attr('class') === 'selected' ? '' : $(this).data('id');
+                updateProcedureDialog(id);
             });
             if ($('.add-options[data-id="subsections"] > li').length === 0) {
                 $('.add-options[data-id="subsections"]').hide();
@@ -264,6 +273,9 @@
             if ($('.add-options[data-id="select"] > li').length === 0) {
                 $('.add-options[data-id="select"]').hide();
             }
+
+            // Set select dialog to show defaults when first loading
+            updateProcedureDialog('');
         }
 
         function updateProcedureDialog(subsection) {
@@ -278,6 +290,21 @@
                             $(this).show();
                         });
                     }
+                });
+            } else {
+                <?php
+                $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+                $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+                $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
+                $formatted_procedures = "";
+                foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
+                    $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
+                    "<span class='auto-width'>$subspecialty_procedure</span></li>";
+                }
+                ?>
+                $('.add-options[data-id="select"]').each(function () {
+                    $(this).html("<?= $formatted_procedures ?>");
+                    $(this).show();
                 });
             }
         }
@@ -363,10 +390,14 @@
                 'type': 'GET',
                 'data': {'name': name},
                 'success': function (data) {
-                    var enableDurations = <?php echo $durations ? 'true' : 'false'?>;
+                    let enableDurations = <?php echo $durations ? 'true' : 'false'?>;
 
-                    // append selection onto procedure list
-                    $('#procedureList_' + identifier).find('.body').append(data);
+                    // append duration of the procedure
+                    $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
+                        if ($(this).html() === name) {
+                            $(this).parents('td.procedure').after(data);
+                        }
+                    });
                     $('#procedureList_' + identifier).css('visibility', 'visible');
 
                     if (enableDurations) {
@@ -383,8 +414,8 @@
 
                         $('ul.add-options.js-search-results').children().each(function () {
                             if ($(this).text() == m[1]) {
-                                var id = $(this).val();
-                                var name = $(this).text();
+                                let id = $(this).val();
+                                let name = $(this).text();
 
                                 removed_stack_<?php echo $identifier?>.push({name: name, id: id});
 
@@ -420,9 +451,25 @@
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search',
                 onReturn: function (adderDialog, selectedItems) {
-                    var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
-                    for (i in selectedItems) {
-                        ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
+                    //on multiselect: sort selected items alphabetically as the list could have a different display order
+                    if (selectedItems.length > 1) {
+                        selectedItems.sort(function (a, b) {
+                            let label_a = a.label.toUpperCase();
+                            let label_b = b.label.toUpperCase();
+
+                            if (label_a > label_b) {
+                                return 1;
+                            } else if (label_a < label_b) {
+                                return -1;
+                            }
+
+                            return 0;
+                        });
+                    }
+
+                    for (let index = 0; index < selectedItems.length; index++) {
+                        // append selection into procedure list
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
                     }
                     return true;
                 },
