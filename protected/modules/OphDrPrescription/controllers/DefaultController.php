@@ -413,7 +413,12 @@ class DefaultController extends BaseEventTypeController
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
-                $item_model = new OphDrPrescription_Item();
+                if (isset($item['id'])) {
+                    $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
+                } else {
+                    $item_model = new OphDrPrescription_Item();
+                }
+
                 $item_model->attributes = $item;
                 if (!$item_model->start_date) {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
@@ -421,7 +426,12 @@ class DefaultController extends BaseEventTypeController
                 if (isset($item['taper'])) {
                     $tapers = array();
                     foreach ($item['taper'] as $taper) {
-                        $taper_model = new OphDrPrescription_ItemTaper();
+                        if (isset($taper['id'])) {
+                            $taper_model = OphDrPrescription_ItemTaper::model()->findByPk($taper['id']);
+                        } else {
+                            $taper_model = new OphDrPrescription_ItemTaper();
+                        }
+
                         $taper_model->attributes = $taper;
                         $tapers[] = $taper_model;
                     }
