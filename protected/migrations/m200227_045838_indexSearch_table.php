@@ -9,8 +9,8 @@ class m200227_045838_indexSearch_table extends CDbMigration
     {
         $this->createTable('index_search', [
             'id' => 'pk',
-            'event_type' => 'varchar(64) not null',
-            'parent' => 'int(5) unsigned',
+            'event_type' => 'varchar(64) not null',//Eg: Examination
+            'parent' => 'int(5) unsigned',//Parent row id (if this row is a child row)
             'primary_term' => 'varchar(128)',
             'secondary_term_list' => 'varchar(1024)',
             'description' => 'varchar(512)',
