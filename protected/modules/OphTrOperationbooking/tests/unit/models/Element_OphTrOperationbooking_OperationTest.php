@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
+class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'episode' => 'Episode',
@@ -31,6 +31,15 @@ class Element_OphTrOperationbooking_OperationTest extends CDbTestCase
         'anaesthetic_type_assignments' => 'OphTrOperationbooking_AnaestheticAnaestheticType',
         'operations' => 'Element_OphTrOperationbooking_Operation',
     );
+
+    public function getModel()
+    {
+        return Element_OphTrOperationbooking_Operation::model();
+    }
+
+    protected $columns_to_skip = [
+        'total_duration'
+    ];
 
     public static function setUpBeforeClass()
     {

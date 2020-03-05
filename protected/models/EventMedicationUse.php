@@ -70,6 +70,10 @@ class EventMedicationUse extends BaseElement
     const USER_MEDICATION_SOURCE_TYPE = "LOCAL";
     const USER_MEDICATION_SOURCE_SUBTYPE = "UNMAPPED";
 
+    /** @var bool Used to change default behaviour when converting old drugs to DMD */
+    public static $local_to_dmd_conversion = false;
+    private static $other_stop_reason = null;
+
     /** @var bool Tracking variable used when creating/editing entries */
     public $originallyStopped = false;
 
@@ -82,7 +86,7 @@ class EventMedicationUse extends BaseElement
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
 
-    /* temporaryly saved properties to keep edit mode consistent through pages */
+    /* temporarily saved properties to keep edit mode consistent through pages */
     public $group;
     public $chk_prescribe;
     public $chk_stop;
@@ -136,6 +140,7 @@ class EventMedicationUse extends BaseElement
             array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('start_date', 'default', 'value' => '0000-00-00'),
             array('last_modified_date, created_date, event_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -500,9 +505,10 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        } else {
-            return "";
+        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
+            return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
+        return "";
     }
 
     public function getStopDateDisplay()
@@ -627,6 +633,10 @@ class EventMedicationUse extends BaseElement
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
                   'dose','dose_unit_term', 'frequency_id', 'frequency'];
+
+        if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
+            $attrs[] = 'start_date';
+        }
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
@@ -680,6 +690,21 @@ class EventMedicationUse extends BaseElement
                 $this->medication_id = $medication->id;
             } else {
                 $this->addError("medication_id", "There has been an error while saving the new medication '" . $this->medication_name . "'");
+            }
+        }
+
+        if (EventMedicationUse::$local_to_dmd_conversion) {
+            if (isset($this->end_date) && !isset($this->stop_reason_id)) {
+                if (!isset(EventMedicationUse::$other_stop_reason)) {
+                    EventMedicationUse::$other_stop_reason = HistoryMedicationsStopReason::model()->find("name = :name", [":name" => "Other"]);
+                }
+                $this->stop_reason_id = EventMedicationUse::$other_stop_reason->id;
+            }
+            if (isset($this->dose) && (!isset($this->dose_unit_term) || $this->dose_unit_term == "")) {
+                $medication = Medication::model()->findByPk($this->medication_id);
+                $this->dose_unit_term = ($medication && $medication->default_dose_unit_term) ?
+                    $medication->default_dose_unit_term :
+                    'unit';
             }
         }
 

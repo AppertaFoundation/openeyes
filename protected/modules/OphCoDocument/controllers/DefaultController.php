@@ -141,6 +141,7 @@ class DefaultController extends BaseEventTypeController
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
+        $p_file->title = $original_name;
 
         if ($p_file->save()) {
             unlink($tmp_name);

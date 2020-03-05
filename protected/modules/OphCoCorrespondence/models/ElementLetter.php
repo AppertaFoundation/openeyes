@@ -789,6 +789,7 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
+
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.

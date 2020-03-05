@@ -171,10 +171,11 @@ class MedicationManagementController extends BaseController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
+        $usage_code = \MedicationUsageCode::model()->findByAttributes(['usage_code' => 'COMMON_OPH']);
         $rule = MedicationSetRule::model()->findByAttributes(array(
             'subspecialty_id' => $subspecialty_id,
             'site_id' => $site_id,
-            'usage_code' => 'COMMON_OPH'
+            'usage_code_id' => $usage_code->id
         ));
         if ($rule) {
             return $rule->medicationSet;

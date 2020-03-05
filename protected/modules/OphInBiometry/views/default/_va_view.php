@@ -24,27 +24,14 @@ if ($eventtype) {
 <?php
 $VAdate = "";
 $VA_data = null;
-$episode = $this->episode;
 $api = Yii::app()->moduleAPI->get('OphCiExamination');
 if ($api) {
-    $chosenVA[] = array('');
-    //Get All Events for episode.
-    $criteria = new CDbCriteria();
-    $criteria->condition = 'episode_id = :e_id AND event_type_id = :e_typeid';
-    $criteria->order = ' event_date DESC';
-    $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
-    //For each event, check if =event_id in _visualacuity.
-    $events = Event::model()->findAll($criteria);
-    if ($events) {
-        for ($i = 0; $i < count($events); ++$i) {
-            // Get Most Recent VA
-            $vaID = $api->getMostRecentVA($events[$i]->id);
-            if ($vaID && !$VA_data) {
-                $VA_data = $api->getMostRecentVAData($vaID->id);
-                $chosenVA = $vaID;
-                $VAdate = date("d M Y", strtotime($events[$i]->event_date));
-            }
-        }
+    $chosenVA = array();
+    $latest_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->patient);
+    if ($latest_VA_element && !$VA_data) {
+        $VA_data = $api->getMostRecentVAData($latest_VA_element->id);
+        $chosenVA = $latest_VA_element;
+        $VAdate = date("d M Y", strtotime($latest_VA_element->event->event_date));
     }
     $rightData = array();
     $leftData = array();
@@ -68,11 +55,11 @@ if ($api) {
         for ($i = 0; $i < count($leftData); ++$i) {
             $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
         }
-        $methodIdRight = $api->getMethodIdRight($chosenVA->id, $episode);
+        $methodIdRight = $api->getMethodIdRight($chosenVA->id);
         for ($i = 0; $i < count($methodIdRight); ++$i) {
             $methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
         }
-        $methodIdLeft = $api->getMethodIdLeft($chosenVA->id, $episode);
+        $methodIdLeft = $api->getMethodIdLeft($chosenVA->id);
         for ($i = 0; $i < count($methodIdLeft); ++$i) {
             $methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
         }
@@ -128,28 +115,26 @@ if ($api) {
 <?php
 // Near VA
 $NearVAdate = "";
-$NearVAFound = false;
+$nearVAdata = null;
 if ($api) {
-    for ($i = 0; $i < count($events); ++$i) {
-        // Get Most Recent VA
-        $vaID = $api->getMostRecentNearVA($events[$i]->id);
-        // Loop through $data and separate into different eyes
-        if ($vaID && !$NearVAFound) {
-            $neardata = $api->getMostRecentNearVAData($vaID->id);
-            $chosenNearVA = $vaID;
-            $NearVAFound = true;
-            $NearVAdate = date("d M Y", strtotime($events[$i]->event_date));
-        }
+    $chosenNearVA = array();
+    $latest_Near_VA_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity', $this->patient);
+
+    if ($latest_Near_VA_element && !$nearVAdata) {
+        $nearVAdata = $api->getMostRecentNearVAData($latest_Near_VA_element->id);
+        $chosenNearVA = $latest_Near_VA_element;
+        $NearVAdate = date("d M Y", strtotime($latest_Near_VA_element->event->event_date));
     }
     $rightNearData = array();
     $leftNearData = array();
-    if ($NearVAFound) {
-        for ($i = 0; $i < count($neardata); ++$i) {
-            if ($neardata[$i]->side == 0) {
-                $rightNearData[] = $neardata[$i];
+
+    if ($nearVAdata) {
+        for ($i = 0; $i < count($nearVAdata); ++$i) {
+            if ($nearVAdata[$i]->side == 0) {
+                $rightNearData[] = $nearVAdata[$i];
             }
-            if ($neardata[$i]->side == 1) {
-                $leftNearData[] = $neardata[$i];
+            if ($nearVAdata[$i]->side == 1) {
+                $leftNearData[] = $nearVAdata[$i];
             }
         }
         $unitId = $chosenNearVA->unit_id;
@@ -213,24 +198,18 @@ if ($api) {
 <?php
 // Refraction here
 $refractfound = false;
-$eventid = Event::model()->findAll(array(
-    'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
-    'order' => 'event_date DESC',
-));
-if ($eventid) {
-// Loop through responses, for ones that have RefractionValues
-    for ($i = 0; $i < count($eventid); ++$i) {
-        $refraction_values = $api->getRefractionValues($eventid[$i]->id);
-        if ($refraction_values) {
-            if (!$refractfound) {
-                $refractelement = $refraction_values;
-                $refract_event_date = $eventid[$i]->event_date;
-                $refractfound = true;
-            }
-        }
+if ($api) {
+    $latest_refraction_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction', $this->patient);
+    if ($latest_refraction_element) {
+        $refraction_values = $api->getRefractionValues($latest_refraction_element->event->id);
+        $refractelement = $refraction_values;
+        $refract_event_date = $latest_refraction_element->event->event_date;
+        $refractfound = true;
     }
-    if ($refractfound) {
-        ?>
+}
+
+if ($refractfound) {
+    ?>
     <section class="element full <?php if ($action == 'update') {
         echo 'edit  edit-biometry';
                                  } else if ($action == 'view') {
@@ -261,11 +240,11 @@ if ($eventid) {
         </div>
     </section>
         <?php
-    } else { ?>
+} else { ?>
 <section class="element full <?php if ($action == 'update') {
     echo 'edit  edit-biometry';
                              } else if ($action == 'view') {
-                                                      echo 'priority';
+                                                  echo 'priority';
                              } ?>
   eye-divider ">
     <header class="element-header">
@@ -277,8 +256,7 @@ if ($eventid) {
                 <div class="data-value not-recorded">
                     Not recorded
                 </div>
+            </div>
         <?php endforeach; ?>
-    </div>
-    <?php }
-} ?>
+<?php } ?>
 </section>

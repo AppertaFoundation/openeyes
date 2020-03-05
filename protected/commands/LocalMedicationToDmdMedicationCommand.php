@@ -45,6 +45,7 @@ EOH;
 
     public function actionIndex()
     {
+        EventMedicationUse::$local_to_dmd_conversion = true;
         $t = microtime(true);
         echo "[" . (date("Y-m-d H:i:s")) . "] Local medication to DMD set (localmedicationtodmdmedication) ... ";
         $drugs_with_national_code = Drug::model()->findAll("national_code is NOT NULL");
@@ -115,6 +116,7 @@ EOH;
         }
 
         MedicationMerge::model()->mergeAll();
+        EventMedicationUse::$local_to_dmd_conversion = false;
         echo "OK - took: " . (microtime(true) - $t) . "s\n";
 
     }

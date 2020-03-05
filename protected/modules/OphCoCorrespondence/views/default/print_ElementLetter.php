@@ -23,10 +23,20 @@
  */
 
 $toAddressContactType = $element->getToAddressContactType();
+if (is_null($contact_type)) {
+    $contact_type = $toAddressContactType;
+}
+if ($contact_type === "PATIENT") {
+    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+    $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
+    if ($examination_accessible_info_standards) {
+        $large_letters = $examination_accessible_info_standards->correspondence_in_large_letters === '1';
+    }
+}
 
-if (!@$no_header) {?>
+if (!@$no_header) { ?>
     <header class="print-header" style="margin-bottom: 0;">
-    <?php
+        <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
 
@@ -36,74 +46,77 @@ if (!@$no_header) {?>
             'date' => $element->date,
             'clinicDate' => strtotime($element->clinic_date),
             'element' => $element,
-        ))?>
+        )) ?>
     </header>
 
     <?php $this->renderPartial('reply_address', array(
         'site' => $element->site,
         'is_internal_referral' => $element->isInternalReferral(),
-    ))?>
+    )) ?>
 
-<?php }?>
-<p class="accessible">
-    <?php echo $element->renderIntroduction()?>
-</p>
-<p class="accessible"><strong><?php if ($element->re) {
-?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
-<?php } else {
-                                  if (Yii::app()->params['nhs_num_private'] == true) {
-                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?><?php
-                                  } else {
-                                        ?><?php echo Yii::app()->params['hos_num_label'].': '. $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label'].': '. $element->event->episode->patient->nhsnum?> <?php
-                                  }
-}?></strong></p>
+<?php } ?>
 
-<p class="accessible">
-<?php echo $element->renderBody() ?>
-</p>
-<br/>
-<p class="accessible" nobr="true">
-    <?php echo $element->renderFooter() ?>
-</p>
+<div <?= isset($large_letters) && $large_letters ? 'class="impaired-vision"' : '' ?>>
+    <p class="accessible">
+        <?php echo $element->renderIntroduction() ?>
+    </p>
+    <p class="accessible"><strong><?php if ($element->re) {
+        ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re)) ?>
+                                  <?php } else {
+                                      if (Yii::app()->params['nhs_num_private'] == true) {
+                                            ?><?php echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num ?><?php
+                                      } else {
+                                            ?><?php echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num ?>, <?php echo Yii::app()->params['nhs_num_label'] . ': ' . $element->event->episode->patient->nhsnum ?><?php
+                                      }
+                                  } ?></strong></p>
 
-<div class="spacer"></div>
+    <p class="accessible">
+        <?php echo $element->renderBody() ?>
+    </p>
+    <br/>
+    <p class="accessible" nobr="true">
+        <?php echo $element->renderFooter() ?>
+    </p>
+
+    <div class="spacer"></div>
     <h5>
         <?php
         echo($toAddress ? ('To: ' . (isset($toAddressContactType) ? $toAddressContactType . ' : ' : '') . $element->renderSourceAddress($toAddress) . '<br/>') : '');
         echo($ccString ? $ccString : ''); ?>
     </h5>
-<p nobr="true">
-<?php if ($element->enclosures) {?>
-    <?php
-    foreach ($element->enclosures as $enclosure) {?>
-        <br/>Enc: <?php echo $enclosure->content?>
-    <?php }?>
+    <p nobr="true">
+        <?php if ($element->enclosures) { ?>
+            <?php
+            foreach ($element->enclosures as $enclosure) { ?>
+                <br/>Enc: <?php echo $enclosure->content ?>
+            <?php } ?>
 
-<?php }?>
+        <?php } ?>
 
-<?php
-    $associated_content = EventAssociatedContent::model()
-    ->with('initAssociatedContent')
-    ->findAllByAttributes(
-        array('parent_event_id' => $element->event->id),
-        array('order' => 't.display_order asc')
-    );
-
-    if ($associated_content) {?>
-        <br>
-        Attachments:
         <?php
-        $attachments = array();
-        foreach ($associated_content as $ac) {
-            if ($ac->display_title) {
-                $attachments[] = $ac->display_title;
-            } else {
-                $associated_event = Event::model()->findByPk($ac->associated_event_id);
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $element->event->id),
+                array('order' => 't.display_order asc')
+            );
 
-                $attachments[] = $associated_event->eventType->name.' ('.Helper::convertDate2NHS($associated_event->event_date).')';
+        if ($associated_content) { ?>
+            <br>
+            Attachments:
+            <?php
+            $attachments = array();
+            foreach ($associated_content as $ac) {
+                if ($ac->display_title) {
+                    $attachments[] = $ac->display_title;
+                } else {
+                    $associated_event = Event::model()->findByPk($ac->associated_event_id);
+
+                    $attachments[] = $associated_event->eventType->name . ' (' . Helper::convertDate2NHS($associated_event->event_date) . ')';
+                }
             }
+            echo implode(", ", $attachments);
         }
-        echo implode(", ", $attachments);
-    }
-    ?>
-</p>
+        ?>
+    </p>
+</div>

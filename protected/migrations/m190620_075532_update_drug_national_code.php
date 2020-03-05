@@ -2,7 +2,7 @@
 
 class m190620_075532_update_drug_national_code extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
         $handle = fopen(Yii::app()->basePath."/migrations/data/m190620_075532_update_drug_national_code/01_Old2NewDrugmapping.csv", "r");
         if ($handle !== false) {

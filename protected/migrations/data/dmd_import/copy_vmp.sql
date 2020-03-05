@@ -29,4 +29,4 @@ INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code
     LEFT JOIN {prefix}lookup_route lr ON lr.cd = drt.routecd
     LEFT JOIN medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
 
-    LEFT JOIN {prefix}lookup_unit_o{prefix}measure uom ON uom.cd = vmp.udfs_uomcd
+    LEFT JOIN {prefix}lookup_unit_of_measure uom ON uom.cd = vmp.udfs_uomcd

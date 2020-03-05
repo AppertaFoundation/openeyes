@@ -16,10 +16,18 @@
 ?>
 <?php
 $is_prescription_set = $medication_set->hasUsageCode("PRESCRIPTION_SET");
-if ($is_prescription_set) {
-    $default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
-    $default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
-}
+$default_dispense_location = \CHtml::listData(\OphDrPrescription_DispenseLocation::model()->findAll(), 'id', 'name');
+$default_dispense_condition = \CHtml::listData(\OphDrPrescription_DispenseCondition::model()->findAll(), 'id', 'name');
+
+// FP10 settings
+$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
+$overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+
+$dispense_condition_options = array(
+    $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
+);
+// End of FP10 settings
 ?>
 
 <h2>Medications in set</h2>
@@ -55,7 +63,7 @@ if ($is_prescription_set) {
                     <th>Default frequency</th>
                     <th>Default duration</th>
                     <th>Default Dispense Condition</th>
-                    <th>Condition   Default Dispense Location</th>
+                    <th>Default Dispense Location</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -133,38 +141,64 @@ if ($is_prescription_set) {
                             ); ?>
                         </td>
 
-                        <?php if ($is_prescription_set) : ?>
-                            <td class="js-input-wrapper">
-                                <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text"><?= $set_item->defaultDispenseCondition ? $set_item->defaultDispenseCondition->name : '-'; ?></span>
-                                <?= \CHtml::activeDropDownList(
-                                    $set_item,
-                                    'default_dispense_condition_id',
-                                    $default_dispense_condition,
-                                    [
-                                        'class' => 'js-input cols-full',
-                                        'style' => 'display:none',
-                                        'empty' => '-- select --',
-                                        'id' => null,
-                                        'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]"
-                                    ]
-                                ); ?>
-                            </td>
-                            <td class="js-input-wrapper">
-                                <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text"><?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?></span>
-                                <?= \CHtml::activeDropDownList(
-                                    $set_item,
-                                    'default_dispense_location_id',
-                                    $default_dispense_location,
-                                    [
-                                        'class' => 'js-input cols-full',
-                                        'style' => 'display:none',
-                                        'empty' => '-- select --',
-                                        'id' => null,
-                                        'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
-                                    ]
-                                ); ?>
-                            </td>
-                        <?php endif; ?>
+                        <td class="js-input-wrapper">
+                            <div class="js-prescription-extra js-prescription-dispense-condition" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <span data-type="default_dispense_condition" data-id="<?= $set_item->defaultDispenseCondition ? $set_item->default_dispense_condition_id : ''; ?>" class="js-text">
+                                <?php if ($set_item->default_dispense_condition_id) {
+                                    if ($set_item->defaultDispenseCondition->name === 'Print to {form_type}') {
+                                        echo str_replace(
+                                                '{form_type}',
+                                                $fpten_setting,
+                                                $set_item->defaultDispenseCondition->name
+                                            );
+                                    } else {
+                                        echo  $set_item->defaultDispenseCondition->name;
+                                    }
+                                } else {
+                                    echo '-';
+                                } ?>
+
+                            </span>
+                            <?= \CHtml::activeDropDownList(
+                                $set_item,
+                                'default_dispense_condition_id',
+                                CHtml::listData(
+                                    OphDrPrescription_DispenseCondition::model()->findAll(array(
+                                        'condition' => '(active'
+                                            . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
+                                            . ") or id='" . $set_item->default_dispense_condition_id . "'",
+                                        'order' => 'display_order',
+                                    )), 'id', 'name'),
+                                [
+                                    'class' => 'js-input cols-full dispense-condition',
+                                    'style' => 'display:none',
+                                    'empty' => '-- select --',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_condition_id]",
+                                    'options' => $dispense_condition_options
+                                ]
+                            ); ?>
+                            </div>
+                        </td>
+                        <td class="js-input-wrapper" >
+                            <div class="js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
+                                <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
+                            </span>
+                            <?= \CHtml::activeDropDownList(
+                                $set_item,
+                                'default_dispense_location_id',
+                                $default_dispense_location,
+                                [
+                                    'class' => 'js-input cols-full dispense-location',
+                                    'style' => 'display:none',
+                                    'empty' => '-- select --',
+                                    'id' => null,
+                                    'name' => "MedicationSetAutoRuleMedication[$k][default_dispense_location_id]"
+                                ]
+                            ); ?>
+                            </div>
+                        </td>
 
                         <td class="actions" style="text-align:center">
                             <button class="js-add-taper" data-action_type="add-taper" type="button" title="Add taper">
@@ -279,16 +313,14 @@ if ($is_prescription_set) {
             <?=\CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_duration_id]', null, $duration_options, ['id' => null, 'style' => 'display:none', 'class' => 'js-input cols-full', 'empty' => '-- select --']);?>
         </td>
 
-        <?php if ($is_prescription_set) : ?>
-        <td class="js-input-wrapper">
+        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-condition" style="display:<?=$is_prescription_set ? 'block':'none';?>">
             <span data-id="{{#default_dispense_condition_id}}{{default_dispense_condition_id}}{{/default_dispense_condition_id}}" data-type="default_dispense_condition" class="js-text">{{^default_dispense_condition}}-{{/default_dispense_condition}}{{#default_dispense_condition}}{{default_dispense_condition}}{{/default_dispense_condition}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_condition_id]', null, $default_dispense_condition, ['class' => 'js-input cols-full dispense-condition', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
-        <td class="js-input-wrapper">
+        <td class="js-input-wrapper js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
             <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
-            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
+            <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
         </td>
-        <?php endif; ?>
 
         <td class="actions" style="text-align:center">
             <button class="js-add-taper" data-action_type="add-taper" type="button" title="Add taper">
@@ -371,4 +403,21 @@ if ($is_prescription_set) {
         booleanSearchFilterLabel: 'Include branded',
         booleanSearchFilterURLparam: 'include_branded'
     });
+
+    $('#meds-list').delegate('select.dispense-condition', 'change', function () {
+        let $dispense_condition = $(this);
+        $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
+            condition_id: $dispense_condition.val(),
+        }, function (data) {
+            let $dispense_location = $dispense_condition.closest('tr').find('.dispense-location');
+            $dispense_location.find('option').remove();
+            if (data) {
+                $dispense_location.append(data);
+                $('.js-prescription-dispense-location').show();
+            } else {
+                $('.js-prescription-dispense-location').hide();
+            }
+        });
+    });
+
 </script>

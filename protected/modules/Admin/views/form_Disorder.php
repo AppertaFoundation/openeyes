@@ -28,11 +28,12 @@
         <tr>
             <td>Id</td>
             <td class="cols-full">
-                <?= \CHtml::activeTextArea(
+                <?= \CHtml::activeHiddenField(
                     $model,
                     'id',
                     ['class' => 'cols-full']
                 ); ?>
+                <?= $model->id ?>
             </td>
         </tr>
         <tr>

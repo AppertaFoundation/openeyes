@@ -131,7 +131,7 @@ class RefMedicationAdminController extends BaseAdminController
                             'options' => CHtml::listData(MedicationAttributeOption::model()->with('medicationAttribute')->findAll(
                                 ["condition" => "medicationAttribute.name = 'UNIT_OF_MEASURE'",
                                                                 'order' => 'description asc']
-                                                        ), "id", "description"),
+                                                        ), "description", "description"),
                             'htmlOptions' => array('empty' => '-- None --', 'class' => 'cols-full'),
                             'hidden' => false,
                             'layoutColumns' => array()

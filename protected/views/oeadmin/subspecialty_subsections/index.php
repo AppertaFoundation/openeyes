@@ -17,7 +17,7 @@
 <p class="alert-box info" style="margin-bottom: 0px;"><?= $message ?></p>
 <?php } ?>
 <h2>Manage Subspecialty Subsections</h2>
-<div class="cols-5">
+<div class="cols-5" id="generic-admin-list">
     <form id="admin_subspecialty_sections">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
         <input type="hidden" name="page" value="1" />
@@ -48,19 +48,25 @@
             </tbody>
         </table>
         <?php if ($subspecialty_id && !empty($subspecialty_id)) { ?>
-        <table class="standard generic-admin">
+        <table class="standard" id="et_sort" data-uri="/oeadmin/SubspecialtySubsections/sortConditions">
             <thead>
                 <tr>
                     <th>Select</th>
                     <th>Subspecialty Subsection</th>
+                    <th>Display Order</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="sortable">
             <?php foreach ($model_list as $key => $model) { ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="oeadmin/subspecialtySubsections/edit?id=<?= $model->id ?>&subspecialty_id=<?= $subspecialty_id ?>" >
-                    <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
+                    <td class="reorder">
+                        <span>↑↓</span>
+                        <?=\CHtml::hiddenField(CHtml::modelName($model)."[display_order][]", $model->id);?>
+                        <?=\CHtml::hiddenField(CHtml::modelName($model)."[id][]", $model->id);?>
+                    </td>
                     <td><?= $model->name ?></td>
+                    <td><?= $model->display_order ?></td>
                 </tr>
             <?php } ?>
             </tbody>

@@ -20,8 +20,17 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
  */
 use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
+class Element_OphCiExamination_VisualAcuityTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return models\Element_OphCiExamination_VisualAcuity::model();
+    }
+
+    protected $columns_to_skip = [
+        'left_notes', 'right_notes'
+    ];
+
     protected $fixtures = array(
         'element_types' => ElementType::class,
         'readings' => models\OphCiExamination_VisualAcuity_Reading::class,

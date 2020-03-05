@@ -11,6 +11,8 @@
             <tr>
                 <td>Service</td>
                 <td>
+                    <?php
+                    $element->to_subspecialty_id = $element->to_subspecialty_id != "" ? $element->to_subspecialty_id : Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->getSubspecialtyID() ?>
                     <?=\CHtml::activeDropDownList($element, "to_subspecialty_id",
                         CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'),
                         array('empty' => '- None -', 'class' => 'cols-full')) ?>

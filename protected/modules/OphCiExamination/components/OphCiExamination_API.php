@@ -827,7 +827,7 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getMethodIdRight($vaid, $episode)
+    public function getMethodIdRight($vaid)
     {
         $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
             . $vaid . ' AND side = ' . self::RIGHT);
@@ -847,7 +847,7 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getMethodIdLeft($vaid, $episode)
+    public function getMethodIdLeft($vaid)
     {
         $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
             . ' AND side = ' . self::LEFT);
@@ -3441,7 +3441,7 @@ class OphCiExamination_API extends \BaseAPI
                             <td>
                             </td>
                             <td>
-                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                <?= $taper->frequency ? $taper->frequency->term : '' ?>
                             </td>
                             <td>
                                 <?= $taper_display_date ?>
@@ -3530,7 +3530,7 @@ class OphCiExamination_API extends \BaseAPI
                                             </td>
                                             <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
                                             <td>
-                                                    <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                                    <?= $taper->frequency ? $taper->frequency->term : '' ?>
                                             </td>
                                             <td>
                                                     <?= $taper_display_date ?>

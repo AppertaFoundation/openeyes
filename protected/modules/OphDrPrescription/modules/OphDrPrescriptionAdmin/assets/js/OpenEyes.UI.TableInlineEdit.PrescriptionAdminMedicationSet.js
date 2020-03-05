@@ -6,6 +6,7 @@ class PrescriptionAdminMedicationSet extends OpenEyes.TableInlineEdit
 
     showEditControls($tr, $row) {
         super.showEditControls($tr, $row);
+        togglePrescriptionExtraInputs();
     }
 
     hideEditControls($tr, $row) {
