@@ -3441,7 +3441,7 @@ class OphCiExamination_API extends \BaseAPI
                             <td>
                             </td>
                             <td>
-                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                <?= $taper->frequency ? $taper->frequency->term : '' ?>
                             </td>
                             <td>
                                 <?= $taper_display_date ?>
@@ -3530,7 +3530,7 @@ class OphCiExamination_API extends \BaseAPI
                                             </td>
                                             <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
                                             <td>
-                                                    <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                                    <?= $taper->frequency ? $taper->frequency->term : '' ?>
                                             </td>
                                             <td>
                                                     <?= $taper_display_date ?>
