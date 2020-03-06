@@ -19,6 +19,15 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     TableInlineEdit.prototype.initTriggers = function () {
         const controller = this;
+        let snapshot = [];
+        let $rows = $(controller.options.tableSelector).find('tr[id*="medication"]');
+
+        $rows.each(function (i, row) {
+            const $row = $(row);
+            snapshot[$row.attr('id')] = $row.clone().wrap('<div>').parent().html(); //take initial snapshot of the table incase user cancels their action
+        });
+
+
         $(this.options.tableSelector).on('click', 'td a', function() {
             const $tr = $(this).closest('tr');
             const $tapers = $(controller.options.tableSelector).find('tr[data-parent-med-id="' + $tr.attr('data-med_id') + '"]');
@@ -30,33 +39,59 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.showEditControls($tr, $tapers);
 
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
-                $.each(trs, function(i, tr) {
-                    const $tr = $(tr);
-                    $tr.find('.js-text').hide();
+
+                $tapers.each(function (i, taper) {
+                    trs.push(taper);
                 });
 
-                $tapers.find('.js-text').hide();
+                trs.find('.js-text').hide();
                 controller.showEditFields($tr, $tapers);
 
             } else if (action === 'cancel') {
-                controller.hideEditControls($tr, $tapers);
-                controller.showGeneralControls($tr);
 
                 const trs = $(controller.options.tableSelector).find(`.js-row-of-${$tr.data('med_id')}`);
-                $.each(trs, function(i, tr) {
-                    const $tr = $(tr);
-                    $tr.find('.js-text').show();
-                    $tr.find('.js-input').hide();
+                $tapers.each(function (i, taper) {
+                    trs.push(taper);
                 });
 
-                $tapers.find('.js-text').show();
-                $tapers.find('.js-input').hide();
+                $.each(trs, function(i, tr) {
+                    let $tr = $(tr);
+                    $tr.replaceWith(snapshot[$tr.attr('id')]); //replace table row with snapshot of latest edit
+                });
+
             }
+        });
+
+        $('#meds-list').bind('taperAdded', function () { //add taper HTML to snapshot when adding it
+            let $taper = $(this).find('tr.prescription-taper.new').clone();
+            $taper.find('.js-text').show();
+            $taper.find('.js-input').hide();
+            $taper.find('.js-remove-taper').hide();
+            snapshot[$taper.attr('id')] = $taper.wrap('<div>').parent().html();
+            $(this).find('tr.prescription-taper.new').removeClass('new');
+        });
+
+        $('#meds-list').bind('medicationAdded', function () { //add medication row HTML to snapshot when adding it via AdderDialog
+            let $rows = $(this).find('tr.new[class*="js-row-of"]').clone();
+            $rows.find('.js-text').show();
+            $rows.find('.js-input').hide();
+            $rows.each(function (i, row) {
+                let $row = $(row);
+                snapshot[$row.attr('id')] = $row.wrap('<div>').parent().html();
+            });
+            $(this).find('tr.new[class*="js-row-of"]').removeClass('new');
         });
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
-            controller.updateRow($tr);
+            const $spinner = '<div style="display:inline-block" class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
+            const $actionsTd = $tr.find('td:last-child');
+            $actionsTd.append($spinner);
+            setTimeout(function () { //timeout to account for AJAX request made for getDispenseLocation
+                controller.updateRow($tr);
+                $actionsTd.find('.js-spinner-as-icon').remove();
+                snapshot = controller.updateSnapshot($tr);
+            }, 3000);
         });
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="remove"]', function () {
@@ -132,6 +167,25 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     };
 
+    //update the snapshot for the row when the user saves
+    TableInlineEdit.prototype.updateSnapshot = function($row) {
+        let snapshot = [];
+        let controller = this;
+        let tr_id = $row.data('med_id');
+        let $trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
+        let $tapers = $('#meds-list tr[data-parent-med-id="' + tr_id + '"]');
+        $tapers.each(function (i, taper) {
+            $trs.push(taper);
+        });
+
+        $trs.each(function (i, tr) {
+            const $tr = $(tr);
+            snapshot[$tr.attr('id')] = $tr.clone().wrap('<div>').parent().html();
+        });
+
+        return snapshot;
+    };
+
     TableInlineEdit.prototype.showEditControls = function($tr, $tapers)
     {
         const tr_id = $tr.data('med_id');
@@ -198,6 +252,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $tapers.find('.js-text').show();
         $tapers.find('.js-input').hide();
+        $tapers.find('.js-remove-taper').hide();
         controller.showGeneralControls($tr);
         controller.hideEditControls($tr);
     };
@@ -223,29 +278,48 @@ OpenEyes.UI = OpenEyes.UI || {};
         const $input = $wrapper.find('.js-input');
         const $text = $wrapper.find('.js-text');
         let selectedText = '-';
+        const value = $input.val();
 
         $text.toggle(state === 'show');
         $input.toggle(state === 'edit');
+        if ($input.parent().hasClass('hidden')) {
+            $input.parent().hide();
+            $text.attr('data-id', '');
+        }
 
-        if (showEditValue === true) {
-
-            if ($input.prop('tagName') === 'SELECT' && $input.val() && $input.val() !== '') {
-                let $selectedOption = $input.find('option:selected');
+        if (showEditValue === true) { // set correct HTML and values for snapshot and for saving
+            if ($input.prop('tagName') === 'SELECT') {
+                const $selectedOption = $input.find('option:selected');
                 if(typeof $selectedOption.attr('label') != "undefined") {
                     selectedText = $selectedOption.attr('label');
-                } else {
-                    selectedText = $input.find('option:selected').text();
+                } else if (value !== ''){
+                    selectedText = $selectedOption.text();
+                }
+                if ($input.find('option[selected="selected"]').val() !== $selectedOption.val()) {
+                    $input.find('option[selected="selected"]').removeAttr('selected');
+                    if (value !== '') {
+                        $selectedOption.attr('selected', 'selected');
+                    }
                 }
             } else if ($input.prop('tagName') === 'LABEL') {
                 const $first = $input.find('[type="checkbox"]');
-                selectedText = $first.is(':checked') ? 'yes' : 'no';
+                if ($first.is(':checked')) {
+                    selectedText = 'yes';
+                    $first.attr('checked', 'checked');
+                } else {
+                    selectedText = 'no';
+                    $first.removeAttr('checked');
+                }
+            } else if (value !== ''){
+                selectedText = value;
+                $input.attr('value', value);
             } else {
-                selectedText = $input.val();
+                $input.removeAttr('value');
             }
 
             const label = $text.data('display-label') !== undefined ? $text.data('display-label') : '';
             $text.text(label + selectedText);
-            $text.data('id', $input.val());
+            $text.data('id', value);
         }
     };
 
