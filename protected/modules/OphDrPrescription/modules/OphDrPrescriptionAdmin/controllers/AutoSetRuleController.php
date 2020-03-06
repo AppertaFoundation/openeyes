@@ -358,9 +358,7 @@ class AutoSetRuleController extends BaseAdminController
         $medication_set = \MedicationSet::model()->findByPk($set_id);
 
         $criteria = new \CDbCriteria();
-        $criteria->with = ['medicationSetAutoRuleMedication'];
-        $criteria->together = true;
-        $criteria->addCondition('medicationSetAutoRuleMedication.medication_set_id = :set_id');
+        $criteria->addCondition('medication_set_id = :set_id');
         $criteria->params[':set_id'] = $set_id;
 
         if ($search) {
@@ -371,7 +369,7 @@ class AutoSetRuleController extends BaseAdminController
             }
         }
 
-        $data_provider = new CActiveDataProvider('Medication', [
+        $data_provider = new CActiveDataProvider('MedicationSetAutoRuleMedication', [
             'criteria' => $criteria
         ]);
 

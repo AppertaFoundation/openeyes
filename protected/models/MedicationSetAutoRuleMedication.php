@@ -118,6 +118,62 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
         return $this;
     }
 
+    public function getAllMedications()
+    {
+        $medication_ids = [];
+        $medication_ids[] = $this->medication->id;
+        $medication_ids = array_merge($medication_ids, $this->getChildMedicationIds());
+        $medication_ids = array_merge($medication_ids, $this->getParentMedicationIds());
+
+        return $medication_ids;
+    }
+
+    public function getChildMedicationIds()
+    {
+        $child_medication_ids = [];
+        $medication = $this->medication;
+        if ($this->include_children)
+        {
+            if ($medication->isVTM()) {
+                foreach (Medication::model()->findAll('vtm_code=?', array($medication->vtm_code)) as $vtm) {
+                    $child_medication_ids[] = $vtm->id;
+                }
+            } else if ($medication->isVMP()) {
+                foreach (Medication::model()->findAll('vmp_code=?', array($medication->vmp_code)) as $vmp) {
+                    $child_medication_ids[] = $vmp->id;
+                }
+            }
+        }
+
+        return $child_medication_ids;
+    }
+
+    public function getParentMedicationIds()
+    {
+        $parent_medication_ids = [];
+        $medication = $this->medication;
+        if ($this->include_parent)
+        {
+            if ($medication->isAMP()) {
+                foreach (Medication::model()->findAll('preferred_code=?', array($medication->amp_code)) as $amp) {
+                    $parent_medication_ids[] = $amp->id;
+                }
+                $vmp = Medication::model()->findAll('preferred_code=?', array($medication->vmp_code));
+                if ($vmp) {
+                    foreach (Medication::model()->findAll('preferred_code=?', array($vmp->vtm_code)) as $vmp_vtm) {
+                        $parent_medication_ids[] = $vmp_vtm->id;
+                    }
+                }
+            } else if ($medication->isVMP()) {
+                foreach (Medication::model()->findAll('preferred_code=?', array($medication->vtm_code)) as $vtm) {
+                    $parent_medication_ids[] = $vtm->id;
+                }
+            }
+        }
+
+        return $parent_medication_ids;
+    }
+
     public function beforeDelete()
     {
         if ($this->delete_with_tapers === true) {

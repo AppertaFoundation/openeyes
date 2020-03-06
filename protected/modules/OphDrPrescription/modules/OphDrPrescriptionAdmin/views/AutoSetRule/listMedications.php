@@ -16,6 +16,13 @@
  */
 ?>
 
+<?php
+$medication_ids = [];
+foreach ($data_provider->getData() as $medicationSetAutoRuleMedication) {
+    $medication_ids = array_merge($medication_ids, $medicationSetAutoRuleMedication->getAllMedications());
+}
+$medications = Medication::model()->findAllByAttributes(array('id' => $medication_ids));
+?>
 <div class="row divider">
     <h2><?=$medication_set_name?> Medications:</h2>
 </div>
@@ -45,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data_provider->getData() as $medication) { ?>
+            <?php foreach ($medications as $medication) { ?>
                 <tr data-url="/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/edit/<?=$medication->id;?>">
                     <td><?=$medication->preferred_code ? $medication->preferred_code : '<i>(empty)</i>'?></td>
                     <td><?=$medication->preferred_term?></td>
