@@ -265,7 +265,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function itemsCount()
     {
-        return \MedicationSetAutoRuleMedication::model()->countByAttributes(['medication_set_id' => $this->id]);
+        return \MedicationSetItem::model()->countByAttributes(['medication_set_id' => $this->id]);
     }
 
     public function rulesString()
