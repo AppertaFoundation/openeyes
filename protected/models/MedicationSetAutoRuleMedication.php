@@ -132,8 +132,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
     {
         $child_medication_ids = [];
         $medication = $this->medication;
-        if ($this->include_children)
-        {
+        if ($this->include_children) {
             if ($medication->isVTM()) {
                 foreach (Medication::model()->findAll('vtm_code=?', array($medication->vtm_code)) as $vtm) {
                     $child_medication_ids[] = $vtm->id;
@@ -152,8 +151,7 @@ class MedicationSetAutoRuleMedication extends BaseActiveRecordVersioned
     {
         $parent_medication_ids = [];
         $medication = $this->medication;
-        if ($this->include_parent)
-        {
+        if ($this->include_parent) {
             if ($medication->isAMP()) {
                 foreach (Medication::model()->findAll('preferred_code=?', array($medication->amp_code)) as $amp) {
                     $parent_medication_ids[] = $amp->id;
