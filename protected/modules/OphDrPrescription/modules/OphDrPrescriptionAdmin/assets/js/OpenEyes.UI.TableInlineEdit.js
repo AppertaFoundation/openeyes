@@ -44,7 +44,6 @@ OpenEyes.UI = OpenEyes.UI || {};
                     trs.push(taper);
                 });
 
-                trs.find('.js-text').hide();
                 controller.showEditFields($tr, $tapers);
 
             } else if (action === 'cancel') {
@@ -84,14 +83,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="save"]', function() {
             const $tr = $(this).closest('tr');
-            const $spinner = '<div style="display:inline-block" class="js-spinner-as-icon"><i class="spinner as-icon"></i></div>';
-            const $actionsTd = $tr.find('td:last-child');
-            $actionsTd.append($spinner);
-            setTimeout(function () { //timeout to account for AJAX request made for getDispenseLocation
-                controller.updateRow($tr);
-                $actionsTd.find('.js-spinner-as-icon').remove();
-                snapshot = controller.updateSnapshot($tr);
-            }, 3000);
+            controller.updateRow($tr);
+            snapshot = controller.updateSnapshot($tr, snapshot);
         });
 
         $(this.options.tableSelector).on('click', 'td a[data-action_type="remove"]', function () {
@@ -168,8 +161,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     //update the snapshot for the row when the user saves
-    TableInlineEdit.prototype.updateSnapshot = function($row) {
-        let snapshot = [];
+    TableInlineEdit.prototype.updateSnapshot = function($row, snapshot) {
         let controller = this;
         let tr_id = $row.data('med_id');
         let $trs = $(controller.options.tableSelector).find(`.js-row-of-${tr_id}`);
@@ -282,8 +274,9 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $text.toggle(state === 'show');
         $input.toggle(state === 'edit');
-        if ($input.parent().hasClass('hidden')) {
-            $input.parent().hide();
+        $wrapper.find('div').show();
+        if ($wrapper.find('div').hasClass('hidden')) {
+            $wrapper.find('div').hide();
             $text.attr('data-id', '');
         }
 

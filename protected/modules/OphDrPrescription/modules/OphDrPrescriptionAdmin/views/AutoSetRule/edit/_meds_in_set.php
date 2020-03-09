@@ -181,7 +181,7 @@ $dispense_condition_options = array(
                             </div>
                         </td>
                         <td class="js-input-wrapper" >
-                            <div class="js-prescription-extra js-prescription-dispense-location" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <div class="js-prescription-extra js-prescription-dispense-location<?= !$set_item->defaultDispenseLocation ? ' hidden':'';?>" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
@@ -320,7 +320,7 @@ $dispense_condition_options = array(
             </div>
         </td>
         <td class="js-input-wrapper">
-            <div class="js-prescription-extra js-prescription-dispense-location" style="display:none;">
+            <div class="js-prescription-extra js-prescription-dispense-location hidden" style="display:none;">
                 <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
                 <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
             </div>
@@ -412,23 +412,34 @@ $dispense_condition_options = array(
 
     $('#meds-list').delegate('select.dispense-condition', 'change', function () {
         let $dispense_condition = $(this);
+        let data_med_id = $dispense_condition.closest('tr').data('med_id');
         let $dispense_location = $dispense_condition.closest('tr').find('.js-prescription-dispense-location');
         let $dispense_location_dropdown = $dispense_location.find('.dispense-location');
+        let $confirm_btn = $(`.js-row-of-${data_med_id}.js-addition-line`).find('.js-tick-set-medication');
 
-        $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
-            condition_id: $dispense_condition.val(),
-        }, function (data) {
-            if ($dispense_condition.is(':visible')) { //check if still visible otherwise ignore the request
-                $dispense_location.find('option').remove();
-                if (data) {
-                    $dispense_location_dropdown.append(data);
-                    $dispense_location.show();
-                    $dispense_location.removeClass('hidden');
-                } else {
-                    $dispense_location_dropdown.append('<option value>-- select --</option>');
-                    $dispense_location.hide();
-                    $dispense_location.addClass('hidden');
+        $confirm_btn.removeAttr('data-action_type');
+        $confirm_btn.find('i').css('opacity', '0.4');
+        $.ajax({
+            type: 'GET',
+            url: baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation",
+            data: {condition_id: $dispense_condition.val()},
+            success: function (data) {
+                if ($dispense_condition.is(':visible')) { //check if still visible otherwise ignore the request
+                    $dispense_location.find('option').remove();
+                    if (data) {
+                        $dispense_location_dropdown.append(data);
+                        $dispense_location.show();
+                        $dispense_location.removeClass('hidden');
+                    } else {
+                        $dispense_location_dropdown.append('<option value>-- select --</option>');
+                        $dispense_location.hide();
+                        $dispense_location.addClass('hidden');
+                    }
                 }
+            },
+            complete: function () {
+                $confirm_btn.attr('data-action_type', 'save');
+                $confirm_btn.find('i').css('opacity', '');
             }
         });
     });
