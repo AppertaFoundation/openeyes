@@ -2,7 +2,7 @@
 
 class m180828_063658_add_ref_set_common_systemic_medications extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
         $common_sys_id = $this->dbConnection->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_SYSTEMIC'])->queryScalar();
         $this->execute("INSERT INTO medication_set (`name`) VALUES ('Common systemic medications (manual)')");
@@ -30,7 +30,7 @@ class m180828_063658_add_ref_set_common_systemic_medications extends CDbMigratio
         }
     }
 
-    public function down()
+    public function safeDown()
     {
         $common_sys_id = $this->dbConnection->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_SYSTEMIC'])->queryScalar();
         $this->execute("DELETE FROM medication_set_rule WHERE usage_code_id = $common_sys_id");
