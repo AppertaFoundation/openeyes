@@ -424,7 +424,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $this->getExaminationEventTypeId(),
             'OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
 
-        if (!$diagnosisData['left_diagnosis_id'] || !$diagnosisData['right_diagnosis_id']) {
+        if (!$diagnosisData['left_diagnosis_id'] && !$diagnosisData['right_diagnosis_id']) {
             $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date,
                 $this->getApplicationEventTypeID(), 'Element_OphCoTherapyapplication_Therapydiagnosis');
         }
