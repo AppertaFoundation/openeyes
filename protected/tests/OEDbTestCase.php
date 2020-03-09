@@ -16,7 +16,7 @@ class OEDbTestCase extends CDbTestCase
 
     public function setUpTraits()
     {
-        $uses = array_flip(static::class_uses_recursive(static::class));
+        $uses = array_flip(static::classUsesRecursive(static::class));
 
         if (isset($uses[WithFaker::class])) {
             $this->setUpFaker();
@@ -55,12 +55,12 @@ class OEDbTestCase extends CDbTestCase
      * @param $trait
      * @return array
      */
-    public static function trait_uses_recursive($trait)
+    public static function traitUsesRecursive($trait)
     {
         $traits = class_uses($trait);
 
         foreach ($traits as $trait) {
-            $traits += static::trait_uses_recursive($trait);
+            $traits += static::traitUsesRecursive($trait);
         }
 
         return $traits;
@@ -72,7 +72,7 @@ class OEDbTestCase extends CDbTestCase
      * @param $class
      * @return array
      */
-    public static function class_uses_recursive($class)
+    public static function classUsesRecursive($class)
     {
         if (is_object($class)) {
             $class = get_class($class);
@@ -81,7 +81,7 @@ class OEDbTestCase extends CDbTestCase
         $results = [];
 
         foreach (array_merge([$class => $class], class_parents($class)) as $class) {
-            $results += static::trait_uses_recursive($class);
+            $results += static::traitUsesRecursive($class);
         }
 
         return array_unique($results);
