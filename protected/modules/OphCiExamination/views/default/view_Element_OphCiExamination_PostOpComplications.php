@@ -22,21 +22,21 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
     (is_array($operationNoteList) ? key($operationNoteList) : null));
 ?>
 
-<?php if (isset($operation_note_id)) : ?>
-    <div class="element-data element-eyes">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-            <div class="js-element-eye <?= $eye_side ?>-eye column">
+
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
+        <div class="js-element-eye <?= $eye_side ?>-eye column">
+            <?php if (isset($operation_note_id)) : ?>
                 <div class="data-group">
                     <?php if ($element->hasEye($eye_side)) :
                         $eye_abbr = $eye_side == 'right' ? 'R' : 'L';
                         $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                         ?>
-                        <table id="right-complication-list" class="recorded-postop-complications"
-                               data-sideletter="<?= $eye_abbr ?>">
+                        <table id="<?=$eye_side?>-complication-list" class="recorded-postop-complications" data-sideletter="<?= $eye_abbr ?>">
                             <tr>
                                 <td colspan="2">
                                     <?php if ($eye_side === 'right') {
-                                        echo $operationNoteList[$operation_note_id];
+                                            echo $operationNoteList[$operation_note_id];
                                     } ?>
                                 </td>
                             </tr>
@@ -49,11 +49,15 @@ $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_com
                         </table>
                     <?php else : ?>
                         <div class="data-value not-recorded">
-                            Not assessed in this examination
+                                Not assessed in this examination
                         </div>
                     <?php endif; ?>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+            <?php else: ?>
+                <div class="data-value not-recorded">
+                    There are no recorded operations for this patient
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
