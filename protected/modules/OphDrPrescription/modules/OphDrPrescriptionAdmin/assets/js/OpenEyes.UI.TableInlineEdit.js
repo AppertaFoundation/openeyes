@@ -275,7 +275,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         $text.toggle(state === 'show');
         $input.toggle(state === 'edit');
         $wrapper.find('div').show();
-        if ($wrapper.find('div').hasClass('hidden')) {
+        if ($wrapper.find('div').hasClass('js-hide-field')) {
             $wrapper.find('div').hide();
             $text.attr('data-id', '');
         }

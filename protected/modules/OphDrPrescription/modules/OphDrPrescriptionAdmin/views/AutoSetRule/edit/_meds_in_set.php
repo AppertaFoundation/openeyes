@@ -181,7 +181,7 @@ $dispense_condition_options = array(
                             </div>
                         </td>
                         <td class="js-input-wrapper" >
-                            <div class="js-prescription-extra js-prescription-dispense-location<?= !$set_item->defaultDispenseLocation ? ' hidden':'';?>" style="display:<?=$is_prescription_set ? 'block':'none';?>">
+                            <div class="js-prescription-extra js-prescription-dispense-location<?= !$set_item->defaultDispenseLocation ? ' js-hide-field':'';?>" style="display:<?=$is_prescription_set ? 'block':'none';?>">
                             <span data-type="default_dispense_location" data-id="<?= $set_item->defaultDispenseLocation ? $set_item->default_dispense_location_id : ''; ?>" class="js-text">
                                 <?= $set_item->defaultDispenseLocation ? $set_item->defaultDispenseLocation->name : '-'; ?>
                             </span>
@@ -320,7 +320,7 @@ $dispense_condition_options = array(
             </div>
         </td>
         <td class="js-input-wrapper">
-            <div class="js-prescription-extra js-prescription-dispense-location hidden" style="display:none;">
+            <div class="js-prescription-extra js-prescription-dispense-location js-hide-field" style="display:none;">
                 <span data-id="{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}" data-type="default_dispense_location" class="js-text">{{^default_dispense_location_id}}-{{/default_dispense_location_id}}{{#default_dispense_location_id}}{{default_dispense_location_id}}{{/default_dispense_location_id}}</span>
                 <?= \CHtml::dropDownList('MedicationSetAutoRuleMedication[{{key}}][default_dispense_location_id]', null, $default_dispense_location, ['class' => 'js-input cols-full dispense-location', 'style' => 'display:none', 'empty' => '-- select --', 'id' => null]); ?>
             </div>
@@ -429,11 +429,11 @@ $dispense_condition_options = array(
                     if (data) {
                         $dispense_location_dropdown.append(data);
                         $dispense_location.show();
-                        $dispense_location.removeClass('hidden');
+                        $dispense_location.removeClass('js-hide-field');
                     } else {
                         $dispense_location_dropdown.append('<option value>-- select --</option>');
                         $dispense_location.hide();
-                        $dispense_location.addClass('hidden');
+                        $dispense_location.addClass('js-hide-field');
                     }
                 }
             },
