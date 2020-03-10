@@ -20,6 +20,10 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      */
     public $only_latest_event;
 
+    protected $options = array(
+        'value_type' => 'string_search'
+    );
+
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -29,6 +33,27 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         parent::__construct($scenario);
         $this->name = 'diagnosis';
         $this->only_latest_event = false;
+
+        $firms = Firm::model()->getListWithSpecialties();
+
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'firm',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $firms,
+                    array_keys($firms)
+                ),
+            ),
+            array(
+                'id' => 'latest-event',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Only latest event')
+                ),
+            ),
+        );
     }
 
     public function getLabel()

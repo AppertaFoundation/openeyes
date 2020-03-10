@@ -20,6 +20,10 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public $condition;
 
+    protected $options = array(
+        'value_type' => 'multi_select',
+    );
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -29,6 +33,43 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         parent::__construct($scenario);
         $this->name = 'family_history';
         $this->operation = '=';
+
+        $relatives = OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll();
+        $sides = OEModule\OphCiExamination\models\FamilyHistorySide::model()->findAll();
+        $conditions = OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll();
+
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'family-relative',
+                'field' => 'relative',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $relatives
+                ),
+            ),
+            array(
+                'id' => 'family-side',
+                'field' => 'side',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $sides
+                ),
+            ),
+            array(
+                'id' => 'family-condition',
+                'field' => 'condition',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $conditions
+                ),
+            ),
+        );
     }
 
     public function getLabel()

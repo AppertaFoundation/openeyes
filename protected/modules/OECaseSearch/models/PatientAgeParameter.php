@@ -16,10 +16,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     public $maxValue;
 
     protected $options = array(
-        'operations' => array(
-            array('label' => 'IS LESS THAN', 'id' => '<'),
-            array('label' => 'IS MORE THAN', 'id' => '>'),
-        ),
         'value_type' => 'number',
     );
 
@@ -31,6 +27,9 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     {
         parent::__construct($scenario);
         $this->name = 'age';
+
+        $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
+        $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
     }
 
     /**

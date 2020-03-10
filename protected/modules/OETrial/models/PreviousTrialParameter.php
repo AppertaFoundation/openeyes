@@ -16,6 +16,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     public $status;
     public $treatmentTypeId;
 
+    protected $options = array(
+        'value_type' => 'multi_select',
+    );
+
     /**
      * @return TrialType
      */
@@ -38,6 +42,60 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         parent::__construct($scenario);
         $this->name = 'previous_trial';
         $this->status = TrialPatientStatus::model()->find('code = "ACCEPTED"')->id;
+
+        $trialTypes = TrialType::getOptions();
+        $treatmentTypes = TreatmentType::getOptions();
+
+        $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
+
+        $statusList = array(
+            TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
+            TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
+            TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
+        );
+
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'trial-status',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $statusList,
+                    array_keys($statusList)
+                )
+            ),
+            array(
+                'id' => 'trial-type',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $trialTypes,
+                    array_keys($trialTypes)
+                )
+            ),
+            array(
+                'id' => 'trial',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $trials,
+                    array_keys($trials)
+                )
+            ),
+            array(
+                'id' => 'treatment-type',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $treatmentTypes,
+                    array_keys($treatmentTypes)
+                )
+            ),
+        );
     }
 
     public function getLabel()

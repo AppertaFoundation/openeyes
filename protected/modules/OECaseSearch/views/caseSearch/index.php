@@ -288,23 +288,51 @@ $user_searches = array_map(
             ],
             openButton: $('#add-to-advanced-search-filters'),
             onReturn: function (dialog, selectedValues) {
-                console.log(selectedValues);
-                /*let parameters = [];
-                $.each(selectedValues, function (index, item) {
-                    parameter_id_counter++;
-                    parameters.push({param: item.type, id: parameter_id_counter});
+                let operator = null;
+                let value = null;
+                let valueList = [];
+                let type = null;
+                $.each(selectedValues, function(index, item) {
+                    switch (item.type) {
+                        case 'operator':
+                            operator = item.id;
+                            break;
+                        case 'number':
+                            if (value) {
+                                // Second digit, so multiply the existing value by 10 first before adding the next number.
+                                value = (value * 10) + item.id;
+                            } else {
+                                // First digit.
+                                value = item.id
+                            }
+                            break;
+                        case 'lookup':
+                            // Selected value
+                            valueList.push({id: item.id, field: item.field});
+                            break;
+                        default:
+                            // Parameter type.
+                            type = item.type;
+                            break;
+                    }
                 });
+                let parameter = {
+                    type: type,
+                    operation: operator,
+                    value: value || valueList,
+                    id: ++parameter_id_counter
+                };
                 $.ajax({
                     url: '<?= $this->createUrl('caseSearch/addParameter') ?>',
                     data: {
-                        parameters: parameters
+                        parameter: parameter
                     },
                     type: 'GET',
                     success: function (response) {
                         // Append the dynamic parameter HTML before the first fixed parameter.
                         $('#param-list tbody tr.fixed-parameter:first').before(response);
                     }
-                });*/
+                });
             }
         });
 

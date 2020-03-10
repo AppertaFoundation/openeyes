@@ -24,9 +24,10 @@
             $('.js-digits1').closest('td').remove();
             $('.js-extra-options').closest('td').remove();
             let type = $(this).data('type');
-            $.ajax({
-                url: '/OECaseSearch/caseSearch/getOptions?type=' + type,
-                success: function(response) {
+            $.getJSON(
+                '/OECaseSearch/caseSearch/getOptions?type=' + type,
+                null,
+                function(response) {
                     let options = JSON.parse(response);
                     dialog.options.itemSets.splice(1, dialog.options.itemSets.length - 1);
                     dialog.generateOperatorList(options.operations);
@@ -35,55 +36,20 @@
                             dialog.generateDigits();
                             break;
                         case 'string_search':
-                            /*dialog.options.itemSets.push(
-                                new OpenEyes.UI.AdderDialog.ItemSet(
-                                    options.common_terms,
-                                    {'multiSelect': false, 'id': 'param-common-search-list', 'deSelectOnReturn': true,}
-                                )
-                            );*/
                             // Add item set for the common searches, then show the search field.
-                            dialog.generateSearch(type);
+                            dialog.generateSearch(type, options.option_data);
                             break;
                         case 'multi_select':
                             dialog.generateOptionLists(options.option_data);
                             break;
                         default:
                             // Show the search field.
-                            dialog.generateSearch(type);
+                            dialog.generateSearch(type, options.option_data);
                             break;
                     }
-                },
-                error: function() {
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: 'Unable to retrieve options for selected parameter.'
-                    }).open();
                 }
-            });
+            );
         });
-
-        /*this.popup.on('click', '.js-drug-types li', function () {
-            if ($(this).data('selected') === "none") {
-                dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
-                dialog.popup.find('.js-drug-types li').not(this).data('selected', 'none');
-                $(this).data('selected', 'true');
-            } else {
-                $(this).data('selected', 'none');
-                $(this).removeClass('selected');
-            }
-            dialog.runItemSearch(dialog.popup.find('input.search').val());
-        });
-
-        this.popup.on('click', '.js-no-preservative li', function () {
-            dialog.runItemSearch(dialog.popup.find('input.search').val());
-        });*/
-    };
-
-    QuerySearchDialog.prototype.getSelectedItems = function () {
-        return this.popup.find('li.selected').filter(function () {
-            return $(this).closest('.js-drug-types').length === 0 && !$(this).parent().hasClass('js-no-preservative');
-        }).map(function () {
-            return $(this).data();
-        }).get();
     };
 
     QuerySearchDialog.prototype.generateContent = function () {
@@ -103,20 +69,6 @@
                 let $list = dialog.generateItemList(itemSet);
                 $list.addClass(itemSet.options.class);
                 let $listDiv = $('<div />', {class: 'list-wrap'}).appendTo($listContainer);
-
-                // add the search field only to the common_drugs section
-                if (itemSet.options.class !== null && itemSet.options.class === "js-search-results") {
-                    /*let $searchInput = $('<input />', {
-                        class: 'search cols-full js-search-autocomplete',
-                        placeholder: 'Search...',
-                        type: 'text'
-                    });
-                    $searchInput.appendTo($listDiv);
-                    $searchInput.on('keyup', function () {
-                        dialog.runItemSearch($(this).val());
-                    });
-                    $listDiv.addClass('has-filter');*/
-                }
 
                 $list.appendTo($listDiv);
             });
@@ -145,6 +97,8 @@
             optionData.options.forEach(function (option) {
                 dialog.optionList.append($('<li />', {
                     'data-id': option.id,
+                    'data-type': 'lookup',
+                    'data-field': optionData.field
                 }).append($('<span />', {class: 'auto-width'}).text(option.label)));
             });
 
@@ -224,6 +178,10 @@
             "data-multiselect": "false"
         });
         this.searchResultList.appendTo($filterDiv);
+
+        if (option_data) {
+            this.generateOptionLists(option_data);
+        }
     };
 
     QuerySearchDialog.prototype.runItemSearch = function (text, type) {
@@ -243,7 +201,9 @@
             $('.js-search-results').empty();
             $.each(response, function(index, item) {
                 let $listItem = $('<li />', {
-                    "data-id": item.id
+                    "data-id": item.id,
+                    'data-type': 'lookup',
+                    'data-field': 'term'
                 }).append('<span class="auto-width">' + item.label + '</span>');
                 $('.js-search-results').append($listItem);
             });
