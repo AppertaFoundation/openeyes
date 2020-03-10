@@ -54,6 +54,19 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         );
     }
 
+    public static function getCommonItemsForTerm($term)
+    {
+        $allergies = Allergy::model()->findAllBySql('
+SELECT a.*
+FROM allergy a 
+WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "%$term%"));
+        $values = array();
+        foreach ($allergies as $allergy) {
+            $values[] = array('id' => $allergy->id, 'label' => $allergy->name);
+        }
+        return $values;
+    }
+
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.

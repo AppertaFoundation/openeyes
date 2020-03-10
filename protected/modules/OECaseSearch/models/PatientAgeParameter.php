@@ -15,6 +15,14 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
      */
     public $maxValue;
 
+    protected $options = array(
+        'operations' => array(
+            array('label' => 'IS LESS THAN', 'id' => '<'),
+            array('label' => 'IS MORE THAN', 'id' => '>'),
+        ),
+        'value_type' => 'number',
+    );
+
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario Model scenario.

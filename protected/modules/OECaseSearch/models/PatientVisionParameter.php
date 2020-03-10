@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+
 /**
  * Class PatientVisionParameter
  *
@@ -13,6 +15,10 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public $maxValue;
     public $bothEyesIndicator;
 
+    protected $options = array(
+        'value_type' => 'multi_select',
+    );
+
     /**
      * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario Model scenario.
@@ -21,6 +27,28 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'vision';
+        $va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
+            OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id,
+            false
+        )[0];
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'va-values',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $va_values,
+                    array_keys($va_values)
+                )
+            ),
+            array(
+                'id' => 'both-eyes',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Both Eyes')
+                )
+            ),
+        );
     }
 
     /**

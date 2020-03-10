@@ -58,7 +58,7 @@ $user_searches = array_map(
                     'model' => $param,
                     'id' => $id
                 ));
-            endforeach;?>
+            endforeach; ?>
             <tr id="search-label-row">
                 <td><?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
             </tr>
@@ -76,7 +76,8 @@ $user_searches = array_map(
                     )
                 ) ?>
             </div>
-            <button id="add-to-advanced-search-filters" class="button hint green thin js-add-select-btn" data-popup="add-to-advanced-search-filters">
+            <button id="add-to-advanced-search-filters" class="button hint green thin js-add-select-btn"
+                    data-popup="add-to-advanced-search-filters">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -87,9 +88,9 @@ $user_searches = array_map(
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-basic-csv', 'class' => 'cols-full')) ?>
             <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-advanced-csv', 'class' => 'cols-full')) ?>
-            <?php if ($this->trialContext) :?>
+            <?php if ($this->trialContext) : ?>
                 <button class="cols-full" onclick="backToTrial()">Back to Trial</button>
-            <?php endif;?>
+            <?php endif; ?>
         </div>
         <?php $this->endWidget('search-form'); ?>
     </nav>
@@ -116,6 +117,9 @@ $user_searches = array_map(
                 )
             );
             $sort = $patients->getSort();
+            /**
+             * @var $pager LinkPager
+             */
             $pager = $this->createWidget(
                 'LinkPager',
                 array(
@@ -138,30 +142,34 @@ $user_searches = array_map(
                 $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
             }
             ?>
-        <div class="table-sort-order">
-            <div class="sort-by">
-                Sort by:
-                <span class="sort-options">
+            <div class="table-sort-order">
+                <div class="sort-by">
+                    Sort by:
+                    <span class="sort-options">
                     <?= CHtml::dropDownList('sort', $sort_field, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
                     <span class="direction">
                         <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend'))?>
+                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend')) ?>
                             <i class="oe-i direction-up medium"></i>
                         </label>
                         <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend'))?>
+                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend')) ?>
                             <i class="oe-i direction-down medium"></i>
                         </label>
                     </span>
                 </span>
+                </div>
+                <?php $pager->run(); ?>
             </div>
-            <?php $pager->run(); ?>
-        </div>
             <table id="case-search-results" class="standard last-right">
                 <tbody>
                 <?= $searchResults->renderItems() ?>
                 </tbody>
-                <tfoot><tr><td colspan="3"><?php $pager->run(); ?></td></tr></tfoot>
+                <tfoot>
+                <tr>
+                    <td colspan="3"><?php $pager->run(); ?></td>
+                </tr>
+                </tfoot>
             </table>
         <?php } ?>
     </main>
@@ -247,10 +255,10 @@ $user_searches = array_map(
         $(elm).parents('.parameter').remove();
     }
 
-    function getMaxId(){
+    function getMaxId() {
         let id_max = -1;
         $('#param-list tbody tr.parameter').each(function () {
-            if ($(this)[0].id > id_max){
+            if ($(this)[0].id > id_max) {
                 id_max = $(this)[0].id;
             }
         });
@@ -258,12 +266,12 @@ $user_searches = array_map(
     }
 
     function performSort(field) {
-        let $field = $('#sort-field option[value=' + field +']');
+        let $field = $('#sort-field option[value=' + field + ']');
         let direction = $("input[name='sort-options']").filter("input[checked='checked']").val();
         if (direction === 'ascend') {
             window.location.href = $($field).data('sort-ascend');
         } else if (direction === 'descend') {
-            window.location.href =  $($field).data('sort-descend');
+            window.location.href = $($field).data('sort-descend');
         }
     }
 
@@ -271,17 +279,18 @@ $user_searches = array_map(
     $(document).ready(function () {
         //null coalesce the id of the last parameter
         let parameter_id_counter = getMaxId();
-        new OpenEyes.UI.AdderDialog({
+        new OpenEyes.UI.AdderDialog.QuerySearchDialog({
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode($paramList) ?>,
-                    {'multiSelect': true, 'id': 'param-type-list', 'deselectOnReturn': true,}
-                )
+                    {'multiSelect': false, 'id': 'param-type-list', 'deselectOnReturn': true,}
+                ),
             ],
             openButton: $('#add-to-advanced-search-filters'),
-            onReturn: function(dialog, selectedValues) {
-                let parameters = [];
-                $.each(selectedValues, function(index, item) {
+            onReturn: function (dialog, selectedValues) {
+                console.log(selectedValues);
+                /*let parameters = [];
+                $.each(selectedValues, function (index, item) {
                     parameter_id_counter++;
                     parameters.push({param: item.type, id: parameter_id_counter});
                 });
@@ -295,7 +304,7 @@ $user_searches = array_map(
                         // Append the dynamic parameter HTML before the first fixed parameter.
                         $('#param-list tbody tr.fixed-parameter:first').before(response);
                     }
-                });
+                });*/
             }
         });
 
@@ -303,8 +312,8 @@ $user_searches = array_map(
             this.closest('tr').remove();
         });
 
-        $('#load-saved-search').click(function() {
-            var savedSearchDialog = new OpenEyes.UI.Dialog.LoadSavedSearch({
+        $('#load-saved-search').click(function () {
+            const savedSearchDialog = new OpenEyes.UI.Dialog.LoadSavedSearch({
                 id: 'load-saved-search-dialog',
                 title: 'All searches',
                 user_id: <?= Yii::app()->user->id ?>,
@@ -312,12 +321,12 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('#sort-field').change(function() {
+        $('#sort-field').change(function () {
             let value = $('#sort-field').val();
             performSort(value)
         });
 
-        $("input[name='sort-options']").change(function() {
+        $("input[name='sort-options']").change(function () {
             let value = $('#sort-field').val();
             performSort(value);
         });
@@ -330,7 +339,7 @@ $user_searches = array_map(
                     $('#case-search-results').children().remove();
                     $('#param-list tbody tr.parameter').remove();
                 },
-                error: function() {
+                error: function () {
                     new OpenEyes.UI.Dialog.Alert({
                         content: 'Unable to clear search results.'
                     }).open();
@@ -341,40 +350,40 @@ $user_searches = array_map(
 </script>
 
 <?php if ($this->trialContext) { ?>
-  <script type="text/javascript">
+    <script type="text/javascript">
 
-    $(document).on('click', '.js-add-to-trial', function () {
-        const addLink = this;
-        const $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
-        let trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function () {
-            return this.nodeType === Node.TEXT_NODE;
-        }).text());
-        const trialShortListElement = $(this).closest('.js-oe-patient').find('.trial-shortlist');
-        const patientId = $(this).closest('.js-oe-patient').data('patient-id');
+        $(document).on('click', '.js-add-to-trial', function () {
+            const addLink = this;
+            const $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
+            let trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function () {
+                return this.nodeType === Node.TEXT_NODE;
+            }).text());
+            const trialShortListElement = $(this).closest('.js-oe-patient').find('.trial-shortlist');
+            const patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
-        $.ajax({
-            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
-            data: {
-              id: <?= $this->trialContext->id?>,
-              patient_id: patientId,
-            },
-            success: function () {
-              $(addLink).hide();
-              trialShortlist += 1;
-              trialShortListElement.text(' ' + trialShortlist);
-              trialShortListElement.prepend('<em>Shortlisted</em>');
-              trialShortListElement.show();
+            $.ajax({
+                url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
+                data: {
+                    id: <?= $this->trialContext->id?>,
+                    patient_id: patientId,
+                },
+                success: function () {
+                    $(addLink).hide();
+                    trialShortlist += 1;
+                    trialShortListElement.text(' ' + trialShortlist);
+                    trialShortListElement.prepend('<em>Shortlisted</em>');
+                    trialShortListElement.show();
 
-            },
-            error: function () {
-              new OpenEyes.UI.Dialog.Alert({
-                content: "Sorry, an internal error occurred and we were unable to add the patient to the trial." +
-                    "\n\nPlease contact support for assistance."
-              }).open();
-            }
+                },
+                error: function () {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "Sorry, an internal error occurred and we were unable to add the patient to the trial." +
+                            "\n\nPlease contact support for assistance."
+                    }).open();
+                }
+            });
         });
-    });
-  </script>
+    </script>
 <?php } ?>
 
 

@@ -10,7 +10,7 @@ abstract class SearchProvider
     /**
      * @var string|int $_providerID Unique provider ID
      */
-    protected $_providerID;
+    private $_providerID;
 
     /**
      * SearchProvider constructor.

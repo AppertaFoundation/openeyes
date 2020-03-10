@@ -18,6 +18,7 @@ class CaseSearchController extends BaseModuleController
             'ajaxOnly + otherSearchUsers',
             'ajaxOnly + loadSearch',
             'ajaxOnly + clear',
+            'ajaxOnly + searchCommonItems'
         );
     }
 
@@ -26,7 +27,16 @@ class CaseSearchController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'addParameter', 'otherSearchUsers', 'getSearchesByUser', 'loadSearch', 'saveSearch', 'clear'),
+                'actions' => array(
+                    'index',
+                    'addParameter',
+                    'getSearchesByUser',
+                    'loadSearch',
+                    'saveSearch',
+                    'clear',
+                    'getOptions',
+                    'searchCommonItems',
+                ),
                 'users' => array('@'),
             ),
         );
@@ -181,7 +191,7 @@ class CaseSearchController extends BaseModuleController
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
+            'params' => (empty($parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $parameters,
             'fixedParams' => $fixedParameters,
             'patients' => $patientData,
             'saved_searches' => $all_searches,
@@ -208,18 +218,14 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->end();
     }
 
-    /**
-     * @param $id
-     * @throws CException
-     */
-    public function actionGetSearchesByUser($id)
+    public function actionGetOptions()
     {
-        $searches = Yii::app()->db->createCommand()
-            ->select('id, name')
-            ->from('case_search_saved_search')
-            ->where('created_user_id = :user_id', array(':user_id' => $id))
-            ->queryAll();
-        echo json_encode($searches);
+        /**
+         * @var $parameter CaseSearchParameter
+         */
+        $type = Yii::app()->request->getQuery('type');
+        $parameter = new $type;
+        echo json_encode($parameter->getOptions());
     }
 
     /**
@@ -343,6 +349,19 @@ class CaseSearchController extends BaseModuleController
             Yii::app()->user->setFlash('success', 'Search saved successfully.');
         }
         $this->redirect('/OECaseSearch/caseSearch/index');
+    }
+
+    public function actionSearchCommonItems()
+    {
+        $term = Yii::app()->request->getQuery('term');
+        $type = Yii::app()->request->getQuery('type');
+
+        /**
+         * @var $stub CaseSearchParameter
+         */
+        $values = $type::getCommonItemsForTerm($term);
+
+        echo json_encode($values);
     }
 
     /**

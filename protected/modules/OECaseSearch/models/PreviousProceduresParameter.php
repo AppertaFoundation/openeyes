@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\PastSurgery_Operation;
+
 /**
  * Class PreviousProceduresParameter
  */
@@ -53,6 +55,30 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
                 array('textValue', 'required')
             )
         );
+    }
+
+    public static function getCommonItemsForTerm($term)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('term', $term, true);
+        $procedures = Procedure::model()->findAll($criteria);
+
+        $options = array();
+        foreach ($procedures as $procedure) {
+            $options[] = array('id' => $procedure->id, 'label' => $procedure->term);
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('operation', $term, true);
+        $criteria->addNotInCondition('operation', $options);
+        $past_ops = PastSurgery_Operation::model()->findAll($criteria);
+
+        foreach ($past_ops as $op) {
+            $options[] = array('id' => $op->id, 'label' => $op->operation);
+        }
+        return $options;
     }
 
     /**

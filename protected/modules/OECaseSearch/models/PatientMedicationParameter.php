@@ -54,6 +54,34 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
     }
 
+    public static function getCommonItemsForTerm($term)
+    {
+        $drugs = Drug::model()->findAllBySql('
+SELECT *
+FROM drug d 
+WHERE LOWER(d.name) LIKE LOWER(:term) ORDER BY d.name LIMIT 30', array('term' => "$term%"));
+
+        $medicationDrugs = MedicationDrug::model()->findAllBySql('
+SELECT *
+FROM medication_drug md
+WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "$term%"));
+
+        $values = array();
+        foreach ($drugs as $drug) {
+            $values[] = array('id' => $drug->id, 'label' => $drug->name);
+        }
+
+        foreach ($medicationDrugs as $medicationDrug) {
+            // Filter out any duplicates.
+            if (!isset($values[$medicationDrug->name])) {
+                $values[] = array('id' => $medicationDrug->id, 'label' => $medicationDrug->name);
+            }
+        }
+
+        sort($values);
+        return $values;
+    }
+
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.

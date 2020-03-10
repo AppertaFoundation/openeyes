@@ -5,6 +5,7 @@
  */
 abstract class CaseSearchParameter extends CFormModel
 {
+    const _AUTOCOMPLETE_LIMIT = 30;
     /**
      * @var string $name
      */
@@ -21,15 +22,48 @@ abstract class CaseSearchParameter extends CFormModel
     public $id;
 
     /**
+     * @var string $value
+     */
+    public $value;
+
+    /**
      * @var bool $isFixed
      */
     public $isFixed = false;
+
+    protected $options = array(
+        'value_type' => 'string',
+    );
+
+    /**
+     * CaseSearchParameter constructor.
+     * @param string $scenario
+     */
+    public function __construct($scenario = '')
+    {
+        parent::__construct($scenario);
+        if (!array_key_exists('operations', $this->options)) {
+            $this->options['operations'] = array(
+                array('label' => 'IS', 'id' => '='),
+                array('label' => 'IS NOT', 'id' => '!=')
+            );
+        } else {
+            $this->options['operations'][] = array('label' => 'IS', 'id' => '=');
+            $this->options['operations'][] = array('label' => 'IS NOT', 'id' => '!=');
+        }
+    }
 
     /**
      * Get the parameter identifier (usually the name).
      * @return string The human-readable name of the parameter (for display purposes).
      */
     abstract public function getLabel();
+
+    public static function getCommonItemsForTerm($term)
+    {
+        // Override in subclasses where relevant
+        return array();
+    }
 
     /**
      * Get the path of the view to use when rendering the search parameter. Override this function if the parameter is within a different module.
@@ -105,4 +139,9 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     abstract public function getDisplayString();
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
 }

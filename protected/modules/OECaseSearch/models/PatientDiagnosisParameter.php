@@ -132,6 +132,23 @@ WHERE p1.id NOT IN (
         return $query;
     }
 
+    public static function getCommonItemsForTerm($term)
+    {
+        $disorders = Disorder::model()->findAllBySql(
+            'SELECT * FROM disorder
+WHERE LOWER(term) LIKE LOWER(:term)
+   OR LOWER(aliases) LIKE LOWER(:term)
+   OR LOWER(fully_specified_name) LIKE LOWER(:term)
+ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
+            array('term' => "%$term%")
+        );
+        $values = array();
+        foreach ($disorders as $disorder) {
+            $values[] = array('id' => $disorder->id, 'label' => $disorder->term);
+        }
+        return $values;
+    }
+
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
