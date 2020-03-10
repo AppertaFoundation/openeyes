@@ -19,6 +19,7 @@ class FlotChartTest extends CTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->chart = new FlotChart(ComponentStubGenerator::generate('CController'));
     }
 

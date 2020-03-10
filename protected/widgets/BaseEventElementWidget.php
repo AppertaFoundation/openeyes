@@ -198,9 +198,15 @@ class BaseEventElementWidget extends CWidget
         $this->element->widget = $this;
     }
 
+    /**
+     * Abstraction around the element tip status
+     *
+     * @return bool
+     */
     protected function isAtTip()
     {
-        return $this->element->isAtTip();
+        // if method not on element we can assume tip status is irrelevant and therefore return true.
+        return method_exists($this->element, 'isAtTip') ? $this->element->isAtTip() : true;
     }
 
     /**
@@ -410,11 +416,15 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
-     * @return null|string
+     * @return string
      * @throws CException
      */
     public function renderWarnings()
     {
+        if (Yii::app()->params['show_notattip_warning'] !== 'on') {
+            return '';
+        }
+
         if (!$this->isAtTip()) {
             if ($this->showEditTipWarning()) {
                 return $this->render($this->notattip_edit_warning, array('element' => $this->element));
@@ -423,7 +433,6 @@ class BaseEventElementWidget extends CWidget
                 return $this->render($this->notattip_view_warning, array('element' => $this->element));
             }
         }
-        return null;
     }
 
     public function getEyeIdFromPost(array $data)

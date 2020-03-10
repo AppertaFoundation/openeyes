@@ -111,5 +111,6 @@ abstract class PASAPI_BaseTest extends RestTestCase
     public function tearDown()
     {
         $this->cleanUpTestUser();
+        parent::tearDown();
     }
 }

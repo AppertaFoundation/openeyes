@@ -23,7 +23,7 @@ class ReportDiagnosesTest extends CDbTestCase
         'episodes' => 'Episode',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
     }
