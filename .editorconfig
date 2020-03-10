@@ -11,12 +11,8 @@ trim_trailing_whitespace = true
 insert_final_newline = false
 
 [*.{php,js,css,html,pp,scss,json,sh,less}]
-indent_style = tab
-indent_size = 2
-
-[Vagrantfile]
-indent_style = tab
-indent_size = 2
+indent_style = space
+indent_size = 4
 
 [node_modules/**.js]
 indent_style = space

@@ -18,6 +18,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
         Yii::app()->params['event_lock_days'] = 1;
         $this->rules = new AuthRules();
     }

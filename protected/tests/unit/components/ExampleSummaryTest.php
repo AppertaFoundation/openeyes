@@ -30,7 +30,7 @@ class ExampleSummaryTest extends CDbTestCase
         'events' => 'Event',
     );
 
-    protected function setUp()
+    public function setUp()
     {
         $this->widget = new ExampleSummary('ExampleSummary');
         parent::setUp();

@@ -31,11 +31,6 @@ class Element_OphCiExamination_DilationTest extends ActiveRecordTestCase
         return models\Element_OphCiExamination_Dilation::model();
     }
 
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function tearDown()
     {
         foreach ($this->delete_element_ids as $id) {
@@ -45,6 +40,8 @@ class Element_OphCiExamination_DilationTest extends ActiveRecordTestCase
             models\Element_OphCiExamination_Dilation::model()->noVersion()->deleteByPk($id);
         }
         $this->delete_element_ids = array();
+
+        parent::tearDown();
     }
 
     public function getValidTreatmentMock()

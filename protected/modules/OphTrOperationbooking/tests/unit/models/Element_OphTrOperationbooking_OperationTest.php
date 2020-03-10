@@ -46,11 +46,6 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         date_default_timezone_set('UTC');
     }
 
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /**
      * Checks both that the array values are equal, and that the keys for the array are in the same order
      * which assertEquals does not appear to do.

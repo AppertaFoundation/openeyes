@@ -58,7 +58,7 @@ class PatientTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new Patient();
@@ -107,7 +107,7 @@ class PatientTest extends ActiveRecordTestCase
         Yii::app()->params['pseudonymise_patient_details'] = false;
 
         $patient = $this->patients('patient9'); //dob=1979-09-08
-        
+
         $age = 39; // patient9 died on 2019-07-10, when they were 39
 
         $this->assertEquals($age, $patient->getAge());
