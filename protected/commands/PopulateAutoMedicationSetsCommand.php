@@ -37,8 +37,6 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
             exit(1);
         }
 
-        $this->_savePid();
-
         //populate whole set unless we are given specific set number to reduce time on rebuilding sets on admin page
         if (empty($args)) {
             MedicationSet::populateAutoSets();
@@ -66,11 +64,5 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
     public function actionCheckRunning()
     {
         return $this->_isRunning();
-    }
-
-    private function _savePid()
-    {
-        file_put_contents($this->_pidfile, $this->_pid);
-        chmod($this->_pidfile, 0777);
     }
 }

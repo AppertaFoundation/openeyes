@@ -61,7 +61,7 @@ class MedicationSetRule extends BaseActiveRecordVersioned
             ['subspecialty_id, site_id', 'numerical', 'integerOnly' => true, 'allowEmpty' => true],
             ['usage_code', 'length', 'max'=>255],
             ['last_modified_user_id, created_user_id', 'length', 'max'=>10],
-            ['usage_code_id, deleted_date, last_modified_date, created_date', 'safe'],
+            ['id, usage_code_id, deleted_date, last_modified_date, created_date', 'safe'],
             ['usage_code_id', 'required'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.

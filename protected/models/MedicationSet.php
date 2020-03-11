@@ -567,7 +567,7 @@ class MedicationSet extends BaseActiveRecordVersioned
                                 INNER JOIN medication_set_item ON medication_set_item.id = medication_set_item_taper.`medication_set_item_id`
                                 WHERE medication_set_id = {$this->id};";
 
-        $delete_taper_item = "DELETE FROM medication_set_item WHERE id = {$this->id}";
+        $delete_taper_item = "DELETE FROM medication_set_item WHERE medication_set_id = {$this->id}";
 
         $this->dbConnection->getCommandBuilder()->createSqlCommand($delete_taper_query . $delete_taper_item)->execute();
 
