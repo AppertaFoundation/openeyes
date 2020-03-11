@@ -88,19 +88,14 @@ EOH;
                     }
 
                     /* Auto set */
-
-                    $target_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
-
-                    foreach ($target_medication_auto_set_items as $set_item) {
-                            $current_medication_auto_set_item = MedicationSetAutoRuleMedication::model()->findByAttributes([
-                                    'medication_id' => $current_medication->id,
-                                    'medication_set_id' => $set_item->medication_set_id
-                                    ]);
-                        if (isset($current_medication_auto_set_item)) {
-                            $set_item->delete();
-                        } else {
-                            $set_item->medication_id = $current_medication->id;
-                            $set_item->save();
+                    foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
+                                 'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
+                        try {
+                            Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
+                                         SET medication_id = {$current_medication->id} 
+                                         WHERE medication_id = {$target_medication->id}")->execute();
+                        } catch (Exception $exception) {
+                            Yii::log($exception->getMessage());
                         }
                     }
 
