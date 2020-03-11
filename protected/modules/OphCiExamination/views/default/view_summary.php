@@ -181,7 +181,7 @@ if ($historyElement) {
         </div>
     </section>
 
-    <section class=" element view-Systemic-Medications tile"
+    <section class="element view-Systemic-Medications tile"
              data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
              data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
              data-element-type-name="Systemic Medications"
@@ -246,8 +246,8 @@ if ($historyElement) {
                         </table>
                     </div>
                 </div>
+                <?php } else { ?>
             </div>
-                    <?php } else { ?>
                 <div class="data-value none">
                     No current Systemic Medications
                 </div>
