@@ -39,7 +39,7 @@ class IndexSearch extends BaseCWidget
      * @param $event
      */
 
-    protected function processEventDefinition($event)
+    public function processEventDefinition($event)
     {
         $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search WHERE event_type=:eventtype AND parent IS NULL');
         $cmd->bindValue(':eventtype', $event);
@@ -95,7 +95,7 @@ class IndexSearch extends BaseCWidget
         return "<input id=\"searchable_terms\" hidden data-searchable-terms='$searchable_terms_JSON'/>";
     }
 
-    private function formatHTML($html)
+    public function formatHTML($html)
     {
         return $this->HTML($html);
     }
@@ -140,7 +140,7 @@ class IndexSearch extends BaseCWidget
         }
     }
 
-    private function generateIndexMainDiv($index, $lvl)
+    public function generateIndexMainDiv($index, $lvl)
     {
         $div_attr = $this->getMainDivDivAttr($index);
         $span_attr = $this->getMainDivSpanAttr($index, $lvl);
@@ -148,7 +148,7 @@ class IndexSearch extends BaseCWidget
         return $this->getIndexMainDiv($div_attr, $span_attr, $primary_term);
     }
 
-    private function generateAdditionalInfoDiv($index, $lvl)
+    public function generateAdditionalInfoDiv($index, $lvl)
     {
         $result = "";
         $secondary_term_list = $index['secondary_term_list'];
@@ -249,7 +249,7 @@ class IndexSearch extends BaseCWidget
         }
     }
 
-    private function getMainDivDivData($index)
+    public function getMainDivDivData($index)
     {
         $data_map_attrs = array(
             'goto-id' => 'goto_id',
@@ -320,7 +320,7 @@ class IndexSearch extends BaseCWidget
      * @return mixed
      * @throws SystemException
      */
-    private function getElementName($open_element_class_name)
+    public function getElementName($open_element_class_name)
     {
         if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name))) {
             return $element_type->name;
