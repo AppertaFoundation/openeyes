@@ -21,6 +21,27 @@
 
 namespace OEModule\OphCiExamination\models;
 
+/**
+ * This is the model class for table "ophciexamination_systemic_diagnoses_set.
+ *
+ * The followings are the available columns in table 'ophciexamination_systemic_diagnoses_set':
+ * @property integer $id
+ * @property string $name
+ * @property integer $firm_id
+ * @property integer $subspecialty_id
+ * @property string $last_modified_user_id
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $created_date
+ *
+ * The followings are the available model relations:
+ * @property OphCiExaminationSystemicDiagnosesSetEntry[] $entries
+ * @property Firm $firm
+ * @property \User $created_user
+ * @property \User $last_modified_user
+ * @property Subspecialty $subspecialty
+ */
+
 class OphCiExaminationSystemicDiagnosesSet extends \BaseActiveRecordVersioned
 {
     /**
@@ -124,10 +145,6 @@ class OphCiExaminationSystemicDiagnosesSet extends \BaseActiveRecordVersioned
 
     public function beforeDelete()
     {
-        foreach ($this->set_assignments as $set_assignment) {
-            $set_assignment->delete();
-        }
-
         foreach ($this->entries as $set_entry) {
             $set_entry->delete();
         }

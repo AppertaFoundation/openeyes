@@ -89,10 +89,8 @@ $(document).ready(function() {
 			$('#date-start').val(format_pickmeup_date(returnDateWithInterval(new Date(sd), -7)));
 		}
 
-		setDiaryFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',true);
-		$('#date-start').trigger('change');
-		$('#date-end').trigger('change');
+		setDiaryFilter({'date-filter':'','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
+
 		return false;
 	});
 
@@ -118,10 +116,7 @@ $(document).ready(function() {
 			}
 		}
 
-		setDiaryFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',true);
-		$('#date-start').trigger('change');
-		$('#date-end').trigger('change');
+		setDiaryFilter({'date-filter':'','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
 		return false;
 	});
@@ -140,12 +135,12 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#date-start').change(function() {
+	$('#date-start').on('pickmeup-change change', function() {
 		setDiaryFilter({'date-start':$(this).val()});
 		$('#date-filter_3').attr('checked','checked');
 	});
 
-	$('#date-end').change(function() {
+	$('#date-end').on('pickmeup-change change', function() {
 		setDiaryFilter({'date-end':$(this).val()});
 		$('#date-filter_3').attr('checked','checked');
 	});
@@ -461,6 +456,19 @@ $(document).ready(function() {
 			instance.disable();
 		}
 	});
+
+	pickmeup('#date-start', {
+		format: 'Y-m-d',
+		hide_on_select: true,
+		date: $('#date-start').val()
+	});
+	pickmeup('#date-end', {
+		format: 'Y-m-d',
+		hide_on_select: true,
+		date: $('#date-end').val()
+	});
+
+	return getDiary();
 });
 
 function getDiary() {

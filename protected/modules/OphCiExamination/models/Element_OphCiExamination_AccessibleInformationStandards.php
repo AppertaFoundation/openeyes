@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,29 +11,33 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
+use Yii;
+
 /**
- * This is the model class for table "subspecialty_subsection".
+ * This is the model class for table "et_ophciexamination_accessible_information_standards".
  *
- * The followings are the available columns in table 'subspecialty_subsection':
+ * The followings are the available columns in table:
  *
- * @property int $id
- * @property int $subspecialty_id
- * @property string $name
+ * @property string $id
+ * @property int $event_id
+ * @property int $correspondence_in_large_letters
  *
- * The followings are the available model relations:
- * @property Procedure[] $procedures
- * @property Subspecialty $subspecialty
  */
-class SubspecialtySubsection extends BaseActiveRecordVersioned
+class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    public $service;
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return SubspecialtySubsection the static model class
+     * @return the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -46,7 +49,7 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'subspecialty_subsection';
+        return 'et_ophciexamination_accessible_information_standards';
     }
 
     /**
@@ -57,13 +60,11 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('subspecialty_id, name', 'required'),
-            array('subspecialty_id', 'length', 'max' => 10),
-            array('name', 'length', 'max' => 255),
+                array('correspondence_in_large_letters', 'safe'),
+                array('correspondence_in_large_letters', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, subspecialty_id, name', 'safe', 'on' => 'search'),
-            array('subspecialty_id, name, display_order', 'safe'),
+            array('id, event_id, correspondence_in_large_letters,anticoagulant ', 'safe', 'on' => 'search'),
         );
     }
 
@@ -75,8 +76,9 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'procedures' => array(self::MANY_MANY, 'Procedure', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
-            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -86,17 +88,18 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'subspecialty_id' => 'Subspecialty',
-            'name' => 'Name',
+                'id' => 'ID',
+                'event_id' => 'Event',
+                'correspondence_in_large_letters' => 'Large print for correspondence',
         );
     }
 
-    public function behaviors()
+    /**
+     * Set default values for forms on create.
+     */
+    public function setDefaultOptions(\Patient $patient = null)
     {
-        return array(
-            'LookupTable' => 'LookupTable',
-        );
+        
     }
 
     /**
@@ -109,37 +112,27 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
-        $criteria->compare('name', $this->name, true);
+        $criteria->compare('event_id', $this->event_id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria' => $criteria,
+        $criteria->compare('correspondence_in_large_letters', $this->correspondence_in_large_letters);
+
+        return new \CActiveDataProvider(get_class($this), array(
+                'criteria' => $criteria,
         ));
     }
 
-    public function getList($subspecialtyId)
+    public function getLetter_string()
     {
-        $sections = Yii::app()->db->createCommand()
-            ->select('id, name')
-            ->from('subspecialty_subsection')
-            ->where('subspecialty_id = :id and active = 1', array(':id' => $subspecialtyId))
-            ->order('display_order ASC')
-            ->queryAll();
-
-        $data = array();
-
-        foreach ($sections as $section) {
-            $data[$section['id']] = $section['name'];
-        }
-
-        return $data;
+        return "Large print for correspondence: $this->correspondence_in_large_letters\n";
     }
 
-    public function defaultScope()
+    public function canCopy()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return true;
     }
+
+
 }
