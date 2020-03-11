@@ -18,7 +18,7 @@
 class IndexSearchTest extends CTestCase {
 
     private $search;
-private $array =[
+    private $array =[
                     'id' => '2',
                     'parent' => null,
                     'primary_term' => 'Examination History',
@@ -41,13 +41,15 @@ private $array =[
         $this->search = new IndexSearch();
     }
     /** @test */
-    public function getIndexSearchHTML(){
+    public function getIndexSearchHTML()
+    {
         $this->assertNotNull($this->search->processEventDefinition("Examination"));
     }
     /** @test */
-    public function testFormatHTML() {
+    public function testFormatHTML()
+    {
         $expectedHTML =
-"\n<div>\n\t<span>Test</span>\n</div>";
+        "\n<div>\n\t<span>Test</span>\n</div>";
 
         $unformattedHTML = "<div><span>Test</span></div>";
         $formattedHTML = $this->search->formatHTML($unformattedHTML);
@@ -55,30 +57,34 @@ private $array =[
 
     }
 
-    public function testGenerateIndexMainDiv(){
+    public function testGenerateIndexMainDiv()
+    {
 
-    $html_content_generated = $this->search->generateIndexMainDiv($this->array,1);
-    $html_content_expected = '<div  class="result_item" data-element-id="311" data-element-name="History" data-goto-id=\'OEModule_OphCiExamination_models_Element_OphCiExamination_History_description\' data-element-class-name=\'OEModule\OphCiExamination\models\Element_OphCiExamination_History\'><span data-alias="Examination History,Presenting Compliant, Follow Up Including History" class="lvl1">Examination History</span></div>';
-    $this->assertEquals($html_content_expected,$html_content_generated);
+        $html_content_generated = $this->search->generateIndexMainDiv($this->array, 1);
+        $html_content_expected = '<div  class="result_item" data-element-id="311" data-element-name="History" data-goto-id=\'OEModule_OphCiExamination_models_Element_OphCiExamination_History_description\' data-element-class-name=\'OEModule\OphCiExamination\models\Element_OphCiExamination_History\'><span data-alias="Examination History,Presenting Compliant, Follow Up Including History" class="lvl1">Examination History</span></div>';
+        $this->assertEquals($html_content_expected, $html_content_generated);
     }
 
-    public function testGenerateAdditionalInfoDiv(){
+    public function testGenerateAdditionalInfoDiv()
+    {
 
-        $html_content_generated = $this->search->generateAdditionalInfoDiv($this->array,1);
+        $html_content_generated = $this->search->generateAdditionalInfoDiv($this->array, 1);
         $html_content_expected = '<div class="index_row row"><div class="index_col_left_lvl1"><span class="alias">Presenting Compliant, Follow Up Including History</span></div><div class="index_col_right"></div></div>';
-        $this->assertEquals($html_content_expected,$html_content_generated);
+        $this->assertEquals($html_content_expected, $html_content_generated);
     }
 
-    public function testGetElementName(){
+    public function testGetElementName()
+    {
         $expected_element_name  = "Allergies";
         $actual_element_name = $this->search->getElementName("OEModule\OphCiExamination\models\Allergies");
-        $this->assertEquals($expected_element_name,$actual_element_name);
+        $this->assertEquals($expected_element_name, $actual_element_name);
     }
 
-    public function testGetMainDivDivData(){
+    public function testGetMainDivDivData()
+    {
         $actual_result = $this->search->getMainDivDivData($this->array);
         $expected_result = "data-element-id=\"311\" data-element-name=\"History\" data-goto-id='OEModule_OphCiExamination_models_Element_OphCiExamination_History_description' data-element-class-name='OEModule\OphCiExamination\models\Element_OphCiExamination_History'";
-        $this->assertEquals($expected_result,$actual_result);
+        $this->assertEquals($expected_result, $actual_result);
     }
 
 }
