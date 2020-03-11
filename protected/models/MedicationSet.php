@@ -56,10 +56,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     /*
      * These variables stand for temporary storage only
      */
-    public $tmp_attrs = [];
-    public $tmp_sets = [];
-    public $tmp_meds = [];
-    public $tmp_rules = [];
     public $tmp_tapers = [];
 
     private static $_processed = [];
@@ -290,8 +286,8 @@ class MedicationSet extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         if ($this->automatic) {
-            foreach ($this->tmp_attrs as $attr) {
-                if ($attr['medication_attribute_option_id'] == '') {
+            foreach ($this->medicationAutoRuleAttributes as $attr) {
+                if ($attr->medicationAttributeOption->id == '') {
                     $this->addError('attribute', 'Attribute value must be set');
                 }
             }
@@ -322,16 +318,11 @@ class MedicationSet extends BaseActiveRecordVersioned
         $existing_ids = array_map(function ($e) {
             return $e->id;
 
-        }, $this->medicationAutoRuleAttributes);
+        }, MedicationSetAutoRuleAttribute::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = array();
-        foreach ($this->tmp_attrs as $attr) {
-            if ($attr['id'] == -1) {
-                $attrib = new MedicationSetAutoRuleAttribute();
-            } else {
-                $attrib = MedicationSetAutoRuleAttribute::model()->findByPk($attr['id']);
-            }
-
-            $attrib->medication_attribute_option_id = $attr['medication_attribute_option_id'];
+        foreach ($this->medicationAutoRuleAttributes as $attr) {
+            $attrib = $attr;
+            $attrib->medication_attribute_option_id = $attr->medicationAttributeOption->id;
             $attrib->medication_set_id = $this->id;
             $attrib->save();
             $updated_ids[] = $attrib->id;
@@ -354,17 +345,12 @@ class MedicationSet extends BaseActiveRecordVersioned
         $existing_ids = array_map(function ($e) {
             return $e->id;
 
-        }, $this->medicationSetAutoRuleSetMemberships);
+        }, MedicationSetAutoRuleSetMembership::model()->findAllByAttributes(['target_medication_set_id' => $this->id]));
         $updated_ids = [];
         $models = [];
-        foreach ($this->tmp_sets as $set) {
-            if ($set['id'] == -1) {
-                $set_m = new MedicationSetAutoRuleSetMembership();
-            } else {
-                $set_m = MedicationSetAutoRuleSetMembership::model()->findByPk($set['id']);
-            }
-
-            $set_m->source_medication_set_id = $set['medication_set_id'];
+        foreach ($this->medicationSetAutoRuleSetMemberships as $set) {
+            $set_m = $set;
+            $set_m->source_medication_set_id = $set->source_medication_set_id;
             $set_m->target_medication_set_id = $this->id;
             $set_m->save();
             $updated_ids[] = $set_m->id;
@@ -392,32 +378,28 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
-        }, $this->medicationSetAutoRuleMedications);
+        }, MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = array();
 
-        foreach ($this->tmp_meds as $key => $med) {
-            if (isset($med['id']) && $med['id'] !== '') {
-                $med_m = MedicationSetAutoRuleMedication::model()->findByPk($med['id']);
-            } else {
-                $med_m = new MedicationSetAutoRuleMedication();
-            }
+        foreach ($this->medicationSetAutoRuleMedications as $key => $med) {
+            $med_m = $med;
 
             if (!$med_m) {
-                throw new Exception("MedicationSetAutoRuleMedication {$med['id']} did not found");
+                throw new Exception("MedicationSetAutoRuleMedication {$med->medication_id} did not found");
             }
 
-            $med_m->medication_id = $med['medication_id'];
+            $med_m->medication_id = $med->medication_id;
             $med_m->medication_set_id = $this->id;
 
-            $med_m->default_dose = isset($med['default_dose']) ? $med['default_dose'] : $med_m->default_dose;
-            $med_m->default_route_id = isset($med['default_route_id']) ? $med['default_route_id'] : $med_m->default_route_id;
-            $med_m->default_frequency_id = isset($med['default_frequency_id']) ? $med['default_frequency_id'] : $med_m->default_frequency_id;
-            $med_m->default_duration_id = isset($med['default_duration_id']) ? $med['default_duration_id'] : $med_m->default_duration_id;
-            $med_m->default_dispense_condition_id = isset($med['default_dispense_condition_id']) ? $med['default_dispense_condition_id'] : $med_m->default_dispense_condition_id;
-            $med_m->default_dispense_location_id = isset($med['default_dispense_location_id']) ? $med['default_dispense_location_id'] : $med_m->default_dispense_location_id;
+            $med_m->default_dose = isset($med->default_dose) ? $med->default_dose : $med_m->default_dose;
+            $med_m->default_route_id = isset($med->default_route_id) ? $med->default_route_id : $med_m->default_route_id;
+            $med_m->default_frequency_id = isset($med->default_frequency_id) ? $med->default_frequency_id : $med_m->default_frequency_id;
+            $med_m->default_duration_id = isset($med->default_duration_id) ? $med->default_duration_id : $med_m->default_duration_id;
+            $med_m->default_dispense_condition_id = isset($med->default_dispense_condition_id) ? $med->default_dispense_condition_id : $med_m->default_dispense_condition_id;
+            $med_m->default_dispense_location_id = isset($med->default_dispense_location_id) ? $med->default_dispense_location_id : $med_m->default_dispense_location_id;
 
-            $med_m->include_children = isset($med['include_children']) ? $med['include_children'] : 0;
-            $med_m->include_parent = isset($med['include_parent']) ? $med['include_parent'] : 0;
+            $med_m->include_children = isset($med->include_children) ? $med->include_children : 0;
+            $med_m->include_parent = isset($med->include_parent) ? $med->include_parent : 0;
 
             $med_m->tapers = [];
 
@@ -452,15 +434,11 @@ class MedicationSet extends BaseActiveRecordVersioned
         $existing_ids = array_map(function ($rule) {
             return $rule->id;
 
-        }, $this->medicationSetRules);
+        }, MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = [];
 
-        foreach ($this->tmp_rules as $rule) {
-            if (isset($rule['id']) && !$rule['id']) {
-                $rule_model = new MedicationSetRule();
-            } else {
-                $rule_model = MedicationSetRule::model()->findByPk($rule['id']);
-            }
+        foreach ($this->medicationSetRules as $rule) {
+            $rule_model = $rule;
             $rule_model->attributes = $rule;
             $rule_model->medication_set_id = $this->id;
             $rule_model->save();
@@ -771,10 +749,8 @@ class MedicationSet extends BaseActiveRecordVersioned
                 'medication_attribute_id' => $medication_attribute->id,
                 'value' => $value
             ))->id;
-        $this->tmp_attrs[] = array(
-            'id' => $this->id,
-            'medication_attribute_option_id' => $medication_set_auto_rule_attribute->medication_attribute_option_id
-        );
+        $medication_set_auto_rule_attribute->medication_set_id = $this->id;
+        $medication_set_auto_rule_attribute->medication_attribute_option_id = $medication_set_auto_rule_attribute->medication_attribute_option_id;
         if ($medication_attribute_option) {
             $medication_set_auto_rule_attribute->medication_set_id = $this->id;
             $medication_set_auto_rule_attribute->medication_attribute_option_id = $medication_attribute_option;

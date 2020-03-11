@@ -85,11 +85,11 @@ EOH;
                     $medication = Medication::model()->find('source_subtype = :source_subtype and ' . strtolower($row["type"]) . '_code = :code', array('source_subtype' => $row["type"], 'code' => $row["snomed"]));
 
                     if ($medication) {
-                        $new_set->tmp_meds[] = array(
-                            'medication_id' => $medication->id,
-                            'include_parent' => 1,
-                            'include_children' => 1,
-                        );
+                        $medicationSetAutoRuleMedications[$key] = new MedicationSetAutoRuleMedication();
+                        $medicationSetAutoRuleMedications[$key]->medication_id = $medication->id;
+                        $medicationSetAutoRuleMedications[$key]->include_parent = 1;
+                        $medicationSetAutoRuleMedications[$key]->include_children = 1;
+                        $new_set->medicationSetAutoRuleMedications = $medicationSetAutoRuleMedications;
                     } else {
                         echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication table\n";
                     }
@@ -97,10 +97,9 @@ EOH;
                 case "SET":
                     $set = MedicationSet::model()->find('name = :set_name', array(':set_name' => $row["name"]));
                     if ($set) {
-                        $new_set->tmp_sets[] = array(
-                            'id' => '-1',
-                            'medication_set_id' => $set->id
-                        );
+                        $medicationSetAutoRuleSetMemberships[$key] = new MedicationSetAutoRuleSetMembership();
+                        $medicationSetAutoRuleSetMemberships[$key]->target_medication_set_id = $set->id;
+                        $new_set->medicationSetAutoRuleSetMemberships = $medicationSetAutoRuleSetMemberships;
                     } else {
                         echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_set table\n";
                     }
@@ -108,10 +107,9 @@ EOH;
                 case "ROUTE":
                     $route_option = MedicationAttributeOption::model()->find('description = :description', array('description' => $row["name"]));
                     if ($route_option) {
-                        $new_set->tmp_attrs[] = array(
-                            'id' => '-1',
-                            'medication_attribute_option_id' => $route_option->id
-                        );
+                        $medicationAutoRuleAttributes[$key] = new MedicationSetAutoRuleAttribute();
+                        $medicationAutoRuleAttributes[$key]->medication_attribute_option_id = $route_option->id;
+                        $new_set->medicationAutoRuleAttributes = $medicationAutoRuleAttributes;
                     } else {
                         echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_attribute_option table\n";
                     }

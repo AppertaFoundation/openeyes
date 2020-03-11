@@ -265,11 +265,15 @@ class AutoSetRuleController extends BaseAdminController
         }
 
         if (\Yii::app()->request->isPostRequest) {
-            $set->tmp_attrs = \Yii::app()->request->getParam('MedicationSetAutoRuleAttributes', []);
-            $set->tmp_sets = \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []);
-            $set->tmp_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
-            $set->tmp_meds = \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []);
+            $set_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
             $set->tmp_tapers = \Yii::app()->request->getParam('MedicationSetAutoRuleMedicationTaper', []);
+
+            ## so we can display what user set previously
+            $set->medicationAutoRuleAttributes = $this->repopulateFields('attrs', \Yii::app()->request->getParam('MedicationSetAutoRuleAttributes', []));
+            $set->medicationSetAutoRuleSetMemberships = $this->repopulateFields('sets', \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []));
+            $set->medicationSetRules = $this->repopulateFields('rules', $set_rules);
+            $set->medicationSetAutoRuleMedications = $this->repopulateFields('meds', \Yii::app()->request->getParam('MedicationSetAutoRuleMedication', []));
+
 
             $set->name = $data['name'];
             $set->hidden = $data['hidden'];
@@ -277,7 +281,7 @@ class AutoSetRuleController extends BaseAdminController
             //validate here so if tmp_rules are empty we can return these errors as well
             $set->validate();
 
-            if (!$set->tmp_rules && $set->name !== "medication_management" && !$set->hidden) {
+            if (!$set_rules && $set->name !== "medication_management" && !$set->hidden) {
                 $set->addError('medicationSetRules', 'Usage rules must be set for visible sets.');
             }
 
@@ -418,5 +422,41 @@ class AutoSetRuleController extends BaseAdminController
 
         echo \CJSON::encode($result);
         \Yii::app()->end();
+    }
+
+    private function repopulateFields($field_set, $tmp_set)
+    {
+        $set_m = [];
+        switch ($field_set) {
+            case 'attrs':
+                foreach ($tmp_set as $row => $med_attr) {
+                    $set_m[$row] = MedicationSetAutoRuleAttribute::model()->findByPk($med_attr['id']) ?? new MedicationSetAutoRuleAttribute;
+                    $set_m[$row]->medicationAttributeOption = MedicationAttributeOption::model()->findByAttributes(['medication_attribute_id' => $med_attr['medication_attribute_id']]);
+                }
+            break;
+            
+            case 'sets':
+                foreach ($tmp_set as $row => $med_set) {
+                    $set_m[$row] = MedicationSetAutoRuleSetMembership::model()->findByPk($med_set['id']) ?? new MedicationSetAutoRuleSetMembership();
+                    $set_m[$row]->attributes =  $med_set;
+                }
+            break;
+
+            case 'meds':
+                foreach ($tmp_set as $row => $med_meds) {
+                    $set_m[$row] = MedicationSetAutoRuleMedication::model()->findByPk($med_meds['id']) ?? new MedicationSetAutoRuleMedication();
+                    $set_m[$row]->attributes =  $med_meds;
+                }
+            break;
+
+            case 'rules':
+                foreach ($tmp_set as $row => $med_rules) {
+                    $set_m[$row] = MedicationSetRule::model()->findByPk($med_rules['id']) ?? new MedicationSetRule();
+                    $set_m[$row]->attributes =  $med_rules;
+                }
+            break;
+        }
+
+        return $set_m;
     }
 }

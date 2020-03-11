@@ -73,16 +73,24 @@ $dispense_condition_options = array(
                 $frequency_options = \CHtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
             ?>
-            <?php foreach ($medication_data_provider->getData() as $k => $med) : ?>
-                <?php $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->id, 'medication_set_id' => $medication_set->id]);?>
+            <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
+                <?php
+                if ($med->id) {
+                    $set_item = \MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_id' => $med->medication_id, 'medication_set_id' => $medication_set->id]);
+                }
+                if ($med->isNewRecord) {
+                    $set_item = $med;
+                    $med->id = $med->medication->id;
+                }
+                ?>
                 <?php if ($set_item) : ?>
                     <tr class="js-row-of-<?=$med->id?>" id="medication_set_item_<?=$k?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                         <td>
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
 
-                            <?= $med->preferred_term; ?>
+                            <?= (isset($med->preferred_term) ? $med->preferred_term : $med->medication->preferred_term); ?>
                             <?= \CHtml::activeHiddenField($set_item, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][id]"]); ?>
-                            <?= \CHtml::activeHiddenField($med, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
+                            <?= \CHtml::activeHiddenField($med, 'medication_id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <span data-type="default_dose" data-id="<?= $set_item->default_dose ? $set_item->default_dose : ''; ?>" class="js-text"><?= $set_item->default_dose ? $set_item->default_dose : '-'; ?></span>

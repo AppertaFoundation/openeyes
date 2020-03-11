@@ -45,6 +45,11 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             }
             return false;
         });
+
+        if ($(this.options.tableSelector).find('tbody tr').length > 0) {
+            $(this.options.tableSelector).show();
+            $('.empty-set').hide();
+        }
     };
 
     DrugSetController.prototype.bindFilterButtons = function () {
