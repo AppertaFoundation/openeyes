@@ -104,6 +104,7 @@
 
             dialog.optionList.appendTo($filterDiv);
         });
+        this.positionFixedPopup(this.options.openButton);
     };
 
     QuerySearchDialog.prototype.generateOperatorList = function(operators) {
@@ -128,6 +129,7 @@
         });
 
         this.operatorList.appendTo($filterDiv);
+        this.positionFixedPopup(this.options.openButton);
     };
 
     QuerySearchDialog.prototype.generateDigits = function() {
@@ -154,6 +156,7 @@
                 }).append($('<span />', {class: 'auto-width'}).text(digit)));
             });
             this.digitList.appendTo($filterDiv);
+            this.positionFixedPopup(this.options.openButton);
         }
     };
 
@@ -182,6 +185,7 @@
         if (option_data) {
             this.generateOptionLists(option_data);
         }
+        this.positionFixedPopup(this.options.openButton);
     };
 
     QuerySearchDialog.prototype.runItemSearch = function (text, type) {
