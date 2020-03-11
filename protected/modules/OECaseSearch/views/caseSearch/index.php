@@ -37,11 +37,11 @@ $user_searches = array_map(
         ?>
     </div>
 </div>
-<div class="oe-full-content subgrid wide-side-panel oe-advanced-search">
+<div class="oe-full-content subgrid wide-side-panel oe-query-search">
     <nav class="oe-full-side-panel">
-        <h3>Search Filters</h3>
+        <h3>Custom Search</h3>
         <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
-        <table id="param-list" class="standard last-right normal-text">
+        <table id="param-list" class="standard normal-text last-right">
             <tbody>
             <?php
             if (isset($params)) :
@@ -53,33 +53,31 @@ $user_searches = array_map(
                     )); ?>
                 <?php endforeach;
             endif; ?>
-            <?php foreach ($fixedParams as $id => $param) :
-                $this->renderPartial('fixed_parameter_form', array(
-                    'model' => $param,
-                    'id' => $id
-                ));
-            endforeach; ?>
-            <tr id="search-label-row">
-                <td><?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search label', 'class' => 'cols-full')) ?></td>
-            </tr>
             </tbody>
         </table>
+        <table>
+            <tbody>
+                <?php foreach ($fixedParams as $id => $param) : ?>
+                    <?php $this->renderPartial('fixed_parameter_form', array(
+                        'model' => $param,
+                        'id' => $id
+                    )); ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
         <div class="flex-layout row">
             <div>
                 <button id="load-saved-search">All searches</button>
                 <?= CHtml::htmlButton(
-                    'Save/Share',
+                    'Save',
                     array(
-                        'class' => 'js-save-search-btn',
-                        'type' => 'submit',
-                        'formaction' => $this->createUrl('caseSearch/saveSearch')
+                        'class' => 'js-save-search-dialog-btn',
                     )
                 ) ?>
             </div>
-            <button id="add-to-advanced-search-filters" class="button hint green thin js-add-select-btn"
-                    data-popup="add-to-advanced-search-filters">
-                <i class="oe-i plus pro-theme"></i>
-            </button>
+            <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
+                    data-popup="add-to-search-queries">Add Query</button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
@@ -174,41 +172,69 @@ $user_searches = array_map(
         <?php } ?>
     </main>
 </div>
+<script type="text/html" id="save-search-template">
+    <?php $form = $this->beginWidget('CActiveForm', array('id' => 'save-form')); ?>
+    <div class="flex-layout flex-top">
+        <div class="search-queries">
+            <h3>Search queries</h3>
+            <table>
+                {{{queryTable}}}
+            </table>
+        </div>
+        <div class="show-query">
+            <h3>Save search as</h3>
+            <?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search name description', 'class' => 'cols-full')) ?>
+            <div class="row align-right">
+                <?= CHtml::htmlButton(
+                    'Save search',
+                    array(
+                        'class' => 'js-save-search-btn hint green',
+                        'type' => 'submit',
+                        'formaction' => $this->createUrl('caseSearch/saveSearch')
+                    )
+                ) ?>
+            </div>
+        </div>
+    </div>
+    <?php $this->endWidget('save-form'); ?>
+</script>
 <script type="text/html" id="load-saved-search-template">
     <div class="flex-layout flex-top">
-        <div class="search-query">
-            <table>
+        <div class="all-searches">
+            <table class="searches">
                 <tbody>
                 {{#allSearches}}
                 <tr>
-                    <td>
-                        <button data-id="{{id}}">{{name}}</button>
+                    <td>{{name}}</td>
+                    <td class="nowrap">
+                        <button class="js-use-query" data-id="{{id}}">Use</button>
+                        <button class="js-show-query" data-id="{{id}}">Show queries</button>
                     </td>
                     <td>
-                        <i class="oe-i trash"></i>
+                        <i class="oe-i trash large pro-theme" data-id="{{id}}"></i>
                     </td>
                 </tr>
                 {{/allSearches}}
                 </tbody>
             </table>
         </div>
-        <div class="save-query">
-            <h3>Import search queries</h3>
-            <textarea rows="2" name="search_content" id="search-content" class="cols-full"></textarea>
-            <div class="row align-right">
-                <button id="load-selected-search">Import new search</button>
-            </div>
+        <div class="show-query">
+            <h3>Current search queries</h3>
+            <table>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
 </script>
-<script type="text/html" id="search-contents-template">{{#searchContents}}[{{.}}], {{/searchContents}}</script>
+<script type="text/html" id="search-contents-template">{{{searchContents}}}</script>
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
         const addSelector = '#add-to-trial-link-' + patient_id;
         const removeSelector = '#remove-from-trial-link-' + patient_id;
         $.ajax({
-            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
+            url: '<?php echo $this->createUrl('/OETrial/trial/addPatient'); ?>',
             data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val()},
             type: 'POST',
             success: function () {
@@ -229,7 +255,7 @@ $user_searches = array_map(
         let addSelector = '#add-to-trial-link-' + patient_id;
         let removeSelector = '#remove-from-trial-link-' + patient_id;
         $.ajax({
-            url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
+            url: '<?php echo $this->createUrl('/OETrial/trial/removePatient'); ?>',
             data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val()},
             type: 'POST',
             success: function () {
@@ -330,7 +356,7 @@ $user_searches = array_map(
                     type: 'GET',
                     success: function (response) {
                         // Append the dynamic parameter HTML before the first fixed parameter.
-                        $('#param-list tbody tr.fixed-parameter:first').before(response);
+                        $('#param-list tbody').append(response);
                     }
                 });
             }
@@ -340,12 +366,20 @@ $user_searches = array_map(
             this.closest('tr').remove();
         });
 
-        $('#load-saved-search').click(function () {
-            const savedSearchDialog = new OpenEyes.UI.Dialog.LoadSavedSearch({
+        $('#load-saved-search').click(function (e) {
+            e.preventDefault();
+            new OpenEyes.UI.Dialog.LoadSavedSearch({
                 id: 'load-saved-search-dialog',
                 title: 'All searches',
                 user_id: <?= Yii::app()->user->id ?>,
                 all_searches: <?= json_encode($user_searches) ?>
+            }).open();
+        });
+
+        $('.js-save-search-dialog-btn').click(function () {
+            new OpenEyes.UI.Dialog.SaveSearch({
+                id: 'save-search-dialog',
+                title: 'Save search'
             }).open();
         });
 
@@ -382,7 +416,7 @@ $user_searches = array_map(
 
         $(document).on('click', '.js-add-to-trial', function () {
             const addLink = this;
-            const $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
+            //const $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
             let trialShortlist = parseInt($(this).closest('.js-oe-patient').find('.trial-shortlist').contents().filter(function () {
                 return this.nodeType === Node.TEXT_NODE;
             }).text());
@@ -390,7 +424,7 @@ $user_searches = array_map(
             const patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
             $.ajax({
-                url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
+                url: '<?php echo $this->createUrl('/OETrial/trial/addPatient'); ?>',
                 data: {
                     id: <?= $this->trialContext->id?>,
                     patient_id: patientId,

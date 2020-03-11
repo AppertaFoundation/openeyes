@@ -72,6 +72,26 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'relative':
+                    return OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'side':
+                    return OEModule\OphCiExamination\models\FamilyHistorySide::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'condition':
+                    return OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findByPk($this->$attribute)->name;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
+    }
+
     public function getLabel()
     {
         return 'Family History';

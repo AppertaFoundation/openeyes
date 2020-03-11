@@ -22,7 +22,7 @@ abstract class CaseSearchParameter extends CFormModel
     public $id;
 
     /**
-     * @var string $value
+     * @var string|int|bool $value
      */
     public $value;
 
@@ -81,7 +81,7 @@ abstract class CaseSearchParameter extends CFormModel
      */
     public function attributeNames()
     {
-        return array('name', 'operation', 'id');
+        return array('name', 'operation', 'value', 'id', 'isFixed');
     }
 
     /**
@@ -91,8 +91,21 @@ abstract class CaseSearchParameter extends CFormModel
     public function rules()
     {
         return array(
-            array('id, operation, name', 'safe'),
+            array('id, operation, name, value', 'safe'),
         );
+    }
+
+    /**
+     * Override this function to customise the value returned for specific attributes.
+     * @param $attribute
+     * @return mixed|null
+     */
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            return $this->$attribute;
+        }
+        return null;
     }
 
     /**
@@ -122,6 +135,7 @@ abstract class CaseSearchParameter extends CFormModel
             'operation' => $this->operation,
             'id' => $this->id,
             'isFixed' => $this->isFixed,
+            'value' => $this->value
         );
     }
 
@@ -140,7 +154,7 @@ abstract class CaseSearchParameter extends CFormModel
 
     abstract public function getDisplayString();
 
-    public function getOptions()
+    final public function getOptions()
     {
         return $this->options;
     }

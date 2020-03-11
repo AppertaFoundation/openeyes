@@ -28,7 +28,7 @@
                 '/OECaseSearch/caseSearch/getOptions?type=' + type,
                 null,
                 function(response) {
-                    let options = JSON.parse(response);
+                    let options = response;
                     dialog.options.itemSets.splice(1, dialog.options.itemSets.length - 1);
                     dialog.generateOperatorList(options.operations);
                     switch (options.value_type) {
@@ -203,7 +203,7 @@
                 let $listItem = $('<li />', {
                     "data-id": item.id,
                     'data-type': 'lookup',
-                    'data-field': 'term'
+                    'data-field': 'value'
                 }).append('<span class="auto-width">' + item.label + '</span>');
                 $('.js-search-results').append($listItem);
             });

@@ -48,25 +48,30 @@ class PatientAgeParameterTest extends CDbTestCase
     public function testQuery()
     {
         $correctOps = array(
-            '>=',
-            '<=',
-            'BETWEEN',
+            '>',
+            '<',
+            '=',
+            '!='
         );
 
         // Ensure the query is correct for each operator.
         foreach ($correctOps as $id => $operator) {
             switch ($id) {
                 case 0:
-                    $this->parameter->minValue = 5;
-                    $this->parameter->maxValue = null;
+                    $this->parameter->value = 5;
+                    $this->parameter->operation = '>';
                     break;
                 case 1:
-                    $this->parameter->minValue = null;
-                    $this->parameter->maxValue = 80;
+                    $this->parameter->value = 80;
+                    $this->parameter->operation = '<';
                     break;
                 case 2:
-                    $this->parameter->minValue = 5;
-                    $this->parameter->maxValue = 80;
+                    $this->parameter->value = 50;
+                    $this->parameter->operation = '=';
+                    break;
+                case 3:
+                    $this->parameter->value = 50;
+                    $this->parameter->operation = '!=';
                     break;
             }
             $this->parameter->operation = $operator;
@@ -88,34 +93,15 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
      */
     public function testBindValues()
     {
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
+        $this->parameter->value = 50;
         $expected = array(
-            'p_a_min_0' => $this->parameter->minValue,
-            'p_a_max_0' => $this->parameter->maxValue,
+            'p_a_value_0' => $this->parameter->value,
         );
         $actual = $this->parameter->bindValues();
-
-        // Ensure that (if all elements are set) all bind values are returned.
         $this->assertEquals($expected, $actual);
 
         // Ensure that all bind values are integers.
-        $this->assertTrue(is_int($actual['p_a_min_0']) and is_int($actual['p_a_max_0']));
-
-        $this->parameter->operation = '<=';
-        $expected = array(
-            'p_a_value_0' => $this->parameter->maxValue,
-        );
-
-        $this->assertEquals($expected, $this->parameter->bindValues());
-
-        $this->parameter->operation = '>=';
-        $expected = array(
-            'p_a_value_0' => $this->parameter->minValue,
-        );
-
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        $this->assertInternalType('int', $actual['p_a_value_0']);
     }
 
     /**
@@ -123,13 +109,13 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
      * @covers PatientAgeParameter::query()
      * @throws Exception
      */
-    public function testSearchSingleInput()
+    public function testSearch()
     {
         // test an exact search using a simple operation
         $patients = array($this->patient('patient1'));
-        $this->parameter->operation = 'BETWEEN';
+        $this->parameter->operation = '=';
         $dob = new DateTime($this->patient['patient1']['dob']);
-        $this->parameter->maxValue = $this->parameter->minValue = $dob->diff(new DateTime())->format('%y');
+        $this->parameter->value = $dob->diff(new DateTime())->format('%y');
         $results = $this->searchProvider->search(array($this->parameter));
         $ids = array();
 
@@ -142,41 +128,11 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
         // Ensure that results are returned.
         $this->assertEquals($patients, $patientList);
 
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 1;
-        $this->parameter->maxValue = 1;
+        $this->parameter->operation = '<';
+        $this->parameter->value = 1;
         $results = $this->searchProvider->search(array($this->parameter));
 
         // Ensure that no results are returned.
         $this->assertEmpty($results);
-    }
-
-    /**
-     * @covers DBProvider::search()
-     * @covers PatientAgeParameter::query()
-     */
-    public function testSearchDualInput()
-    {
-        $patients = array();
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
-
-        for ($i = 1; $i < 10; $i++) {
-            $patients[] = $this->patient("patient$i");
-        }
-
-        $results = $this->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-
-        // deconstruct the results list into a single array of primary keys.
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-        $patientList = Patient::model()->findAllByPk($ids);
-
-        // Ensure that results are returned.
-        $this->assertEquals($patients, $patientList);
     }
 }

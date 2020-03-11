@@ -6,11 +6,6 @@
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var string $textValue
-     */
-    public $textValue;
-
-    /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
      */
@@ -23,35 +18,21 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
 
     public function getLabel()
     {
-        return 'Patient Allergy';
+        return 'Allergy';
     }
 
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
+    public function getValueForAttribute($attribute)
     {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'textValue',
-            )
-        );
-    }
-
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('textValue', 'required'),
-            )
-        );
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Allergy::model()->findByPk($this->$attribute)->name;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     public static function getCommonItemsForTerm($term)
@@ -100,7 +81,7 @@ $query
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_al_textValue_$this->id" => $this->textValue,
+            "p_al_textValue_$this->id" => $this->value,
         );
     }
 
@@ -109,21 +90,12 @@ $query
      */
     public function getAuditData()
     {
-        $op = 'LIKE';
-        if ($this->operation) {
+        if ($this->operation === '=') {
+            $op = 'LIKE';
+        } else {
             $op = 'NOT LIKE';
         }
-        return "$this->name: $op \"$this->textValue\"";
-    }
-
-    public function saveSearch()
-    {
-        return array_merge(
-            parent::saveSearch(),
-            array(
-                'textValue' => $this->textValue,
-            )
-        );
+        return "$this->name: $op \"$this->value\"";
     }
 
     public function getDisplayString()
@@ -133,6 +105,6 @@ $query
             $op = 'IS NOT';
         }
 
-        return "Allergy $op = $this->textValue";
+        return "Allergy $op = $this->value";
     }
 }

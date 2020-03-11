@@ -17,6 +17,7 @@ class CaseSearchController extends BaseModuleController
             'ajaxOnly + getSearchesByUser',
             'ajaxOnly + otherSearchUsers',
             'ajaxOnly + loadSearch',
+            'ajaxOnly + deleteSearch',
             'ajaxOnly + clear',
             'ajaxOnly + searchCommonItems'
         );
@@ -33,6 +34,7 @@ class CaseSearchController extends BaseModuleController
                     'getSearchesByUser',
                     'loadSearch',
                     'saveSearch',
+                    'deleteSearch',
                     'clear',
                     'getOptions',
                     'searchCommonItems',
@@ -205,16 +207,24 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionAddParameter()
     {
-        $params = $_GET['parameters'];
-        foreach ($params as $param) {
-            $parameter = new $param['param'];
-            $parameter->id = $param['id'];
+        $param = $_GET['parameter'];
 
-            $this->renderPartial('parameter_form', array(
-                'model' => $parameter,
-                'id' => $parameter->id,
-            ));
+        $parameter = new $param['type'];
+        $parameter->id = $param['id'];
+        $parameter->operation = $param['operation'];
+        if (is_array($param['value'])) {
+            foreach ($param['value'] as $value) {
+                $key = $value['field'];
+                $parameter->$key = $value['id'];
+            }
+        } else {
+            $parameter->value = $param['value'];
         }
+
+        $this->renderPartial('parameter_form', array(
+            'model' => $parameter,
+            'id' => $parameter->id,
+        ));
         Yii::app()->end();
     }
 
@@ -237,7 +247,6 @@ class CaseSearchController extends BaseModuleController
     public function actionLoadSearch($id)
     {
         $preview = isset($_GET['preview']) ? $_GET['preview'] : null;
-        $preview_list = array();
 
         $search = SavedSearch::model()->findByPk($id);
         if (!$search) {
@@ -258,9 +267,14 @@ class CaseSearchController extends BaseModuleController
             $instance->loadSearch($param);
             if ($preview) {
                 // Get the human-readable string representing the full parameter.
-                if ($instance->getDisplayString()) {
-                    $preview_list[] = $instance->getDisplayString();
-                }
+                $this->renderPartial(
+                    'parameter_form',
+                    array(
+                        'model' => $instance,
+                        'id' => $instance->id,
+                        'readonly' => true,
+                    )
+                );
             } elseif (!$instance->isFixed) {
                 $this->renderPartial(
                     'parameter_form',
@@ -278,13 +292,6 @@ class CaseSearchController extends BaseModuleController
                     )
                 );
             }
-        }
-        if ($preview) {
-            echo json_encode($preview_list);
-        } else {
-            // Output the search label content.
-            echo '<tr id="search-label-row"><td>' . $search->name . '</td></tr>';
-            echo '</tbody>';
         }
     }
 
@@ -351,6 +358,23 @@ class CaseSearchController extends BaseModuleController
         $this->redirect('/OECaseSearch/caseSearch/index');
     }
 
+    /**
+     * @param $id
+     * @throws CHttpException
+     * @throws CDbException
+     */
+    public function actionDeleteSearch($id)
+    {
+        $search = SavedSearch::model()->findByPk($id);
+
+        if (!$search) {
+            throw new CHttpException(404, 'Unable to delete saved search - Saved search not found.');
+        }
+        if (!$search->delete()) {
+            throw new CHttpException(500, 'Unable to delete saved search - Unknown error occurred.');
+        }
+    }
+
     public function actionSearchCommonItems()
     {
         $term = Yii::app()->request->getQuery('term');
@@ -387,6 +411,7 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.SaveSearch.js', 'application.modules.OECaseSearch.assets', -10);
 
         return parent::beforeAction($action);
     }

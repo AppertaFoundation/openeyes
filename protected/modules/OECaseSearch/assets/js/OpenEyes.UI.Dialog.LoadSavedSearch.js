@@ -50,11 +50,12 @@
         otherUserSearchTemplate: '#other-user-search-item-template',
         otherUserSearchItem: '#other-user-search-list li',
         searchContentItem: '#search-content-template',
-        currentUserSearchList: '.search-query td button',
+        currentUserSearchList: '.searches button.js-show-query',
+        deleteSearch: '.searches .trash',
         otherUserList: '#other-user-list li',
         otherUserSearchList: '#other-user-search-list',
-        searchContentsList: '#search-content',
-        loadSearchButton: '#load-selected-search'
+        searchContentsList: '.show-query table tbody',
+        loadSearchButton: '.searches td button.js-use-query'
     };
     LoadSavedSearchDialog.prototype.selectedSearchId = 0;
 
@@ -94,30 +95,45 @@
     LoadSavedSearchDialog.prototype.setupEventHandlers = function () {
         var self = this;
 
-        self.content.on('click', selectors.currentUserSearchList, function () {
+        self.content.on('click', selectors.currentUserSearchList, function (e) {
+            e.preventDefault();
             self.content.find(selectors.currentUserSearchList).removeClass('selected');
             $(this).addClass('selected');
             self.selectedSearchId = $(this).data('id');
             self.updateSearchContentsList();
         });
 
-        self.content.on('click', selectors.loadSearchButton, function() {
+        self.content.on('click', selectors.deleteSearch, function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            $.ajax({
+                url: '/OECaseSearch/caseSearch/deleteSearch/' + id,
+                success: function() {
+                    $(e.target).closest('tr').remove();
+                },
+                error: function() {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: 'Unable to delete saved search - Unexpected error occurred.'
+                    }).open();
+                }
+            });
+        });
+
+        self.content.on('click', selectors.loadSearchButton, function(e) {
+            e.preventDefault();
             // Add the search parameters to the screen.
+            self.selectedSearchId = $(this).data('id');
             $.ajax({
                 url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId,
                 type: 'GET',
                 success: function (response) {
                     // Append the dynamic parameter HTML before the first fixed parameter.
                     let $tableBody = $('#param-list tbody');
-                    let $fixedParams = $(response).find('tr.fixed-parameter');
                     let $params = $(response).find('tr.parameter');
-                    let $searchLabel = $(response).find('tr#search-label-row');
 
                     $($tableBody).find('.parameter').remove();
-                    $($tableBody).find('.fixed-parameter').remove();
-                    $($tableBody).find('tr#search-label-row').before($fixedParams);
-                    $('#param-list tbody tr.fixed-parameter:first').before($params);
-                    $('#search-label-row input').val($($searchLabel).text());
+                    //$($tableBody).find('.fixed-parameter').remove();
+                    $('#param-list tbody').append($params);
 
                     // Execute the search.
                     $('form#search-form').submit();
@@ -138,13 +154,12 @@
             url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId + '?preview=1',
             type: 'GET',
             success: function (response) {
-                self.searchContentList = JSON.parse(response);
                 $(selectors.searchContentsList).empty();
-                $(selectors.searchContentsList).val(
+                $(selectors.searchContentsList).html(
                     self.compileTemplate({
                         selector: selectors.searchContentTemplate,
                         data: {
-                            searchContents: self.searchContentList,
+                            searchContents: response,
                         }
                     })
                 );

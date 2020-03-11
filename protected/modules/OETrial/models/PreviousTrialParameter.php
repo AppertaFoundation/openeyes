@@ -16,6 +16,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     public $status;
     public $treatmentTypeId;
 
+    private $statusList = array();
+
     protected $options = array(
         'value_type' => 'multi_select',
     );
@@ -48,7 +50,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
         $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
 
-        $statusList = array(
+        $this->statusList = array(
             TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
             TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
             TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
@@ -57,16 +59,18 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $this->options['option_data'] = array(
             array(
                 'id' => 'trial-status',
+                'field' => 'status',
                 'options' => array_map(
                     static function ($item, $key) {
                         return array('id' => $key, 'label' => $item);
                     },
-                    $statusList,
-                    array_keys($statusList)
+                    $this->statusList,
+                    array_keys($this->statusList)
                 )
             ),
             array(
                 'id' => 'trial-type',
+                'field' => 'trialTypeId',
                 'options' => array_map(
                     static function ($item, $key) {
                         return array('id' => $key, 'label' => $item);
@@ -77,6 +81,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             ),
             array(
                 'id' => 'trial',
+                'field' => 'trial',
                 'options' => array_map(
                     static function ($item, $key) {
                         return array('id' => $key, 'label' => $item);
@@ -87,6 +92,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             ),
             array(
                 'id' => 'treatment-type',
+                'field' => 'treatmentTypeId',
                 'options' => array_map(
                     static function ($item, $key) {
                         return array('id' => $key, 'label' => $item);
@@ -113,9 +119,9 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(
             parent::attributeNames(),
             array(
-                'trial',
-                'trialType',
                 'status',
+                'trialTypeId',
+                'trial',
                 'treatmentTypeId',
             )
         );
@@ -133,6 +139,29 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
             )
         );
+    }
+
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'trial':
+                    return Trial::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'trialTypeId':
+                    return $this->getTrialType()->name;
+                    break;
+                case 'treatmentTypeId':
+                    return $this->getTreatmentType()->name;
+                    break;
+                case 'status':
+                    return $this->statusList[$this->$attribute];
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     public function getViewPath()

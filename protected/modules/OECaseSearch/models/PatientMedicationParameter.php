@@ -6,11 +6,6 @@
 class PatientMedicationParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var string $textValue
-     */
-    public $textValue;
-
-    /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
      */
@@ -24,34 +19,6 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
     public function getLabel()
     {
         return 'Medication';
-    }
-
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'textValue',
-            )
-        );
-    }
-
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('textValue', 'required'),
-            )
-        );
     }
 
     public static function getCommonItemsForTerm($term)
@@ -86,11 +53,10 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . self::_AUTOCOM
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
-        if (!$this->operation) {
+        if ($this->operation === '=') {
             $op = 'LIKE';
             $wildcard = '%';
 
@@ -132,7 +98,7 @@ OR m.id IS NULL";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_m_value_$this->id" => $this->textValue,
+            "p_m_value_$this->id" => $this->value,
         );
     }
 
@@ -145,17 +111,7 @@ OR m.id IS NULL";
         if ($this->operation) {
             $op = 'NOT LIKE';
         }
-        return "$this->name: $op \"$this->textValue\"";
-    }
-
-    public function saveSearch()
-    {
-        return array_merge(
-            parent::saveSearch(),
-            array(
-                'textValue' => $this->textValue,
-            )
-        );
+        return "$this->name: $op \"$this->value\"";
     }
 
     public function getDisplayString()
@@ -165,6 +121,6 @@ OR m.id IS NULL";
             $op = 'IS NOT';
         }
 
-        return "Medication $op = $this->textValue";
+        return "Medication $op = $this->value";
     }
 }

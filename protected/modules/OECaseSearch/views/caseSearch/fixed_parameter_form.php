@@ -6,7 +6,7 @@
 ?>
 
 <tr id="<?= $id ?>" class="fixed-parameter">
-    <td>
+    <td colspan="3">
         <?php $this->renderPartial($model->getViewPath(), array(
             'model' => $model,
             'id' => $id

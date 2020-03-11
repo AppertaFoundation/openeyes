@@ -8,11 +8,6 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 class PreviousProceduresParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var string $textValue
-     */
-    public $textValue;
-
-    /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
      */
@@ -26,35 +21,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Previous Procedures';
-    }
-
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'textValue',
-            )
-        );
-    }
-
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('textValue', 'required')
-            )
-        );
+        return 'Previous Procedure';
     }
 
     public static function getCommonItemsForTerm($term)
@@ -130,7 +97,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
 
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_p_value_$this->id" => $this->textValue,
+            "p_p_value_$this->id" => $this->value,
         );
     }
 
@@ -139,7 +106,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         return array_merge(
             parent::saveSearch(),
             array(
-                'textValue' => $this->textValue,
+                'textValue' => $this->value,
             )
         );
     }
@@ -151,6 +118,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             $op = 'IS NOT';
         }
 
-        return "Previous procedure $op = $this->textValue";
+        return "Previous procedure $op = $this->value";
     }
 }

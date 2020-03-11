@@ -5,8 +5,6 @@
  */
 class PatientNumberParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $number;
-
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -46,21 +44,6 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('number', 'required'),
-                array('number', 'numerical'),
-            )
-        );
-    }
-
-    /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
@@ -82,7 +65,7 @@ WHERE p.hos_num $op :p_num_number_$this->id";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_num_number_$this->id" => $this->number,
+            "p_num_number_$this->id" => $this->value,
         );
     }
 
@@ -91,17 +74,7 @@ WHERE p.hos_num $op :p_num_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: = $this->number";
-    }
-
-    public function saveSearch()
-    {
-        return array_merge(
-            parent::saveSearch(),
-            array(
-                'number' => $this->number,
-            )
-        );
+        return "$this->name: = $this->value";
     }
 
     public function getDisplayString()
@@ -111,6 +84,6 @@ WHERE p.hos_num $op :p_num_number_$this->id";
             $op = 'IS NOT';
         }
 
-        return "Number $op = $this->number";
+        return "Number $op = $this->value";
     }
 }

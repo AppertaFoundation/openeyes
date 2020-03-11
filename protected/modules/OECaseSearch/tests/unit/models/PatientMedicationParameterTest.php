@@ -35,14 +35,11 @@ class PatientMedicationParameterTest extends CDbTestCase
      */
     public function testQuery()
     {
-        $this->object->textValue = 5;
+        $this->object->value = 5;
 
         $correctOps = array(
-            false,
-            true
-        );
-        $invalidOps = array(
             '=',
+            '!='
         );
 
         // Ensure the query is correct for each operator.
@@ -63,7 +60,7 @@ WHERE d.name NOT LIKE '$wildcard' :p_m_value_0 '$wildcard'
   OR md.name NOT LIKE '$wildcard' :p_m_value_0 '$wildcard'
   OR m.id IS NULL";
 
-            if (!$operator) {
+            if ($operator === '=') {
                 $sqlValue = "
 SELECT p.id
 FROM patient p
@@ -89,9 +86,9 @@ WHERE d.name LIKE '$wildcard' :p_m_value_0 '$wildcard'
      */
     public function testBindValues()
     {
-        $this->object->textValue = 5;
+        $this->object->value = 5;
         $expected = array(
-            'p_m_value_0' => $this->object->textValue,
+            'p_m_value_0' => $this->object->value,
         );
 
         // Ensure that all bind values are returned.

@@ -5,13 +5,12 @@
  */
 class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    public $isFixed = true;
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
      */
-
-    public $isFixed = true;
-
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
