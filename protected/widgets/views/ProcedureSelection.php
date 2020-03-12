@@ -170,7 +170,7 @@
         }
 
         let list_selector = '';
-        if (moduleName === "OphTrConsent") {
+        if (typeof moduleName !== 'undefined' && moduleName === "OphTrConsent") {
             list_selector = 'td #typeProcedure'
         } else {
             list_selector = '#typeProcedure'
