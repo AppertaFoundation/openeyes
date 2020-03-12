@@ -27,6 +27,8 @@ class MedicationInfoBox extends \BaseCWidget
     public $error = false;
     public $type;
     private $data;
+    private $icon = 'info';
+    private $append_label = [];
 
     public function init()
     {
@@ -34,12 +36,48 @@ class MedicationInfoBox extends \BaseCWidget
         $this->data = $this->getViewData($this->medication_id);
     }
 
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    public function getAppendLabel()
+    {
+        return implode('<br />', $this->append_label);
+    }
+
+
+
     private function getViewData($medication_id)
     {
         $data = [];
+        $this->append_label = [];
         if (!$medication = Medication::model()->findByPk($medication_id)) {
             $this->error = true;
             return $data;
+        }
+
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+        $site_id = Yii::app()->session['selected_site_id'];
+
+        if ($medication->isPreservativeFree()) {
+            $this->icon = 'info-blue';
+            $this->append_label[] = 'This drug is preservative free.';
+        }
+
+        foreach ($medication->medicationSets as $sets) {
+            if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
+                $this->icon = 'asterisk';
+                $this->append_label[] = 'This drug is available in the hospital formulary.';
+
+                // when the drug is both in the formulary AND preservative free
+                if ($medication->isPreservativeFree()) {
+                    $this->icon = 'asterisk-blue';
+                }
+
+                break;
+            }
         }
 
         if ($this->type === self::TYPE_LIGHT) {
@@ -49,10 +87,10 @@ class MedicationInfoBox extends \BaseCWidget
             }
 
             if ($medication->isVMP()) {
-                              $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
-                        // VTMs : No tool-tip needed, these are self explanatory
+            // VTMs : No tool-tip needed, these are self explanatory
             // for local no tooltip is needed
             return $data;
         }
@@ -63,7 +101,7 @@ class MedicationInfoBox extends \BaseCWidget
             $this->error = true;
         } else {
             $data = [
-                'label' => $medication->getLabel(),
+                'label' => $medication->getLabel()
             ];
 
             if ($medication->isAMP()) {
@@ -95,8 +133,7 @@ class MedicationInfoBox extends \BaseCWidget
 
     public function run()
     {
-        echo $this->data ?
-            ('<i class="oe-i info pad small js-has-tooltip" data-tooltip-content="' . $this->getInfoBoxHTML() . '"></i>') : '';
+        echo $this->getHTML();
     }
 
     private function getInfoBoxHTML()
@@ -110,19 +147,26 @@ class MedicationInfoBox extends \BaseCWidget
             }
 
             foreach ($this->data as $key => $value) {
-                if ($key == "label") {
+                if ($key == "label" || $key == "append-label") {
                     continue;
                 }
                 $lines[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
             }
 
-            return implode("<br/>", $lines);
+            $lines[] = $this->getAppendLabel();
+
+            if ($lines) {
+                return implode("<br/>", $lines);
+            }
+
+            return null;
         }
     }
 
     public function getHTML()
     {
-        return $this->data ?
-            ('<i class="oe-i info pad small js-has-tooltip" data-tooltip-content="' . $this->getInfoBoxHTML() . '"></i>') : '';
+        $content = $this->getInfoBoxHTML();
+        return ($this->data && $content) ?
+            ('<i class="oe-i ' .  $this->icon . ' pad small js-has-tooltip" data-tooltip-content="' . $content . '"></i>') : '';
     }
 }

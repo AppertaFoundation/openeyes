@@ -156,9 +156,11 @@ class MedicationSet extends BaseActiveRecordVersioned
      * Returns true if the set has a usage_code provided as parameter
      *
      * @param $usage_code
+     * @param null $site_id
+     * @param null $subspecialty_id
      * @return bool
      */
-    public function hasUsageCode($usage_code)
+    public function hasUsageCode($usage_code, $site_id = null, $subspecialty_id = null)
     {
 
         $criteria = new \CDbCriteria();
@@ -170,6 +172,17 @@ class MedicationSet extends BaseActiveRecordVersioned
             ':id' => $this->id,
             ':usage_code' => $usage_code
         ];
+
+        if ($site_id) {
+            $criteria->addCondition("(r.site_id = :site_id OR site_id IS NULL)");
+            $criteria->params[':site_id'] = $site_id;
+        }
+
+        if ($subspecialty_id) {
+            $criteria->addCondition("(r.subspecialty_id = :subspecialty_id OR subspecialty_id IS NULL)");
+            $criteria->params[':subspecialty_id'] = $subspecialty_id;
+        }
+
         return (bool)$this->count($criteria);
     }
 
