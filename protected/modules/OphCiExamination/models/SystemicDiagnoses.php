@@ -17,7 +17,6 @@
 
 namespace OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
-use OEModule\PASAPI\resources\Patient;
 
 /**
  * Class SystemicDiagnoses
@@ -163,7 +162,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
-                $both = array(true, false);
+            $both = array(true, false);
             foreach ($both as $present) {
                 foreach ($patient->getSystemicDiagnoses($present) as $sd) {
                     $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);

@@ -391,4 +391,14 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
         parent::afterSave();
     }
+
+    public function getViewTitle()
+    {
+        return 'OCT (manual)';
+    }
+
+    public function getFormTitle()
+    {
+        return 'OCT (manual)';
+    }
 }
