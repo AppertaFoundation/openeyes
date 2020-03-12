@@ -385,7 +385,7 @@
         });
         <?php endif ?>
 
-        function ProcedureSelectionSelectByName(name, callback, identifier) {
+        function ProcedureSelectionSelectByName(name, callback, identifier, procedure_id) {
             $.ajax({
                 'url': baseUrl + '/procedure/details?durations=<?php echo $durations ? '1' : '0'?>&identifier=' + identifier,
                 'type': 'GET',
@@ -426,8 +426,10 @@
                     }
 
                     if (callback && typeof (window.callbackAddProcedure) === 'function') {
-                        let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
-                        let procedure_id = m[1];
+                        if(typeof procedure_id == "undefined") {
+                            let m = data.match(/<input class="js-procedure" type=\"hidden\" value=\"([0-9]+)\"/);
+                            procedure_id = m[1];
+                        }
                         callbackAddProcedure(procedure_id);
                     }
                 }
@@ -470,7 +472,8 @@
 
                     for (let index = 0; index < selectedItems.length; index++) {
                         // append selection into procedure list
-                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>');
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
+                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>',selectedItems[index]['id']);
                     }
                     return true;
                 },
