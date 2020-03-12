@@ -17,9 +17,10 @@ LEFT JOIN tmp_medication_match AS tmp ON tmp.legacy_id = msi.medication_id
 SET msi.medication_id = tmp.dmd_id
 WHERE tmp.legacy_id IS NOT NULL;
 
-DELETE FROM medication_set_auto_rule_medication WHERE medication_id IN (
-    SELECT legacy_id FROM tmp_medication_match
-);
+UPDATE medication_set_auto_rule_medication msarm
+JOIN tmp_medication_match tmm
+  ON msarm.medication_id = tmm.legacy_id
+SET msarm.medication_id = tmm.dmd_id;
 
 DELETE FROM medication_search_index WHERE medication_id IN (SELECT legacy_id FROM tmp_medication_match);
 DELETE FROM medication_attribute_assignment WHERE medication_id IN (SELECT legacy_id FROM tmp_medication_match);
