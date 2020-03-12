@@ -43,8 +43,10 @@ class PrescriptionCommonController extends DefaultController
 
         $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
         foreach ($drug_set_items as $drug_set_item) {
-            $this->renderPrescriptionItem($key, $drug_set_item);
-            ++$key;
+            if ($drug_set_item->drug->active) {
+                $this->renderPrescriptionItem($key, $drug_set_item);
+                ++$key;
+            }
         }
     }
 
@@ -54,12 +56,14 @@ class PrescriptionCommonController extends DefaultController
         $drugs = [];
         foreach ($drug_set_items as $drug_set_item) {
             $drug = $drug_set_item->drug;
-            $drugs[] = [
-                'label' => $drug->name,
-                'allergies' => array_map(function ($allergy) {
-                    return $allergy->id;
-                }, $drug->allergies),
-            ];
+            if ($drug->active) {
+                $drugs[] = [
+                    'label' => $drug->name,
+                    'allergies' => array_map(function ($allergy) {
+                        return $allergy->id;
+                    }, $drug->allergies),
+                ];
+            }
         }
         echo CJSON::encode($drugs);
     }
