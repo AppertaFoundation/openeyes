@@ -39,7 +39,7 @@ $required_allergy_ids = array_map(function ($r) {
         <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
             id="<?= $model_name ?>_no_allergies_wrapper">
             <td colspan="5" class="align-left">
-                <label class="inline highlight" id="<?= $model_name ?>_no_allergies">
+                <label class="inline highlight" for="<?= $model_name ?>_no_allergies" id="<?= $model_name ?>_no_allergies_label">
                     <input type="hidden" name="<?=$model_name?>[no_allergies]" value="off">
                     <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
                     Confirm patient has no allergies
