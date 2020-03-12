@@ -232,7 +232,7 @@
                 // No subsections, so we should be safe to just push it back into the list
                 $('ul.add-options[data-id="select"]').append(
                     '<li data-label="'+popped["name"]+'" data-id="'+popped["id"]+'">' +
-                        '<span class="auto-width">'+popped["name"]+'</span>' +
+                    '<span class="auto-width">'+popped["name"]+'</span>' +
                     '</li>'
                 ).removeAttr('disabled');
                 sort_ul($('ul.add-options[data-id="select"]'));
@@ -300,7 +300,7 @@
                 $formatted_procedures = "";
                 foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
                     $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>".
-                    "<span class='auto-width'>$subspecialty_procedure</span></li>";
+                        "<span class='auto-width'>$subspecialty_procedure</span></li>";
                 }
                 ?>
                 $('.add-options[data-id="select"]').each(function () {
@@ -472,10 +472,8 @@
 
                     for (let index = 0; index < selectedItems.length; index++) {
                         // append selection into procedure list
-                        let tableRow = "<tr class='item'><td class='procedure'><span class='field'>";
-                        tableRow += "<input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'>";
-                        tableRow += "</span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>";
-                        $('#procedureList_' + identifier).find('.body').append(tableRow);
+                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
+                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>',selectedItems[index]['id']);
                     }
                     return true;
                 },
@@ -499,7 +497,6 @@
 
                             if (procedureMatchArray.length === 0) {
                                 items.push(result);
-
                             }
                         });
                         return items;
