@@ -274,7 +274,7 @@
             if ($('.add-options[data-id="select"] > li').length === 0) {
                 $('.add-options[data-id="select"]').hide();
             }
-            
+
             // Set select dialog to show defaults when first loading
             updateProcedureDialog('');
         }
@@ -472,8 +472,10 @@
 
                     for (let index = 0; index < selectedItems.length; index++) {
                         // append selection into procedure list
-                        $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
-                        ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>',selectedItems[index]['id']);
+                        let tableRow = "<tr class='item'><td class='procedure'><span class='field'>";
+                        tableRow += "<input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'>";
+                        tableRow += "</span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>";
+                        $('#procedureList_' + identifier).find('.body').append(tableRow);
                     }
                     return true;
                 },
@@ -491,12 +493,13 @@
                         let items = [];
                         $(results).each(function (index, result) {
                             let procedureMatchArray = $('#procedureList_<?=$identifier ?: ''; ?>')
-                                .find('span:contains(' + result + ')').filter(function () {
-                                    return $(this).text() === result;
+                                .find('span:contains(' + result.label + ')').filter(function () {
+                                    return $(this).text() === result.label;
                                 });
 
                             if (procedureMatchArray.length === 0) {
                                 items.push(result);
+
                             }
                         });
                         return items;

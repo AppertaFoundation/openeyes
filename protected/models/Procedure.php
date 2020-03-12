@@ -155,14 +155,14 @@ class Procedure extends BaseActiveRecordVersioned
         $where .= ' and proc.active = 1';
 
         return Yii::app()->db->createCommand()
-            ->select('term')
+            ->select('proc.term as label,proc.id')
             ->from('proc')
             ->where($where, array(
                 ':term' => $term,
                 ':search' => $search,
             ))
             ->order('term')
-            ->queryColumn();
+            ->queryAll();
     }
 
     /**
