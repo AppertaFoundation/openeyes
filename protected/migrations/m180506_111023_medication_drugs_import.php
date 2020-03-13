@@ -199,12 +199,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 $alternative_terms = [$drug['name']];
 
-                // $tallman = trim($drug['tallman']);
-
-                // if (!is_null($tallman) && $tallman != "" && strcasecmp($tallman, $drug['name']) !== 0) {
-                //     $alternative_terms[]=$tallman;
-                // }
-
                 foreach (explode(",", $drug['aliases']) as $alias) {
                     $alias = trim($alias);
                     if ($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
@@ -223,12 +217,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $drug_freq_id = ($drug['ref_freq_id'] == null) ? 'NULL' : $drug['ref_freq_id'];
                 $default_dose_unit = ($drug['dose_unit'] == null) ? 'NULL' : $drug['dose_unit'];
                 $default_duration_id = ($drug['default_duration_id'] == null) ? 'NULL' : $drug['default_duration_id'];
-
-                // /* Add medication to the 'Legacy' set */
-                // $this->dbConnection->createCommand("
-                //     INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term )
-                //         values (".$ref_medication_id." , ".$formulary_id.", NULL, ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
-                // ")->execute();
 
                 /* Add medication to their respective sets */
                 $drug_sets = $this->dbConnection->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
