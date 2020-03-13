@@ -182,7 +182,7 @@ $(document).ready(function() {
     $('#et_save_workflow').click(e => {
       e.preventDefault();
 
-      $('#et_save_workflow').attr('disabled','true');
+      $('#et_save_workflow').prop("disabled", true);
       $('.spinner').css('display', 'block');
       let $form = $('#et_sort').closest('form');
       $.ajax({
@@ -193,7 +193,7 @@ $(document).ready(function() {
           workflowFlash();
           $('.spinner').css('display', 'none');
           $('#et_save_workflow').fadeOut();
-          $('#et_save_workflow').removeAttr('disabled');
+          $('#et_save_workflow').prop("disabled", false);
           workflow_edited = false;
         },
         'error': function (jqXHR, status) {
