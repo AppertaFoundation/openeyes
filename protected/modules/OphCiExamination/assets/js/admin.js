@@ -193,7 +193,7 @@ $(document).ready(function() {
           workflowFlash();
           $('.spinner').css('display', 'none');
           $('#et_save_workflow').fadeOut();
-          $('#et_save_workflow').attr('disabled','false');
+          $('#et_save_workflow').removeAttr('disabled');
           workflow_edited = false;
         },
         'error': function (jqXHR, status) {
