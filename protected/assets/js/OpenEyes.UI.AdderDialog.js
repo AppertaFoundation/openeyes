@@ -554,6 +554,9 @@
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+              
+							// deselect options when closing the adderDialog
+							dialog.popup.find('.selected').removeClass('selected');
             }
 
             itemSets.each(function (itemSetIndex, itemSet) {
