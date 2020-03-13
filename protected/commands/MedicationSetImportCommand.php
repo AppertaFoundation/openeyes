@@ -98,7 +98,7 @@ EOH;
                     $set = MedicationSet::model()->find('name = :set_name', array(':set_name' => $row["name"]));
                     if ($set) {
                         $medicationSetAutoRuleSetMemberships[$key] = new MedicationSetAutoRuleSetMembership();
-                        $medicationSetAutoRuleSetMemberships[$key]->target_medication_set_id = $set->id;
+                        $medicationSetAutoRuleSetMemberships[$key]->source_medication_set_id = $set->id;
                         $new_set->medicationSetAutoRuleSetMemberships = $medicationSetAutoRuleSetMemberships;
                     } else {
                         echo "Missing " . $row["type"] . ": " . $row["snomed"] . " || " . $row["name"] . " || from medication_set table\n";
