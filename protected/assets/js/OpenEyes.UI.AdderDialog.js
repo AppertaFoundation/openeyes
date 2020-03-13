@@ -503,8 +503,11 @@
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+              
+							// deselect options when closing the adderDialog
+							dialog.popup.find('.selected').removeClass('selected');
             }
-
+          
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
             if ($input.length) {
