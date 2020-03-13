@@ -398,7 +398,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             $med_m = $med;
 
             if (!$med_m) {
-                throw new Exception("MedicationSetAutoRuleMedication {$med->medication_id} did not found");
+                throw new Exception("MedicationSetAutoRuleMedication {$med->medication_id} was not found");
             }
 
             $med_m->medication_id = $med->medication_id;
