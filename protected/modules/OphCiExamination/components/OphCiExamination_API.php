@@ -3422,7 +3422,7 @@ class OphCiExamination_API extends \BaseAPI
                                         $taper_date = $entry->end_date;
                     foreach ($tapers as $taper) :
                         if ($taper->duration) {
-                            if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                            if (in_array($taper->duration->name, array('On-going', 'Once', 'Other'))) {
                                 $taper_display_date = $taper->duration->name;
                             } else if ($taper_date) {
                                 $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
@@ -3513,7 +3513,7 @@ class OphCiExamination_API extends \BaseAPI
                             $taper_date = $entry->end_date;
                             foreach ($tapers as $taper) :
                                 if ($taper->duration) {
-                                    if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                    if (in_array($taper->duration->name, array('On-going', 'Once', 'Other'))) {
                                                     $taper_display_date = $taper->duration->name;
                                     } else if ($taper_date) {
                                                     $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);

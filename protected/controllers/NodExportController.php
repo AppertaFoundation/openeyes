@@ -1380,7 +1380,7 @@ EOL;
                         (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                         (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                         (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                        (SELECT CASE WHEN lower(dd.name) = 'until review' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
+                        (SELECT CASE WHEN lower(dd.name) = 'on-going' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
                         (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
                     FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
@@ -1425,7 +1425,7 @@ EOL;
                     AS StopDate,
 
                     1 AS IsAddedByPrescription,
-                    CASE WHEN lower(drug_duration.name) = 'until review' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
+                    CASE WHEN lower(drug_duration.name) = 'on-going' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
 
                     FROM ophdrprescription_item AS opi
@@ -3299,7 +3299,7 @@ EOL;
     protected function prescriptionItemFormat(array $row)
     {
         if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $row['StopDate']) === 0) {
-            if (!in_array($row['StopDate'], array('Other', 'Until review'))) {
+            if (!in_array($row['StopDate'], array('Other', 'On-going'))) {
                 $startDate = new DateTime($row['StartDate']);
                 $endDate = $startDate->add(DateInterval::createFromDateString($row['StopDate']));
                 $row['StopDate'] = $endDate->format('Y-m-d');
