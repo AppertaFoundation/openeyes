@@ -18,8 +18,12 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
+use Eye;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
+use OEModule\OphGeneric\models\Assessment;
+use OEModule\OphGeneric\models\AssessmentEntry;
+use services\DateTime;
 use Yii;
 
 /*
@@ -36,7 +40,9 @@ class DefaultController extends \BaseEventTypeController
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationList' => self::ACTION_TYPE_FORM,
         'getPostOpComplicationAutocopleteList' => self::ACTION_TYPE_FORM,
-        'dismissCVIalert' => self::ACTION_TYPE_FORM
+        'dismissCVIalert' => self::ACTION_TYPE_FORM,
+        'getOctAssessment' => self::ACTION_TYPE_FORM,
+        'getAttachment' => self::ACTION_TYPE_FORM
     );
 
     /**
@@ -298,6 +304,7 @@ class DefaultController extends \BaseEventTypeController
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
                 models\HistoryIOP::class,
+                models\OCT::class,
             ), true);
         });
 
@@ -795,7 +802,6 @@ class DefaultController extends \BaseEventTypeController
             $this->allergies = $this->patient->allergyAssignments;
         }
     }
-
     /**
      * Override action value when action is step to be update.
      *
@@ -881,11 +887,11 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Merge workflow next step elements into existing elements.
      *
-     * @param array       $elements
-     *
-     * @throws \CException
+     * @param array $elements
      *
      * @return array
+     * @throws \CException
+     *
      */
     protected function mergeNextStep($elements)
     {
@@ -1481,6 +1487,11 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+
+        if (isset($data['OEModule_OphGeneric_models_Assessment'])) {
+            $errors = $this->setAndValidateOctFromData($data, $errors);
+        }
+
         if (isset($data['OEModule_OphCiExamination_models_HistoryIOP'])) {
             $errors = $this->setAndValidateHistoryIopFromData($data, $errors);
         }
@@ -1856,5 +1867,154 @@ class DefaultController extends \BaseEventTypeController
     private function getOtherSide($side1, $side2, $selectedSide)
     {
         return $selectedSide === $side1 ? $side2 : $side1;
+    }
+
+    public function actionGetOctAssessment($assessment_ids)
+    {
+        $assessment_ids = json_decode($assessment_ids);
+        $event_type = \EventType::model()->find('name = "Examination"');
+        $assessments = [];
+        $api = Yii::app()->moduleAPI->get('OphGeneric');
+
+
+        foreach ($assessment_ids as $assessment_id) {
+            $assessment = Assessment::model()->findByPk($assessment_id);
+            $eye = $api->getLaterality($assessment->event->id);
+            $datetime = new DateTime($assessment->event->event_date);
+
+            if (intval($eye->id) === Eye::BOTH) {
+                foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) {
+                    ${"html_" . $eye_side} = '<div class="js-element-eye ' . $eye_side . '-eye ' . $page_side . '" data-side="' . $eye_side . '">'
+                        . '<div class="assessment cols-full" data-assessment-id="' . $assessment->id . '"'
+                        . ' data-assessment-side="' . $eye->name . '"'
+                        . ' data-assessment-date="' . $datetime->format('Ymd') . '"'
+                        . ' data-assessment-time="' . $datetime->format('His') . '">'
+                        . $this->widget('application.modules.OphGeneric.widgets.Assessment', [
+                            // TODO TODO TODO during the development cycle this will be overridden in the widget init
+                            'assessment' => $assessment,
+                            'entry' => $assessment->{$eye_side . "_assessment"},
+                            'patient' => $this->patient,
+                            'event_type' => $event_type,
+                            'side' => $eye_side,
+                            'key' => $assessment->id
+                        ], true)
+                        . '</div>'
+                        . ($page_side === "right" ? '<div class="flex-layout flex-right"><i class="oe-i trash js-delete-assessment"></i></div>' : '')
+                        . '</div>';
+                }
+
+                $assessments[] = [
+                    "html_left" => $html_left,
+                    "html_right" => $html_right,
+                    "side" => $eye->name,
+                    "date" => $datetime->format('Ymd'),
+                    "time" => $datetime->format('His')
+                ];
+            } else {
+                $html = '';
+                if (intval($eye->id) === Eye::LEFT) {
+                    $page_side = 'right';
+                } else {
+                    $page_side = 'left';
+                }
+                $eye_side = strtolower($eye->getAdjective());
+                $html .= '<div class="js-element-eye ' . $eye_side . '-eye ' . $page_side . '" data-side="' . $eye_side . '">';
+
+                $assessments[] = [
+                    "html" => $html
+                        . '<div class="assessment cols-full" data-assessment-id="' . $assessment->id . '"'
+                        . ' data-assessment-side="' . $eye->name . '"'
+                        . ' data-assessment-date="' . $datetime->format('Ymd') . '"'
+                        . ' data-assessment-time="' . $datetime->format('His') . '">'
+                        . $this->widget('application.modules.OphGeneric.widgets.Assessment', [
+                            // TODO TODO TODO during the development cycle this will be overridden in the widget init
+                            'assessment' => $assessment,
+                            'entry' => $assessment->readings[0],
+                            'patient' => $this->patient,
+                            'event_type' => $event_type,
+                            'key' => $assessment->id,
+                            'side' => $eye_side
+                        ], true)
+                        . '</div><div class="flex-layout flex-right"><i class="oe-i trash js-delete-assessment"></i></div></div>',
+                    "side" => $eye->name,
+                    "date" => $datetime->format('Ymd'),
+                    "time" => $datetime->format('His')
+                 ];
+            }
+        }
+
+        echo json_encode($assessments);
+    }
+
+    public function actionGetAttachment($assessment_ids)
+    {
+        $assessment_ids = json_decode($assessment_ids);
+        $event_ids = [];
+
+        foreach ($assessment_ids as $assessment_id) {
+            $assessment = Assessment::model()->findByPk($assessment_id);
+            $event_ids[] = $assessment->event_id;
+        }
+
+        $this->widget(
+            'application.modules.OphGeneric.widgets.Attachment',
+            [
+                'event_ids' => $event_ids,
+                'allow_attach' => false,
+                'element' => null,
+                'show_titles' => true,
+                'is_examination' => true,
+            ]);
+    }
+
+    protected function saveComplexAttributes_OCT($element, $data, $index)
+    {
+        if (isset($data['OEModule_OphGeneric_models_Assessment'])) {
+            $entries = $data['OEModule_OphGeneric_models_Assessment']['entries'];
+
+            foreach ($entries as $assessment_id => $assessment_entry_sides) {
+                foreach ($assessment_entry_sides as $eye_side => $assessment_entry_data) {
+                    $assessment_entry = AssessmentEntry::model()->findByPk($assessment_entry_data['entry_id']);
+                    $assessment_entry->attributes = $assessment_entry_data;
+                    $assessment_entry->save(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Custom validation for OCT element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidateOctFromData($data, $errors)
+    {
+        $et_name = Assessment::model()->getElementTypeName();
+        $OCT = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_OCT');
+        $entries = $data['OEModule_OphGeneric_models_Assessment']['entries'];
+
+        //TODO: make validation error link to Assessment work:
+        // currently, "addError()" is not called so function "scrolToElement()" is not called
+
+        foreach ($entries as $assessment_id => $assessment_entry_sides) {
+            foreach ($assessment_entry_sides as $eye_side => $assessment_entry_data) {
+                $assessment_entry = AssessmentEntry::model()->findByPk($assessment_entry_data['entry_id']);
+                $assessment_entry->attributes = $assessment_entry_data;
+
+                if (!$assessment_entry->validate()) {
+                    $assessmentErrors = $assessment_entry->getErrors();
+                    foreach ($assessmentErrors as $assessmentErrorsAttributeName => $assessmentErrorsMessages) {
+                        foreach ($assessmentErrorsMessages as $assessmentErrorMessage) {
+                            $OCT->setFrontEndError('OEModule_OphGeneric_models_Assessment_entries_' . $assessment_id . '_' . $eye_side . '_' . $assessmentErrorsAttributeName);
+                            $errors[$et_name][] = $assessmentErrorMessage;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $errors;
     }
 }

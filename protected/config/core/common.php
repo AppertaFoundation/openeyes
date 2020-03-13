@@ -43,7 +43,14 @@ return array(
         'application.gii.*',
         'system.gii.generators.module.*',
         'application.modules.OphTrOperationnote.components.*',
-        'application.modules.OECaseSearch.components.*',
+        //Import Api files to be available everywhere
+        'application.modules.Api.modules.Request.models.*',
+        'application.modules.Api.modules.Request.controllers.*',
+        'application.modules.Api.modules.Request.views.*',
+        'application.modules.Api.controllers.*',
+        'application.modules.Api.modules.Request.components.*',
+        'application.modules.Api.modules.Request.widgets.*',
+              'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(
@@ -60,6 +67,7 @@ return array(
         ),
         'oldadmin',
         'Admin',
+        'Api'
     ),
 
     // Application components
@@ -82,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202002261802',
+            'time' => '202003121602',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -195,6 +203,7 @@ return array(
             'noCsrfValidationRoutes' => array(
                 'site/login', //disabled csrf check on login form
                 'api/',
+                'Api/',
                 //If the user uploads a too large file (php.ini) then CSRF validation error comes back
                 //instead of the proper error message
                 'OphCoDocument/Default/create',
@@ -239,7 +248,7 @@ return array(
                 array('api/create', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'POST'),
                 array('api/search', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'GET'),
                 array('api/search', 'pattern' => 'api/<resource_type:\w+>/_search', 'verb' => 'GET,POST'),
-                array('api/badrequest', 'pattern' => 'api/(.*)'),
+                array('api/badrequest', 'pattern' => 'api/^(?!v1$).*$'),
 
                 '<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
                 '<module:\w+>/oeadmin/<controller:\w+>/<action:\w+>' => '<module>/oeadmin/<controller>/<action>',
@@ -568,6 +577,9 @@ return array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
+                            'Biometry' => array(
+                                'image_width' => 1200
+                            ),
             ),
         ),
 

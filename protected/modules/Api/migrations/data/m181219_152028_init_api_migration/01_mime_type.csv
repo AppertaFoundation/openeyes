@@ -1,0 +1,12 @@
+mime_type
+"application/dicom"
+"application/json"
+"application/octet-stream"
+"application/pdf"
+"application/xml"
+"application/x-www-form-urlencoded"
+"multipart/form-data"
+"text/plain"
+"image/jpg"
+"image/jpeg"
+"image/png"
