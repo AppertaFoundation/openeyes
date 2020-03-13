@@ -2427,6 +2427,64 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
+          <PRIMARY_TERM>OCT (manual)</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Optical coherence tomography</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Image Type</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_method_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Maximum CRT</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Central Retinal Thickness</TERM>
+                <TERM>CRT</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_crt</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Central Macular Thickness (CMT)</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Central Subfield Thickness</TERM>
+                <TERM>Central SFT</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_sft</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Thickness increase of 100µm</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Thickness increase of 100µm</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Dry</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Dry</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>OCT</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Optical coherence tomography</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\OCT</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
           <PRIMARY_TERM>Corneal Tomography</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
@@ -2631,60 +2689,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description</GOTO_ID>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>OCT</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>
-            <TERM>Optical coherence tomography</TERM>
-          </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-          <INDEX_LIST>
-            <INDEX>
-              <PRIMARY_TERM>Image Type</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_method_id</GOTO_ID>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Maximum CRT</PRIMARY_TERM>
-              <SECONDARY_TERM_LIST>
-                <TERM>Corneal Refractive Therapy</TERM>
-              </SECONDARY_TERM_LIST>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_crt</GOTO_ID>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Central Macular Thickness (CMT)</PRIMARY_TERM>
-              <SECONDARY_TERM_LIST>
-                <TERM>Central Subfield Thickness</TERM>
-                <TERM>Central SFT</TERM>
-              </SECONDARY_TERM_LIST>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_sft</GOTO_ID>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Thickness increase of 100µm</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
-              <GOTO_TAG>legend</GOTO_TAG>
-              <GOTO_TEXT>Thickness increase of 100µm</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Dry</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
-              <GOTO_TAG>legend</GOTO_TAG>
-              <GOTO_TEXT>Dry</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Comments</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_comments</GOTO_ID>
-            </INDEX>
-          </INDEX_LIST>
-        </INDEX>
-        <INDEX>
-          <PRIMARY_TERM>Glaucoma Risk</PRIMARY_TERM>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_GlaucomaRisk</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
-        <INDEX>
           <PRIMARY_TERM>PCR Risk</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Posterior capsular opacification grading</TERM>
@@ -2742,6 +2746,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_can_lie_flat</GOTO_ID>
             </INDEX>
           </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Glaucoma Risk</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_GlaucomaRisk</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Clinical Management</PRIMARY_TERM>

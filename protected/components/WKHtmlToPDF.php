@@ -104,9 +104,9 @@ class WKHtmlToPDF extends WKHtmlToX
         $footer = str_replace('{{BARCODES}}', CJavaScript::encode($this->barcodes), $footer);
         $footer = str_replace('{{BARCODE}}', '<span class="barcode"></span>', $footer);
         $footer = str_replace('{{DOCREF}}', '<span class="docref"></span>', $footer);
+        $this->docrefs = str_replace('{{PAGE}}', '<span class="page"></span>', $this->docrefs);
         $footer = str_replace('{{DOCREFS}}', CJavaScript::encode($this->docrefs), $footer);
         $footer = str_replace('{{DOCUMENTS}}', $this->documents, $footer);
-        $footer = str_replace('{{PAGE}}', '<span class="page"></span>', $footer);
         $footer = str_replace('{{PAGES}}', '<span class="topage"></span>', $footer);
         $footer = str_replace('{{CUSTOM_TAGS}}', CJavaScript::encode($this->custom_tags), $footer);
         $footer = str_replace('{{NHS No}}', Yii::app()->params['nhs_num_label'], $footer);
@@ -207,10 +207,10 @@ class WKHtmlToPDF extends WKHtmlToX
 
         $html_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.html";
         $pdf_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.pdf";
+        $footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . 'footer.html';
 
         $this->writeFile($html_file, $html);
 
-        $footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . 'footer.html';
         $footer = $this->formatFooter(
             $this->readFile(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'print' . DIRECTORY_SEPARATOR . 'pdf_footer.php'),
             $this->left,
@@ -238,7 +238,7 @@ class WKHtmlToPDF extends WKHtmlToX
         $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltopdf_nice_level'] . ' ' : '';
         $res = $this->execute($nice . escapeshellarg($this->application_path)
             . ($this->disable_smart_shrinking ? ' --disable-smart-shrinking' : null)
-            . ($print_footer === 'true' ? ' --footer-html ' . escapeshellarg($footer_file) : null)
+            . ($print_footer ? ' --footer-html ' . escapeshellarg($footer_file) : null)
             . ($this->orientation ? " --orientation $this->orientation" : null)
             . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin "
             . ($this->page_width ? "--page-width $this->page_width " : null)

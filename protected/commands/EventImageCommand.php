@@ -146,6 +146,7 @@ EOH;
         // disable SSL certificate check for locally issued certificates
         if (Yii::app()->params['disable_ssl_certificate_check']) {
             curl_setopt($this->curlConnection, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($this->curlConnection, CURLOPT_SSL_VERIFYHOST, false);
         }
         curl_setopt($this->curlConnection, CURLOPT_FRESH_CONNECT, true);
         curl_setopt($this->curlConnection, CURLOPT_COOKIESESSION, true);

@@ -68,7 +68,6 @@ body {
     font-size: 7.5pt;
     font-weight: bold;
     text-align: right;
-    margin-right: 0;
 }
 
 /*Site box appears at the bottom toward the center.*/
@@ -260,8 +259,6 @@ body {
 .fpten-doctor-name {
     font-size: 7.5pt;
     font-weight: bold;
-    margin-left: 0;
-    width: 70%;
 }
 
 .end {
