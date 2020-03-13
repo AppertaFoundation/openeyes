@@ -29,35 +29,37 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
             <!-- actions auto-->
         </colgroup>
         <thead>
-            <tr>
-                <th>Drug</th>
-                <th>Dose/frequency/route/start/stop</th>
-                <th>Duration/dispense/comments</th>
-                <th><i class="oe-i drug-rx small no-click"></i></th>
-                <th></th><!-- actions -->
-            </tr>
+        <tr>
+            <th>Drug</th>
+            <th>Dose/frequency/route/start/stop</th>
+            <th>Duration/dispense/comments</th>
+            <th><i class="oe-i drug-rx small no-click"></i></th>
+            <th></th><!-- actions -->
+        </tr>
         </thead>
         <tbody>
         <?php foreach (array(
-                                "start" => "getContinuedEntries",
-                                "direction-right " => "getEntriesStartedToday",
-                            ) as $entry_icon => $method) :
-            $entries = $element->$method();
-    if (!empty($entries)) : ?>
-                <?php foreach ($entries as $key => $entry) : ?>
-                    <?php echo $this->render(
-                        'MedicationManagementEntry_event_view',
-                        [
-                            'entry' => $entry,
-                            'patient' => $this->patient,
-                            'entry_icon' => $entry_icon,
-                            'row_count' => $key,
-                            'form_setting' => $form_format
-                        ]
-                    ); ?>
-                <?php endforeach; ?>
+                           "start" => ["getContinuedEntries", "getEntriesStartingInFuture"],
+                           "direction-right " => ["getEntriesStartedToday"],
+                       ) as $entry_icon => $methods) :
+    foreach ($methods as $method) {
+        $entries = $element->$method();
+        if (!empty($entries)) : ?>
+                    <?php foreach ($entries as $key => $entry) : ?>
+                        <?php echo $this->render(
+                            'MedicationManagementEntry_event_view',
+                            [
+                                'entry' => $entry,
+                                'patient' => $this->patient,
+                                'entry_icon' => $entry_icon,
+                                'row_count' => $key,
+                                'form_setting' => $form_format
+                            ]
+                        ); ?>
+                    <?php endforeach; ?>
 
-    <?php endif; ?>
+        <?php endif; ?>
+    <?php } ?>
         <?php endforeach; ?>
         </tbody>
     </table>
@@ -65,7 +67,8 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
     if ($stoppedEntries) { ?>
         <div class="collapse-data">
             <div class="collapse-data-header-icon expand">
-                Stopped Medications <small>(<?= count($stoppedEntries) ?>)</small>
+                Stopped Medications
+                <small>(<?= count($stoppedEntries) ?>)</small>
             </div>
             <div class="collapse-data-content" style="display:none;">
 
