@@ -355,8 +355,7 @@ class AdminController extends \ModuleAdminController
 
     public function actionEditWorkflow($id)
     {
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-
+        Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
@@ -592,12 +591,14 @@ class AdminController extends \ModuleAdminController
 
     public function actionSaveWorkflowStepName()
     {
-        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']));
+        $workflow_id = Yii::app()->request->getParam('workflow_id');
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
         if (!$step) {
-            throw new \Exception('Unknown element set '.@$_POST['element_set_id'].' for workflow '.@$_POST['workflow_id']);
+            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
         }
 
-        $step->name = @$_POST['step_name'];
+        $step->name = Yii::app()->request->getParam('step_name');
 
         if (!$step->save()) {
             throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
