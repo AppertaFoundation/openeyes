@@ -48,7 +48,7 @@ $tech_support_url = $settings->getSetting('tech_support_url')
     <h4>Legal</h4>
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
-    <p>OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.</p>
+    <p>OpenEyes is maintained by the <a href="http://apperta.org/" target="_blank">Apperta Foundation</a>. find out more at <a href='https://openeyes.org.uk' target='blank'>openeyes.org.uk</a></p>
     <p>Technical support is provided by <a href="<?= $tech_support_url?>" target="_blank"><?= $tech_support_provider ?></a>.</p>
   </div>
 
