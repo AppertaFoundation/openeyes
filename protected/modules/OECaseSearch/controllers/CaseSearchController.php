@@ -145,7 +145,7 @@ class CaseSearchController extends BaseModuleController
 
         $all_searches = SavedSearch::model()->findAll();
 
-        if (array_key_exists('variable_list',$_POST)) {
+        if (array_key_exists('variable_list', $_POST)) {
             $variables = explode(',', $_POST['variable_list']);
         }
 
