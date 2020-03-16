@@ -302,6 +302,10 @@ class CaseSearchController extends BaseModuleController
     protected function populateParams($populate_param_cache = false)
     {
         $valid = true;
+        if ($populate_param_cache) {
+            // Ensure that the parameter list is empty before appending to it.
+            $this->parameterList = array();
+        }
         foreach ($this->module->getConfigParam('parameters') as $group) {
             foreach ($group as $parameter) {
                 $paramName = $parameter . 'Parameter';
