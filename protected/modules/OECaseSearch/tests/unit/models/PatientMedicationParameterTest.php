@@ -17,16 +17,18 @@ class PatientMedicationParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    protected function setUp()
+    public function setUp()
     {
+        parent::setUp();
         $this->object = new PatientMedicationParameter();
         $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->object, $this->searchProvider);
+        parent::tearDown();
     }
 
     /**

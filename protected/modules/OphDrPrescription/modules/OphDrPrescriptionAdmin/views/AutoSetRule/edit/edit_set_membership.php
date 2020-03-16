@@ -6,8 +6,8 @@ $setlist = array_map(function ($e) {
 ?>
 <script id="set_membership_row_template" type="x-tmpl-mustache">
      <tr data-key="{{ key }}">
-        <input type="hidden" name="MedicationSetAutoRuleSetMemberships[{{ key }}][id]" value="-1" />
-        <input type="hidden" name="MedicationSetAutoRuleSetMemberships[{{ key }}][medication_set_id]" value="{{set_id}}" />
+        <input type="hidden" name="MedicationSetAutoRuleSetMemberships[{{ key }}][id]" value="" />
+        <input type="hidden" name="MedicationSetAutoRuleSetMemberships[{{ key }}][source_medication_set_id]" value="{{set_id}}" />
         <td>{{set_name}}</td>
         <td>
             <a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a>
@@ -31,8 +31,8 @@ $setlist = array_map(function ($e) {
     <?php if (!is_null($set)): ?>
         <?php foreach ($set->medicationSetAutoRuleSetMemberships as $row_key => $membership): ?>
             <tr data-key="<?=$row_key; ?>">
-                <input type="hidden" name="MedicationSetAutoRuleSetMemberships[<?=$row_key; ?>][id]" value="<?= $membership->id ?>"/>
-                <input type="hidden" name="MedicationSetAutoRuleSetMemberships[<?=$row_key; ?>][medication_set_id]"
+                <input type="hidden" name="MedicationSetAutoRuleSetMemberships[<?=$row_key; ?>][id]" value="<?= (isset($membership->id) ? $membership->id : '') ?>"/>
+                <input type="hidden" name="MedicationSetAutoRuleSetMemberships[<?=$row_key; ?>][source_medication_set_id]"
                        value="<?= $membership->source_medication_set_id ?>"/>
                 <td><?= \CHtml::encode($membership->sourceMedicationSet->name); ?></td>
                 <td><a href="javascript:void(0);" class="js-delete-set-membership"><i class="oe-i trash"></i></a></td>

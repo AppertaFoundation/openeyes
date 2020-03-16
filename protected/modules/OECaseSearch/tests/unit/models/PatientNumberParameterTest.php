@@ -21,7 +21,7 @@ class PatientNumberParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientNumberParameter();
@@ -29,7 +29,7 @@ class PatientNumberParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProvider);

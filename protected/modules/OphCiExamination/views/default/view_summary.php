@@ -66,9 +66,14 @@ if ($historyElement) {
                                         </td>
                                         <td></td>
                                         <td>
-                                            <?php $tooltip_content = $entry->getTooltipContent();
+                                            <?php
+                                                $info_box = new MedicationInfoBox();
+                                                $info_box->medication_id = $entry->medication->id;
+                                                $info_box->init();
+
+                                            $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i info small js-has-tooltip"
+                                                <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip"
                                                    data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>
@@ -118,9 +123,14 @@ if ($historyElement) {
                                                     <?= $entry->getMedicationDisplay() ?>
                                                 </td>
                                                 <td>
-                                                    <?php $tooltip_content = $entry->getTooltipContent();
+                                                    <?php
+                                                    $info_box = new MedicationInfoBox();
+                                                    $info_box->medication_id = $entry->medication->id;
+                                                    $info_box->init();
+
+                                                    $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                                     if ($tooltip_content) { ?>
-                                              <i class="oe-i info small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
+                                              <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
                                                         </i>
                                                     <?php } ?>
                                                 </td>
@@ -181,7 +191,7 @@ if ($historyElement) {
         </div>
     </section>
 
-    <section class=" element view-Systemic-Medications tile"
+    <section class="element view-Systemic-Medications tile"
              data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
              data-element-type-class="<?php echo $medicationsElement->elementType->class_name ?>"
              data-element-type-name="Systemic Medications"
@@ -232,9 +242,13 @@ if ($historyElement) {
                                     </td>
                                     <td>
                                         <?php
-                                        $tooltip_content = $entry->getTooltipContent();
+                                        $info_box = new MedicationInfoBox();
+                                        $info_box->medication_id = $entry->medication->id;
+                                        $info_box->init();
+
+                                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                         if (!empty($tooltip_content)) { ?>
-                                            <i class="oe-i info small-icon js-has-tooltip"
+                                            <i class="oe-i <?=$info_box->getIcon();?> small-icon js-has-tooltip"
                                                data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
@@ -246,8 +260,8 @@ if ($historyElement) {
                         </table>
                     </div>
                 </div>
+                <?php } else { ?>
             </div>
-                    <?php } else { ?>
                 <div class="data-value none">
                     No current Systemic Medications
                 </div>
@@ -279,9 +293,14 @@ if ($historyElement) {
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td>
-                                            <?php $tooltip_content = $entry->getTooltipContent();
+                                            <?php
+                                            $info_box = new MedicationInfoBox();
+                                            $info_box->medication_id = $entry->medication->id;
+                                            $info_box->init();
+
+                                            $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i info small js-has-tooltip"
+                                                <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip"
                                                    data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>

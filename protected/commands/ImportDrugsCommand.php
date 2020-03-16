@@ -583,7 +583,7 @@ EOD;
 
         $scripts = [
             'delete', 'forms_routes', 'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'search_index',
-            'replace_legacy_with_dmd', 'laterality_mapping'
+            'replace_legacy_with_dmd', 'laterality_mapping', 'preservative-free'
         ];
 
         foreach ($scripts as $script) {

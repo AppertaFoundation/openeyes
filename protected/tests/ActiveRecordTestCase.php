@@ -5,7 +5,7 @@
  * Base class for all unit tests that test active record subclasses. Includes a test function
  * to verify that database mandatory columns without a default value are given a 'required' validator to prevent bad data.
  */
-abstract class ActiveRecordTestCase extends CDbTestCase
+abstract class ActiveRecordTestCase extends OEDbTestCase
 {
     /**
      * @return CActiveRecord
@@ -51,7 +51,7 @@ abstract class ActiveRecordTestCase extends CDbTestCase
             'column_name'
         );
 
-        if(!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
+        if (!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
             $this->fail('The following mandatory columns do not possess a required validator rule: ' . var_export($required_columns, true));
         } elseif (!empty($rules) && !empty($required_columns)) {
             $columns = explode(', ', $rules[0]);

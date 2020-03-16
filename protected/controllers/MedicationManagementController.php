@@ -113,7 +113,7 @@ class MedicationManagementController extends BaseController
             $defaults = $this->getMedicationDefaults($med, $this->getCommonDrugsRefSet());
 
             $ret_data[] = array_merge($med->getAttributes(), [
-                    'label' => $med->getLabel() . ($med->isMemberOf("Formulary") ? " (*)" : ""),
+                    'label' => $med->getLabel(),
                     'dose_unit_term' => $defaults->dose_unit_term,
                     'dose' => $defaults->dose,
                     'default_form' => $defaults->form_id,

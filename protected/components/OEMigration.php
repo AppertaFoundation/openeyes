@@ -585,14 +585,20 @@ class OEMigration extends CDbMigration
         }
     }
 
-    public function alterOEColumn($tableName, $columnName, $columnType, $versioned = false) {
+    /**
+     * @param $tableName
+     * @param $columnName
+     * @param $columnType
+     * @param bool $versioned
+     */
+    public function alterOEColumn($tableName, $columnName, $columnType, $versioned = false)
+    {
         $this->alterColumn($tableName, $columnName, $columnType);
-        if ($versioned && Yii::app()->db->schema->getTable($tableName . '_version') !== null) {
-            $this->alterColumn($tableName . '_version', $columnName, $columnType);
-        } else if ($versioned) {
-            $this->migrationEcho(
-                "\nWarning: $tableName specified as versioned but the version table does not exist"
-            );
+
+        if ($versioned) {
+            if ($this->verifyTableVersioned($tableName)) {
+                $this->alterColumn($tableName . '_version', $columnName, $columnType);
+            }
         }
     }
 
@@ -823,27 +829,51 @@ class OEMigration extends CDbMigration
 
     /**
      * Add a column to an OE table and its corresponding versioning table.
+     *
      * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
      * @param $column string Column name.
      * @param $type string Column type.
+     * @param bool $versioned
      */
-    public function addOEColumn($table, $column, $type)
+    public function addOEColumn($table, $column, $type, $versioned = false)
     {
         $this->addColumn($table, $column, $type);
-        $this->addColumn($table . '_version', $column, $type);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->addColumn($table . '_version', $column, $type);
+        }
     }
 
     /**
      * Drop a column from an OE table and its corresponding versioning table.
+     *
      * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
      * @param $column string Column name
+     * @param bool $versioned
      */
-    public function dropOEColumn($table, $column)
+    public function dropOEColumn($table, $column, $versioned = false)
     {
         $this->dropColumn($table, $column);
-        $this->dropColumn($table . '_version', $column);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->dropColumn($table . '_version', $column);
+        }
     }
 
+    /**
+     * Rename a column on an OE table and its corresponding versioning table
+     *
+     * @param $table
+     * @param $name
+     * @param $newName
+     * @param bool $versioned
+     */
+    public function renameOEColumn($table, $name, $newName, $versioned = false)
+    {
+        $this->renameColumn($table, $name, $newName);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->renameColumn($table . '_version', $name, $newName);
+        }
+    }
+    
     public function removeOperationFromTask($oprn_name, $task_name)
     {
         $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name', array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
@@ -867,5 +897,23 @@ class OEMigration extends CDbMigration
     public function removeOperation($oprn_name)
     {
         $this->delete('authitem', "name = :name and type=0", array(':name' => $oprn_name));
+    }
+
+    /**
+     * @param $table_name
+     * @param bool $warn
+     * @return bool
+     */
+    protected function verifyTableVersioned($table_name, $warn = true)
+    {
+        if (Yii::app()->db->schema->getTable($table_name . '_version') !== null) {
+            return true;
+        }
+        if ($warn) {
+            $this->migrationEcho(
+                "\nWarning: $table_name specified as versioned but the version table does not exist"
+            );
+        }
+        return false;
     }
 }

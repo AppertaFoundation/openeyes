@@ -29,7 +29,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
     <?php if ($this->patient->nhsNumberStatus) : ?>
         <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
             <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
@@ -262,7 +262,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 </div>
 
     <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-    <div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
+    <div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
         <div class="situational-awareness flex-layout flex-left flex-top">
             <?php
             $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
@@ -405,17 +405,18 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     </td>
                                 </tr>
                             <?php } ?>
-                            <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
+                            <?php foreach ($this->patient->systemicDiagnoses as $systemic_diagnosis) { ?>
                                 <tr>
-                                    <td> <?= $diagnosis->disorder->term ?></td>
+                                    <td> <?= $systemic_diagnosis->disorder->term ?></td>
                                     <td><i class="oe-i"></i></td>
                                     <td class="nowrap">
-                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye, 'pad' => '')) ?>
-                                        <div class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></div>
+                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => '')) ?>
+                                        <div class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></div>
                                     </td>
                                     <td>
-                                        <?php $event_id = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($diagnosis->id))->element->event_id;
-                                        if (isset($event_id) && $event_id) { ?>
+                                        <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
+                                        if ($diagnosis) { ?>
+                                            <?php $event_id = $diagnosis->element->event_id ?>
                                         <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
                                         <?php } ?>
                                     </td>
@@ -480,7 +481,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
   </div><!-- .flex-layout -->
 </div>
 
-    <div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
+    <div class="oe-patient-popup patient-popup-management" style="display: none;">
         <div class="flex-layout flex-top">
             <div class="cols-left">
                 <div class="popup-overflow">
@@ -520,7 +521,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
             </div>
         </div><!-- flex -->
     </div>
-<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
@@ -557,7 +558,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 </div>
 
 <?php if (Yii::app()->getModule('OETrial')) { ?>
-<div class="oe-patient-popup" id="patient-popup-trials" style="display: none;">
+<div class="oe-patient-popup patient-popup-trials" style="display: none;">
   <div class="flex-layout flex-top">
       <?php
         $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(

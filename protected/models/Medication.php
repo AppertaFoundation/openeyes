@@ -297,10 +297,6 @@ class Medication extends BaseActiveRecordVersioned
             $name.=" (".$this->vtm_term.")";
         }
 
-        if ($this->isPreservativeFree()) {
-            $name.= ' (PF)';
-        }
-
         return $name;
     }
 

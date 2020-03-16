@@ -27,6 +27,7 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->manager = new ServiceManager();
         $this->manager->internal_services = array(
             'services\ServiceManagerTest_InternalResourceService',

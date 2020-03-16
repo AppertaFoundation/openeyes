@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<tr data-parent-med-id="<?=$set_item_medication_id?>" data-taper="<?= $taper_count ?>" class="prescription-taper">
+<tr data-parent-med-id="<?=$set_item_medication_id?>" id="medication_set_item_taper_<?= $data_parent_key ?>_<?= $taper_count ?>" data-taper="<?= $taper_count ?>" class="prescription-taper<?= is_null($set_item_medication) ? ' new' : ''?>">
     <td style="padding-left: 4%"><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
     <?= \CHtml::activeHiddenField($taper, 'id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedicationTaper[$data_parent_key][$taper_count][id]"]); ?>
     <?php if (!is_null($set_item_medication)) : ?>

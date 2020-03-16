@@ -10,7 +10,7 @@ $options = array_map(function ($e) {
 <script id="row_template" type="x-tmpl-mustache">
     <tr data-key="{{ key }}">
         <td>
-            <input type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][id]" value="-1" />
+            <input type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][id]" value="" />
             <input class="js-attribute" type="hidden" name="MedicationSetAutoRuleAttributes[{{ key }}][medication_attribute_id]" value="{{attribute_id}}" />
             {{attribute_name}}
         </td>

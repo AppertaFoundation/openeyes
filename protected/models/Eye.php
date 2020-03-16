@@ -31,6 +31,14 @@ class Eye extends BaseActiveRecord
     const RIGHT = 2;
     const BOTH = 3;
 
+    public static function getIdFromName($side) {
+        return strtolower($side) === "left" ? EYE::LEFT : (
+                strtolower($side) === "right" ? EYE::RIGHT : (
+                strtolower($side) === "both" ? EYE::BOTH : null
+            )
+        );
+    }
+
     /**
      * Simple helper method to ensure that any change to Eye names doesn't affect the method names derived from
      * decisions based on the Eye.

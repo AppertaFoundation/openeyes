@@ -24,7 +24,7 @@
 <form method="GET">
     <input type="hidden" name="set_id" value="<?= Yii::app()->request->getParam('set_id') ?>"/>
     <input type="text"
-           class="search cols-6"
+           class="search cols-full"
            autocomplete=""
            name="search"
            id="search_query"
@@ -35,8 +35,8 @@
 
     <table id="medicationset-medications-list" class="standard">
         <colgroup>
-            <col class="cols-2">
-            <col class="cols-5">
+            <col class="cols-6">
+            <col class="cols-6">
         </colgroup>
         <thead>
             <tr>
@@ -54,7 +54,7 @@
         </tbody>
         <tfoot class="pagination-container">
         <tr>
-            <td colspan="2">
+            <td colspan="1">
                 <?= \OEHtml::cancelButton("Back", [
                     'data-uri' => '/OphDrPrescription/admin/AutoSetRule/index',
                 ]) ?>

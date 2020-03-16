@@ -1,4 +1,6 @@
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 1);

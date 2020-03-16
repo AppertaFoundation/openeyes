@@ -21,7 +21,10 @@
     <?php $this->renderOpenElements($this->action->id, $form) ?>
 </div>
 
-<?php if ($this->show_element_sidebar === false && count($this->getOptionalElements())) { ?>
+<?php if ($this->show_element_sidebar === false && count($this->getOptionalElements())
+    && isset($this->render_optional_elements)
+    && $this->render_optional_elements
+) { ?>
   <section class="optional-elements">
     <header class="optional-elements-header">
       <h3 class="optional-elements-title">Optional Elements</h3>

@@ -33,14 +33,14 @@ EOH;
     }
 
     /**
-     * @var DefaultController
+     * @var QueueController
      */
     private $controller;
 
     protected function getController()
     {
         if (!$this->controller) {
-            $this->controller = new DefaultController("Default");
+            $this->controller = new QueueController("Default");
         }
         return $this->controller;
     }

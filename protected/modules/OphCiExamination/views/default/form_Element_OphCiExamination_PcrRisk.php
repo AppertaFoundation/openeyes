@@ -37,6 +37,8 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
             $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
         });
     }
+
+    pcr_init();
 </script>
 <div class="element-eyes element-fields flex-layout full-width">
     <?php
@@ -93,7 +95,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
     ];
     echo $form->hiddenInput($element, 'eye_id', false, ['class' => 'sideField']);
 
-    foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :
+    foreach (['right' => 'left','left' => 'right'] as $side => $eye) :
         $opposite = ($side === 'right') ? 'left' : 'right';
         $pcrRisk = new PcrRisk();
         $activeClass = ($element->{'has' . ucfirst($side)}()) ? 'active' : 'inactive'; ?>
