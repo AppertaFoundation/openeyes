@@ -38,8 +38,8 @@ class PreviousTrialParameterTest extends CDbTestCase
     public function testQueryOperation()
     {
         $validOps = array(
-            'IS',
-            'IS NOT',
+            'IN',
+            'NOT IN',
         );
 
         foreach ($validOps as $op) {
