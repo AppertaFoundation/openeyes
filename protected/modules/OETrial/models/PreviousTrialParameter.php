@@ -48,12 +48,17 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $trialTypes = TrialType::getOptions();
         $treatmentTypes = TreatmentType::getOptions();
 
+        $this->options['operations'][0]['label'] = 'INCLUDES';
+        $this->options['operations'][0]['id'] = 'IN';
+        $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
+        $this->options['operations'][1]['id'] = 'NOT IN';
+
         $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
 
         $this->statusList = array(
-            TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
-            TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
-            TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
+            TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in trial',
+            TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted into trial',
+            TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from trial',
         );
 
         $this->options['option_data'] = array(
@@ -149,10 +154,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     return Trial::model()->findByPk($this->$attribute)->name;
                     break;
                 case 'trialTypeId':
-                    return $this->getTrialType()->name;
+                    return 'Participating in ' . $this->getTrialType()->name . ' trial';
                     break;
                 case 'treatmentTypeId':
-                    return $this->getTreatmentType()->name;
+                    return 'Received ' . $this->getTreatmentType()->name . ' treatment';
                     break;
                 case 'status':
                     return $this->statusList[$this->$attribute];
@@ -202,7 +207,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
         }
         switch ($this->operation) {
-            case 'IS':
+            case 'IN':
                 $query = "SELECT p.id 
                         FROM patient p 
                         $joinCondition trial_patient t_p 
@@ -212,7 +217,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                         WHERE $condition";
 
                 break;
-            case 'IS NOT':
+            case 'NOT IN':
                 $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id 
                             FROM patient p 
                             $joinCondition trial_patient t_p 

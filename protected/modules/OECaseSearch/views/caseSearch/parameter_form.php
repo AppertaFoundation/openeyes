@@ -25,6 +25,12 @@ switch ($model->operation) {
     case '!=':
         $operation_display = 'IS NOT';
         break;
+    case 'IN':
+        $operation_display = 'INCLUDES';
+        break;
+    case 'NOT IN':
+        $operation_display = 'DOES NOT INCLUDE';
+        break;
     default:
         $operation_display = $model->operation;
         break;

@@ -27,12 +27,26 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
+     * @throws CException
      */
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
         $this->name = 'patient_identifier';
         $this->operation = '='; // Remove if more operations are added.
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'code',
+                'field' => 'code',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $this->getAllCodes(),
+                    array_keys($this->getAllCodes())
+                ),
+            ),
+        );
     }
 
     public function getLabel()
@@ -64,6 +78,24 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         return array(
             'code' => 'Code'
         );
+    }
+
+    /**
+     * @param $attribute
+     * @return string|null
+     */
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'code':
+                    return 'Code - ' . $this->$attribute;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     /**
@@ -114,6 +146,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
 
     /**
      * @return array contains all identifier codes
+     * @throws CException
      */
     public function getAllCodes()
     {

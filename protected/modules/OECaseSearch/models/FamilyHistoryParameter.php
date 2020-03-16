@@ -3,6 +3,10 @@
 /**
  * Class FamilyHistoryParameter
  */
+use OEModule\OphCiExamination\models\FamilyHistoryCondition;
+use OEModule\OphCiExamination\models\FamilyHistoryRelative;
+use OEModule\OphCiExamination\models\FamilyHistorySide;
+
 class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
@@ -34,21 +38,15 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $this->name = 'family_history';
         $this->operation = '=';
 
-        $relatives = OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll();
-        $sides = OEModule\OphCiExamination\models\FamilyHistorySide::model()->findAll();
-        $conditions = OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll();
+        $this->options['operations'][0]['label'] = 'INCLUDES';
+        $this->options['operations'][0]['id'] = 'IN';
+        unset($this->options['operations'][1]);
+
+        $relatives = FamilyHistoryRelative::model()->findAll();
+        $sides = FamilyHistorySide::model()->findAll();
+        $conditions = FamilyHistoryCondition::model()->findAll();
 
         $this->options['option_data'] = array(
-            array(
-                'id' => 'family-relative',
-                'field' => 'relative',
-                'options' => array_map(
-                    static function ($item) {
-                        return array('id' => $item->id, 'label' => $item->name);
-                    },
-                    $relatives
-                ),
-            ),
             array(
                 'id' => 'family-side',
                 'field' => 'side',
@@ -57,6 +55,16 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                         return array('id' => $item->id, 'label' => $item->name);
                     },
                     $sides
+                ),
+            ),
+            array(
+                'id' => 'family-relative',
+                'field' => 'relative',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $relatives
                 ),
             ),
             array(
@@ -77,13 +85,13 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'relative':
-                    return OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findByPk($this->$attribute)->name;
+                    return FamilyHistoryRelative::model()->findByPk($this->$attribute)->name;
                     break;
                 case 'side':
-                    return OEModule\OphCiExamination\models\FamilyHistorySide::model()->findByPk($this->$attribute)->name;
+                    return FamilyHistorySide::model()->findByPk($this->$attribute)->name;
                     break;
                 case 'condition':
-                    return OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findByPk($this->$attribute)->name;
+                    return 'has ' . FamilyHistoryCondition::model()->findByPk($this->$attribute)->name;
                     break;
                 default:
                     return parent::getValueForAttribute($attribute);

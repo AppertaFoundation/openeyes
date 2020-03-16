@@ -26,6 +26,10 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'vision';
+        $this->options['operations'][0]['label'] = 'INCLUDES';
+        $this->options['operations'][0]['id'] = 'IN';
+        $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
+        $this->options['operations'][1]['id'] = 'NOT IN';
         $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
             OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id,
             false
@@ -118,8 +122,11 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function query($searchProvider)
     {
         $second_operation = 'OR';
+        $op = '=';
 
-        $op = $this->operation;
+        if ($this->operation === 'NOT IN') {
+            $op = '!=';
+        }
 
         if ($this->bothEyesIndicator) {
             $second_operation = 'AND';

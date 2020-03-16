@@ -66,10 +66,10 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
                     return Disorder::model()->findByPk($this->$attribute)->term;
                     break;
                 case 'firm_id':
-                    return Firm::model()->findByPk($this->$attribute)->name;
+                    return 'by ' . Firm::model()->findByPk($this->$attribute)->name;
                     break;
                 case 'only_latest_event':
-                    return '(Only latest event)';
+                    return 'Only patient\'s latest event';
                 default:
                     return parent::getValueForAttribute($attribute);
             }

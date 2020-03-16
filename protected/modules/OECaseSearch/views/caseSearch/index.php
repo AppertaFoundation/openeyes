@@ -9,6 +9,7 @@
  * @var $saved_searches array
  * @var $user_list array
  * @var $search_label string
+ * @var $variables string[]
  */
 $this->pageTitle = 'Advanced Search';
 $sort_field = 'last_name';
@@ -27,12 +28,21 @@ $user_searches = array_map(
         return array('id' => $item->id, 'name' => $item->name);
     },
     $saved_searches
+);
+
+$variable_map = array(
+    'age' => 'Age',
+    'va_best' => 'VA (best)',
+    'refraction' => 'Refraction (mean sph)',
+    'iop_first' => 'IOP (first)',
+    'iop_last' => 'IOP (last)',
+    'crt' => 'CRT',
 )
 ?>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
         <?= $this->trialContext === null ?
-            'Advanced Search' :
+            'Search' :
             'Adding Participants to Trial: ' . $this->trialContext->name
         ?>
     </div>
@@ -55,7 +65,6 @@ $user_searches = array_map(
             endif; ?>
             </tbody>
         </table>
-
         <div class="flex-layout row">
             <div>
                 <button id="load-saved-search">All searches</button>
@@ -70,6 +79,38 @@ $user_searches = array_map(
                     data-popup="add-to-search-queries">Add Query</button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <hr class="divider"/>
+        <h3>Variables</h3>
+        <table id="js-variable-table" class="standard normal-text last-right">
+            <tbody>
+            <?php if ($variables[0]) {
+                foreach ($variables as $variable) { ?>
+                    <tr data-id="<?= $variable ?>">
+                        <td>
+                            <?= $variable_map[$variable] ?>
+                        </td>
+                        <td>
+                            <i class="oe-i remove-circle small"></i>
+                        </td>
+                    </tr>
+                <?php }
+            } ?>
+            </tbody>
+        </table>
+        <?= CHtml::hiddenField('variable_list', implode(',', $variables), array('id' => 'js-variable-list')) ?>
+        <button id="add-variable" class="button hint green js-add-select-btn"
+                data-popup="add-to-variable-list">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+        <hr class="divider"/>
+        <h3>Date range</h3>
+        <div class="flex-layout">
+            <input type="text" name="from_date" placeholder="from" class="date datepicker-from"/>
+            <input type="text" name="to_date" class="date datepicker-to" placeholder="to"/>
+            <label class="inline highlight ">
+                <input value="All available dates" name="show-all-datas" type="checkbox" checked=""> All available dates
+            </label>
+        </div>
         <hr class="divider"/>
         <div class="button-stack">
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
@@ -295,6 +336,32 @@ $user_searches = array_map(
     $(document).ready(function () {
         //null coalesce the id of the last parameter
         let parameter_id_counter = getMaxId();
+        new OpenEyes.UI.AdderDialog({
+            itemSets: [
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= json_encode(array_map(
+                            static function ($item, $index) {
+                                return array('id' => $index, 'label' => $item);
+                            }, $variable_map, array_keys($variable_map))) ?>,
+                    {'multiSelect': true, 'id': 'variable-type-list', 'deselectOnReturn': true,}
+                ),
+            ],
+            openButton: $('#add-variable'),
+            onReturn: function (dialog, selectedValues) {
+                let $variableList = $('#js-variable-list');
+                $('#js-variable-table tbody').empty();
+                $variableList.val('');
+                // Add a row to the table for each selected variable, and add each one to the hidden field as a CSV list.
+                $.each(selectedValues, function(index, item) {
+                    $('#js-variable-table tbody').append('<tr data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
+                    if ($variableList.val()) {
+                        $variableList.val($variableList.val() + ',' + item.id);
+                    } else {
+                        $variableList.val(item.id);
+                    }
+                });
+            }
+        });
         new OpenEyes.UI.AdderDialog.QuerySearchDialog({
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -381,6 +448,18 @@ $user_searches = array_map(
         $("input[name='sort-options']").change(function () {
             let value = $('#sort-field').val();
             performSort(value);
+        });
+
+        $('#js-variable-table i.remove-circle').click(function() {
+            let newList = '';
+            $(this).closest('tr').remove();
+            $.each($('#js-variable-table tr'), function(index, item) {
+                if (index !== 0) {
+                    newList = newList + ',';
+                }
+                newList = newList + $(item).data('id');
+            });
+            $('input[name="variable_list"]').val(newList);
         });
 
         $('#clear-search').click(function () {

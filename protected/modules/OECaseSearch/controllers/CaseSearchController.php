@@ -54,6 +54,7 @@ class CaseSearchController extends BaseModuleController
     public function actionIndex($trial_id = null)
     {
         $auditValues = array();
+        $variables = array();
         $ids = array();
         $pagination = array(
             'pageSize' => 10,
@@ -144,6 +145,10 @@ class CaseSearchController extends BaseModuleController
 
         $all_searches = SavedSearch::model()->findAll();
 
+        if (array_key_exists('variable_list',$_POST)) {
+            $variables = explode(',', $_POST['variable_list']);
+        }
+
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
         if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
@@ -159,6 +164,7 @@ class CaseSearchController extends BaseModuleController
             'paramList' => $paramList,
             'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
+            'variables' => $variables,
             'saved_searches' => $all_searches,
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
         ));

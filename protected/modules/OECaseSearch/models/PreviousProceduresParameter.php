@@ -101,16 +101,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         );
     }
 
-    public function saveSearch()
-    {
-        return array_merge(
-            parent::saveSearch(),
-            array(
-                'textValue' => $this->value,
-            )
-        );
-    }
-
     public function getDisplayString()
     {
         $op = 'IS';
