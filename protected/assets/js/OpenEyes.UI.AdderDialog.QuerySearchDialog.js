@@ -42,6 +42,8 @@
                         case 'multi_select':
                             dialog.generateOptionLists(options.option_data);
                             break;
+                        case 'boolean':// Do nothing further as we only need the operation.
+                            break;
                         default:
                             // Show the search field.
                             dialog.generateSearch(type, options.option_data);

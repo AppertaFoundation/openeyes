@@ -55,16 +55,6 @@ $user_searches = array_map(
             endif; ?>
             </tbody>
         </table>
-        <table>
-            <tbody>
-                <?php foreach ($fixedParams as $id => $param) : ?>
-                    <?php $this->renderPartial('fixed_parameter_form', array(
-                        'model' => $param,
-                        'id' => $id
-                    )); ?>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
 
         <div class="flex-layout row">
             <div>

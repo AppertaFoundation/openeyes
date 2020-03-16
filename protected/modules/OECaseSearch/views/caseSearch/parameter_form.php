@@ -17,9 +17,11 @@ switch ($model->operation) {
     case '>':
         $operation_display = 'IS MORE THAN';
         break;
+    case '1':
     case '=':
         $operation_display = 'IS';
         break;
+    case '0':
     case '!=':
         $operation_display = 'IS NOT';
         break;
@@ -38,20 +40,20 @@ switch ($model->operation) {
         <?= $operation_display ?>
         <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]operation") : '' ?>
     </td>
-    <?php if ($model->value && !is_array($model->value)) { ?>
     <td>
-        <?= $model->getValueForAttribute('value') ?>
-        <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '' ?>
-    </td>
-    <?php }
-    foreach ($model->attributeNames() as $attribute) {
-        if (strpos('operation, id, name, isFixed, value', $attribute) === false) { ?>
-            <td>
+        <?php
+        if ($model->value && !is_array($model->value)) {
+            echo $model->getValueForAttribute('value');
+            echo !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '';
+        }
+        foreach ($model->attributeNames() as $attribute) {
+            if (strpos('operation, id, name, value', $attribute) === false) { ?>
+                <br/>
                 <?= $model->getValueForAttribute($attribute) ?>
                 <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
-            </td>
-        <?php }
-    } ?>
+            <?php }
+        }?>
+    </td>
     <?php if (!$readonly) : ?>
     <td>
         <i id="<?= $id ?>-remove" class="oe-i remove-circle small"></i>

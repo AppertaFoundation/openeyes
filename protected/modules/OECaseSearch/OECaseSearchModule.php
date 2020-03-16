@@ -28,38 +28,12 @@ class OECaseSearchModule extends BaseModule
                 $dependencies[$module] = "$module.models.*";
             }
         }
-
-        foreach ($this->config['fixedParameters'] as $module => $paramList) {
-            if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
-                $dependencies[$module] = "$module.models.*";
-            }
-        }
         $this->setImport($dependencies);
 
         // Initialise the search provider/s.
         foreach ($this->config['providers'] as $providerID => $searchProvider) {
             $this->searchProviders[$providerID] = new $searchProvider($providerID);
         }
-    }
-
-    /**
-     * @return array The list of fixed parameter class instances configured for the case search module.
-     */
-    public function getFixedParams()
-    {
-        $fixedParams = array();
-        $count = 0;
-        foreach ($this->config['fixedParameters'] as $group) {
-            foreach ($group as $parameter) {
-                $className = $parameter . 'Parameter';
-                $obj = new $className;
-                $obj->id = "fixed_$count";
-                $fixedParams[$obj->id] = $obj;
-                $count++;
-            }
-        }
-
-        return $fixedParams;
     }
 
     /**

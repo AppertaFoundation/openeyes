@@ -8,6 +8,8 @@
 class CaseSearchController extends BaseModuleController
 {
     public $trialContext;
+    protected $parameters = array();
+    protected $parameterList = array();
 
     public function filters()
     {
@@ -51,11 +53,7 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionIndex($trial_id = null)
     {
-        $valid = true;
-        $parameters = array();
         $auditValues = array();
-        $fixedParameters = $this->module->getFixedParams();
-        $parameterList = array();
         $ids = array();
         $pagination = array(
             'pageSize' => 10,
@@ -70,56 +68,22 @@ class CaseSearchController extends BaseModuleController
         }
 
         $criteria = new CDbCriteria();
-        foreach ($this->module->getConfigParam('parameters') as $group) {
-            foreach ($group as $parameter) {
-                $paramName = $parameter . 'Parameter';
-                $parameterList[] = $paramName;
-                if (isset($_POST[$paramName])) {
-                    foreach ($_POST[$paramName] as $id => $param) {
-                        /**
-                         * @var $newParam CaseSearchParameter
-                         */
-                        $newParam = new $paramName;
-                        $newParam->attributes = $_POST[$paramName][$id];
-                        $newParam->isFixed = false;
-                        if (!$newParam->validate()) {
-                            $valid = false;
-                        }
-                        $parameters[$id] = $newParam;
-                    }
-                }
-            }
-        }
-        foreach ($fixedParameters as $parameter) {
-            /**
-             * @var $parameter CaseSearchParameter
-             */
-            if (isset($_POST[get_class($parameter)])) {
-                foreach ($_POST[get_class($parameter)] as $id => $param) {
-                    $parameter->attributes = $_POST[get_class($parameter)][$id];
-                    $parameter->isFixed = true;
-                    if (!$parameter->validate()) {
-                        $valid = false;
-                    }
-                }
-            }
-        }
+        $valid = $this->populateParams(true);
 
         // This can always run as there will always be at least 1 fixed parameter included in the search. Just as long as it is valid!
-        if ($valid && !empty($parameters)) {
-            $mergedParams = array_merge($parameters, $fixedParameters);
+        if ($valid && !empty($this->parameters)) {
             $this->actionClear();
             /**
              * @var $searchProvider SearchProvider
              */
             $searchProvider = $this->module->getSearchProvider('mysql');
-            $results = $searchProvider->search($mergedParams);
+            $results = $searchProvider->search($this->parameters);
 
             if (count($results) === 0) {
                 /**
                  * @var $param CaseSearchParameter
                  */
-                foreach ($mergedParams as $param) {
+                foreach ($this->parameters as $param) {
                     $auditValues[] = $param->getAuditData();
                 }
                 Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
@@ -136,7 +100,7 @@ class CaseSearchController extends BaseModuleController
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
-            $_SESSION['last_search_params'] = $parameters;
+            $_SESSION['last_search_params'] = $this->parameters;
             $pagination['currentPage'] = 0;
         }
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
@@ -185,7 +149,7 @@ class CaseSearchController extends BaseModuleController
         if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
             foreach ($_SESSION['last_search_params'] as $key => $last_search_param) {
                 $last_search_param_name = get_class($last_search_param);
-                if (!in_array($last_search_param_name, $parameterList, true)) {
+                if (!in_array($last_search_param_name, $this->parameterList, true)) {
                     unset($_SESSION['last_search_params'][$key]);
                 }
             }
@@ -193,8 +157,7 @@ class CaseSearchController extends BaseModuleController
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => (empty($parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $parameters,
-            'fixedParams' => $fixedParameters,
+            'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
             'saved_searches' => $all_searches,
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
@@ -212,13 +175,15 @@ class CaseSearchController extends BaseModuleController
         $parameter = new $param['type'];
         $parameter->id = $param['id'];
         $parameter->operation = $param['operation'];
-        if (is_array($param['value'])) {
-            foreach ($param['value'] as $value) {
-                $key = $value['field'];
-                $parameter->$key = $value['id'];
+        if (array_key_exists('value', $param)) {
+            if (is_array($param['value'])) {
+                foreach ($param['value'] as $value) {
+                    $key = $value['field'];
+                    $parameter->$key = $value['id'];
+                }
+            } else {
+                $parameter->value = $param['value'];
             }
-        } else {
-            $parameter->value = $param['value'];
         }
 
         $this->renderPartial('parameter_form', array(
@@ -275,17 +240,9 @@ class CaseSearchController extends BaseModuleController
                         'readonly' => true,
                     )
                 );
-            } elseif (!$instance->isFixed) {
-                $this->renderPartial(
-                    'parameter_form',
-                    array(
-                        'model' => $instance,
-                        'id' => $instance->id,
-                    )
-                );
             } else {
                 $this->renderPartial(
-                    'fixed_parameter_form',
+                    'parameter_form',
                     array(
                         'model' => $instance,
                         'id' => $instance->id,
@@ -303,48 +260,15 @@ class CaseSearchController extends BaseModuleController
     public function actionSaveSearch()
     {
         $criteria_list = array();
-        $parameters = array();
-        $fixedParameters = $this->module->getFixedParams();
         $search = new SavedSearch();
-        $valid = true;
-        foreach ($this->module->getConfigParam('parameters') as $group) {
-            foreach ($group as $parameter) {
-                $paramName = $parameter . 'Parameter';
-                if (isset($_POST[$paramName])) {
-                    foreach ($_POST[$paramName] as $id => $param) {
-                        /**
-                         * @var $newParam CaseSearchParameter
-                         */
-                        $newParam = new $paramName;
-                        $newParam->attributes = $_POST[$paramName][$id];
-                        if (!$newParam->validate()) {
-                            $valid = false;
-                        }
-                        $parameters[$id] = $newParam;
-                    }
-                }
-            }
-        }
-        foreach ($fixedParameters as $parameter) {
-            /**
-             * @var $parameter CaseSearchParameter
-             */
-            if (isset($_POST[get_class($parameter)])) {
-                foreach ($_POST[get_class($parameter)] as $id => $param) {
-                    $parameter->attributes = $_POST[get_class($parameter)][$id];
-                    if (!$parameter->validate()) {
-                        $valid = false;
-                    }
-                }
-            }
-        }
-        if (!empty($parameters) && $valid) {
-            $mergedParams = array_merge($parameters, $fixedParameters);
-            foreach ($mergedParams as $mergedParam) {
+        $valid = $this->populateParams();
+
+        if (!empty($this->parameters) && $valid) {
+            foreach ($this->parameters as $parameter) {
                 /**
                  * @var $mergedParam CaseSearchParameter
                  */
-                $criteria_list[] = $mergedParam->saveSearch();
+                $criteria_list[] = $parameter->saveSearch();
             }
             $search_criteria = serialize($criteria_list);
             $search->search_criteria = $search_criteria;
@@ -373,6 +297,34 @@ class CaseSearchController extends BaseModuleController
         if (!$search->delete()) {
             throw new CHttpException(500, 'Unable to delete saved search - Unknown error occurred.');
         }
+    }
+
+    protected function populateParams($populate_param_cache = false)
+    {
+        $valid = true;
+        foreach ($this->module->getConfigParam('parameters') as $group) {
+            foreach ($group as $parameter) {
+                $paramName = $parameter . 'Parameter';
+                if ($populate_param_cache) {
+                    $this->parameterList[] = $paramName;
+                }
+
+                if (isset($_POST[$paramName])) {
+                    foreach ($_POST[$paramName] as $id => $param) {
+                        /**
+                         * @var $newParam CaseSearchParameter
+                         */
+                        $newParam = new $paramName;
+                        $newParam->attributes = $_POST[$paramName][$id];
+                        if (!$newParam->validate()) {
+                            $valid = false;
+                        }
+                        $this->parameters[$id] = $newParam;
+                    }
+                }
+            }
+        }
+        return $valid;
     }
 
     public function actionSearchCommonItems()

@@ -5,7 +5,9 @@
  */
 class PatientDeceasedParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $isFixed = true;
+    protected $options = array(
+        'value_type' => 'boolean',
+    );
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -16,6 +18,10 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         parent::__construct($scenario);
         $this->name = 'patient_deceased';
         $this->operation = false;
+
+        // Override the existing operation IDs to use boolean values.
+        $this->options['operations'][0]['id'] = '1';
+        $this->options['operations'][1]['id'] = '0';
     }
 
     public function getLabel()
@@ -52,13 +58,12 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
      */
     public function query($searchProvider)
     {
-        $op = '=';
         switch ($this->operation) {
             case '0':
                 return 'SELECT id FROM patient WHERE NOT(is_deceased)';
                 break;
             case '1':
-                return 'SELECT id FROM patient WHERE is_deceased'. $op .$this->operation;
+                return 'SELECT id FROM patient WHERE is_deceased';
                 break;
             default:
                 throw new CHttpException(400, "Invalid value specified: $this->operation");

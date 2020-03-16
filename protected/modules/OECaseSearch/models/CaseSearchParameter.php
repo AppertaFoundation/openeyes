@@ -26,11 +26,6 @@ abstract class CaseSearchParameter extends CFormModel
      */
     public $value;
 
-    /**
-     * @var bool $isFixed
-     */
-    public $isFixed = false;
-
     protected $options = array(
         'value_type' => 'string',
     );
@@ -66,22 +61,12 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Get the path of the view to use when rendering the search parameter. Override this function if the parameter is within a different module.
-     * By default, the view name is just the class name.
-     * @return string
-     */
-    public function getViewPath()
-    {
-        return get_class($this);
-    }
-
-    /**
      * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
      * @return string[] An array of attribute names.
      */
     public function attributeNames()
     {
-        return array('name', 'operation', 'value', 'id', 'isFixed');
+        return array('name', 'operation', 'value', 'id');
     }
 
     /**
@@ -134,7 +119,6 @@ abstract class CaseSearchParameter extends CFormModel
             'name' => $this->name,
             'operation' => $this->operation,
             'id' => $this->id,
-            'isFixed' => $this->isFixed,
             'value' => $this->value
         );
     }

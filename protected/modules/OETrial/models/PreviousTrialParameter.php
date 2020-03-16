@@ -164,11 +164,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return null;
     }
 
-    public function getViewPath()
-    {
-        return 'application.modules.OETrial.views.caseSearch.' . parent::getViewPath();
-    }
-
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider SearchProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
