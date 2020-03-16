@@ -5,8 +5,6 @@
  */
 class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $patient_name;
-
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -21,37 +19,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Patient Name';
-    }
-
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(parent::attributeNames(), array(
-                'patient_name',
-            )
-        );
-    }
-
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(), array(
-            'patient_name' => 'Patient Name',
-        ));
-    }
-
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(parent::rules(), array(
-            array('patient_name', 'required'),
-        ));
+        return 'Name';
     }
 
     /**
@@ -81,8 +49,8 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_n_name_like_$this->id" => '%' . $this->patient_name . '%',
-            "p_n_name_$this->id" => $this->patient_name,
+            "p_n_name_like_$this->id" => '%' . $this->value . '%',
+            "p_n_name_$this->id" => $this->value,
         );
     }
 
@@ -91,6 +59,13 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
      */
     public function getAuditData()
     {
-        return "$this->name: = \"$this->patient_name\"";
+        return "$this->name: = \"$this->value\"";
+    }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+
+        return "Name $op = $this->value";
     }
 }

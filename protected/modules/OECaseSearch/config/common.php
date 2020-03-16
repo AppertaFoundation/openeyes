@@ -28,11 +28,7 @@ return array(
                     'PatientNumber',
                     'PreviousProcedures',
                     'PatientVision',
-                    'PatientIdentifier'
-                ),
-            ),
-            'fixedParameters' => array(
-                'OECaseSearch' => array(
+                    'PatientIdentifier',
                     'PatientDeceased',
                 ),
             ),

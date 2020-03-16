@@ -20,6 +20,10 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public $condition;
 
+    protected $options = array(
+        'value_type' => 'multi_select',
+    );
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -29,6 +33,63 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         parent::__construct($scenario);
         $this->name = 'family_history';
         $this->operation = '=';
+
+        $relatives = OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll();
+        $sides = OEModule\OphCiExamination\models\FamilyHistorySide::model()->findAll();
+        $conditions = OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll();
+
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'family-relative',
+                'field' => 'relative',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $relatives
+                ),
+            ),
+            array(
+                'id' => 'family-side',
+                'field' => 'side',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $sides
+                ),
+            ),
+            array(
+                'id' => 'family-condition',
+                'field' => 'condition',
+                'options' => array_map(
+                    static function ($item) {
+                        return array('id' => $item->id, 'label' => $item->name);
+                    },
+                    $conditions
+                ),
+            ),
+        );
+    }
+
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'relative':
+                    return OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'side':
+                    return OEModule\OphCiExamination\models\FamilyHistorySide::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'condition':
+                    return OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findByPk($this->$attribute)->name;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     public function getLabel()
@@ -79,7 +140,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $query_relative = '';
         $query_condition = '';
 
-        if ($this->side !=='') {
+        if ($this->side !== '') {
             $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
         }
         if ($this->relative !== '') {
@@ -102,7 +163,7 @@ SELECT DISTINCT p.id
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (' .$query_side.$query_relative.$query_condition;
+WHERE (' . $query_side . $query_relative . $query_condition;
         if ($this->operation) {
             $queryStr = "
 SELECT id
@@ -142,5 +203,22 @@ WHERE id NOT IN (
     public function getAuditData()
     {
         return "$this->name: $this->side $this->relative $this->operation \"$this->condition\"";
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'relative' => $this->relative,
+                'side' => $this->side,
+                'condition' => $this->condition,
+            )
+        );
+    }
+
+    public function getDisplayString()
+    {
+        return "{$this->side} {$this->relative} {$this->operation} {$this->condition}";
     }
 }

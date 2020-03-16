@@ -28,38 +28,12 @@ class OECaseSearchModule extends BaseModule
                 $dependencies[$module] = "$module.models.*";
             }
         }
-
-        foreach ($this->config['fixedParameters'] as $module => $paramList) {
-            if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
-                $dependencies[$module] = "$module.models.*";
-            }
-        }
         $this->setImport($dependencies);
 
         // Initialise the search provider/s.
         foreach ($this->config['providers'] as $providerID => $searchProvider) {
             $this->searchProviders[$providerID] = new $searchProvider($providerID);
         }
-    }
-
-    /**
-     * @return array The list of fixed parameter class instances configured for the case search module.
-     */
-    public function getFixedParams()
-    {
-        $fixedParams = array();
-        $count = 0;
-        foreach ($this->config['fixedParameters'] as $group) {
-            foreach ($group as $parameter) {
-                $className = $parameter . 'Parameter';
-                $obj = new $className;
-                $obj->id = "fixed_$count";
-                $fixedParams[$obj->id] = $obj;
-                $count++;
-            }
-        }
-
-        return $fixedParams;
     }
 
     /**
@@ -92,22 +66,11 @@ class OECaseSearchModule extends BaseModule
     }
 
     /**
-     * @param $providerID mixed The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
+     * @param $providerID string|int The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
      * @return SearchProvider The search provider identified by $providerID
      */
     public function getSearchProvider($providerID)
     {
         return $this->searchProviders[$providerID];
-    }
-
-    public function beforeControllerAction($controller, $action)
-    {
-        if (parent::beforeControllerAction($controller, $action)) {
-            // this method is called before any module controller action is performed
-            // you may place customized code here
-            return true;
-        }
-
-        return false;
     }
 }

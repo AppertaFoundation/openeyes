@@ -1,15 +1,12 @@
 <?php
 
+use OEModule\OphCiExamination\models\PastSurgery_Operation;
+
 /**
  * Class PreviousProceduresParameter
  */
 class PreviousProceduresParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    /**
-     * @var string $textValue
-     */
-    public $textValue;
-
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -24,32 +21,31 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Previous Procedures';
+        return 'Previous Procedure';
     }
 
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
+    public static function getCommonItemsForTerm($term)
     {
-        return array_merge(parent::attributeNames(), array(
-                'textValue',
-            )
-        );
-    }
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('term', $term, true);
+        $procedures = Procedure::model()->findAll($criteria);
 
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
-    {
-        return array_merge(parent::rules(),
-            array(
-                array('textValue', 'required')
-            )
-        );
+        $options = array();
+        foreach ($procedures as $procedure) {
+            $options[] = array('id' => $procedure->id, 'label' => $procedure->term);
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('operation', $term, true);
+        $criteria->addNotInCondition('operation', $options);
+        $past_ops = PastSurgery_Operation::model()->findAll($criteria);
+
+        foreach ($past_ops as $op) {
+            $options[] = array('id' => $op->id, 'label' => $op->operation);
+        }
+        return $options;
     }
 
     /**
@@ -57,7 +53,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
      *
-     * @throws CHttpException when operator is invalid
      */
     public function query($searchProvider)
     {
@@ -102,7 +97,27 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
 
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_p_value_$this->id" => $this->textValue,
+            "p_p_value_$this->id" => $this->value,
         );
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'textValue' => $this->value,
+            )
+        );
+    }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Previous procedure $op = $this->value";
     }
 }

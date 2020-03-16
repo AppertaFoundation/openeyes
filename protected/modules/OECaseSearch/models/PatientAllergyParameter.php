@@ -6,11 +6,6 @@
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var string $textValue
-     */
-    public $textValue;
-
-    /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
      */
@@ -23,42 +18,40 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
 
     public function getLabel()
     {
-        return 'Patient Allergy';
+        return 'Allergy';
     }
 
-    /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
+    public function getValueForAttribute($attribute)
     {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'textValue',
-            )
-        );
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Allergy::model()->findByPk($this->$attribute)->name;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
-    /**
-     * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
-     * @return array The validation rules for the parameter.
-     */
-    public function rules()
+    public static function getCommonItemsForTerm($term)
     {
-        return array_merge(
-            parent::rules(),
-            array(
-                array('textValue', 'required'),
-            )
-        );
+        $allergies = Allergy::model()->findAllBySql('
+SELECT a.*
+FROM allergy a 
+WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "%$term%"));
+        $values = array();
+        foreach ($allergies as $allergy) {
+            $values[] = array('id' => $allergy->id, 'label' => $allergy->name);
+        }
+        return $values;
     }
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
@@ -88,7 +81,7 @@ $query
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_al_textValue_$this->id" => $this->textValue,
+            "p_al_textValue_$this->id" => $this->value,
         );
     }
 
@@ -97,10 +90,21 @@ $query
      */
     public function getAuditData()
     {
-        $op = 'LIKE';
-        if ($this->operation) {
+        if ($this->operation === '=') {
+            $op = 'LIKE';
+        } else {
             $op = 'NOT LIKE';
         }
-        return "$this->name: $op \"$this->textValue\"";
+        return "$this->name: $op \"$this->value\"";
+    }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Allergy $op = $this->value";
     }
 }

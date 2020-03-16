@@ -6,11 +6,6 @@
 class PatientDiagnosisParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var string $term
-     */
-    public $term;
-
-    /**
      * @var integer $firm_id
      */
     public $firm_id;
@@ -19,6 +14,10 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      * @var boolean $only_last_event
      */
     public $only_latest_event;
+
+    protected $options = array(
+        'value_type' => 'string_search'
+    );
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -29,11 +28,53 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         parent::__construct($scenario);
         $this->name = 'diagnosis';
         $this->only_latest_event = false;
+
+        $firms = Firm::model()->getListWithSpecialties();
+
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'firm',
+                'field' => 'firm_id',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $firms,
+                    array_keys($firms)
+                ),
+            ),
+            array(
+                'id' => 'latest-event',
+                'field' => 'only_latest_event',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Only latest event')
+                ),
+            ),
+        );
     }
 
     public function getLabel()
     {
         return 'Diagnosis';
+    }
+
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Disorder::model()->findByPk($this->$attribute)->term;
+                    break;
+                case 'firm_id':
+                    return Firm::model()->findByPk($this->$attribute)->name;
+                    break;
+                case 'only_latest_event':
+                    return '(Only latest event)';
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     /**
@@ -42,7 +83,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      */
     public function attributeNames()
     {
-        return array_merge(parent::attributeNames(), array('term', 'firm_id', 'only_latest_event'));
+        return array_merge(parent::attributeNames(), array('firm_id', 'only_latest_event'));
     }
 
     /**
@@ -54,8 +95,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         return array_merge(
             parent::rules(),
             array(
-                array('term', 'required'),
-                array('term, firm_id, only_latest_event', 'safe'),
+                array('firm_id, only_latest_event', 'safe'),
             )
         );
     }
@@ -64,7 +104,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
@@ -133,6 +172,23 @@ WHERE p1.id NOT IN (
         return $query;
     }
 
+    public static function getCommonItemsForTerm($term)
+    {
+        $disorders = Disorder::model()->findAllBySql(
+            'SELECT * FROM disorder
+WHERE LOWER(term) LIKE LOWER(:term)
+   OR LOWER(aliases) LIKE LOWER(:term)
+   OR LOWER(fully_specified_name) LIKE LOWER(:term)
+ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
+            array('term' => "%$term%")
+        );
+        $values = array();
+        foreach ($disorders as $disorder) {
+            $values[] = array('id' => $disorder->id, 'label' => $disorder->term);
+        }
+        return $values;
+    }
+
     /**
      * Get the list of bind values for use in the SQL query.
      * @return array An array of bind values. The keys correspond to the named binds in the query string.
@@ -140,7 +196,7 @@ WHERE p1.id NOT IN (
     public function bindValues()
     {
         $result = array(
-            "p_d_value_$this->id" => '%' . $this->term . '%',
+            "p_d_value_$this->id" => '%' . $this->value . '%',
             "p_d_only_latest_event_$this->id" => $this->only_latest_event,
             "p_d_firm_$this->id" => $this->firm_id ?: null,
         );
@@ -158,11 +214,11 @@ WHERE p1.id NOT IN (
         if ($this->operation) {
             $op = 'NOT LIKE';
         }
-        $result = "$this->name: $op \"$this->term\"";
+        $result = "$this->name: $op \"$this->value\"";
 
         if ($this->firm_id !== '' && $this->firm_id !== null) {
             $firm = Firm::model()->findByPk($this->firm_id);
-            $result .= "$this->name: $this->operation \"$this->term\" diagnosed by {$firm->getNameAndSubspecialty()}";
+            $result .= "$this->name: $this->operation \"$this->value\" diagnosed by {$firm->getNameAndSubspecialty()}";
         }
 
         if ($this->only_latest_event) {
@@ -170,5 +226,36 @@ WHERE p1.id NOT IN (
         }
 
         return $result;
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'firm_id' => $this->firm_id,
+                'only_latest_event' => $this->only_latest_event,
+            )
+        );
+    }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        $only_latest_event = ' for all events';
+        $firm = '';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        if ($this->firm_id) {
+            $firm = ' for ' . Firm::model()->findByPk($this->firm_id)->name;
+        }
+
+        if ($this->only_latest_event) {
+            $only_latest_event = ' for latest event only';
+        }
+
+        return "Diagnosis $op = {$this->value}{$firm}{$only_latest_event}";
     }
 }

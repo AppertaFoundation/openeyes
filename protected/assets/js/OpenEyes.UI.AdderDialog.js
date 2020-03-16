@@ -392,6 +392,10 @@
         let right = (w - btnPos.right);
         let bottom = (h - btnPos.bottom);
 
+        if (w - right < 620) {
+            right = w - 645;
+        }
+
         if (h - bottom < 310) {
             bottom = h - 335;
         }

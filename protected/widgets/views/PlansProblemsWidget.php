@@ -77,7 +77,9 @@
 <?php if ($allow_save) : ?>
 <script>
     $(document).ready(() => {
-        const PlansProblems = new OpenEyes.UI.PlansProblemsController();
+        if (typeof PlansProblems === 'undefined') {
+            const PlansProblems = new OpenEyes.UI.PlansProblemsController();
+        }
     });
 </script>
 <script type="text/html" id="plans-problems-template">

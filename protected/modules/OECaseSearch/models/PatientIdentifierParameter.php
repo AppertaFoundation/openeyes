@@ -22,8 +22,6 @@
  */
 class PatientIdentifierParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $number;
-
     public $code;
 
     /**
@@ -40,7 +38,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return 'Patient Identifier Number';
+        return 'Identifier Number';
     }
 
     /**
@@ -53,10 +51,10 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
             parent::attributeNames(),
             array(
                 'code',
-                'number',
             )
         );
     }
+
     /**
      * Attribute labels for display purposes.
      * @return array Attribute key/value pairs.
@@ -64,7 +62,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function attributeLabels()
     {
         return array(
-            'number' => 'Number',
             'code' => 'Code'
         );
     }
@@ -76,10 +73,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('number', 'required'),
-            array('number','numerical'),
             array('code', 'required'),
-            array('code','safe')
+            array('code', 'safe')
         ));
     }
 
@@ -87,7 +82,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
@@ -105,7 +99,7 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_id_number_$this->id" => $this->number,
+            "p_id_number_$this->id" => $this->value,
             "p_code_$this->id" => $this->code,
         );
     }
@@ -115,21 +109,39 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
      */
     public function getAuditData()
     {
-        return "$this->name: = $this->code $this->number";
+        return "$this->name: = $this->code $this->value";
     }
 
     /**
      * @return array contains all identifier codes
-     * @throws CException
      */
     public function getAllCodes()
     {
-        $command = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier');
-        $all_codes = $command->queryAll();
+        $all_codes = Yii::app()->db->createCommand('SELECT DISTINCT code FROM patient_identifier')->queryAll();
         $codes = array();
         foreach ($all_codes as $code) {
             $codes[$code['code']] = $code['code'];
         }
         return $codes;
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'code' => $this->code,
+            )
+        );
+    }
+
+    public function getDisplayString()
+    {
+        $op = 'IS';
+        if ($this->operation) {
+            $op = 'IS NOT';
+        }
+
+        return "Identifier $op = $this->value $this->code";
     }
 }

@@ -1,23 +1,22 @@
 <?php
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+
 /**
  * Class PatientVisionParameter
+ *
+ * @property int $minValue Represents a minimum value.
+ * @property int $maxValue Represents a maximum value.
+ * @property bool $bothEyesIndicator
  */
 class PatientVisionParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    /**
-     * @var integer $minValue Represents a minimum value.
-     */
-    public $minValue;
+    public $bothEyesIndicator = false;
+    private $va_values;
 
-    /**
-     * @var integer $maxValue Represents a maximum value.
-     */
-    public $maxValue;
-    /**
-     * @var boolean $bothEyesIndicator Indicate searching for either eyes or both eyes.
-     */
-    public $bothEyesIndicator;
+    protected $options = array(
+        'value_type' => 'multi_select',
+    );
 
     /**
      * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -27,6 +26,46 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'vision';
+        $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
+            OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id,
+            false
+        )[0];
+        $this->options['option_data'] = array(
+            array(
+                'id' => 'va-values',
+                'field' => 'value',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $this->va_values,
+                    array_keys($this->va_values)
+                )
+            ),
+            array(
+                'id' => 'both-eyes',
+                'field' => 'bothEyesIndicator',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Both Eyes')
+                )
+            ),
+        );
+    }
+
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return $this->va_values[$this->$attribute];
+                    break;
+                case 'bothEyesIndicator':
+                    return 'Both eyes';
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     /**
@@ -36,9 +75,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('minValue, maxValue', 'numerical', 'min' => 0),
-            array('minValue, maxValue', 'values'),
-            array('bothEyesIndicator','safe'),
+            array('bothEyesIndicator', 'safe'),
         ));
     }
 
@@ -49,8 +86,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeNames()
     {
         return array_merge(parent::attributeNames(), array(
-            'minValue',
-            'maxValue',
             'bothEyesIndicator',
         ));
     }
@@ -62,29 +97,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function attributeLabels()
     {
         return array(
-            'minValue' => 'Minimum Value',
-            'maxValue' => 'Maximum Value',
-            'id' => 'ID',
-            'bothEyesIndicator'=>'Both Eyes',
+            'bothEyesIndicator' => 'Both Eyes',
         );
-    }
-
-    /**
-     * Validator to validate parameter values for specific operators.
-     * @param $attribute string Attribute being validated.
-     */
-    public function values($attribute)
-    {
-        $label = $this->attributeLabels()[$attribute];
-        if ($attribute === 'minValue' || $attribute === 'maxValue') {
-            if ($this->operation === 'BETWEEN' && $this->$attribute === '') {
-                $this->addError($attribute, "$label must be specified.");
-            }
-        } else {
-            if ($this->operation !== 'BETWEEN' && $this->$attribute === '') {
-                $this->addError($attribute, "$label must be specified.");
-            }
-        }
     }
 
     /**
@@ -92,7 +106,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function getLabel()
     {
-        return 'Patient Vision';
+        return 'Vision';
     }
 
     /**
@@ -104,16 +118,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function query($searchProvider)
     {
         $second_operation = 'OR';
-
-        if ($this->minValue && !$this->maxValue) {
-            $this->operation = '>=';
-        } elseif ($this->maxValue && !$this->minValue) {
-            $this->operation = '<=';
-        } elseif ($this->maxValue && $this->minValue) {
-            $this->operation = 'BETWEEN';
-        } else {
-            throw new CHttpException(400, 'Please specify either a minimum or maximum value');
-        }
 
         $op = $this->operation;
 
@@ -158,16 +162,11 @@ FROM (
                                       WHERE t2.patient_id = t1.patient_id
                                         AND t1.va_side = t2.va_side)
                    ) t3) t4
-       GROUP BY patient_id) t5
- WHERE';
+       GROUP BY patient_id) t5';
 
-        $subQueryStr = " (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
+        $subQueryStr = " WHERE (t5.left_va_value $op :p_v_value_$this->id) $second_operation (t5.right_va_value $op :p_v_value_$this->id)";
 
-        if ($op === 'BETWEEN') {
-            $subQueryStr = " (t5.left_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id) $second_operation (t5.right_va_value BETWEEN :p_v_min_$this->id AND :p_v_max_$this->id)";
-        }
-
-        return $queryStr.$subQueryStr;
+        return $queryStr . $subQueryStr;
     }
 
     /**
@@ -175,25 +174,9 @@ FROM (
      */
     public function bindValues()
     {
-        $bindValues = array();
-
-        if ($this->operation === 'BETWEEN') {
-            $this->minValue = (int)$this->minValue;
-            $this->maxValue = (int)$this->maxValue;
-            if ($this->minValue > $this->maxValue) {
-                $temp = $this->minValue;
-                $this->minValue = $this->maxValue;
-                $this->maxValue = $temp;
-            }
-            $bindValues["p_v_min_$this->id"] = $this->minValue;
-            $bindValues["p_v_max_$this->id"] = $this->maxValue;
-        } elseif ($this->operation === '<=') {
-            $bindValues["p_v_value_$this->id"] = (int)$this->maxValue;
-        } elseif ($this->operation === '>=') {
-            $bindValues["p_v_value_$this->id"] = (int)$this->minValue;
-        }
-
-        return $bindValues;
+        return array(
+            "p_v_value_$this->id" => (int)$this->value
+        );
     }
 
     /**
@@ -202,14 +185,39 @@ FROM (
     public function getAuditData()
     {
         $bothEyes = $this->bothEyesIndicator ? ' searching both eyes' : '';
+
+        return "$this->name: $this->operation $this->value" . $bothEyes;
+    }
+
+    public function saveSearch()
+    {
+        return array_merge(
+            parent::saveSearch(),
+            array(
+                'bothEyesIndicator' => $this->bothEyesIndicator
+            )
+        );
+    }
+
+    public function getDisplayString()
+    {
+        if ($this->minValue && !$this->maxValue) {
+            $this->operation = '>=';
+        } elseif ($this->maxValue && !$this->minValue) {
+            $this->operation = '<=';
+        } elseif ($this->maxValue && $this->minValue) {
+            $this->operation = 'BETWEEN';
+        }
+
+        $bothEyes = $this->bothEyesIndicator ? ' for both eyes' : null;
         if ($this->operation === 'BETWEEN') {
-            return "$this->name: BETWEEN $this->minValue and $this->maxValue" . $bothEyes;
+            return "Vision IS between $this->minValue and {$this->maxValue}{$bothEyes}";
         }
 
         if ($this->operation === '<=') {
-            return "$this->name: $this->operation $this->maxValue" . $bothEyes;
+            return "Vision IS $this->operation {$this->maxValue}{$bothEyes}";
         }
 
-        return "$this->name: $this->operation $this->minValue" . $bothEyes;
+        return "Vision IS $this->operation {$this->minValue}{$bothEyes}";
     }
 }

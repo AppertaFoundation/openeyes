@@ -8,13 +8,20 @@
 class CaseSearchController extends BaseModuleController
 {
     public $trialContext;
+    protected $parameters = array();
+    protected $parameterList = array();
 
     public function filters()
     {
         return array(
             'accessControl',
             'ajaxOnly + addParameter',
+            'ajaxOnly + getSearchesByUser',
+            'ajaxOnly + otherSearchUsers',
+            'ajaxOnly + loadSearch',
+            'ajaxOnly + deleteSearch',
             'ajaxOnly + clear',
+            'ajaxOnly + searchCommonItems'
         );
     }
 
@@ -23,7 +30,17 @@ class CaseSearchController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'addParameter', 'clear'),
+                'actions' => array(
+                    'index',
+                    'addParameter',
+                    'getSearchesByUser',
+                    'loadSearch',
+                    'saveSearch',
+                    'deleteSearch',
+                    'clear',
+                    'getOptions',
+                    'searchCommonItems',
+                ),
                 'users' => array('@'),
             ),
         );
@@ -36,11 +53,7 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionIndex($trial_id = null)
     {
-        $valid = true;
-        $parameters = array();
         $auditValues = array();
-        $fixedParameters = $this->module->getFixedParams();
-        $parameterList = array();
         $ids = array();
         $pagination = array(
             'pageSize' => 10,
@@ -55,54 +68,22 @@ class CaseSearchController extends BaseModuleController
         }
 
         $criteria = new CDbCriteria();
-        foreach ($this->module->getConfigParam('parameters') as $group) {
-            foreach ($group as $parameter) {
-                $paramName = $parameter . 'Parameter';
-                $parameterList[] = $paramName;
-                if (isset($_POST[$paramName])) {
-                    foreach ($_POST[$paramName] as $id => $param) {
-                        /**
-                         * @var $newParam CaseSearchParameter
-                         */
-                        $newParam = new $paramName;
-                        $newParam->attributes = $_POST[$paramName][$id];
-                        if (!$newParam->validate()) {
-                            $valid = false;
-                        }
-                        $parameters[$id] = $newParam;
-                    }
-                }
-            }
-        }
-        foreach ($fixedParameters as $parameter) {
-            /**
-             * @var $parameter CaseSearchParameter
-             */
-            if (isset($_POST[get_class($parameter)])) {
-                foreach ($_POST[get_class($parameter)] as $id => $param) {
-                    $parameter->attributes = $_POST[get_class($parameter)][$id];
-                    if (!$parameter->validate()) {
-                        $valid = false;
-                    }
-                }
-            }
-        }
+        $valid = $this->populateParams(true);
 
         // This can always run as there will always be at least 1 fixed parameter included in the search. Just as long as it is valid!
-        if ($valid && !empty($parameters)) {
-            $mergedParams = array_merge($parameters, $fixedParameters);
+        if ($valid && !empty($this->parameters)) {
             $this->actionClear();
             /**
              * @var $searchProvider SearchProvider
              */
             $searchProvider = $this->module->getSearchProvider('mysql');
-            $results = $searchProvider->search($mergedParams);
+            $results = $searchProvider->search($this->parameters);
 
             if (count($results) === 0) {
                 /**
                  * @var $param CaseSearchParameter
                  */
-                foreach ($mergedParams as $param) {
+                foreach ($this->parameters as $param) {
                     $auditValues[] = $param->getAuditData();
                 }
                 Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
@@ -119,7 +100,7 @@ class CaseSearchController extends BaseModuleController
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
                 $_SESSION['last_search'] = $ids;
             }
-            $_SESSION['last_search_params'] = $parameters;
+            $_SESSION['last_search_params'] = $this->parameters;
             $pagination['currentPage'] = 0;
         }
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
@@ -161,13 +142,14 @@ class CaseSearchController extends BaseModuleController
             ),
         ));
 
+        $all_searches = SavedSearch::model()->findAll();
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
         if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
             foreach ($_SESSION['last_search_params'] as $key => $last_search_param) {
                 $last_search_param_name = get_class($last_search_param);
-                if (!in_array($last_search_param_name, $parameterList, true)) {
+                if (!in_array($last_search_param_name, $this->parameterList, true)) {
                     unset($_SESSION['last_search_params'][$key]);
                 }
             }
@@ -175,9 +157,10 @@ class CaseSearchController extends BaseModuleController
 
         $this->render('index', array(
             'paramList' => $paramList,
-            'params' => (empty($parameters) && isset($_SESSION['last_search_params']))?  $_SESSION['last_search_params']:$parameters,
-            'fixedParams' => $fixedParameters,
+            'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
+            'saved_searches' => $all_searches,
+            'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
         ));
     }
 
@@ -187,17 +170,178 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionAddParameter()
     {
-        $params = $_GET['parameters'];
-        foreach ($params as $param) {
-            $parameter = new $param['param'];
-            $parameter->id = $param['id'];
+        $param = $_GET['parameter'];
 
-            $this->renderPartial('parameter_form', array(
-                'model' => $parameter,
-                'id' => $parameter->id,
-            ));
+        $parameter = new $param['type'];
+        $parameter->id = $param['id'];
+        $parameter->operation = $param['operation'];
+        if (array_key_exists('value', $param)) {
+            if (is_array($param['value'])) {
+                foreach ($param['value'] as $value) {
+                    $key = $value['field'];
+                    $parameter->$key = $value['id'];
+                }
+            } else {
+                $parameter->value = $param['value'];
+            }
         }
+
+        $this->renderPartial('parameter_form', array(
+            'model' => $parameter,
+            'id' => $parameter->id,
+        ));
         Yii::app()->end();
+    }
+
+    public function actionGetOptions()
+    {
+        /**
+         * @var $parameter CaseSearchParameter
+         */
+        $type = Yii::app()->request->getQuery('type');
+        $parameter = new $type;
+        echo json_encode($parameter->getOptions());
+    }
+
+    /**
+     * Load the selected search criteria.
+     * @param $id
+     * @throws CHttpException
+     * @throws CException
+     */
+    public function actionLoadSearch($id)
+    {
+        $preview = isset($_GET['preview']) ? $_GET['preview'] : null;
+
+        $search = SavedSearch::model()->findByPk($id);
+        if (!$search) {
+            throw new CHttpException(404, 'Saved search not found');
+        }
+        $this->actionClear();
+        $params = unserialize($search->search_criteria, array('allowed_classes' => true));
+        if (!$preview) {
+            echo '<tbody>';
+        }
+
+        foreach ($params as $param) {
+            $class_name = $param['class_name'];
+            /**
+             * @var $instance CaseSearchParameter
+             */
+            $instance = new $class_name();
+            $instance->loadSearch($param);
+            if ($preview) {
+                // Get the human-readable string representing the full parameter.
+                $this->renderPartial(
+                    'parameter_form',
+                    array(
+                        'model' => $instance,
+                        'id' => $instance->id,
+                        'readonly' => true,
+                    )
+                );
+            } else {
+                $this->renderPartial(
+                    'parameter_form',
+                    array(
+                        'model' => $instance,
+                        'id' => $instance->id,
+                    )
+                );
+            }
+        }
+    }
+
+    /**
+     * Save the search criteria.
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionSaveSearch()
+    {
+        $criteria_list = array();
+        $search = new SavedSearch();
+        $valid = $this->populateParams();
+
+        if (!empty($this->parameters) && $valid) {
+            foreach ($this->parameters as $parameter) {
+                /**
+                 * @var $mergedParam CaseSearchParameter
+                 */
+                $criteria_list[] = $parameter->saveSearch();
+            }
+            $search_criteria = serialize($criteria_list);
+            $search->search_criteria = $search_criteria;
+            $search->name = $_POST['search_name'];
+
+            if (!$search->save()) {
+                throw new CHttpException(500, 'Unable to save search');
+            }
+            Yii::app()->user->setFlash('success', 'Search saved successfully.');
+        }
+        $this->redirect('/OECaseSearch/caseSearch/index');
+    }
+
+    /**
+     * @param $id
+     * @throws CHttpException
+     * @throws CDbException
+     */
+    public function actionDeleteSearch($id)
+    {
+        $search = SavedSearch::model()->findByPk($id);
+
+        if (!$search) {
+            throw new CHttpException(404, 'Unable to delete saved search - Saved search not found.');
+        }
+        if (!$search->delete()) {
+            throw new CHttpException(500, 'Unable to delete saved search - Unknown error occurred.');
+        }
+    }
+
+    protected function populateParams($populate_param_cache = false)
+    {
+        $valid = true;
+        if ($populate_param_cache) {
+            // Ensure that the parameter list is empty before appending to it.
+            $this->parameterList = array();
+        }
+        foreach ($this->module->getConfigParam('parameters') as $group) {
+            foreach ($group as $parameter) {
+                $paramName = $parameter . 'Parameter';
+                if ($populate_param_cache) {
+                    $this->parameterList[] = $paramName;
+                }
+
+                if (isset($_POST[$paramName])) {
+                    foreach ($_POST[$paramName] as $id => $param) {
+                        /**
+                         * @var $newParam CaseSearchParameter
+                         */
+                        $newParam = new $paramName;
+                        $newParam->attributes = $_POST[$paramName][$id];
+                        if (!$newParam->validate()) {
+                            $valid = false;
+                        }
+                        $this->parameters[$id] = $newParam;
+                    }
+                }
+            }
+        }
+        return $valid;
+    }
+
+    public function actionSearchCommonItems()
+    {
+        $term = Yii::app()->request->getQuery('term');
+        $type = Yii::app()->request->getQuery('type');
+
+        /**
+         * @var $stub CaseSearchParameter
+         */
+        $values = $type::getCommonItemsForTerm($term);
+
+        echo json_encode($values);
     }
 
     /**
@@ -220,8 +364,10 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->clientScript->registerCoreScript('cookie');
 
         // This is required when the search results return any records.
-        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
-        Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
+        Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.SaveSearch.js', 'application.modules.OECaseSearch.assets', -10);
 
         return parent::beforeAction($action);
     }

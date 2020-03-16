@@ -2,14 +2,15 @@
 
 /**
  * Class SearchProvider
+ *
+ * @property-read string|int $providerID
  */
-
 abstract class SearchProvider
 {
     /**
-     * @var string|int Unique provider ID
+     * @var string|int $_providerID Unique provider ID
      */
-    protected $_providerID;
+    private $_providerID;
 
     /**
      * SearchProvider constructor.
@@ -31,10 +32,11 @@ abstract class SearchProvider
             return $this->_providerID;
         }
         $trace = debug_backtrace();
-        trigger_error('Undefined property via __get(): ' . $name .
+        trigger_error(
+            'Undefined property via __get(): ' . $name .
             ' in ' . $trace[0]['file'] .
-            ' on line ' . $trace[0]['line'],
-            E_USER_NOTICE);
+            ' on line ' . $trace[0]['line']
+        );
 
         return null;
     }
