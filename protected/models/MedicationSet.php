@@ -357,7 +357,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
-
         }, MedicationSetAutoRuleSetMembership::model()->findAllByAttributes(['target_medication_set_id' => $this->id]));
         $updated_ids = [];
         $models = [];
@@ -518,6 +517,13 @@ class MedicationSet extends BaseActiveRecordVersioned
             $no_condition = false;
         }
 
+        if (!empty($auto_set_ids)) {
+            $cmd->orWhere("id IN (SELECT medication_id FROM " . MedicationSetItem::model()->tableName() . "
+												WHERE medication_set_id IN (" . implode(",", $auto_set_ids) . ")
+												)");
+            $no_condition = false;
+        }
+
         if (!empty($nonauto_set_ids)) {
             $cmd->orWhere("id IN (SELECT medication_id FROM " . MedicationSetItem::model()->tableName() . "
 												WHERE medication_set_id IN (" . implode(",", $nonauto_set_ids) . ")
@@ -529,20 +535,26 @@ class MedicationSet extends BaseActiveRecordVersioned
             if ($medicationSetAutoRuleMedication->include_parent) {
                 $medication = $medicationSetAutoRuleMedication->medication;
                 if ($medication->isAMP()) {
-                    $cmd->orWhere("preferred_code = '{$medication->vmp_code}'");
+                    if (!empty($medication->vmp_code)) {
+                        $cmd->orWhere("preferred_code = '{$medication->vmp_code}'");
+                    }
                     if ($vmp = Medication::model()->findAll("preferred_code = '{$medication->vmp_code}'")) {
                         $vmp = $vmp[0];
                     };
-                    $cmd->orWhere("preferred_code = '{$vmp->vtm_code}'");
+                    if (!empty($vmp->vtm_code)) {
+                        $cmd->orWhere("preferred_code = '{$vmp->vtm_code}'");
+                    }
                 } elseif ($medication->isVMP()) {
-                    $cmd->orWhere("preferred_code = '{$medication->vtm_code}'");
+                    if (!empty($medication->vtm_code)) {
+                        $cmd->orWhere("preferred_code = '{$medication->vtm_code}'");
+                    }
                 }
             }
             if ($medicationSetAutoRuleMedication->include_children) {
                 $medication = $medicationSetAutoRuleMedication->medication;
-                if ($medication->isVTM()) {
+                if ($medication->isVTM() && !empty($medication->preferred_code)) {
                     $cmd->orWhere("vtm_code = '{$medication->preferred_code}'");
-                } elseif ($medication->isVMP()) {
+                } elseif ($medication->isVMP() && !empty($medication->preferred_code)) {
                     $cmd->orWhere("vmp_code = '{$medication->preferred_code}'");
                 }
             }
@@ -567,10 +579,13 @@ class MedicationSet extends BaseActiveRecordVersioned
 
             $medication_queries = [];
             foreach ($medication_ids as $mk => $id) {
-                $medication_queries[] = [
-                    'medication_set_id' => $this->id,
-                    'medication_id' => $id
-                ];
+                $deleted = $this->dbConnection->createCommand("SELECT deleted_date FROM medication WHERE id = $id")->queryAll()[0]['deleted_date'];
+                if (!$deleted) {
+                    $medication_queries[] = [
+                        'medication_set_id' => $this->id,
+                        'medication_id' => $id
+                    ];
+                }
             }
             if ($medication_queries) {
                 $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('medication_set_item', $medication_queries)->execute();
