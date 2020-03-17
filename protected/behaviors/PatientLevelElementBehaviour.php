@@ -23,10 +23,15 @@ class PatientLevelElementBehaviour extends CActiveRecordBehavior
      */
     public function getTipElement(\Patient $patient = null)
     {
+        $latest_element = null;
         if (!$patient) {
             $patient = $this->owner->event->getPatient();
         }
-        return $this->owner->getModuleApi()->getLatestElement(get_class($this->owner), $patient);
+        if ($this->owner->getModuleApi()) {
+            $latest_element = $this->owner->getModuleApi()->getLatestElement(get_class($this->owner), $patient);
+        }
+
+        return $latest_element;
     }
 
     /**

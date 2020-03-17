@@ -42,37 +42,36 @@
         </thead>
         <tbody class="body">
         <?php
-        if (!empty($selected_procedures)) {
-            foreach ($selected_procedures as $procedure) {
+        if (isset($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) :
                 $totalDuration += $this->adjustTimeByComplexity($procedure['default_duration'], $complexity); ?>
+
                 <tr class="item">
                     <td class="procedure">
-                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]',
-                                $procedure->id,
-                                ['class' => 'js-procedure']); ?>
-                        </span>
+                        <span class="field"><?= \CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure->id, ['class' => 'js-procedure']); ?></span>
                         <span class="value"><?= $procedure->term; ?></span>
                     </td>
 
                     <?php if ($durations) { ?>
                         <td class="duration">
-                        <span data-default-duration="<?= $procedure->default_duration ?>">
+                    <span data-default-duration="<?= $procedure->default_duration ?>">
                         <?= $this->adjustTimeByComplexity($procedure->default_duration, $complexity); ?>
-                        </span> mins
+                    </span> mins
                         </td>
                     <?php } ?>
                     <td>
-                        <span class="removeProcedure">
-                            <i class="oe-i trash"></i>
-                        </span>
+                        <span class="removeProcedure"><i class="oe-i trash"></i></span>
                     </td>
                 </tr>
 
-            <?php }
-            if (isset($_POST[$class]['total_duration_' . $identifier])) {
-                $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
-            }
+            <?php endforeach;
         } ?>
+
+        <?php
+        if (isset($_POST[$class]['total_duration_' . $identifier])) {
+            $adjusted_total_duration = $_POST[$class]['total_duration_' . $identifier];
+        }
+        ?>
         </tbody>
 
         <?php if ($durations) { ?>
@@ -171,7 +170,7 @@
         }
 
         let list_selector = '';
-        if (moduleName === "OphTrConsent") {
+        if (typeof moduleName !== 'undefined' && moduleName === "OphTrConsent") {
             list_selector = 'td #typeProcedure'
         } else {
             list_selector = '#typeProcedure'

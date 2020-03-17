@@ -57,7 +57,7 @@
         filterDataId: "",
         listFilter:false,
         filterListId: "",
-        listForFilterId: ""
+        listForFilterId: "",
     };
 
     /**
@@ -113,7 +113,6 @@
                     }
                     $(this).addClass('selected');
                 } else {
-
                     // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
                     if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
                         || $(this).closest('ul').find('li.selected').length > 1) {
@@ -126,10 +125,10 @@
                         let filterValue = $(this).data('filter-value');
                         let listToFilter = dialog.popup.find('ul[data-id="' + dialog.options.listForFilterId + '"]');
                         if (!$(this).hasClass('selected')) {
-                            listToFilter.find('li').show();
+                            listToFilter.find('li:not(".js-already-used")').show();
                         } else {
                             listToFilter.find('li').hide().removeClass('selected');
-                            listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
+                            listToFilter.find('li[data-filter_value="' + filterValue +'"]:not(".js-already-used")').show();
                         }
                     }
                 }
@@ -330,7 +329,7 @@
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
             let $list = $('<ul />', {class: 'number', id: 'number-digit-' + i}).appendTo($divList);
             for (let digit = itemSet.options.splitIntegerNumberColumns[i].min;
-								 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+                 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
                 let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
                 $listItem.append(digit);
                 $listItem.appendTo($list);
@@ -504,8 +503,11 @@
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+              
+							// deselect options when closing the adderDialog
+							dialog.popup.find('.selected').removeClass('selected');
             }
-
+          
             const $input = dialog.popup.find('.js-search-autocomplete.search');
             // reset search list when adding an item
             if ($input.length) {

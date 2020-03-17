@@ -47,6 +47,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
             'left_fluidtypes' => array(
@@ -389,5 +390,15 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
         }
 
         parent::afterSave();
+    }
+
+    public function getViewTitle()
+    {
+        return 'OCT (manual)';
+    }
+
+    public function getFormTitle()
+    {
+        return 'OCT (manual)';
     }
 }

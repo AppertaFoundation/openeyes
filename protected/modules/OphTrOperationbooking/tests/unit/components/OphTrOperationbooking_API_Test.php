@@ -94,9 +94,9 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
     {
         $operations = $this->api->getScheduledOpenOperations($this->patients('patient6'));
 
-        $this->assertCount(2, $operations);
+        $this->assertCount(3, $operations);
         $this->assertEquals(14, $operations[0]->id);
-        $this->assertEquals(10, $operations[1]->id);
+        $this->assertEquals(15, $operations[1]->id);
     }
 
     public function testGetOperationProcedures()

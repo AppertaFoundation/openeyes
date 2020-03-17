@@ -19,6 +19,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
+     * @param $className string
      *
      * @return OphTrOperationbooking_Whiteboard the static model class
      */
@@ -38,6 +39,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'on' => 't.event_id = booking.event_id',
                 'joinType' => 'INNER JOIN',
                 'alias' => 'booking',
+            ),
+            'biometry_report' => array(
+                self::BELONGS_TO,
+                'Element_OphCoDocument_Document',
+                'id',
             ),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
@@ -64,7 +70,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
 
         $eye = Eye::model()->findByPk($booking->eye_id);
-        if ($eye->name === 'Both') {
+        if ($eye->name === 'Both' && $booking->event->episode->firm->getSubspecialty()->name === 'Cataract') {
             throw new CHttpException(400, 'Can\'t display whiteboard for dual eye bookings');
         }
         $eyeLabel = strtolower($eye->name);
@@ -73,32 +79,50 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $episode = Episode::model()->findByPk($event->episode_id);
         $patient = Patient::model()->findByPk($episode->patient_id);
         $contact = Contact::model()->findByPk($patient->contact_id);
+
         $biometry = $this->recentBiometry($patient);
+        $report = $this->recentBiometryReport($patient);
         $blockers = $this->alphaBlockerStatusAndDate($patient);
         $anticoag = $this->anticoagsStatusAndDate($patient);
-        $labResult = Element_OphInLabResults_Entry::model()->findPatientResultByType($patient->id, '1');
-        $allergyString = $this->allergyString($episode);
+
         $operation = $this->operation($id);
+        $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
         $this->booking = $booking;
         $this->eye_id = $eye->id;
         $this->eye = $eye;
-        $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
+        $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
+        $this->complexity = $booking->complexity;
+
+        if ($report) {
+            $this->biometry_report = $report;
+        }
 
         $this->iol_model = 'Unknown';
         $this->iol_power = 'None';
+        $this->axial_length = 'Unknown';
+        $this->acd = 'Unknown';
         $this->predicted_refractive_outcome = 'Unknown';
+        $this->formula = 'Unknown';
+        $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
-            if ($biometry->attributes['lens_display_name_' . $eyeLabel]) {
-                $this->iol_model = $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br> ' . $biometry->attributes['formula_' . $eyeLabel];
-                $this->iol_power = $biometry->attributes['iol_power_' . $eyeLabel];
-                $this->predicted_refractive_outcome = $biometry->attributes['predicted_refraction_' . $eyeLabel];
+            if (isset($biometry->attributes["lens_display_name_$eyeLabel"])) {
+                $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
+                $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
+                $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
+                $this->acd = $biometry->attributes["acd_$eyeLabel"];
+                $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
+                $this->formula = $biometry->attributes["formula_$eyeLabel"];
+                $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
+                $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
+                $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
+                $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
             }
         }
 
@@ -106,7 +130,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
         $this->alpha_blocker_name = $blockers;
         $this->anticoagulant_name = $anticoag;
-        $this->inr = ($labResult) ? $labResult : 'None';
 
         if (!$this->predicted_additional_equipment) {
             $this->predicted_additional_equipment = $booking->special_equipment_details;
@@ -147,8 +170,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $episode
-     *
      * @return string
+     * @throws CException
      */
     protected function allergyString($episode)
     {
@@ -175,15 +198,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $allergyOtherString = implode(', ', array_column($allergiesOther, 'other'));
 
             if ($allergyOtherString && $allergyString) {
-                $allergyString = $allergyString . ", " . $allergyOtherString;
+                $allergyString .= ', ' . $allergyOtherString;
             }
 
             if ($allergyOtherString && !$allergyString) {
                 $allergyString = $allergyOtherString;
             }
 
-
             return $allergyString;
+        }
+
+        if (!$episode->patient->no_allergies_date) {
+            $allergyString = 'Unknown';
         }
 
         return $allergyString;
@@ -191,8 +217,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $id
-     *
      * @return mixed
+     * @throws CException
      */
     protected function operation($id)
     {
@@ -219,14 +245,14 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if ($risk['status'] === true) {
             $status = 'Present';
-        };
+        }
         if ($risk['status'] === false) {
             $status = 'Not present';
-        };
+        }
 
         return $status;
     }
-    
+
     /**
      * @param $patient
      *
@@ -237,13 +263,61 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
-            if ($alpha) {
-                return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
+            if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
+                return ($alpha['comments'] ?: '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
+            if (!$alpha) {
+                return 'Not checked';
+            }
+            return 'No Alpha Blockers';
         }
 
         //default value when no Risk element exists
         return 'Not checked';
+    }
+
+    /**
+     * @param $patient Patient
+     * @return Element_OphCoDocument_Document|null
+     */
+    protected function recentBiometryReport($patient)
+    {
+        $biometry_report_subtype = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Biometry Report'));
+
+        $criteria = new CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+        $criteria->addCondition('patient_id = :patient_id');
+        $criteria->addCondition('event_sub_type = :sub_type');
+        $criteria->params = array('patient_id' => $patient->id, 'sub_type' => $biometry_report_subtype->id);
+        $criteria->order = 't.last_modified_date DESC';
+        $criteria->limit = 1;
+
+        $recent_document = Element_OphCoDocument_Document::model()->find($criteria);
+
+        $criteria = new CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+        $criteria->join = "JOIN event ev ON t.event_id = ev.id";
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->join .= " RIGHT JOIN event_attachment_group eag ON eag.event_id = ev.id";
+        $criteria->params = array('patient_id' => $patient->id);
+        $criteria->order = 'ev.event_date DESC';
+        $criteria->limit = 1;
+
+        $recent_attachment_document = OphInBiometry_Imported_Events::model()->find($criteria);
+
+        if ($recent_document === null && $recent_attachment_document === null) {
+            return null;
+        }
+
+        if ($recent_document !== null && $recent_attachment_document === null) {
+            return $recent_document;
+        } else if ($recent_document === null && $recent_attachment_document !== null) {
+            return $recent_attachment_document;
+        } else {
+            return $recent_document->last_modified_date > $recent_attachment_document->last_modified_date ?
+                $recent_document :
+                $recent_attachment_document;
+        }
     }
 
     /**
@@ -254,11 +328,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function anticoagsStatusAndDate($patient)
     {
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $labResult = Element_OphInLabResults_Entry::model()->findPatientResultByType($patient->id, '1');
+        $this->inr = ($labResult) ? $labResult : 'None';
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
-            if ($anticoag) {
-                return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
+            if ($anticoag && $this->getDisplayHasRisk($anticoag) !== 'Not present') {
+                return ($anticoag['comments'] ?: '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
+                    . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
+            if (!$anticoag) {
+                return 'Not checked';
+            }
+            return 'No Anticoagulants';
         }
 
         //default value when no Risk element exists
@@ -266,10 +347,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $total_risks int Total risks for the patient. The variable passed to this function is populated with the value.
      * @return string
      */
-
-    public function getPatientRisksDisplay()
+    public function getPatientRisksDisplay(&$total_risks)
     {
         /** @var Patient $patient */
         $patient = $this->event->patient;
@@ -291,19 +372,48 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
 
-        $risks = array_filter($risks, function($risk){
-            return !in_array($risk->name, ["Anticoagulants", "Alpha blockers"]);
+        $risks = array_filter($risks, static function ($risk) {
+            return !in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
         });
 
-        $lines = array_merge($lines, array_map(function($risk){
-            if ($risk->comments != "") {
-                return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
+        $lines = array_merge(
+            $lines,
+            array_map(
+                static function ($risk) {
+                    if ($risk->comments !== '') {
+                        return '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->name . '</span>';
+                    }
+                    return $risk->name;
+                },
+                array_filter(
+                    $risks,
+                    static function ($risk) {
+                        return $risk->display_on_whiteboard;
+                    }
+                )
+            )
+        );
+
+        $display = '';
+
+        foreach ($lines as $line) {
+            $total_risks++;
+            $display .= '<div class="alert-box warning">' . $line . '</div>';
+        }
+
+        if (!$patient->no_risks_date && !$risks) {
+            $total_risks = 0;
+            $display .= '<div class="alert-box info">Status unknown</div>';
+        }
+
+        // Add positive risk labels for significant risks that are not present.
+        // Anticoagulants and alpha blockers are excluded from this list as they are handled independently.
+        foreach ($this->booking->getAllBookingRisks() as $risk) {
+            if (!in_array($risk, $risks, true) && !in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
+                $display .= '<div class="alert-box success">' . "No {$risk->name}" . '</div>';
             }
-            return $risk->name;
-        }, $risks));
+        }
 
-        $display = implode('<br/>', $lines);
-
-        return $display === "" ? "None" : $display;
+        return $display;
     }
 }

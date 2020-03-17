@@ -106,7 +106,7 @@ class Disorder extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
-            'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
+            'commonSystemicDisorder' => array(self::HAS_ONE, 'CommonSystemicDisorder', 'disorder_id'),
             //'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
             'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
         );
@@ -160,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('fully_specified_name', $this->fully_specified_name, true);
-        $criteria->compare('term', $this->term, true);
+        $criteria->compare('lower(fully_specified_name)', strtolower($this->fully_specified_name), true);
+        $criteria->compare('lower(term)', strtolower($this->term), true);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }

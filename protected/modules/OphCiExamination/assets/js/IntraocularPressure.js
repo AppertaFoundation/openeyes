@@ -30,6 +30,14 @@ $(document).ready(function () {
     return false;
   }
 
+  // Set Intraocular reading attribute field validation error
+  let readings = $('.js-reading-time');
+  readings.each((i,reading) => {
+    if (!$(reading).val().match('^[0-9]{2}:[0-9]{2}$')) {
+      $(reading).addClass('highlighted-error error');   
+    }
+  });
+
   $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right").on("click", "i.trash", null, deleteReading);
   $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "i.trash", null, deleteReading);
 });

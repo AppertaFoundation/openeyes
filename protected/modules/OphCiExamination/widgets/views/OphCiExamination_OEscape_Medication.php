@@ -63,7 +63,7 @@
       }
       data.push(text_trace);
       layout_meds['margin']['b'] = 0;
-      layout_meds['title'] = "";
+      layout_meds['title'] = '';
       layout_meds['yaxis'] = meds_yaxis;
       layout_meds['height'] = 25*max_med+50;
       layout_meds['showlegend'] = false;
