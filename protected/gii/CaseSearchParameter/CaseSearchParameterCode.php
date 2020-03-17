@@ -41,12 +41,9 @@ class CaseSearchParameterCode extends CCodeModel
     {
         $parameterPath = Yii::getPathOfAlias($this->path . '.models.' . $this->className) . 'Parameter.php';
         $parameterCode = $this->render($this->templatePath.'/case_search_parameter.php');
-        $viewPath = Yii::getPathOfAlias($this->path . '.views.' . $this->className) . 'Parameter.php';
-        $viewCode = $this->render($this->templatePath.'/case_search_parameter_view.php');
         $testPath = Yii::getPathOfAlias($this->path . '.tests.unit.models.' . $this->className) . 'ParameterTest.php';
         $testCode = $this->render($this->templatePath.'/case_search_parameter_test.php');
         $this->files[] = new CCodeFile($parameterPath, $parameterCode);
         $this->files[] = new CCodeFile($testPath, $testCode);
-        $this->files[] = new CCodeFile($viewPath, $viewCode);
     }
 }
