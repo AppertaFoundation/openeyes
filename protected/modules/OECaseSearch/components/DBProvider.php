@@ -51,7 +51,8 @@ class DBProvider extends SearchProvider
         foreach ($variables as $variable) {
             if ($variable instanceof DBProviderInterface) {
                 $variable_data_list[$variable->field_name] = Yii::app()->db->createCommand($variable->query($this))
-                ->queryAll();
+                    ->bindValues($variable->bindValues())
+                    ->queryAll();
             }
         }
         return $variable_data_list;

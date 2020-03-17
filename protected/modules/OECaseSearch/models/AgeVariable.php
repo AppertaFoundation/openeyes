@@ -1,10 +1,16 @@
 <?php
 
-
+/**
+ * Class AgeVariable
+ */
 class AgeVariable extends CaseSearchVariable implements DBProviderInterface
 {
-    public $field_name = 'age';
-    public $label = 'Age';
+    public function __construct($id_list)
+    {
+        parent::__construct($id_list);
+        $this->_field_name = 'age';
+        $this->_label = 'Age';
+    }
 
     public function query($searchProvider)
     {
@@ -16,5 +22,6 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function bindValues()
     {
+        return array();
     }
 }

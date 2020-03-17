@@ -59,8 +59,9 @@ abstract class SearchProvider
     abstract protected function executeSearch($criteria);
 
     /**
-     * @param $variables CaseSearchVariable[]
-     * @return array
+     * Delegate function for retrieving variable data. Implement this function to specify how to retrieve data for selected variables.
+     * @param $variables CaseSearchVariable[] A list of variables
+     * @return array An array of arrays of variable data for each variable.
      */
     abstract public function getVariableData($variables);
 }
