@@ -266,7 +266,14 @@
         if (id) {
             // deselect the current subspecialty card to provide clear visual clue to
             // user that they are now on a different path
-            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            let selected_subspecialty = self.content.find(selectors.subspecialtyItem + '.selected');
+            let multiple_services = selected_subspecialty.find('.change-service');
+            if (multiple_services.length !== 0) {
+                multiple_services.hide();
+                selected_subspecialty.find('.service').show();
+            }
+            selected_subspecialty.removeClass('selected');
+
             self.updateContextList();
             var services = self.servicesBySubspecialtyId[id];
             if (services.length === 1) {
