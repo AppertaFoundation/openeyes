@@ -32,19 +32,7 @@ $user_searches = array_map(
     $saved_searches
 );
 
-$newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-$oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($newblue_path, true) . '/plotlyJS/oePlotly.js';
-
-if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
-    $display_theme = 'dark';
-} else {
-    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
-    $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme'): Yii::app()->params['image_generation'];
-}
-
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
-<script src="<?= $oePlotlyPath ?>"></script>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
         <?= $this->trialContext === null ?
@@ -131,19 +119,12 @@ if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_ge
         <?php $this->endWidget('search-form'); ?>
     </nav>
     <main class="oe-full-main">
-        <div class="results-options">
-            Select plot:
-            <?= CHtml::dropDownList('selected_variable', isset($variables[0]) ? $variables[0]->field_name : null, CHtml::listData($variables, 'field_name', 'label')) ?>
-            <span class="tabspace"></span>
-            <button>View as list</button>
-        </div>
-        <?php $this->renderPartial('_query_plot_container', array(
-            'display_theme' => $display_theme,
-            'variable_data' => $variableData,
-            'variable' => isset($variables[0]) ? $variables[0]->field_name : null,
-            'variables' => $variables,
-            'total_patients' => $patients->totalItemCount,
-        )); ?>
+        <?php $this->widget('CaseSearchPlot', array(
+                    'variable_data' => $variableData,
+                    'variables' => $variables,
+                    'total_patients' => $patients->totalItemCount,
+                ));
+        ?>
         <div class="oe-search-results" style="display: none;">
             <?php if ($patients->itemCount > 0) {
                 //Just create the widget here so we can render it's parts separately

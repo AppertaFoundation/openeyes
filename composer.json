@@ -8,7 +8,8 @@
     "setasign/fpdi-fpdf": "1.6.1",
     "xthiago/pdf-version-converter": "dev-master",
     "phpoffice/phpspreadsheet": "^1.6",
-    "phpseclib/mcrypt_compat": "^1.0"
+    "phpseclib/mcrypt_compat": "^1.0",
+    "ext-json": "*"
   },
   "require-dev": {
     "behat/behat": "2.*@stable",

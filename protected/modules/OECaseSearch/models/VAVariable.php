@@ -11,7 +11,6 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function query($searchProvider)
     {
-        // TODO: Return a query string here.
         return 'SELECT value va, COUNT(*) frequency
         FROM v_patient_va
         WHERE patient_id IN (' . implode(',', $this->id_list) . ')
@@ -20,7 +19,6 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function bindValues()
     {
-        // TODO: Return an array of  bind mappings here (if applicable)
         return array();
     }
 }

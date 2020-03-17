@@ -19,6 +19,7 @@ class OECaseSearchModule extends BaseModule
             'OECaseSearch.components.*',
             'OECaseSearch.models.*',
             'OECaseSearch.controllers.*',
+            'OECaseSearch.widgets.*',
         );
         if (!isset(Yii::app()->params['patient_identifiers'])) {
             unset($this->config['parameters']['OECaseSearch'][array_search('PatientIdentifier', $this->config['parameters']['OECaseSearch'], true)]);
