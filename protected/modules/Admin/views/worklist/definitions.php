@@ -54,7 +54,9 @@
             <tr>
                 <td colspan="4">
 
-                    <?=\OEHtml::linkButton('Add Definition', '/Admin/worklist/definitionUpdate/');?>
+                    <?= CHtml::link('Add Definition', '/Admin/worklist/definitionUpdate/', [
+                        'class' => 'button large green hint',
+                    ]) ?>
                     <?php echo EventAction::button(
                         'Sort',
                         'sort',
@@ -72,7 +74,7 @@
         </table>
     </form>
     <?php } else {?>
-        <?= EventAction::link('Add Definition', '/worklistAdmin/definitionUpdate/', [], ['class' => 'button primary small'])->toHtml()?>
+        <?= EventAction::link('Add Definition', '/Admin/worklist/definitionUpdate/', [], ['class' => 'button primary small'])->toHtml()?>
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>
