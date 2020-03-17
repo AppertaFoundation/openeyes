@@ -129,10 +129,10 @@
                         let filterValue = $(this).data('filter-value');
                         let listToFilter = dialog.popup.find('ul[data-id="' + dialog.options.listForFilterId + '"]');
                         if (!$(this).hasClass('selected')) {
-                            listToFilter.find('li').show();
+                            listToFilter.find('li:not(".js-already-used")').show();
                         } else {
                             listToFilter.find('li').hide().removeClass('selected');
-                            listToFilter.find('li[data-filter_value="' + filterValue +'"]').show();
+                            listToFilter.find('li[data-filter_value="' + filterValue +'"]:not(".js-already-used")').show();
                         }
                     }
                 }
@@ -368,7 +368,7 @@
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
             let $list = $('<ul />', {class: 'number', id: 'number-digit-' + i}).appendTo($divList);
             for (let digit = itemSet.options.splitIntegerNumberColumns[i].min;
-								 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
+                 digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
                 let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"/>');
                 $listItem.append(digit);
                 $listItem.appendTo($list);
