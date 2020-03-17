@@ -142,6 +142,7 @@ if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_ge
             'variable_data' => $variableData,
             'variable' => isset($variables[0]) ? $variables[0]->field_name : null,
             'variables' => $variables,
+            'total_patients' => $patients->totalItemCount,
         )); ?>
         <div class="oe-search-results" style="display: none;">
             <?php if ($patients->itemCount > 0) {
