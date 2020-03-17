@@ -1,10 +1,29 @@
 $(document).ready(function() {
     $('#selected-variable').change(function() {
         // Toggle visibility for all other plots
-        $('.js-plotly-plot').each(function(index, item) {
-            $(item).hide();
-        });
-        $('.js-plotly-plot[id="' + $(this).val() + '"]').show();
+        if ($('.results-options button').text() === 'View as list') {
+            $('.js-plotly-plot').each(function(index, item) {
+                $(item).hide();
+            });
+            // Only display the plot if the user is not currently viewing the results as a list.
+            $('.js-plotly-plot[id="' + $(this).val() + '"]').show();
+        }
+    });
+
+    $('.results-options button').click(function() {
+        let $selector = $(this).data('selector');
+        if ($(this).text() === 'View as list') {
+            $($selector).show();
+            $(this).text('View as plot');
+            $('.js-plotly-plot').each(function(index, item) {
+                $(item).hide();
+            });
+        } else if ($(this).text() === 'View as plot') {
+            $($selector).hide();
+            $(this).text('View as list');
+            let selected_var = $('#selected-variable').val();
+            $('#' + selected_var).show();
+        }
     });
 
     $('.js-plotly-plot').each(function(index, item) {

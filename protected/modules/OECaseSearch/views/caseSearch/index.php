@@ -123,6 +123,7 @@ $user_searches = array_map(
                     'variable_data' => $variableData,
                     'variables' => $variables,
                     'total_patients' => $patients->totalItemCount,
+                    'list_selector' => '.oe-search-results'
                 ));
         ?>
         <div class="oe-search-results" style="display: none;">

@@ -9,7 +9,7 @@
     Select plot:
     <?= CHtml::dropDownList('selected_variable', isset($this->variables[0]) ? $this->variables[0]->field_name : null, CHtml::listData($this->variables, 'field_name', 'label'), array('id' => 'selected-variable')) ?>
     <span class="tabspace"></span>
-    <button>View as list</button>
+    <button data-selector="<?= $this->list_selector ?>">View as list</button>
 </div>
 <?php foreach ($this->variables as $id => $variable) {
     $x = array_column($this->variable_data[$variable->field_name], $variable->field_name);
