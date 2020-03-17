@@ -39,4 +39,21 @@ class DBProvider extends SearchProvider
 
         return $command->queryAll();
     }
+
+    /**
+     * @param $variables CaseSearchVariable[]
+     * @return array
+     * @throws CException
+     */
+    public function getVariableData($variables)
+    {
+        $variable_data_list = array();
+        foreach ($variables as $variable) {
+            if ($variable instanceof DBProviderInterface) {
+                $variable_data_list[$variable->field_name] = Yii::app()->db->createCommand($variable->query($this))
+                ->queryAll();
+            }
+        }
+        return $variable_data_list;
+    }
 }

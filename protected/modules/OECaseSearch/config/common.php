@@ -32,6 +32,11 @@ return array(
                     'PatientDeceased',
                 ),
             ),
+            'variables' => array(
+                'OECaseSearch' => array(
+                    'age' => 'AgeVariable',
+                ),
+            ),
             'providers' => array(
                 'mysql' => 'DBProvider',
             ),

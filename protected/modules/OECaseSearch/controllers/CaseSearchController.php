@@ -55,7 +55,9 @@ class CaseSearchController extends BaseModuleController
     {
         $auditValues = array();
         $variables = array();
+        $variable_data = array();
         $ids = array();
+        $searchProvider = $this->module->getSearchProvider('mysql');
         $pagination = array(
             'pageSize' => 10,
         );
@@ -77,7 +79,6 @@ class CaseSearchController extends BaseModuleController
             /**
              * @var $searchProvider SearchProvider
              */
-            $searchProvider = $this->module->getSearchProvider('mysql');
             $results = $searchProvider->search($this->parameters);
 
             if (count($results) === 0) {
@@ -89,13 +90,8 @@ class CaseSearchController extends BaseModuleController
                 }
                 Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
             }
-
-            $ids = array();
-
             // deconstruct the results list into a single array of primary keys.
-            foreach ($results as $result) {
-                $ids[] = $result['id'];
-            }
+            $ids = array_column($results, 'id');
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
@@ -146,11 +142,17 @@ class CaseSearchController extends BaseModuleController
         $all_searches = SavedSearch::model()->findAll();
 
         if (array_key_exists('variable_list', $_POST)) {
-            $variables = explode(',', $_POST['variable_list']);
+            $variable_names = explode(',', $_POST['variable_list']);
+            foreach ($variable_names as $variable_name) {
+                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
+                $variables[] = new $class_name($ids);
+            }
+            $variable_data = $searchProvider->getVariableData($variables);
         }
 
         // Get the list of parameter types for display on-screen.
         $paramList = $this->module->getParamList();
+        $variableList = $this->module->getVariableList();
         if (isset($_SESSION['last_search_params']) && !empty($_SESSION['last_search_params'])) {
             foreach ($_SESSION['last_search_params'] as $key => $last_search_param) {
                 $last_search_param_name = get_class($last_search_param);
@@ -165,6 +167,8 @@ class CaseSearchController extends BaseModuleController
             'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
             'patients' => $patientData,
             'variables' => $variables,
+            'variableList' => $variableList,
+            'variableData' => $variable_data,
             'saved_searches' => $all_searches,
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
         ));

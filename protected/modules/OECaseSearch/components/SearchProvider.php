@@ -57,4 +57,10 @@ abstract class SearchProvider
      * @return array Search results.
      */
     abstract protected function executeSearch($criteria);
+
+    /**
+     * @param $variables CaseSearchVariable[]
+     * @return array
+     */
+    abstract public function getVariableData($variables);
 }

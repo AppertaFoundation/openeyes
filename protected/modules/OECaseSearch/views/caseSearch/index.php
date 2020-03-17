@@ -9,7 +9,9 @@
  * @var $saved_searches array
  * @var $user_list array
  * @var $search_label string
- * @var $variables string[]
+ * @var $variables CaseSearchVariable[]
+ * @var $variableList CaseSearchVariable[]
+ * @var $variableData array
  */
 $this->pageTitle = 'Advanced Search';
 $sort_field = 'last_name';
@@ -37,8 +39,21 @@ $variable_map = array(
     'iop_first' => 'IOP (first)',
     'iop_last' => 'IOP (last)',
     'crt' => 'CRT',
-)
+);
+
+$newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+$oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($newblue_path, true) . '/plotlyJS/oePlotly.js';
+
+if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
+    $display_theme = 'dark';
+} else {
+    $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
+    $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme'): Yii::app()->params['image_generation'];
+}
+
 ?>
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
+<script src="<?= $oePlotlyPath ?>"></script>
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
         <?= $this->trialContext === null ?
@@ -83,21 +98,22 @@ $variable_map = array(
         <h3>Variables</h3>
         <table id="js-variable-table" class="standard normal-text last-right">
             <tbody>
-            <?php if ($variables[0]) {
-                foreach ($variables as $variable) { ?>
-                    <tr data-id="<?= $variable ?>">
+                <?php foreach ($variables as $variable) { ?>
+                    <tr data-id="<?= $variable->field_name ?>">
                         <td>
-                            <?= $variable_map[$variable] ?>
+                            <?= $variable->label ?>
                         </td>
                         <td>
                             <i class="oe-i remove-circle small"></i>
                         </td>
                     </tr>
-                <?php }
-            } ?>
+                <?php } ?>
             </tbody>
         </table>
-        <?= CHtml::hiddenField('variable_list', implode(',', $variables), array('id' => 'js-variable-list')) ?>
+        <?= CHtml::hiddenField('variable_list', implode(',', array_map(
+                static function ($item) {
+                    return $item->field_name;
+                }, $variables)), array('id' => 'js-variable-list')) ?>
         <button id="add-variable" class="button hint green js-add-select-btn"
                 data-popup="add-to-variable-list">
             <i class="oe-i plus pro-theme"></i>
@@ -124,83 +140,102 @@ $variable_map = array(
         <?php $this->endWidget('search-form'); ?>
     </nav>
     <main class="oe-full-main">
-        <?php if ($patients->itemCount > 0) {
-            //Just create the widget here so we can render it's parts separately
-            /** @var $searchResults CListView */
-            $searchResults = $this->createWidget(
-                'zii.widgets.CListView',
-                array(
-                    'dataProvider' => $patients,
-                    'itemView' => 'search_results',
-                    'emptyText' => 'No patients found',
-                    'viewData' => array(
-                        'trial' => $this->trialContext
-                    ),
-                    'enableSorting' => true,
-                    'sortableAttributes' => array(
-                        'last_name',
-                        'first_name',
-                        'age',
-                        'gender',
+        <div class="results-options">
+            Select plot:
+            <select>
+                <option>Age</option>
+                <option>CCT</option>
+                <option>IOP</option>
+                <option>VA</option>
+            </select>
+            <span class="tabspace"></span>
+            <button>View as list</button>
+        </div>
+        <?php $this->renderPartial('_query_plot_container', array(
+            'display_theme' => $display_theme,
+            'variable_data' => $variableData,
+            'variable' => 'age',
+            'variables' => $variables,
+        )); ?>
+        <div class="oe-search-results" style="display: none;">
+            <?php if ($patients->itemCount > 0) {
+                //Just create the widget here so we can render it's parts separately
+                /** @var $searchResults CListView */
+                $searchResults = $this->createWidget(
+                    'zii.widgets.CListView',
+                    array(
+                        'dataProvider' => $patients,
+                        'itemView' => 'search_results',
+                        'emptyText' => 'No patients found',
+                        'viewData' => array(
+                            'trial' => $this->trialContext
+                        ),
+                        'enableSorting' => true,
+                        'sortableAttributes' => array(
+                            'last_name',
+                            'first_name',
+                            'age',
+                            'gender',
+                        )
                     )
-                )
-            );
-            $sort = $patients->getSort();
-            /**
-             * @var $pager LinkPager
-             */
-            $pager = $this->createWidget(
-                'LinkPager',
-                array(
-                    'pages' => $patients->getPagination(),
-                    'maxButtonCount' => 15,
-                    'cssFile' => false,
-                    'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                    'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                    'htmlOptions' => array(
-                        'class' => 'pagination',
-                    ),
-                )
-            );
-            // Build up the list of sort fields and the relevant ascending/descending sort URLs for each option.
-            $sort_fields = array();
-            $sort_field_options = array();
-            foreach ($sort->attributes as $key => $attribute) {
-                $sort_fields[$key] = $attribute['label'];
-                $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
-                $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
-            }
-            ?>
-            <div class="table-sort-order">
-                <div class="sort-by">
-                    Sort by:
-                    <span class="sort-options">
-                    <?= CHtml::dropDownList('sort', $sort_field, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
-                    <span class="direction">
-                        <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend')) ?>
-                            <i class="oe-i direction-up medium"></i>
-                        </label>
-                        <label class="inline highlight">
-                            <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend')) ?>
-                            <i class="oe-i direction-down medium"></i>
-                        </label>
+                );
+                $sort = $patients->getSort();
+                /**
+                 * @var $pager LinkPager
+                 */
+                $pager = $this->createWidget(
+                    'LinkPager',
+                    array(
+                        'pages' => $patients->getPagination(),
+                        'maxButtonCount' => 15,
+                        'cssFile' => false,
+                        'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                        'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                        'htmlOptions' => array(
+                            'class' => 'pagination',
+                        ),
+                    )
+                );
+                // Build up the list of sort fields and the relevant ascending/descending sort URLs for each option.
+                $sort_fields = array();
+                $sort_field_options = array();
+                foreach ($sort->attributes as $key => $attribute) {
+                    $sort_fields[$key] = $attribute['label'];
+                    $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
+                    $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
+                }
+                ?>
+                <div class="table-sort-order">
+                    <div class="sort-by">
+                        Sort by:
+                        <span class="sort-options">
+                        <?= CHtml::dropDownList('sort', $sort_field, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
+                        <span class="direction">
+                            <label class="inline highlight">
+                                <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend')) ?>
+                                <i class="oe-i direction-up medium"></i>
+                            </label>
+                            <label class="inline highlight">
+                                <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend')) ?>
+                                <i class="oe-i direction-down medium"></i>
+                            </label>
+                        </span>
                     </span>
-                </span>
+                    </div>
+                    <?php $pager->run(); ?>
                 </div>
-                <?php $pager->run(); ?>
-            </div>
-            <table id="case-search-results" class="standard last-right">
-                <tbody>
-                <?= $searchResults->renderItems() ?>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="3"><?php $pager->run(); ?></td>
-                </tr>
-                </tfoot>
-            </table>
-        <?php } ?>
+                <table id="case-search-results" class="standard last-right">
+                    <tbody>
+                    <?= $searchResults->renderItems() ?>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="3"><?php $pager->run(); ?></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            <?php } ?>
+        </div>
     </main>
 </div>
 <script type="text/html" id="save-search-template">
@@ -340,9 +375,9 @@ $variable_map = array(
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= json_encode(array_map(
-                            static function ($item, $index) {
-                                return array('id' => $index, 'label' => $item);
-                            }, $variable_map, array_keys($variable_map))) ?>,
+                            static function ($item) {
+                                return array('id' => $item['id'], 'label' => $item['label']);
+                            }, $variableList)) ?>,
                     {'multiSelect': true, 'id': 'variable-type-list', 'deselectOnReturn': true,}
                 ),
             ],

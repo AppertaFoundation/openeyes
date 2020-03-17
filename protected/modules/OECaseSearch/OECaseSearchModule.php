@@ -23,7 +23,14 @@ class OECaseSearchModule extends BaseModule
         if (!isset(Yii::app()->params['patient_identifiers'])) {
             unset($this->config['parameters']['OECaseSearch'][array_search('PatientIdentifier', $this->config['parameters']['OECaseSearch'], true)]);
         }
+        // Set imports for other modules with parameters.
         foreach ($this->config['parameters'] as $module => $paramList) {
+            if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
+                $dependencies[$module] = "$module.models.*";
+            }
+        }
+        // Set imports for other modules with variables.
+        foreach ($this->config['variables'] as $module => $variableList) {
             if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
                 $dependencies[$module] = "$module.models.*";
             }
@@ -50,6 +57,22 @@ class OECaseSearchModule extends BaseModule
                  */
                 $obj = new $className;
                 $keys[] = array('type' => $className, 'label' => $obj->getLabel(), 'id' => $className);
+            }
+        }
+
+        return $keys;
+    }
+
+    public function getVariableList()
+    {
+        $keys = array();
+        foreach ($this->config['variables'] as $group) {
+            foreach ($group as $variable) {
+                /**
+                 * @var $obj CaseSearchVariable
+                 */
+                $obj = new $variable(null);
+                $keys[] = array('type' => $variable, 'label' => $obj->label, 'id' => $obj->field_name);
             }
         }
 
