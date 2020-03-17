@@ -32,15 +32,6 @@ $user_searches = array_map(
     $saved_searches
 );
 
-$variable_map = array(
-    'age' => 'Age',
-    'va_best' => 'VA (best)',
-    'refraction' => 'Refraction (mean sph)',
-    'iop_first' => 'IOP (first)',
-    'iop_last' => 'IOP (last)',
-    'crt' => 'CRT',
-);
-
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($newblue_path, true) . '/plotlyJS/oePlotly.js';
 
@@ -142,19 +133,14 @@ if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_ge
     <main class="oe-full-main">
         <div class="results-options">
             Select plot:
-            <select>
-                <option>Age</option>
-                <option>CCT</option>
-                <option>IOP</option>
-                <option>VA</option>
-            </select>
+            <?= CHtml::dropDownList('selected_variable', isset($variables[0]) ? $variables[0]->field_name : null, CHtml::listData($variables, 'field_name', 'label')) ?>
             <span class="tabspace"></span>
             <button>View as list</button>
         </div>
         <?php $this->renderPartial('_query_plot_container', array(
             'display_theme' => $display_theme,
             'variable_data' => $variableData,
-            'variable' => 'age',
+            'variable' => isset($variables[0]) ? $variables[0]->field_name : null,
             'variables' => $variables,
         )); ?>
         <div class="oe-search-results" style="display: none;">

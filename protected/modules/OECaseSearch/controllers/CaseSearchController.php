@@ -145,7 +145,8 @@ class CaseSearchController extends BaseModuleController
             $variable_names = explode(',', $_POST['variable_list']);
             foreach ($variable_names as $variable_name) {
                 $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
-                $variables[] = new $class_name($ids);
+                $variable = new $class_name($ids);
+                $variables[] = $variable;
             }
             $variable_data = $searchProvider->getVariableData($variables);
         }

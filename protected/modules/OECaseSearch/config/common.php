@@ -35,6 +35,8 @@ return array(
             'variables' => array(
                 'OECaseSearch' => array(
                     'age' => 'AgeVariable',
+                    'iop' => 'IOPVariable',
+                    'va' => 'VAVariable',
                 ),
             ),
             'providers' => array(

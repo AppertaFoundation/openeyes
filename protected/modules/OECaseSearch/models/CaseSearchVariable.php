@@ -5,29 +5,23 @@
  * @property $id_list array
  * @property $label string
  * @property $field_name string
+ * @property $unit string
  */
-abstract class CaseSearchVariable
+abstract class CaseSearchVariable extends CModel
 {
-    protected $_field_name;
-    protected $_label;
-    private $_id_list;
+    public $field_name;
+    public $label;
+    public $unit;
+    public $id_list;
 
-    public function __get($name)
+    public function attributeNames()
     {
-        // TODO: Implement __get() method.
-        switch ($name) {
-            case 'id_list':
-                return $this->_id_list;
-                break;
-            case 'field_name':
-                return $this->_field_name;
-                break;
-            case 'label':
-                return $this->_label;
-                break;
-            default:
-                return $this->$name;
-        }
+        return array(
+            'field_name',
+            'label',
+            'unit',
+            'id_list',
+        );
     }
 
     public function __construct($id_list)

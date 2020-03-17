@@ -6,6 +6,7 @@ class CaseSearchVariableCode extends CCodeModel
     public $className;
     public $name;
     public $label;
+    public $unit;
     public $searchProviders = 'DBProvider'; // default to DBProvider
     public $path = 'application.modules.OECaseSearch';
 
@@ -15,7 +16,8 @@ class CaseSearchVariableCode extends CCodeModel
             array('className, name, label, searchProviders, path', 'required'),
             array('className, name, label', 'match', 'pattern' => '/^\w+$/'),
             array('searchProviders', 'match', 'pattern' => '/^[\w,]+$/'),
-            array('className, name, label, searchProviders', 'sticky')
+            array('unit', 'match', 'pattern' => '/^[\w\s,]+$/'),
+            array('className, name, label, unit, searchProviders', 'sticky')
         ));
     }
 
@@ -25,6 +27,7 @@ class CaseSearchVariableCode extends CCodeModel
             'className' => 'Variable Class Name',
             'name' => 'Variable name',
             'label' => 'Variable label',
+            'unit' => 'Unit of measure',
             'searchProviders' => 'Supported Search Providers',
             'path' => 'Module Path',
         ));

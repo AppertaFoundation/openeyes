@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var $variable_data array
+ * @var $variables CaseSearchVariable[]
+ */
 if ($variable_data) {
     $x = array_column($variable_data[$variable], $variables[0]->field_name);
     $y = array_column($variable_data[$variable], 'frequency')
@@ -12,7 +16,7 @@ if ($variable_data) {
             x: <?= json_encode($x) ?>,
             y: <?= json_encode($y) ?>,
             type: 'bar',
-            hovertemplate: 'IOP: %{y}<br>(N: %{x})',
+            hovertemplate: '<?= $variables[0]->label ?>: %{y}<br>(N: %{x})',
             name:""
         }
     ];
@@ -22,7 +26,7 @@ if ($variable_data) {
         theme: ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light',
         plotTitle: '<?= $variables[0]->label ?> distribution N = 1,450',
         legend: false,
-        titleX: 'Age (y)',
+        titleX: '<?= $variables[0]->label ?><?= $variables[0]->unit ? " ({$variables[0]->unit})" : ''?>',
         titleY: false,
         numTicksX: <?= count($x) ?>,
         numTicksY: 20,

@@ -6,8 +6,9 @@ class <?= $this->className ?>Variable extends CaseSearchVariable implements <?= 
     public function __construct($id_list)
     {
         parent::__construct($id_list);
-        $this->_field_name = '<?= $this->name ?>';
-        $this->_label = '<?= $this->label ?>';
+        $this->field_name = '<?= $this->name ?>';
+        $this->label = '<?= $this->label ?>';
+        $this->unit = '<?= $this->unit ?>';
     }
 
 <?php foreach (explode(',', $this->searchProviders) as $searchProvider) :?>

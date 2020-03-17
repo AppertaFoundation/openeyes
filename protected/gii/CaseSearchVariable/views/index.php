@@ -36,6 +36,15 @@
     </div>
 
     <div class="row">
+        <?php echo $form->labelEx($model, 'unit'); ?>
+        <?php echo $form->textField($model, 'unit', array('size' => 20, 'id' => 'label')); ?>
+        <div class="tooltip">
+            This value is displayed as part of the x-axis of a Plotly graph.
+        </div>
+        <?php echo $form->error($model, 'unit'); ?>
+    </div>
+
+    <div class="row">
         <?php echo $form->labelEx($model, 'searchProviders'); ?>
         <?php echo $form->textField($model, 'searchProviders', array('size' => 65)); ?>
         <div class="tooltip">
