@@ -54,7 +54,8 @@
         deleteSearch: '.searches .trash',
         otherUserList: '#other-user-list li',
         otherUserSearchList: '#other-user-search-list',
-        searchContentsList: '.show-query table tbody',
+        searchContentsList: 'table.query-list tbody',
+        searchVariableList: 'table.var-list tbody',
         loadSearchButton: '.searches td button.js-use-query'
     };
     LoadSavedSearchDialog.prototype.selectedSearchId = 0;
@@ -129,11 +130,17 @@
                 success: function (response) {
                     // Append the dynamic parameter HTML before the first fixed parameter.
                     let $tableBody = $('#param-list tbody');
+                    let $varTable = $('#js-variable-table');
                     let $params = $(response).find('tr.parameter');
+                    let $variables = $(response).find('tr.search-var');
+                    let $varList = $('#js-variable-list');
 
                     $($tableBody).find('.parameter').remove();
-                    //$($tableBody).find('.fixed-parameter').remove();
-                    $('#param-list tbody').append($params);
+                    $($varTable).find('.search-var').remove();
+                    $tableBody.append($params);
+                    $varTable.append($variables);
+                    console.log($(response).find('tr#var-list td').text());
+                    $varList.val($(response).find('tr#var-list td').text());
 
                     // Execute the search.
                     $('form#search-form').submit();
@@ -159,7 +166,16 @@
                     self.compileTemplate({
                         selector: selectors.searchContentTemplate,
                         data: {
-                            searchContents: response,
+                            searchContents: $(response).find('tr.parameter').html(),
+                        }
+                    })
+                );
+                $(selectors.searchVariableList).empty();
+                $(selectors.searchVariableList).html(
+                    self.compileTemplate({
+                        selector: selectors.searchContentTemplate,
+                        data: {
+                            searchContents: $(response).find('tr.search-var').html(),
                         }
                     })
                 );
@@ -167,30 +183,6 @@
             error: function() {
                 new OpenEyes.UI.Dialog.Alert({
                     content: 'Unable to fetch saved search content.'
-                }).open();
-            }
-        });
-    };
-
-    LoadSavedSearchDialog.prototype.updateOtherUserSearchesList = function () {
-        var self = this;
-        $.ajax({
-            url: '/OECaseSearch/caseSearch/getSearchesByUser/' + self.selectedUserId,
-            type: 'GET',
-            success: function (response) {
-                self.otherUserSearchItems = JSON.parse(response);
-                $(selectors.otherUserSearchList).append(
-                    self.compileTemplate({
-                        selector: selectors.otherUserSearchTemplate,
-                        data: {
-                            otherUserSearches: self.otherUserSearchItems,
-                        }
-                    })
-                );
-            },
-            error: function() {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: 'Unable to fetch saved searches for selected user.'
                 }).open();
             }
         });

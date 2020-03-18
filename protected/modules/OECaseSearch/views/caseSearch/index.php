@@ -78,7 +78,7 @@ $user_searches = array_map(
         <table id="js-variable-table" class="standard normal-text last-right">
             <tbody>
                 <?php foreach ($variables as $variable) { ?>
-                    <tr data-id="<?= $variable->field_name ?>">
+                    <tr class="search-var" data-id="<?= $variable->field_name ?>">
                         <td>
                             <?= $variable->label ?>
                         </td>
@@ -215,6 +215,11 @@ $user_searches = array_map(
             <table>
                 {{{queryTable}}}
             </table>
+            <h3>Variables</h3>
+            <table>
+                {{{variableTable}}}
+            </table>
+            <input type="hidden" name="variable_list" value="{{variableList}}"/>
         </div>
         <div class="show-query">
             <h3>Save search as</h3>
@@ -255,14 +260,20 @@ $user_searches = array_map(
         </div>
         <div class="show-query">
             <h3>Current search queries</h3>
-            <table>
+            <table class="query-list">
                 <tbody>
                 </tbody>
+            </table>
+            <h3>Current variables</h3>
+            <table class="var-list">
+                <tbody></tbody>
             </table>
         </div>
     </div>
 </script>
-<script type="text/html" id="search-contents-template">{{{searchContents}}}</script>
+<script type="text/html" id="search-contents-template">
+    <tr>{{{searchContents}}}</tr>
+</script>
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
@@ -357,7 +368,7 @@ $user_searches = array_map(
                 $variableList.val('');
                 // Add a row to the table for each selected variable, and add each one to the hidden field as a CSV list.
                 $.each(selectedValues, function(index, item) {
-                    $('#js-variable-table tbody').append('<tr data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
+                    $('#js-variable-table tbody').append('<tr class="search-variable" data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
                     if ($variableList.val()) {
                         $variableList.val($variableList.val() + ',' + item.id);
                     } else {

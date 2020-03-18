@@ -143,12 +143,14 @@ class CaseSearchController extends BaseModuleController
 
         if (array_key_exists('variable_list', $_POST)) {
             $variable_names = explode(',', $_POST['variable_list']);
-            foreach ($variable_names as $variable_name) {
-                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
-                $variable = new $class_name($ids);
-                $variables[] = $variable;
+            if ($variable_names[0] != '') {
+                foreach ($variable_names as $variable_name) {
+                    $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
+                    $variable = new $class_name($ids);
+                    $variables[] = $variable;
+                }
+                $variable_data = $searchProvider->getVariableData($variables);
             }
-            $variable_data = $searchProvider->getVariableData($variables);
         }
 
         // Get the list of parameter types for display on-screen.
@@ -230,9 +232,7 @@ class CaseSearchController extends BaseModuleController
         }
         $this->actionClear();
         $params = unserialize($search->search_criteria, array('allowed_classes' => true));
-        if (!$preview) {
-            echo '<tbody>';
-        }
+        echo '<tbody>';
 
         foreach ($params as $param) {
             $class_name = $param['class_name'];
@@ -261,6 +261,30 @@ class CaseSearchController extends BaseModuleController
                 );
             }
         }
+
+        if ($preview) {
+            foreach (explode(',', $search->variables) as $var) {
+                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
+                $variable = new $class_name(null);
+                echo '<tr class="search-var">
+                <td>' . $variable->label . '</td>
+                </tr>';
+            }
+        } else {
+            foreach (explode(',', $search->variables) as $var) {
+                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
+                /**
+                 * @var $variable CaseSearchVariable
+                 */
+                $variable = new $class_name(null);
+                echo '<tr class="search-var" data-id="' . $variable->field_name . '">
+                <td>' . $variable->label . '</td>
+                <td><i class="oe-i remove-circle small"></i></td>
+                </tr>';
+            }
+            echo '<tr id="var-list"><td>' . $search->variables . '</td></tr>';
+        }
+        echo '</tbody>';
     }
 
     /**
@@ -284,6 +308,7 @@ class CaseSearchController extends BaseModuleController
             $search_criteria = serialize($criteria_list);
             $search->search_criteria = $search_criteria;
             $search->name = $_POST['search_name'];
+            $search->variables = $_POST['variable_list'];
 
             if (!$search->save()) {
                 throw new CHttpException(500, 'Unable to save search');

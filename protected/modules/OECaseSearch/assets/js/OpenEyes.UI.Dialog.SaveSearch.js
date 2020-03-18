@@ -55,12 +55,17 @@
      * @returns {string}
      */
     SaveSearchDialog.prototype.getContent = function (options) {
-        let $paramTable = $('#param-list');
+        let $paramTable = $('#param-list').clone();
+        let $variableTable = $('#js-variable-table').clone();
+        let $variableList = $('#js-variable-list');
         $paramTable.find('td:has(i)').remove();
+        $variableTable.find('td:has(i)').remove();
         return this.compileTemplate({
             selector: options.selector,
             data: {
-                queryTable: $paramTable.html()
+                queryTable: $paramTable.html(),
+                variableTable:$variableTable.html(),
+                variableList: $variableList.val()
             }
         });
     };
