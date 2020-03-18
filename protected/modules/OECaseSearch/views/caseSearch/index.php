@@ -119,6 +119,7 @@ $user_searches = array_map(
         <?php $this->endWidget('search-form'); ?>
     </nav>
     <main class="oe-full-main">
+        <?php if ($patients->itemCount > 0) { ?>
         <?php $this->widget('CaseSearchPlot', array(
                     'variable_data' => $variableData,
                     'variables' => $variables,
@@ -127,7 +128,7 @@ $user_searches = array_map(
                 ));
         ?>
         <div class="oe-search-results" style="display: none;">
-            <?php if ($patients->itemCount > 0) {
+            <?php
                 //Just create the widget here so we can render it's parts separately
                 /** @var $searchResults CListView */
                 $searchResults = $this->createWidget(
