@@ -57,7 +57,7 @@ class ProtectedFileThumbnail extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('file_id, width, height, thumbnail_content', 'required'),
+            array('file_id, width, height, size, thumbnail_content', 'required'),
         );
     }
 

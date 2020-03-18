@@ -96,7 +96,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('uid, name, mimetype, size', 'required'),
+                array('uid, name, title, mimetype, size', 'required'),
         );
     }
 
