@@ -2772,49 +2772,25 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 <TERM>Second eye</TERM>
               </SECONDARY_TERM_LIST>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>div</GOTO_TAG>
-              <GOTO_TEXT>First eye</GOTO_TEXT>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_%position_eye_id_0</GOTO_ID>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Straightforward case?</PRIMARY_TERM>
+              <PRIMARY_TERM>Primary reason for surgery</PRIMARY_TERM>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>label</GOTO_TAG>
-              <GOTO_TEXT>Straightforward case</GOTO_TEXT>
+              <GOTO_ID>%position_reason_entry</GOTO_ID>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
               <DESCRIPTION>Post operative refractive target in dioptres</DESCRIPTION>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction</GOTO_ID>
+              <GOTO_ID>%position_refraction_entry</GOTO_ID>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
+              <PRIMARY_TERM>Correction discussed</PRIMARY_TERM>
               <DESCRIPTION>The post operative refractive target has been discussed with the patient</DESCRIPTION>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>div</GOTO_TAG>
-              <GOTO_TEXT>The post operative refractive target has been discussed with the patient</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Suitable for surgeon</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_suitable_for_surgeon_id</GOTO_ID>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Previous refractive surgery</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>div</GOTO_TAG>
-              <GOTO_TEXT>Previous refractive surgery</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Vitrectomised eye</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>div</GOTO_TAG>
-              <GOTO_TEXT>Vitrectomised eye</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Primary reason for cataract surgery</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_reasonForSurgery</GOTO_ID>
+              <GOTO_ID>%position_discussed_entry</GOTO_ID>
             </INDEX>
           </INDEX_LIST>
         </INDEX>
