@@ -267,7 +267,7 @@
      * @returns {Array} A n array of ids and labels of the selected items
      */
     AdderDialog.prototype.getSelectedItems = function () {
-        return this.popup.find('li.selected').map(function () {
+        return this.popup.find('li.selected:not(.js-searchfilter-check)').map(function () {
             return $(this).data();
         }).get();
     };
