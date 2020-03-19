@@ -37,6 +37,7 @@ return array(
                     'age' => 'AgeVariable',
                     'iop' => 'IOPVariable',
                     'va' => 'VAVariable',
+                    'cct' => 'CCTVariable',
                 ),
             ),
             'providers' => array(

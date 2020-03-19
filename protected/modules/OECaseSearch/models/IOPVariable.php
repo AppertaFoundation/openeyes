@@ -11,13 +11,16 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function query($searchProvider)
     {
-        // TODO: Return a query string here.
-        return null;
+        return '
+        SELECT value iop, COUNT(*) frequency
+        FROM v_patient_iop
+        WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
+        AND eye IS NOT NULL
+        GROUP BY value';
     }
 
     public function bindValues()
     {
-        // TODO: Return an array of  bind mappings here (if applicable)
         return array();
     }
 }

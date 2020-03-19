@@ -1,26 +1,26 @@
 <?php
 
-use OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure;
-use OEModule\OphCiExamination\models\OphCiExamination_Instrument;
-use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading;
-use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT;
 
 /**
-* Class IOPVariableTest
+* Class CCTVariableTest
 */
-class IOPVariableTest extends CDbTestCase
+class CCTVariableTest extends CDbTestCase
 {
     protected $variable;
     protected $searchProviders;
     protected $invalidProvider;
 
     protected $fixtures = array(
-        'iop' => Element_OphCiExamination_IntraocularPressure::class,
-        'iop_value' => OphCiExamination_IntraocularPressure_Value::class,
-        'iop_instrument' => OphCiExamination_Instrument::class,
+        'cct' => Element_OphCiExamination_AnteriorSegment_CCT::class,
         'events' => Event::class,
         'episodes' => Episode::class,
         'patients' => Patient::class,
+        'event_types' => EventType::class,
+        'firms' => Firm::class,
+        'ssa' => ServiceSubspecialtyAssignment::class,
+        'subspecialties' => Subspecialty::class,
+        'contacts' => Contact::class,
     );
 
     public static function setUpBeforeClass()
@@ -32,7 +32,7 @@ class IOPVariableTest extends CDbTestCase
     {
         parent::setUp();
         $this->searchProviders = array();
-        $this->variable = new IOPVariable([1, 2, 3]);
+        $this->variable = new CCTVariable([1, 2, 3]);
         $this->searchProviders[] = new DBProvider('provider0');
     }
 

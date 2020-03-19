@@ -26,6 +26,6 @@
         data-total="<?= $n ?>"
         data-var-name="<?= $variable->field_name ?>"
         data-var-label="<?= $variable->label ?>"
-        data-var-unit="<?= $variable->unit ? " ({$variable->unit})" : ''?>'"></div>
+        data-var-unit="<?= $variable->unit ? " ({$variable->unit})" : ''?>"></div>
     <!-- END PLOT CONTAINER -->
 <?php } ?>

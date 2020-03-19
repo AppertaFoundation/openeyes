@@ -11,10 +11,11 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function query($searchProvider)
     {
-        return 'SELECT value va, COUNT(*) frequency
-        FROM v_patient_va
+        return 'SELECT ETDRS_value va, COUNT(*) frequency
+        FROM v_patient_va_converted
         WHERE patient_id IN (' . implode(',', $this->id_list) . ')
-        GROUP BY value';
+        AND eye IS NOT NULL
+        GROUP BY ETDRS_value';
     }
 
     public function bindValues()

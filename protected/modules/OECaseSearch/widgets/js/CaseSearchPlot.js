@@ -43,7 +43,7 @@ $(document).ready(function() {
             theme: ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light',
             plotTitle: $(item).data('var-label') + ' distribution N = ' + $(item).data('total'),
             legend: false,
-            titleX: $(item).data('var-label'),
+            titleX: $(item).data('var-label') + $(item).data('var-unit'),
             titleY: false,
             numTicksX: 20,
             numTicksY: 20,
