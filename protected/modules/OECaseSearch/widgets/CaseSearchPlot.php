@@ -16,7 +16,7 @@ class CaseSearchPlot extends BaseCWidget
         $this->newblue_path = Yii::getPathOfAlias('application.assets.newblue');
         $this->oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($this->newblue_path, true) . '/plotlyJS/oePlotly.js';
 
-        if(isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
+        if (isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {
             $this->display_theme = 'dark';
         } else {
             $user_theme = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"', array(":user_id"=>Yii::app()->user->id));
