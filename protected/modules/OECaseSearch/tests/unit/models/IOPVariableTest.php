@@ -8,12 +8,17 @@ class IOPVariableTest extends CDbTestCase
     protected $searchProviders;
     protected $invalidProvider;
 
+    public static function setUpBeforeClass()
+    {
+        Yii::app()->getModule('OECaseSearch');
+    }
+
     public function setUp()
     {
         parent::setUp();
         $this->searchProviders = array();
         $this->variable = new IOPVariable([1, 2, 3]);
-        $this->searchProviders[] = new DBProvider('provider0')
+        $this->searchProviders[] = new DBProvider('provider0');
     }
 
     public function tearDown()
@@ -28,11 +33,11 @@ class IOPVariableTest extends CDbTestCase
      */
     public function testGetVariableData()
     {
-        // TODO: Use fixtures to populate the relevant database tables with dummy data.
-        $variables = array();
+        $variables = array($this->variable);
 
-        // TODO: Populate the case search parameter attributes here.
         $results = $this->searchProviders[0]->getVariableData($variables);
+
+        $this->assertCount(3, $results[$this->variable->field_name]);
 
         $this->markTestIncomplete('TODO');
     }
