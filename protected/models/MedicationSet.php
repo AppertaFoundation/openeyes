@@ -309,6 +309,66 @@ class MedicationSet extends BaseActiveRecordVersioned
         return parent::beforeValidate();
     }
 
+    public function validateRelations()
+    {
+        $validation_processor = function($model, $prepend = null) {
+            $has_error = false;
+            foreach ($model->getErrors() as $attribute => $errors) {
+                foreach ($errors as $k => $error) {
+                    $this->addError(get_class($model) . " [$k] $attribute", $prepend . "$attribute : " . $error);
+                    $has_error = true;
+                }
+            }
+            return $has_error;
+        };
+
+        $has_error = false;
+        $relations = [
+            'medicationAutoRuleAttributes' => 'Attributes',
+            'medicationSetAutoRuleSetMemberships' => 'Set',
+            'medicationSetRules' => 'Usage Rules',
+        ];
+
+        foreach ($relations as $relation => $relation_name) {
+            foreach ($this->{$relation} as $k => $model) {
+                $attributes = array_keys($model->getAttributes());
+                unset($attributes[array_flip($attributes)['medication_set_id']]);
+                $model->validate($attributes);
+                $z = $k+1;
+                $has_error = $validation_processor($model, "$relation_name [$z] ");
+            }
+        }
+
+        foreach ($this->medicationSetAutoRuleMedications as $model) {
+            $attributes = array_keys($model->getAttributes());
+            unset($attributes[array_flip($attributes)['medication_set_id']]);
+            foreach ($model->getErrors() as $attribute => $errors) {
+                foreach ($errors as $k => $error) {
+                    $this->addError(get_class($model) . " [$k] $attribute", $model->medication->preferred_term .  " : " . $error);
+                    $has_error = true;
+                }
+            }
+
+            $i = 0;
+            foreach ($model->tapers as $taper_model) {
+                $attributes = array_keys($taper_model->getAttributes());
+                unset($attributes[array_flip($attributes)['medication_set_auto_rule_id']]);
+                $taper_model->validate($attributes);
+
+                $i++;
+                foreach ($taper_model->getErrors() as $attribute => $errors) {
+                    foreach ($errors as $k => $error) {
+                        // $z = $k+1;
+                        $this->addError(get_class($taper_model) . " [$z] $attribute", $model->medication->preferred_term .  " [taper][$i] : " . $error);
+                        $has_error = true;
+                    }
+                }
+            }
+        }
+
+        return $has_error;
+    }
+
     public function afterSave()
     {
         if ($this->automatic) {
@@ -413,23 +473,6 @@ class MedicationSet extends BaseActiveRecordVersioned
             $med_m->include_children = isset($med->include_children) ? $med->include_children : 0;
             $med_m->include_parent = isset($med->include_parent) ? $med->include_parent : 0;
 
-            $med_m->tapers = [];
-
-            //save tapers if there are any
-            if (isset($this->tmp_tapers[$key])) {
-                $new_tapers = [];
-                foreach ($this->tmp_tapers[$key] as $taper) {
-                    $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['id']);
-                    if (!$new_taper) {
-                        $new_taper = new MedicationSetAutoRuleMedicationTaper();
-                    }
-                    $new_taper->dose = $taper['dose'];
-                    $new_taper->duration_id = $taper['duration_id'];
-                    $new_taper->frequency_id = $taper['frequency_id'];
-                    $new_tapers[] = $new_taper;
-                }
-                $med_m->tapers = $new_tapers;
-            }
             $med_m->save();
             $updated_ids[] = $med_m->id;
         }
@@ -437,7 +480,11 @@ class MedicationSet extends BaseActiveRecordVersioned
         if (!empty($ids_to_delete)) {
             $criteria = new \CDbCriteria();
             $criteria->addInCondition('id', $ids_to_delete);
-            MedicationSetAutoRuleMedication::model()->deleteWithTapers()->deleteAll($criteria);
+
+            // beforeDelete only called before delete() but not before deleteAll();
+            foreach (MedicationSetAutoRuleMedication::model()->findAll($criteria) as $item) {
+                $item->deleteWithTapers()->delete($criteria);
+            }
         }
     }
 
