@@ -120,13 +120,13 @@ $user_searches = array_map(
     </nav>
     <main class="oe-full-main">
         <?php if ($patients->itemCount > 0) { ?>
-        <?php $this->widget('CaseSearchPlot', array(
+            <?php $this->widget('CaseSearchPlot', array(
                     'variable_data' => $variableData,
                     'variables' => $variables,
                     'total_patients' => $patients->totalItemCount,
                     'list_selector' => '.oe-search-results'
                 ));
-        ?>
+            ?>
         <div class="oe-search-results" style="display: none;">
             <?php
                 //Just create the widget here so we can render it's parts separately
@@ -169,12 +169,12 @@ $user_searches = array_map(
                 // Build up the list of sort fields and the relevant ascending/descending sort URLs for each option.
                 $sort_fields = array();
                 $sort_field_options = array();
-                foreach ($sort->attributes as $key => $attribute) {
-                    $sort_fields[$key] = $attribute['label'];
-                    $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
-                    $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
-                }
-                ?>
+            foreach ($sort->attributes as $key => $attribute) {
+                $sort_fields[$key] = $attribute['label'];
+                $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
+                $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
+            }
+            ?>
                 <div class="table-sort-order">
                     <div class="sort-by">
                         Sort by:
@@ -204,7 +204,7 @@ $user_searches = array_map(
                     </tr>
                     </tfoot>
                 </table>
-            <?php } ?>
+        <?php } ?>
         </div>
     </main>
 </div>

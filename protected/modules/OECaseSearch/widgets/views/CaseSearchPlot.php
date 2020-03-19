@@ -15,7 +15,7 @@
     $x = array_column($this->variable_data[$variable->field_name], $variable->field_name);
     $y = array_column($this->variable_data[$variable->field_name], 'frequency');
     $n = $this->total_patients
-?>
+    ?>
     <!-- BEGIN PLOT CONTAINER -->
     <div
         id="<?= $variable->field_name ?>"

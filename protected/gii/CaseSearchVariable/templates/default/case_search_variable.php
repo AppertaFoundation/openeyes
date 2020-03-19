@@ -12,7 +12,7 @@ class <?= $this->className ?>Variable extends CaseSearchVariable implements <?= 
     }
 
 <?php foreach (explode(',', $this->searchProviders) as $searchProvider) :?>
-<?php if ($searchProvider === 'DBProvider') :?>
+    <?php if ($searchProvider === 'DBProvider') :?>
     public function query($searchProvider)
     {
         // TODO: Return a query string here.
@@ -24,6 +24,6 @@ class <?= $this->className ?>Variable extends CaseSearchVariable implements <?= 
         // TODO: Return an array of  bind mappings here (if applicable)
         return array();
     }
-<?php endif; ?>
+    <?php endif; ?>
 <?php endforeach; ?>
 }
