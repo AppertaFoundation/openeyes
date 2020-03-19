@@ -1306,7 +1306,13 @@ class BaseEventTypeController extends BaseModuleController
         //event date and parent validation
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
-            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $current_event_date = substr($event->event_date, 0, 10);
+
+            if ($event_date !== $current_event_date) {
+                $event->event_date = $event_date;
+            }
+
             if (isset($data['Event']['parent_id'])) {
                 $event->parent_id = $data['Event']['parent_id'];
             }
