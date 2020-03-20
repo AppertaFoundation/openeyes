@@ -266,9 +266,8 @@ class AutoSetRuleController extends BaseAdminController
 
         if (\Yii::app()->request->isPostRequest) {
             $set_rules = \Yii::app()->request->getParam('MedicationSetRule', []);
-            $set->tmp_tapers = \Yii::app()->request->getParam('MedicationSetAutoRuleMedicationTaper', []);
 
-            ## so we can display what user set previously
+            // so we can display what user set previously
             $set->medicationAutoRuleAttributes = $this->repopulateFields('attrs', \Yii::app()->request->getParam('MedicationSetAutoRuleAttributes', []));
             $set->medicationSetAutoRuleSetMemberships = $this->repopulateFields('sets', \Yii::app()->request->getParam('MedicationSetAutoRuleSetMemberships', []));
             $set->medicationSetRules = $this->repopulateFields('rules', $set_rules);
@@ -278,8 +277,8 @@ class AutoSetRuleController extends BaseAdminController
             $set->name = $data['name'];
             $set->hidden = $data['hidden'];
 
-            //validate here so if tmp_rules are empty we can return these errors as well
             $set->validate();
+            $set->validateRelations();
 
             if (!$set_rules && $set->name !== "medication_management" && !$set->hidden) {
                 $set->addError('medicationSetRules', 'Usage rules must be set for visible sets.');
@@ -446,6 +445,23 @@ class AutoSetRuleController extends BaseAdminController
                 foreach ($tmp_set as $row => $med_meds) {
                     $set_m[$row] = MedicationSetAutoRuleMedication::model()->findByPk($med_meds['id']) ?? new MedicationSetAutoRuleMedication();
                     $set_m[$row]->attributes =  $med_meds;
+                    $tapers = \Yii::app()->request->getParam('MedicationSetAutoRuleMedicationTaper', []);
+
+                    // tapers
+                    if (isset($tapers[$row])) {
+                        $new_tapers = [];
+                        foreach ($tapers[$row] as $taper) {
+                            $new_taper = MedicationSetAutoRuleMedicationTaper::model()->findByPk($taper['id']);
+                            if (!$new_taper) {
+                                $new_taper = new MedicationSetAutoRuleMedicationTaper();
+                            }
+                            $new_taper->dose = $taper['dose'];
+                            $new_taper->duration_id = $taper['duration_id'];
+                            $new_taper->frequency_id = $taper['frequency_id'];
+                            $new_tapers[] = $new_taper;
+                        }
+                        $set_m[$row]->tapers = $new_tapers;
+                    }
                 }
             break;
 

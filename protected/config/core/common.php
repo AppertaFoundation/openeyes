@@ -90,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202003121602',
+            'time' => '202003191634',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -663,6 +663,8 @@ return array(
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,
       // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-      'worklist_default_pagination_size' => 1000
+      'worklist_default_pagination_size' => 1000,
+      'tech_support_provider' => !empty(trim(getenv('OE_TECH_SUPPORT_PROVIDER'))) ? getenv('OE_TECH_SUPPORT_PROVIDER') :  '',
+      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  ''
     ),
 );

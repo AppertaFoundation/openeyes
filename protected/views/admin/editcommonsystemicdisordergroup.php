@@ -13,17 +13,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes">
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'right'
-    ]
-  ) ?>
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'left'
-    ]
-  ) ?>
-</div>
+<h2><?= $model->id ? 'Edit' : 'Add'?> Common Systemic Disorder Group</h2>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', [
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => [
+        'label' => 2,
+        'field' => 5,
+    ],
+]);
+
+$this->renderPartial(
+    '/admin/formcommonsystemicdisordergroup',
+    ['form' => $form, 'model' => $model, 'errors' => $errors]
+);
+
+$this->endWidget();
