@@ -142,7 +142,7 @@ class HistoryMedicationsEntry extends \BaseElement
      *
      * @param $item
      */
-    private function clonefromPrescriptionItem($item)
+    private function cloneFromPrescriptionItem($item)
     {
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
@@ -315,6 +315,11 @@ class HistoryMedicationsEntry extends \BaseElement
         return $this->medication_name ? :
             ($this->medication_drug ? (string) $this->medication_drug :
                 ($this->drug ? $this->drug->tallmanlabel : ''));
+    }
+
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
     }
 
     /**

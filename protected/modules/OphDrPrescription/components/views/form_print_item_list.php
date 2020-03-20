@@ -27,7 +27,7 @@
                 for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
                     $item = $this->items[$j];
                     if ($this->isPrintable($item)) {
-                        $drug_label = $item->drug->label;
+                        $drug_label = strtoupper($item->drug->label);
                         $total_tapers = count($item->tapers);
 
                         $current_item_copy = $this->current_item_index ?: $current_item_copy;
@@ -101,7 +101,7 @@
                                 if (!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === "taper{$index}_$attr") {
                                     switch ($attr) {
                                         case 'label':
-                                            echo '<br/>then<br/>';
+                                            echo '<br/>THEN<br/>';
                                             break;
                                         case 'dose':
                                             echo wordwrap($taper->fpTenDose(), $this->getLineLength(), '<br/>') . '<br/>';
@@ -131,7 +131,7 @@
                                 $end_of_page = true;
                             }
                             if ((!$this->getCurrentItemAttr() || $this->getCurrentItemAttr() === 'item_comment') && $item->comments) {
-                                echo '<br/>' . wordwrap("Comment: $item->comments", $this->getLineLength(), '<br/>');
+                                echo '<br/>' . wordwrap('COMMENT: ' . strtoupper($item->comments), $this->getLineLength(), '<br/>');
                                 $this->setCurrentAttr();
                                 $this->current_item_index = 0;
                                 $this->current_taper_index = 0;
@@ -185,11 +185,21 @@
                 </div>
                 <p class="fpten-form-row fpten-page-counter">
                     <?php
-                    echo "Page {$this->getPageNumber()} of {$this->getTotalPages()}";
+                    echo "PAGE {$this->getPageNumber()} OF {$this->getTotalPages()}<br/><br/>";
                     if ($side === 'right') {
                         $this->addPages();
                     }?>
                 </p>
+                <div class="fpten-form-row">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="fpten-doctor-name"><?= $this->user->getFirstInitialFullNameAndTitle() ?></td>
+                            <td class="fpten-registration-code"><?=  str_replace('GMC', '', $this->user->registration_code) ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 var analytics_cataract = (function () {
 	var ajaxThrottleTime = analytics_toolbox.getAjaxThrottleTime() || 100;
-	var throttleTIme = analytics_toolbox.getThrottleTime() || 1000;
+	var throttleTime = analytics_toolbox.getThrottleTime() || 1000;
 	var dict = {
 		'/report/ajaxReport?report=PcrRisk&template=analytics': [
 			'PcrRiskReport',
@@ -284,7 +284,7 @@ var analytics_cataract = (function () {
 		}
 		$('.js-cataract-report-type').off('click').on('click', _.throttle(cataractPlotType, ajaxThrottleTime));
 
-		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTIme));
+		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTime));
 
 		$('#js-all-surgeons').off('click').on('click', _.throttle(toggleAllSurgeonOpt, ajaxThrottleTime));
 

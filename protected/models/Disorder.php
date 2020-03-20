@@ -88,7 +88,7 @@ class Disorder extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('fully_specified_name, term', 'required'),
-            array('id', 'length', 'max' => 10),
+            array('id', 'length', 'max' => 20),
             array('id', 'checkDisorderExists'),
             array('fully_specified_name, term , aliases , specialty_id', 'length', 'max' => 255),
             // The following rule is used by search().
