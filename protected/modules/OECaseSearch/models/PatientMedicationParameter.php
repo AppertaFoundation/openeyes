@@ -57,8 +57,7 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . self::_AUTOCOM
     public function query($searchProvider)
     {
         if ($this->operation === '=') {
-            $op = 'LIKE';
-            $wildcard = '%';
+            $op = '=';
 
             return "
 SELECT p.id
@@ -69,12 +68,11 @@ LEFT JOIN drug d
   ON d.id = m.drug_id
 LEFT JOIN medication_drug md
   ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
-  OR md.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'";
+WHERE d.id $op :p_m_value_$this->id
+  OR md.id $op :p_m_value_$this->id";
         }
 
-        $op = 'NOT LIKE';
-        $wildcard = '%';
+        $op = '!=';
 
         return "
 SELECT p.id
@@ -85,8 +83,8 @@ LEFT JOIN drug d
 ON d.id = m.drug_id
 LEFT JOIN medication_drug md
 ON md.id = m.medication_drug_id
-WHERE d.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
-OR md.name $op '$wildcard' :p_m_value_$this->id  '$wildcard'
+WHERE d.id $op :p_m_value_$this->id
+OR md.id $op :p_m_value_$this->id
 OR m.id IS NULL";
     }
 
@@ -107,20 +105,10 @@ OR m.id IS NULL";
      */
     public function getAuditData()
     {
-        $op = 'LIKE';
+        $op = '=';
         if ($this->operation) {
-            $op = 'NOT LIKE';
+            $op = '!=';
         }
         return "$this->name: $op \"$this->value\"";
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        return "Medication $op = $this->value";
     }
 }

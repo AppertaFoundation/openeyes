@@ -84,24 +84,16 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * This has been overridden to add additional attributes.
-     * @return array Complete array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(parent::attributeNames(), array(
-            'bothEyesIndicator',
-        ));
-    }
-
-    /**
      * Attribute labels for display purposes.
      * @return array Attribute key/value pairs.
      */
     public function attributeLabels()
     {
-        return array(
-            'bothEyesIndicator' => 'Both Eyes',
+        return array_merge(
+            parent::attributeLabels(),
+            array(
+                'bothEyesIndicator' => 'Both Eyes',
+            )
         );
     }
 
@@ -204,27 +196,5 @@ FROM (
                 'bothEyesIndicator' => $this->bothEyesIndicator
             )
         );
-    }
-
-    public function getDisplayString()
-    {
-        if ($this->minValue && !$this->maxValue) {
-            $this->operation = '>=';
-        } elseif ($this->maxValue && !$this->minValue) {
-            $this->operation = '<=';
-        } elseif ($this->maxValue && $this->minValue) {
-            $this->operation = 'BETWEEN';
-        }
-
-        $bothEyes = $this->bothEyesIndicator ? ' for both eyes' : null;
-        if ($this->operation === 'BETWEEN') {
-            return "Vision IS between $this->minValue and {$this->maxValue}{$bothEyes}";
-        }
-
-        if ($this->operation === '<=') {
-            return "Vision IS $this->operation {$this->maxValue}{$bothEyes}";
-        }
-
-        return "Vision IS $this->operation {$this->minValue}{$bothEyes}";
     }
 }

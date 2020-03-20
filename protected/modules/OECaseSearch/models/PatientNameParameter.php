@@ -61,11 +61,4 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
     {
         return "$this->name: = \"$this->value\"";
     }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-
-        return "Name $op = $this->value";
-    }
 }

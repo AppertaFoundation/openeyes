@@ -47,12 +47,12 @@ class VAVariableTest extends CDbTestCase
         unset($this->variable, $this->searchProviders);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers DBProvider::executeSearch()
-     */
     public function testGetVariableData()
     {
+        $this->assertEquals('va', $this->variable->field_name);
+        $this->assertEquals('VA', $this->variable->label);
+        $this->assertEquals('ETDRS Letters', $this->variable->unit);
+        $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = $this->searchProviders[0]->getVariableData($variables);

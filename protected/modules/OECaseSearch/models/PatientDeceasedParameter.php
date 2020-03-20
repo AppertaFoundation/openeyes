@@ -31,15 +31,6 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return parent::attributeNames();
-    }
-
-    /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
@@ -89,14 +80,5 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
     {
         $value = $this->operation === false ? 'False' : 'True';
         return "$this->name: $value";
-    }
-
-    public function getDisplayString()
-    {
-        if ($this->operation) {
-            return 'Patient IS deceased';
-        }
-
-        return null;
     }
 }

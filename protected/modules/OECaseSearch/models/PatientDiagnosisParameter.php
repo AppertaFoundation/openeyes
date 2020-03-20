@@ -16,7 +16,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     public $only_latest_event;
 
     protected $options = array(
-        'value_type' => 'string_search'
+        'value_type' => 'string_search',
     );
 
     /**
@@ -28,6 +28,8 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         parent::__construct($scenario);
         $this->name = 'diagnosis';
         $this->only_latest_event = false;
+        $this->options['operations'][0] = array('label' => 'INCLUDES', 'id' => 'IN');
+        $this->options['operations'][1] = array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN');
 
         $firms = Firm::model()->getListWithSpecialties();
 
@@ -78,15 +80,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(parent::attributeNames(), array('firm_id', 'only_latest_event'));
-    }
-
-    /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
@@ -114,7 +107,7 @@ JOIN et_ophciexamination_diagnoses diagnoses ON diagnoses.id = diagnosis.element
 JOIN event ON event.id = diagnoses.event_id
 JOIN episode ON episode.id = event.episode_id
 JOIN disorder ON diagnosis.disorder_id = disorder.id
-WHERE LOWER(disorder.term) LIKE LOWER(:p_d_value_$this->id)
+WHERE disorder.id = :p_d_value_$this->id
 AND (:p_d_firm_$this->id IS NULL OR event.firm_id = :p_d_firm_$this->id)
 AND (:p_d_only_latest_event_$this->id = 0 OR
   NOT EXISTS (
@@ -135,7 +128,7 @@ JOIN et_ophciexamination_systemic_diagnoses diagnoses ON diagnoses.id = diagnosi
 JOIN event ON event.id = diagnoses.event_id
 JOIN episode ON episode.id = event.episode_id
 JOIN disorder ON diagnosis.disorder_id = disorder.id
-WHERE LOWER(disorder.term) LIKE LOWER(:p_d_value_$this->id)
+WHERE disorder.id = :p_d_value_$this->id
 AND (:p_d_firm_$this->id IS NULL OR event.firm_id = :p_d_firm_$this->id)
 AND (:p_d_only_latest_event_$this->id = 0 OR
   NOT EXISTS (
@@ -155,12 +148,12 @@ JOIN secondary_diagnosis sd
   ON sd.patient_id = p3.id
 JOIN disorder d3
   ON d3.id = sd.disorder_id
-WHERE LOWER(d3.term) LIKE LOWER(:p_d_value_$this->id)
+WHERE d3.id = :p_d_value_$this->id
 AND :p_d_firm_$this->id IS NULL
 AND :p_d_only_latest_event_$this->id = 0";
         }
 
-        if ($this->operation) {
+        if ($this->operation === 'NOT IN') {
                 $query = "
 SELECT DISTINCT p1.id
 FROM patient p1
@@ -196,7 +189,7 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
     public function bindValues()
     {
         $result = array(
-            "p_d_value_$this->id" => '%' . $this->value . '%',
+            "p_d_value_$this->id" => $this->value,
             "p_d_only_latest_event_$this->id" => $this->only_latest_event,
             "p_d_firm_$this->id" => $this->firm_id ?: null,
         );
@@ -209,10 +202,10 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
      */
     public function getAuditData()
     {
-        $op = 'LIKE';
+        $op = '=';
         $result = null;
         if ($this->operation) {
-            $op = 'NOT LIKE';
+            $op = '!=';
         }
         $result = "$this->name: $op \"$this->value\"";
 
@@ -237,25 +230,5 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
                 'only_latest_event' => $this->only_latest_event,
             )
         );
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        $only_latest_event = ' for all events';
-        $firm = '';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        if ($this->firm_id) {
-            $firm = ' for ' . Firm::model()->findByPk($this->firm_id)->name;
-        }
-
-        if ($this->only_latest_event) {
-            $only_latest_event = ' for latest event only';
-        }
-
-        return "Diagnosis $op = {$this->value}{$firm}{$only_latest_event}";
     }
 }

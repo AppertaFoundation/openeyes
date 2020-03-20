@@ -23,27 +23,6 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'number',
-            )
-        );
-    }
-
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(), array(
-            'number' => 'Value',
-        ));
-    }
-
-    /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
@@ -75,15 +54,5 @@ WHERE p.hos_num $op :p_num_number_$this->id";
     public function getAuditData()
     {
         return "$this->name: = $this->value";
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        return "Number $op = $this->value";
     }
 }

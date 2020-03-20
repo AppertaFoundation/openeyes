@@ -106,22 +106,6 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'relative',
-                'side',
-                'condition',
-            )
-        );
-    }
-
-    /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
@@ -223,10 +207,5 @@ WHERE id NOT IN (
                 'condition' => $this->condition,
             )
         );
-    }
-
-    public function getDisplayString()
-    {
-        return "{$this->side} {$this->relative} {$this->operation} {$this->condition}";
     }
 }

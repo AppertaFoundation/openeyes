@@ -27,13 +27,14 @@ class AgeVariableTest extends CDbTestCase
         unset($this->variable, $this->searchProviders);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers DBProvider::executeSearch()
-     */
     public function testGetVariableData()
     {
         $variables = array($this->variable);
+
+        $this->assertEquals('age', $this->variable->field_name);
+        $this->assertEquals('Age', $this->variable->label);
+        $this->assertEquals('y', $this->variable->unit);
+        $this->assertNotEmpty($this->variable->id_list);
 
         $results = $this->searchProviders[0]->getVariableData($variables);
 

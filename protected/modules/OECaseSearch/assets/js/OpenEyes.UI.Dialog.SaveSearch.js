@@ -55,11 +55,16 @@
      * @returns {string}
      */
     SaveSearchDialog.prototype.getContent = function (options) {
+        // Copy the parameter and variable lists from the main search pane. This will capture the visible text as well as the hidden inputs.
         let $paramTable = $('#param-list').clone();
         let $variableTable = $('#js-variable-table').clone();
         let $variableList = $('#js-variable-list');
+
+        // Remove the delete buttons that were cloned for each row.
         $paramTable.find('td:has(i)').remove();
         $variableTable.find('td:has(i)').remove();
+
+        // Display the screen using the specified template.
         return this.compileTemplate({
             selector: options.selector,
             data: {

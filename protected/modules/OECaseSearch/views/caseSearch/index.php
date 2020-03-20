@@ -121,7 +121,9 @@ $user_searches = array_map(
                 'display_class' => 'oe-search-results',
                 'display' => false,
             ));
-        } ?>
+        } else { ?>
+            <p>No patients found.</p>
+        <?php } ?>
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </main>
 </div>
@@ -141,7 +143,7 @@ $user_searches = array_map(
         </div>
         <div class="show-query">
             <h3>Save search as</h3>
-            <?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search name description', 'class' => 'cols-full')) ?>
+            <?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search name description', 'class' => 'cols-full', 'maxlength' => 50)) ?>
             <div class="row align-right">
                 <?= CHtml::htmlButton(
                     'Save search',
@@ -288,13 +290,14 @@ $user_searches = array_map(
                 ),
             ],
             openButton: $('#add-variable'),
+            id: 'add-variable-dialog',
             onReturn: function (dialog, selectedValues) {
                 let $variableList = $('#js-variable-list');
                 $('#js-variable-table tbody').empty();
                 $variableList.val('');
                 // Add a row to the table for each selected variable, and add each one to the hidden field as a CSV list.
                 $.each(selectedValues, function(index, item) {
-                    $('#js-variable-table tbody').append('<tr class="search-variable" data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
+                    $('#js-variable-table tbody').append('<tr class="search-var" data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
                     if ($variableList.val()) {
                         $variableList.val($variableList.val() + ',' + item.id);
                     } else {
@@ -311,6 +314,7 @@ $user_searches = array_map(
                 ),
             ],
             openButton: $('#add-to-advanced-search-filters'),
+            id: 'add-parameter-dialog',
             onReturn: function (dialog, selectedValues) {
                 let operator = null;
                 let value = null;

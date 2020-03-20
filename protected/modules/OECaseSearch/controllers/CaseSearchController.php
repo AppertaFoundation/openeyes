@@ -142,7 +142,7 @@ class CaseSearchController extends BaseModuleController
 
         $all_searches = SavedSearch::model()->findAll();
 
-        if (array_key_exists('variable_list', $_POST)) {
+        if (array_key_exists('variable_list', $_POST) && !empty($ids)) {
             $variable_names = explode(',', $_POST['variable_list']);
             if ($variable_names[0] != '') {
                 foreach ($variable_names as $variable_name) {
@@ -320,6 +320,7 @@ class CaseSearchController extends BaseModuleController
             $search->variables = $_POST['variable_list'];
 
             if (!$search->save()) {
+                Yii::log(var_Export($search->getErrors(), true));
                 throw new CHttpException(500, 'Unable to save search');
             }
             Yii::app()->user->setFlash('success', 'Search saved successfully.');
@@ -467,9 +468,17 @@ class CaseSearchController extends BaseModuleController
 
         // This is required when the search results return any records.
         Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.SaveSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        if (!Yii::app()->clientScript->isScriptFileRegistered('js/OpenEyes.UI.Dialog.js')) {
+            Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
+        }
+
+        if (!Yii::app()->clientScript->isScriptFileRegistered($assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js')) {
+            Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.LoadSavedSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        }
+
+        if (!Yii::app()->clientScript->isScriptFileRegistered($assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js')) {
+            Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.SaveSearch.js', 'application.modules.OECaseSearch.assets', -10);
+        }
 
         return parent::beforeAction($action);
     }

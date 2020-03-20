@@ -62,9 +62,4 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     {
         return "$this->name: $this->operation $this->value";
     }
-
-    public function getDisplayString()
-    {
-        return "Age IS $this->operation $this->value";
-    }
 }

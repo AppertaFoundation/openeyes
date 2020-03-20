@@ -2,7 +2,6 @@
 
 use OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure;
 use OEModule\OphCiExamination\models\OphCiExamination_Instrument;
-use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
 
 /**
@@ -42,12 +41,12 @@ class IOPVariableTest extends CDbTestCase
         unset($this->variable, $this->searchProviders);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers DBProvider::executeSearch()
-     */
     public function testGetVariableData()
     {
+        $this->assertEquals('iop', $this->variable->field_name);
+        $this->assertEquals('IOP', $this->variable->label);
+        $this->assertEquals('mm Hg', $this->variable->unit);
+        $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = $this->searchProviders[0]->getVariableData($variables);

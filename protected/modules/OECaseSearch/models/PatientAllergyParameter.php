@@ -61,8 +61,8 @@ LEFT JOIN patient_allergy_assignment paa
   ON paa.patient_id = p.id
 LEFT JOIN allergy a
   ON a.id = paa.allergy_id
-WHERE a.name = :p_al_textValue_$this->id";
-        if (!$this->operation) {
+WHERE a.id = :p_al_textValue_$this->id";
+        if ($this->operation === '=') {
             return $query;
         }
 
@@ -91,20 +91,10 @@ $query
     public function getAuditData()
     {
         if ($this->operation === '=') {
-            $op = 'LIKE';
+            $op = '=';
         } else {
-            $op = 'NOT LIKE';
+            $op = '!=';
         }
         return "$this->name: $op \"$this->value\"";
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        return "Allergy $op = $this->value";
     }
 }

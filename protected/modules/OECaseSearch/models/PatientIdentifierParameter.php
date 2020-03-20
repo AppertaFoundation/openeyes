@@ -56,20 +56,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'code',
-            )
-        );
-    }
-
-    /**
      * Attribute labels for display purposes.
      * @return array Attribute key/value pairs.
      */
@@ -166,15 +152,5 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
                 'code' => $this->code,
             )
         );
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        return "Identifier $op = $this->value $this->code";
     }
 }

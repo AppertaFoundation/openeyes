@@ -61,15 +61,6 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return string[] An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array('name', 'operation', 'value', 'id');
-    }
-
-    /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
@@ -102,11 +93,6 @@ abstract class CaseSearchParameter extends CFormModel
         return null;
     }
 
-    public function getDisplayTitle()
-    {
-        return $this->getLabel();
-    }
-
     /**
      * Returns an array representing the parameter to store in the database. This array will be serialised before storage.
      * Subclasses should override this method and extend the array.
@@ -135,8 +121,6 @@ abstract class CaseSearchParameter extends CFormModel
             }
         }
     }
-
-    abstract public function getDisplayString();
 
     final public function getOptions()
     {

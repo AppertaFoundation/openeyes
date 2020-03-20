@@ -25,6 +25,7 @@
 
         this.userId = options.user_id;
         this.userSearches = options.all_searches;
+        this.id = options.id;
         Dialog.call(this, options);
     }
 
@@ -128,21 +129,20 @@
                 url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId,
                 type: 'GET',
                 success: function (response) {
-                    // Append the dynamic parameter HTML before the first fixed parameter.
                     let $tableBody = $('#param-list tbody');
                     let $varTable = $('#js-variable-table');
                     let $params = $(response).find('tr.parameter');
                     let $variables = $(response).find('tr.search-var');
                     let $varList = $('#js-variable-list');
 
+                    // Append the HTML from the response appropriately.
                     $($tableBody).find('.parameter').remove();
                     $($varTable).find('.search-var').remove();
                     $tableBody.append($params);
                     $varTable.append($variables);
-                    console.log($(response).find('tr#var-list td').text());
                     $varList.val($(response).find('tr#var-list td').text());
 
-                    // Execute the search.
+                    // Automatically execute the search.
                     $('form#search-form').submit();
                 },
                 error: function() {
@@ -161,23 +161,29 @@
             url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId + '?preview=1',
             type: 'GET',
             success: function (response) {
-                $(selectors.searchContentsList).empty();
-                $(selectors.searchContentsList).html(
-                    self.compileTemplate({
-                        selector: selectors.searchContentTemplate,
-                        data: {
-                            searchContents: $(response).find('tr.parameter').html(),
-                        }
-                    })
+                // Replace the contents of the search queries table with the returned HTML.
+                self.content.find(selectors.searchContentsList).empty();
+                self.content.find(selectors.searchContentsList).append(
+                    $(response).find('tr.parameter').map(function() {
+                        return self.compileTemplate({
+                            selector: selectors.searchContentTemplate,
+                            data: {
+                                searchContents: $(this).html(),
+                            }
+                        });
+                    }).get().join()
                 );
-                $(selectors.searchVariableList).empty();
-                $(selectors.searchVariableList).html(
-                    self.compileTemplate({
-                        selector: selectors.searchContentTemplate,
-                        data: {
-                            searchContents: $(response).find('tr.search-var').html(),
-                        }
-                    })
+                // Replace the contents of the search variables table with the returned HTML.
+                self.content.find(selectors.searchVariableList).empty();
+                self.content.find(selectors.searchVariableList).append(
+                    $(response).find('tr.search-var').map(function() {
+                        return self.compileTemplate({
+                            selector: selectors.searchContentTemplate,
+                            data: {
+                                searchContents: $(this).html(),
+                            }
+                        });
+                    }).get().join()
                 );
             },
             error: function() {

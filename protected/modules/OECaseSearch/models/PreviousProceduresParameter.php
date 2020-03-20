@@ -66,7 +66,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
               AND o.status_id = (SELECT id FROM ophtroperationbooking_operation_status WHERE name = 'Completed')
             JOIN ophtroperationnote_procedurelist_procedure_assignment op ON eop.id = op.procedurelist_id
             JOIN proc ON op.proc_id = proc.id
-            AND proc.term = :p_p_value_$this->id
+            AND proc.id = :p_p_value_$this->id
             UNION
             SELECT pa.id
             FROM patient pa
@@ -74,9 +74,9 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             JOIN event e on ep.id = e.episode_id
             JOIN et_ophciexamination_pastsurgery eop2 on e.id = eop2.event_id
             JOIN ophciexamination_pastsurgery_op o3 on eop2.id = o3.element_id
-               AND o3.operation = :p_p_value_$this->id";
+               AND o3.id = :p_p_value_$this->id";
 
-        if ($this->operation) {
+        if ($this->operation === '!=') {
             $query = "
                 SELECT outer_pat.id
                 FROM patient outer_pat 
@@ -99,15 +99,5 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         return array(
             "p_p_value_$this->id" => $this->value,
         );
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        return "Previous procedure $op = $this->value";
     }
 }
