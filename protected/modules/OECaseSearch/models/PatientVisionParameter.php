@@ -109,7 +109,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
      * Generate the SQL query for patient vision.
      * @param $searchProvider DBProvider The search provider building the query.
      * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {
@@ -132,7 +131,7 @@ FROM (
                      IF(va_side = 0, va_value, NULL) AS left_va_value,
                      IF(va_side = 1, va_value, NULL) AS right_va_value
               FROM (
-                     SELECT t1.patient_id, t1.va_value, t1.va_side, t1.date
+                     SELECT t1.patient_id, t1.va_value, t1.va_side
                      FROM (SELECT patient.id             AS patient_id,
                                   ovr.value              AS va_value,
                                   ovr.side               AS va_side,
@@ -147,7 +146,6 @@ FROM (
                              AND ovr.last_modified_date IS NOT NULL) t1
                      WHERE t1.date = (SELECT MAX(t2.date)
                                       FROM (SELECT patient.id             AS patient_id,
-                                                   ovr.value              AS va_value,
                                                    ovr.side               AS va_side,
                                                    ovr.last_modified_date AS date
                                             FROM patient

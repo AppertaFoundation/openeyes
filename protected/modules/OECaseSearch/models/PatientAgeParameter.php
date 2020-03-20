@@ -34,7 +34,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
      * Generate the SQL query for patient age.
      * @param $searchProvider DBProvider The search provider building the query.
      * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
-     * @throws CHttpException
      */
     public function query($searchProvider)
     {

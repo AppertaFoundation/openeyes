@@ -188,13 +188,11 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
      */
     public function bindValues()
     {
-        $result = array(
+        return array(
             "p_d_value_$this->id" => $this->value,
             "p_d_only_latest_event_$this->id" => $this->only_latest_event,
             "p_d_firm_$this->id" => $this->firm_id ?: null,
         );
-
-        return $result;
     }
 
     /**

@@ -53,9 +53,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         unset($this->parameter, $this->searchProvider);
     }
 
-    /**
-     * @covers PatientDiagnosisParameter::bindValues()
-     */
     public function testBindValues()
     {
         $this->parameter->value = 'Diabetes';
@@ -80,9 +77,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals($expected, $this->parameter->bindValues());
     }
 
-    /**
-     * @covers PatientDiagnosisParameter::query()
-     */
     public function testSearchLike()
     {
         $expected = array();
@@ -126,9 +120,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals($expected, $patients);
     }
 
-    /**
-     * @covers PatientDiagnosisParameter::query()
-     */
     public function testSearchNotLike()
     {
         $expected = array();

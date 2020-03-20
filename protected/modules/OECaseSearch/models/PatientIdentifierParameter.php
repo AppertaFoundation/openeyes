@@ -27,7 +27,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
-     * @throws CException
      */
     public function __construct($scenario = '')
     {
@@ -132,7 +131,6 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
 
     /**
      * @return array contains all identifier codes
-     * @throws CException
      */
     public function getAllCodes()
     {

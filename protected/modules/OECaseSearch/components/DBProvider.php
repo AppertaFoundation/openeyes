@@ -43,7 +43,6 @@ class DBProvider extends SearchProvider
     /**
      * @param $variables CaseSearchVariable[]
      * @return array
-     * @throws CException
      */
     public function getVariableData($variables)
     {

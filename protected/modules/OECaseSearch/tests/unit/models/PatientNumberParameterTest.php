@@ -35,12 +35,6 @@ class PatientNumberParameterTest extends CDbTestCase
         unset($this->parameter, $this->searchProvider);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers DBProvider::executeSearch()
-     * @covers PatientNumberParameter::query()
-     * @covers PatientNumberParameter::bindValues()
-     */
     public function testSearch()
     {
         $expected = array($this->patient('patient1'));

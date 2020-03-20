@@ -41,10 +41,6 @@ class PatientAgeParameterTest extends CDbTestCase
         unset($this->parameter, $this->searchProvider);
     }
 
-    /**
-     * @covers PatientAgeParameter::query()
-     * @throws CHttpException
-     */
     public function testQuery()
     {
         $correctOps = array(
@@ -88,9 +84,6 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
         }
     }
 
-    /**
-     * @covers PatientAgeParameter::bindValues()
-     */
     public function testBindValues()
     {
         $this->parameter->value = 50;
@@ -104,11 +97,6 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
         $this->assertInternalType('int', $actual['p_a_value_0']);
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers PatientAgeParameter::query()
-     * @throws Exception
-     */
     public function testSearch()
     {
         // test an exact search using a simple operation

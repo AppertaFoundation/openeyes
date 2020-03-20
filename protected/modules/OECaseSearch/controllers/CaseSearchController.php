@@ -390,6 +390,10 @@ class CaseSearchController extends BaseModuleController
         echo json_encode($values);
     }
 
+    /**
+     * @param $patient_ids
+     * @throws CException
+     */
     public function actionGetDrilldownList($patient_ids) {
         $pagination = array(
             'pageSize' => 10,

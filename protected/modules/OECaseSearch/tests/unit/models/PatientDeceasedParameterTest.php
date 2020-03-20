@@ -32,10 +32,6 @@ class PatientDeceasedParameterTest extends CDbTestCase
         unset($this->parameter, $this->searchProvider);
     }
 
-    /**
-     * @covers PatientDeceasedParameter::query()
-     * @throws CHttpException
-     */
     public function testQuery()
     {
         $correctOps = array(
@@ -65,9 +61,6 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
     }
 
-    /**
-     * @covers PatientDeceasedParameter::bindValues()
-     */
     public function testBindValues()
     {
         $this->parameter->operation = '1';
@@ -77,10 +70,6 @@ class PatientDeceasedParameterTest extends CDbTestCase
         $this->assertEquals($expected, $this->parameter->bindValues());
     }
 
-    /**
-     * @covers DBProvider::search()
-     * @covers PatientDeceasedParameter::query()
-     */
     public function testSearch()
     {
         // Ensure only the patient with the is_deceased as 1 fixture is returned.

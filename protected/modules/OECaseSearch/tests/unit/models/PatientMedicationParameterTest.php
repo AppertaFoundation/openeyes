@@ -31,10 +31,6 @@ class PatientMedicationParameterTest extends CDbTestCase
         parent::tearDown();
     }
 
-    /**
-     * @covers PatientMedicationParameter::query()
-     * @throws CHttpException
-     */
     public function testQuery()
     {
         $this->object->value = 5;
@@ -83,9 +79,6 @@ WHERE d.id = :p_m_value_0
         }
     }
 
-    /**
-     * @covers PatientMedicationParameter::bindValues()
-     */
     public function testBindValues()
     {
         $this->object->value = 5;

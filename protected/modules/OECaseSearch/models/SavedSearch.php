@@ -7,14 +7,15 @@
  * @property integer $id
  * @property string $name
  * @property string $search_criteria
+ * @property string $variables
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property User $createdUser
- * @property User $lastModifiedUser
+ * @property User $created_user
+ * @property User $last_modified_user
  */
 class SavedSearch extends BaseActiveRecordVersioned
 {
@@ -34,7 +35,7 @@ class SavedSearch extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, search_criteria', 'required'),
+            array('name, search_criteria, variables', 'required'),
             array('name', 'length', 'max' => 50),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date', 'safe'),
