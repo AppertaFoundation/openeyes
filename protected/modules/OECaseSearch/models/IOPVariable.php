@@ -12,7 +12,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
     public function query($searchProvider)
     {
         return '
-        SELECT value iop, COUNT(*) frequency
+        SELECT value iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_iop
         WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
         AND eye IS NOT NULL

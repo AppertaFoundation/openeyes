@@ -21,7 +21,7 @@ class CaseSearchController extends BaseModuleController
             'ajaxOnly + loadSearch',
             'ajaxOnly + deleteSearch',
             'ajaxOnly + clear',
-            'ajaxOnly + searchCommonItems'
+            'ajaxOnly + searchCommonItems',
         );
     }
 
@@ -40,6 +40,7 @@ class CaseSearchController extends BaseModuleController
                     'clear',
                     'getOptions',
                     'searchCommonItems',
+                    'getDrilldownList'
                 ),
                 'users' => array('@'),
             ),
@@ -165,6 +166,14 @@ class CaseSearchController extends BaseModuleController
             }
         }
 
+        if (Yii::app()->request->isAjaxRequest) {
+            $this->renderPartial('patient_drill_down_list', array(
+                'patients' => $patientData,
+                'display_class' => 'oe-search-results',
+                'display' => true,
+            ));
+            Yii::app()->end();
+        }
         $this->render('index', array(
             'paramList' => $paramList,
             'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
@@ -373,11 +382,68 @@ class CaseSearchController extends BaseModuleController
         $type = Yii::app()->request->getQuery('type');
 
         /**
-         * @var $stub CaseSearchParameter
+         * @var $type CaseSearchParameter
          */
         $values = $type::getCommonItemsForTerm($term);
 
         echo json_encode($values);
+    }
+
+    public function actionGetDrilldownList($patient_ids) {
+        $pagination = array(
+            'pageSize' => 10,
+        );
+        $criteria = new CDbCriteria();
+        $criteria->compare('t.id', explode(',', $patient_ids));
+        $criteria->with = 'contact';
+        $criteria->compare('t.deleted', 0);
+        $patients = new CActiveDataProvider('Patient', array(
+            'criteria' => $criteria,
+            'totalItemCount' => count(explode(',', $patient_ids)),
+            'pagination' => $pagination,
+            'sort' => array(
+                'attributes' => array(
+                    'last_name' => array(
+                        'asc' => 'last_name',
+                        'desc' => 'last_name DESC',
+                        'label' => 'Surname',
+                    ),
+                    'first_name' => array(
+                        'asc' => 'first_name',
+                        'desc' => 'first_name DESC',
+                        'label' => 'First name',
+                    ),
+                    'age' => array(
+                        'asc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))',
+                        'desc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) DESC',
+                        'label' => 'Age',
+                    ),
+                    'gender' => array(
+                        'asc' => 'gender',
+                        'desc' => 'gender DESC',
+                        'label' => 'Gender',
+                    ),
+                ),
+                'defaultOrder' => array(
+                    'last_name' => CSort::SORT_ASC,
+                ),
+            ),
+        ));
+
+        if (Yii::app()->request->isAjaxRequest) {
+            $this->renderPartial('patient_drill_down_list', array(
+                'patients' => $patients,
+                'display_class' => 'oe-search-drill-down-list',
+                'display' => true,
+            ));
+            Yii::app()->end();
+        }
+
+        $this->renderPartial('patient_drill_down_list', array(
+            'patients' => $patients,
+            'display_class' => 'oe-search-drill-down-list',
+            'display' => true,
+        ));
     }
 
     /**

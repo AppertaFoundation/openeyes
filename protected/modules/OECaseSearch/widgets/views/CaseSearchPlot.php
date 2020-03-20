@@ -14,6 +14,7 @@
 <?php foreach ($this->variables as $id => $variable) {
     $x = array_column($this->variable_data[$variable->field_name], $variable->field_name);
     $y = array_column($this->variable_data[$variable->field_name], 'frequency');
+    $customdata = array_column($this->variable_data[$variable->field_name], 'patient_id_list');
     $n = $this->total_patients
     ?>
     <!-- BEGIN PLOT CONTAINER -->
@@ -23,6 +24,10 @@
         class="js-plotly-plot"
         data-x="<?= CHtml::encode(json_encode($x)) ?>"
         data-y="<?= CHtml::encode(json_encode($y)) ?>"
+        data-patient-id-list="<?= CHtml::encode(json_encode(array_map(
+                static function ($item) {
+                    return explode(', ', $item);
+                }, $customdata))) ?>"
         data-total="<?= $n ?>"
         data-var-name="<?= $variable->field_name ?>"
         data-var-label="<?= $variable->label ?>"

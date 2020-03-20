@@ -14,16 +14,6 @@
  * @var $variableData array
  */
 $this->pageTitle = 'Advanced Search';
-$sort_field = 'last_name';
-$sort_direction = 'ascend';
-if (isset($_GET['Patient_sort'])) {
-    if (!strpos($_GET['Patient_sort'], '.desc')) {
-        $sort_direction = 'ascend';
-    } else {
-        $sort_direction = 'descend';
-    }
-    $sort_field = str_replace('.desc', '', $_GET['Patient_sort']);
-}
 
 $user_searches = array_map(
     static function ($item) {
@@ -119,93 +109,20 @@ $user_searches = array_map(
         <?php $this->endWidget('search-form'); ?>
     </nav>
     <main class="oe-full-main">
-        <?php if ($patients->itemCount > 0) { ?>
-            <?php $this->widget('CaseSearchPlot', array(
+        <?php if ($patients->itemCount > 0) {
+            $this->widget('CaseSearchPlot', array(
                     'variable_data' => $variableData,
                     'variables' => $variables,
                     'total_patients' => $patients->totalItemCount,
                     'list_selector' => '.oe-search-results'
-                ));
-            ?>
-        <div class="oe-search-results" style="display: none;">
-            <?php
-                //Just create the widget here so we can render it's parts separately
-                /** @var $searchResults CListView */
-                $searchResults = $this->createWidget(
-                    'zii.widgets.CListView',
-                    array(
-                        'dataProvider' => $patients,
-                        'itemView' => 'search_results',
-                        'emptyText' => 'No patients found',
-                        'viewData' => array(
-                            'trial' => $this->trialContext
-                        ),
-                        'enableSorting' => true,
-                        'sortableAttributes' => array(
-                            'last_name',
-                            'first_name',
-                            'age',
-                            'gender',
-                        )
-                    )
-                );
-                $sort = $patients->getSort();
-                /**
-                 * @var $pager LinkPager
-                 */
-                $pager = $this->createWidget(
-                    'LinkPager',
-                    array(
-                        'pages' => $patients->getPagination(),
-                        'maxButtonCount' => 15,
-                        'cssFile' => false,
-                        'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                        'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                        'htmlOptions' => array(
-                            'class' => 'pagination',
-                        ),
-                    )
-                );
-                // Build up the list of sort fields and the relevant ascending/descending sort URLs for each option.
-                $sort_fields = array();
-                $sort_field_options = array();
-            foreach ($sort->attributes as $key => $attribute) {
-                $sort_fields[$key] = $attribute['label'];
-                $sort_field_options[$key]['data-sort-ascend'] = $sort->createUrl($this, array($key => $sort::SORT_ASC));
-                $sort_field_options[$key]['data-sort-descend'] = $sort->createUrl($this, array($key => $sort::SORT_DESC));
-            }
-            ?>
-                <div class="table-sort-order">
-                    <div class="sort-by">
-                        Sort by:
-                        <span class="sort-options">
-                        <?= CHtml::dropDownList('sort', $sort_field, $sort_fields, array('id' => 'sort-field', 'options' => $sort_field_options)) ?>
-                        <span class="direction">
-                            <label class="inline highlight">
-                                <?= CHtml::radioButton('sort-options', ($sort_direction === 'ascend'), array('value' => 'ascend')) ?>
-                                <i class="oe-i direction-up medium"></i>
-                            </label>
-                            <label class="inline highlight">
-                                <?= CHtml::radioButton('sort-options', ($sort_direction === 'descend'), array('value' => 'descend')) ?>
-                                <i class="oe-i direction-down medium"></i>
-                            </label>
-                        </span>
-                    </span>
-                    </div>
-                    <?php $pager->run(); ?>
-                </div>
-                <table id="case-search-results" class="standard last-right">
-                    <tbody>
-                    <?= $searchResults->renderItems() ?>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3"><?php $pager->run(); ?></td>
-                    </tr>
-                    </tfoot>
-                </table>
-        <?php } ?>
-        </div>
+            ));
+            $this->renderPartial('patient_drill_down_list', array(
+                'patients' => $patients,
+                'display_class' => 'oe-search-results',
+                'display' => false,
+            ));
+        } ?>
+        <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </main>
 </div>
 <script type="text/html" id="save-search-template">
@@ -338,13 +255,21 @@ $user_searches = array_map(
         return id_max;
     }
 
-    function performSort(field) {
-        let $field = $('#sort-field option[value=' + field + ']');
-        let direction = $("input[name='sort-options']").filter("input[checked='checked']").val();
+    function performSort(field, $container) {
+        let $field = $container.find('#sort-field option[value="' + field + '"]');
+        console.log($field.val());
+        let direction = $container.find("input[name='sort-options']").filter("input[checked='checked']").val();
+        $('#js-analytics-spinner').show();
         if (direction === 'ascend') {
-            window.location.href = $($field).data('sort-ascend');
+            $.get($field.data('sort-ascend')).done(function(response) {
+                $container.html(response);
+                $('#js-analytics-spinner').hide();
+            });
         } else if (direction === 'descend') {
-            window.location.href = $($field).data('sort-descend');
+            $.get($field.data('sort-descend')).done(function(response) {
+                $container.html(response);
+                $('#js-analytics-spinner').hide();
+            });
         }
     }
 
@@ -456,14 +381,16 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('#sort-field').change(function () {
-            let value = $('#sort-field').val();
-            performSort(value)
+        $('.oe-full-main').on('change','#sort-field', function (e) {
+            let $container = $(this).parent().parent().parent().parent();
+            let value = $container.find('#sort-field').val();
+            performSort(value, $container);
         });
 
-        $("input[name='sort-options']").change(function () {
-            let value = $('#sort-field').val();
-            performSort(value);
+        $('.oe-full-main').on('change', "input[name='sort-options']", function (e) {
+            let $container = $(this).parent().parent().parent().parent().parent().parent();
+            let value = $container.find('#sort-field').val();
+            performSort(value, $container);
         });
 
         $('#js-variable-table i.remove-circle').click(function() {
@@ -491,6 +418,26 @@ $user_searches = array_map(
                         content: 'Unable to clear search results.'
                     }).open();
                 }
+            });
+        });
+
+        $('.oe-full-main').on('click', '.oe-search-drill-down-list .pagination a', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#js-analytics-spinner').show();
+            $.get($(this).attr("href")).done(function(response) {
+                $('.oe-search-drill-down-list').html(response);
+                $('#js-analytics-spinner').hide();
+            });
+        });
+
+        $('.oe-full-main').on('click', '.oe-search-results .pagination a', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#js-analytics-spinner').show();
+            $.get($(this).attr("href")).done(function(response) {
+                $('.oe-search-results').html(response);
+                $('#js-analytics-spinner').hide();
             });
         });
     });

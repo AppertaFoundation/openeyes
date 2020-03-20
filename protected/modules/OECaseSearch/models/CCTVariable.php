@@ -12,7 +12,7 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
     public function query($searchProvider)
     {
         return '
-        SELECT value cct, COUNT(*) frequency
+        SELECT value cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_cct
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')
         GROUP BY value';
