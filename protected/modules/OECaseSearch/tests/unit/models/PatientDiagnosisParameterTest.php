@@ -61,7 +61,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->value = 'Diabetes';
         $this->parameter->firm_id = 1;
         $expected = array(
-            'p_d_value_0' => '%' . $this->parameter->value . '%',
+            'p_d_value_0' => $this->parameter->value,
             'p_d_firm_0' => $this->parameter->firm_id,
             'p_d_only_latest_event_0' => $this->parameter->only_latest_event,
         );
@@ -72,7 +72,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->firm_id = '';
 
         $expected = array(
-            'p_d_value_0' => '%' . $this->parameter->value . '%',
+            'p_d_value_0' => $this->parameter->value,
             'p_d_firm_0' => null,
             'p_d_only_latest_event_0' => $this->parameter->only_latest_event,
         );
@@ -91,7 +91,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         }
 
         $this->parameter->operation = false;
-        $this->parameter->value = 'Myopia';
+        $this->parameter->value = 1;
         $this->parameter->firm_id = '';
 
         $results = $this->searchProvider->search(array($this->parameter));
@@ -110,8 +110,8 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     {
         $expected = array();
 
-        $this->parameter->operation = false;
-        $this->parameter->value = 'Myopia';
+        $this->parameter->operation = 'IN';
+        $this->parameter->value = 1;
         $this->parameter->firm_id = 2;
 
         $results = $this->searchProvider->search(array($this->parameter));
@@ -136,8 +136,8 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $expected[] = $this->patient("patient$patientNum");
         }
 
-        $this->parameter->operation = 'NOT LIKE';
-        $this->parameter->value = 'Myopia';
+        $this->parameter->operation = 'NOT IN';
+        $this->parameter->value = 1;
         $this->parameter->firm_id = '';
 
         $results = $this->searchProvider->search(array($this->parameter));
@@ -159,8 +159,8 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $expected[] = $this->patient("patient$patientNum");
         }
 
-        $this->parameter->operation = 'NOT LIKE';
-        $this->parameter->value = 'Myopia';
+        $this->parameter->operation = 'NOT IN';
+        $this->parameter->value = 1;
         $this->parameter->firm_id = 2;
 
         $results = $this->searchProvider->search(array($this->parameter));
