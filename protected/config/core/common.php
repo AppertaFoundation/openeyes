@@ -619,7 +619,7 @@ return array(
         'Indigenous Australian',
         'Greek',
         'Italian'
-      ),
+        ),
         'gender_short' => 'Gen',
 //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
         'add_patient_fields' => [ 'title' => '',
