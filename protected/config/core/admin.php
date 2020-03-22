@@ -75,6 +75,7 @@ return array(
                 'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
                 'Common Ophthalmic Disorders' => '/admin/editcommonophthalmicdisorder',
                 'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
+                'Common Systemic Disorders Groups' => '/oeadmin/CommonSystemicDisorderGroup/list',
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
                 'Findings' => '/admin/managefindings',
                 'Disorders' => '/Admin/disorder/list',

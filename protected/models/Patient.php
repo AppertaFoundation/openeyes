@@ -466,7 +466,14 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['maiden_name'])) {
             $criteria->compare('LOWER(contact.maiden_name)', strtolower($params['maiden_name']), false);
         }
-        if (strlen($this->nhs_num) == (Yii::app()->params['nhs_num_length'] )) {
+
+        $nhs_num_length = SettingMetadata::model()->getSetting('nhs_num_length');
+        if (!$nhs_num_length) {
+            $nhs_num_length_setting = SettingInstallation::model()->find("key = ?", ['nhs_num_length']);
+            $nhs_num_length = $nhs_num_length_setting ? $nhs_num_length_setting->value : null;
+        }
+
+        if (strlen($this->nhs_num) == $nhs_num_length) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);

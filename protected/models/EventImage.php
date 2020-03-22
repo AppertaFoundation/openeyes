@@ -57,6 +57,7 @@ class EventImage extends BaseActiveRecord
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'attachmentData' => [self::BELONGS_TO, 'AttachmentData', 'attachment_data_id'],
         );
     }
 
@@ -126,6 +127,8 @@ class EventImage extends BaseActiveRecord
         if ($this->page !== null) {
             $options['page'] = $this->page;
         }
+
+				$options['document_number'] = $this->document_number;
 
         return Yii::app()->createUrl('//eventImage/view', $options);
     }

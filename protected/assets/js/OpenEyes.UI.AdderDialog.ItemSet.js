@@ -19,14 +19,23 @@
         'signs':{'minus' : '-' , 'plus' : '+'},
         'supportDecimalValues' : false,
         'decimalValues' : ['.00' , '.25' , '.50' , '.75'],
+        'decimalValuesType': null,
         'splitIntegerNumberColumns': [], // array with min&max interval allowed for each column
+        'splitIntegerNumberColumnsTypes': [],
         'deselectOnReturn' : true,
+        'conditionalFlowMaps' : [],
+        'hideByDefault': false,
     };
 
-  ItemSet.prototype.create = function () {
+    ItemSet.prototype.create = function () {
+    };
 
-  };
+    ItemSet.prototype.hide = function () {
+        if (this.options.hideByDefault) {
+            $('#'+this.options.id).parent().css('display', 'none');
+        }
+    };
 
-  exports.ItemSet = ItemSet;
+    exports.ItemSet = ItemSet;
 
 }(OpenEyes.UI.AdderDialog));

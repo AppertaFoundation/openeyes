@@ -1,0 +1,2 @@
+request_queue,maximum_active_threads,busy_yield_ms,idle_yield_ms
+dicom_queue,5,1000,1000
