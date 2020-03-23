@@ -1787,8 +1787,9 @@ class AdminController extends BaseAdminController
             foreach ($filter as $logoKey => $logoName) {
                 $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
                 $fileInfo = pathinfo($logoName);
-                foreach (glob($savePath . $logoKey) as $existingLogo) {
-                    unlink($savePath . $existingLogo);
+
+                foreach (glob($savePath . $logoKey . '.*') as $existingLogo) {
+                    unlink($existingLogo);
                 }
 
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
