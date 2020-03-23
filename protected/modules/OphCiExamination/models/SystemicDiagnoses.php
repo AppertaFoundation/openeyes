@@ -18,7 +18,6 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\components\OphCiExamination_API;
-use OEModule\PASAPI\resources\Patient;
 
 /**
  * Class SystemicDiagnoses

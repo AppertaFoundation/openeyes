@@ -49,6 +49,8 @@ class RefMedicationAdminController extends BaseAdminController
             $admin->getSearch()->getCriteria()->addColumnCondition(['source_type' => $this->source_type]);
         }
 
+        $admin->getSearch()->getCriteria()->addColumnCondition(['deleted_date' => null]);
+
         if (is_null($this->source_type)) {
             $admin->getSearch()->addSearchItem('source_type');
         }

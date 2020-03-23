@@ -28,6 +28,7 @@ class LinkPager extends CLinkPager
     public $previousPageCssClass = 'oe-i arrow-left-bold medium pad';
     public $nextPageCssClass = 'oe-i arrow-right-bold medium pad';
     public $hiddenPageCssClass = 'disabled';
+    public $includeFirstAndLastPageLabel = false;
 
     /**
      * Inits Pager.
@@ -116,9 +117,17 @@ class LinkPager extends CLinkPager
         list($beginPage, $endPage) = $this->getPageRange();
         $currentPage = $this->getCurrentPage(false);
 
+        if ($this->includeFirstAndLastPageLabel && $beginPage !== 0) {
+            $buttons[] = $this->createFirstPageButton();
+        }
+
         // internal pages
         for ($i = $beginPage; $i <= $endPage; ++$i) {
             $buttons[] = $this->createPageButton($i + 1, $i, $this->internalPageCssClass, false, $i == $currentPage);
+        }
+
+        if ($this->includeFirstAndLastPageLabel && $endPage !== $pageCount - 1) {
+            $buttons[] = $this->createLastPageButton();
         }
 
         return implode('', $buttons);
@@ -139,5 +148,18 @@ class LinkPager extends CLinkPager
         }
 
         return $this->createPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
+    }
+
+    private function createFirstPageButton()
+    {
+        $currentPage = $this->getCurrentPage(false);
+        return $this->createPageButton('1', 0, $this->internalPageCssClass, $currentPage == 0, false) . '...';
+    }
+
+    private function createLastPageButton()
+    {
+        $currentPage = $this->getCurrentPage(false);
+        $pageCount = $this->getPageCount();
+        return '...' . $this->createPageButton("{$pageCount}", $pageCount - 1, $this->internalPageCssClass, $currentPage >= $pageCount - 1 , false);
     }
 }

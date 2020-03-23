@@ -44,6 +44,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
         <?php } else { ?>
             <?php if ($current_systemic_meds) { ?>
                 <table id="<?= $model_name ?>_systemic_current_entry_table">
+                    <colgroup>
+                        <col class="cols-8">
+                        <col>
+                    </colgroup>
                     <thead style="display:none;">
                         <th>Drug</th>
                         <th>Date</th>
@@ -58,9 +62,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <?= $entry->getMedicationDisplay() ?>
                             </td>
                             <td>
-                                <?php $tooltip_content = $entry->getTooltipContent();
+                                <?php
+                                $info_box = new MedicationInfoBox();
+                                $info_box->medication_id = $entry->medication->id;
+                                $info_box->init();
+
+                                $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                 if (!empty($tooltip_content)) { ?>
-                                    <i class="oe-i info small pro-theme js-has-tooltip"
+                                    <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip"
                                        data-tooltip-content="<?= $tooltip_content ?>">
                                     </i>
                                 <?php } ?>
@@ -92,6 +101,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </div>
                     <div class="collapse-data-content">
                         <table id="<?= $model_name ?>_systemic_stopped_entry_table">
+                            <colgroup>
+                                <col class="cols-8">
+                                <col>
+                            </colgroup>
                         <thead style="display:none;">
                             <th>Drug</th>
                             <th>Date</th>
@@ -106,9 +119,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
-                                        <?php $tooltip_content = $entry->getTooltipContent();
+                                        <?php
+                                        $info_box = new MedicationInfoBox();
+                                        $info_box->medication_id = $entry->medication->id;
+                                        $info_box->init();
+
+                                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                         if (!empty($tooltip_content)) { ?>
-                                            <i class="oe-i info small pro-theme js-has-tooltip"
+                                            <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip"
                                                data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
@@ -121,7 +139,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                                 data-tooltip-content="View prescription"></span></a>
                                         <?php } ?>
                                     </td>
-                                    
+
                                 </tr>
                                 <?php $index++; ?>
                             <?php endforeach; ?>
@@ -164,9 +182,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
-                                    <?php $tooltip_content = $entry->getTooltipContent();
+
+                                   <?php
+                                        $info_box = new MedicationInfoBox();
+                                        $info_box->medication_id = $entry->medication->id;
+                                        $info_box->init();
+
+                                    $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                     if (!empty($tooltip_content)) { ?>
-                                        <i class="oe-i info small pro-theme js-has-tooltip"
+                                        <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip"
                                            data-tooltip-content="<?= $tooltip_content ?>">
                                         </i>
                                     <?php } ?>
@@ -221,9 +245,14 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         </td>
                                         <td></td>
                                         <td>
-                                            <?php $tooltip_content = $entry->getTooltipContent();
+                                            <?php
+                                            $info_box = new MedicationInfoBox();
+                                            $info_box->medication_id = $entry->medication->id;
+                                            $info_box->init();
+
+                                            $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                             if (!empty($tooltip_content)) { ?>
-                                                <i class="oe-i info small pro-theme js-has-tooltip"
+                                                <i class="oe-i <?=$info_box->getIcon()?> small pro-theme js-has-tooltip"
                                                    data-tooltip-content="<?= $tooltip_content ?>">
                                                 </i>
                                             <?php } ?>

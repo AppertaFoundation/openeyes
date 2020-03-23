@@ -560,6 +560,20 @@ EOD;
         }
     }
 
+    private function executeScript($script)
+    {
+        $cmd = file_get_contents(Yii::getPathOfAlias('application') . '/migrations/data/dmd_import/' . $script . '.sql');
+        $this->printMsg($script, false, true);
+        $cmd = str_replace(['{prefix}'], [$this->tablePrefix], $cmd);
+        $cmds = explode(";", $cmd);
+        foreach ($cmds as $cmd) {
+            if (trim($cmd)) {
+                Yii::app()->db->createCommand($cmd . ';')->execute();
+            }
+        }
+        echo " OK" . PHP_EOL;
+    }
+
     public function copyToOE()
     {
 
@@ -569,15 +583,11 @@ EOD;
 
         $scripts = [
             'delete', 'forms_routes', 'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'search_index',
-            'replace_legacy_with_dmd', 'laterality_mapping'
+            'replace_legacy_with_dmd', 'laterality_mapping', 'preservative-free'
         ];
 
         foreach ($scripts as $script) {
-            $cmd = file_get_contents(Yii::getPathOfAlias('application') . '/migrations/data/dmd_import/' . $script . '.sql');
-            $this->printMsg($script, false, true);
-            $cmd = str_replace(['{prefix}'], [$this->tablePrefix], $cmd);
-            Yii::app()->db->createCommand($cmd)->execute();
-            echo " OK" . PHP_EOL;
+            $this->executeScript($script);
         }
 
         $this->printMsg("Creating attributes", false);

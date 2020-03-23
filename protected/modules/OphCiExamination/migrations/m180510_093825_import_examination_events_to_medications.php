@@ -8,183 +8,139 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
      */
     public function up()
     {
-        echo "> The import may take a several seconds!\n";
 
-        $this->execute("SET foreign_key_checks = 0");
+        echo "> The import may take a several seconds...\n";
+
+        
 
         /*
-         * Get Examination events with Drugs
+         * Import Examination events with Drugs
          */
-        $eventsDrugs = $this->dbConnection
-            ->createCommand("
-                    SELECT 
-                        event.id                            AS event_id,
-                        SUBSTRING(REPLACE(ohme.start_date, '-', ''), 1,8)   AS event_date,
-                        SUBSTRING(REPLACE(ohme.end_date, '-', ''), 1,8)     AS end_date,
-                        et.class_name,
-                        ohme.dose,
-                        ohme.units,
-                        ohme.stop_reason_id,
-                        medication_laterality.id        AS ref_laterality_id,
-                        medication.id                   AS ref_medication_id,
-                        medication_form.id              AS ref_medication_form_id,
-                        medication_route.id             AS ref_route_id,
-                        medication_frequency.id         AS ref_frequency_id,
-                        medication_duration.id          AS ref_duration_id,
-                        ( SELECT id FROM event_medication_use WHERE ohme.prescription_item_id = temp_prescription_item_id ) AS prescription_item_id
-                    FROM event 
-                    LEFT JOIN event_type                                    AS et           ON event.event_type_id = et.id
-                    LEFT JOIN et_ophciexamination_history_medications       AS ehm          ON event.id = ehm.event_id
-                    LEFT JOIN ophciexamination_history_medications_entry    AS ohme         ON ehm.id = ohme.element_id
-                    LEFT JOIN drug                                          AS d            ON ohme.drug_id = d.id
-                    LEFT JOIN drug_form                                     AS df           ON d.form_id = df.id
-                    LEFT JOIN drug_route                                    AS dr           ON ohme.route_id = dr.id
-                    LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
-                    LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
-                    LEFT JOIN drug_duration                                 AS dd           ON d.default_duration_id = dd.id
-                    LEFT JOIN medication                                                ON medication.source_old_id = ohme.drug_id 
-                    LEFT JOIN medication_form                                           ON medication_form.term = df.name
-                    LEFT JOIN medication_route                                          ON medication_route.term = dr.name
-                    LEFT JOIN medication_frequency                                      ON medication_frequency.original_id = dfreq.id
-                    LEFT JOIN medication_laterality                                     ON medication_laterality.name = dro.name
-                    LEFT JOIN medication_duration                                       ON medication_duration.name = dd.name
-                    WHERE et.name = 'Examination'
-                    AND medication.source_type = 'LEGACY'
-                    AND medication.source_subtype = 'drug'
-                    ORDER BY event.id ASC
-                 ")
-            ->queryAll();
+        $this->execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER';");
+        $this->execute("
+            INSERT INTO event_medication_use (
+                    event_id, 
+                    usage_type, 
+                    usage_subtype,
+                    medication_id, 
+                    form_id, 
+                    laterality,
+                    dose,
+                    dose_unit_term,
+                    route_id, 
+                    frequency_id, 
+                    duration_id, 
+                    stop_reason_id,
+                    prescription_item_id,
+                    start_date,
+                    end_date
+                )   			
+                SELECT 
+                    event.id AS event_id,
+                    et.class_name AS usage_type,
+                    'History' AS usage_subtype, 
+                    medication.id AS medication_id,
+                    medication_form.id  AS form_id,
+                    medication_laterality.id AS laterality,
+                    -- ohme.dose AS legacy_dose, -- left commented for debugging
+                    REPLACE(REGEXP_REPLACE(REPLACE(ohme.dose, '1/2', '0.5'), 'half', '0.5'), ',', '.') + 0 AS dose, -- +0 implicitly casts to a numberic and strips trailing alpha characters
+                    CASE 
+                        WHEN (ohme.units IS NULL OR ohme.units = '') THEN  
+                            REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(ohme.dose, '\\d|\\s|\\.|/|half(\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') -- Lots of cleanup for mistyped dosages
+                        ELSE
+                            ohme.units
+                    END  AS dose_unit_term,
+                    medication_route.id AS route_id,
+                    medication_frequency.id AS frequency_id,
+                    medication_duration.id  AS duration_id,
+                    ohme.stop_reason_id,
+                    ( SELECT id FROM event_medication_use WHERE ohme.prescription_item_id = temp_prescription_item_id ) AS prescription_item_id,
+                    SUBSTRING(REPLACE(ohme.start_date, '-', ''), 1,8)   AS start_date,
+                    SUBSTRING(REPLACE(ohme.end_date, '-', ''), 1,8)     AS end_date
+                FROM event 
+                LEFT JOIN event_type                                    AS et           ON event.event_type_id = et.id
+                LEFT JOIN et_ophciexamination_history_medications       AS ehm          ON event.id = ehm.event_id
+                LEFT JOIN ophciexamination_history_medications_entry    AS ohme         ON ehm.id = ohme.element_id
+                LEFT JOIN drug                                          AS d            ON ohme.drug_id = d.id
+                LEFT JOIN drug_form                                     AS df           ON d.form_id = df.id
+                LEFT JOIN drug_route                                    AS dr           ON ohme.route_id = dr.id
+                LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
+                LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
+                LEFT JOIN drug_duration                                 AS dd           ON d.default_duration_id = dd.id
+                LEFT JOIN medication                                                ON medication.source_old_id = ohme.drug_id 
+                LEFT JOIN medication_form                                           ON medication_form.term = df.name
+                LEFT JOIN medication_route                                          ON medication_route.term = dr.name
+                LEFT JOIN medication_frequency                                      ON medication_frequency.original_id = dfreq.id
+                LEFT JOIN medication_laterality                                     ON medication_laterality.name = dro.name
+                LEFT JOIN medication_duration                                       ON medication_duration.name = dd.name
+                WHERE et.name = 'Examination'
+                AND medication.source_type = 'LEGACY'
+                AND medication.source_subtype = 'drug'
+                ORDER BY event.id ASC");
 
-        $this->insertExaminations($eventsDrugs);
+        echo "> Examinations with Drugs imported successfully\n";
 
-        echo "> The Examinations with Drug import was successfully!\n";
         /*
-         * Get Examination events with Medication Drugs
+         * Import Examination events with Medication Drugs
          */
-        $eventMedDrugs = $this->dbConnection
-            ->createCommand("
-                    SELECT 
-                        event.id                            AS event_id,
-                        SUBSTRING(REPLACE(event.event_date, '-', ''), 1,8) AS event_date,
-                        et.class_name,
-                        ohme.dose,
-                        ohme.units,
-                        ohme.stop_reason_id,
-                        medication_laterality.id        AS ref_laterality_id,
-                        medication.id                   AS ref_medication_id,
-                        medication_route.id             AS ref_route_id,
-                        medication_frequency.id         AS ref_frequency_id,
-                        ( SELECT id FROM event_medication_use WHERE ohme.prescription_item_id = temp_prescription_item_id ) AS prescription_item_id
-                    FROM event 
-                    LEFT JOIN event_type                                    AS et           ON event.event_type_id = et.id
-                    LEFT JOIN et_ophciexamination_history_medications       AS ehm          ON event.id = ehm.event_id
-                    LEFT JOIN ophciexamination_history_medications_entry    AS ohme         ON ehm.id = ohme.element_id
-                    LEFT JOIN medication_drug                               AS md           ON ohme.medication_drug_id = md.id
-                    LEFT JOIN drug_route                                    AS dr           ON ohme.route_id = dr.id
-                    LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
-                    LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
-                    LEFT JOIN medication                                                ON medication.source_old_id = ohme.medication_drug_id 
-                    LEFT JOIN medication_route                                          ON medication_route.term = dr.name
-                    LEFT JOIN medication_frequency                                      ON medication_frequency.original_id = dfreq.id
-                    LEFT JOIN medication_laterality                                     ON medication_laterality.name = dro.name
-                    WHERE et.name = 'Examination'
-                    AND medication.source_type = 'LEGACY'
-                    AND medication.source_subtype = 'medication_drug'
-                    ORDER BY event.id ASC
-                 ")
-            ->queryAll();
-
-        $this->insertExaminations($eventMedDrugs);
-        echo "> The Examinations with Medication Drug import was successfully!\n";
-        $this->execute("SET foreign_key_checks = 1");
+        $this->execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER';");
+        $this->execute("
+        INSERT INTO event_medication_use (
+                event_id, 
+                usage_type, 
+                usage_subtype,
+                medication_id, 
+                form_id, 
+                laterality,
+                dose,
+                dose_unit_term,
+                route_id, 
+                frequency_id, 
+                duration_id, 
+                stop_reason_id,
+                prescription_item_id,
+                start_date,
+                end_date
+            )   			
+        SELECT 
+            event.id AS event_id,
+            et.class_name AS usage_type,
+            'History' AS usage_subtype,
+            medication.id AS medication_id,
+            NULL as form_id,
+            medication_laterality.id AS laterality,
+            REPLACE(REGEXP_REPLACE(REPLACE(ohme.dose, '1/2', '0.5'), 'half', '0.5'), ',', '.') + 0 AS dose, -- +0 implicitly casts to a numberic and strips trailing alpha characters
+                CASE 
+                    WHEN (ohme.units IS NULL OR ohme.units = '') THEN 
+                        REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(ohme.dose, '\\d|\\s|\\.|/|half(\\s*a)?|-|=|s/r|,', ''), 'tabletmg', 'tablet'), 'mgbd', 'mg') -- Lots of cleanup for mistyped dosages
+                    ELSE
+                        ohme.units
+                END  AS dose_unit_term,
+            medication_route.id AS route_id,
+            medication_frequency.id AS frequency_id,
+            NULL AS duration_id,
+            ohme.stop_reason_id,
+            ( SELECT id FROM event_medication_use WHERE ohme.prescription_item_id = temp_prescription_item_id ) AS prescription_item_id,
+            SUBSTRING(REPLACE(ohme.start_date, '-', ''), 1,8) AS start_date,
+            SUBSTRING(REPLACE(ohme.end_date, '-', ''), 1,8) AS end_date
+        FROM event 
+        LEFT JOIN event_type                                    AS et           ON event.event_type_id = et.id
+        LEFT JOIN et_ophciexamination_history_medications       AS ehm          ON event.id = ehm.event_id
+        LEFT JOIN ophciexamination_history_medications_entry    AS ohme         ON ehm.id = ohme.element_id
+        LEFT JOIN medication_drug                               AS md           ON ohme.medication_drug_id = md.id
+        LEFT JOIN drug_route                                    AS dr           ON ohme.route_id = dr.id
+        LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
+        LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
+        LEFT JOIN medication                                                ON medication.source_old_id = ohme.medication_drug_id 
+        LEFT JOIN medication_route                                          ON medication_route.term = dr.name
+        LEFT JOIN medication_frequency                                      ON medication_frequency.original_id = dfreq.id
+        LEFT JOIN medication_laterality                                     ON medication_laterality.name = dro.name
+        WHERE et.name = 'Examination'
+        AND medication.source_type = 'LEGACY'
+        AND medication.source_subtype = 'medication_drug'
+        ORDER BY event.id ASC");
+        echo "> Examinations with Medication Drugs imported successfully!\n";
     }
-
-    private function insertExaminations($events)
-    {
-        if ($events) {
-            foreach ($events as $event) {
-                $legacy_dose = explode(" ", $event['dose']);
-                $dose = '';
-                $dose_unit_term = '';
-
-
-                if (count($legacy_dose) == 1 || preg_match("/[a-z]/i", $legacy_dose[0])) {
-                    $array = str_split($legacy_dose[0]);
-                    foreach ($array as $key => $char) {
-                        if (($char == '.') || ($char == '/') || (is_numeric($char))) {
-                            $dose .= $char;
-                        } else {
-                            $dose_unit_term .= $char;
-                        }
-                    }
-                    if (count($legacy_dose) === 2) {
-                        $dose_unit_term .= ' ' . $legacy_dose[1];
-                    }
-                } else {
-                    $dose = $legacy_dose[0];
-                    $dose_unit_term = $legacy_dose[1];
-                }
-
-                if ((strtolower($dose) == 'half') || ($dose == '1/2')) {
-                    $dose = '0.5';
-                }
-
-                $dose = str_replace(',', '.', $dose);
-
-                $dose = !$dose ? 'NULL' : "'$dose'";
-
-                $event['ref_duration_id'] = (!isset($event['ref_duration_id'])) ? null : $event['ref_duration_id'];
-                $event['ref_medication_form_id'] = (!isset($event['ref_medication_form_id'])) ? 'NULL' : $event['ref_medication_form_id'];
-                $event['end_date'] = (!isset($event['end_date'])) ? $end_date_string = 'NULL' : $end_date_string = "'" . $event['end_date'] . "'";
-
-                $ref_laterality_id = (!isset($event['ref_laterality_id']) || !is_numeric($event['ref_laterality_id'])) ? 'NULL' : $event['ref_laterality_id'];
-                $ref_route_id = ($event['ref_route_id'] == null) ? 'NULL' : $event['ref_route_id'];
-                $ref_frequency_id = ($event['ref_frequency_id'] == null) ? 'NULL' : $event['ref_frequency_id'];
-                $ref_duration_id = ($event['ref_duration_id'] == null) ? 'NULL' : $event['ref_duration_id'];
-                $stop_reason_id = ($event['stop_reason_id'] == null) ? 'NULL' : $event['stop_reason_id'];
-                $prescription_item_id = ($event['prescription_item_id'] == null) ? 'NULL' : "'" . $event['prescription_item_id'] . "'";
-
-                $command = $this->dbConnection
-                    ->createCommand("
-                    INSERT INTO event_medication_use (
-                        event_id, 
-                        usage_type, 
-                        usage_subtype,
-                        medication_id, 
-                        form_id, 
-                        laterality,
-                        dose,
-                        dose_unit_term,
-                        route_id, 
-                        frequency_id, 
-                        duration_id, 
-                        stop_reason_id,
-                        prescription_item_id,
-                        start_date,
-                        end_date
-                    ) values(
-                        " . $event['event_id'] . ",
-                        '" . $event['class_name'] . "',
-                        'History',
-                        " . $event['ref_medication_id'] . ",
-                        " . $event['ref_medication_form_id'] . ", 
-                        " . $ref_laterality_id . ", 
-                        " . $dose . ", 
-                        '" . $dose_unit_term . "', 
-                        " . $ref_route_id . ",
-                        " . $ref_frequency_id . ",
-                        " . $ref_duration_id . ",
-                        " . $stop_reason_id . ",
-                        " . $prescription_item_id . ",
-                        '" . $event['event_date'] . "',"
-                        . $end_date_string . ")
-                ");
-                $command->execute();
-                $command = null;
-            }
-        }
-    }
-
     public function down()
     {
         $this->execute("SET foreign_key_checks = 0");

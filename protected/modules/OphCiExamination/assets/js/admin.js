@@ -182,7 +182,7 @@ $(document).ready(function() {
     $('#et_save_workflow').click(e => {
       e.preventDefault();
 
-      $('#et_save_workflow').attr('disabled','true');
+      $('#et_save_workflow').prop("disabled", true);
       $('.spinner').css('display', 'block');
       let $form = $('#et_sort').closest('form');
       $.ajax({
@@ -193,7 +193,7 @@ $(document).ready(function() {
           workflowFlash();
           $('.spinner').css('display', 'none');
           $('#et_save_workflow').fadeOut();
-          $('#et_save_workflow').attr('disabled','false');
+          $('#et_save_workflow').prop("disabled", false);
           workflow_edited = false;
         },
         'error': function (jqXHR, status) {
@@ -229,6 +229,26 @@ $(document).ready(function() {
         }
       });
     });
+
+	  bindActionWithWorkflowWarning('#et_save_step_name', 'click', function (e) {
+		  if ($('#step_name').val() == '') {
+			  alert("Name cannot be blank");
+			  return;
+		  }
+
+		  $.ajax({
+			  'type': 'POST',
+			  'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+$('#admin_workflow_steps tbody tr.selected').data('id')+'&step_name='+$('#step_name').val()+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+			  'url': baseUrl+'/OphCiExamination/admin/saveWorkflowStepName',
+			  'success': function(resp) {
+				  if (resp != "1") {
+					  alert("Something went wrong trying to set the name for the step.  Please try again or contact support for assistance.");
+				  } else {
+					  $('#admin_workflow_steps tr.selected td:nth-child(2)').text($('#step_name').val());
+				  }
+			  }
+		  });
+	  });
 
     // Bind Remove element action to current flow rows.
     $('a.removeElementType').click(function(e) {
@@ -333,26 +353,6 @@ $(document).ready(function() {
 					alert("Something went wrong trying to remove the workflow step.  Please try again or contact support for assistance.");
 				} else {
 					window.location.reload();
-				}
-			}
-		});
-	});
-
-  bindActionWithWorkflowWarning('#et_save_step_name', 'click', function (e) {
-		if ($('#step_name').val() == '') {
-			alert("Name cannot be blank");
-			return;
-		}
-
-		$.ajax({
-			'type': 'POST',
-			'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+$('#admin_workflow_steps tbody tr.selected').data('id')+'&step_name='+$('#step_name').val()+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			'url': baseUrl+'/OphCiExamination/admin/saveWorkflowStepName',
-			'success': function(resp) {
-				if (resp != "1") {
-					alert("Something went wrong trying to set the name for the step.  Please try again or contact support for assistance.");
-				} else {
-					$('#admin_workflow_steps tr.selected td:nth-child(2)').text($('#step_name').val());
 				}
 			}
 		});

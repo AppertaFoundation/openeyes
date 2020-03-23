@@ -70,6 +70,10 @@ class EventMedicationUse extends BaseElement
     const USER_MEDICATION_SOURCE_TYPE = "LOCAL";
     const USER_MEDICATION_SOURCE_SUBTYPE = "UNMAPPED";
 
+    /** @var bool Used to change default behaviour when converting old drugs to DMD */
+    public static $local_to_dmd_conversion = false;
+    private static $other_stop_reason = null;
+
     /** @var bool Tracking variable used when creating/editing entries */
     public $originallyStopped = false;
 
@@ -82,7 +86,7 @@ class EventMedicationUse extends BaseElement
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
 
-    /* temporaryly saved properties to keep edit mode consistent through pages */
+    /* temporarily saved properties to keep edit mode consistent through pages */
     public $group;
     public $chk_prescribe;
     public $chk_stop;
@@ -182,7 +186,7 @@ class EventMedicationUse extends BaseElement
 
     public function validateStopReason()
     {
-        if ($this->end_date && !$this->stop_reason_id) {
+        if ($this->end_date && !$this->stop_reason_id && !$this->prescribe) {
             $this->addError("stop_reason_id", "You must select a stop reason if the medication is stopped.");
         }
     }
@@ -672,6 +676,15 @@ class EventMedicationUse extends BaseElement
         return false;
     }
 
+    protected function beforeSave()
+    {
+        $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Course complete']);
+        if ($this->end_date && $this->prescribe && $course_complete_model && $this->stop_reason_id !== $course_complete_model->id) {
+            $this->stop_reason_id = $course_complete_model->id;
+        }
+        return parent::beforeSave();
+    }
+
     public function beforeValidate()
     {
         if ($this->medication_id == self::USER_MEDICATION_ID) {
@@ -686,6 +699,21 @@ class EventMedicationUse extends BaseElement
                 $this->medication_id = $medication->id;
             } else {
                 $this->addError("medication_id", "There has been an error while saving the new medication '" . $this->medication_name . "'");
+            }
+        }
+
+        if (EventMedicationUse::$local_to_dmd_conversion) {
+            if (isset($this->end_date) && !isset($this->stop_reason_id)) {
+                if (!isset(EventMedicationUse::$other_stop_reason)) {
+                    EventMedicationUse::$other_stop_reason = HistoryMedicationsStopReason::model()->find("name = :name", [":name" => "Other"]);
+                }
+                $this->stop_reason_id = EventMedicationUse::$other_stop_reason->id;
+            }
+            if (isset($this->dose) && (!isset($this->dose_unit_term) || $this->dose_unit_term == "")) {
+                $medication = Medication::model()->findByPk($this->medication_id);
+                $this->dose_unit_term = ($medication && $medication->default_dose_unit_term) ?
+                    $medication->default_dose_unit_term :
+                    'unit';
             }
         }
 

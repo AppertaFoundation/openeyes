@@ -82,9 +82,9 @@ class BaseActiveRecord extends CActiveRecord
         return $this;
     }
 
-    public function autoValidateRelation($save = false)
+    public function autoValidateRelation($validate = false)
     {
-        $this->auto_validate_relations = $save;
+        $this->auto_validate_relations = $validate;
         return $this;
     }
 

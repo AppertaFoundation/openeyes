@@ -72,7 +72,9 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 ORDER BY t.id, ms.id, medication_set_auto_rule_id");
 
             // Delete old manual entries (this will get regenerated later)
+            $this->execute('SET foreign_key_checks = 0');
             $this->execute("TRUNCATE TABLE medication_set_item");
+            $this->execute('SET foreign_key_checks = 1');
     }
 
     public function safeDown()

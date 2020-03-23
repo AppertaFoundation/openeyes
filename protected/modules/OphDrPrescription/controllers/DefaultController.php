@@ -413,7 +413,12 @@ class DefaultController extends BaseEventTypeController
             // Form has been posted, so we should return the submitted values instead
             $items = array();
             foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
-                $item_model = new OphDrPrescription_Item();
+                if (isset($item['id'])) {
+                    $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
+                } else {
+                    $item_model = new OphDrPrescription_Item();
+                }
+
                 $item_model->attributes = $item;
                 if (!$item_model->start_date) {
                     $item_model->start_date = substr($this->event->event_date, 0, 10);
@@ -421,7 +426,12 @@ class DefaultController extends BaseEventTypeController
                 if (isset($item['taper'])) {
                     $tapers = array();
                     foreach ($item['taper'] as $taper) {
-                        $taper_model = new OphDrPrescription_ItemTaper();
+                        if (isset($taper['id'])) {
+                            $taper_model = OphDrPrescription_ItemTaper::model()->findByPk($taper['id']);
+                        } else {
+                            $taper_model = new OphDrPrescription_ItemTaper();
+                        }
+
                         $taper_model->attributes = $taper;
                         $tapers[] = $taper_model;
                     }
@@ -818,10 +828,9 @@ class DefaultController extends BaseEventTypeController
                 ['condition' => "prescription_item_id = $prescription_item->id"]
             );
             foreach ($prescribed_medication_models as $prescribed_medication) {
-                if (!isset($prescribed_medication->end_date)) {
-                    $prescribed_medication->end_date = $prescription_item->stopDateFromDuration()->format('Y-m-d');
-                    $prescribed_medication->update();
-                }
+                $stop_date_from_duration = $prescription_item->stopDateFromDuration();
+                $prescribed_medication->end_date = !is_null($stop_date_from_duration) ? $stop_date_from_duration->format('Y-m-d') : null;
+                $prescribed_medication->update();
             }
 
             if ($model) {

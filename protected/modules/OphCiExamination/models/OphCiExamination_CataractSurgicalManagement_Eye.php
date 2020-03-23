@@ -27,6 +27,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_CataractSurgicalManagement_Eye extends \BaseActiveRecordVersioned
 {
+    const FIRST_EYE = 1;
+    const SECOND_EYE = 2;
     /**
      * Returns the static model of the specified AR class.
      *

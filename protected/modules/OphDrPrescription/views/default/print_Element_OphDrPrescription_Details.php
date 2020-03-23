@@ -137,7 +137,7 @@ if ($footer_param !== null) {
                             <td class="prescriptionLabel">then</td>
                     <td><?=is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
                             <td>-</td>
-                            <td><?= $taper->frequency->long_name ?></td>
+                            <td><?= $taper->frequency->term ?></td>
                             <td><?= $taper->duration->name ?></td>
                             <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                                 <td></td>

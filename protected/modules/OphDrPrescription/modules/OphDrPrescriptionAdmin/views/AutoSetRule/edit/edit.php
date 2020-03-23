@@ -104,7 +104,7 @@
     $('#meds-list').data('tableInlineEditController', tableInlineEditController);
 
     function togglePrescriptionExtraInputs() {
-        const usage_codes = $("select[id$='_usage_code_id']");
+        const usage_codes = $("input[name*='usage_code_id']");
         let prescriptionFound = false;
         usage_codes.each(function(i, el) {
             if ($(el).val() == prescriptionUsageRuleId) {
@@ -114,10 +114,11 @@
 
         // hide dropdowns
         if (prescriptionFound) {
-            $('.js-prescription-dispense-condition').show();
+            $('.dispense-condition, .dispense-location').prop('disabled', false).css({'background': 'white', 'color':'black'});
         } else {
+            $('.dispense-condition, .dispense-location').prop('disabled', 'disabled').css({'background': 'lightgrey', 'color':'gray'});
             // set dropdowns to default position
-            $('.js-prescription-extra').hide();
+
             $("select[id$='_default_dispense_condition_id']").val(null);
             $("select[id$='_default_dispense_location_id']").val(null);
         }

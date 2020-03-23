@@ -43,12 +43,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         $this->dbConnection->createCommand("INSERT INTO medication_set(name) values ('Formulary')")->execute();
         $formulary_id = $this->dbConnection->getLastInsertID();
 
+        $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
+
         /* Set for medication drugs */
 
         $this->dbConnection->createCommand("INSERT INTO medication_set(name) values ('Medication Drugs')")->execute();
         $medication_drugs_id = $this->dbConnection->getLastInsertID();
-
-        $this->dbConnection->createCommand("INSERT INTO medication_set_rule(medication_set_id, usage_code_id) values (".$formulary_id.", {$usage_codes['Formulary']})")->execute();
 
         /*
          * set medication_route table by drug_route table
@@ -119,34 +119,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
          */
       
         $medication_drug_table = 'medication_drug';
-        $medication_drugs = $this->dbConnection
-                ->createCommand("SELECT id AS original_id, `name`, external_code FROM ".$medication_drug_table." ORDER BY original_id ASC")
-                ->queryAll();
         
-        if ($medication_drugs) {
-            foreach ($medication_drugs as $drug) {
-                $command = $this->dbConnection;
-                $command->createCommand("
-                         INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
-                        values('LEGACY', '".$medication_drug_table."', :drug_name, :drug_code, :original_id)
-                    ")
-                ->bindValue(':drug_name', $drug['name'])
-                    ->bindValue(':drug_code', $drug['external_code'])
-                    ->bindValue(':original_id', $drug['original_id'])
-                ->execute();
-                
-                $ref_medication_id = $command->getLastInsertID();
-
-                $this->dbConnection->createCommand("
-                    INSERT INTO medication_set_item( medication_id , medication_set_id )
-                        values (".$ref_medication_id." , ".$medication_drugs_id." )
-                ")->execute();
-            }
-            
-            $command = null;
-            $medication_drugs = null;
-            $ref_medication_id = null;
-        }
+        $this->dbConnection->createCommand("INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id)
+        SELECT 'LEGACY', '".$medication_drug_table."', `name`, external_code, id FROM ".$medication_drug_table." ORDER BY id ASC")->execute();
+ 
+        $this->dbConnection->createCommand("INSERT INTO medication_set_item ( medication_id , medication_set_id )
+        SELECT id, '".$medication_drugs_id."' FROM medication where source_subtype = '".$medication_drug_table."'")->execute();
         
         /*
          * get and set drug table data
@@ -199,12 +177,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 $alternative_terms = [$drug['name']];
 
-                $tallman = trim($drug['tallman']);
-
-                if (!is_null($tallman) && $tallman != "" && strcasecmp($tallman, $drug['name']) !== 0) {
-                    $alternative_terms[]=$tallman;
-                }
-
                 foreach (explode(",", $drug['aliases']) as $alias) {
                     $alias = trim($alias);
                     if ($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
@@ -219,28 +191,32 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                                     ", array(":id"=>$ref_medication_id, ":term" => $term));
                 }
 
-                $drug_form_id = ($drug['ref_form_id'] == null) ? 'NULL' : $drug['ref_form_id'];
                 $drug_route_id = ($drug['ref_route_id'] == null) ? 'NULL' : $drug['ref_route_id'];
                 $drug_freq_id = ($drug['ref_freq_id'] == null) ? 'NULL' : $drug['ref_freq_id'];
                 $default_dose_unit = ($drug['dose_unit'] == null) ? 'NULL' : $drug['dose_unit'];
                 $default_duration_id = ($drug['default_duration_id'] == null) ? 'NULL' : $drug['default_duration_id'];
 
-                /* Add medication to the 'Legacy' set */
+
+                /* Add medication to the 'Formulary' set */
                 $this->dbConnection->createCommand("
                     INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term )
                         values (".$ref_medication_id." , ".$formulary_id.", NULL, ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
                 ")->execute();
 
                 /* Add medication to their respective sets */
-                $drug_sets = $this->dbConnection->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id
+                $drug_sets = $this->dbConnection->createCommand("SELECT drug_set.id, `name`, subspecialty_id, dispense_condition_id, dispense_location_id, duration_id, dose, frequency_id
                                                             FROM drug_set
                                                             JOIN drug_set_item ON drug_set.id = drug_set_item.drug_set_id
                                                             WHERE drug_set_item.drug_id = :drug_id")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
 
                 if ($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
+                        $default_dose = isset($drug_set['dose']) ? $drug_set['dose'] : 'NULL';
+                        $default_duration_id = isset($drug_set['duration_id']) ? $drug_set['duration_id'] : $default_duration_id;
+                        $default_freq_id = isset($drug_set['frequency_id']) ? $drug_set['frequency_id'] :(isset($drug_set['default_frequency_id']) ? $drug_set['default_frequency_id'] : $drug_freq_id);
+                        
                         $this->dbConnection->createCommand("
-                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
+                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id, default_dispense_condition_id, default_dispense_location_id)
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 
@@ -248,8 +224,9 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                          ),
                          
                          NULL,
+                         " . $default_dose . ",
                          " . $drug_route_id . ",
-                         " . $drug_freq_id . ",
+                         " . $default_freq_id . ",
                          '" . $default_dose_unit . "',
                           " . $default_duration_id . ",
                           " . ($drug_set['dispense_condition_id'] ? $drug_set['dispense_condition_id'] : "NULL") . ",

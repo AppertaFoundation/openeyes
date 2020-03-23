@@ -10,7 +10,16 @@
                 Target Refraction:
             </td>
             <td>
-                <?php echo $form->textField($element, 'target_refraction_'.$side, array('placeholder'=>'0.00', 'nowrapper'=> true), null, array('label' => 4, 'field' => 2))?>
+                <?php
+                if (!$element->{'target_refraction_' . $side}) {
+                    $element->{'target_refraction_' . $side} = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::getLatestTargetRefraction($this->patient, $side);
+                }
+                ?>
+                <?php echo $form->textField($element, 'target_refraction_'.$side,
+                    [
+                        'nowrapper'=> true
+                    ],
+                    null, array('label' => 4, 'field' => 2))?>
             </td>
         </tr>
         </tbody>
