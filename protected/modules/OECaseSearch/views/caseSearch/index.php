@@ -99,10 +99,11 @@ $user_searches = array_map(
         </div>
         <hr class="divider"/>
         <div class="button-stack">
+            <?= CHtml::hiddenField('var', isset($variables[0]) ? $variables[0]->field_name : null) ?>
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
-            <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-basic-csv', 'class' => 'cols-full')) ?>
-            <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-advanced-csv', 'class' => 'cols-full')) ?>
+            <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-csv-basic', 'type' => 'submit', 'class' => 'cols-full', 'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=BASIC')) ?>
+            <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-csv-advanced', 'type' => 'submit', 'class' => 'cols-full', 'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=ADVANCED')) ?>
             <?php if ($this->trialContext) : ?>
                 <button class="cols-full" onclick="backToTrial()">Back to Trial</button>
             <?php endif; ?>

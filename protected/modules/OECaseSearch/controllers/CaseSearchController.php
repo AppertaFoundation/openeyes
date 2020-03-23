@@ -40,7 +40,8 @@ class CaseSearchController extends BaseModuleController
                     'clear',
                     'getOptions',
                     'searchCommonItems',
-                    'getDrilldownList'
+                    'getDrilldownList',
+                    'downloadCSV',
                 ),
                 'users' => array('@'),
             ),
@@ -54,7 +55,6 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionIndex($trial_id = null)
     {
-        $auditValues = array();
         $variables = array();
         $variable_data = array();
         $ids = array();
@@ -64,6 +64,7 @@ class CaseSearchController extends BaseModuleController
         $pagination = array(
             'pageSize' => 10,
         );
+
         if (isset($_SESSION['last_search'])) {
             $ids = $_SESSION['last_search'];
         }
@@ -76,25 +77,12 @@ class CaseSearchController extends BaseModuleController
         $criteria = new CDbCriteria();
         $valid = $this->populateParams(true);
 
-        // This can always run as there will always be at least 1 fixed parameter included in the search. Just as long as it is valid!
         if ($valid && !empty($this->parameters)) {
             $this->actionClear();
             /**
              * @var $searchProvider SearchProvider
              */
-            $results = $searchProvider->search($this->parameters);
-
-            if (count($results) === 0) {
-                /**
-                 * @var $param CaseSearchParameter
-                 */
-                foreach ($this->parameters as $param) {
-                    $auditValues[] = $param->getAuditData();
-                }
-                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
-            }
-            // deconstruct the results list into a single array of primary keys.
-            $ids = array_column($results, 'id');
+            $ids = $this->runSearch();
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
@@ -393,6 +381,28 @@ class CaseSearchController extends BaseModuleController
         return $valid;
     }
 
+    protected function runSearch()
+    {
+        $searchProvider = $this->module->getSearchProvider('mysql');
+        $auditValues = array();
+        /**
+         * @var $searchProvider SearchProvider
+         */
+        $results = $searchProvider->search($this->parameters);
+
+        if (count($results) === 0) {
+            /**
+             * @var $param CaseSearchParameter
+             */
+            foreach ($this->parameters as $param) {
+                $auditValues[] = $param->getAuditData();
+            }
+            Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
+        }
+        // deconstruct the results list into a single array of primary keys.
+        return array_column($results, 'id');
+    }
+
     public function actionSearchCommonItems()
     {
         $term = Yii::app()->request->getQuery('term');
@@ -473,6 +483,33 @@ class CaseSearchController extends BaseModuleController
     public function actionClear()
     {
         unset($_SESSION['last_search'], $_SESSION['last_search_params']);
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionDownloadCSV()
+    {
+        /**
+         * @var $searchProvider SearchProvider
+         */
+        $searchProvider = $this->module->getSearchProvider('mysql');
+        $mode = Yii::app()->request->getQuery('mode');
+        $var_name = Yii::app()->request->getPost('var');
+        $start_date = Yii::app()->request->getPost('from_date', null) ? new DateTime(Yii::app()->request->getPost('from_date', null)) : null;
+        $end_date = Yii::app()->request->getPost('to_date', null) ? new DateTime(Yii::app()->request->getPost('to_date', null)) : null;
+
+        $this->populateParams();
+        $ids = $this->runSearch();
+
+        /**
+         * @var $var CaseSearchVariable
+         */
+        $var_class = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var_name];
+        $var = new $var_class($ids);
+        $searchProvider->getVariableData($var, $start_date, $end_date, true, $mode);
+        Yii::app()->end();
     }
 
     public function beforeAction($action)

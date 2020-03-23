@@ -60,10 +60,12 @@ abstract class SearchProvider
 
     /**
      * Delegate function for retrieving variable data. Implement this function to specify how to retrieve data for selected variables.
-     * @param $variables CaseSearchVariable[] A list of variables
+     * @param $variables CaseSearchVariable|CaseSearchVariable[] A list of variables
      * @param null|DateTime $start_date
      * @param null|DateTime $end_date
+     * @param bool $return_csv
+     * @param string $mode
      * @return array An array of arrays of variable data for each variable.
      */
-    abstract public function getVariableData($variables, $start_date = null, $end_date = null);
+    abstract public function getVariableData($variables, $start_date = null, $end_date = null, $return_csv = false, $mode = 'BASIC');
 }

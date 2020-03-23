@@ -41,32 +41,74 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * @param $variables CaseSearchVariable[]
+     * @param CaseSearchVariable $variable
      * @param null|DateTime $start_date
      * @param null|DateTime $end_date
+     * @param string $mode
+     * @return array|null
+     * @throws CException
+     */
+    private function getVariableDataInternal($variable, $start_date, $end_date, $mode = null)
+    {
+        $data = null;
+        if ($variable instanceof DBProviderInterface) {
+            $variable->csv_mode = $mode;
+            $data = Yii::app()->db->createCommand($variable->query($this))
+                ->andWhere(':start_date IS NULL OR created_date > :start_date')
+                ->andWhere(':end_date IS NULL OR created_date < :end_date')
+                ->bindValues(
+                    array_merge(
+                        $variable->bindValues(),
+                        array(
+                            ':start_date' => $start_date ? $start_date->format('Y-m-d') : $start_date,
+                            ':end_date' => $end_date ? $end_date->format('Y-m-d') : $end_date,
+                        )
+                    )
+                )
+                ->queryAll();
+        }
+        return $data;
+    }
+
+    /**
+     * @param CaseSearchVariable|CaseSearchVariable[] $variables
+     * @param null|DateTime $start_date
+     * @param null|DateTime $end_date
+     * @param bool $return_csv
+     * @param string $mode
      * @return array
      * @throws CException
      */
-    public function getVariableData($variables, $start_date = null, $end_date = null)
+    public function getVariableData($variables, $start_date = null, $end_date = null, $return_csv = false, $mode = 'BASIC')
     {
         $variable_data_list = array();
-        foreach ($variables as $variable) {
-            if ($variable instanceof DBProviderInterface) {
-                $variable_data_list[$variable->field_name] = Yii::app()->db->createCommand($variable->query($this))
-                    ->andWhere(':start_date IS NULL OR created_date > :start_date')
-                    ->andWhere(':end_date IS NULL OR created_date < :end_date')
-                    ->bindValues(
-                        array_merge(
-                            $variable->bindValues(),
-                            array(
-                                ':start_date' => !$start_date ? $start_date : $start_date->format('Y-m-d'),
-                                ':end_date' => !$end_date ? $end_date : $end_date->format('Y-m-d')
-                            )
-                        )
-                    )
-                    ->queryAll();
+        if (is_array($variables)) {
+            foreach ($variables as $variable) {
+                $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
+                if ($var_data) {
+                    $variable_data_list[$variable->field_name] = $var_data;
+                }
+            }
+        } else {
+            $var_data = $this->getVariableDataInternal($variables, $start_date, $end_date, $mode);
+            if ($return_csv) {
+                $output = fopen('php://output', 'w') or die ('Can\'t open php://output');
+                header('Content-Type: application/csv');
+                header('Content-Disposition:attachment;filename=search_results_' . $variables->field_name . "_$mode.csv");
+
+                if ($mode === 'BASIC') {
+                    fputcsv($output, $variables->csvColumns($mode));
+                    foreach ($var_data as $var) {
+                        fputcsv($output, $var);
+                    }
+                } else {
+
+                }
+                fclose($output) or die('Can\'t close php://output');
             }
         }
+
+
         return $variable_data_list;
     }
 }

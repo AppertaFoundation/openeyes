@@ -8,6 +8,7 @@ $(document).ready(function() {
             // Only display the plot if the user is not currently viewing the results as a list.
             $('.js-plotly-plot[id="' + $(this).val() + '"]').show();
         }
+        $('input[name="var"]').val($(this).val());
     });
 
     $('.results-options button').click(function() {
