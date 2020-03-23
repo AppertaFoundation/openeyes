@@ -19,7 +19,7 @@
 <?php
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/allergicDrugs.js", \CClientScript::POS_HEAD);
 // we need to separate the public and admin view
-if (is_a(Yii::app()->getController(), 'QueueController')) {
+if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
 } ?>
 
@@ -72,7 +72,7 @@ if (is_a(Yii::app()->getController(), 'QueueController')) {
 
             <?php
           // we need to separate the public and admin view
-          if (is_a(Yii::app()->getController(), 'QueueController') &&
+          if (is_a(Yii::app()->getController(), 'DefaultController') &&
               $this->getPreviousPrescription($element->id)): ?>
             <button type="button" class="button hint blue"
                     id="repeat_prescription" name="repeat_prescription">
@@ -93,7 +93,7 @@ if (is_a(Yii::app()->getController(), 'QueueController')) {
 
 <?php
 // we need to separate the public and admin view
-if (is_a(Yii::app()->getController(), 'QueueController')) { ?>
+if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
   <section class="element full">
     <header class="element-header">
       <h3 class="element-title">Comments</h3>
@@ -107,7 +107,7 @@ if (is_a(Yii::app()->getController(), 'QueueController')) { ?>
 <script type="text/javascript">
     <?php
     // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'QueueController')): ?>
+    if (is_a(Yii::app()->getController(), 'DefaultController')): ?>
     var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
     <?php else : ?>
     var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
