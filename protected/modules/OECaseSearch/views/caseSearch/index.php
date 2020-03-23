@@ -1,17 +1,18 @@
 <?php
 /* @var $this CaseSearchController
- * @var $fixedParams array
  * @var $params array
  * @var $paramList array
  * @var $patients CActiveDataProvider
  * @var $trial Trial
  * @var $form CActiveForm
  * @var $saved_searches array
- * @var $user_list array
  * @var $search_label string
  * @var $variables CaseSearchVariable[]
  * @var $variableList CaseSearchVariable[]
  * @var $variableData array
+ * @var $from_date string
+ * @var $to_date string
+ * @var $show_all_dates bool
  */
 $this->pageTitle = 'Advanced Search';
 
