@@ -95,13 +95,10 @@ class DBProvider extends SearchProvider
                 $output = fopen('php://output', 'w') or die ('Can\'t open php://output');
                 header('Content-Type: application/csv');
                 header('Content-Disposition:attachment;filename=search_results_' . $variables->field_name . "_$mode.csv");
-
-                if ($mode === 'BASIC') {
-                    fputcsv($output, $variables->csvColumns($mode));
-                    foreach ($var_data as $var) {
-                        fputcsv($output, $var);
-                    }
-                } else {
+                
+                fputcsv($output, $variables->csvColumns($mode));
+                foreach ($var_data as $var) {
+                    fputcsv($output, $var);
                 }
                 fclose($output) or die('Can\'t close php://output');
             }
