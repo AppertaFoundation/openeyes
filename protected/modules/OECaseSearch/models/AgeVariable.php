@@ -18,6 +18,8 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         return 'SELECT TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, COUNT(*) frequency, GROUP_CONCAT(DISTINCT id) patient_id_list
         FROM patient p
         WHERE id IN (' . implode(', ', $this->id_list) . ')
+        AND (:start_date IS NULL OR p.created_date > :start_date)
+        AND (:end_date IS NULL OR p.created_date < :end_date)
         GROUP BY TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))';
     }
 

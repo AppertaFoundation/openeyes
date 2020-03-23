@@ -16,6 +16,8 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         FROM v_patient_iop
         WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
         AND eye IS NOT NULL
+        AND (:start_date IS NULL OR event_date > :start_date)
+        AND (:end_date IS NULL OR event_date < :end_date)
         GROUP BY value';
     }
 

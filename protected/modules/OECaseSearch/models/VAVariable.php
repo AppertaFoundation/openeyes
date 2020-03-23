@@ -15,6 +15,8 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
         FROM v_patient_va_converted
         WHERE patient_id IN (' . implode(',', $this->id_list) . ')
         AND eye IS NOT NULL
+        AND (:start_date IS NULL OR reading_date > :start_date)
+        AND (:end_date IS NULL OR reading_date < :end_date)
         GROUP BY ETDRS_value';
     }
 

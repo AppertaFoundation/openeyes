@@ -60,29 +60,30 @@ $user_searches = array_map(
                 ) ?>
             </div>
             <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
-                    data-popup="add-to-search-queries">Add Query</button>
+                    data-popup="add-to-search-queries">Add Query
+            </button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
         <h3>Variables</h3>
         <table id="js-variable-table" class="standard normal-text last-right">
             <tbody>
-                <?php foreach ($variables as $variable) { ?>
-                    <tr class="search-var" data-id="<?= $variable->field_name ?>">
-                        <td>
-                            <?= $variable->label ?>
-                        </td>
-                        <td>
-                            <i class="oe-i remove-circle small"></i>
-                        </td>
-                    </tr>
-                <?php } ?>
+            <?php foreach ($variables as $variable) { ?>
+                <tr class="search-var" data-id="<?= $variable->field_name ?>">
+                    <td>
+                        <?= $variable->label ?>
+                    </td>
+                    <td>
+                        <i class="oe-i remove-circle small"></i>
+                    </td>
+                </tr>
+            <?php } ?>
             </tbody>
         </table>
         <?= CHtml::hiddenField('variable_list', implode(',', array_map(
-                static function ($item) {
-                    return $item->field_name;
-                }, $variables)), array('id' => 'js-variable-list')) ?>
+            static function ($item) {
+                return $item->field_name;
+            }, $variables)), array('id' => 'js-variable-list')) ?>
         <button id="add-variable" class="button hint green js-add-select-btn"
                 data-popup="add-to-variable-list">
             <i class="oe-i plus pro-theme"></i>
@@ -90,10 +91,10 @@ $user_searches = array_map(
         <hr class="divider"/>
         <h3>Date range</h3>
         <div class="flex-layout">
-            <input type="text" name="from_date" placeholder="from" class="date datepicker-from"/>
-            <input type="text" name="to_date" class="date datepicker-to" placeholder="to"/>
+            <?= CHtml::textField('from_date', CHtml::encode($from_date), array('placeholder' => 'from', 'disabled' => $show_all_dates, 'class' => 'date datepicker-from')) ?>
+            <?= CHtml::textField('to_date', CHtml::encode($to_date), array('placeholder' => 'to', 'disabled' => $show_all_dates, 'class' => 'date datepicker-to')) ?>
             <label class="inline highlight ">
-                <input value="All available dates" name="show-all-datas" type="checkbox" checked=""> All available dates
+                <?= CHtml::checkBox('show-all-dates', $show_all_dates); ?> All available dates
             </label>
         </div>
         <hr class="divider"/>
@@ -111,10 +112,10 @@ $user_searches = array_map(
     <main class="oe-full-main">
         <?php if ($patients->itemCount > 0) {
             $this->widget('CaseSearchPlot', array(
-                    'variable_data' => $variableData,
-                    'variables' => $variables,
-                    'total_patients' => $patients->totalItemCount,
-                    'list_selector' => '.oe-search-results'
+                'variable_data' => $variableData,
+                'variables' => $variables,
+                'total_patients' => $patients->totalItemCount,
+                'list_selector' => '.oe-search-results'
             ));
             $this->renderPartial('patient_drill_down_list', array(
                 'patients' => $patients,
@@ -263,29 +264,41 @@ $user_searches = array_map(
         let direction = $container.find("input[name='sort-options']").filter("input[checked='checked']").val();
         $('#js-analytics-spinner').show();
         if (direction === 'ascend') {
-            $.get($field.data('sort-ascend')).done(function(response) {
+            $.get($field.data('sort-ascend')).done(function (response) {
                 $container.html(response);
                 $('#js-analytics-spinner').hide();
             });
         } else if (direction === 'descend') {
-            $.get($field.data('sort-descend')).done(function(response) {
+            $.get($field.data('sort-descend')).done(function (response) {
                 $container.html(response);
                 $('#js-analytics-spinner').hide();
             });
         }
     }
 
-
     $(document).ready(function () {
         //null coalesce the id of the last parameter
         let parameter_id_counter = getMaxId();
+
+        pickmeup('.datepicker-from', {
+            format: 'Y-m-d',
+            hide_on_select: true,
+            default_date: false,
+        });
+
+        pickmeup('.datepicker-to', {
+            format: 'Y-m-d',
+            hide_on_select: true,
+            default_date: false
+        });
+
         new OpenEyes.UI.AdderDialog({
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= json_encode(array_map(
-                            static function ($item) {
-                                return array('id' => $item['id'], 'label' => $item['label']);
-                            }, $variableList)) ?>,
+                        static function ($item) {
+                            return array('id' => $item['id'], 'label' => $item['label']);
+                        }, $variableList)) ?>,
                     {'multiSelect': true, 'id': 'variable-type-list', 'deselectOnReturn': true,}
                 ),
             ],
@@ -296,7 +309,7 @@ $user_searches = array_map(
                 $('#js-variable-table tbody').empty();
                 $variableList.val('');
                 // Add a row to the table for each selected variable, and add each one to the hidden field as a CSV list.
-                $.each(selectedValues, function(index, item) {
+                $.each(selectedValues, function (index, item) {
                     $('#js-variable-table tbody').append('<tr class="search-var" data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
                     if ($variableList.val()) {
                         $variableList.val($variableList.val() + ',' + item.id);
@@ -320,7 +333,7 @@ $user_searches = array_map(
                 let value = null;
                 let valueList = [];
                 let type = null;
-                $.each(selectedValues, function(index, item) {
+                $.each(selectedValues, function (index, item) {
                     switch (item.type) {
                         case 'operator':
                             operator = item.id;
@@ -368,6 +381,21 @@ $user_searches = array_map(
             this.closest('tr').remove();
         });
 
+        $('input[name="show-all-dates"]').change(function () {
+            // Toggle disable/enable of date fields.
+            let $from_date = $('input[name="from_date"]');
+            let $to_date = $('input[name="to_date"]');
+            if ($(this).is(':checked')) {
+                $from_date.val('');
+                $to_date.val('');
+                $from_date.prop('disabled', true);
+                $to_date.prop('disabled', true)
+            } else {
+                $from_date.prop('disabled', false);
+                $to_date.prop('disabled', false)
+            }
+        });
+
         $('#load-saved-search').click(function (e) {
             e.preventDefault();
             new OpenEyes.UI.Dialog.LoadSavedSearch({
@@ -385,7 +413,7 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('.oe-full-main').on('change','#sort-field', function (e) {
+        $('.oe-full-main').on('change', '#sort-field', function (e) {
             let $container = $(this).parent().parent().parent().parent();
             let value = $container.find('#sort-field').val();
             performSort(value, $container);
@@ -397,10 +425,10 @@ $user_searches = array_map(
             performSort(value, $container);
         });
 
-        $('#js-variable-table i.remove-circle').click(function() {
+        $('#js-variable-table i.remove-circle').click(function () {
             let newList = '';
             $(this).closest('tr').remove();
-            $.each($('#js-variable-table tr'), function(index, item) {
+            $.each($('#js-variable-table tr'), function (index, item) {
                 if (index !== 0) {
                     newList = newList + ',';
                 }
@@ -425,21 +453,21 @@ $user_searches = array_map(
             });
         });
 
-        $('.oe-full-main').on('click', '.oe-search-drill-down-list .pagination a', function(e) {
+        $('.oe-full-main').on('click', '.oe-search-drill-down-list .pagination a', function (e) {
             e.preventDefault();
             e.stopPropagation();
             $('#js-analytics-spinner').show();
-            $.get($(this).attr("href")).done(function(response) {
+            $.get($(this).attr("href")).done(function (response) {
                 $('.oe-search-drill-down-list').html(response);
                 $('#js-analytics-spinner').hide();
             });
         });
 
-        $('.oe-full-main').on('click', '.oe-search-results .pagination a', function(e) {
+        $('.oe-full-main').on('click', '.oe-search-results .pagination a', function (e) {
             e.preventDefault();
             e.stopPropagation();
             $('#js-analytics-spinner').show();
-            $.get($(this).attr("href")).done(function(response) {
+            $.get($(this).attr("href")).done(function (response) {
                 $('.oe-search-results').html(response);
                 $('#js-analytics-spinner').hide();
             });

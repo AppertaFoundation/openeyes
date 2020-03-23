@@ -42,15 +42,28 @@ class DBProvider extends SearchProvider
 
     /**
      * @param $variables CaseSearchVariable[]
+     * @param null|DateTime $start_date
+     * @param null|DateTime $end_date
      * @return array
+     * @throws CException
      */
-    public function getVariableData($variables)
+    public function getVariableData($variables, $start_date = null, $end_date = null)
     {
         $variable_data_list = array();
         foreach ($variables as $variable) {
             if ($variable instanceof DBProviderInterface) {
                 $variable_data_list[$variable->field_name] = Yii::app()->db->createCommand($variable->query($this))
-                    ->bindValues($variable->bindValues())
+                    ->andWhere(':start_date IS NULL OR created_date > :start_date')
+                    ->andWhere(':end_date IS NULL OR created_date < :end_date')
+                    ->bindValues(
+                        array_merge(
+                            $variable->bindValues(),
+                            array(
+                                ':start_date' => !$start_date ? $start_date : $start_date->format('Y-m-d'),
+                                ':end_date' => !$end_date ? $end_date : $end_date->format('Y-m-d')
+                            )
+                        )
+                    )
                     ->queryAll();
             }
         }

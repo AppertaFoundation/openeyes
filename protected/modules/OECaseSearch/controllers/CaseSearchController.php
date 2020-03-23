@@ -58,6 +58,8 @@ class CaseSearchController extends BaseModuleController
         $variables = array();
         $variable_data = array();
         $ids = array();
+        $from = null;
+        $to = null;
         $searchProvider = $this->module->getSearchProvider('mysql');
         $pagination = array(
             'pageSize' => 10,
@@ -150,7 +152,18 @@ class CaseSearchController extends BaseModuleController
                     $variable = new $class_name($ids);
                     $variables[] = $variable;
                 }
-                $variable_data = $searchProvider->getVariableData($variables);
+                if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
+                    if ($_POST['from_date']) {
+                        $from = new DateTime($_POST['from_date']);
+                    }
+                    if ($_POST['to_date']) {
+                        $to = new DateTime($_POST['to_date']);
+                    }
+                } else {
+                    $from = null;
+                    $to = null;
+                }
+                $variable_data = $searchProvider->getVariableData($variables, $from, $to);
             }
         }
 
@@ -183,6 +196,9 @@ class CaseSearchController extends BaseModuleController
             'variableData' => $variable_data,
             'saved_searches' => $all_searches,
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
+            'from_date' => $from ? $from->format('Y-m-d') : null,
+            'to_date' => $to ? $to->format('Y-m-d') : null,
+            'show_all_dates' => isset($_POST['show-all-dates']) ? $_POST['show-all-dates'] === '1' : false,
         ));
     }
 
