@@ -102,7 +102,6 @@ class DBProvider extends SearchProvider
                         fputcsv($output, $var);
                     }
                 } else {
-
                 }
                 fclose($output) or die('Can\'t close php://output');
             }
