@@ -48,10 +48,10 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'} || $element->has_si
 
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('ConjunctivalHaem', 'Lens', 'PCIOL', 'ToricPCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
+        array('Lens', 'PCIOL', 'ToricPCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
             'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
             'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
-            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing'),
+            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium' , 'CapsularTensionRing', 'ConjunctivalHaem'),
         array('BandKeratopathy', 'SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture', 'CornealThinning', 'PeripheralVascularisation',
