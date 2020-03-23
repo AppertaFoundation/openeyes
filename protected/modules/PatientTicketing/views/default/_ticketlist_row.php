@@ -44,7 +44,7 @@
     </a>
   </td>
   <td>
-    <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->name : '' ?> small pad selected"></i>
+    <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->colour : '' ?> small pad selected"></i>
   </td>
   <td><span class="oe-date"><?= Helper::convertMySQL2HTML($ticket->created_date) ?></span></td>
   <td>
