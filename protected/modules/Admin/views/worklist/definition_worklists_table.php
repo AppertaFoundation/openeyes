@@ -39,4 +39,5 @@
     </table>
 <?php } else {?>
     <div class="alert-box info">No instances have been generated for this Worklist Definition.</div>
+    <a class="button small" href="/Admin/worklist/definitionGenerate/<?=$definition->id?>">Generate</a>
 <?php } ?>
