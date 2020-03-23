@@ -75,7 +75,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         return array(
             array('subspecialty_id', 'required'),
             array('disorder_id, finding_id', 'containsDisorderOrFinding'),
-            array('disorder_id, alternate_disorder_id', 'max' => 20),
+            array('disorder_id, alternate_disorder_id', 'length', 'max' => 20),
             array('finding_id, group_id, subspecialty_id', 'length', 'max' => 10),
             array('alternate_disorder_label', 'RequiredIfFieldValidator', 'field' => 'alternate_disorder_id', 'value' => true),
             array('id, disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'safe', 'on' => 'search'),
