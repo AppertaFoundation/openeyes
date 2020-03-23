@@ -72,8 +72,8 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 
             <?php
           // we need to separate the public and admin view
-          if (is_a(Yii::app()->getController(), 'DefaultController') &&
-              $this->getPreviousPrescription($element->id)): ?>
+            if (is_a(Yii::app()->getController(), 'DefaultController') &&
+              $this->getPreviousPrescription($element->id)) : ?>
             <button type="button" class="button hint blue"
                     id="repeat_prescription" name="repeat_prescription">
               Add repeat prescription
@@ -107,7 +107,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 <script type="text/javascript">
     <?php
     // we need to separate the public and admin view
-    if (is_a(Yii::app()->getController(), 'DefaultController')): ?>
+    if (is_a(Yii::app()->getController(), 'DefaultController')) : ?>
     var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
     <?php else : ?>
     var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
@@ -127,7 +127,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             return [
                 'label' => $drug['name'],
                 'id' => $drug['id'],
-                'allergies' => CJSON::encode(array_map(function($allergy){
+                'allergies' => CJSON::encode(array_map(function ($allergy) {
                         return $allergy->id;
                 }, $drug->allergies)),
             ];
