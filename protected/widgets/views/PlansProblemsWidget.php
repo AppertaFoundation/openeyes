@@ -76,9 +76,7 @@
 </div>
 
 <?php if ($allow_save) : ?>
-<script>
-    const PlansProblems = new OpenEyes.UI.PlansProblemsController();
-</script>
+    <?php Yii::app()->clientScript->registerScript('plansProblems', 'const PlansProblems = new OpenEyes.UI.PlansProblemsController();');?>
 <script type="text/html" id="plans-problems-template">
     <li>
         <span class="drag-handle"><i class="oe-i menu medium pro-theme"></i></span>
