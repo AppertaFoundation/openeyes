@@ -102,8 +102,26 @@ $user_searches = array_map(
             <?= CHtml::hiddenField('var', isset($variables[0]) ? $variables[0]->field_name : null) ?>
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
-            <?= CHtml::htmlButton('Download CSV BASIC', array('id' => 'download-csv-basic', 'type' => 'submit', 'class' => 'cols-full', 'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=BASIC')) ?>
-            <?= CHtml::htmlButton('Download CSV Advanced', array('id' => 'download-csv-advanced', 'type' => 'submit', 'class' => 'cols-full', 'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=ADVANCED')) ?>
+            <?= CHtml::htmlButton(
+                    'Download CSV BASIC',
+                    array(
+                        'id' => 'download-csv-basic',
+                        'type' => 'submit',
+                        'class' => 'cols-full',
+                        'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=BASIC',
+                        'style' => !$patients || $patients->totalItemCount === 0 ? 'display: none;' : '',
+                    )
+            ) ?>
+            <?= CHtml::htmlButton(
+                    'Download CSV Advanced',
+                    array(
+                        'id' => 'download-csv-advanced',
+                        'type' => 'submit',
+                        'class' => 'cols-full',
+                        'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=ADVANCED',
+                        'style' => !$patients || $patients->totalItemCount === 0 ? 'display: none;' : '',
+                    )
+            ) ?>
             <?php if ($this->trialContext) : ?>
                 <button class="cols-full" onclick="backToTrial()">Back to Trial</button>
             <?php endif; ?>
@@ -444,7 +462,15 @@ $user_searches = array_map(
                 type: 'GET',
                 success: function () {
                     $('#case-search-results').children().remove();
-                    $('#param-list tbody tr.parameter').remove();
+                    $('#param-list tbody tr').remove();
+                    $('#js-variable-table tbody tr').remove();
+                    $('#js-variable-list').val('');
+                    $('.date').val('');
+                    $('.js-plotly-plot').remove();
+                    $('.results-options').hide();
+                    $('.oe-full-main').append('<p>No patients found.</p>');
+                    $('#download-csv-basic').hide();
+                    $('#download-csv-advanced').hide();
                 },
                 error: function () {
                     new OpenEyes.UI.Dialog.Alert({
