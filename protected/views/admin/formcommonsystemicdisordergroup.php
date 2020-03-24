@@ -13,17 +13,33 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes">
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'right'
-    ]
-  ) ?>
-    <?= $this->renderPartial('view_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'left'
-    ]
-  ) ?>
+
+<?php $this->renderPartial('/admin/_form_errors', $errors); ?>
+
+<div class="cols-5">
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?=\CHtml::activeTextField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <?= \OEHtml::submitButton() ?>
+
+    <?= \OEHtml::cancelButton("Cancel", [
+        'data-uri' => '/oeadmin/CommonSystemicDisorderGroup/list',
+    ]) ?>
+
 </div>

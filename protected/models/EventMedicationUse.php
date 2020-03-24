@@ -186,7 +186,7 @@ class EventMedicationUse extends BaseElement
 
     public function validateStopReason()
     {
-        if ($this->end_date && !$this->stop_reason_id) {
+        if ($this->end_date && !$this->stop_reason_id && !$this->prescribe) {
             $this->addError("stop_reason_id", "You must select a stop reason if the medication is stopped.");
         }
     }
@@ -674,6 +674,15 @@ class EventMedicationUse extends BaseElement
             return true;
         }
         return false;
+    }
+
+    protected function beforeSave()
+    {
+        $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Course complete']);
+        if ($this->end_date && $this->prescribe && $course_complete_model && $this->stop_reason_id !== $course_complete_model->id) {
+            $this->stop_reason_id = $course_complete_model->id;
+        }
+        return parent::beforeSave();
     }
 
     public function beforeValidate()

@@ -114,16 +114,11 @@
 
         // hide dropdowns
         if (prescriptionFound) {
-            let $dispense_conditions =  $('.js-prescription-dispense-condition');
-            $dispense_conditions.show();
-            $dispense_conditions.each(function (i, dispense_condition) {
-                let $dispense_location = $(dispense_condition).closest('tr').find('.js-prescription-dispense-location');
-                let $dispense_condition_text = $(dispense_condition).find('.js-text');
-                $dispense_location.toggle($dispense_condition_text.data('id') !== '');
-            })
+            $('.dispense-condition, .dispense-location').prop('disabled', false).css({'background': 'white', 'color':'black'});
         } else {
+            $('.dispense-condition, .dispense-location').prop('disabled', 'disabled').css({'background': 'lightgrey', 'color':'gray'});
             // set dropdowns to default position
-            $('.js-prescription-extra').hide();
+
             $("select[id$='_default_dispense_condition_id']").val(null);
             $("select[id$='_default_dispense_location_id']").val(null);
         }

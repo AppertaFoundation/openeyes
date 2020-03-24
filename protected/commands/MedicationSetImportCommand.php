@@ -128,11 +128,13 @@ EOH;
                     \MedicationSetAutoRuleSetMembership::model()->updateAll(['source_medication_set_id' => $new_set->id], 'source_medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetAutoRuleSetMembership::model()->updateAll(['target_medication_set_id' => $new_set->id], 'target_medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetAutoRuleAttribute::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
-                    \MedicationSetAutoRuleMedication::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
+                    // \MedicationSetAutoRuleMedication::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetItem::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     \MedicationSetRule::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
+                    
+                    
                     foreach ($risk_tags as $risk_tag) {
                         $risk_tag->medication_set_id = $new_set->id;
                         $risk_tag->update(['medication_set_id']);

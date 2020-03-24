@@ -592,12 +592,14 @@ class AdminController extends \ModuleAdminController
 
     public function actionSaveWorkflowStepName()
     {
-        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']));
+        $workflow_id = Yii::app()->request->getParam('workflow_id');
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
         if (!$step) {
-            throw new \Exception('Unknown element set '.@$_POST['element_set_id'].' for workflow '.@$_POST['workflow_id']);
+            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
         }
 
-        $step->name = @$_POST['step_name'];
+        $step->name = Yii::app()->request->getParam('step_name');
 
         if (!$step->save()) {
             throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
@@ -991,26 +993,34 @@ class AdminController extends \ModuleAdminController
 
     public function actionSocialHistoryOccupation()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('occupation_id'),
-            'OEModule\OphCiExamination\models\SocialHistoryOccupation');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('occupation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryOccupation'
+        );
     }
 
     public function actionSocialHistoryDrivingStatus()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
-            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
+            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus'
+        );
     }
 
     public function actionSocialHistorySmokingStatus()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
-            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
+            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus'
+        );
     }
 
     public function actionSocialHistoryAccommodation()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
-            'OEModule\OphCiExamination\models\SocialHistoryAccommodation');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryAccommodation'
+        );
     }
 
     public function actionFamilyHistory()
@@ -1020,14 +1030,18 @@ class AdminController extends \ModuleAdminController
 
     public function actionFamilyHistoryRelative()
     {
-        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']);
+        $this->genericAdmin(
+            models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']
+        );
     }
 
     public function actionFamilyHistoryCondition()
     {
-        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryCondition');
+        $this->genericAdmin(
+            models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryCondition'
+        );
     }
 
     public function actionMedicationManagementSets()
@@ -1046,7 +1060,8 @@ class AdminController extends \ModuleAdminController
         );
     }
 
-    public function actionChangeWorkflowStepActiveStatus(){
+    public function actionChangeWorkflowStepActiveStatus()
+    {
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
         if (!$step) {
             throw new \Exception('Unknown element set '.$_POST['element_set_id'].' for workflow '.$_POST['workflow_id']);

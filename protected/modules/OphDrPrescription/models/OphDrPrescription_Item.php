@@ -143,11 +143,14 @@ class OphDrPrescription_Item extends EventMedicationUse
      */
     public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->drugDuration->name, array('Other', 'Once', 'On-going'))) {
+        if (in_array($this->drugDuration->name, array('Other', 'On-going'))) {
             return null;
         }
 
         $start_date = new DateTime($this->prescription->event->event_date);
+        if ($this->drugDuration->name === 'Once') {
+            return $start_date;
+        }
         $end_date = $start_date->add(DateInterval::createFromDateString($this->drugDuration->name));
         if ($include_tapers) {
             foreach ($this->tapers as $taper) {
