@@ -323,6 +323,7 @@ $user_searches = array_map(
                 ),
             ],
             openButton: $('#add-variable'),
+            parentContainer: 'body',
             id: 'add-variable-dialog',
             onReturn: function (dialog, selectedValues) {
                 let $variableList = $('#js-variable-list');
@@ -347,6 +348,7 @@ $user_searches = array_map(
                 ),
             ],
             openButton: $('#add-to-advanced-search-filters'),
+            parentContainer: 'body',
             id: 'add-parameter-dialog',
             onReturn: function (dialog, selectedValues) {
                 let operator = null;

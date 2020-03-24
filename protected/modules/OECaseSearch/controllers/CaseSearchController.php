@@ -494,11 +494,11 @@ class CaseSearchController extends BaseModuleController
         /**
          * @var $searchProvider SearchProvider
          */
+        $variables = array();
         $searchProvider = $this->module->getSearchProvider('mysql');
+        $start_date = null;
+        $end_date = null;
         $mode = Yii::app()->request->getQuery('mode');
-        $var_name = Yii::app()->request->getPost('var');
-        $start_date = Yii::app()->request->getPost('from_date', null) ? new DateTime(Yii::app()->request->getPost('from_date', null)) : null;
-        $end_date = Yii::app()->request->getPost('to_date', null) ? new DateTime(Yii::app()->request->getPost('to_date', null)) : null;
 
         $this->populateParams();
         $ids = $this->runSearch();
@@ -506,9 +506,29 @@ class CaseSearchController extends BaseModuleController
         /**
          * @var $var CaseSearchVariable
          */
-        $var_class = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var_name];
-        $var = new $var_class($ids);
-        $searchProvider->getVariableData($var, $start_date, $end_date, true, $mode);
+        if (array_key_exists('variable_list', $_POST) && !empty($ids)) {
+            $variable_names = explode(',', $_POST['variable_list']);
+            if ($variable_names[0] != '') {
+                foreach ($variable_names as $variable_name) {
+                    $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
+                    $variable = new $class_name($ids);
+                    $variables[] = $variable;
+                }
+                if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
+                    if ($_POST['from_date']) {
+                        $start_date = new DateTime($_POST['from_date']);
+                    }
+                    if ($_POST['to_date']) {
+                        $end_date = new DateTime($_POST['to_date']);
+                    }
+                } else {
+                    $start_date = null;
+                    $end_date = null;
+                }
+                $searchProvider->getVariableData($variables, $start_date, $end_date, true, $mode);
+            }
+        }
+
         Yii::app()->end();
     }
 

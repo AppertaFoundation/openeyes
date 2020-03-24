@@ -15,11 +15,11 @@ abstract class CaseSearchVariable
     public $unit;
     public $id_list;
     public $csv_mode = null; // Can be either 'BASIC' or 'ADVANCED'
+    public $eye;
+    public $eye_cardinality = false;
 
     public function __construct($id_list)
     {
         $this->id_list = $id_list;
     }
-
-    abstract public function csvColumns($mode);
 }
