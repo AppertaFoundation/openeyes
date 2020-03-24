@@ -46,6 +46,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 <?php } else if ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
+        <h2 class="event-header-title">Patient Overview</h2>
         <?php $this->renderPartial('//patient/event_actions'); ?>
     </nav>
 
