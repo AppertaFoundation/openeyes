@@ -70,7 +70,7 @@ class AgeVariableTest extends CDbTestCase
         $expected = $query_template;
         $this->variable->csv_mode = $csv_mode;
         $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
-}
+    }
 
     public function testGetVariableData()
     {
