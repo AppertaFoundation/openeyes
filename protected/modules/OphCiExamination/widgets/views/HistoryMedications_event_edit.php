@@ -120,7 +120,7 @@ foreach ($element->entries as $entry) {
             </div>
             <div class="collapse-data-content" style="display: none;">
 
-                <table class="medications js-entry-table js-stopped-medications">
+                <table id="<?= $model_name ?>_stopped_entry_table" class="medications js-entry-table js-stopped-medications">
                     <colgroup>
                         <col class="cols-2">
                         <col class="cols-6">

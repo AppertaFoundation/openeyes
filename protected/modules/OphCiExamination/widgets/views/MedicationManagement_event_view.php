@@ -79,7 +79,15 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
                         <col class="cols-3">
                         <col class="cols-icon" span="2">
                     </colgroup>
-
+                    <thead>
+                        <tr>
+                            <th>Drug</th>
+                            <th>Dose/frequency/route/start/stop</th>
+                            <th>Comments</th>
+                            <th><i class="oe-i drug-rx small no-click"></i></th>
+                            <th></th><!-- actions -->
+                        </tr>
+                    </thead>
                     <tbody>
                     <?php foreach ($stoppedEntries as $key => $entry) : ?>
                         <?php echo $this->render(
