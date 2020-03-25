@@ -23,6 +23,24 @@
         <table class="standard">
             <thead>
             <tr>
+                <th>
+                    <?= CHtml::link('Add Definition', '/Admin/worklist/definitionUpdate/', [
+                        'class' => 'button large green hint',
+                    ]) ?>
+                    <?php echo EventAction::button(
+                        'Sort',
+                        'sort',
+                        array(),
+                        array(
+                            'class' => 'button large',
+                            'style' => 'display:none;',
+                            'data-uri' => '/Admin/worklist/definitionSort/',
+                            'data-object' => 'WorklistDefinition',
+                        )
+                    )->toHtml() ?>
+                </th>
+            </tr>
+            <tr>
                 <th>Order</th>
                 <th>Name</th>
                 <th>Actions</th>
@@ -50,27 +68,6 @@
                 </tr>
             <?php } ?>
             </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="4">
-
-                    <?= CHtml::link('Add Definition', '/Admin/worklist/definitionUpdate/', [
-                        'class' => 'button large green hint',
-                    ]) ?>
-                    <?php echo EventAction::button(
-                        'Sort',
-                        'sort',
-                        array(),
-                        array(
-                            'class' => 'button large',
-                            'style' => 'display:none;',
-                            'data-uri' => '/Admin/worklist/definitionSort/',
-                            'data-object' => 'WorklistDefinition',
-                        )
-                    )->toHtml() ?>
-                </td>
-            </tr>
-            </tfoot>
         </table>
     </form>
     <?php } else {?>

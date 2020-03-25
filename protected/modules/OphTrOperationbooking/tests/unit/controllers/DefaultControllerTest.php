@@ -27,8 +27,8 @@ class DefaultControllerTest extends CDbTestCase
 
     public function getDefaultController($methods = null)
     {
-        return $this->getMockBuilder('QueueController')
-                ->setConstructorArgs(array('QueueController', new BaseEventTypeModule('OphTrOperationbooking', null)))
+        return $this->getMockBuilder('DefaultController')
+                ->setConstructorArgs(array('DefaultController', new BaseEventTypeModule('OphTrOperationbooking', null)))
                 ->setMethods($methods)
                 ->getMock();
     }
