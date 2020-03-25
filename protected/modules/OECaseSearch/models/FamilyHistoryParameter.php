@@ -50,31 +50,46 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             array(
                 'id' => 'family-side',
                 'field' => 'side',
-                'options' => array_map(
-                    static function ($item) {
-                        return array('id' => $item->id, 'label' => $item->name);
-                    },
-                    $sides
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any')
+                    ),
+                    array_map(
+                        static function ($item) {
+                            return array('id' => $item->id, 'label' => $item->name);
+                        },
+                        $sides
+                    ),
                 ),
             ),
             array(
                 'id' => 'family-relative',
                 'field' => 'relative',
-                'options' => array_map(
-                    static function ($item) {
-                        return array('id' => $item->id, 'label' => $item->name);
-                    },
-                    $relatives
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any')
+                    ),
+                    array_map(
+                        static function ($item) {
+                            return array('id' => $item->id, 'label' => $item->name);
+                        },
+                        $relatives
+                    ),
                 ),
             ),
             array(
                 'id' => 'family-condition',
                 'field' => 'condition',
-                'options' => array_map(
-                    static function ($item) {
-                        return array('id' => $item->id, 'label' => $item->name);
-                    },
-                    $conditions
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any')
+                    ),
+                    array_map(
+                        static function ($item) {
+                            return array('id' => $item->id, 'label' => $item->name);
+                        },
+                        $conditions
+                    )
                 ),
             ),
         );
@@ -85,13 +100,13 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'relative':
-                    return FamilyHistoryRelative::model()->findByPk($this->$attribute)->name;
+                    return FamilyHistoryRelative::model()->findByPk($this->$attribute) ? FamilyHistoryRelative::model()->findByPk($this->$attribute)->name : 'Any relative';
                     break;
                 case 'side':
-                    return FamilyHistorySide::model()->findByPk($this->$attribute)->name;
+                    return FamilyHistorySide::model()->findByPk($this->$attribute) ? FamilyHistorySide::model()->findByPk($this->$attribute)->name : 'Any side of family';
                     break;
                 case 'condition':
-                    return 'has ' . FamilyHistoryCondition::model()->findByPk($this->$attribute)->name;
+                    return FamilyHistoryCondition::model()->findByPk($this->$attribute) ? 'has ' . FamilyHistoryCondition::model()->findByPk($this->$attribute)->name : 'Any condition';
                     break;
                 default:
                     return parent::getValueForAttribute($attribute);
@@ -127,7 +142,6 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public function query($searchProvider)
     {
-//        Changed query conditions because family history search in Advanced serch was working correctly for ANY values - CERA-538
         $query_side = '';
         $query_relative = '';
         $query_condition = '';

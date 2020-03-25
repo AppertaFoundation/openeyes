@@ -84,7 +84,7 @@
         let dialog = this;
         $.each(options, function(index, optionData) {
             // Add the list of operators.
-            let $td = $('<td />');
+            let $td = $('<td />', {style: (optionData.hidden ? 'display: none;' : 'display: table-cell;')});
             dialog.optionWrapper = $('<div />', {class: 'lists-layout'}).appendTo($td);
             $td.appendTo(dialog.$tr);
 
@@ -92,19 +92,34 @@
 
             dialog.optionList = $('<ul />', {
                 class: 'add-options single js-extra-options',
+                id: optionData.id,
                 "data-multiselect": "false",
-                "data-option-list-id": index
+                "data-option-list-id": index,
             });
 
             optionData.options.forEach(function (option) {
                 dialog.optionList.append($('<li />', {
                     'data-id': option.id,
+                    'data-conditional-id': option.conditional_id,
                     'data-type': 'lookup',
                     'data-field': optionData.field
                 }).append($('<span />', {class: 'auto-width'}).text(option.label)));
             });
 
             dialog.optionList.appendTo($filterDiv);
+        });
+
+        $(dialog.popup).on('click', 'li[data-conditional-id]', function() {
+            let targetGroup = $(this).closest('ul').attr('id');
+            let target = $(this).data('conditional-id') ? $(this).data('conditional-id').split(',') : null;
+            console.log(target);
+            $('ul[id^="'+ targetGroup + '-"').closest('.lists-layout').parent().hide();
+
+            if (target) {
+                $.each(target, function(index, item) {
+                    $('#' + item).closest('.lists-layout').parent().show();
+                });
+            }
         });
         this.positionFixedPopup(this.options.openButton);
     };

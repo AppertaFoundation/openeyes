@@ -53,7 +53,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
         $this->options['operations'][1]['id'] = 'NOT IN';
 
-        $trials = Trial::getTrialList(isset($this->trialType) ? $this->trialType->id : '');
+        $intervention_trials = Trial::getTrialList(TrialType::model()->findByAttributes(array('code' => 'INTERVENTION'))->id);
+        $non_intervention_trials = Trial::getTrialList(TrialType::model()->findByAttributes(array('code' => 'NON_INTERVENTION'))->id);
 
         $this->statusList = array(
             TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in trial',
@@ -65,45 +66,91 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             array(
                 'id' => 'trial-status',
                 'field' => 'status',
-                'options' => array_map(
-                    static function ($item, $key) {
-                        return array('id' => $key, 'label' => $item);
-                    },
-                    $this->statusList,
-                    array_keys($this->statusList)
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any status')
+                    ),
+                    array_map(
+                        static function ($item, $key) {
+                            return array('id' => $key, 'label' => $item);
+                        },
+                        $this->statusList,
+                        array_keys($this->statusList)
+                    )
                 )
             ),
             array(
                 'id' => 'trial-type',
                 'field' => 'trialTypeId',
-                'options' => array_map(
-                    static function ($item, $key) {
-                        return array('id' => $key, 'label' => $item);
-                    },
-                    $trialTypes,
-                    array_keys($trialTypes)
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any trial type', 'conditional_id' => '')
+                    ),
+                    array_map(
+                        static function ($item, $key) {
+                            $conditional_id = '';
+                            Yii::log($key);
+                            if ($key == TrialType::model()->findByAttributes(array('code' => 'INTERVENTION'))->id) {
+                                $conditional_id = 'trial-type-intervention-trial,trial-type-treatment-type';
+                            } elseif ($key == TrialType::model()->findByAttributes(array('code' => 'NON_INTERVENTION'))->id) {
+                                $conditional_id = 'trial-type-non-intervention-trial';
+                            }
+                            return array('id' => $key, 'label' => $item, 'conditional_id' => $conditional_id);
+                        },
+                        $trialTypes,
+                        array_keys($trialTypes)
+                    )
                 )
             ),
             array(
-                'id' => 'trial',
+                'id' => 'trial-type-intervention-trial',
                 'field' => 'trial',
-                'options' => array_map(
-                    static function ($item, $key) {
-                        return array('id' => $key, 'label' => $item);
-                    },
-                    $trials,
-                    array_keys($trials)
+                'hidden' => true,
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any trial')
+                    ),
+                    array_map(
+                        static function ($item, $key) {
+                            return array('id' => $key, 'label' => $item);
+                        },
+                        $intervention_trials,
+                        array_keys($intervention_trials)
+                    )
                 )
             ),
             array(
-                'id' => 'treatment-type',
+                'id' => 'trial-type-non-intervention-trial',
+                'field' => 'trial',
+                'hidden' => true,
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any trial')
+                    ),
+                    array_map(
+                        static function ($item, $key) {
+                            return array('id' => $key, 'label' => $item);
+                        },
+                        $non_intervention_trials,
+                        array_keys($non_intervention_trials)
+                    )
+                )
+            ),
+            array(
+                'id' => 'trial-type-treatment-type',
                 'field' => 'treatmentTypeId',
-                'options' => array_map(
-                    static function ($item, $key) {
-                        return array('id' => $key, 'label' => $item);
-                    },
-                    $treatmentTypes,
-                    array_keys($treatmentTypes)
+                'hidden' => true,
+                'options' => array_merge(
+                    array(
+                        array('id' => '', 'label' => 'Any treatment')
+                    ),
+                    array_map(
+                        static function ($item, $key) {
+                            return array('id' => $key, 'label' => $item);
+                        },
+                        $treatmentTypes,
+                        array_keys($treatmentTypes)
+                    )
                 )
             ),
         );
@@ -134,16 +181,16 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
                 case 'trial':
-                    return Trial::model()->findByPk($this->$attribute)->name;
+                    return $this->trialTypeId ? ($this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial') : '';
                     break;
                 case 'trialTypeId':
-                    return 'Participating in ' . $this->getTrialType()->name . ' trial';
+                    return 'Participating in ' . ($this->$attribute ? $this->getTrialType()->name : 'any') . ' trial';
                     break;
                 case 'treatmentTypeId':
-                    return 'Received ' . $this->getTreatmentType()->name . ' treatment';
+                    return 'Received ' . ($this->$attribute ? $this->getTreatmentType()->name : 'any') . ' treatment';
                     break;
                 case 'status':
-                    return $this->statusList[$this->$attribute];
+                    return $this->$attribute ? $this->statusList[$this->$attribute] : 'Any trial status';
                     break;
                 default:
                     return parent::getValueForAttribute($attribute);
