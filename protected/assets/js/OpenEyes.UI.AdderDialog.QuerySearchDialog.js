@@ -112,7 +112,6 @@
         $(dialog.popup).on('click', 'li[data-conditional-id]', function() {
             let targetGroup = $(this).closest('ul').attr('id');
             let target = $(this).data('conditional-id') ? $(this).data('conditional-id').split(',') : null;
-            console.log(target);
             $('ul[id^="'+ targetGroup + '-"').closest('.lists-layout').parent().hide();
 
             if (target) {
