@@ -201,9 +201,7 @@ if (!empty($subspecialty)) { ?>
             if (min !== max){
                 for(let key in charts){
 
-                    let updateParams = {
-                        'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
-                    };
+                    let updateParams = null;
 
                     if (key==='IOP'){
                         //set the iop target line
@@ -214,7 +212,14 @@ if (!empty($subspecialty)) { ?>
                             Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
                         }
                     }
-                    Plotly.relayout(charts[key][eye_side], updateParams);
+                    if(limits[eye_side].min || limits[eye_side].max){
+                        updateParams = {
+                            'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
+                        };
+                    }
+                    if(updateParams){
+                        Plotly.relayout(charts[key][eye_side], updateParams);
+                    }
                 }
             }
 
