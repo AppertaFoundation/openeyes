@@ -5,6 +5,10 @@
  */
 class PatientNumberParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    protected $options = array(
+        'value_type' => 'string_search',
+    );
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -22,6 +26,20 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
         return Yii::app()->params['hos_num_label'];
     }
 
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Patient::model()->findByPk($this->$attribute)->hos_num;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
+    }
+
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @param $searchProvider DBProvider The database search provider.
@@ -33,7 +51,25 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
 
         return "SELECT DISTINCT p.id 
 FROM patient p
-WHERE p.hos_num $op :p_num_number_$this->id";
+WHERE p.id $op :p_num_number_{$this->id}";
+    }
+
+    public static function getCommonItemsForTerm($term)
+    {
+        /**
+         * @var $patients Patient[]
+         */
+        $patients = Patient::model()->findAllBySql(
+            "SELECT p.* FROM patient p
+WHERE p.hos_num LIKE :term
+ORDER BY p.hos_num LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+            array('term' => "$term%")
+        );
+        $values = array();
+        foreach ($patients as $patient) {
+            $values[] = array('id' => $patient->id, 'label' => $patient->hos_num);
+        }
+        return $values;
     }
 
     /**

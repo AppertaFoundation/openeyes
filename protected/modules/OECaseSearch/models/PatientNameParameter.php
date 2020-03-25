@@ -13,13 +13,31 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     {
         parent::__construct($scenario);
         $this->name = 'patient_name';
-        $this->operation = 'LIKE'; // Remove if more operations are added.
+        $this->operation = '=';
     }
+
+    protected $options = array(
+        'value_type' => 'string_search',
+    );
 
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
         return 'Name';
+    }
+
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Patient::model()->findByPk($this->$attribute)->getFullName();
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
     }
 
     /**
@@ -29,16 +47,31 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      */
     public function query($searchProvider)
     {
-        $op = 'LIKE';
-
         return "SELECT DISTINCT p.id 
 FROM patient p 
-JOIN contact c 
-  ON c.id = p.contact_id
-WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$this->id)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) $op LOWER(:p_n_name_like_$this->id)) OR
-     SOUNDEX(c.first_name) = SOUNDEX(:p_n_name_$this->id)
-      OR SOUNDEX(c.last_name) = SOUNDEX(:p_n_name_$this->id)
+WHERE p.id = :p_n_name_{$this->id}
 ";
+    }
+
+    public static function getCommonItemsForTerm($term)
+    {
+        /**
+         * @var $patients Patient[]
+         */
+        $patients = Patient::model()->findAllBySql(
+            "SELECT p.* FROM patient p
+JOIN contact c ON c.id = p.contact_id
+WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) LIKE LOWER(:term)) OR (LOWER(CONCAT(c.last_name, ' ', c.first_name)) LIKE LOWER(:term)) OR
+     SOUNDEX(c.first_name) = SOUNDEX(:term)
+      OR SOUNDEX(c.last_name) = SOUNDEX(:term)
+ORDER BY c.first_name, c.last_name LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+            array('term' => "%$term%")
+        );
+        $values = array();
+        foreach ($patients as $patient) {
+            $values[] = array('id' => $patient->id, 'label' => $patient->getFullName());
+        }
+        return $values;
     }
 
     /**
@@ -49,7 +82,6 @@ WHERE (LOWER(CONCAT(c.first_name, ' ', c.last_name)) $op LOWER(:p_n_name_like_$t
     {
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
-            "p_n_name_like_$this->id" => '%' . $this->value . '%',
             "p_n_name_$this->id" => $this->value,
         );
     }

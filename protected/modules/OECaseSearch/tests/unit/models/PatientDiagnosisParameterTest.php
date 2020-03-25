@@ -77,6 +77,60 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals($expected, $this->parameter->bindValues());
     }
 
+    public function attributeValueTestList()
+    {
+        return array(
+            'Operation' => array(
+                'attribute' => 'operation',
+                'expected' => '=',
+            ),
+            'Value' => array(
+                'attribute' => 'value',
+                'expected' => 'Myopia',
+            ),
+            'Firm' => array(
+                'attribute' => 'firm_id',
+                'expected' => 'by Aylward Firm',
+            ),
+            'Only latest event' => array(
+                'attribute' => 'only_latest_event',
+                'expected' => 'Only patient\'s latest event',
+            ),
+            'Invalid attribute' => array(
+                'attribute' => 'invalid',
+                'expected' => null,
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider attributeValueTestList
+     * @param $attribute
+     * @param $expected
+     */
+    public function testGetValueForAttribute($attribute, $expected)
+    {
+        $this->parameter->operation = '=';
+        $this->parameter->value = 1;
+        $this->parameter->firm_id = 1;
+        $this->parameter->only_latest_event = true;
+        $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
+    }
+
+    /**
+     * @covers PatientDiagnosisParameter::getCommonItemsForTerm
+     */
+    public function testGetCommonItemsForTerm()
+    {
+        // Full match
+        $this->assertCount(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia'));
+        $this->assertEquals('Myopia', PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['label']);
+        $this->assertEquals(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['id']);
+
+        // Partial match
+        $this->assertCount(8, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
+    }
+
     public function testSearchLike()
     {
         $expected = array();

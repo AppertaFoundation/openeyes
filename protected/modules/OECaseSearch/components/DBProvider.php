@@ -99,8 +99,16 @@ class DBProvider extends SearchProvider
                     $select .= ", ({$variable->query($this)}) {$variable->field_name}";
                 }
             } else {
-                $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
-                $variable_data_list[$variable->field_name] = $var_data;
+                if ($variable->eye_cardinality) {
+                    foreach (array('L', 'R') as $eye) {
+                        $variable->eye = $eye;
+                        $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
+                        $variable_data_list[$variable->field_name][] = $var_data;
+                    }
+                } else {
+                    $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
+                    $variable_data_list[$variable->field_name][] = $var_data;
+                }
             }
         }
         if ($return_csv) {

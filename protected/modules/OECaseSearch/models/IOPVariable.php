@@ -78,7 +78,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         SELECT value iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_iop
         WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
-        AND eye IS NOT NULL
+        AND eye = \'' . $this->eye . '\'
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
         GROUP BY value';

@@ -72,7 +72,9 @@ abstract class CaseSearchParameter extends CFormModel
     }
 
     /**
+     * Display the user-friendly representation of the specified parameter attribute.
      * Override this function to customise the value returned for specific attributes.
+     * @uses CFormModel::attributeNames()
      * @param $attribute
      * @return mixed|null
      */

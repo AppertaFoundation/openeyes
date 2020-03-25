@@ -31,52 +31,52 @@ class PatientMedicationParameterTest extends CDbTestCase
         parent::tearDown();
     }
 
-    public function testQuery()
+    public function getOperations()
+    {
+        return array(
+            'Equal' => array(
+                'operator' => '=',
+            ),
+            'Not equal' => array(
+                'operator' => '!=',
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getOperations
+     * @param $operator
+     */
+    public function testQuery($operator)
     {
         $this->object->value = 5;
+        $this->object->operation = $operator;
 
-        $correctOps = array(
-            '=',
-            '!='
-        );
-
-        // Ensure the query is correct for each operator.
-        foreach ($correctOps as $operator) {
-            $this->object->operation = $operator;
-            $wildcard = '%';
-
-            $sqlValue = "
+        $sqlValue = "
 SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
-  ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.id != :p_m_value_0
-  OR md.id != :p_m_value_0
-  OR m.id IS NULL";
+ON m.patient_id = p.id
+LEFT JOIN medication md
+ON md.id = m.medication_drug_id
+WHERE md.id != :p_m_value_0
+OR m.id IS NULL";
 
-            if ($operator === '=') {
-                $sqlValue = "
+        if ($operator === '=') {
+            $sqlValue = "
 SELECT p.id
 FROM patient p
 JOIN patient_medication_assignment m
-  ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.id = :p_m_value_0
-  OR md.id = :p_m_value_0";
-            }
-
-            $this->assertEquals(
-                trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->object->query($this->searchProvider)))
-            );
+ON m.patient_id = p.id
+LEFT JOIN medication d
+ON d.id = m.medication_drug_id
+WHERE d.id = :p_m_value_0";
         }
+
+        $this->assertEquals(
+            trim(preg_replace('/\s+/', ' ', $sqlValue)),
+            trim(preg_replace('/\s+/', ' ', $this->object->query($this->searchProvider)))
+        );
     }
 
     public function testBindValues()

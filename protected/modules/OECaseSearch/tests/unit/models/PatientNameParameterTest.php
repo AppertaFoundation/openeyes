@@ -38,12 +38,12 @@ class PatientNameParameterTest extends CDbTestCase
     {
         $expected = array($this->patient('patient1'));
 
-        $this->parameter->operation = 'LIKE';
-        $this->parameter->value = 'Jim';
+        $this->parameter->operation = '=';
+        $this->parameter->value = 1;
 
         $secondParam = new PatientNameParameter();
-        $secondParam->operation = 'LIKE';
-        $secondParam->value = 'Jim';
+        $secondParam->operation = '=';
+        $secondParam->value = $this->patient('patient1')->id;
 
         $results = $this->searchProvider->search(array($this->parameter, $secondParam));
 
@@ -56,7 +56,7 @@ class PatientNameParameterTest extends CDbTestCase
 
         $this->assertEquals($expected, $actual);
 
-        $this->parameter->value = 'Aylward';
+        $this->parameter->value = $this->patient('patient1')->id;
 
         $results = $this->searchProvider->search(array($this->parameter));
 

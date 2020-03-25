@@ -40,11 +40,11 @@ class PatientNumberParameterTest extends CDbTestCase
         $expected = array($this->patient('patient1'));
 
         $this->parameter->operation = '=';
-        $this->parameter->value = 12345;
+        $this->parameter->value = $this->patient('patient1')->id;
 
         $secondParam = new PatientNumberParameter();
         $secondParam->operation = '=';
-        $secondParam->value = 12345;
+        $secondParam->value = $this->patient('patient1')->id;
 
         $results = $this->searchProvider->search(array($this->parameter, $secondParam));
 

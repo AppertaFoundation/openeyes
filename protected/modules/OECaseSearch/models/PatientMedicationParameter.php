@@ -23,30 +23,30 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
 
     public static function getCommonItemsForTerm($term)
     {
-        $drugs = Drug::model()->findAllBySql('
+        $drugs = Medication::model()->findAllBySql('
 SELECT *
-FROM drug d 
-WHERE LOWER(d.name) LIKE LOWER(:term) ORDER BY d.name LIMIT 30', array('term' => "$term%"));
-
-        $medicationDrugs = MedicationDrug::model()->findAllBySql('
-SELECT *
-FROM medication_drug md
-WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "$term%"));
+FROM medication d 
+WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 30', array('term' => "$term%"));
 
         $values = array();
         foreach ($drugs as $drug) {
-            $values[] = array('id' => $drug->id, 'label' => $drug->name);
+            $values[] = array('id' => $drug->id, 'label' => $drug->preferred_term);
         }
+        return $values;
+    }
 
-        foreach ($medicationDrugs as $medicationDrug) {
-            // Filter out any duplicates.
-            if (!isset($values[$medicationDrug->name])) {
-                $values[] = array('id' => $medicationDrug->id, 'label' => $medicationDrug->name);
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    return Medication::model()->findByPk($this->$attribute)->preferred_term;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
             }
         }
-
-        sort($values);
-        return $values;
+        return null;
     }
 
     /**
@@ -64,12 +64,9 @@ SELECT p.id
 FROM patient p
 JOIN patient_medication_assignment m
   ON m.patient_id = p.id
-LEFT JOIN drug d
-  ON d.id = m.drug_id
-LEFT JOIN medication_drug md
-  ON md.id = m.medication_drug_id
-WHERE d.id $op :p_m_value_$this->id
-  OR md.id $op :p_m_value_$this->id";
+LEFT JOIN medication d
+  ON d.id = m.medication_drug_id
+WHERE d.id $op :p_m_value_$this->id";
         }
 
         $op = '!=';
@@ -79,12 +76,9 @@ SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
 ON m.patient_id = p.id
-LEFT JOIN drug d
-ON d.id = m.drug_id
-LEFT JOIN medication_drug md
+LEFT JOIN medication md
 ON md.id = m.medication_drug_id
-WHERE d.id $op :p_m_value_$this->id
-OR md.id $op :p_m_value_$this->id
+WHERE md.id $op :p_m_value_$this->id
 OR m.id IS NULL";
     }
 
