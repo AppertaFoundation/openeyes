@@ -116,23 +116,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Override this function for any new attributes added to the subclass. Ensure that you invoke the parent function first to obtain and augment the initial list of attribute names.
-     * @return array An array of attribute names.
-     */
-    public function attributeNames()
-    {
-        return array_merge(
-            parent::attributeNames(),
-            array(
-                'status',
-                'trialTypeId',
-                'trial',
-                'treatmentTypeId',
-            )
-        );
-    }
-
-    /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
      */
@@ -296,24 +279,5 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'treatmentTypeId' => $this->treatmentTypeId,
             )
         );
-    }
-
-    public function getDisplayString()
-    {
-        $op = 'IS';
-        if ($this->operation) {
-            $op = 'IS NOT';
-        }
-
-        $status = TrialPatientStatus::model()->findbyPk($this->status)->name;
-
-        $trialType = $this->trialType ? $this->trialType->name : 'any trial type';
-
-        $trial = Trial::model()->findByPk($this->trial);
-        $trialStr = $trial ? $trial->name : 'for any trial';
-        $treatment_type = $this->getTreatmentType();
-        $treatment_str = $treatment_type ? $treatment_type->name : 'any';
-
-        return "$op $status $trialType $trialStr with $treatment_str treatment";
     }
 }

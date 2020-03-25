@@ -23,6 +23,9 @@
 class PatientIdentifierParameter extends CaseSearchParameter implements DBProviderInterface
 {
     public $code;
+    protected $options = array(
+        'value_type' => 'string_search',
+    );
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
@@ -106,6 +109,24 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         return "SELECT DISTINCT p.patient_id 
 FROM patient_identifier p
 WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
+    }
+
+    public static function getCommonItemsForTerm($term)
+    {
+        /**
+         * @var $patients Patient[]
+         */
+        $patients = PatientIdentifier::model()->findAllBySql(
+            "SELECT p.* FROM patient_identifier p
+WHERE p.value LIKE :term
+ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+            array('term' => "%$term%")
+        );
+        $values = array();
+        foreach ($patients as $patient) {
+            $values[] = array('id' => $patient->value, 'label' => $patient->value);
+        }
+        return $values;
     }
 
     /**

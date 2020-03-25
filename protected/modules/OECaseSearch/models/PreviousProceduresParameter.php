@@ -24,6 +24,29 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         return 'Previous Procedure';
     }
 
+    /**
+     * @param $attribute
+     * @return string|null
+     */
+    public function getValueForAttribute($attribute)
+    {
+        if (in_array($attribute, $this->attributeNames(), true)) {
+            switch ($attribute) {
+                case 'value':
+                    $op = Procedure::model()->findByPk($this->$attribute);
+                    if (!$op) {
+                        $op = PastSurgery_Operation::model()->findByPk($this->$attribute);
+                        return $op->operation;
+                    }
+                    return $op->term;
+                    break;
+                default:
+                    return parent::getValueForAttribute($attribute);
+            }
+        }
+        return null;
+    }
+
     public static function getCommonItemsForTerm($term)
     {
         $criteria = new CDbCriteria();
@@ -39,7 +62,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         $criteria = new CDbCriteria();
         $criteria->limit = 15;
         $criteria->compare('operation', $term, true);
-        $criteria->addNotInCondition('operation', $options);
+        $criteria->addNotInCondition('operation', array_column($options, 'id'));
         $past_ops = PastSurgery_Operation::model()->findAll($criteria);
 
         foreach ($past_ops as $op) {
@@ -94,7 +117,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      */
     public function bindValues()
     {
-
         // Construct your list of bind values here. Use the format "bind" => "value".
         return array(
             "p_p_value_$this->id" => $this->value,

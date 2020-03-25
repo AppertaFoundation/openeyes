@@ -5,6 +5,10 @@
  */
 class PatientNameParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    protected $options = array(
+        'value_type' => 'string_search',
+    );
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -15,10 +19,6 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         $this->name = 'patient_name';
         $this->operation = '=';
     }
-
-    protected $options = array(
-        'value_type' => 'string_search',
-    );
 
     public function getLabel()
     {
