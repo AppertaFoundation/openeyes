@@ -54,6 +54,7 @@ class DBProvider extends SearchProvider
         if ($variable instanceof DBProviderInterface) {
             $variable->csv_mode = $mode;
             $data = Yii::app()->db->createCommand($variable->query($this))
+                ->andWhere('p.deleted != 1')
                 ->bindValues(
                     array_merge(
                         $variable->bindValues(),

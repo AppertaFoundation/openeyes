@@ -57,6 +57,7 @@ class CaseSearchController extends BaseModuleController
     {
         $variables = array();
         $variable_data = array();
+        $show_all_dates = false;
         $ids = array();
         $from = null;
         $to = null;
@@ -150,9 +151,15 @@ class CaseSearchController extends BaseModuleController
                 } else {
                     $from = null;
                     $to = null;
+                    $show_all_dates = true;
                 }
                 $variable_data = $searchProvider->getVariableData($variables, $from, $to);
             }
+        }
+
+        if (!array_key_exists('from_date', $_POST) && !array_key_exists('to_date', $_POST)) {
+            // First entry to screen, so mark show_all_dates as true.
+            $show_all_dates = true;
         }
 
         // Get the list of parameter types for display on-screen.
@@ -175,6 +182,7 @@ class CaseSearchController extends BaseModuleController
             ));
             Yii::app()->end();
         }
+
         $this->render('index', array(
             'paramList' => $paramList,
             'params' => (empty($this->parameters) && isset($_SESSION['last_search_params'])) ? $_SESSION['last_search_params'] : $this->parameters,
@@ -186,7 +194,7 @@ class CaseSearchController extends BaseModuleController
             'search_label' => isset($_POST['search_name']) ? $_POST['search_name'] : '',
             'from_date' => $from ? $from->format('Y-m-d') : null,
             'to_date' => $to ? $to->format('Y-m-d') : null,
-            'show_all_dates' => isset($_POST['show-all-dates']) ? $_POST['show-all-dates'] === '1' : false,
+            'show_all_dates' => $show_all_dates,
         ));
     }
 
