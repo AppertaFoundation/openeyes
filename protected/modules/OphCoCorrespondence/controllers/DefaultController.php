@@ -930,7 +930,6 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_output->Cell(0, 10, 'Attachment unavailable -', 0, 2, 'C');
             $this->pdf_output->Cell(0, 10, 'please try re-printing the event to re-generate attachments', 0, 2, 'C');
         }
-        return $errors;
     }
 
 		protected function verifyActionAccess(CAction $action)

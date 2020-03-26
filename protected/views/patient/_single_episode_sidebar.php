@@ -147,7 +147,13 @@ $operation_status_to_css_class = [
                               <?php
                                                             $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
                                 if (method_exists($api, 'getLaterality')) {
-                                    $this->widget('EyeLateralityWidget', ['eye' => $api->getLaterality($event->id), 'pad' => '']);
+                                    $this->widget('EyeLateralityWidget', [
+                                            'show_if_both_eyes_are_null' =>
+                                                !property_exists($api, 'show_if_both_eyes_are_null') ||
+                                                $api->show_if_both_eyes_are_null,
+                                            'eye' => $api->getLaterality($event->id),
+                                            'pad' => '',
+                                        ]);
                                 } ?>
                             </span><span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
                             <?php echo $event->event_date

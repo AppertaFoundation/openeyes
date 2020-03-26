@@ -64,6 +64,7 @@ class BookingControllerTest extends CDbTestCase
     {
         $_GET = array();
         unset(Yii::app()->session['selected_firm_id']);
+        parent::tearDown();
     }
 
     public function testActionScheduleCancelledOperation()

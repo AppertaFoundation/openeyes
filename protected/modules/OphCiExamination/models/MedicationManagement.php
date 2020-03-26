@@ -132,7 +132,18 @@ class MedicationManagement extends BaseMedicationElement
         $event_date = substr($this->event->event_date, 0, 10);
 
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
-            return ($e->start_date == $event_date && is_null($e->end_date) || $e->end_date > date('Y-m-d'));
+            return ($e->start_date == $event_date && (is_null($e->end_date) || $e->end_date > date('Y-m-d')));
+        });
+    }
+
+    public function getEntriesStartingInFuture()
+    {
+        $event_date = substr($this->event->event_date, 0, 10);
+
+        return array_filter($this->visible_entries, function ($e) use ($event_date) {
+            return ($e->start_date > $event_date &&
+                (is_null($e->end_date) || $e->end_date > date('Y-m-d'))
+            );
         });
     }
 

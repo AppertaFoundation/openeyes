@@ -2624,19 +2624,21 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
 
         if ($element) {
-            $str = "Eye: {$element->eye()->name}" . PHP_EOL;
-            $str .= "Straight Forward: " . ($element->fast_track == 1 ? 'Yes' : 'No') . PHP_EOL;
-            $str .= "Post Operative Target: {$element->target_postop_refraction}D" . PHP_EOL;
-            $str .= "Suitable for: {$element->suitable_for_surgeon->name}" . ($element->supervised == 1 ? " (supervised)" : "") . PHP_EOL;
-            $str .= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery" . PHP_EOL : "");
-            $str .= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye" . PHP_EOL : "");
-            $reasons = [];
-            foreach ($element->reasonForSurgery as $reason) {
-                $reasons[] = $reason->name;
-            }
+            foreach (['right', 'left'] as $side) {
+                $str .= ucfirst($side) . " Eye: {" .
+                    ($element->{$side . 'Eye'} ? $element->{$side . 'Eye'}->name :
+                    'Not recorded')
+                    . "}" . PHP_EOL;
 
-            if (!empty($reasons)) {
-                $str .= "Primary reason for surgery: " . implode(", ", $reasons) . PHP_EOL;
+                $str .= ucfirst($side) . " Post Operative Target: {" .
+                    ($element->{$side . '_target_postop_refraction'} ? $element->{$side . '_target_postop_refraction'} :
+                    'Not recorded')
+                    . "}D" . PHP_EOL;
+
+                $str .= ucfirst($side) . " Post Operative Target: {" .
+                    ($element->{$side . 'ReasonForSurgery'} ? $element->{$side . 'ReasonForSurgery'}->name :
+                    'N/A')
+                    . "}D" . PHP_EOL . PHP_EOL;
             }
         }
         return $str;

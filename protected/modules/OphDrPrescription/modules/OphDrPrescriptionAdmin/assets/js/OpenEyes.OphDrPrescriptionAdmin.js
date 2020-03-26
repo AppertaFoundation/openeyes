@@ -35,9 +35,21 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
             const $tr = $(this).closest('tr');
             const id = $tr.data(controller.options.rowLink);
             controller.addTaper($tr);
-            $(`.js-row-of-${id}`).find('.js-edit-set-medication').trigger('click');
+            let $taper = $(controller.options.tableSelector).find('tr[data-parent-med-id="' + $tr.attr('data-med_id') + '"]');
+            if ($(`.js-row-of-${id}.js-addition-line`).find('.js-tick-set-medication').is(':hidden')) { //don't trigger if edit fields already shown
+                $(`.js-row-of-${id}`).find('.js-edit-set-medication').trigger('click');
+            } else {
+                $taper.find('.js-remove-taper').show();
+                $taper.find('.js-input').show();
+                $taper.find('.js-text').hide();
+            }
             return false;
         });
+
+        if ($(this.options.tableSelector).find('tbody tr').length > 0) {
+            $(this.options.tableSelector).show();
+            $('.empty-set').hide();
+        }
     };
 
     DrugSetController.prototype.bindFilterButtons = function () {
@@ -70,13 +82,14 @@ OpenEyes.OphDrPrescriptionAdmin = OpenEyes.OphDrPrescriptionAdmin || {};
                 'taper_count' : next_taper_count
             });
 
-        let $lastrow = $row;
+        let $lastrow = $('#meds-list tr.js-addition-line[data-med_id="' + data_med_id + '"]');
 
         if($tapers.length>0) {
             $lastrow = $tapers.last();
         }
 
         $(markup).insertAfter($lastrow);
+        $('#meds-list').trigger('taperAdded');
 
         return false;
 

@@ -73,7 +73,7 @@
     <!--
        You can hard-code custom php.ini settings into your custom standard.
        The following tag sets the memory limit to 64M.
-    
+
     <ini name="memory_limit" value="128M"/>
     -->
 
@@ -83,7 +83,10 @@
        PEAR standard exists inside the PHP_CodeSniffer install
        directory.
     -->
-    <rule ref="PSR2"/>
+    <rule ref="PSR2">
+        <!-- Too many classes are already defined in OE that do not conform to this rule -->
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+    </rule>
 
     <rule ref="Generic.Files.LineLength">
         <properties>

@@ -48,15 +48,19 @@ EOH;
         EventMedicationUse::$local_to_dmd_conversion = true;
         $t = microtime(true);
         echo "[" . (date("Y-m-d H:i:s")) . "] Local medication to DMD set (localmedicationtodmdmedication) ... ";
-        $drugs_with_national_code = Drug::model()->findAll("national_code is NOT NULL");
-        foreach ($drugs_with_national_code as $drug) {
+        $drugs = Drug::model()->findAll();
+        foreach ($drugs as $drug) {
             // check for medication ID
-            $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug' AND deleted_date is NULL", array(":old_id" => $drug->id));
-            $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D' AND deleted_date is NULL", array(":national_code" => $drug->national_code));
+            $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug' AND deleted_date is NULL", [":old_id" => $drug->id]);
+            $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D' AND deleted_date is NULL", [":national_code" => $drug->national_code]);
+            // Link drugs that do not have a national code set
+            if (!$target_medication) {
+                $target_medication = medication::model()->find("preferred_term = :local_name and source_type='dm+d' and deleted_date is null", [":local_name" => $drug->name]);
+            }
 
             if ($current_medication && $target_medication) {
-                    // Only drug medication has source_old_id if target medication has one it means one drug with
-                    // this national code was already merged in with dmd data
+                // Only drug medication has source_old_id if target medication has one it means one drug with
+                // this national code was already merged in with dmd data
                 if ($target_medication->source_old_id) {
                     if (!$this->activeMedicationMergeExists($current_medication, $target_medication)) {
                         $transaction = Yii::app()->db->beginTransaction();
@@ -88,19 +92,14 @@ EOH;
                     }
 
                     /* Auto set */
-
-                    $target_medication_auto_set_items = MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
-
-                    foreach ($target_medication_auto_set_items as $set_item) {
-                            $current_medication_auto_set_item = MedicationSetAutoRuleMedication::model()->findByAttributes([
-                                    'medication_id' => $current_medication->id,
-                                    'medication_set_id' => $set_item->medication_set_id
-                                    ]);
-                        if (isset($current_medication_auto_set_item)) {
-                            $set_item->delete();
-                        } else {
-                            $set_item->medication_id = $current_medication->id;
-                            $set_item->save();
+                    foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
+                              'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
+                        try {
+                            Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
+                                         SET medication_id = {$current_medication->id} 
+                                         WHERE medication_id = {$target_medication->id}")->execute();
+                        } catch (Exception $exception) {
+                            Yii::log($exception->getMessage());
                         }
                     }
 

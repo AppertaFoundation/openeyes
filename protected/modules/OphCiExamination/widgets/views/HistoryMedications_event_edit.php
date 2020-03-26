@@ -120,14 +120,22 @@ foreach ($element->entries as $entry) {
             </div>
             <div class="collapse-data-content" style="display: none;">
 
-                <table class="medications js-entry-table js-stopped-medications">
+                <table id="<?= $model_name ?>_stopped_entry_table" class="medications js-entry-table js-stopped-medications">
                     <colgroup>
                         <col class="cols-2">
                         <col class="cols-6">
                         <col class="cols-3">
                         <col class="cols-icon" span="2">
                     </colgroup>
-
+                    <thead>
+                        <tr style='display:none'>
+                            <th>Drug</th>
+                            <th>Dose/frequency/route/start/stop</th>
+                            <th>Comments</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody>
                     <?php
                     foreach ($stopped_entries as $entry) {

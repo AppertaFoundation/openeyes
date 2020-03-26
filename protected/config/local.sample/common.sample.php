@@ -118,6 +118,7 @@ $config = array(
         'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
+        'OphGeneric',
         'OECaseSearch',
         'OETrial',
         'OphOuCatprom5'

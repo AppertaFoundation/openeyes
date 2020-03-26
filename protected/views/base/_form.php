@@ -56,7 +56,7 @@ if (!Yii::app()->user->isGuest) {
     <div class="oe-nav">
         <ul class="oe-big-icons">
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="/">
+                <a class="icon-btn" href="/" id="js-home-btn">
                     <svg viewBox="0 0 80 40" class="icon home">
                         <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
                     </svg>
@@ -83,7 +83,7 @@ if (!Yii::app()->user->isGuest) {
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>" id="js-logout-btn">
                     <svg viewBox="0 0 80 40" class="icon logout">
                         <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
                     </svg>
