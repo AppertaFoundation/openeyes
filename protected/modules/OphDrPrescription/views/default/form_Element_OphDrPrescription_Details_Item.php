@@ -31,7 +31,7 @@ $dispense_condition_options = array(
             <i class="oe-i child-arrow small"></i>
         </button>
     </td>
-    <td>
+    <td class="drug-details">
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][usage_type]"
                value="<?= OphDrPrescription_Item::getUsageType(); ?>"/>
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][usage_subtype]"
@@ -41,7 +41,7 @@ $dispense_condition_options = array(
                data-tooltip-content="Allergic to <?= implode(',', $patient->getPatientDrugAllergy($item->medication_id)) ?>"></i>
         <?php endif; ?>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
-        <?= $item->medication->preferred_term; ?>
+        <span class='js-medication-display'><?= $item->medication->preferred_term; ?></span>
         <?php if ($item->id) { ?>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][id]"
                    value="<?= $item->id ?>" /><?php
