@@ -33,7 +33,12 @@ $row_count = 0;
                     if ($entry->isPatientTicket()) {
                         $api = Yii::app()->moduleAPI->get('PatientTicketing');
                         $ticket = $api->getTicketForEvent($this->event);
-                        if ($ticket) { ?>
+                        if ($ticket) {
+                            if ($ticket->priority) {?>
+                            <div class="priority">
+                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                            </div>
+                            <?php } ?>
                             <div class="cols-7">
                                 <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
                             </div>
