@@ -47,75 +47,35 @@ class IOPVariableTest extends CDbTestCase
             'Standard' => array(
                 'csv_mode' => null,
                 'query_template' => '
-        SELECT value iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        SELECT 10 * FLOOR(value/10) iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_iop
         WHERE patient_id IN (1, 2, 3)
-        AND eye = \'{{eye}}\'
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY value'
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1'
             ),
             'Basic CSV' => array(
                 'csv_mode' => 'BASIC',
                 'query_template' => "
-        SELECT iop.value iop
-        FROM v_patient_iop iop
-        WHERE iop.patient_id = p_outer.id
-          AND iop.eye = '{{eye}}'
-          AND iop.event_id = (
-              SELECT MAX(iop2.event_id)
-              FROM v_patient_iop iop2
-              WHERE iop2.patient_id = iop.patient_id
-                AND iop2.eye = iop.eye
-                AND (:start_date IS NULL OR iop2.event_date > :start_date)
-                AND (:end_date IS NULL OR iop2.event_date < :end_date)
-          )
-        AND iop.reading_time = (
-            SELECT MAX(iop3.reading_time)
-            FROM v_patient_iop iop3
-            WHERE iop3.patient_id = iop.patient_id
-              AND iop3.eye = iop.eye
-              AND iop3.event_id IN (
-                SELECT MAX(iop4.event_id)
-                FROM v_patient_iop iop4
-                WHERE iop4.patient_id = iop3.patient_id
-                  AND iop4.eye = iop3.eye
-                  AND (:start_date IS NULL OR iop4.event_date > :start_date)
-                  AND (:end_date IS NULL OR iop4.event_date < :end_date)
-              )
-        )
-        GROUP BY iop.value"
+        SELECT 10 * FLOOR(value/10) iop, COUNT(*) frequency
+        FROM v_patient_iop
+        WHERE patient_id IN (1, 2, 3)
+        AND (:start_date IS NULL OR event_date > :start_date)
+        AND (:end_date IS NULL OR event_date < :end_date)
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1"
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
                 'query_template' => "
-        SELECT iop.value iop
+        SELECT p.nhs_num, iop.value iop, iop.side, iop.event_date, iop.reading_time
         FROM v_patient_iop iop
-        WHERE iop.patient_id = p_outer.id
-          AND iop.eye = '{{eye}}'
-          AND iop.event_id = (
-              SELECT MAX(iop2.event_id)
-              FROM v_patient_iop iop2
-              WHERE iop2.patient_id = iop.patient_id
-                AND iop2.eye = iop.eye
-                AND (:start_date IS NULL OR iop2.event_date > :start_date)
-                AND (:end_date IS NULL OR iop2.event_date < :end_date)
-          )
-        AND iop.reading_time = (
-            SELECT MAX(iop3.reading_time)
-            FROM v_patient_iop iop3
-            WHERE iop3.patient_id = iop.patient_id
-              AND iop3.eye = iop.eye
-              AND iop3.event_id IN (
-                SELECT MAX(iop4.event_id)
-                FROM v_patient_iop iop4
-                WHERE iop4.patient_id = iop3.patient_id
-                  AND iop4.eye = iop3.eye
-                  AND (:start_date IS NULL OR iop4.event_date > :start_date)
-                  AND (:end_date IS NULL OR iop4.event_date < :end_date)
-              )
-        )
-        GROUP BY iop.value"
+        JOIN patient p ON p.id = iop.patient_id
+        WHERE iop.patient_id IN (1, 2, 3)
+        AND (:start_date IS NULL OR event_date > :start_date)
+        AND (:end_date IS NULL OR event_date < :end_date)
+        ORDER BY 1, 2, 3, 4, 5"
             ),
         );
     }
@@ -127,12 +87,9 @@ class IOPVariableTest extends CDbTestCase
      */
     public function testQuery($csv_mode, $query_template)
     {
-        foreach (array('L', 'R') as $eye) {
-            $expected = str_replace('{{eye}}', $eye, $query_template);
-            $this->variable->eye = $eye;
-            $this->variable->csv_mode = $csv_mode;
-            $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
-        }
+        $expected = $query_template;
+        $this->variable->csv_mode = $csv_mode;
+        $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
     }
 
     public function testGetVariableData()
@@ -145,8 +102,9 @@ class IOPVariableTest extends CDbTestCase
 
         $results = $this->searchProviders[0]->getVariableData($variables);
 
-        $this->assertCount(2, $results[$this->variable->field_name]);
-        $this->assertCount(0, $results[$this->variable->field_name][0]);
-        $this->assertCount(1, $results[$this->variable->field_name][1]);
+        $this->assertCount(1, $results[$this->variable->field_name]);
+        $this->assertEquals('20', $results[$this->variable->field_name][0]['iop']);
+        $this->assertEquals('1', $results[$this->variable->field_name][0]['frequency']);
+        $this->assertEquals('1', $results[$this->variable->field_name][0]['patient_id_list']);
     }
 }

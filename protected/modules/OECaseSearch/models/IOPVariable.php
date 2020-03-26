@@ -20,7 +20,8 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         WHERE patient_id IN (" . implode(', ', $this->id_list) . ")
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)";
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1";
                 break;
             case 'ADVANCED':
                 return "
@@ -39,7 +40,8 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)';
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1';
                 break;
         }
     }

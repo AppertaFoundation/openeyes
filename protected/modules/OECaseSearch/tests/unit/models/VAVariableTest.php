@@ -52,49 +52,33 @@ class VAVariableTest extends CDbTestCase
         return array(
             'Standard' => array(
                 'csv_mode' => null,
-                'query_template' => 'SELECT ETDRS_value va, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+                'query_template' => 'SELECT snellen_value va, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
             FROM v_patient_va_converted
             WHERE patient_id IN (1, 2, 3)
-            AND eye = \'{{eye}}\'
             AND (:start_date IS NULL OR reading_date > :start_date)
             AND (:end_date IS NULL OR reading_date < :end_date)
-            GROUP BY ETDRS_value'
+            GROUP BY snellen_value
+            ORDER BY snellen_value'
             ),
             'Basic CSV' => array(
                 'csv_mode' => 'BASIC',
-                'query_template' => "SELECT va_converted.ETDRS_value va
-            FROM v_patient_va_converted va_converted
-            WHERE va_converted.patient_id = p_outer.id
-              AND va_converted.eye = '{{eye}}'
-              AND va_converted.base_value = (
-                SELECT MAX(va2.base_value)
-                FROM v_patient_va_converted va2
-                WHERE va2.patient_id = va_converted.patient_id
-                  AND va2.eye = va_converted.eye
-                  AND (:start_date IS NULL OR reading_date > :start_date)
-                  AND (:end_date IS NULL OR reading_date < :end_date)
-                )
-              AND (:start_date IS NULL OR reading_date > :start_date)
-              AND (:end_date IS NULL OR reading_date < :end_date)
-              GROUP BY va_converted.ETDRS_value"
+                'query_template' => "SELECT snellen_value va, COUNT(*) frequency
+            FROM v_patient_va_converted
+            WHERE patient_id IN (1, 2, 3)
+            AND (:start_date IS NULL OR reading_date > :start_date)
+            AND (:end_date IS NULL OR reading_date < :end_date)
+            GROUP BY snellen_value
+            ORDER BY snellen_value"
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
-                'query_template' => "SELECT va_converted.ETDRS_value va
-            FROM v_patient_va_converted va_converted
-            WHERE va_converted.patient_id = p_outer.id
-              AND va_converted.eye = '{{eye}}'
-              AND va_converted.base_value = (
-                SELECT MAX(va2.base_value)
-                FROM v_patient_va_converted va2
-                WHERE va2.patient_id = va_converted.patient_id
-                  AND va2.eye = va_converted.eye
-                  AND (:start_date IS NULL OR reading_date > :start_date)
-                  AND (:end_date IS NULL OR reading_date < :end_date)
-                )
-              AND (:start_date IS NULL OR reading_date > :start_date)
-              AND (:end_date IS NULL OR reading_date < :end_date)
-              GROUP BY va_converted.ETDRS_value"
+                'query_template' => "SELECT p.nhs_num, snellen_value va, side, va.reading_date, null
+            FROM v_patient_va_converted va
+            JOIN patient p ON p.id = va.patient_id
+            WHERE patient_id IN (1, 2, 3)
+            AND (:start_date IS NULL OR reading_date > :start_date)
+            AND (:end_date IS NULL OR reading_date < :end_date)
+            ORDER BY 1, 2, 3, 4"
             ),
         );
     }
@@ -106,26 +90,24 @@ class VAVariableTest extends CDbTestCase
      */
     public function testQuery($csv_mode, $query_template)
     {
-        foreach (array('L', 'R') as $eye) {
-            $expected = str_replace('{{eye}}', $eye, $query_template);
-            $this->variable->eye = $eye;
-            $this->variable->csv_mode = $csv_mode;
-            $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
-        }
+        $expected = $query_template;
+        $this->variable->csv_mode = $csv_mode;
+        $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
     }
 
     public function testGetVariableData()
     {
         $this->assertEquals('va', $this->variable->field_name);
         $this->assertEquals('VA', $this->variable->label);
-        $this->assertEquals('ETDRS Letters', $this->variable->unit);
+        $this->assertNull($this->variable->unit);
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = $this->searchProviders[0]->getVariableData($variables);
 
-        $this->assertCount(2, $results[$this->variable->field_name]);
-        $this->assertCount(1, $results[$this->variable->field_name][0]);
-        $this->assertCount(1, $results[$this->variable->field_name][1]);
+        $this->assertCount(1, $results[$this->variable->field_name]);
+        $this->assertEquals('6/9', $results[$this->variable->field_name][0]['va']);
+        $this->assertEquals(2, $results[$this->variable->field_name][0]['frequency']);
+        $this->assertEquals(1, $results[$this->variable->field_name][0]['patient_id_list']);
     }
 }

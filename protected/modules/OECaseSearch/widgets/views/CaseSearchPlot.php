@@ -12,9 +12,9 @@
     <button data-selector="<?= $this->list_selector ?>">View as list</button>
 </div>
 <?php foreach ($this->variables as $id => $variable) {
-    $x = array_column($this->variable_data[$variable->field_name][0], $variable->field_name);
-    $y = array_column($this->variable_data[$variable->field_name][0], 'frequency');
-    $customdata = array_column($this->variable_data[$variable->field_name][0], 'patient_id_list');
+    $x = array_column($this->variable_data[$variable->field_name], $variable->field_name);
+    $y = array_column($this->variable_data[$variable->field_name], 'frequency');
+    $customdata = array_column($this->variable_data[$variable->field_name], 'patient_id_list');
 
     $n = $this->total_patients
     ?>

@@ -37,7 +37,8 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         WHERE p.id IN (' . implode(', ', $this->id_list) . ')
         AND (:start_date IS NULL OR p.created_date > :start_date)
         AND (:end_date IS NULL OR p.created_date < :end_date)
-        GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)';
+        GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)
+        ORDER BY 1';
         }
     }
 

@@ -40,8 +40,6 @@ $(document).ready(function() {
             legend: false,
             titleX: $(item).data('var-label') + $(item).data('var-unit'),
             titleY: false,
-            numTicksX: 20,
-            numTicksY: 20,
         });
 
         let data = [

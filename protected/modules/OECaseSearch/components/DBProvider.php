@@ -112,16 +112,8 @@ class DBProvider extends SearchProvider
 
         if (is_array($variables)) {
             foreach ($variables as $variable) {
-                if ($variable->eye_cardinality) {
-                    foreach (array('L', 'R') as $eye) {
-                        $variable->eye = $eye;
-                        $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
-                        $variable_data_list[$variable->field_name][] = $var_data;
-                    }
-                } else {
-                    $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
-                    $variable_data_list[$variable->field_name][] = $var_data;
-                }
+                $var_data = $this->getVariableDataInternal($variable, $start_date, $end_date);
+                $variable_data_list[$variable->field_name] = $var_data;
             }
         }
 

@@ -47,34 +47,36 @@ class CCTVariableTest extends CDbTestCase
         return array(
             'Standard' => array(
                 'csv_mode' => null,
-                'query_template' => "
-        SELECT value cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+                'query_template' => '
+        SELECT 10 * FLOOR(value/10) cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_cct
         WHERE patient_id IN (1, 2, 3)
-        AND eye = '{{eye}}'
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY value"
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1'
             ),
             'Basic CSV' => array(
                 'csv_mode' => 'BASIC',
-                'query_template' => "
-        SELECT value cct
-        FROM v_patient_cct cct
-        WHERE patient_id = p_outer.id
-          AND eye = '{{eye}}'
+                'query_template' => '
+        SELECT 10 * FLOOR(value/10) cct, COUNT(*) frequency
+        FROM v_patient_cct
+        WHERE patient_id IN (1, 2, 3)
         AND (:start_date IS NULL OR event_date > :start_date)
-        AND (:end_date IS NULL OR event_date < :end_date)"
+        AND (:end_date IS NULL OR event_date < :end_date)
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1'
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
-                'query_template' => "
-        SELECT value cct
+                'query_template' => '
+        SELECT p.nhs_num, cct.value, cct.side, cct.event_date, null
         FROM v_patient_cct cct
-        WHERE patient_id = p_outer.id
-          AND eye = '{{eye}}'
+        JOIN patient p ON p.id = cct.patient_id
+        WHERE patient_id IN (1, 2, 3)
         AND (:start_date IS NULL OR event_date > :start_date)
-        AND (:end_date IS NULL OR event_date < :end_date)"
+        AND (:end_date IS NULL OR event_date < :end_date)
+        ORDER BY 1, 2, 3, 4'
             ),
         );
     }
@@ -86,12 +88,8 @@ class CCTVariableTest extends CDbTestCase
      */
     public function testQuery($csv_mode, $query_template)
     {
-        foreach (array('L', 'R') as $eye) {
-            $expected = str_replace('{{eye}}', $eye, $query_template);
-            $this->variable->eye = $eye;
-            $this->variable->csv_mode = $csv_mode;
-            $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
-        }
+        $this->variable->csv_mode = $csv_mode;
+        $this->assertEquals($query_template, $this->variable->query($this->searchProviders[0]));
     }
 
     public function testGetVariableData()
@@ -104,8 +102,6 @@ class CCTVariableTest extends CDbTestCase
 
         $results = $this->searchProviders[0]->getVariableData($variables);
 
-        $this->assertCount(2, $results[$this->variable->field_name]);
-        $this->assertCount(1, $results[$this->variable->field_name][0]);
-        $this->assertCount(0, $results[$this->variable->field_name][1]);
+        $this->assertCount(1, $results[$this->variable->field_name]);
     }
 }
