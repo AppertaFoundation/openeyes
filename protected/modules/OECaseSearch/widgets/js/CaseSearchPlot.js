@@ -46,36 +46,14 @@ $(document).ready(function() {
 
         let data = [
             {
-                x: $(item).data('x0'),
-                y: $(item).data('y0'),
+                x: $(item).data('x'),
+                y: $(item).data('y'),
                 type: 'bar',
                 hovertemplate: $(item).data('var-name') + ': %{x}<br>(N: %{y})',
                 name: "",
-                customdata: $(item).data('patient-id-list0'),
+                customdata: $(item).data('patient-id-list'),
             },
         ];
-
-
-
-        if ($(item).data('x1')) {
-            // Set the colour of the left-eye data
-            data[0].marker = {
-                color: oePlotly.getColorFor('leftEye', layout.theme)
-            };
-
-            // Add the right-eye data to the list of datapoints to plot.
-            data.push({
-                x: $(item).data('x1'),
-                y: $(item).data('y1'),
-                type: 'bar',
-                hovertemplate: $(item).data('var-name') + ': %{x}<br>(N: %{y})',
-                name: "",
-                marker: {
-                    color: oePlotly.getColorFor('rightEye', layout.theme)
-                },
-                customdata: $(item).data('patient-id-list1')
-            });
-        }
 
         Plotly.newPlot(container, data, layout, {displayModeBar: false, responsive: true});
 

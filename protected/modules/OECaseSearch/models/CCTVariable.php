@@ -14,32 +14,33 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
     {
         switch ($this->csv_mode) {
             case 'BASIC':
-                return "
-        SELECT value cct
-        FROM v_patient_cct cct
-        WHERE patient_id = p_outer.id
-          AND eye = '{$this->eye}'
+                return '
+        SELECT 10 * FLOOR(value/10) cct, COUNT(*) frequency
+        FROM v_patient_cct
+        WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
         AND (:start_date IS NULL OR event_date > :start_date)
-        AND (:end_date IS NULL OR event_date < :end_date)";
+        AND (:end_date IS NULL OR event_date < :end_date)
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1';
                 break;
             case 'ADVANCED':
-                return "
-        SELECT value cct
+                return '
+        SELECT p.nhs_num, cct.value, cct.side, cct.event_date, null
         FROM v_patient_cct cct
-        WHERE patient_id = p_outer.id
-          AND eye = '{$this->eye}'
+        JOIN patient p ON p.id = cct.patient_id
+        WHERE patient_id IN (' . implode(', ', $this->id_list) .')
         AND (:start_date IS NULL OR event_date > :start_date)
-        AND (:end_date IS NULL OR event_date < :end_date)";
+        AND (:end_date IS NULL OR event_date < :end_date)
+        ORDER BY 1, 2, 3, 4';
                 break;
             default:
                 return '
-        SELECT value cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        SELECT 10 * FLOOR(value/10) cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_cct
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')
-        AND eye = \'' . $this->eye . '\'
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY value';
+        GROUP BY FLOOR(value/10)';
                 break;
         }
     }

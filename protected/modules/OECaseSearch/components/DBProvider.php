@@ -54,8 +54,6 @@ class DBProvider extends SearchProvider
         if ($variable instanceof DBProviderInterface) {
             $variable->csv_mode = $mode;
             $data = Yii::app()->db->createCommand($variable->query($this))
-                ->andWhere(':start_date IS NULL OR created_date > :start_date')
-                ->andWhere(':end_date IS NULL OR created_date < :end_date')
                 ->bindValues(
                     array_merge(
                         $variable->bindValues(),
@@ -71,34 +69,49 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * @param CaseSearchVariable[] $variables
+     * @param CaseSearchVariable|CaseSearchVariable[] $variables
      * @param null|DateTime $start_date
      * @param null|DateTime $end_date
      * @param bool $return_csv
      * @param string $mode
-     * @return array
+     * @return array|void
      * @throws CException
      */
     public function getVariableData($variables, $start_date = null, $end_date = null, $return_csv = false, $mode = 'BASIC')
     {
+        $csv_columns = array();
         $variable_data_list = array();
-        $csv_columns = array('First Name', 'Surname');
-        $select = 'c.first_name, c.last_name';
-        $where = 'p_outer.id IN (' . implode(',', $variables[0]->id_list) . ')';
-        foreach ($variables as $variable) {
-            if ($return_csv) {
-                $variable->csv_mode = $mode;
-                if ($variable->eye_cardinality) {
-                    foreach (array('L' => 'left', 'R' => 'right') as $eye_id => $eye) {
-                        $variable->eye = $eye_id;
-                        $csv_columns[] = ucfirst($eye) . ' ' . $variable->label;
-                        $select .= ", ({$variable->query($this)}) {$eye}_{$variable->field_name}";
-                    }
+        if ($return_csv) {
+            if (is_array($variables)) {
+                throw new CException('Unable to generate single CSV for multiple variables.');
+            }
+            $variables->csv_mode = $mode;
+
+            if ($mode === 'BASIC') {
+                $csv_columns = array($variables->label, 'bin count');
+            } elseif ($mode === 'ADVANCED') {
+                if ($variables->eye_cardinality) {
+                    $csv_columns = array('NHS number', $variables->label, 'eye', 'date', 'time');
                 } else {
-                    $csv_columns[] = $variable->label;
-                    $select .= ", ({$variable->query($this)}) {$variable->field_name}";
+                    $csv_columns = array('NHS number', $variables->label, 'date', 'time');
                 }
-            } else {
+            }
+
+            $results = $this->getVariableDataInternal($variables, $start_date, $end_date, $mode);
+            $output = fopen('php://output', 'w') or die ('Can\'t open php://output');
+            header('Content-Type: application/csv');
+            header("Content-Disposition:attachment;filename=search_results_{$variables->field_name}_$mode.csv");
+
+            fputcsv($output, $csv_columns);
+            foreach ($results as $result) {
+                fputcsv($output, $result);
+            }
+            fclose($output) or die('Can\'t close php://output');
+            return;
+        }
+
+        if (is_array($variables)) {
+            foreach ($variables as $variable) {
                 if ($variable->eye_cardinality) {
                     foreach (array('L', 'R') as $eye) {
                         $variable->eye = $eye;
@@ -110,28 +123,6 @@ class DBProvider extends SearchProvider
                     $variable_data_list[$variable->field_name][] = $var_data;
                 }
             }
-        }
-        if ($return_csv) {
-            $results = Yii::app()->db->createCommand()
-                ->select($select)
-                ->from('patient p_outer')
-                ->join('contact c', 'c.id = p_outer.contact_id')
-                ->where($where)
-                ->order('c.first_name ASC, c.last_name DESC')
-                ->bindValues(array(
-                    ':start_date' => $start_date ? $start_date->format('Y-m-d') : $start_date,
-                    ':end_date' => $end_date ? $end_date->format('Y-m-d') : $end_date,
-                ))
-                ->queryAll();
-            $output = fopen('php://output', 'w') or die ('Can\'t open php://output');
-            header('Content-Type: application/csv');
-            header("Content-Disposition:attachment;filename=search_results_$mode.csv");
-
-            fputcsv($output, $csv_columns);
-            foreach ($results as $result) {
-                fputcsv($output, $result);
-            }
-            fclose($output) or die('Can\'t close php://output');
         }
 
         return $variable_data_list;

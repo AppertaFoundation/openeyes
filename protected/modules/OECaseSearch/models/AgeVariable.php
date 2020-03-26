@@ -15,27 +15,29 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
 
     public function query($searchProvider)
     {
-        if ($this->csv_mode === 'BASIC') {
-            return 'SELECT TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age
+        if ($this->csv_mode === 'ADVANCED') {
+            return 'SELECT p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null
         FROM patient p
         JOIN contact c ON c.id = p.contact_id
-        WHERE p.id = p_outer.id
-            AND (:start_date IS NULL OR p.created_date > :start_date)
-        AND (:end_date IS NULL OR p.created_date < :end_date)';
-        } elseif ($this->csv_mode === 'ADVANCED') {
-            return 'SELECT TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age
-        FROM patient p
-        JOIN contact c ON c.id = p.contact_id
-        WHERE p.id = p_outer.id
-            AND (:start_date IS NULL OR p.created_date > :start_date)
-        AND (:end_date IS NULL OR p.created_date < :end_date)';
-        } else {
-            return 'SELECT TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, COUNT(*) frequency, GROUP_CONCAT(DISTINCT id) patient_id_list
+        WHERE p.id IN (' . implode(', ', $this->id_list) . ')
+        AND (:start_date IS NULL OR p.created_date > :start_date)
+        AND (:end_date IS NULL OR p.created_date < :end_date)
+        ORDER BY 1, 2, 3';
+        } elseif ($this->csv_mode === 'BASIC') {
+            return 'SELECT (10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age, COUNT(*) frequency
         FROM patient p
         WHERE p.id IN (' . implode(', ', $this->id_list) . ')
-            AND (:start_date IS NULL OR p.created_date > :start_date)
+        AND (:start_date IS NULL OR p.created_date > :start_date)
         AND (:end_date IS NULL OR p.created_date < :end_date)
-        GROUP BY TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))';
+        GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))/10)
+        ORDER BY 1';
+        } else {
+            return 'SELECT (10*FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)) age, COUNT(*) frequency, GROUP_CONCAT(DISTINCT id) patient_id_list
+        FROM patient p
+        WHERE p.id IN (' . implode(', ', $this->id_list) . ')
+        AND (:start_date IS NULL OR p.created_date > :start_date)
+        AND (:end_date IS NULL OR p.created_date < :end_date)
+        GROUP BY FLOOR(TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE()))/10)';
         }
     }
 
