@@ -42,10 +42,9 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
      */
-    public function query($searchProvider)
+    public function query()
     {
         $op = '=';
 

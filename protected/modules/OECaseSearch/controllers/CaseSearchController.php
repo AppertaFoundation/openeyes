@@ -61,7 +61,6 @@ class CaseSearchController extends BaseModuleController
         $ids = array();
         $from = null;
         $to = null;
-        $searchProvider = $this->module->getSearchProvider('mysql');
         $pagination = array(
             'pageSize' => 10,
         );
@@ -80,9 +79,6 @@ class CaseSearchController extends BaseModuleController
 
         if ($valid && !empty($this->parameters)) {
             $this->actionClear();
-            /**
-             * @var $searchProvider SearchProvider
-             */
             $ids = $this->runSearch();
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
@@ -153,7 +149,7 @@ class CaseSearchController extends BaseModuleController
                     $to = null;
                     $show_all_dates = true;
                 }
-                $variable_data = $searchProvider->getVariableData($variables, $from, $to);
+                $variable_data = Yii::app()->searchProvider->getVariableData($variables, $from, $to);
             }
         }
 
@@ -391,12 +387,8 @@ class CaseSearchController extends BaseModuleController
 
     protected function runSearch()
     {
-        $searchProvider = $this->module->getSearchProvider('mysql');
         $auditValues = array();
-        /**
-         * @var $searchProvider SearchProvider
-         */
-        $results = $searchProvider->search($this->parameters);
+        $results = Yii::app()->searchProvider->search($this->parameters);
 
         if (count($results) === 0) {
             /**
@@ -499,10 +491,6 @@ class CaseSearchController extends BaseModuleController
      */
     public function actionDownloadCSV()
     {
-        /**
-         * @var $searchProvider SearchProvider
-         */
-        $searchProvider = $this->module->getSearchProvider('mysql');
         $start_date = null;
         $end_date = null;
         $mode = Yii::app()->request->getQuery('mode');
@@ -525,7 +513,7 @@ class CaseSearchController extends BaseModuleController
             $end_date = null;
         }
 
-        $searchProvider->getVariableData($variable, $start_date, $end_date, true, $mode);
+        Yii::app()->searchProvider->getVariableData($variable, $start_date, $end_date, true, $mode);
 
         Yii::app()->end();
     }

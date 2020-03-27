@@ -73,11 +73,10 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
      *
      */
-    public function query($searchProvider)
+    public function query()
     {
         $query = "
             SELECT pa.id

@@ -201,13 +201,12 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider SearchProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return mixed The constructed query string.
      * @throws CHttpException
      */
-    public function query($searchProvider)
+    public function query()
     {
-        $condition = ' ';
+        $condition = null;
         $joinCondition = 'JOIN';
         if ($this->trialType) {
             if ($this->trial === '') {

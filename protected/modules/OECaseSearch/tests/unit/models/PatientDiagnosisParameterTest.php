@@ -19,11 +19,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      */
     protected $parameter;
 
-    /**
-     * @var DBProvider $searchProvider
-     */
-    protected $searchProvider;
-
     protected $fixtures = array(
         'disorder' => 'Disorder',
         'ophciexamination_diagnosis' => OphCiExamination_Diagnosis::class,
@@ -37,7 +32,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->parameter = new PatientDiagnosisParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
     }
 
@@ -50,7 +44,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
     }
 
     public function testBindValues()
@@ -142,7 +136,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->value = 1;
         $this->parameter->firm_id = '';
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {
@@ -162,7 +156,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->value = 1;
         $this->parameter->firm_id = 2;
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {
@@ -185,7 +179,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->value = 1;
         $this->parameter->firm_id = '';
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {
@@ -208,7 +202,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->value = 1;
         $this->parameter->firm_id = 2;
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {

@@ -9,7 +9,6 @@ class PatientMedicationParameterTest extends CDbTestCase
      * @var $object PatientMedicationParameter
      */
     protected $object;
-    protected $searchProvider;
 
     public static function setUpBeforeClass()
     {
@@ -21,13 +20,12 @@ class PatientMedicationParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->object = new PatientMedicationParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->object->id = 0;
     }
 
     public function tearDown()
     {
-        unset($this->object, $this->searchProvider);
+        unset($this->object);
         parent::tearDown();
     }
 
@@ -75,7 +73,7 @@ WHERE d.id = :p_m_value_0";
 
         $this->assertEquals(
             trim(preg_replace('/\s+/', ' ', $sqlValue)),
-            trim(preg_replace('/\s+/', ' ', $this->object->query($this->searchProvider)))
+            trim(preg_replace('/\s+/', ' ', $this->object->query()))
         );
     }
 

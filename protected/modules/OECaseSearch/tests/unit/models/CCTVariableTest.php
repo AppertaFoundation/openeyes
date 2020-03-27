@@ -8,8 +8,6 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CC
 class CCTVariableTest extends CDbTestCase
 {
     protected $variable;
-    protected $searchProviders;
-    protected $invalidProvider;
 
     protected $fixtures = array(
         'cct' => Element_OphCiExamination_AnteriorSegment_CCT::class,
@@ -31,15 +29,13 @@ class CCTVariableTest extends CDbTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->searchProviders = array();
         $this->variable = new CCTVariable([1, 2, 3]);
-        $this->searchProviders[] = new DBProvider('provider0');
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->variable, $this->searchProviders);
+        unset($this->variable);
     }
 
     public function getData()
@@ -89,7 +85,7 @@ class CCTVariableTest extends CDbTestCase
     public function testQuery($csv_mode, $query_template)
     {
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($query_template, $this->variable->query($this->searchProviders[0]));
+        $this->assertEquals($query_template, $this->variable->query());
     }
 
     public function testGetVariableData()
@@ -100,7 +96,7 @@ class CCTVariableTest extends CDbTestCase
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
-        $results = $this->searchProviders[0]->getVariableData($variables);
+        $results = Yii::app()->searchProvider->getVariableData($variables);
 
         $this->assertCount(1, $results[$this->variable->field_name]);
     }

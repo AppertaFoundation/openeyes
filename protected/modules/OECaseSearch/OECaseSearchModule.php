@@ -5,7 +5,6 @@
  */
 class OECaseSearchModule extends BaseModule
 {
-    private $searchProviders = array();
     /**
      * @var array $config
      */
@@ -37,11 +36,6 @@ class OECaseSearchModule extends BaseModule
             }
         }
         $this->setImport($dependencies);
-
-        // Initialise the search provider/s.
-        foreach ($this->config['providers'] as $providerID => $searchProvider) {
-            $this->searchProviders[$providerID] = new $searchProvider($providerID);
-        }
     }
 
     /**
@@ -87,14 +81,5 @@ class OECaseSearchModule extends BaseModule
     public function getConfigParam($param)
     {
         return $this->config[$param];
-    }
-
-    /**
-     * @param $providerID string|int The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
-     * @return SearchProvider The search provider identified by $providerID
-     */
-    public function getSearchProvider($providerID)
-    {
-        return $this->searchProviders[$providerID];
     }
 }

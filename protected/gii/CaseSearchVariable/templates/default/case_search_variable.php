@@ -9,6 +9,9 @@ class <?= $this->className ?>Variable extends CaseSearchVariable implements <?= 
         $this->field_name = '<?= $this->name ?>';
         $this->label = '<?= $this->label ?>';
         $this->unit = '<?= $this->unit ?>';
+<?php if ($this->eyeCardinality) : ?>
+        $this->eye_cardinality = true;
+<?php endif; ?>
     }
 
 <?php foreach (explode(',', $this->searchProviders) as $searchProvider) :?>

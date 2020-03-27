@@ -8,7 +8,6 @@
 class PatientNameParameterTest extends CDbTestCase
 {
     protected $parameter;
-    protected $searchProvider;
     protected $fixtures = array(
         'patient' => 'Patient',
         'contact' => 'Contact',
@@ -24,14 +23,13 @@ class PatientNameParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->parameter = new PatientNameParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
     }
 
     public function testSearch()
@@ -45,7 +43,7 @@ class PatientNameParameterTest extends CDbTestCase
         $secondParam->operation = '=';
         $secondParam->value = $this->patient('patient1')->id;
 
-        $results = $this->searchProvider->search(array($this->parameter, $secondParam));
+        $results = Yii::app()->searchProvider->search(array($this->parameter, $secondParam));
 
         $ids = array();
 
@@ -58,7 +56,7 @@ class PatientNameParameterTest extends CDbTestCase
 
         $this->parameter->value = $this->patient('patient1')->id;
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
 

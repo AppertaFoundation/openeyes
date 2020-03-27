@@ -5,8 +5,6 @@
 class AgeVariableTest extends CDbTestCase
 {
     protected $variable;
-    protected $searchProviders;
-    protected $invalidProvider;
 
     public static function setUpBeforeClass()
     {
@@ -16,15 +14,13 @@ class AgeVariableTest extends CDbTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->searchProviders = array();
         $this->variable = new AgeVariable([1, 2, 3]);
-        $this->searchProviders[] = new DBProvider('provider0');
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->variable, $this->searchProviders);
+        unset($this->variable);
     }
 
     public function getData()
@@ -72,7 +68,7 @@ class AgeVariableTest extends CDbTestCase
     {
         $expected = $query_template;
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
+        $this->assertEquals($expected, $this->variable->query());
     }
 
     public function testGetVariableData()
@@ -84,7 +80,7 @@ class AgeVariableTest extends CDbTestCase
         $this->assertEquals('y', $this->variable->unit);
         $this->assertNotEmpty($this->variable->id_list);
 
-        $results = $this->searchProviders[0]->getVariableData($variables);
+        $results = Yii::app()->searchProvider->getVariableData($variables);
 
         $this->assertCount(3, $results[$this->variable->field_name]);
     }

@@ -51,10 +51,9 @@ WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The search provider. This is used to determine whether or not the search provider is using SQL syntax.
      * @return string The constructed query string.
      */
-    public function query($searchProvider)
+    public function query()
     {
         if ($this->operation === '=') {
             $op = '=';

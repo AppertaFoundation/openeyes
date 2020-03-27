@@ -7,10 +7,9 @@ interface DBProviderInterface
 {
     /**
      * Generate a SQL fragment representing a self-contained query. This fragment can be used in a subquery or standalone.
-     * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
      */
-    public function query($searchProvider);
+    public function query();
 
     /**
      * Get the list of bind values for use in the SQL query.

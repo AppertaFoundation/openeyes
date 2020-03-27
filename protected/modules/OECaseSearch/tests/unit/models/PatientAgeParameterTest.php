@@ -12,11 +12,6 @@ class PatientAgeParameterTest extends CDbTestCase
      */
     protected $parameter;
 
-    /**
-     * @var DBProvider
-     */
-    protected $searchProvider;
-
     protected $fixtures = array(
         'patient' => 'Patient',
     );
@@ -31,14 +26,13 @@ class PatientAgeParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->parameter = new PatientAgeParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
     }
 
     public function testQuery()
@@ -79,7 +73,7 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
             }
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
             );
         }
     }
@@ -97,14 +91,17 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
         $this->assertInternalType('int', $actual['p_a_value_0']);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testSearch()
     {
         // test an exact search using a simple operation
         $patients = array($this->patient('patient1'));
         $this->parameter->operation = '=';
-        $dob = new DateTime($this->patient['patient1']['dob']);
+        $dob = new DateTime($this->patient('patient1')['dob']);
         $this->parameter->value = $dob->diff(new DateTime())->format('%y');
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
         $ids = array();
 
         // deconstruct the results list into a single array of primary keys.
@@ -118,7 +115,7 @@ WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_
 
         $this->parameter->operation = '<';
         $this->parameter->value = 1;
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         // Ensure that no results are returned.
         $this->assertEmpty($results);

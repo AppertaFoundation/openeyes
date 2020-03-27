@@ -7,7 +7,6 @@
 class PatientDeceasedParameterTest extends CDbTestCase
 {
     protected $parameter;
-    protected $searchProvider;
     protected $fixtures = array(
         'patient' => 'Patient',
     );
@@ -22,16 +21,18 @@ class PatientDeceasedParameterTest extends CDbTestCase
     {
         parent::setUp();
         $this->parameter = new PatientDeceasedParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
     }
 
+    /**
+     * @throws CHttpException
+     */
     public function testQuery()
     {
         $correctOps = array(
@@ -49,7 +50,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
             $sqlValue = ($operator === '0') ? 'SELECT id FROM patient WHERE NOT(is_deceased)' : 'SELECT id FROM patient WHERE is_deceased';
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
             );
         }
 
@@ -57,7 +58,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         $this->expectException(CHttpException::class);
         foreach ($invalidOps as $operator) {
             $this->parameter->operation = $operator;
-            $this->parameter->query($this->searchProvider);
+            $this->parameter->query();
         }
     }
 
@@ -80,7 +81,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
 
         $this->parameter->operation = '1';
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {
@@ -97,7 +98,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
             $match[] = $this->patient("patient$i");
         }
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
         foreach ($results as $result) {

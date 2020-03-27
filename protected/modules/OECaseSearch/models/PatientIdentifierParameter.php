@@ -100,10 +100,9 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
 
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
-     * @param $searchProvider DBProvider The database search provider.
      * @return string The constructed query string.
      */
-    public function query($searchProvider)
+    public function query()
     {
         $op = '=';
         return "SELECT DISTINCT p.patient_id 

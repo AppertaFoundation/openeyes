@@ -13,7 +13,7 @@ class CaseSearchParameterCode extends CCodeModel
     public $name;
     public $attributeList;
     public $searchProviders = 'DBProvider'; // default to DBProvider
-    public $path = 'application';
+    public $path = 'application.modules.OECaseSearch';
 
     public function rules()
     {

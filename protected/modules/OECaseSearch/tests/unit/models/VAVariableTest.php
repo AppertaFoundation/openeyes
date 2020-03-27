@@ -1,7 +1,6 @@
 <?php
 
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
 
@@ -11,8 +10,6 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
 class VAVariableTest extends CDbTestCase
 {
     protected $variable;
-    protected $searchProviders;
-    protected $invalidProvider;
 
     protected $fixtures = array(
         'va' => Element_OphCiExamination_VisualAcuity::class,
@@ -36,15 +33,13 @@ class VAVariableTest extends CDbTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->searchProviders = array();
         $this->variable = new VAVariable([1, 2, 3]);
-        $this->searchProviders[] = new DBProvider('provider0');
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->variable, $this->searchProviders);
+        unset($this->variable);
     }
 
     public function getData()
@@ -92,7 +87,7 @@ class VAVariableTest extends CDbTestCase
     {
         $expected = $query_template;
         $this->variable->csv_mode = $csv_mode;
-        $this->assertEquals($expected, $this->variable->query($this->searchProviders[0]));
+        $this->assertEquals($expected, $this->variable->query());
     }
 
     public function testGetVariableData()
@@ -103,7 +98,7 @@ class VAVariableTest extends CDbTestCase
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
-        $results = $this->searchProviders[0]->getVariableData($variables);
+        $results = Yii::app()->searchProvider->getVariableData($variables);
 
         $this->assertCount(1, $results[$this->variable->field_name]);
         $this->assertEquals('6/9', $results[$this->variable->field_name][0]['va']);

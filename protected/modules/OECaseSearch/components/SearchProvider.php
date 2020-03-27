@@ -2,45 +2,9 @@
 
 /**
  * Class SearchProvider
- *
- * @property-read string|int $providerID
  */
-abstract class SearchProvider
+abstract class SearchProvider extends CApplicationComponent
 {
-    /**
-     * @var string|int $_providerID Unique provider ID
-     */
-    private $_providerID;
-
-    /**
-     * SearchProvider constructor.
-     * @param $id mixed An identifier uniquely identifying the search provider.
-     */
-    public function __construct($id)
-    {
-        $this->_providerID = $id;
-    }
-
-    /**
-     * Magic get method to get the provider ID without a getter while also preventing setting it directly.
-     * @param $name string The property name
-     * @return string|int The value of the given property (if it exists).
-     */
-    final public function __get($name)
-    {
-        if ($name === 'providerID') {
-            return $this->_providerID;
-        }
-        $trace = debug_backtrace();
-        trigger_error(
-            'Undefined property via __get(): ' . $name .
-            ' in ' . $trace[0]['file'] .
-            ' on line ' . $trace[0]['line']
-        );
-
-        return null;
-    }
-
     /**
      * Perform a search using the specified parameters. Call this function to run the search rather than executeSearch.
      * @param $parameters array A list of CaseSearchParameter objects representing a search parameter.

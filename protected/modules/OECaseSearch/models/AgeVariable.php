@@ -13,7 +13,7 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         $this->unit = 'y';
     }
 
-    public function query($searchProvider)
+    public function query()
     {
         if ($this->csv_mode === 'ADVANCED') {
             return 'SELECT p.nhs_num, TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) age, p.created_date, null

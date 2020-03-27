@@ -10,7 +10,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         $this->eye_cardinality = true;
     }
 
-    public function query($searchProvider)
+    public function query()
     {
         switch ($this->csv_mode) {
             case 'BASIC':

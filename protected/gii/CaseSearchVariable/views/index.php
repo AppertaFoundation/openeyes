@@ -5,6 +5,10 @@
  * Date: 26/05/2017
  * Time: 4:21 PM
  */
+
+/**
+ * @var $form CActiveForm
+ */
 ?>
 
 <?php $form = $this->beginWidget('CCodeForm', array('model' => $model)); ?>
@@ -47,6 +51,15 @@
     <div class="row">
         <?php echo $form->labelEx($model, 'searchProviders'); ?>
         <?php echo $form->textField($model, 'searchProviders', array('size' => 65)); ?>
+        <div class="tooltip">
+            At least one search provider must be listed here. Separate each search provider with a comma.
+        </div>
+        <?php echo $form->error($model, 'searchProviders'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model, 'eyeCardinality'); ?>
+        <?php echo $form->checkBox($model, 'eyeCardinality'); ?>
         <div class="tooltip">
             At least one search provider must be listed here. Separate each search provider with a comma.
         </div>

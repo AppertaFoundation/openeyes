@@ -7,6 +7,11 @@
  */
 
 return array(
+    'components' => array(
+        'searchProvider' => array(
+            'class' => 'DBProvider',
+        ),
+    ),
     'params' => array(
         'menu_bar_items' => array(
             'casesearch' => array(

@@ -7,6 +7,7 @@ class CaseSearchVariableCode extends CCodeModel
     public $name;
     public $label;
     public $unit;
+    public $eyeCardinality = false;
     public $searchProviders = 'DBProvider'; // default to DBProvider
     public $path = 'application.modules.OECaseSearch';
 
@@ -17,6 +18,7 @@ class CaseSearchVariableCode extends CCodeModel
             array('className, name, label', 'match', 'pattern' => '/^\w+$/'),
             array('searchProviders', 'match', 'pattern' => '/^[\w,]+$/'),
             array('unit', 'match', 'pattern' => '/^[\w\s,]+$/'),
+            array('eyeCardinality', 'boolean'),
             array('className, name, label, unit, searchProviders', 'sticky')
         ));
     }
@@ -28,6 +30,7 @@ class CaseSearchVariableCode extends CCodeModel
             'name' => 'Variable name',
             'label' => 'Variable label',
             'unit' => 'Unit of measure',
+            'eyeCardinality' => 'Eye-based cardinality',
             'searchProviders' => 'Supported Search Providers',
             'path' => 'Module Path',
         ));
