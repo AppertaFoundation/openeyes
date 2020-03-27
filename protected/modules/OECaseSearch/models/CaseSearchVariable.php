@@ -16,6 +16,8 @@ abstract class CaseSearchVariable
     public $id_list;
     public $csv_mode = null; // Can be either 'BASIC' or 'ADVANCED'
     public $eye_cardinality = false;
+    public $bin_size = 10;
+    public $min_value = 0;
 
     public function __construct($id_list)
     {

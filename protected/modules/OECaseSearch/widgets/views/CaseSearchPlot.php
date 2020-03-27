@@ -30,6 +30,8 @@
                     return explode(', ', $item);
                 }, $customdata))) ?>"
         data-total="<?= $n ?>"
+        data-bin-size="<?= $variable->bin_size ?>"
+        data-min-value="<?= $variable->min_value ?>"
         data-var-name="<?= $variable->field_name ?>"
         data-var-label="<?= $variable->label ?>"
         data-var-unit="<?= $variable->unit ? " ({$variable->unit})" : ''?>"></div>

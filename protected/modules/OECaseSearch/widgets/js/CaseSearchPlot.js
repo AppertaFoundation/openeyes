@@ -32,15 +32,24 @@ $(document).ready(function() {
 
     $('.js-plotly-plot').each(function(index, item) {
         let container = document.getElementById($(item).attr('id'));
+        let theme = ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light';
 
         // layout
-        const layout = oePlotly.getLayout({
-            theme: ($('link[data-theme="light"]').prop('media') === 'none') ? 'dark' : 'light',
+        let layout = oePlotly.getLayout({
+            theme: theme,
             plotTitle: $(item).data('var-label') + ' distribution N = ' + $(item).data('total'),
             legend: false,
             titleX: $(item).data('var-label') + $(item).data('var-unit'),
             titleY: false,
+
         });
+
+        // Override the tick options (as we don't necessarily want to use the default tick options in oePlotly,
+        // but still want the other layout options currently present in oePlotly.getLayout().
+        layout.xaxis.tick0 = parseFloat($(item).data('min-value'));
+        layout.xaxis.dtick = parseFloat($(item).data('bin-size'));
+        layout.xaxis.nticks = null;
+        layout.xaxis.tickmode = 'linear';
 
         let data = [
             {
