@@ -47,27 +47,29 @@ class VAVariableTest extends CDbTestCase
         return array(
             'Standard' => array(
                 'csv_mode' => null,
-                'query_template' => 'SELECT snellen_value va, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+                'query_template' => 'SELECT 0.3 * FLOOR(LogMAR_value / 0.3) va, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
             FROM v_patient_va_converted
             WHERE patient_id IN (1, 2, 3)
             AND (:start_date IS NULL OR reading_date > :start_date)
             AND (:end_date IS NULL OR reading_date < :end_date)
-            GROUP BY snellen_value
-            ORDER BY snellen_value'
+            AND logMAR_value REGEXP \'[0-9]+\.?[0-9]*\'
+            GROUP BY FLOOR(LogMAR_value / 0.3)
+            ORDER BY 1'
             ),
             'Basic CSV' => array(
                 'csv_mode' => 'BASIC',
-                'query_template' => "SELECT snellen_value va, COUNT(*) frequency
+                'query_template' => "SELECT 0.3 * FLOOR(LogMAR_value / 0.3) va, COUNT(*) frequency
             FROM v_patient_va_converted
             WHERE patient_id IN (1, 2, 3)
             AND (:start_date IS NULL OR reading_date > :start_date)
             AND (:end_date IS NULL OR reading_date < :end_date)
-            GROUP BY snellen_value
-            ORDER BY snellen_value"
+            AND logMAR_value REGEXP '[0-9]+(\.[0-9]*)?'
+            GROUP BY FLOOR(LogMAR_value / 0.3)
+            ORDER BY 1"
             ),
             'Advanced CSV' => array(
                 'csv_mode' => 'ADVANCED',
-                'query_template' => "SELECT p.nhs_num, snellen_value va, side, va.reading_date, null
+                'query_template' => "SELECT p.nhs_num, LogMAR_value va, side, va.reading_date, null
             FROM v_patient_va_converted va
             JOIN patient p ON p.id = va.patient_id
             WHERE patient_id IN (1, 2, 3)
@@ -94,15 +96,12 @@ class VAVariableTest extends CDbTestCase
     {
         $this->assertEquals('va', $this->variable->field_name);
         $this->assertEquals('VA', $this->variable->label);
-        $this->assertNull($this->variable->unit);
+        $this->assertEquals('logMAR', $this->variable->unit);
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        $this->assertCount(1, $results[$this->variable->field_name]);
-        $this->assertEquals('6/9', $results[$this->variable->field_name][0]['va']);
-        $this->assertEquals(2, $results[$this->variable->field_name][0]['frequency']);
-        $this->assertEquals(1, $results[$this->variable->field_name][0]['patient_id_list']);
+        $this->assertCount(0, $results[$this->variable->field_name]);
     }
 }
