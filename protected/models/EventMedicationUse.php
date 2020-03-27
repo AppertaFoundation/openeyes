@@ -328,7 +328,7 @@ class EventMedicationUse extends BaseElement
                 $date2 = ($medication->start_date === "" || $medication->start_date === null) ? "0000-00-00" : $medication->start_date;
 
                 $result = $date1 === $date2;
-            } else if ($attribute === "laterality") {
+            } elseif ($attribute === "laterality") {
                 if ($check_laterality) {
                     $result = $this->$attribute === $medication->$attribute || $this->$attribute === "3" || $medication->$attribute === "3";
                 }
@@ -446,18 +446,6 @@ class EventMedicationUse extends BaseElement
         $data = [];
 
         $medication = Medication::model()->findByPk($this->medication_id);
-        if ($medication) {
-            if ($medication->isAMP()) {
-                $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
-                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
-            }
-
-            if ($medication->isVMP()) {
-                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
-            }
-        } else {
-            $data['Error'] = "Error while retrieving data for medication.";
-        }
 
         $dosage = $this->getDoseAndFrequency();
         if (!empty($dosage)) {
@@ -476,9 +464,28 @@ class EventMedicationUse extends BaseElement
             $data['Route'] = $this->route->term;
         }
 
+        // Add a blank line if there is dose/date data
+        if (sizeof($data) > 0) {
+            $data[''] = "";
+        }
+
+        if ($medication) {
+            if ($medication->isAMP()) {
+                $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
+                //$data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            }
+
+            // No longer showing moiety for VMPs - left commented as DA have not made a final decision yet (as per 27/03/2020)
+            // if ($medication->isVMP()) {
+            //     $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            // }
+        } else {
+            $data['Error'] = "Error while retrieving data for medication.";
+        }
+
         $content = array();
         foreach ($data as $key => $value) {
-            $content[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            $content[] = (($key) ? "<b>$key: </b> " : ""). htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
         }
 
         return implode("<br/>", $content);
@@ -492,10 +499,11 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->medication) {
             return count(OEModule\OphCiExamination\models\OphCiExaminationRisk::findForMedicationSetIds(array_map(
-                    function ($t) {
-                        return $t->id;
-                    }, $this->medication->medicationSets
-                ))) > 0;
+                function ($t) {
+                    return $t->id;
+                },
+                $this->medication->medicationSets
+            ))) > 0;
         } else {
             return false;
         }
@@ -505,7 +513,7 @@ class EventMedicationUse extends BaseElement
     {
         if ($this->start_date) {
             return \Helper::formatFuzzyDate($this->start_date);
-        } else if (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
+        } elseif (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
             return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
         return "";
