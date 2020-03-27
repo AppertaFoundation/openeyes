@@ -385,6 +385,10 @@ class CaseSearchController extends BaseModuleController
         return $valid;
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     protected function runSearch()
     {
         $auditValues = array();
@@ -486,7 +490,6 @@ class CaseSearchController extends BaseModuleController
     }
 
     /**
-     * @throws CHttpException
      * @throws Exception
      */
     public function actionDownloadCSV()

@@ -125,16 +125,53 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertCount(8, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
     }
 
-    public function testSearchLike()
+    public function getSearchData()
+    {
+        return array(
+            'Exact match, no firm' => array(
+                'op' => 'IN',
+                'value' => 1,
+                'firm_id' => '',
+                'expected_ids' => array(1, 2, 3, 7),
+            ),
+            'Exact match with firm' => array(
+                'op' => 'IN',
+                'value' => 1,
+                'firm_id' => 2,
+                'expected_ids' => array(),
+            ),
+            'Does not match, no firm' => array(
+                'op' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => '',
+                'expected_ids' => array(4, 5, 6, 8, 9),
+            ),
+            'Does not match, including firm' => array(
+                'op' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => 2,
+                'expected_ids' => array(1, 2, 3, 4, 5, 6, 7, 8, 9),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getSearchData
+     * @param $op
+     * @param $value
+     * @param $firm_id
+     * @param $expected_ids
+     */
+    public function testSearch($op, $value, $firm_id, $expected_ids)
     {
         $expected = array();
-        foreach (array(1, 2, 3, 7) as $patientNum) {
+        foreach ($expected_ids as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
         }
 
-        $this->parameter->operation = false;
-        $this->parameter->value = 1;
-        $this->parameter->firm_id = '';
+        $this->parameter->operation = $op;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
 
         $results = Yii::app()->searchProvider->search(array($this->parameter));
 
@@ -143,71 +180,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             $ids[] = $result['id'];
         }
 
-        $patients = Patient::model()->findAllByPk($ids);
-
-        $this->assertEquals($expected, $patients);
-    }
-
-    public function testFirmEqualitySearch()
-    {
-        $expected = array();
-
-        $this->parameter->operation = 'IN';
-        $this->parameter->value = 1;
-        $this->parameter->firm_id = 2;
-
-        $results = Yii::app()->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-
-        $patients = Patient::model()->findAllByPk($ids);
-
-        $this->assertEquals($expected, $patients);
-    }
-
-    public function testSearchNotLike()
-    {
-        $expected = array();
-        foreach (array(4, 5, 6, 8, 9) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
-        }
-
-        $this->parameter->operation = 'NOT IN';
-        $this->parameter->value = 1;
-        $this->parameter->firm_id = '';
-
-        $results = Yii::app()->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-
-        $patients = Patient::model()->findAllByPk($ids);
-
-        $this->assertEquals($expected, $patients);
-    }
-
-    public function testSearchFirmInequality()
-    {
-        $expected = array();
-        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9) as $patientNum) {
-            $expected[] = $this->patient("patient$patientNum");
-        }
-
-        $this->parameter->operation = 'NOT IN';
-        $this->parameter->value = 1;
-        $this->parameter->firm_id = 2;
-
-        $results = Yii::app()->searchProvider->search(array($this->parameter));
-
-        $ids = array();
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
         $patients = Patient::model()->findAllByPk($ids);
 
         $this->assertEquals($expected, $patients);

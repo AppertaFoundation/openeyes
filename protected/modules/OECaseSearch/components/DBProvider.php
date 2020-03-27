@@ -58,6 +58,7 @@ class DBProvider extends SearchProvider
      * @param null|DateTime $end_date
      * @param string $mode
      * @return array|null
+     * @throws CException
      */
     private function getVariableDataInternal($variable, $start_date, $end_date, $mode = null)
     {

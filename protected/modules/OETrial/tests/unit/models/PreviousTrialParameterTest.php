@@ -24,34 +24,40 @@ class PreviousTrialParameterTest extends CDbTestCase
 
     public function tearDown()
     {
-        unset($this->object); // start from scratch for each test.
+        unset($this->object);
         parent::tearDown();
     }
 
+    public function getData()
+    {
+        return array(
+            'IN' => array(
+                'op' => 'IN',
+            ),
+            'NOT IN' => array(
+                'op' => 'NOT IN'
+            ),
+            'INVALID' => array(
+                'op' => 'no',
+                'exception' => 'CHttpException'
+            ),
+        );
+    }
+
     /**
-     *
+     * @dataProvider getData
+     * @param string $op
+     * @param string|null $exception
      * @throws CHttpException
      */
-    public function testQueryOperation()
+    public function testQueryOperation($op, $exception = null)
     {
-        $validOps = array(
-            'IN',
-            'NOT IN',
-        );
-
-        foreach ($validOps as $op) {
-            try {
-                $this->object->operation = $op;
-                $this->object->query();
-            } catch (Exception $e) {
-                $this->fail('Failed on valid query operation ' . $op . ': ' . $e);
-            }
-            $this->assertTrue(true);
+        if ($exception) {
+            $this->expectException($exception);
         }
-
-        // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->expectException(CHttpException::class);
-        $this->object->operation = 'no';
+        $this->object->operation = $op;
         $this->object->query();
+
+        $this->assertTrue(true);
     }
 }

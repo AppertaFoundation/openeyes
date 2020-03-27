@@ -35,47 +35,42 @@ class PatientAgeParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
-    public function testQuery()
+    public function getQueryParams()
     {
-        $correctOps = array(
-            '>',
-            '<',
-            '=',
-            '!='
+        return array(
+            'Greater than' => array(
+                'op' => '>',
+                'value' => 5,
+            ),
+            'Less than' => array(
+                'op' => '>',
+                'value' => 80,
+            ),
+            'Equal' => array(
+                'op' => '>',
+                'value' => 50,
+            ),
+            'Not equal' => array(
+                'op' => '>',
+                'value' => 50,
+            ),
         );
+    }
 
-        // Ensure the query is correct for each operator.
-        foreach ($correctOps as $id => $operator) {
-            switch ($id) {
-                case 0:
-                    $this->parameter->value = 5;
-                    $this->parameter->operation = '>';
-                    break;
-                case 1:
-                    $this->parameter->value = 80;
-                    $this->parameter->operation = '<';
-                    break;
-                case 2:
-                    $this->parameter->value = 50;
-                    $this->parameter->operation = '=';
-                    break;
-                case 3:
-                    $this->parameter->value = 50;
-                    $this->parameter->operation = '!=';
-                    break;
-            }
-            $this->parameter->operation = $operator;
-            if ($operator === 'BETWEEN') {
-                $sqlValue = "SELECT id FROM patient
-WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_min_0 AND :p_a_max_0";
-            } else {
-                $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_value_0";
-            }
-            $this->assertEquals(
-                trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
-            );
-        }
+    /**
+     * @dataProvider getQueryParams
+     * @param $op
+     * @param $value
+     */
+    public function testQuery($op, $value)
+    {
+        $this->parameter->value = $value;
+        $this->parameter->operation = $op;
+        $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $op :p_a_value_0";
+        $this->assertEquals(
+            trim(preg_replace('/\s+/', ' ', $sqlValue)),
+            trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
+        );
     }
 
     public function testBindValues()
