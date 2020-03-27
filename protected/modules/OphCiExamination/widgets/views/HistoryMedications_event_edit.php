@@ -127,7 +127,15 @@ foreach ($element->entries as $entry) {
                         <col class="cols-3">
                         <col class="cols-icon" span="2">
                     </colgroup>
-
+                    <thead>
+                        <tr style='display:none'>
+                            <th>Drug</th>
+                            <th>Dose/frequency/route/start/stop</th>
+                            <th>Comments</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody>
                     <?php
                     foreach ($stopped_entries as $entry) {
