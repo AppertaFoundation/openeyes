@@ -75,7 +75,7 @@ return array(
                          ),
     'drugduration12' => array(
         'id' => 12,
-        'name' => 'Until review',
+        'name' => 'Ongoing',
         'display_order' => 11,
     ),
 );

@@ -328,9 +328,10 @@
 
       let dataset = AdderDialog.prototype.constructDataset(item);
       let $listItem = $('<li />', dataset);
+      $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
       if(typeof item.prepended_markup !== "undefined") {
-            $(item.prepended_markup).appendTo($listItem);
-        }$('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+        $(item.prepended_markup).appendTo($listItem);
+    }
       if (item.selected || item.defaultSelected) {
         $listItem.addClass('selected');
       }
@@ -678,10 +679,10 @@
                 $(results).each(function (index, result) {
                     var dataset = AdderDialog.prototype.constructDataset(result);
                     var $listItem = $("<li />", dataset);
+                    $('<span />', {class: dialog.options.liClass}).text(dataset['data-label']).appendTo($listItem);
                     if(typeof result.prepended_markup !== "undefined") {
                         $(result.prepended_markup).appendTo($listItem);
                     }
-                    $('<span />', {class: dialog.options.liClass}).text(dataset['data-label']).appendTo($listItem);
                     dialog.searchResultList.append($listItem);
                 });
 
