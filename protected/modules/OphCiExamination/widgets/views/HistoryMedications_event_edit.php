@@ -140,8 +140,8 @@ foreach ($element->entries as $entry) {
                     <?php
                     $stopped_entries_has_errors = false;
                     foreach ($stopped_entries as $entry) {
-                        if(!$stopped_entries_has_errors) {
-                            if($entry->hasErrors()) {
+                        if (!$stopped_entries_has_errors) {
+                            if ($entry->hasErrors()) {
                                 $stopped_entries_has_errors = true;
                             }
                         }
