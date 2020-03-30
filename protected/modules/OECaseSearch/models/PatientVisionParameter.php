@@ -18,6 +18,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         'value_type' => 'multi_select',
     );
 
+    protected $_label = 'Vision';
+
     /**
      * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario Model scenario.
@@ -31,7 +33,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
         $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
         $this->options['operations'][1]['id'] = 'NOT IN';
         $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
-            OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id,
+            OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'ETDRS Letters'))->id,
             false
         )[0];
         $this->options['option_data'] = array(
@@ -69,7 +71,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**
@@ -97,14 +99,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                 'bothEyesIndicator' => 'Both Eyes',
             )
         );
-    }
-
-    /**
-     * @return string "Patient Vision".
-     */
-    public function getLabel()
-    {
-        return 'Vision';
     }
 
     /**

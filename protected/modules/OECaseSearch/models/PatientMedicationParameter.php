@@ -5,6 +5,8 @@
  */
 class PatientMedicationParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    protected $_label = 'Medication';
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -14,11 +16,6 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         parent::__construct($scenario);
         $this->name = 'medication';
         $this->operation = 'LIKE';
-    }
-
-    public function getLabel()
-    {
-        return 'Medication';
     }
 
     public function rules()
@@ -57,7 +54,7 @@ WHERE LOWER(d.preferred_term) LIKE LOWER(:term) ORDER BY d.preferred_term LIMIT 
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

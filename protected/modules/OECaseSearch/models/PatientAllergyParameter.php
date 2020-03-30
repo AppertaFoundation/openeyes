@@ -5,6 +5,8 @@
  */
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    protected $_label = 'Allergy';
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -14,11 +16,6 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         parent::__construct($scenario);
         $this->name = 'allergy';
         $this->operation = '=';
-    }
-
-    public function getLabel()
-    {
-        return 'Allergy';
     }
 
     public function getValueForAttribute($attribute)
@@ -32,7 +29,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     public function rules()

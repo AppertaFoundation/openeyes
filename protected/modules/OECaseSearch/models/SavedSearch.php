@@ -35,12 +35,11 @@ class SavedSearch extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, search_criteria, variables', 'required'),
+            array('name, search_criteria', 'required'),
             array('name', 'length', 'max' => 50),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('last_modified_date, created_date', 'safe'),
-            // The following rule is used by search().
-            array('id, name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
+            array('variables', 'length', 'max' => 255),
+            array('last_modified_date, created_date, variables', 'safe'),
         );
     }
 
@@ -66,39 +65,12 @@ class SavedSearch extends BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'search_criteria' => 'Search Criteria',
+            'variables' => 'Variable List',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
         );
-    }
-
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * Typical usecase:
-     * - Initialize the model fields with values from filter form.
-     * - Execute this method to get CActiveDataProvider instance which will filter
-     * models according to data in model fields.
-     * - Pass data provider to CGridView, CListView or any similar widget.
-     *
-     * @return CActiveDataProvider the data provider that can return the models
-     * based on the search/filter conditions.
-     */
-    public function search()
-    {
-        $criteria = new CDbCriteria;
-
-        $criteria->compare('id', $this->id);
-        $criteria->compare('name', $this->name, true);
-        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
-        $criteria->compare('last_modified_date', $this->last_modified_date, true);
-        $criteria->compare('created_user_id', $this->created_user_id, true);
-        $criteria->compare('created_date', $this->created_date, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-        ));
     }
 
     /**

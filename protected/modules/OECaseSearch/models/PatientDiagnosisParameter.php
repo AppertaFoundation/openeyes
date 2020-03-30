@@ -19,6 +19,8 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         'value_type' => 'string_search',
     );
 
+    protected $_label = 'Diagnosis';
+
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -55,11 +57,6 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         );
     }
 
-    public function getLabel()
-    {
-        return 'Diagnosis';
-    }
-
     public function getValueForAttribute($attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
@@ -76,7 +73,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

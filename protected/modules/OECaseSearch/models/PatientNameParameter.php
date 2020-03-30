@@ -9,6 +9,8 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         'value_type' => 'string_search',
     );
 
+    protected $_label = 'Name';
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -18,12 +20,6 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
         parent::__construct($scenario);
         $this->name = 'patient_name';
         $this->operation = '=';
-    }
-
-    public function getLabel()
-    {
-        // This is a human-readable value, so feel free to change this as required.
-        return 'Name';
     }
 
     public function rules()
@@ -48,7 +44,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

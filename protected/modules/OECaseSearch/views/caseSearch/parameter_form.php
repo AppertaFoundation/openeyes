@@ -38,7 +38,7 @@ switch ($model->operation) {
 ?>
 <tr class="parameter" id="<?= $id ?>">
     <td>
-        <?= $model->getLabel() ?>
+        <?= $model->label ?>
         <?= !$readonly ? CHtml::hiddenField(CHtml::modelName($model) . "[$id][type]", CHtml::modelName($model)) : '' ?>
         <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]id") : '' ?>
     </td>

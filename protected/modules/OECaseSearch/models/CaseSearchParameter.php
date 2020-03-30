@@ -2,10 +2,11 @@
 
 /**
  * Class CaseSearchParameter
+ * @property string $label
  */
 abstract class CaseSearchParameter extends CFormModel
 {
-    const _AUTOCOMPLETE_LIMIT = 30;
+    protected const _AUTOCOMPLETE_LIMIT = 30;
     /**
      * @var string $name
      */
@@ -26,6 +27,11 @@ abstract class CaseSearchParameter extends CFormModel
      */
     public $value;
 
+    /**
+     * @var string $label
+     */
+    protected $_label = null;
+
     protected $options = array(
         'value_type' => 'string',
     );
@@ -42,9 +48,6 @@ abstract class CaseSearchParameter extends CFormModel
                 array('label' => 'IS', 'id' => '='),
                 array('label' => 'IS NOT', 'id' => '!=')
             );
-        } else {
-            $this->options['operations'][] = array('label' => 'IS', 'id' => '=');
-            $this->options['operations'][] = array('label' => 'IS NOT', 'id' => '!=');
         }
     }
 
@@ -52,12 +55,21 @@ abstract class CaseSearchParameter extends CFormModel
      * Get the parameter identifier (usually the name).
      * @return string The human-readable name of the parameter (for display purposes).
      */
-    abstract public function getLabel();
+    final public function getLabel()
+    {
+        return $this->_label;
+    }
 
+    /**
+     * Retrieves a list of common items for the given search term. This is used for any parameter where the value_type is 'string_search'.
+     * Override this function to specify how to retrieve the common items.
+     * @param $term string
+     * @return array
+     */
     public static function getCommonItemsForTerm($term)
     {
         // Override in subclasses where relevant
-        return array();
+        return array($term);
     }
 
     /**
@@ -72,27 +84,33 @@ abstract class CaseSearchParameter extends CFormModel
         );
     }
 
+    /**
+     * @return array
+     * @uses CaseSearchParameter::getLabel()
+     */
     public function attributeLabels()
     {
         return array(
-            'operation' => $this->getLabel() . ' parameter operator',
-            'value' => $this->getLabel(),
+            'operation' => $this->label . ' parameter operator',
+            'value' => $this->label,
         );
     }
 
     /**
      * Display the user-friendly representation of the specified parameter attribute.
      * Override this function to customise the value returned for specific attributes.
-     * @uses CFormModel::attributeNames()
+     * If the parameter does not exist, an exception is thrown.
      * @param $attribute
-     * @return mixed|null
+     * @return mixed|void
+     * @throws CException
+     * @uses CFormModel::attributeNames()
      */
     public function getValueForAttribute($attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             return $this->$attribute;
         }
-        return null;
+        throw new CException('Attribute does not exist.');
     }
 
     /**

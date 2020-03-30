@@ -9,6 +9,8 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         'value_type' => 'number',
     );
 
+    protected $_label = 'Age';
+
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario Model scenario.
@@ -20,14 +22,6 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
 
         $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
         $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
-    }
-
-    /**
-     * @return string "Patient age".
-     */
-    public function getLabel()
-    {
-        return 'Age';
     }
 
     public function rules()

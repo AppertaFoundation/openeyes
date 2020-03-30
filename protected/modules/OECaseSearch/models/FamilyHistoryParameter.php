@@ -24,6 +24,8 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public $condition;
 
+    protected $_label = 'Family History';
+
     protected $options = array(
         'value_type' => 'multi_select',
     );
@@ -112,12 +114,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
-    }
-
-    public function getLabel()
-    {
-        return 'Family History';
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

@@ -9,6 +9,8 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
         'value_type' => 'string_search',
     );
 
+    protected $_label = null;
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -18,12 +20,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
         parent::__construct($scenario);
         $this->name = 'patient_number';
         $this->operation = '='; // Remove if more operations are added.
-    }
-
-    public function getLabel()
-    {
-        // This is a human-readable value, so feel free to change this as required.
-        return Yii::app()->params['hos_num_label'];
+        $this->_label = Yii::app()->params['hos_num_label'];
     }
 
     public function rules()
@@ -48,7 +45,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

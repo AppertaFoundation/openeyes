@@ -18,6 +18,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
     private $statusList = array();
 
+    protected $_label = 'Previous Trial';
+
     protected $options = array(
         'value_type' => 'multi_select',
     );
@@ -156,12 +158,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         );
     }
 
-    public function getLabel()
-    {
-        // This is a human-readable value, so feel free to change this as required.
-        return 'Previous Trial';
-    }
-
     /**
      * Override this function if the parameter subclass has extra validation rules. If doing so, ensure you invoke the parent function first to obtain the initial list of rules.
      * @return array The validation rules for the parameter.
@@ -196,7 +192,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

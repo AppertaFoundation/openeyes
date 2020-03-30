@@ -27,6 +27,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         'value_type' => 'string_search',
     );
 
+    protected $_label = 'Identifier Number';
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -51,12 +53,6 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         );
     }
 
-    public function getLabel()
-    {
-        // This is a human-readable value, so feel free to change this as required.
-        return 'Identifier Number';
-    }
-
     /**
      * Attribute labels for display purposes.
      * @return array Attribute key/value pairs.
@@ -71,6 +67,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     /**
      * @param $attribute
      * @return string|null
+     * @throws CException
      */
     public function getValueForAttribute($attribute)
     {
@@ -83,7 +80,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
                     return parent::getValueForAttribute($attribute);
             }
         }
-        return null;
+        return parent::getValueForAttribute($attribute);
     }
 
     /**

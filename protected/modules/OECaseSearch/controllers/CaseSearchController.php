@@ -339,7 +339,7 @@ class CaseSearchController extends BaseModuleController
             $search->variables = $_POST['variable_list'];
 
             if (!$search->save()) {
-                Yii::log(var_Export($search->getErrors(), true));
+                Yii::log(var_export($search->getErrors(), true));
                 throw new CHttpException(500, 'Unable to save search');
             }
             Yii::app()->user->setFlash('success', 'Search saved successfully.');

@@ -92,7 +92,8 @@ class PatientDiagnosisParameterTest extends CDbTestCase
             ),
             'Invalid attribute' => array(
                 'attribute' => 'invalid',
-                'expected' => null,
+                'expected' => 'null',
+                'exception' => 'CException',
             ),
         );
     }
@@ -101,18 +102,63 @@ class PatientDiagnosisParameterTest extends CDbTestCase
      * @dataProvider attributeValueTestList
      * @param $attribute
      * @param $expected
+     * @param null|string $exception
+     * @throws CException
      */
-    public function testGetValueForAttribute($attribute, $expected)
+    public function testGetValueForAttribute($attribute, $expected, $exception = null)
     {
         $this->parameter->operation = '=';
         $this->parameter->value = 1;
         $this->parameter->firm_id = 1;
         $this->parameter->only_latest_event = true;
-        $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
+        if ($exception) {
+            $this->expectException($exception);
+            $this->parameter->getValueForAttribute($attribute);
+        } else {
+            $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
+        }
+
+
     }
 
     /**
-     * @covers PatientDiagnosisParameter::getCommonItemsForTerm
+     * @covers CaseSearchParameter
+     */
+    public function testGetOptions()
+    {
+        $options = array(
+            'value_type' => 'string_search',
+        );
+        $options['operations'][0] = array('label' => 'INCLUDES', 'id' => 'IN');
+        $options['operations'][1] = array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN');
+
+        $firms = Firm::model()->getListWithSpecialties();
+        $options['option_data'] = array(
+            array(
+                'id' => 'firm',
+                'field' => 'firm_id',
+                'options' => array_map(
+                    static function ($item, $key) {
+                        return array('id' => $key, 'label' => $item);
+                    },
+                    $firms,
+                    array_keys($firms)
+                ),
+            ),
+            array(
+                'id' => 'latest-event',
+                'field' => 'only_latest_event',
+                'options' => array(
+                    array('id' => 1, 'label' => 'Only latest event')
+                ),
+            ),
+        );
+        $this->assertEquals($options, $this->parameter->getOptions());
+    }
+
+    /**
+     * @covers PatientDiagnosisParameter
+     * @covers CaseSearchParameter
      */
     public function testGetCommonItemsForTerm()
     {

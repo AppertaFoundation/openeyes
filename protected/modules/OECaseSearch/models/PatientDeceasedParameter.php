@@ -9,6 +9,8 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         'value_type' => 'boolean',
     );
 
+    protected $_label = 'Patient Deceased';
+
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
@@ -22,12 +24,6 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         // Override the existing operation IDs to use boolean values.
         $this->options['operations'][0]['id'] = '1';
         $this->options['operations'][1]['id'] = '0';
-    }
-
-    public function getLabel()
-    {
-        // This is a human-readable value, so feel free to change this as required.
-        return 'Patient Deceased';
     }
 
     /**

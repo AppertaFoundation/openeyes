@@ -2,19 +2,21 @@
 
 /**
  * Class DBProvider
+ *
+ * @property string $driver
  */
 class DBProvider extends SearchProvider
 {
-    private $driver = 'mariadb';
+    private $_driver = 'mariadb';
 
     public function getDriver()
     {
-        return $this->driver;
+        return $this->_driver;
     }
 
-    protected function setDriver($driver)
+    public function setDriver($driver)
     {
-        $this->driver = $driver;
+        $this->_driver = $driver;
     }
 
     /**
