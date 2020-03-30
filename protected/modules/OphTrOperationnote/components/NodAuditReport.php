@@ -73,6 +73,12 @@ class NodAuditReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo, $type)
     {
+        $unit = 'MONTH';
+        $num = $this->months;
+        if($this->months < 1){
+            $unit = 'WEEK';
+            $num = $this->months * 4;
+        }
         $this->command->reset();
         $this->command->from('et_ophtroperationnote_cataract eoc')
             ->join('event e1', 'eoc.event_id = e1.id')
@@ -103,7 +109,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
-                    ->andWhere("ABS(TIMESTAMPDIFF(MONTH,e2.event_date,e1.event_date)) <= :month", array(':month' => $this->months))
+                    ->andWhere("ABS(TIMESTAMPDIFF($unit,e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
                     ->group('e2.id');
                 break;
             //biometry
@@ -134,7 +140,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_postop_complications eopc', 'eopc.event_id = e2.id')
-                    ->andWhere("ABS(TIMESTAMPDIFF(MONTH,e2.event_date,e1.event_date)) <= :month", array(':month' => $this->months))
+                    ->andWhere("ABS(TIMESTAMPDIFF($unit,e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
                     ->group('e2.id');
                 break;
             // indication for surgery
