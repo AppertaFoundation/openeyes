@@ -777,7 +777,7 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
-        return (new CHtmlPurifier())->purify($this->body);
+        return (new CHtmlPurifier())->purify(preg_replace("/(<p>(<em><\/em>)?(<span style=\"text-decoration: underline;\"><\/span>)?(<strong><\/strong>)?<\/p>)/", "<br>", $this->body));
     }
 
     public function getCreate_view()
