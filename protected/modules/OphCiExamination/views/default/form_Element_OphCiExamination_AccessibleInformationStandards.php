@@ -22,7 +22,7 @@ $model_name = CHtml::modelName($element);
         <tbody>
         <tr>
             <td colspan="5" class="align-left">
-                <label class="inline highlight" for="<?= $model_name ?>_correspondence_in_large_letters">
+                <label class="inline highlight">
                     <input type="hidden" name="<?= $model_name ?>[correspondence_in_large_letters]" value="off">
                     <?= CHtml::checkBox($model_name . '[correspondence_in_large_letters]', $element->correspondence_in_large_letters ? true : false) ?>
                     Large print for correspondence
