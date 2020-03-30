@@ -36,6 +36,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Macroaneurysm',
             'RetinalVeinOcclusionPostPole',
             'RetinalArteryOcclusionPostPole',
+            'CNV',
         ),
         array(
             'Microaneurysm',

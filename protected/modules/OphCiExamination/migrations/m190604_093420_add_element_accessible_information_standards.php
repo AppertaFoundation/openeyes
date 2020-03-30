@@ -21,7 +21,7 @@ class m190604_093420_add_element_accessible_information_standards extends OEMigr
 
         $this->createElementType('OphCiExamination', 'Accessible Information Standards', array(
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards',
-            'display_order' => 10,
+            'display_order' => 135,
             'group_name' => 'Accessible Information Standards',
             'default' => 0,
             'required' => 0,
