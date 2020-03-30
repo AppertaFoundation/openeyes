@@ -3991,6 +3991,15 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               </INDEX_LIST>
             </INDEX>
             <INDEX>
+              <PRIMARY_TERM>Toric Posterior chamber IOL</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Intraocular lens</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ToricPCIOL.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ToricPCIOL</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
               <PRIMARY_TERM>Peripheral iridectomy</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PI.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
@@ -4010,6 +4019,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 </INDEX>
               </INDEX_LIST>
             </INDEX>
+
             <INDEX>
               <PRIMARY_TERM>Pingueculum</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Pingueculum.png</IMG_URL>
