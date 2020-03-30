@@ -86,9 +86,11 @@ class MedicationInfoBox extends \BaseCWidget
                 $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
-            if ($medication->isVMP()) {
-                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
-            }
+            // VMPs : No tool-tip needed as the moiety is usually part of he name
+            // Left commented out for now, as at time of wrinting (27/03/2020) DA had not decided if they definitely do not want to show or not
+            // if ($medication->isVMP()) {
+            //     $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+            // }
 
             // VTMs : No tool-tip needed, these are self explanatory
             // for local no tooltip is needed
@@ -166,7 +168,7 @@ class MedicationInfoBox extends \BaseCWidget
     public function getHTML()
     {
         $content = $this->getInfoBoxHTML();
-        return ($this->data && $content) ?
+        return ($content) ?
             ('<i class="oe-i ' .  $this->icon . ' pad small js-has-tooltip" data-tooltip-content="' . $content . '"></i>') : '';
     }
 }
