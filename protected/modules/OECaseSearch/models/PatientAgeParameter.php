@@ -30,6 +30,17 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         return 'Age';
     }
 
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('value', 'numerical', 'allowEmpty' => false, 'min' => 0, 'max' => 99),
+                array('value', 'safe'),
+            )
+        );
+    }
+
     /**
      * Generate the SQL query for patient age.
      * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.

@@ -102,7 +102,8 @@
                     'data-id': option.id,
                     'data-conditional-id': option.conditional_id,
                     'data-type': 'lookup',
-                    'data-field': optionData.field
+                    'data-field': optionData.field,
+                    'class': option.selected ? 'selected' : null,
                 }).append($('<span />', {class: 'auto-width'}).text(option.label)));
             });
 

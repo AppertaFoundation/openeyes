@@ -24,6 +24,17 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         return 'Previous Procedure';
     }
 
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('value', 'required'),
+                array('value', 'safe'),
+            )
+        );
+    }
+
     /**
      * @param $attribute
      * @return string|null

@@ -9,10 +9,43 @@ abstract class SearchProvider extends CApplicationComponent
      * Perform a search using the specified parameters. Call this function to run the search rather than executeSearch.
      * @param $parameters array A list of CaseSearchParameter objects representing a search parameter.
      * @return mixed Search results. This will take whatever form is specified within the subclass' executeSearch implementation.
+     * @throws Exception
      */
     final public function search($parameters)
     {
-        return $this->executeSearch($parameters);
+        $this->beforeSearch($parameters);
+        $results = $this->executeSearch($parameters);
+        $this->afterSearch($parameters, count($results));
+        return $results;
+    }
+
+    /**
+     * Override this function to customise the behaviour of the search provider before performing the search.
+     * @param $parameters CaseSearchParameter[]
+     */
+    protected function beforeSearch($parameters)
+    {
+    }
+
+    /**
+     * Override this function to customise the behaviour of the search provider after performing the search.
+     * This function can be used to clean up resources and is currently used to record audit data if the search returns no results.
+     * @param $parameters CaseSearchParameter[]
+     * @param $result_count int
+     * @throws Exception
+     */
+    protected function afterSearch($parameters, $result_count)
+    {
+        $auditValues = array();
+        if ($result_count === 0) {
+            /**
+             * @var $param CaseSearchParameter
+             */
+            foreach ($parameters as $param) {
+                $auditValues[] = $param->getAuditData();
+            }
+            Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
+        }
     }
 
     /**

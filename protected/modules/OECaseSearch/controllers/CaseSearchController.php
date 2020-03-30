@@ -79,7 +79,7 @@ class CaseSearchController extends BaseModuleController
 
         if ($valid && !empty($this->parameters)) {
             $this->actionClear();
-            $ids = $this->runSearch();
+            $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
             if (!isset($_SESSION['last_search']) || empty($_SESSION['last_search'])) {
@@ -202,6 +202,9 @@ class CaseSearchController extends BaseModuleController
     {
         $param = $_GET['parameter'];
 
+        /**
+         * @var $parameter CaseSearchParameter
+         */
         $parameter = new $param['type'];
         $parameter->id = $param['id'];
         $parameter->operation = $param['operation'];
@@ -216,10 +219,18 @@ class CaseSearchController extends BaseModuleController
             }
         }
 
-        $this->renderPartial('parameter_form', array(
-            'model' => $parameter,
-            'id' => $parameter->id,
-        ));
+        if ($parameter->validate()) {
+            $this->renderPartial('parameter_form', array(
+                'model' => $parameter,
+                'id' => $parameter->id,
+            ));
+        } else {
+            foreach ($parameter->getErrors() as $attr => $errors) {
+                echo '<li>' . implode(', ', $errors) . '</li>';
+            }
+            http_response_code(400);
+        }
+
         Yii::app()->end();
     }
 
@@ -385,28 +396,6 @@ class CaseSearchController extends BaseModuleController
         return $valid;
     }
 
-    /**
-     * @return array
-     * @throws Exception
-     */
-    protected function runSearch()
-    {
-        $auditValues = array();
-        $results = Yii::app()->searchProvider->search($this->parameters);
-
-        if (count($results) === 0) {
-            /**
-             * @var $param CaseSearchParameter
-             */
-            foreach ($this->parameters as $param) {
-                $auditValues[] = $param->getAuditData();
-            }
-            Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. No results', null, array('module' => 'OECaseSearch'));
-        }
-        // deconstruct the results list into a single array of primary keys.
-        return array_column($results, 'id');
-    }
-
     public function actionSearchCommonItems()
     {
         $term = Yii::app()->request->getQuery('term');
@@ -500,7 +489,7 @@ class CaseSearchController extends BaseModuleController
         $var = $_POST['var'];
 
         $this->populateParams();
-        $ids = $this->runSearch();
+        $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
 
         $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
         $variable = new $class_name($ids);
@@ -525,12 +514,6 @@ class CaseSearchController extends BaseModuleController
     {
         $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'), true);
         Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
-
-        // Loading the following files from the package before calling each action as they are required by the zii AutoCompleteSearch widget (used for diagnosis)
-        // and they must be loaded before the widget loads any jquery files.
-        Yii::app()->clientScript->registerCoreScript('jquery');
-        Yii::app()->clientScript->registerCoreScript('jquery.ui');
-        Yii::app()->clientScript->registerCoreScript('cookie');
 
         // This is required when the search results return any records.
         Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);

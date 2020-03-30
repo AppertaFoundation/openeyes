@@ -67,7 +67,16 @@ abstract class CaseSearchParameter extends CFormModel
     public function rules()
     {
         return array(
+            array('id, operation, name', 'required'),
             array('id, operation, name, value', 'safe'),
+        );
+    }
+
+    public function attributeLabels()
+    {
+        return array(
+            'operation' => $this->getLabel() . ' parameter operator',
+            'value' => $this->getLabel(),
         );
     }
 

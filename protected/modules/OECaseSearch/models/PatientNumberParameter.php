@@ -26,6 +26,17 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
         return Yii::app()->params['hos_num_label'];
     }
 
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('value', 'required'),
+                array('value', 'safe'),
+            )
+        );
+    }
+
     public function getValueForAttribute($attribute)
     {
         if (in_array($attribute, $this->attributeNames(), true)) {

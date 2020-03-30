@@ -52,7 +52,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'side',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any')
+                        array('id' => '', 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -67,7 +67,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'relative',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any')
+                        array('id' => '', 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -82,7 +82,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'condition',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any')
+                        array('id' => '', 'label' => 'Any', 'selected' => true,)
                     ),
                     array_map(
                         static function ($item) {
@@ -129,7 +129,6 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(
             parent::rules(),
             array(
-                array('condition', 'required'),
                 array('relative, side, condition', 'safe'),
             )
         );

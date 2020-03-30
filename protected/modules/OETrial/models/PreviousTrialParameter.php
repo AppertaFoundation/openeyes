@@ -68,7 +68,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'status',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any status')
+                        array('id' => '', 'label' => 'Any status', 'selected' => true)
                     ),
                     array_map(
                         static function ($item, $key) {
@@ -84,7 +84,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'field' => 'trialTypeId',
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any trial type', 'conditional_id' => '')
+                        array('id' => '', 'label' => 'Any trial type', 'conditional_id' => '', 'selected' => true)
                     ),
                     array_map(
                         static function ($item, $key) {
@@ -108,7 +108,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'hidden' => true,
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any trial')
+                        array('id' => '', 'label' => 'Any trial', 'selected' => true)
                     ),
                     array_map(
                         static function ($item, $key) {
@@ -125,7 +125,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'hidden' => true,
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any trial')
+                        array('id' => '', 'label' => 'Any trial', 'selected' => true)
                     ),
                     array_map(
                         static function ($item, $key) {
@@ -142,7 +142,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'hidden' => true,
                 'options' => array_merge(
                     array(
-                        array('id' => '', 'label' => 'Any treatment')
+                        array('id' => '', 'label' => 'Any treatment', 'selected' => true)
                     ),
                     array_map(
                         static function ($item, $key) {

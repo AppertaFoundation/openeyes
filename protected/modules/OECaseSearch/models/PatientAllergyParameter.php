@@ -35,6 +35,17 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         return null;
     }
 
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('value', 'required'),
+                array('value', 'safe'),
+            )
+        );
+    }
+
     public static function getCommonItemsForTerm($term)
     {
         $allergies = Allergy::model()->findAllBySql('

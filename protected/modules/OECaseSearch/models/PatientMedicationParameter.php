@@ -21,6 +21,17 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         return 'Medication';
     }
 
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            array(
+                array('value', 'required'),
+                array('value', 'safe'),
+            )
+        );
+    }
+
     public static function getCommonItemsForTerm($term)
     {
         $drugs = Medication::model()->findAllBySql('

@@ -88,6 +88,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         return array_merge(
             parent::rules(),
             array(
+                array('value', 'required'),
                 array('firm_id, only_latest_event', 'safe'),
             )
         );

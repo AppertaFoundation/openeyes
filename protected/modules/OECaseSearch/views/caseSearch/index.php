@@ -103,24 +103,22 @@ $user_searches = array_map(
             <?= CHtml::hiddenField('var', isset($variables[0]) ? $variables[0]->field_name : null) ?>
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
             <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
-            <?= CHtml::htmlButton(
+            <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
                     'Download CSV BASIC',
                     array(
                         'id' => 'download-csv-basic',
                         'type' => 'submit',
                         'class' => 'cols-full',
                         'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=BASIC',
-                        'style' => !$patients || $patients->totalItemCount === 0 ? 'display: none;' : '',
                     )
             ) ?>
-            <?= CHtml::htmlButton(
+            <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
                     'Download CSV Advanced',
                     array(
                         'id' => 'download-csv-advanced',
                         'type' => 'submit',
                         'class' => 'cols-full',
                         'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=ADVANCED',
-                        'style' => !$patients || $patients->totalItemCount === 0 ? 'display: none;' : '',
                     )
             ) ?>
             <?php if ($this->trialContext) : ?>
@@ -135,12 +133,13 @@ $user_searches = array_map(
                 'variable_data' => $variableData,
                 'variables' => $variables,
                 'total_patients' => $patients->totalItemCount,
-                'list_selector' => '.oe-search-results'
+                'list_selector' => '.oe-search-results',
+                'display' => isset($variables[0]) ? true : false,
             ));
             $this->renderPartial('patient_drill_down_list', array(
                 'patients' => $patients,
                 'display_class' => 'oe-search-results',
-                'display' => false,
+                'display' => isset($variables[0]) ? false : true,
             ));
         } else { ?>
             <p>No patients found.</p>
@@ -352,7 +351,7 @@ $user_searches = array_map(
             id: 'add-parameter-dialog',
             onReturn: function (dialog, selectedValues) {
                 let operator = null;
-                let value = null;
+                let value = -1;
                 let valueList = [];
                 let type = null;
                 $.each(selectedValues, function (index, item) {
@@ -361,12 +360,12 @@ $user_searches = array_map(
                             operator = item.id;
                             break;
                         case 'number':
-                            if (value) {
+                            if (value !== -1) {
                                 // Second digit, so multiply the existing value by 10 first before adding the next number.
-                                value = (value * 10) + item.id;
+                                value = (value * 10) + parseInt(item.id);
                             } else {
                                 // First digit.
-                                value = item.id
+                                value = parseInt(item.id)
                             }
                             break;
                         case 'lookup':
@@ -382,7 +381,7 @@ $user_searches = array_map(
                 let parameter = {
                     type: type,
                     operation: operator,
-                    value: value || valueList,
+                    value: (value !== -1 ? value.toString() : valueList),
                     id: ++parameter_id_counter
                 };
                 $.ajax({
@@ -394,6 +393,11 @@ $user_searches = array_map(
                     success: function (response) {
                         // Append the dynamic parameter HTML before the first fixed parameter.
                         $('#param-list tbody').append(response);
+                    },
+                    error: function (xhr, status, error) {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: '<ul>' + xhr.responseText + '</ul>',
+                        }).open();
                     }
                 });
             }

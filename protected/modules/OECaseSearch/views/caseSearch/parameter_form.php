@@ -48,7 +48,7 @@ switch ($model->operation) {
     </td>
     <td>
         <?php
-        if ($model->value && !is_array($model->value)) {
+        if ($model->value !== null && !is_array($model->value)) {
             echo $model->getValueForAttribute('value');
             echo !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '';
         }

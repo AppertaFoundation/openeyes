@@ -79,6 +79,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function rules()
     {
         return array_merge(parent::rules(), array(
+            array('value', 'required'),
+            array('value', 'safe'),
             array('bothEyesIndicator', 'safe'),
         ));
     }

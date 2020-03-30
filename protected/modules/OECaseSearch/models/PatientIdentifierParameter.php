@@ -93,8 +93,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('code', 'required'),
-            array('code', 'safe')
+            array('value, code', 'required'),
+            array('value, code', 'safe')
         ));
     }
 

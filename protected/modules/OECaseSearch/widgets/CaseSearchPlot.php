@@ -7,6 +7,7 @@ class CaseSearchPlot extends BaseCWidget
     public $variables = array();
     public $total_patients = 0;
     public $list_selector;
+    public $display;
     private $display_theme;
     private $newblue_path;
     private $oePlotlyPath;

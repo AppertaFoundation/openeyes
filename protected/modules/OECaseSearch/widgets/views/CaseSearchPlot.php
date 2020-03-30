@@ -5,7 +5,7 @@
 
 ?>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
-<div class="results-options">
+<div class="results-options"<?= !$this->display ? ' style="display: none;"' : null ?>>
     Select plot:
     <?= CHtml::dropDownList('selected_variable', isset($this->variables[0]) ? $this->variables[0]->field_name : null, CHtml::listData($this->variables, 'field_name', 'label'), array('id' => 'selected-variable')) ?>
     <span class="tabspace"></span>
