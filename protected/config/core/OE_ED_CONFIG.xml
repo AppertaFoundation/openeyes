@@ -2966,6 +2966,50 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>RPEAtrophy</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
+              <PRIMARY_TERM>Extra-foveal CNV</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CNV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal neovascularisation</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fovea</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal neovascularisation</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
               <PRIMARY_TERM>Fovea</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
