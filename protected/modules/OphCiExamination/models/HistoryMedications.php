@@ -102,7 +102,7 @@ class HistoryMedications extends BaseMedicationElement
             $new->loadFromExisting($entry);
             $new->usage_type = \EventMedicationUse::getUsageType();
             $new->usage_subtype = \EventMedicationUse::getUsageSubtype();
-            $new->previous_event_id = $entry->event_id;
+            $new->previous_event_date = date('Y-m-d', strtotime($entry->event->event_date));
             $prescription_end_date = isset($entry->prescription_item_id) ? $entry->prescriptionItem->stopDateFromDuration() : null;
             if (!isset($new->end_date) && $prescription_end_date) {
                 $new->end_date = $prescription_end_date->format('Y-m-d');

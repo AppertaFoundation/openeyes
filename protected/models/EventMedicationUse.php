@@ -82,7 +82,7 @@ class EventMedicationUse extends BaseElement
     public $prescription_not_synced = false;
 
     public $is_copied_from_previous_event = false;
-    public $previous_event_id;
+    public $previous_event_date;
 
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
