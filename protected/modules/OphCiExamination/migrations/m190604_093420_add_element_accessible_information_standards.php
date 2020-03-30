@@ -16,7 +16,7 @@ class m190604_093420_add_element_accessible_information_standards extends OEMigr
         $this->insert('element_group', array(
             'name' => 'Accessible Information Standards',
             'event_type_id' => $this->getIdOfEventTypeByClassName('OphCiExamination'),
-            'display_order' => 10,
+            'display_order' => 135,
         ));
 
         $this->createElementType('OphCiExamination', 'Accessible Information Standards', array(
