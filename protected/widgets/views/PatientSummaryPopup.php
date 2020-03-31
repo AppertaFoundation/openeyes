@@ -243,7 +243,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     <?php }
                                 } ?>
 
-                                <?php $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
+                                <?php $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
                                             <h2>Communication Preferences</h2>
@@ -251,7 +251,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     </tr>
                                     <tr>
                                         <td>Large print</td>
-                                        <td><span class="large-text"><?= ($examination_accessible_info_standards && $examination_accessible_info_standards->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
+                                        <td><span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
                                 </tbody>
                         </table>

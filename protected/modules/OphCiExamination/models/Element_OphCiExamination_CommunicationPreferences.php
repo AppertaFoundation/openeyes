@@ -20,7 +20,7 @@ namespace OEModule\OphCiExamination\models;
 use Yii;
 
 /**
- * This is the model class for table "et_ophciexamination_accessible_information_standards".
+ * This is the model class for table "et_ophciexamination_communication_preferences".
  *
  * The followings are the available columns in table:
  *
