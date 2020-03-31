@@ -609,6 +609,7 @@ class MedicationSet extends BaseActiveRecordVersioned
             $no_condition = false;
         }
 
+        $cmd->andWhere("deleted_date is NULL");
         $medication_ids = $cmd->queryColumn();
 
         // empty the set
@@ -626,59 +627,44 @@ class MedicationSet extends BaseActiveRecordVersioned
 
             $medication_queries = [];
             foreach ($medication_ids as $mk => $id) {
-                $deleted = $this->dbConnection->createCommand("SELECT deleted_date FROM medication WHERE id = $id")->queryAll()[0]['deleted_date'];
-                if (!$deleted) {
                     $medication_queries[] = [
                         'medication_set_id' => $this->id,
                         'medication_id' => $id
                     ];
-                }
             }
             if ($medication_queries) {
                 $this->dbConnection->getCommandBuilder()->createMultipleInsertCommand('medication_set_item', $medication_queries)->execute();
             }
 
-            foreach ($medication_ids as $mk => $id) {
-                $auto_set = MedicationSetAutoRuleMedication::model()->findByAttributes(['medication_set_id' => $this->id, 'medication_id' => $id]);
+            // Add tapers
+            $this->dbConnection->getCommandBuilder()->createSqlCommand("
+                INSERT INTO medication_set_item_taper (medication_set_item_id, dose, frequency_id, duration_id)
+                SELECT   msi.id 
+                        , mat.dose
+                        , mat.frequency_id
+                        , mat.duration_id
+                FROM medication_set_auto_rule_medication_taper mat
+                        INNER JOIN medication_set_auto_rule_medication mam ON mat.medication_set_auto_rule_id = mam.id
+                        INNER JOIN medication_set_item msi ON msi.medication_set_id = mam.medication_set_id 
+                WHERE mam.medication_id = msi.medication_id 
+                    AND mam.medication_set_id = ". $this->id
+                )->execute();
 
-                if ($auto_set) {
-                    $q = [];
-                    foreach ($auto_set->attributes as $attribute) {
-                        if (strpos($attribute, 'default') === 0) {
-                            //$new_set_item->$attribute = $auto_set->$attribute;
-                            $q[$attribute] = $auto_set->$attribute;
-                        }
-                    }
-
-                    if ($q) {
-                        $criteria = new \CDbCriteria();
-                        $criteria->addCondition('medication_set_id', $this->id);
-                        $criteria->addCondition('medication_id', $id);
-                        $this->dbConnection->getCommandBuilder()->createUpdateCommand('medication_set_item', $q, $criteria);
-                    }
-                }
-
-                if ($auto_set && $auto_set->tapers) {
-                    // save tapers
-                    $medication_tapers_values = [];
-                    foreach ($medicationSetAutoRuleMedication->tapers as $taper) {
-                        $medication_tapers_values[] =
-                        "((SELECT id FROM medication_set_item WHERE medication_set_id = {$this->id} AND medication_id = {$id} LIMIT 1), 
-                         {$taper->dose}, {$taper->frequency_id}, {$taper->duration_id})
-                        ";
-                    }
-
-                    if ($medication_tapers_values) {
-                        $insert_taper_query = "
-                        INSERT INTO medication_set_item_taper(medication_set_item_id, dose, frequency_id, duration_id)
-                        VALUES " . (implode(", ", $medication_tapers_values)) . ";";
-                        $this->dbConnection->getCommandBuilder()->createSqlCommand($insert_taper_query)->bindValues([
-                            ':medication_set_id' => $this->id,
-                            ':medication_id' => $id
-                        ])->execute();
-                    }
-                }
-            }
+            // Set defaults for each medication_set_item from medication_set_auto_rule medication
+            $this->dbConnection->getCommandBuilder()->createSqlCommand("
+                UPDATE medication_set_item msi, medication_set_auto_rule_medication msam
+                SET msi.default_dispense_condition_id = msam.default_dispense_condition_id 
+                    , msi.default_dispense_location_id = msam.default_dispense_location_id 
+                    , msi.default_dose = msam.default_dose
+                    , msi.default_dose_unit_term = msam.default_dose_unit_term 
+                    , msi.default_duration_id = msam.default_duration_id
+                    , msi.default_form_id = msam.default_form_id
+                    , msi.default_frequency_id = msam.default_frequency_id 
+                    , msi.default_route_id = msam.default_route_id 
+                WHERE msi.medication_id = msam.medication_id 
+                    AND msi.medication_set_id = msam.medication_set_id
+                    AND msi.medication_set_id = ". $this->id
+                )->execute();
         }
 
         $msg = "Processed non-auto rules in " . $this->name . "\n";

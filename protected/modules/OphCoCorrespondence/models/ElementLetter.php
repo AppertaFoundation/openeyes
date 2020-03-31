@@ -989,6 +989,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($associated_content as $key => $ac) {
                 if ($ac->associated_protected_file_id) {
                     $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    file_put_contents($file->getPath(), $file->file_content);
                     $pdf_files[$key]['path'] = $file->getPath();
                     $pdf_files[$key]['name'] = $file->name;
                     $pdf_files[$key]['mime'] = $file->mimetype;
