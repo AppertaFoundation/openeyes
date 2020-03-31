@@ -14,17 +14,21 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$model_name = CHtml::modelName($element);
 ?>
 
-<table class="standard">
-    <colgroup>
-        <col class="cols-3">
-    </colgroup>
-    <tbody>
-    <tr>
-        <td>
-            <?php echo $form->checkBox($element, 'correspondence_in_large_letters') ?>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="element-fields flex-layout full-width" id="<?= $model_name ?>">
+    <table class="standard">
+        <tbody>
+        <tr>
+            <td colspan="5" class="align-left">
+                <label class="inline highlight">
+                    <input type="hidden" name="<?= $model_name ?>[correspondence_in_large_letters]" value="off">
+                    <?= CHtml::checkBox($model_name . '[correspondence_in_large_letters]', $element->correspondence_in_large_letters ? true : false) ?>
+                    Large print for correspondence
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
