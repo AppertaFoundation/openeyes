@@ -5,7 +5,7 @@ class m200331_053218_rename_accessible_information_standards_to_communication_pr
     public function safeUp()
     {
         $this->renameTable('et_ophciexamination_accessible_information_standards', 'et_ophciexamination_communication_preferences');
-        $this->renameTable('et_ophciexamination_accessible_information_standards_version','et_ophciexamination_communication_preferences_version');
+        $this->renameTable('et_ophciexamination_accessible_information_standards_version', 'et_ophciexamination_communication_preferences_version');
 
         $this->dropForeignKey('et_ophciexamination_accessible_information_standards_ev_fk', 'et_ophciexamination_communication_preferences');
         $this->addForeignKey('et_ophciexamination_communication_preferences_ev_fk', 'et_ophciexamination_communication_preferences', 'event_id', 'event', 'id');
