@@ -75,10 +75,6 @@ class NodAuditReport extends Report implements ReportInterface
     {
         $unit = 'MONTH';
         $num = $this->months;
-        if ($this->months < 1) {
-            $unit = 'WEEK';
-            $num = $this->months * 4;
-        }
         $this->command->reset();
         $this->command->from('et_ophtroperationnote_cataract eoc')
             ->join('event e1', 'eoc.event_id = e1.id')
