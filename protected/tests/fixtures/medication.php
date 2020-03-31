@@ -23,4 +23,15 @@ return array(
         'short_term' => 'acetazolamide 250mg modified release capsules',
         'discontinued' => 0,
     ),
+    'drug5' => array(
+        'id' => 5,
+        'preferred_term' => 'Ibuprofen 250mg modified release capsules',
+        'default_form_id' => 1,
+        'default_dose_unit_term' => 'capsule(s)',
+        'default_dose' => 1,
+        'default_route_id' => 10,
+        'is_prescribable' => 1,
+        'short_term' => 'ibuprofen 250mg modified release capsules',
+        'discontinued' => 0,
+    ),
 );

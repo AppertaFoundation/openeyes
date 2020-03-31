@@ -5,6 +5,11 @@ class DBProviderTest extends CTestCase
 {
     public $searchProvider;
 
+    protected $fixtures = array(
+        'patients' => Patient::class,
+        'procedures' => Procedure::class,
+    );
+
     public static function setUpBeforeClass()
     {
         Yii::app()->getModule('OECaseSearch');
@@ -58,6 +63,8 @@ class DBProviderTest extends CTestCase
     }
 
     /**
+     * @covers SearchProvider
+     * @covers DBProvider
      * @throws Exception
      */
     public function testSearch()

@@ -119,7 +119,7 @@ abstract class CaseSearchParameter extends CFormModel
      */
     public function getAuditData()
     {
-        return null;
+        return $this->name;
     }
 
     /**

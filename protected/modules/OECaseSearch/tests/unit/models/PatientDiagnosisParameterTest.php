@@ -202,6 +202,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     }
 
     /**
+     * @covers PatientDiagnosisParameter
      * @dataProvider getSearchData
      * @param $op
      * @param $value
@@ -218,6 +219,9 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->parameter->operation = $op;
         $this->parameter->value = $value;
         $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = 0;
+
+        $this->assertTrue($this->parameter->validate());
 
         $results = Yii::app()->searchProvider->search(array($this->parameter));
 
@@ -229,5 +233,84 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $patients = Patient::model()->findAllByPk($ids);
 
         $this->assertEquals($expected, $patients);
+    }
+
+    /**
+     * @dataProvider getSearchData
+     * @param $op
+     * @param $value
+     * @param $firm_id
+     */
+    public function testSaveSearch($op, $value, $firm_id)
+    {
+        $this->parameter->operation = $op;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = 0;
+
+        $actual = $this->parameter->saveSearch();
+
+        $this->assertEquals($op, $actual['operation']);
+        $this->assertEquals($value, $actual['value']);
+        $this->assertEquals($firm_id, $actual['firm_id']);
+        $this->assertEquals(0, $actual['only_latest_event']);
+    }
+
+    public function getAuditParams()
+    {
+        return array(
+            'All params' => array(
+                'operator' => 'IN',
+                'value' => 1,
+                'firm_id' => 1,
+                'only_latest_event' => true
+            ),
+            'Null firm_id, only latest event' => array(
+                'operator' => 'IN',
+                'value' => 1,
+                'firm_id' => null,
+                'only_latest_event' => true
+            ),
+            'Null firm_id, all events, not equal' => array(
+                'operator' => 'NOT IN',
+                'value' => 1,
+                'firm_id' => null,
+                'only_latest_event' => false
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getAuditParams
+     * @covers PatientDiagnosisParameter
+     * @param $operator
+     * @param $value
+     * @param $firm_id
+     * @param $only_latest_event
+     */
+    public function testGetAuditData($operator, $value, $firm_id, $only_latest_event)
+    {
+        $op = '=';
+        if ($operator !== 'IN') {
+            $op = '!=';
+        }
+
+        $expected = "diagnosis: $op \"$value\"";
+
+        $this->parameter->operation = $operator;
+        $this->parameter->value = $value;
+        $this->parameter->firm_id = $firm_id;
+        $this->parameter->only_latest_event = $only_latest_event;
+
+        if ($firm_id !== '' && $firm_id !== null) {
+            $firm = Firm::model()->findByPk($firm_id);
+            $expected .= " diagnosed by {$firm->getNameAndSubspecialty()}";
+        }
+
+        if ($only_latest_event) {
+            $expected .= ' with only the latest event';
+        }
+
+        $this->assertEquals($expected, $this->parameter->getAuditData());
     }
 }

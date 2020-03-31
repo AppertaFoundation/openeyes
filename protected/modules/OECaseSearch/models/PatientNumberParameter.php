@@ -96,6 +96,7 @@ ORDER BY p.hos_num LIMIT " . self::_AUTOCOMPLETE_LIMIT,
      */
     public function getAuditData()
     {
-        return "$this->name: = $this->value";
+        $patient = Patient::model()->findByPk($this->value);
+        return "$this->name: = $patient->hos_num";
     }
 }

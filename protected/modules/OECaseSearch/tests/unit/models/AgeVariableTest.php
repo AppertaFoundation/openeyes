@@ -6,6 +6,10 @@ class AgeVariableTest extends CDbTestCase
 {
     protected $variable;
 
+    protected $fixtures = array(
+        'patients' => Patient::class,
+    );
+
     public static function setUpBeforeClass()
     {
         Yii::app()->getModule('OECaseSearch');

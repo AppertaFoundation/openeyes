@@ -107,7 +107,7 @@ OR m.id IS NULL";
     public function getAuditData()
     {
         $op = '=';
-        if ($this->operation) {
+        if ($this->operation !== '=') {
             $op = '!=';
         }
         return "$this->name: $op \"$this->value\"";

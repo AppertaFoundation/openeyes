@@ -106,6 +106,10 @@ class PatientVisionParameterTest extends CDbTestCase
             $this->parameter->operation = 'NOT IN';
         }
 
+        $this->parameter->value = 1;
+
+        $this->assertTrue($this->parameter->validate());
+
         $expected = "SELECT DISTINCT t5.patient_id
 FROM (
        SELECT DISTINCT patient_id, MAX(left_va_value) AS left_va_value, MAX(right_va_value) AS right_va_value

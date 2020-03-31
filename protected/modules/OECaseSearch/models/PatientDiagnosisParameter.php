@@ -199,14 +199,14 @@ ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
     {
         $op = '=';
         $result = null;
-        if ($this->operation) {
+        if ($this->operation !== 'IN') {
             $op = '!=';
         }
         $result = "$this->name: $op \"$this->value\"";
 
         if ($this->firm_id !== '' && $this->firm_id !== null) {
             $firm = Firm::model()->findByPk($this->firm_id);
-            $result .= "$this->name: $this->operation \"$this->value\" diagnosed by {$firm->getNameAndSubspecialty()}";
+            $result .= " diagnosed by {$firm->getNameAndSubspecialty()}";
         }
 
         if ($this->only_latest_event) {

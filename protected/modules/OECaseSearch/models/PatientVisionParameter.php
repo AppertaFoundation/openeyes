@@ -88,20 +88,6 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Attribute labels for display purposes.
-     * @return array Attribute key/value pairs.
-     */
-    public function attributeLabels()
-    {
-        return array_merge(
-            parent::attributeLabels(),
-            array(
-                'bothEyesIndicator' => 'Both Eyes',
-            )
-        );
-    }
-
-    /**
      * Generate the SQL query for patient vision.
      * @return null|string The query string for use by the search provider, or null if not implemented for the specified search provider.
      */

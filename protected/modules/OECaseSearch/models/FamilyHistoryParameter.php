@@ -159,22 +159,12 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             }
         }
 
-        $queryStr = '
+        return '
 SELECT DISTINCT p.id 
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
 WHERE (' . $query_side . $query_relative . $query_condition;
-        if ($this->operation) {
-            $queryStr = "
-SELECT id
-FROM patient
-WHERE id NOT IN (
-  $queryStr
-)";
-        }
-
-        return $queryStr;
     }
 
     /**
@@ -203,7 +193,10 @@ WHERE id NOT IN (
      */
     public function getAuditData()
     {
-        return "$this->name: $this->side $this->relative $this->operation \"$this->condition\"";
+        $side = $this->side ?: 'Any side';
+        $relative = $this->relative ?: 'any relative';
+        $condition = $this->condition ?: 'any condition';
+        return "$this->name: $side $relative $this->operation \"$condition\"";
     }
 
     public function saveSearch()

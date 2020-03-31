@@ -32,6 +32,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
      * @param string $scenario
+     * @throws CException
      */
     public function __construct($scenario = '')
     {
@@ -59,8 +60,11 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
      */
     public function attributeLabels()
     {
-        return array(
-            'code' => 'Code'
+        return array_merge(
+            parent::attributeLabels(),
+            array(
+                'code' => 'Code'
+            )
         );
     }
 
@@ -148,6 +152,7 @@ ORDER BY p.value, p.code LIMIT " . self::_AUTOCOMPLETE_LIMIT,
 
     /**
      * @return array contains all identifier codes
+     * @throws CException
      */
     public function getAllCodes()
     {

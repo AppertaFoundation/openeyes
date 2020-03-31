@@ -32,6 +32,9 @@ class PatientNameParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
+    /**
+     * @covers PatientNameParameter
+     */
     public function testSearch()
     {
         $expected = array($this->patient('patient1'));
@@ -40,8 +43,11 @@ class PatientNameParameterTest extends CDbTestCase
         $this->parameter->value = 1;
 
         $secondParam = new PatientNameParameter();
+        $secondParam->id = 1;
         $secondParam->operation = '=';
         $secondParam->value = $this->patient('patient1')->id;
+
+        $this->assertTrue($secondParam->validate());
 
         $results = Yii::app()->searchProvider->search(array($this->parameter, $secondParam));
 
@@ -56,6 +62,8 @@ class PatientNameParameterTest extends CDbTestCase
 
         $this->parameter->value = $this->patient('patient1')->id;
 
+        $this->assertTrue($this->parameter->validate());
+
         $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         $ids = array();
@@ -65,5 +73,41 @@ class PatientNameParameterTest extends CDbTestCase
         }
         $actual = Patient::model()->findAllByPk($ids);
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetAuditData()
+    {
+        $this->parameter->operation = '=';
+        $this->parameter->value = 1;
+
+        $expected = "patient_name: = \"{$this->patient('patient1')->getFullName()}\"";
+
+        $this->assertEquals($expected, $this->parameter->getAuditData());
+    }
+
+    public function testGetCommonItemsForTerm()
+    {
+        $this->assertCount(1, PatientNameParameter::getCommonItemsForTerm('Jim'));
+
+        $this->assertCount(1, PatientNameParameter::getCommonItemsForTerm('jim'));
+
+        $this->assertCount(1, PatientNameParameter::getCommonItemsForTerm('Aylward'));
+
+        $this->assertCount(1, PatientNameParameter::getCommonItemsForTerm('Jim Aylward'));
+    }
+
+    /**
+     * @throws CException
+     */
+    public function testGetValueForAttribute()
+    {
+        $this->parameter->operation = '=';
+        $this->parameter->value = 1;
+
+        $this->assertEquals('=', $this->parameter->getValueForAttribute('operation'));
+        $this->assertEquals($this->patient('patient1')->getFullName(), $this->parameter->getValueForAttribute('value'));
+
+        $this->expectException('CException');
+        $this->parameter->getValueForAttribute('invalid');
     }
 }

@@ -97,6 +97,7 @@ ORDER BY c.first_name, c.last_name LIMIT " . self::_AUTOCOMPLETE_LIMIT,
      */
     public function getAuditData()
     {
-        return "$this->name: = \"$this->value\"";
+        $patient = Patient::model()->findByPk($this->value);
+        return "$this->name: = \"{$patient->getFullName()}\"";
     }
 }

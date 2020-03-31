@@ -129,4 +129,11 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             "p_p_value_$this->id" => $this->value,
         );
     }
+
+    public function getAuditData()
+    {
+        $str =  parent::getAuditData();
+        $proc = Procedure::model()->findByPk($this->value);
+        return $str . ": $this->operation $proc->term";
+    }
 }

@@ -97,11 +97,12 @@ $query
      */
     public function getAuditData()
     {
+        $allergy = Allergy::model()->findByPk($this->value);
         if ($this->operation === '=') {
             $op = '=';
         } else {
             $op = '!=';
         }
-        return "$this->name: $op \"$this->value\"";
+        return "$this->name: $op \"$allergy->name\"";
     }
 }
