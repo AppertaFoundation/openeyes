@@ -246,11 +246,11 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 <?php $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
-                                            <h2>Accessibility</h2>
+                                            <h2>Communication Preferences</h2>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Large print:</td>
+                                        <td>Large print</td>
                                         <td><span class="large-text"><?= ($examination_accessible_info_standards && $examination_accessible_info_standards->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
                                 </tbody>
