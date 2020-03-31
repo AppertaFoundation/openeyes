@@ -4,6 +4,11 @@ class PatientAllergyParameterTest extends CDbTestCase
 {
     public $parameter;
 
+    protected $fixtures = array(
+        'patients' => Patient::class,
+        'allergy' => ':allergy'
+    );
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -65,7 +70,7 @@ WHERE p1.id NOT IN (
 
     public function testGetCommonItemsForTerm()
     {
-        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy'));
+        $this->assertCount(3, PatientAllergyParameter::getCommonItemsForTerm('allergy'));
         $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy 1'));
     }
 
