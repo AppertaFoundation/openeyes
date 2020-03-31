@@ -77,6 +77,7 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
 
     protected function getImageFileNameForRotation($image_id){
         $protected = ProtectedFile::model()->findByPk($image_id);
+        file_put_contents($protected->getPath(), $protected->file_content);
         if ($protected) {
             $file_name = $protected->getFilePath().'/'.$protected->uid;
             $image_size = getimagesize($file_name);
