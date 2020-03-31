@@ -28,7 +28,7 @@ if (is_null($contact_type)) {
 }
 if ($contact_type === "PATIENT") {
     $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-    $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $this->patient);
+    $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $this->patient);
     if ($examination_accessible_info_standards) {
         $large_letters = $examination_accessible_info_standards->correspondence_in_large_letters === '1';
     }

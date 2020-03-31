@@ -29,7 +29,7 @@ use Yii;
  * @property int $correspondence_in_large_letters
  *
  */
-class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEventTypeElement
+class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
@@ -49,7 +49,7 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
      */
     public function tableName()
     {
-        return 'et_ophciexamination_accessible_information_standards';
+        return 'et_ophciexamination_communication_preferences';
     }
 
     /**
