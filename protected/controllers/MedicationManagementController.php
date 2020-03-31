@@ -60,7 +60,7 @@ class MedicationManagementController extends BaseController
         $item['source_subtype'] = $medication->source_subtype;
         $item['frequency_id'] = (int) $set_item->default_frequency_id;
         $item['default_form'] = (int) ($set_item->default_form_id ? $set_item->default_form_id : $set_item->medication->default_form_id);
-        $item['dose'] = $set_item->default_dose;
+        $item['dose'] = $set_item->default_dose ? $set_item->default_dose: $set_item->medication->default_dose;
         $item['dose_unit_term'] = $set_item->default_dose_unit_term ? $set_item->default_dose_unit_term : $set_item->medication->default_dose_unit_term;
         $item['route_id'] = (int) ($set_item->default_route_id ? $set_item->default_route_id : $set_item->medication->default_route_id);
         $item['duration_id'] = (int) $set_item->default_duration_id;
@@ -152,13 +152,13 @@ class MedicationManagementController extends BaseController
         if ($defaults) {
             $r->frequency_id = $defaults->default_frequency_id;
             $r->route_id = $defaults->default_route_id ? $defaults->default_route_id : $medication->default_route_id;
-            $r->dose = $defaults->default_dose;
+            $r->dose = $defaults->default_dose ? $defaults->default_dose : $medication->default_dose;
             $r->dose_unit_term = $defaults->default_dose_unit_term ? $defaults->default_dose_unit_term : $medication->default_dose_unit_term;
             $r->form_id = $defaults->default_form_id ? $defaults->default_form_id : $medication->default_form_id;
         } else {
             $r->frequency_id = null;
             $r->route_id = $medication->default_route_id;
-            $r->dose = 1;
+            $r->dose = $medication->default_dose;
             $r->dose_unit_term = $medication->default_dose_unit_term;
             $r->form_id = $medication->default_form_id;
         }
