@@ -3,7 +3,7 @@
 class m200331_013628_create_date_diff_function extends OEMigration
 {
     // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
+    public function up()
     {
         $this->execute("
 		CREATE FUNCTION date_diff(unit VARCHAR(10) , start_date DATE, end_date DATE)
@@ -33,7 +33,7 @@ class m200331_013628_create_date_diff_function extends OEMigration
 		");
     }
 
-    public function safeDown()
+    public function down()
     {
         $this->execute("DROP FUNCTION date_diff");
     }
