@@ -74,6 +74,11 @@ $dispense_condition_options = array(
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
             ?>
             <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
+                    <?php
+                    $med_dispense_locations = isset($med->defaultDispenseCondition) ?
+                        \CHtml::listData($med->defaultDispenseCondition->locations, 'id', 'name') :
+                        $default_dispense_location;
+                    ?>
                     <tr class="js-row-of-<?=$med->id?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                         <td>
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
@@ -161,7 +166,7 @@ $dispense_condition_options = array(
                             <?= \CHtml::activeDropDownList(
                                 $med,
                                 'default_dispense_location_id',
-                                $default_dispense_location,
+                                $med_dispense_locations,
                                 [
                                     'disabled' => !$is_prescription_set,
                                     'class' => 'js-input cols-full dispense-location',
