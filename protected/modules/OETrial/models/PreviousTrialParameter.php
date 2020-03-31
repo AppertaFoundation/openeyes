@@ -198,7 +198,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     /**
      * Generate a SQL fragment representing the subquery of a FROM condition.
      * @return mixed The constructed query string.
-     * @throws CHttpException
      */
     public function query()
     {
@@ -231,18 +230,15 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         ) {
             $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
         }
-        switch ($this->operation) {
-            case 'IN':
-                $query = "SELECT p.id 
+        if ($this->operation === 'IN') {
+            $query = "SELECT p.id 
                         FROM patient p 
                         $joinCondition trial_patient t_p 
                           ON t_p.patient_id = p.id 
                         $joinCondition trial t
                           ON t.id = t_p.trial_id
                         WHERE $condition";
-
-                break;
-            case 'NOT IN':
+        } else {
                 $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id 
                             FROM patient p 
                             $joinCondition trial_patient t_p 
@@ -250,10 +246,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                             $joinCondition trial t
                               ON t.id = t_p.trial_id
                             WHERE $condition)";
-                break;
-            default:
-                throw new CHttpException(400, 'Invalid operator specified.');
-                break;
         }
 
         return $query;

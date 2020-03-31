@@ -65,8 +65,8 @@ WHERE p1.id NOT IN (
 
     public function testGetCommonItemsForTerm()
     {
-        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('penicillin'));
-        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('Penicillin'));
+        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy'));
+        $this->assertCount(1, PatientAllergyParameter::getCommonItemsForTerm('allergy 1'));
     }
 
     /**
@@ -93,7 +93,7 @@ WHERE p1.id NOT IN (
     {
         $this->parameter->operation =  $operation;
         $this->parameter->value = 1;
-        $this->assertEquals("allergy: {$this->parameter->operation} \"Penicillin\"", $this->parameter->getAuditData());
+        $this->assertEquals("allergy: {$this->parameter->operation} \"allergy 1\"", $this->parameter->getAuditData());
     }
 
     public function testBindValues()
