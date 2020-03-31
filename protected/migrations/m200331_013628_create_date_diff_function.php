@@ -2,10 +2,10 @@
 
 class m200331_013628_create_date_diff_function extends OEMigration
 {
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-		$this->execute("
+    // Use safeUp/safeDown to do migration with transaction
+    public function safeUp()
+    {
+        $this->execute("
 		CREATE FUNCTION date_diff(unit VARCHAR(10) , start_date DATE, end_date DATE)
 			RETURNS DOUBLE
 			DETERMINISTIC
@@ -31,10 +31,10 @@ class m200331_013628_create_date_diff_function extends OEMigration
 				RETURN ret;
 			END;
 		");
-	}
+    }
 
-	public function safeDown()
-	{
-		$this->execute("DROP FUNCTION date_diff");
-	}
+    public function safeDown()
+    {
+        $this->execute("DROP FUNCTION date_diff");
+    }
 }

@@ -75,7 +75,7 @@ class NodAuditReport extends Report implements ReportInterface
     {
         $unit = 'MONTH';
         $num = $this->months;
-        if($this->months < 1){
+        if ($this->months < 1) {
             $unit = 'WEEK';
             $num = $this->months * 4;
         }
