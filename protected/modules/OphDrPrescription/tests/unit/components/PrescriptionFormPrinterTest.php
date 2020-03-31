@@ -9,7 +9,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         'sites' => Site::class,
         'ophdrprescription_items' => OphDrPrescription_Item::class,
         'ophdrprescription_item_tapers' => OphDrPrescription_ItemTaper::class,
-        'drug_duration' => DrugDuration::class,
+        'drug_duration' => MedicationDuration::class,
         'drug_route' => DrugRoute::class,
         'drug_frequency' => DrugFrequency::class,
     );

@@ -76,7 +76,7 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
             $drug_label = $item->medication->label;
             $dose = 'Dose: ' . (is_numeric($item->dose) ? "{$item->dose} {$item->dose_unit_term}" : $item->dose)
                 . ', ' . $item->route->term . ($item->medicationLaterality ? ' (' . $item->medicationLaterality->name . ')' : null);
-            $frequency = "Frequency: {$item->frequency->term} for {$item->drugDuration->name}";
+            $frequency = "Frequency: {$item->frequency->term} for {$item->medicationDuration->name}";
 
             $item->fpTenLinesUsed();
             $actual = $item->getAttrLength('item_drug');
