@@ -1007,7 +1007,7 @@ class AnalyticsController extends BaseController
                 YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
                 YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age,
                 p.gender as gender,
-                proc.term as procedures,
+                GROUP_CONCAT(proc.term separator \', \') as procedures,
                 patient_diagnoses.diagnoses
             ')
             ->from('et_ophtroperationnote_cataract eoc')
@@ -1035,7 +1035,9 @@ class AnalyticsController extends BaseController
                     GROUP BY sd.patient_id
                  ) t2
                 GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
-            );
+            )
+            ->group('p.id, e.id, eye.name')
+            ->order('name, e.event_date DESC');
         if (isset($params['ids'])&&count($params['ids'] > 0)) {
             $params['ids'] = json_decode($params['ids']);
             $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
