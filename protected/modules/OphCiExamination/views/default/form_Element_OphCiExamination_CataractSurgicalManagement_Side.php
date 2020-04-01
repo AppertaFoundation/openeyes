@@ -98,13 +98,14 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
               'class' => 'fixed-width-small'
             ]
           )?>
-          <td><span style="float:right;">Refractive target:</span></td>
-          <td id="<?= $side . '_refraction_entry' ?>"><?= $refractive_target ?></td>
+          <td style="<?= $element->{$side . '_correction_discussed'} == '1' ? '' : 'display:none'?>">
+              <span style="float:right;">Refractive target: <span id="<?= $side . '_refraction_entry' ?>" ><?= $refractive_target ?></span></span>
+          </td>
           <!-- CORRECTION DISCUSSED -->
             <?=\CHtml::activeHiddenField($element, $side . '_correction_discussed', [
             'id' => $side . '_discussed_hidden',
           ])?>
-          <td id="<?= $side . '_discussed_entry' ?>"><?= $discussed ?></td>
+          <td style="float:right;" id="<?= $side . '_discussed_entry' ?>"><?= $discussed ?></td>
         </tr>
       </tbody>
     </table>

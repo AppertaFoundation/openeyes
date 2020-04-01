@@ -40,11 +40,11 @@
           </td>
             <?php if ($element->{$side . '_correction_discussed'} == '1') : ?>
               <td class="large-text">
+                  <small class="fade">Refractive target</small>
                 <?php $refractive_target_attribute = $side . '_target_postop_refraction'; ?>
                 <?= $element->$refractive_target_attribute
                   ? $element->$refractive_target_attribute . ' D'
-                  : '<span class="none">Not recorded</span>' ?> 
-                <small class="fade">Refractive target</small>
+                  : '<span class="none">Not recorded</span>' ?>
             <?php else : ?>
               <td>
                 <?= $element->getCorrectionDiscussed($side) ?>
