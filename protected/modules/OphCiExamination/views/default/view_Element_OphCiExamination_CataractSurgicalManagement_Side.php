@@ -32,7 +32,7 @@
         </tr>
         <tr>
           <?php $primary_reason_attribute = $side . 'ReasonForSurgery'; ?>
-          <td class="priority-text"><?= $element->$primary_reason_attribute ? $element->$primary_reason_attribute->name : '<span class="non">N/A</span>' ?></td>
+          <td colspan="2" class="priority-text"><?= $element->$primary_reason_attribute ? $element->$primary_reason_attribute->name : '<span class="non">N/A</span>' ?></td>
         </tr>
         <tr>
           <td>

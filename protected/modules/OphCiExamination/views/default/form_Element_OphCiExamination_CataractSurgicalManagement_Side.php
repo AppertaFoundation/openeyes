@@ -108,21 +108,23 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
         </tr>
       </tbody>
     </table>
-    <div id="csm-<?= $side ?>-comments" class="cols-full comment-group flex-layout flex-left js-comment-container"
-      style="<?= !$element->{$side . '_notes'} ? 'display: none;' : '' ?>"
-      data-comment-button="#csm-<?= $side ?>-comment-button"
-    >
-        <?=\CHtml::activeTextArea($element, $side . '_notes',
-        [
-          'rows' => 1,
-          'placeholder' => $element->getAttributeLabel($side . '_notes'),
-          'class' => 'cols-full js-comment-field',
-          'style' => 'overflow-wrap: break-word; height: 24px;',
-        ]
-      )?>
-      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-    </div>
     <div class="flex-layout flex-right">
+        <div class="cols-10">
+            <div id="csm-<?= $side ?>-comments" class="cols-full comment-group flex-layout flex-left js-comment-container"
+                 style="<?= !$element->{$side . '_notes'} ? 'display: none;' : '' ?>"
+                 data-comment-button="#csm-<?= $side ?>-comment-button"
+            >
+                <?=\CHtml::activeTextArea($element, $side . '_notes',
+                    [
+                        'rows' => 1,
+                        'placeholder' => $element->getAttributeLabel($side . '_notes'),
+                        'class' => 'cols-full js-comment-field',
+                        'style' => 'overflow-wrap: break-word; height: 24px;',
+                    ]
+                )?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
+        </div>
       <div class="add-data-action flex-item-bottom">
         <button id="csm-<?= $side ?>-comment-button"
                 class="button js-add-comments"
