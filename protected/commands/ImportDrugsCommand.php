@@ -989,14 +989,11 @@ EOD;
         }
 
         $cmd = "UPDATE medication 
-                SET default_dose = 1 
-                WHERE id IN 
-                (SELECT m.id 
-                    FROM medication m 
-                    WHERE (m.preferred_term LIKE '%eye drop%'
-                    OR default_form_id = (SELECT id 
-                        FROM medication_form 
-                        WHERE term = 'Eye drops')) AND m.default_dose IS NULL
+        SET default_dose = 1 
+        WHERE (preferred_term LIKE '%eye drop%'
+            OR default_form_id = (SELECT id 
+                FROM medication_form 
+                WHERE term = 'Eye drops')) AND default_dose IS NULL
                         )";
 
         Yii::app()->db->createCommand($cmd)->execute();
