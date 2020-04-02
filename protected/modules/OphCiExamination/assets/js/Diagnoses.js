@@ -171,9 +171,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(this).closest('.condition-secondary-to-wrapper').hide();
         });
 
-        eye_selector = new OpenEyes.UI.EyeSelector({
-            element: controller.$element.closest('section')
-        });
     };
 
     DiagnosesController.prototype.popupSearch = function () {
