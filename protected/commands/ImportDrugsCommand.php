@@ -898,11 +898,16 @@ EOD;
         @unlink('/tmp/ref_medication_set.csv');
 
         $cmd = "UPDATE medication
-                SET default_dose_unit_term = 'drop(s)'
+                SET default_dose_unit_term = 'drop'
                 WHERE id IN 
                 (SELECT m.id
 	                FROM medication m  
 	                WHERE m.preferred_term like '%eye drop%')";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        /*------------------------------- Rename 'Ocular' to 'Eye' ----------------------------------------------*/
+        $cmd = "UPDATE medication_route SET term = 'Eye' WHERE term='Ocular' AND source_type = 'DM+D'";
 
         Yii::app()->db->createCommand($cmd)->execute();
 
@@ -946,7 +951,9 @@ EOD;
 
         $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
-            $cmd .= "(BINARY description = \"$uom\") OR ";
+            if ($uom != "Drop"){ // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
+                $cmd .= "(BINARY description = \"$uom\") OR ";
+            }
         }
         if (count($this->uom_to_forms_mapping) > 0) {
             $cmd = substr($cmd, 0, -4);
