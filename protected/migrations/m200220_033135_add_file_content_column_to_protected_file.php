@@ -8,8 +8,8 @@ class m200220_033135_add_file_content_column_to_protected_file extends OEMigrati
      */
     public function safeUp()
     {
-        $this->addOEColumn('protected_file', 'file_content', 'blob');
-        $this->addOEColumn('protected_file', 'thumbnail', 'blob');
+        $this->addOEColumn('protected_file', 'file_content', 'blob', true);
+        $this->addOEColumn('protected_file', 'thumbnail', 'blob', true);
 
         $this->createOETable(
             'protected_file_thumbnail',
@@ -61,7 +61,7 @@ class m200220_033135_add_file_content_column_to_protected_file extends OEMigrati
             'protected_file_thumbnail'
         );
         $this->dropOETable('protected_file_thumbnail', true);
-        $this->dropOEColumn('protected_file', 'file_content');
-        $this->dropOEColumn('protected_file', 'thumbnail');
+        $this->dropOEColumn('protected_file', 'file_content', true);
+        $this->dropOEColumn('protected_file', 'thumbnail', true);
     }
 }

@@ -363,7 +363,7 @@ EOD;
         $cellsString = '';
         foreach ($cells as $cellName => $cellType) {
             if (in_array($cellName, $this->textCells)) {
-                $cellsString .= "`$cellName` " . 'TEXT,';
+                $cellsString .= "`$cellName` " . 'VARCHAR(300),';
             } else {
                 $cellsString .= "`$cellName` " . $this->getSqlColumnType($cellType) . ',';
             }
