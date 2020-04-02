@@ -68,6 +68,15 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $file->generateUID();
 
+        if (!file_exists($file->getPath())) {
+            if (!file_exists($file->getFilePath())) {
+                if (!mkdir($file->getFilePath(), 0777, true)) {
+                    throw new RuntimeException(sprintf('Directory "%s" was not created', $file->getFilePath()));
+                }
+            }
+            file_put_contents($file->getPath(), '');
+        }
+
         return $file;
     }
 
