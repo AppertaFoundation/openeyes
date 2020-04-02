@@ -214,7 +214,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     let digit0 = refractiveTargetLabel.charAt(index++);
                     let digit1 = refractiveTargetLabel.charAt(index++);
                     let decimal = refractiveTargetLabel.substr(index,3);
-
                     $('[data-id="'+side+'_discussed"] .selected').click();
                     let refractive_category = $('#'+side+'_refraction_category_hidden').val();
                     $('[data-conditional-id="'+side+'-refractive-category-'+refractive_category+'"]').click();
@@ -224,7 +223,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                             $adderObject.find("[data-type='refractive_emmetropia']").addClass('selected');
                             break;
                         case '1':
-                            $adderObject.find("[data-type='refractive_myopic'][data-value='"+sign+digit1+decimal+"']").addClass('selected');
+                            let value = refractiveTargetLabel.replace('D','');
+                            let $refractiveValue =  $adderObject.find("[data-type='refractive_myopic'][data-value='"+value+"']");
+                            if(!$refractiveValue.length) {
+                                $refractiveValue =   $adderObject.find("[data-type='refractive_myopic'][data-value='"+sign+digit1+decimal+"']");
+                            }
+                            $refractiveValue.addClass('selected');
                             break;
                         case '2':
                             $adderObject.find("[data-addition='"+sign+"']").addClass('selected');

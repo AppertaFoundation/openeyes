@@ -113,6 +113,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             });
         }
 
+        if ($row.is('tr:first-child')) {
+            $(this.entry_table_selector + ' tr:nth-child(2) td:first-child').html('');
+        }
+
         $row.remove();
     };
 
