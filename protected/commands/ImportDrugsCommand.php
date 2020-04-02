@@ -898,11 +898,8 @@ EOD;
         @unlink('/tmp/ref_medication_set.csv');
 
         $cmd = "UPDATE medication
-                SET default_dose_unit_term = 'drop'
-                WHERE id IN 
-                (SELECT m.id
-	                FROM medication m  
-	                WHERE m.preferred_term like '%eye drop%')";
+                SET default_dose_unit_term = 'drop' 
+	            WHERE m.preferred_term like '%eye drop%'";
 
         Yii::app()->db->createCommand($cmd)->execute();
 
