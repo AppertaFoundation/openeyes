@@ -151,7 +151,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e2.event_date as other_date')
                     ->join('et_ophtroperationnote_procedurelist eop', 'eoc.event_id = eop.event_id')
                     ->join('et_ophciexamination_cataractsurgicalmanagement eocsc', 'eocsc.event_id = e2.id')
-                    ->where('IF(eop.eye_id = 1, eocsc.left_guarded_prognosis, eocsc.right_guarded_prognosis) = 1')
+                    ->andWhere('IF(eop.eye_id = 1, eocsc.left_guarded_prognosis, eocsc.right_guarded_prognosis) = 1')
                     ->group('e2.id, e1.id');
                 break;
             case 'E/I':
