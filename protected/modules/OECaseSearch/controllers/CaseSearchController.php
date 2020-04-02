@@ -133,9 +133,7 @@ class CaseSearchController extends BaseModuleController
             $variable_names = explode(',', $_POST['variable_list']);
             if ($variable_names[0] != '') {
                 foreach ($variable_names as $variable_name) {
-                    $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name];
-                    $variable = new $class_name($ids);
-                    $variables[] = $variable;
+                    $variables[] = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name], $ids);
                 }
                 if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
                     if ($_POST['from_date']) {
@@ -192,6 +190,28 @@ class CaseSearchController extends BaseModuleController
             'to_date' => $to ? $to->format('Y-m-d') : null,
             'show_all_dates' => $show_all_dates,
         ));
+    }
+
+    /**
+     * @param $var string|string[]
+     * @param $ids int[]|null
+     * @return CaseSearchVariable
+     */
+    protected function getVariableInstance($var, $ids = null)
+    {
+        $variable = null;
+
+        if (is_array($var)) {
+            $variable = new $var['class']($ids);
+            foreach ($var as $k => $v) {
+                if ($k !== 'class') {
+                    $variable->$k = $v;
+                }
+            }
+            return $variable;
+        } else {
+            return new $var($ids);
+        }
     }
 
     /**
@@ -292,19 +312,14 @@ class CaseSearchController extends BaseModuleController
 
         if ($preview) {
             foreach (explode(',', $search->variables) as $var) {
-                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
-                $variable = new $class_name(null);
+                $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var]);
                 echo '<tr class="search-var">
                 <td>' . $variable->label . '</td>
                 </tr>';
             }
         } else {
             foreach (explode(',', $search->variables) as $var) {
-                $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
-                /**
-                 * @var $variable CaseSearchVariable
-                 */
-                $variable = new $class_name(null);
+                $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var]);
                 echo '<tr class="search-var" data-id="' . $variable->field_name . '">
                 <td>' . $variable->label . '</td>
                 <td><i class="oe-i remove-circle small"></i></td>
@@ -491,8 +506,8 @@ class CaseSearchController extends BaseModuleController
         $this->populateParams();
         $ids = array_column(Yii::app()->searchProvider->search($this->parameters), 'id');
 
-        $class_name = Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var];
-        $variable = new $class_name($ids);
+        $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var], $ids);
+
         if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
             if ($_POST['from_date']) {
                 $start_date = new DateTime($_POST['from_date']);

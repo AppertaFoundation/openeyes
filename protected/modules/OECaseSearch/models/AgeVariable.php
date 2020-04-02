@@ -10,7 +10,7 @@ class AgeVariable extends CaseSearchVariable implements DBProviderInterface
         parent::__construct($id_list);
         $this->field_name = 'age';
         $this->label = 'Age';
-        $this->unit = 'y';
+        $this->x_label = 'Age (y)';
     }
 
     public function query()

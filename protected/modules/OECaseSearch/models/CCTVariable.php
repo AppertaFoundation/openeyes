@@ -6,7 +6,7 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
         parent::__construct($id_list);
         $this->field_name = 'cct';
         $this->label = 'CCT';
-        $this->unit = 'microns';
+        $this->x_label = 'CCT (microns)';
         $this->eye_cardinality = true;
     }
 

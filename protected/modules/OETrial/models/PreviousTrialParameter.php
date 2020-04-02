@@ -91,7 +91,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     array_map(
                         static function ($item, $key) {
                             $conditional_id = '';
-                            Yii::log($key);
                             if ($key == TrialType::model()->findByAttributes(array('code' => 'INTERVENTION'))->id) {
                                 $conditional_id = 'trial-type-intervention-trial,trial-type-treatment-type';
                             } elseif ($key == TrialType::model()->findByAttributes(array('code' => 'NON_INTERVENTION'))->id) {

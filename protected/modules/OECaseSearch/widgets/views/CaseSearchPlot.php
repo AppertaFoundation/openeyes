@@ -12,7 +12,7 @@
     <button data-selector="<?= $this->list_selector ?>">View as list</button>
 </div>
 <?php foreach ($this->variables as $id => $variable) {
-    $x = array_column($this->variable_data[$variable->field_name], $variable->field_name);
+    $x = array_column($this->variable_data[$variable->field_name], $variable->getPrimaryDataPointName());
     $y = array_column($this->variable_data[$variable->field_name], 'frequency');
     $customdata = array_column($this->variable_data[$variable->field_name], 'patient_id_list');
 
@@ -34,6 +34,6 @@
         data-min-value="<?= $variable->min_value ?>"
         data-var-name="<?= $variable->field_name ?>"
         data-var-label="<?= $variable->label ?>"
-        data-var-unit="<?= $variable->unit ? " ({$variable->unit})" : ''?>"></div>
+        data-var-unit="<?= $variable->x_label ?>"></div>
     <!-- END PLOT CONTAINER -->
 <?php } ?>

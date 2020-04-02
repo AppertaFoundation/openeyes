@@ -12,8 +12,9 @@ abstract class CaseSearchVariable
 {
     public $field_name;
     public $label;
-    public $unit;
+    public $x_label;
     public $id_list;
+    public $query_flags = array(); // Extra flags to use for determining how to retrieve the data.
     public $csv_mode = null; // Can be either 'BASIC' or 'ADVANCED'
     public $eye_cardinality = false;
     public $bin_size = 10;
@@ -22,5 +23,10 @@ abstract class CaseSearchVariable
     public function __construct($id_list)
     {
         $this->id_list = $id_list;
+    }
+
+    public function getPrimaryDataPointName()
+    {
+        return $this->field_name;
     }
 }

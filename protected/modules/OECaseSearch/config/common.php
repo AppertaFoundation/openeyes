@@ -40,7 +40,18 @@ return array(
             'variables' => array(
                 'OECaseSearch' => array(
                     'age' => 'AgeVariable',
-                    'iop' => 'IOPVariable',
+                    'iop_first' => array(
+                        'class' => 'IOPVariable',
+                        'field_name' => 'iop_first',
+                        'label' => 'IOP (first)',
+                        'query_flags' => array('first'),
+                    ),
+                    'iop_last' => array(
+                        'class' => 'IOPVariable',
+                        'field_name' => 'iop_last',
+                        'label' => 'IOP (last)',
+                        'query_flags' => array('last'),
+                    ),
                     'va' => 'VAVariable',
                     'cct' => 'CCTVariable',
                 ),

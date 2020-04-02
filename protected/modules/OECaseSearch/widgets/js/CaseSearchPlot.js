@@ -39,7 +39,7 @@ $(document).ready(function() {
             theme: theme,
             plotTitle: $(item).data('var-label') + ' distribution N = ' + $(item).data('total'),
             legend: false,
-            titleX: $(item).data('var-label') + $(item).data('var-unit'),
+            titleX: $(item).data('var-unit'),
             titleY: false,
 
         });

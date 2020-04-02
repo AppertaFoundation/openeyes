@@ -66,7 +66,15 @@ class OECaseSearchModule extends BaseModule
                 /**
                  * @var $obj CaseSearchVariable
                  */
-                $obj = new $variable(null);
+                $obj = null;
+                if (is_array($variable)) {
+                    $obj = new $variable['class'](null);
+                    foreach ($variable as $k => $v) {
+                        $obj->$k = $v;
+                    }
+                } else {
+                    $obj = new $variable(null);
+                }
                 $keys[] = array('type' => $variable, 'label' => $obj->label, 'id' => $obj->field_name);
             }
         }
