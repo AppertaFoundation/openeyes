@@ -992,8 +992,7 @@ EOD;
         WHERE (preferred_term LIKE '%eye drop%'
             OR default_form_id = (SELECT id 
                 FROM medication_form 
-                WHERE term = 'Eye drops')) AND default_dose IS NULL
-                        )";
+                WHERE term = 'Eye drops')) AND default_dose IS NULL";
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
