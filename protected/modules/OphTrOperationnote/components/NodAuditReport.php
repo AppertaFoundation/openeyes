@@ -104,9 +104,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eor.id as refraction_element_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
+                    ->join('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
                     ->andWhere("ABS(date_diff('$unit',e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
-                    ->group('e2.id');
+                    ->group('e2.id, e1.id');
                 break;
             //biometry
             case 'BM':
