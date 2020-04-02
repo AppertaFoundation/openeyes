@@ -15,7 +15,9 @@ foreach (($cataract ? $data['event_list'] : $data['patient_list']) as $item) {
             style="vertical-align: center;"><?= $item['name']; ?></td>
         <td style="vertical-align: center;" class="js-csv-dob">
             <span class="oe-date">
-                <?php if($dob = strtotime($item['dob']) !== false){ ?>
+                <?php if(strtotime($item['dob']) !== false){ 
+                    $dob = strtotime($item['dob']);
+                ?>
                     <span class="day"><?=date('j', $dob)?></span>
                     <span class="mth"><?=date('M', $dob)?></span>
                     <span class="yr"><?=date('Y', $dob)?></span>
