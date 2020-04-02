@@ -114,11 +114,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eoc.event_id as cataract_event_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophinbiometry_measurement eom', 'eom.event_id = e2.id')
-                    ->leftJoin('ophinbiometry_imported_events oie', 'oie.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_selection eos', 'eos.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_calculation eoc2', 'eoc2.id = eos.formula_id_left')
-                    ->andWhere('eom.deleted = 0');
+                    ->join('et_ophinbiometry_measurement eom', 'eom.event_id = e2.id')
+                    ->andWhere('eom.deleted = 0')
+                    ->group('e2.id, e1.id');
                 break;
             case 'CT':
                 $this->command->select('eoc.id as cataract_element_id, 
