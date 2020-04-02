@@ -453,6 +453,9 @@ class DefaultController extends BaseEventTypeController
                     continue;
                 }
 
+                // Always write the file contents to the file, even if it already exists. This will ensure the contents are always up-to-date.
+                file_put_contents($document->getPath(), $document->file_content);
+
                 switch ($document->mimetype) {
                     case 'application/pdf':
                         $this->createPdfPreviewImages($document->getPath(), $eye);
