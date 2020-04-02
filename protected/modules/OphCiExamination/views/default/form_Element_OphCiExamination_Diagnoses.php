@@ -21,12 +21,11 @@
 <?php
 $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js',
     false, -1);
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
 
 $assetManager = Yii::app()->getAssetManager();
 $widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js', CClientScript::POS_END);
-
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
 
 $firm = Firm::model()->with(array(
     'serviceSubspecialtyAssignment' => array('subspecialty'),
