@@ -897,6 +897,15 @@ EOD;
 
         @unlink('/tmp/ref_medication_set.csv');
 
+        $cmd = "UPDATE medication
+                SET default_dose_unit_term = 'drop(s)'
+                WHERE id IN 
+                (SELECT m.id
+	                FROM medication m  
+	                WHERE m.preferred_term like '%eye drop%')";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
         echo "Data imported to OE." . PHP_EOL;
     }
 
@@ -975,6 +984,19 @@ EOD;
                 WHERE ma.name = \"UNIT_OF_MEASURE\"
             ) AS uom_table ON med.id = uom_table.med_id
             SET med.default_dose_unit_term = uom_table.UOM";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        $cmd = "UPDATE medication 
+                SET default_dose = 1 
+                WHERE id IN 
+                (SELECT m.id 
+                    FROM medication m 
+                    WHERE (m.preferred_term LIKE '%eye drop%'
+                    OR default_form_id = (SELECT id 
+                        FROM medication_form 
+                        WHERE term = 'Eye drops')) AND m.default_dose IS NULL
+                        )";
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
