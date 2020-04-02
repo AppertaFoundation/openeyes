@@ -267,8 +267,8 @@
             $('<div class="lists-layout">' +
                 '<div class="list-wrap ">' +
                 '<ul class="add-options cols-full ">' +
-                '<li class="js-searchfilter-check" data-label="Include branded drugs in search results">' +
-                '<span class="fixed-width ">Include branded drugs in search results</span>' +
+                '<li class="js-searchfilter-check" data-label="Include brand names">' +
+                '<span class="fixed-width ">Include brand names</span>' +
                 '</li></ul></div></div>').appendTo(this.searchOptionsWrapper);
 
 

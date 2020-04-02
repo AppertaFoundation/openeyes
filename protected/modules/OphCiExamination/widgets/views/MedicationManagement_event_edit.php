@@ -446,7 +446,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             enableCustomSearchEntries: true,
             searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
             booleanSearchFilterEnabled: true,
-            booleanSearchFilterLabel: 'Include branded',
+            booleanSearchFilterLabel: 'Include brand names',
             booleanSearchFilterURLparam: 'include_branded'
         });
 
