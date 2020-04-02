@@ -14,8 +14,18 @@ foreach (($cataract ? $data['event_list'] : $data['patient_list']) as $item) {
         <td class="drill_down_patient_list js-csv-data js-csv-nhs_num"
             style="vertical-align: center;"><?= $item['nhs_num'] ?></td>
         <td class="drill_down_patient_list js-csv-name"
-            style="vertical-align: center;"><?= $item['name'] ?></td>
-        <td style="vertical-align: center;" class="js-csv-dob"><?= $item['dob'] ?></td>
+            style="vertical-align: center;"><?= $item['name']; ?></td>
+        <td style="vertical-align: center;" class="js-csv-dob">
+            <span class="oe-date">
+                <?php if($dob = strtotime($item['dob']) !== false){ ?>
+                    <span class="day"><?=date('j', $dob)?></span>
+                    <span class="mth"><?=date('M', $dob)?></span>
+                    <span class="yr"><?=date('Y', $dob)?></span>
+                <?php } else {?>
+                    <?=$item['dob']?>
+                <?php }?>
+            </span>
+        </td>
         <td class="js-anonymise js-csv-data js-csv-age"
             style="vertical-align: center;"><?= $item['age'] ?></td>
         <td class="js-anonymise js-csv-gender"
