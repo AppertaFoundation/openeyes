@@ -21,9 +21,9 @@ var analytics_drill_down = (function () {
 
 	var request_url = '/analytics/getdrilldown';
 	function patientDetails() {
-		$('#js-analytics-spinner').show();
 		var link = $(this).data('link');
-		window.location.href = link;
+		$(this).css('background-color', '#28303b');
+		window.open(link, '_blank');
 	}
 
 	function getPatient() {
