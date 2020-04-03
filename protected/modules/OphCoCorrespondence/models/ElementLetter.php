@@ -793,7 +793,7 @@ class ElementLetter extends BaseEventTypeElement
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.
-        return $this->purifyContent(preg_replace("/\n(?=<p><\/p>)/", "<br/>", $this->body));
+        return $this->purifyContent(preg_replace("/<p>(<?((span style=\"\D{0,40};\")|(em)|(strong))?>){0,3}(<\/?((span)|(em)|(strong))?>){0,3}<\/p>/", "<br/>", $this->body));
     }
 
     /**
