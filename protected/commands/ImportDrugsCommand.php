@@ -899,7 +899,7 @@ EOD;
 
         $cmd = "UPDATE medication
                 SET default_dose_unit_term = 'drop' 
-	            WHERE m.preferred_term like '%eye drop%'";
+	            WHERE preferred_term like '%eye drop%'";
 
         Yii::app()->db->createCommand($cmd)->execute();
 
