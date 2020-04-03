@@ -948,7 +948,7 @@ EOD;
 
         $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
-            if ($uom != "Drop"){ // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
+            if ($uom != "Drop") { // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
                 $cmd .= "(BINARY description = \"$uom\") OR ";
             }
         }
