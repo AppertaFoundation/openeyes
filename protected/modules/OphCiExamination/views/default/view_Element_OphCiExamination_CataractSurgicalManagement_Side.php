@@ -55,8 +55,10 @@
     </table>
     <hr class="divider">
     <div>
+        <?php if ($element->{$side . '_notes'}) { ?>
         <i class="oe-i comments-who medium pad-right js-has-tooltip" data-tooltip-content="<?= $element->usermodified ? $element->usermodified->fullName : '' ?>"></i>
         <span class="user-comment"><?= $element->{$side . '_notes'} ?></span>
+        <?php } ?>
     </div>
   </div>
   <?php else : ?>
