@@ -61,20 +61,10 @@ class MedicationInfoBox extends \BaseCWidget
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        if ($medication->isPreservativeFree()) {
-            $this->icon = 'info-blue';
-            $this->append_label[] = 'This drug is preservative free.';
-        }
-
         foreach ($medication->medicationSets as $sets) {
             if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
-                $this->icon = 'asterisk';
+                $this->icon = 'drug-rx';
                 $this->append_label[] = 'This drug is available in the hospital formulary.';
-
-                // when the drug is both in the formulary AND preservative free
-                if ($medication->isPreservativeFree()) {
-                    $this->icon = 'asterisk-blue';
-                }
 
                 break;
             }

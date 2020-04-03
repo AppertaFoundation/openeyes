@@ -323,7 +323,7 @@ foreach ($element->entries as $entry) {
             enableCustomSearchEntries: true,
             searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
             booleanSearchFilterEnabled: true,
-            booleanSearchFilterLabel: 'Include branded',
+            booleanSearchFilterLabel: 'Include brand names',
             booleanSearchFilterURLparam: 'include_branded'
         });
 

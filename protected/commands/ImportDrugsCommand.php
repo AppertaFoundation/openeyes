@@ -898,11 +898,13 @@ EOD;
         @unlink('/tmp/ref_medication_set.csv');
 
         $cmd = "UPDATE medication
-                SET default_dose_unit_term = 'drop(s)'
-                WHERE id IN 
-                (SELECT m.id
-	                FROM medication m  
-	                WHERE m.preferred_term like '%eye drop%')";
+                SET default_dose_unit_term = 'drop' 
+	            WHERE m.preferred_term like '%eye drop%'";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        /*------------------------------- Rename 'Ocular' to 'Eye' ----------------------------------------------*/
+        $cmd = "UPDATE medication_route SET term = 'Eye' WHERE term='Ocular' AND source_type = 'DM+D'";
 
         Yii::app()->db->createCommand($cmd)->execute();
 
@@ -946,7 +948,9 @@ EOD;
 
         $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
-            $cmd .= "(BINARY description = \"$uom\") OR ";
+            if ($uom != "Drop"){ // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
+                $cmd .= "(BINARY description = \"$uom\") OR ";
+            }
         }
         if (count($this->uom_to_forms_mapping) > 0) {
             $cmd = substr($cmd, 0, -4);
@@ -988,15 +992,11 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
 
         $cmd = "UPDATE medication 
-                SET default_dose = 1 
-                WHERE id IN 
-                (SELECT m.id 
-                    FROM medication m 
-                    WHERE (m.preferred_term LIKE '%eye drop%'
-                    OR default_form_id = (SELECT id 
-                        FROM medication_form 
-                        WHERE term = 'Eye drops')) AND m.default_dose IS NULL
-                        )";
+        SET default_dose = 1 
+        WHERE (preferred_term LIKE '%eye drop%'
+            OR default_form_id = (SELECT id 
+                FROM medication_form 
+                WHERE term = 'Eye drops')) AND default_dose IS NULL";
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;
