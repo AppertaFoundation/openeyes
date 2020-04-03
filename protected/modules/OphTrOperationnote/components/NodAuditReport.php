@@ -18,7 +18,6 @@ class NodAuditReport extends Report implements ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 4);
-        $this->months = ceil($this->months*30);
 
         parent::__construct($app);
     }
@@ -74,6 +73,8 @@ class NodAuditReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo, $type)
     {
+        $unit = 'MONTH';
+        $num = $this->months;
         $this->command->reset();
         $this->command->from('et_ophtroperationnote_cataract eoc')
             ->join('event e1', 'eoc.event_id = e1.id')
@@ -93,8 +94,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days' => 180))
+                    ->andWhere("ABS(date_diff('MONTH',e2.event_date,e1.event_date)) <= :month", array(':month' => 6))
                     ->group('e2.id');
                 break;
             //refraction
@@ -105,8 +105,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
+                    ->andWhere("ABS(date_diff('$unit',e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
                     ->group('e2.id');
                 break;
             //biometry
@@ -119,8 +118,7 @@ class NodAuditReport extends Report implements ReportInterface
                     ->leftJoin('ophinbiometry_imported_events oie', 'oie.event_id = e2.id')
                     ->leftJoin('et_ophinbiometry_selection eos', 'eos.event_id = e2.id')
                     ->leftJoin('et_ophinbiometry_calculation eoc2', 'eoc2.id = eos.formula_id_left')
-                    ->andWhere('eom.deleted = 0')
-                    ->andWhere('DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date, e2.event_date)>0', array(':days'=> $this->months));
+                    ->andWhere('eom.deleted = 0');
                 break;
             case 'CT':
                 $this->command->select('eoc.id as cataract_element_id, 
@@ -138,7 +136,7 @@ class NodAuditReport extends Report implements ReportInterface
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
                     ->leftJoin('et_ophciexamination_postop_complications eopc', 'eopc.event_id = e2.id')
-                    ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0', array(':days'=>$this->months))
+                    ->andWhere("ABS(date_diff('$unit',e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
                     ->group('e2.id');
                 break;
             // indication for surgery
@@ -278,7 +276,7 @@ class NodAuditReport extends Report implements ReportInterface
                     if (!in_array($case['cataract_event_id'], $return_data['post-complete'])) {
                         array_push($return_data['post-complete'], $case['cataract_event_id']);
                     }
-                } elseif ($other_date < $cataract_date) {
+                } elseif ($other_date <= $cataract_date) {
                     if (!in_array($case['cataract_event_id'], $return_data['pre-complete'])) {
                         array_push($return_data['pre-complete'], $case['cataract_event_id']);
                     }
