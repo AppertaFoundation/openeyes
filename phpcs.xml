@@ -92,6 +92,10 @@
         <exclude-pattern>*/*Test.php</exclude-pattern>
     </rule>
 
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>*/*Test.php</exclude-pattern>
+    </rule>
+
     <rule ref="Generic.Files.LineLength">
         <properties>
             <property name="lineLimit" value="150" />
