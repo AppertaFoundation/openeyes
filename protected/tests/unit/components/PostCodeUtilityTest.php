@@ -21,6 +21,7 @@ class PostCodeUtilityTest extends CTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->postcodeUtility = new PostCodeUtility();
     }
 

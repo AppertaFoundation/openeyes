@@ -146,7 +146,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
 
-        if (array_key_exists($model, $_POST) || Yii::app()->params['institution_code'] !== 'CERA') {
+        if (array_key_exists($model, $_POST)) {
                     $va = $_POST[$model];
             foreach (array('left', 'right') as $side) {
                 if (!$this->eyeHasSide($side, $va['eye_id'])) {
@@ -420,18 +420,20 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                 }
 
                 return $text;
-            } elseif ($this->{$side.'_eye_missing'}) {
-                return $this->getAttributeLabel($side.'_eye_missing');
-            } else {
-                return 'not recorded';
             }
+
+            if ($this->{$side.'_eye_missing'}) {
+                return $this->getAttributeLabel($side.'_eye_missing');
+            }
+
+            return 'not recorded';
         }
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider
      */
     public function search()
     {
@@ -454,7 +456,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      *
      * @TODO: The units for correspondence should become a configuration variable
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return string
      */
@@ -465,7 +467,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             'name = ?',
             array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
         )) {
-            throw new Exception('Configured visual acuity correspondence unit was not found: '
+            throw new \Exception(
+                'Configured visual acuity correspondence unit was not found: '
                 .Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']
             );
         }
@@ -479,9 +482,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                 'va_unit' => $va_unit->name
             )
         );
-        $str_return = ob_get_contents();
-        ob_end_clean();
-        return $str_return;
+        return ob_get_clean();
     }
 
     /**

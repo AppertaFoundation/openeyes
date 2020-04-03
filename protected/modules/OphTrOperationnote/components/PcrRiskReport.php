@@ -109,12 +109,23 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return $this->command->queryAll();
     }
-    protected function querySurgeonData(){
+    protected function querySurgeonData()
+    {
         $this->command->reset();
         $this->command->select('user.id as id')
             ->from('user')
             ->where('is_surgeon = 1');
         return $this->command->queryAll();
+    }
+
+    protected function isCurrentUserServiceManager()
+    {
+                return $this->app->authManager->isAssigned('Service Manager', $this->app->user->id);
+    }
+
+    protected function isCurrentUserById($id)
+    {
+            return $this->app->user->id == $id;
     }
 
     /**
@@ -123,9 +134,12 @@ class PcrRiskReport extends Report implements ReportInterface
     public function dataSet()
     {
         $return_data = array();
+        $totalOperations = 0;
         if ($this->allSurgeons) {
+            $totalOperations = $this->getTotalOperations('all');
             $surgeon_id_list =  $this->querySurgeonData();
         } else {
+            $totalOperations = $this->getTotalOperations($this->surgeon);
             $surgeon_id_list = array(array('id' => $this->surgeon));
         }
         $surgeon_count = 1;
@@ -163,13 +177,13 @@ class PcrRiskReport extends Report implements ReportInterface
             if ($total > 1000) {
                 $this->totalOperations = $total;
             }
-            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+            if ($this->isCurrentUserServiceManager()) {
                 $surgeon_name = User::model()->findByPk($surgeon_id)->getFullName();
                 $surgeon_name = '<br><i>Surgeon: </i>'.$surgeon_name;
             } else {
                 $surgeon_name = '<br><i>Surgeon: </i>Surgeon '.$surgeon_count;
             }
-            if ($surgeon_id['id'] == Yii::app()->user->id) {
+            if ($this->isCurrentUserById($surgeon_id['id'])) {
                 $color = "#1f77b4";
             } else {
                 $color = 'red';
@@ -190,7 +204,8 @@ class PcrRiskReport extends Report implements ReportInterface
      * @return string
      */
 
-    public function tracesJson(){
+    public function tracesJson()
+    {
         $dataset =$this->dataSet();
         $current_surgeon_data = array();
         $other_surgeons_data = array();
@@ -207,18 +222,18 @@ class PcrRiskReport extends Report implements ReportInterface
         'mode'=>'markers',
         'type' => 'scatter',
         'marker' => array(
-            'color' => array_map(function ($item){
+            'color' => array_map(function ($item) {
                 return $item['color'];
             }, $current_surgeon_data),
         ),
-        'x' => array_map(function($item){
+        'x' => array_map(function ($item) {
             return $item['x'];
         }, $current_surgeon_data),
-        'y' => array_map(function($item){
+        'y' => array_map(function ($item) {
             return $item['y'];
         }, $current_surgeon_data),
-        'hovertext' => array_map(function($item){
-            return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+        'hovertext' => array_map(function ($item) {
+            return '<b>PCR Risk ' . $item['name'] . '</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
             . number_format($item['y'], 2).$item['surgeon'];
         }, $current_surgeon_data),
@@ -228,7 +243,7 @@ class PcrRiskReport extends Report implements ReportInterface
           'bordercolor' => '#1f77b4',
           'font' => array(
             'color' => '#000',
-          ),
+            ),
         ),
         );
         $trace2 = array(
@@ -236,10 +251,10 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'color' => 'red',
         ),
-        'x'=> array_map(function ($item){
+        'x'=> array_map(function ($item) {
             return $item[0];
         }, $this->upper98()),
-        'y' => array_map(function ($item){
+        'y' => array_map(function ($item) {
             return $item[1];
         }, $this->upper98()),
         'hoverinfo' => 'skip',
@@ -249,10 +264,10 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'color' => 'green',
         ),
-        'x'=> array_map(function ($item){
+        'x'=> array_map(function ($item) {
                     return $item[0];
         }, $this->upper95()),
-        'y' => array_map(function ($item){
+        'y' => array_map(function ($item) {
             return $item[1];
         }, $this->upper95()),
         'hoverinfo' => 'skip',
@@ -262,18 +277,18 @@ class PcrRiskReport extends Report implements ReportInterface
           'mode'=>'markers',
           'type' => 'scatter',
           'marker' => array(
-              'color' => array_map(function ($item){
+              'color' => array_map(function ($item) {
                   return $item['color'];
               }, $other_surgeons_data),
           ),
-          'x' => array_map(function($item){
+          'x' => array_map(function ($item) {
               return $item['x'];
           }, $other_surgeons_data),
-          'y' => array_map(function($item){
+          'y' => array_map(function ($item) {
               return $item['y'];
           }, $other_surgeons_data),
-          'hovertext' => array_map(function($item){
-              return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+          'hovertext' => array_map(function ($item) {
+              return '<b>PCR Risk ' . $item['name'] . '</b><br><i>Operations:</i>'
                   . $item['x'] . '<br><i>PCR Avg:</i>'
                   . number_format($item['y'], 2).$item['surgeon'];
           }, $other_surgeons_data),
@@ -324,18 +339,30 @@ class PcrRiskReport extends Report implements ReportInterface
      * @return string
      */
 
-    public function plotlyConfig(){
-        if ($this->mode == 0) {
-            $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
-            $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
-        }
+    public function plotlyConfig()
+    {
+        $totalOperations = 0;
         if ($this->allSurgeons) {
             $totalOperations = $this->getTotalOperations('all');
         } else {
             $totalOperations = $this->getTotalOperations($this->surgeon);
         }
-        $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '
-        .$totalOperations.'</sub>';
+        // closest allows hovering on any spots, not based on any axis
+        $this->plotlyConfig['hovermode'] = 'closest';
+        // different mode display different title
+        switch ($this->mode) {
+            case 0:
+                $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
+                $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
+                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+            case 1:
+                $this->plotlyConfig['title'] = 'PCR Rate (risk unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+            case 2:
+                $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted & unadjusted)<br><sub>Total Operations: '.$totalOperations.'</sub>';
+                break;
+        }
         return json_encode($this->plotlyConfig);
     }
 

@@ -51,6 +51,7 @@ class ContactMetadata extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
+            ['contact_id, key, value', 'required'],
         );
     }
 

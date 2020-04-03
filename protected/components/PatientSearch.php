@@ -138,7 +138,7 @@ class PatientSearch
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
 
-        if( $this->use_pas == false ){
+        if ( $this->use_pas == false ){
             $patient->use_pas = false;
         }
 
@@ -161,7 +161,7 @@ class PatientSearch
     {
         // NHS number (assume 10 digit number is an NHS number)
         $NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
-        $NHS_NUMBER_REGEX_2 = Yii::app()->params['default_country'] === 'Australia' ? '/^([0-9]{11})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+        $NHS_NUMBER_REGEX_2 = isset(Yii::app()->params['nhs_num_length'])  ? '/^([0-9]{'.Yii::app()->params['nhs_num_length'].'})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
 
         $result = null;
         if (preg_match($NHS_NUMBER_REGEX_1, $term, $matches) || preg_match($NHS_NUMBER_REGEX_2, $term, $matches)) {

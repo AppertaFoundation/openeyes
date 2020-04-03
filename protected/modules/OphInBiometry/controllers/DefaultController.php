@@ -16,6 +16,7 @@ class DefaultController extends BaseEventTypeController
     const LONGALLIMIT = 25;
 
     protected $show_element_sidebar = false;
+    protected $render_optional_elements = false;
 
     /**
      * @param Event                         $unlinkedEvent
@@ -319,9 +320,7 @@ class DefaultController extends BaseEventTypeController
     }
 
     public function afterAction($action){
-        
-
-            return parent::afterAction($action);
+        return parent::afterAction($action);
     }
 
     /**

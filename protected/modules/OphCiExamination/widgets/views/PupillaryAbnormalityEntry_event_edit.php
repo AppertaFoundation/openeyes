@@ -73,7 +73,7 @@ if (!isset($values)) {
                     'rows' => '1',
                     'placeholder' => 'Comments',
                     'autocomplete' => 'off',
-                ]) ?>
+                        ]) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>
             <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"

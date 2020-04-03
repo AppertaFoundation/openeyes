@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugRouteTest extends CDbTestCase
+class DrugRouteTest extends ActiveRecordTestCase
 {
     /**
      * @var DrugRoute
@@ -26,11 +26,16 @@ class DrugRouteTest extends CDbTestCase
         'drugroutes' => 'DrugRoute',
     );
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new DrugRoute();
@@ -54,9 +59,11 @@ class DrugRouteTest extends CDbTestCase
 
     /**
      * @covers DrugForm::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->drugroutes('drugroute1')->validate());
         $this->assertEmpty($this->drugroutes('drugroute2')->errors);
     }

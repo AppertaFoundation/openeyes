@@ -32,7 +32,7 @@ if (!Yii::app()->user->isGuest) {
     }
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
-    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
     ?>
 
     <div class="oe-user-banner">
@@ -56,14 +56,15 @@ if (!Yii::app()->user->isGuest) {
     <div class="oe-nav">
         <ul class="oe-big-icons">
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="/">
+                <a class="icon-btn" href="/" id="js-home-btn">
                     <svg viewBox="0 0 80 40" class="icon home">
                         <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
                     </svg>
                 </a>
             </li>
             <?= $menuHelper->render($navIconUrl) ?>
-            <?php if (Yii::app()->params['institution_code'] !== 'CERA') :?>
+<!--            The exclude admin structure parameter list has elements that can be excluded from the admin sidebar, if Worklist is excluded from that, then it can be removed from the home screen too-->
+            <?php if (!in_array( "Worklist", Yii::app()->params['exclude_admin_structure_param_list'])) :?>
             <li class="oe-nav-btn">
                 <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
                     <svg viewBox="0 0 80 40" class="icon clinic ">
@@ -82,7 +83,7 @@ if (!Yii::app()->user->isGuest) {
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>" id="js-logout-btn">
                     <svg viewBox="0 0 80 40" class="icon logout">
                         <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
                     </svg>

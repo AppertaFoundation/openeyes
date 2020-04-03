@@ -410,6 +410,14 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return string
      */
+    public function getFirstInitialFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
+    }
+
+    /**
+     * @return string
+     */
     public function getFullNameAndTitleAndQualifications()
     {
         return implode(' ', array(
@@ -788,7 +796,7 @@ class User extends BaseActiveRecordVersioned
                 $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
                 $image_data = base64_decode(
                     $this->decryptSignature(
-                        file_get_contents($signature_file->getPath()),
+                        $signature_file->file_content,
                         md5(md5($this->id) . $this->generateUniqueCodeWithChecksum($this->getUniqueCode()) . $signature_pin)
                     )
                 );

@@ -46,6 +46,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 <?php } else if ($allow_clinical) { ?>
     <nav class="event-header no-face">
         <i class="oe-i-e large i-Patient"></i>
+        <h2 class="event-header-title">Patient Overview</h2>
         <?php $this->renderPartial('//patient/event_actions'); ?>
     </nav>
 
@@ -204,6 +205,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                         <table>
                             <colgroup>
                                 <col class="cols-8">
+                                <col>
                             </colgroup>
                             <tbody>
                             <?php
@@ -220,10 +222,8 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                 list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
                                     <td><strong><?= $name ?></strong></td>
-                                    <td>
+                                    <td class="nowrap">
                                         <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                                    </td>
-                                    <td class="date">
                                         <span class="oe-date"><?= $date ?></span>
                                     </td>
                                     <td>
@@ -303,7 +303,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                             <h3 class="element-title">Problems &amp; Plans</h3>
                         </header>
                         <div class="element-data full-width">
-                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id]); ?>
+                            <?php $this->widget('application.widgets.PlansProblemsWidget', ['allow_save' => false, 'patient_id' => $this->patient->id, 'is_popup' => false]); ?>
                         </div>
                     </section>
                 </div>

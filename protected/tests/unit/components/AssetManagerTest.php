@@ -68,13 +68,13 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         // Test the published path matches the expected published path.
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS;
         $publishedPath = $instance->getPublishedPathOfAlias($alias);
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
         $this->assertEquals($publishedPath, $expectedPublishedPath,
             'The published path of specified alias should match the expected path');
 
         // Test the published path matches the expected published path *when no alias is specified*.
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias));
+        $expectedPublishedPath = $instance->publish(Yii::getPathOfAlias($alias), true);
         $this->assertEquals($publishedPath, $expectedPublishedPath,
             'The published path should match the expected path when no alias is specified');
     }
@@ -135,7 +135,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $publishedPath = $instance->getPublishedPath($path, $alias);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);
@@ -146,7 +146,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $publishedPath = $instance->getPublishedPath($path);
         $expectedParts = array(
             Yii::getPathOfAlias('webroot'),
-            $instance->publish(Yii::getPathOfAlias($alias), false, -1),
+            $instance->publish(Yii::getPathOfAlias($alias), true, -1),
             $path,
         );
         $expectedPath = implode(DIRECTORY_SEPARATOR, $expectedParts);

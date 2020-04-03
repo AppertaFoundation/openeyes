@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugTest extends CDbTestCase
+class DrugTest extends ActiveRecordTestCase
 {
     /**
      *  @var Drug
@@ -24,22 +24,19 @@ class DrugTest extends CDbTestCase
         'drugs' => 'Drug',
     );
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new    Drug();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
     }
 
     /**
@@ -63,12 +60,14 @@ class DrugTest extends CDbTestCase
     }
 
     /**
-     *  @covers DrugForm::rules
+     * @covers DrugForm::rules
      *
-     *  @todo Implement testRules().
+     * @throws CException
+     * @todo Implement testRules().
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->drugs('drug1')->validate());
         $this->assertEmpty($this->drugs('drug2')->errors);
     }
@@ -95,6 +94,7 @@ class DrugTest extends CDbTestCase
      */
     public function testGetLabel()
     {
+        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
         $result = $this->drugs('drug1')->getLabel();
 
         if ($this->drugs('drug1')->preservative_free) {
@@ -112,7 +112,8 @@ class DrugTest extends CDbTestCase
       * @todo Implement testGetTallmanLabel().
       */
     public function testGetTallmanLabel()
-     {
+    {
+        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
         $result = $this->drugs('drug1')->getTallmanLabel();
 
         if ($this->drugs('drug1')->preservative_free) {

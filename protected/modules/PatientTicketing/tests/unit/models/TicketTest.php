@@ -1,4 +1,7 @@
 <?php
+
+use OEModule\PatientTicketing\models\Ticket;
+
 /**
  * OpenEyes.
  *
@@ -15,7 +18,7 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class TicketTest extends \CDbTestCase
+class TicketTest extends \ActiveRecordTestCase
 {
     public $fixtures = array(
             'queues' => 'OEModule\PatientTicketing\models\Queue',
@@ -24,6 +27,11 @@ class TicketTest extends \CDbTestCase
             'tickets' => 'OEModule\PatientTicketing\models\Ticket',
             'queue_assignments' => 'OEModule\PatientTicketing\models\TicketQueueAssignment',
     );
+
+    public function getModel()
+    {
+        return Ticket::model();
+    }
 
     public function setUp()
     {

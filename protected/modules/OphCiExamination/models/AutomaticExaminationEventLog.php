@@ -119,6 +119,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->with = array('event.episode.patient');
         $criteria->condition = "import_success = 1";
+        $criteria->addCondition("event.deleted<>1");
 
         $this->handleDateRangeFilter($criteria, $filter);
         $this->invoiceStatusSearch($criteria, $filter);

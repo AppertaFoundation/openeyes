@@ -35,7 +35,7 @@ class ReportController extends BaseReportController
 
     public function init()
     {
-        $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
+        $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'), true);
         Yii::app()->clientScript->registerScriptFile($modulePath.'/js/report.js', CClientScript::POS_HEAD);
 
         if (!$this->subspecialtyId) {
@@ -44,7 +44,7 @@ class ReportController extends BaseReportController
                 $this->subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
             }
         }
-
+        
         if (!$this->siteId) {
             $this->siteId = Yii::app()->session['selected_site_id'];
         }
@@ -70,7 +70,7 @@ class ReportController extends BaseReportController
             foreach ($drugs as $drug) {
                 $commonDrugs[] = array(
                     'id' => $drug->id,
-                    'label' => $drug->tallmanlabel,
+                    'label' => $drug->preferred_term,
                 );
             }
         }

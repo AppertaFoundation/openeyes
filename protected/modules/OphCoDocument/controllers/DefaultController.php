@@ -34,6 +34,7 @@ class DefaultController extends BaseEventTypeController
     protected static $action_types = array(
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
+        'removeDocuments' => self::ACTION_TYPE_FORM,
     );
 
     protected $pdf_output;
@@ -90,7 +91,7 @@ class DefaultController extends BaseEventTypeController
      */
     private function documentErrorHandler($files, $index)
     {
-        $message = NULL;
+        $message = null;
 
         switch ($files['Document']['error'][$index]) {
             case UPLOAD_ERR_OK:
@@ -140,13 +141,31 @@ class DefaultController extends BaseEventTypeController
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
+        $p_file->title = $original_name;
 
         if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        } else {
-            unlink($tmp_name);
-            return false;
+        }
+
+        unlink($tmp_name);
+        return false;
+    }
+
+    public function actionRemoveDocuments()
+    {
+        $doc_ids = \Yii::app()->request->getPost('doc_ids', []);
+        foreach ($doc_ids as $doc_id) {
+            try {
+                $doc = ProtectedFile::model()->findByPk($doc_id);
+                if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
+                    unlink($doc->getFilePath() . '/' . $doc->uid);
+                } else {
+                    OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
+                }
+            } catch (Exception $e) {
+                OELog::log("Failed to delete the ProtectedFile with id = " . $doc_id);
+            }
         }
     }
 
@@ -157,7 +176,7 @@ class DefaultController extends BaseEventTypeController
     {
         if ($this->sub_type) {
             if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets')) . '/';
+                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
                 return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
             }
         }
@@ -173,7 +192,7 @@ class DefaultController extends BaseEventTypeController
             foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $file_key) {
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
-                    if ( $handler == NULL) {
+                    if ( $handler == null) {
                         $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
@@ -433,6 +452,9 @@ class DefaultController extends BaseEventTypeController
                 if (!$document) {
                     continue;
                 }
+
+                // Always write the file contents to the file, even if it already exists. This will ensure the contents are always up-to-date.
+                file_put_contents($document->getPath(), $document->file_content);
 
                 switch ($document->mimetype) {
                     case 'application/pdf':

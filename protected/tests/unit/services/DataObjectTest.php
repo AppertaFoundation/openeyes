@@ -23,6 +23,7 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
         $schemas = array(
             array(
                 'DataObjectTest_Obj1',
@@ -56,6 +57,7 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         \Yii::app()->setComponent('fhirMarshal', null);
+        parent::tearDown();
     }
 
     public function fhirObjectDataProvider()

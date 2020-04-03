@@ -34,7 +34,7 @@ class LogoHelper
      */
     protected function getLogo()
     {
-        if(isset(Yii::app()->params['letter_logo_upload']) && Yii::app()->params['letter_logo_upload']){
+        if (isset(Yii::app()->params['letter_logo_upload']) && Yii::app()->params['letter_logo_upload']){
             return $this->getUploadedLogo();
         } else {
             return $this->getVersionedLogo();
@@ -49,15 +49,15 @@ class LogoHelper
         $logo = array();
 
         $directory = \Yii::getPathOfAlias('application.runtime');
-        $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
+        $images = glob("$directory/*.{png,jpg,gif}", GLOB_BRACE);
 
         foreach($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {
-                Yii::app()->assetManager->publish($image_path);
+                Yii::app()->assetManager->publish($image_path, true);
                 $logo['headerLogo'] = $image_path;
             }
             if (strpos($image_path, 'secondary') !== false) {
-                Yii::app()->assetManager->publish($image_path);
+                Yii::app()->assetManager->publish($image_path, true);
                 $logo['secondaryLogo'] = $image_path;
             }
         }
@@ -73,7 +73,7 @@ class LogoHelper
     protected function getVersionedLogo()
     {
         $path = Yii::app()->basePath . '/assets/img/_print/';
-        $url = Yii::app()->assetManager->publish($path);
+        $url = Yii::app()->assetManager->publish($path, true);
         $logo['headerLogo'] = $url . '/letterhead_Moorfields_NHS.jpg';
         $logo['secondaryLogo'] = $url . '/letterhead_seal.jpg';
 

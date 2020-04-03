@@ -13,9 +13,11 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
+            'default_value' => 'CURRENT',
         ));
 
-        $this->insert('ophtroperationbooking_whiteboard_settings', array(
+        $this->insert(
+            'ophtroperationbooking_whiteboard_settings', array(
             'field_type_id' => $id['id'],
             'key' => 'opnote_whiteboard_display_mode',
             'name' => 'Operation Note whiteboard display mode',
@@ -23,7 +25,9 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
-        ));
+            'default_value' => 'CURRENT',
+            )
+        );
 
         $refresh_setting = new OphTrOperationbooking_Whiteboard_Settings_Data();
         $refresh_setting->key = 'opbooking_whiteboard_display_mode';

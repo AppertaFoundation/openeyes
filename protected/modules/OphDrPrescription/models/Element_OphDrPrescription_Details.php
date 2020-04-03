@@ -1,19 +1,17 @@
 <?php
-
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -26,10 +24,17 @@
  *
  * The followings are the available model relations:
  * @property Event $event
- * @property Item[] $items
+ * @property OphDrPrescription_Item[] $items
+ *
+ * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
+    public $check_for_duplicate_entries = false;
+    protected $errorExceptions = array(
+        'Element_OphDrPrescription_Details_items' => 'prescription_items',
+    );
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -46,6 +51,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     public function tableName()
     {
         return 'et_ophdrprescription_details';
+    }
+
+    public function behaviors()
+    {
+        return array(
+            "AllergicDrugEntriesBehavior" => array(
+                "class" => "application.behaviors.AllergicDrugEntriesBehavior",
+            ),
+        );
     }
 
     /**
@@ -77,7 +91,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'items' => array(self::HAS_MANY, 'OphDrPrescription_Item', 'prescription_id'),
+            'items' => array(
+                self::HAS_MANY,
+                OphDrPrescription_Item::class,
+                array('event_id' => 'event_id')
+            ),
             'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id')
         );
     }
@@ -140,21 +158,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return Drug[]
+     * @return Medication[]
      */
     public function commonDrugs()
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
 
-        return Drug::model()->active()->findAll(array(
-                    'condition' => 'ssd.subspecialty_id = :subSpecialtyId AND ssd.site_id = :siteId',
-                    'join' => 'JOIN site_subspecialty_drug ssd ON ssd.drug_id = t.id',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return Medication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -163,17 +175,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      * @param $site_id
      * @param $subspecialty_id
      *
-     * @return SiteSubspecialtyDrug[]
+     * @return Medication[]
      */
     public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id)
     {
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
-
-        return SiteSubspecialtyDrug::model()->with('drugs')->findAll(array(
-                    'condition' => 't.subspecialty_id = :subSpecialtyId AND t.site_id = :siteId',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return Medication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -181,19 +187,23 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return DrugSet[]
+     * @return MedicationSet[]
      */
     public function drugSets()
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-        $params = array(':subspecialty_id' => $subspecialty_id);
+        $site_id = Yii::app()->session['selected_site_id'];
 
-        return DrugSet::model()->findAll(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND active = 1',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        $criteria = new CDbCriteria();
+        $criteria->join .= " JOIN medication_set_rule msr ON msr.medication_set_id = t.id " ;
+        $criteria->join .= " JOIN medication_usage_code muc ON muc.id = msr.usage_code_id";
+        $criteria->addCondition("(msr.subspecialty_id = :subspecialty_id OR msr.subspecialty_id IS NULL) AND" .
+                                "(msr.site_id = :site_id OR msr.site_id IS NULL) AND muc.usage_code = :usage_code AND msr.deleted_date IS NULL");
+        $criteria->order = "name";
+        $criteria->params = array(':subspecialty_id' => $subspecialty_id, ':site_id' => $site_id, ':usage_code' => 'PRESCRIPTION_SET');
+
+        return MedicationSet::model()->findAll($criteria);
     }
 
     /**
@@ -218,26 +228,32 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     /**
      * Gets listdata for the drugtypes.
      *
-     * @TODO: Should this be a static method on the DrugType model, rather than here?
-     *
-     * @return DrugType[]
+     * @return array
      */
     public function drugTypes()
     {
-        $drugTypes = DrugType::model()->active()->findAll(array(
-            'order' => 'name',
-        ));
-
-        return $drugTypes;
+        return Chtml::listData(MedicationSet::model()->with("medicationSetRules")->findAll(array(
+            "condition" => "usage_code = 'DrugTag' AND medicationSetRules.deleted_date IS NULL",
+            "order" => "name",
+        )), 'id', 'name');
     }
 
-    /**
-     * Prescription is always editable.
+    /*
+     * When a prescription event is created as the result of a medication
+     * management element from an examination event,the prescription event
+     * should be locked for editing.
+     * The only available action will be to save as final (or print final) or delete
      *
      * @return bool
      */
-    public function isEditable()
+
+    public function isEditableByMedication()
     {
+        foreach ($this->items as $key => $item) {
+            if ($item->parent) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -268,7 +284,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $this->event->deleteIssue('Draft');
         }
 
-        $this->auditAllergicDrugEntries();
+        $this->auditAllergicDrugEntries("prescription");
         return parent::afterSave();
     }
 
@@ -284,83 +300,61 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function updateItems($items)
     {
-        $itemCount = count($items);
-        if ($itemCount == 0) {
-            throw new Exception('Item cannot be blank.');
-        } else {
-            if (!$this->id) {
-                throw new Exception('Cannot call updateItems on unsaved instance.');
+        // Get a list of ids so we can keep track of what's been removed
+        $existing_item_ids = [];
+        $existing_taper_ids = [];
+
+        // can't rely on relation, as this will have been set already
+        foreach (OphDrPrescription_Item::model()->findAll("event_id = :eid AND usage_type = 'OphDrPrescription'", [':eid' => $this->event_id]) as $item) {
+            $existing_item_ids[$item->id] = $item->id;
+            foreach ($item->tapers as $taper) {
+                $existing_taper_ids[$taper->id] = $taper->id;
             }
-
-            // Get a list of ids so we can keep track of what's been removed
-            $existing_item_ids = array();
-            $existing_taper_ids = array();
-            // can't rely on relation, as this will have been set already
-            foreach (OphDrPrescription_Item::model()->findAll('prescription_id = :pid', array(':pid' => $this->id)) as $item) {
-                $existing_item_ids[$item->id] = $item->id;
-                foreach ($item->tapers as $taper) {
-                    $existing_taper_ids[$taper->id] = $taper->id;
-                }
-            }
-
-            // Process (any) posted prescription items
-            foreach ($items as $item) {
-                if (isset($item['id']) && isset($existing_item_ids[$item['id']])) {
-                    // Item is being updated
-                    $item_model = OphDrPrescription_Item::model()->findByPk($item['id']);
-                    unset($existing_item_ids[$item['id']]);
-                } else {
-                    // Item is new
-                    $item_model = new OphDrPrescription_Item();
-                    $item_model->prescription_id = $this->id;
-                    $item_model->drug_id = $item['drug_id'];
-                }
-
-                // Save main item attributes
-                $item_model->dose = $item['dose'];
-                $item_model->route_id = $item['route_id'];
-
-                if (isset($item['route_option_id'])) {
-                    $item_model->route_option_id = $item['route_option_id'];
-                } else {
-                    $item_model->route_option_id = null;
-                }
-                $item_model->frequency_id = $item['frequency_id'];
-                $item_model->duration_id = $item['duration_id'];
-                $item_model->dispense_condition_id = $item['dispense_condition_id'];
-                $item_model->dispense_location_id = $item['dispense_location_id'];
-                $item_model->comments = isset($item['comments']) ? $item['comments'] : null;
-
-                $item_model->save();
-
-                // Tapering
-                $new_tapers = (isset($item['taper'])) ? $item['taper'] : array();
-                foreach ($new_tapers as $taper) {
-                    if (isset($taper['id']) && isset($existing_taper_ids[$taper['id']])) {
-                        // Taper is being updated
-                        $taper_model = OphDrPrescription_ItemTaper::model()->findByPk($taper['id']);
-                        unset($existing_taper_ids[$taper['id']]);
-                    } else {
-                        // Taper is new
-                        $taper_model = new OphDrPrescription_ItemTaper();
-                        $taper_model->item_id = $item_model->id;
-                    }
-                    $taper_model->dose = $taper['dose'];
-                    $taper_model->frequency_id = $taper['frequency_id'];
-                    $taper_model->duration_id = $taper['duration_id'];
-                    $taper_model->save();
-                }
-            }
-
-            // Delete remaining (removed) ids
-            OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
-            OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
         }
+
+        // Process (any) prescription items in the relation
+        foreach ($this->items as $item) {
+            if ($item->isNewRecord) {
+                $item->event_id = $this->event_id;
+                $item->start_date = substr($this->event->event_date, 0, 10);
+            } else {
+                // Item is being updated
+                unset($existing_item_ids[$item->id]);
+            }
+
+            $item->save();
+
+            if ($item->tapers) {
+                foreach ($item->tapers as $taper) {
+                    if ($taper->isNewRecord) {
+                        $taper->item_id = $item->id;
+                    } else {
+                        // Taper is being updated
+                        unset($existing_taper_ids[$taper->id]);
+                    }
+
+                    $taper->save();
+                }
+            }
+        }
+
+        // Delete existing relations to medication management items
+        foreach ($existing_item_ids as $item_id) {
+            $related = EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $item_id]);
+            foreach ($related as $record) {
+                $record->setAttribute('prescription_item_id', null);
+                $record->save();
+            }
+        }
+        // Delete remaining (removed) ids
+        OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
+        OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
 
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'drugs' => array_map(function($item) {return $item->drug;
+                'medications' => array_map(function ($item) {
+                    return $item->medication;
                 }, $this->items)
             ));
         }
@@ -397,47 +391,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         return 'print_'.$this->getDefaultView();
     }
 
-    protected function auditAllergicDrugEntries()
+    /**
+     * @return OphDrPrescription_Item[]
+     *
+     * Compatibility function for AllergicDrugEntriesBehavior
+     */
+
+    public function getEntries()
     {
-        $patient = $this->event->getPatient();
-        $patient_allergies = $patient->allergies;
-        $patient_allergies_from_drugs = [];
-        $allergic_drugs = [];
-
-        $drug_allergies_assignments = $this->getDrugAllergiesAssignments();
-
-        foreach ($patient_allergies as $allergy) {
-            foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
-                if ($allergy->id === $drug_allergy_assignment->allergy_id) {
-                    $patient_allergies_from_drugs[$allergy->id] = $allergy->name;
-                    $allergic_drugs[$drug_allergy_assignment->drug_id] = $drug_allergy_assignment->drug->name;
-                }
-            }
-        }
-
-        if (isset($allergic_drugs) && sizeof($allergic_drugs) !== 0 &&
-            isset($patient_allergies_from_drugs) && sizeof($allergic_drugs) != 0) {
-            Audit::add(
-                'prescription', 'allergy-override', 'Allergies: ' .
-                implode(' , ', $patient_allergies_from_drugs) . ' Drugs: ' . implode(' , ', $allergic_drugs),
-                null,
-                array('patient_id' => $patient->id)
-            );
-        }
+        return $this->items;
     }
-
-    protected function getDrugAllergiesAssignments()
-    {
-        $drug_allergies_assignments = [];
-        foreach ($this->items as $prescription_item) {
-            $drug_allergy_assignment = DrugAllergyAssignment::model()->find('drug_id = :drug_id', [':drug_id' => $prescription_item->drug->id]);
-            if (isset($drug_allergy_assignment)) {
-                $drug_allergies_assignments[] = $drug_allergy_assignment;
-            }
-        }
-
-        return $drug_allergies_assignments;
-    }
-
-
 }

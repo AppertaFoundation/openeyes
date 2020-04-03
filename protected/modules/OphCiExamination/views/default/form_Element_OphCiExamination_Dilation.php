@@ -38,8 +38,8 @@ foreach ($dilation_drugs as $d_drug) {
              style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full dilation_table"
-                   style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
+            <table id="<?= CHtml::modelName($element) ?>_<?= $eye_side ?>_treatments" class="cols-full dilation_table"
+                   style="<?= (!$element->{$eye_side . '_treatments'} && !$element->hasErrors($eye_side . '_treatments')) ? 'display: none;' : '' ?>">
               <tbody class="plain" id="dilation_<?= $eye_side ?>">
               <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
                     $this->renderPartial(
@@ -58,8 +58,24 @@ foreach ($dilation_drugs as $d_drug) {
               } ?>
               </tbody>
             </table>
+              <div id="dilation-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_comments'} ? 'display: none;' : '' ?>" data-comment-button="#dilation-<?= $eye_side ?>-comment-button">
+                  <?=\CHtml::activeTextArea($element, $eye_side . '_comments',
+                      array(
+                          'rows' => 1,
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
+                          'class' => 'autosize cols-full js-comment-field',
+                          'style' => 'overflow-wrap: break-word; height: 24px;',
+                      )) ?>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+              </div>
           </div>
           <div class="add-data-actions  flex-item-bottom">
+              <button id="dilation-<?= $eye_side ?>-comment-button"
+                      class="button js-add-comments" data-comment-container="#dilation-<?= $eye_side ?>-comments"
+                      type="button" style="<?= $element->{$eye_side . '_comments'} ? 'visibility: hidden;' : '' ?>">
+                  <i class="oe-i comments small-icon"></i>
+              </button>
             <button class="button hint green js-add-select-search" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>

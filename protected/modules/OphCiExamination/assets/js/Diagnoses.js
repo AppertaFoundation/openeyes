@@ -135,16 +135,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
                 row, $tr, item;
+            $tr = $(this).closest('tr');
+
+            let row_count = $tr.data('key');
+
+            let row_values = [{
+                id: $option.data('id'),
+                label: $option.data('label'),
+                eye_id: controller.getEyeIdFromRow($tr),
+                is_principal: $tr.find('#principal_diagnosis_row_key').is(':checked') ? 1 : 0,
+                date: $('#diagnoses-datepicker-' + row_count).val()
+            }];
 
             if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
-                $tr = $(this).closest('tr');
                 item = $option.data('id');
 
                 if (item) {
-                    row = controller.createRow([{id: $option.data('id'), label: $option.data('label')}]);
                     $tr.remove();
+                    row = controller.createRow(row_values);
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
                     controller.setDatepicker();
@@ -200,17 +210,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.searchResult).append($item);
     };
 
-    DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
-        var res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
-    };
-
-
     DiagnosesController.prototype.initialiseDatepicker = function () {
         var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
         for (var i = 0; i < row_count; i++) {
@@ -239,6 +238,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
+    DiagnosesController.prototype.getEyeIdFromRow = function($row) {
+        let eye_id = $row.find('.js-left-eye').is(':checked') ? 1 : 0;
+        eye_id += $row.find('.js-right-eye').is(':checked') ? 2 : 0;
+        return eye_id;
+    };
 
     DiagnosesController.prototype.createRow = function(selectedItems)
     {
@@ -249,15 +253,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       for (var i in selectedItems) {
 
-        if (typeof selectedItems.eye_id === 'undefined') {
-            selectedItems.eye_id = null;
+        if (typeof selectedItems[i].eye_id === 'undefined') {
+            selectedItems[i].eye_id = null;
         }
-        data = {};
-        data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-        data.date = OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
+        let data = {};
+        data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+        data.date = selectedItems[i].date;
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
-        data.eye_id = selectedItems.eye_id;
+        data.eye_id = selectedItems[i].eye_id;
+        data.right_eye_checked = selectedItems[i].eye_id === 2 || selectedItems[i].eye_id === 3;
+        data.left_eye_checked = selectedItems[i].eye_id === 1 || selectedItems[i].eye_id === 3;
+        data.is_principal = selectedItems[i].is_principal;
         data.is_glaucoma = selectedItems[i].is_glaucoma;
         row = Mustache.render(template, data);
         newRows.push(row);
@@ -321,8 +328,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param diagnosesBySource
      */
-    DiagnosesController.prototype.setExternalDiagnoses = function(diagnosesBySource)
-    {
+    DiagnosesController.prototype.setExternalDiagnoses = function (diagnosesBySource) {
         var controller = this;
 
         // reformat to controller usable structure
@@ -368,8 +374,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Runs through the current external diagnoses and ensures they are displayed correctly
      */
-    DiagnosesController.prototype.renderExternalDiagnoses = function()
-    {
+    DiagnosesController.prototype.renderExternalDiagnoses = function () {
         var controller = this;
 
         for (let diagnosisCode in controller.externalDiagnoses) {
@@ -385,10 +390,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param code
      * @param sides
      */
-    DiagnosesController.prototype.updateExternalDiagnosis = function(code, sides)
-    {
+    DiagnosesController.prototype.updateExternalDiagnosis = function (code, sides) {
         var controller = this;
-        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller) );
+        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller));
     };
 
     var diagnosisDetail = {};
@@ -401,8 +405,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param sides
      * @param callback
      */
-    DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, side, callback)
-    {
+    DiagnosesController.prototype.retrieveDiagnosisDetail = function (code, side, callback) {
         var controller = this;
         if (diagnosisDetail.hasOwnProperty(code)) {
             callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
@@ -410,15 +413,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $.ajax({
                 'type': 'GET',
                 // TODO: this should be a property of the element
-                'url': '/OphCiExamination/default/getDisorder?disorder_id='+code,
-                'beforeSend':function(){
+                'url': '/OphCiExamination/default/getDisorder?disorder_id=' + code,
+                'beforeSend': function () {
                     controller.$loader.show();
                 },
-                'success': function(json) {
+                'success': function (json) {
                     diagnosisDetail[code] = json;
                     callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
                 },
-                'complete': function(){
+                'complete': function () {
                     controller.$loader.hide();
                 }
             });
@@ -433,8 +436,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param sides
      */
-    DiagnosesController.prototype.resolveEyeCode = function(sides)
-    {
+    DiagnosesController.prototype.resolveEyeCode = function (sides) {
         var left = false;
         var right = false;
         for (var i = 0; i < sides.length; i++) {
@@ -455,8 +457,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param name
      * @param side
      */
-    DiagnosesController.prototype.setExternalDiagnosisDisplay = function(id, name, side)
-    {
+    DiagnosesController.prototype.setExternalDiagnosisDisplay = function (id, name, side) {
 
         var controller = this;
 

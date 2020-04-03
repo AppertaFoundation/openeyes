@@ -24,15 +24,17 @@ class ReCropVFImagesCommand extends CConsoleCommand
         ."\n\nRecrops all VF images to required dimensions, and also ensures images sizes in db are correct\n";
     }
 
+    /**
+     * @param string $dims
+     * @throws Exception
+     */
     public function actionCrop($dims = '1328x560,776x864')
     {
         $dimensions = explode(',', $dims);
         $xy = explode('x', $dimensions[0]);
         $wh = explode('x', $dimensions[1]);
-        $src_x = $xy[0];
-        $src_y = $xy[1];
-        $dest_w = $wh[0];
-        $dest_h = $wh[1];
+        [$src_x, $src_y] = $xy;
+        [$dest_w, $dest_h] = $wh;
         // find all cropped images in ophinvisualfields_field_measurement->cropped_image_id:
         $fields = OphInVisualfields_Field_Measurement::model()->findAll();
         foreach ($fields as $field) {
@@ -42,6 +44,9 @@ class ReCropVFImagesCommand extends CConsoleCommand
             if (!$full || !$cropped) {
                 continue;
             }
+
+            file_put_contents($full->getPath(), $full->file_content);
+            file_put_contents($cropped->getPath(), $cropped->file_content);
 
             // next step, take image_id and open image:
             if (file_exists($full->getPath())) {
@@ -53,9 +58,13 @@ class ReCropVFImagesCommand extends CConsoleCommand
 
                 // Reset sizes
                 $full->size = filesize($full->getPath());
+                $full->file_content = file_get_contents($full->getPath());
                 $full->save();
+                unlink($full->getPath());
                 $cropped->size = filesize($cropped->getPath());
+                $cropped->file_content = file_get_contents($cropped->getPath());
                 $cropped->save();
+                unlink($cropped->getPath());
             }
         }
     }

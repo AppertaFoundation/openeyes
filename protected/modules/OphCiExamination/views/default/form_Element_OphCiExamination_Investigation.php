@@ -40,6 +40,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
     ];
 }
 ?>
+
 <script type="text/javascript">
     $(function () {
         autosize($('.autosize'));

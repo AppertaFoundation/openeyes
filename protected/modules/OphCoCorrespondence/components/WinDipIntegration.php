@@ -129,7 +129,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'value' => $event->episode->patient->hos_num
         );
 
-        if( isset(\Yii::app()->user->id) ){
+        if ( isset(\Yii::app()->user->id) ){
             $user = \User::model()->findByPk(\Yii::app()->user->id);
         }
 

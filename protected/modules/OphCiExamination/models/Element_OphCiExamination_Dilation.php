@@ -35,6 +35,12 @@ use Yii;
 class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+    
+    protected $errorExceptions = array(
+      'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_left',
+      'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_right',
+    );
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -61,7 +67,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id', 'safe'),
+                array('eye_id, left_comments, right_comments', 'safe'),
                 array('id, event_id, eye_id', 'safe', 'on' => 'search'),
                 array('left_treatments', 'requiredIfSide', 'side' => 'left'),
                 array('right_treatments', 'requiredIfSide', 'side' => 'right'),
@@ -98,6 +104,8 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
             'eye_id' => 'Eye',
             'left_treatments' => 'Treatments',
             'right_treatments' => 'Treatments',
+            'left_comments' => 'Comments',
+            'right_comments' => 'Comments'
         );
     }
 
