@@ -17,5 +17,3 @@ INSERT INTO medication_route (term,`code`, source_type)
   FROM
     {prefix}lookup_route lr
 ;
-/*------------------------------- Rename 'Ocular' to 'Eye' ----------------------------------------------*/
-UPDATE medication_route SET term = "Eye" WHERE term='Ocular' AND source_type = 'DM+D'
