@@ -16,14 +16,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugFrequencyTest extends ActiveRecordTestCase
+class MedicationSetTest extends ActiveRecordTestCase
 {
     /**
-     * @var DrugFrequency
+     * @var MedicationSet
      */
     protected $model;
     public $fixtures = array(
-        'drugfrequencies' => 'DrugFrequency',
+        'drugsets' => 'MedicationSet',
     );
 
     public function getModel()
@@ -38,15 +38,15 @@ class DrugFrequencyTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new DrugFrequency();
+        $this->model = new MedicationSet();
     }
 
     /**
-     * @covers DrugForm::model
+     * @covers MedicationSet::model
      */
     public function testModel()
     {
-        $this->assertEquals('DrugFrequency', get_class(DrugFrequency::model()), 'Class name should match model.');
+        $this->assertEquals('MedicationSet', get_class(MedicationSet::model()), 'Class name should match model.');
     }
 
     /**
@@ -54,7 +54,7 @@ class DrugFrequencyTest extends ActiveRecordTestCase
      */
     public function testTableName()
     {
-        $this->assertEquals('drug_frequency', $this->model->tableName());
+        $this->assertEquals('medication_set', $this->model->tableName());
     }
 
     /**
@@ -64,24 +64,24 @@ class DrugFrequencyTest extends ActiveRecordTestCase
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->drugfrequencies('drugfrequency1')->validate());
-        $this->assertEmpty($this->drugfrequencies('drugfrequency2')->errors);
+        $this->assertTrue($this->drugsets('drugset1')->validate());
+        $this->assertEmpty($this->drugsets('drugset1')->errors);
     }
 
     /**
-     * @covers DrugFrequency::search
+     * @covers MedicationSet::search
      */
     public function testSearch()
     {
-        $this->model->setAttributes($this->drugfrequencies('drugfrequency1')->getAttributes());
+        $this->model->setAttributes($this->drugsets('drugset1')->getAttributes());
         $results = $this->model->search();
         $data = $results->getData();
 
-        $expectedKeys = array('drugfrequency1');
+        $expectedKeys = array('drugset1');
         $expectedResults = array();
         if (!empty($expectedKeys)) {
             foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->drugfrequencies($key);
+                $expectedResults[] = $this->drugsets($key);
             }
         }
         $this->assertEquals(1, $results->getItemCount());
