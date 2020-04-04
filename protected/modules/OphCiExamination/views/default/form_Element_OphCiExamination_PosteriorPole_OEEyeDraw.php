@@ -35,6 +35,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Macroaneurysm',
             'RetinalVeinOcclusionPostPole',
             'RetinalArteryOcclusionPostPole',
+            'CNV',
         ),
         array(
             'Microaneurysm',
@@ -67,8 +68,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'MacularGrid',
             'SectorPRPPostPole',
             'PRPPostPole',
-            'Freehand',
-            'FreehandCopyForOE'
+            'Freehand'
         ),
     ),
     'onReadyCommandArray' => array(
