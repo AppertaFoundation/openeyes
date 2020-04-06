@@ -19,13 +19,13 @@ else {
     $date_range = "$date_from - $date_to";
 }
 
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 
 ?>
 
 <header class="print-header">
     <div class="logo">
-		<?= $logoHelper->render() ?>
+		<?= $logo_helper->render() ?>
     </div>
 </header>
 

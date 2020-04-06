@@ -13,8 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$logoHelper = new LogoHelper();
-$defaultURLS = $logoHelper->getLogoURLs();
+$logo_helper = new LogoHelper();
+$default_urls = $logo_helper->getLogoURLs();
 ?>
 <style>
     .flash-success{
@@ -82,9 +82,9 @@ $defaultURLS = $logoHelper->getLogoURLs();
             <td>
                 <?php
                     echo $form->fileField($logo, 'primary_logo');
-                if (!empty($defaultURLS['primaryLogo'])) {
+                if (!empty($default_urls['primaryLogo'])) {
                     echo '<div style=" margin-top: 5px; position: relative; ">';
-                        echo "<img src='". $defaultURLS['primaryLogo']."' style='width:100%;'>";
+                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
                         echo '<br>'.CHtml::button( '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(
@@ -109,9 +109,9 @@ $defaultURLS = $logoHelper->getLogoURLs();
             <td>
                 <?php
                     echo $form->fileField($logo, 'secondary_logo');
-                if (!empty($defaultURLS['secondaryLogo'])) {
+                if (!empty($default_urls['secondaryLogo'])) {
                     echo '<div style=" margin-top: 5px; position: relative; ">';
-                        echo "<img src='". $defaultURLS['secondaryLogo']."' style='width:100%;'>";
+                        echo "<img src='". $default_urls['secondaryLogo']."' style='width:100%;'>";
                         echo '<br>'.CHtml::button( '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(

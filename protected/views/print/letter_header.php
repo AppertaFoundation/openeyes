@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- $logoHelper = new LogoHelper();
+ $logo_helper = new LogoHelper();
 
 ?>
 <?php
@@ -23,7 +23,7 @@ $event = $this->event;
 $event_type = $event->eventType->name;
 ?>
 <header class="header">
-    <?= $logoHelper->render() ?>
+    <?= $logo_helper->render() ?>
         <div class="cols-4 column patient">
             <strong><?php echo $this->patient->contact->fullName?></strong>
             <br />

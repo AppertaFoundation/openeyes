@@ -2098,5 +2098,3 @@ class AdminController extends BaseAdminController
         $this->render('patient_shortcodes', ['short_codes' => PatientShortcode::model()->findAll()]);
     }
 }
-
-
