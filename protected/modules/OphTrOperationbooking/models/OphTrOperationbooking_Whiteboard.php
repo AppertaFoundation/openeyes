@@ -405,7 +405,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $display .= '<div class="alert-box warning">' . $line . '</div>';
         }
 
-        if (!$patient->no_risks_date && !$risks && !$alpha_or_anticoag) {
+        if (!$patient->no_risks_date && !$risks && empty($alpha_or_anticoag)) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }
