@@ -26,11 +26,9 @@ class m200130_044814_add_logos_to_site extends OEMigration
 
         foreach ($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {
-                Yii::app()->assetManager->publish($image_path);
                 $logos['primaryLogo'] = $image_path;
             }
             if (strpos($image_path, 'secondary') !== false) {
-                Yii::app()->assetManager->publish($image_path);
                 $logos['secondaryLogo'] = $image_path;
             }
         }
