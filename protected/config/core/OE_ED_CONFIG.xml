@@ -812,6 +812,11 @@
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChoroidalNaevusMelanoma</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Choroidal mass/pigment</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Rubeosis</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Rubeosis iridis</TITLE>
       <INIT_DOODLE_JSON/>
@@ -3388,6 +3393,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/RRD.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>RRD</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Choroidal mass/pigment</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ChoroidalNaevusMelanoma.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ChoroidalNaevusMelanoma</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Traction ‘U’ tear</PRIMARY_TERM>
