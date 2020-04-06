@@ -99,6 +99,7 @@ class MedicationTest extends ActiveRecordTestCase
             'will_copy' => 'Will copy',
             'default_form_id' => 'Default form',
             'default_dose_unit_term' => 'Default dose unit',
+            'default_dose' => 'Default dose'
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels());
