@@ -187,10 +187,12 @@ var analytics_drill_down = (function () {
 					patient_list_container.addClass('analytics-event-list');
 					$('<th class="text-left" style="vertical-align: center;">Eye</th>').insertBefore('.analytics-patient-list .patient_procedures');
 					$('<th style="vertical-align: center;">Date</th>').insertAfter('.analytics-patient-list .patient_procedures');
-					colGroup.append('<col style="width: 350px;"><col style="width: 50px;"><col style="width: 400px;"><col style="width: 100px;">');
+					// the width for eye, procedures, date columns
+					colGroup.append('<col style="width: 3.5%x;"><col style="width: 24%;"><col style="width: 7%;">');
 				} else {
 					// set up patient list dom layout for non cataract
-					colGroup.append('<col style="width: 450px;"><col style="width: 450px;">');
+					// for procedures column
+					colGroup.append('<col style="width: 24%;">');
 				}
 				// deep copy from passed in data
 				g_data = custom_data.slice();
