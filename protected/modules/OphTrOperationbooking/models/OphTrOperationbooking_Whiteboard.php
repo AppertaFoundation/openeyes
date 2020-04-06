@@ -403,7 +403,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if (!$patient->no_risks_date && !$risks) {
             $total_risks = 0;
-            $display .= '<div class="alert-box info">Status unknown</div>';
+            $display .= '<div class="alert-box info">Risk status unknown</div>';
         }
 
         // Add positive risk labels for significant risks that are not present.
