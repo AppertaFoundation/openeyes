@@ -64,11 +64,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'group',
           'hidden',
           'prescription_item_id',
+          'dispense_condition_id',
           'to_be_copied',
           'prepended_markup',
           'set_ids',
           'locked',
-					'bound_key'
+          'bound_key'
       ];
 
     this.initialiseTriggers();
@@ -340,7 +341,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
 
 		$full_row.on("change", ".js-dispense-condition", function(){
-          controller.getDispenseLocation($(this));
+          controller.getDispenseLocation($(this), null);
           return false;
       });
 
@@ -365,7 +366,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
-  HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition)
+  HistoryMedicationsController.prototype.getDispenseLocation = function($dispense_condition, dispense_location)
   {
       $.get("/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
           condition_id: $dispense_condition.val(),
@@ -374,6 +375,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $dispense_location.find('option').remove();
           $dispense_location.append(data);
           $dispense_location.show();
+          if (dispense_location) {
+              $dispense_location.val(dispense_location);
+          }
       });
   };
 
@@ -530,6 +534,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                                 }
                         });
                     }
+                    if (field === "dispense_condition_id") {
+                        self.getDispenseLocation($row.find('.js-dispense-condition'), data['dispense_location_id']);
+                    }
                 }
             }
         });
@@ -658,7 +665,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 let $row = $(rows[row_index]);
                 controller.addMedicationItemRow($row, response[row_index]);
                 $row.find(".js-btn-prescribe").click();
-                $row.find(".js-duration,.js-dispense-condition,.js-dispense-location,.js-add-taper").show();
             }
 
             controller.displayTableHeader();
