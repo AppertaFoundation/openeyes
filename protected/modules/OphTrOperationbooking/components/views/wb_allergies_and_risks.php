@@ -21,7 +21,7 @@ $all_risk_ids = $this->data->booking->getAllBookingRiskIds();
         <?php foreach (explode(', ', $this->data->allergies) as $allergy) { ?>
             <?php if ($allergy === 'Unknown') {?>
                 <div class="alert-box info">
-                    Allergy status unknown
+                    Status unknown
                 </div>
             <?php } else { ?>
                 <div class="alert-box warning">
