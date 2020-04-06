@@ -18,7 +18,6 @@ $default_urls = $logo_helper->getLogoURLs();
 ?>
 <style>
     .flash-success{
-
         border:1px solid #1DDD50;
         background: #C3FFD3;
         text-align: center;
@@ -28,7 +27,6 @@ $default_urls = $logo_helper->getLogoURLs();
     }
 
     .error{
-
         border:1px solid #ff6666;
         background: #ffe6e6;
         text-align: center;
