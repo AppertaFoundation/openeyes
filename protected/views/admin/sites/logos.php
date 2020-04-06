@@ -36,6 +36,15 @@ $default_urls = $logo_helper->getLogoURLs();
         color: #000000;
         margin-bottom: 20px;
     }
+    
+    .remove-logo{
+        display: block;
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        padding: 11px 11px;
+        background-color: rgba(255,255,255,.5);
+    }
 </style>
 <?php if (Yii::app()->user->hasFlash('success')) : ?>
     <div class="flash-success">
@@ -93,8 +102,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             'csrf' => true,
                             'class' =>'oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the default primary logo?',
-                            'data-method'=>"POST",
-                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            'data-method'=>"POST"
                         ));
                         echo '</div>';
                 } else {
@@ -118,10 +126,9 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deleteSecondaryLogo' => true,
                             ),
                             'csrf' => true,
-                            'class' =>'oe-i remove-circle small',
+                            'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the default secondary logo?',
-                            'data-method'=>"POST",
-                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            'data-method'=>"POST"
                         ));
                         echo '</div>';
                 } else {

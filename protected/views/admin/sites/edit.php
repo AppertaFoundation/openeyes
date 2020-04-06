@@ -34,6 +34,15 @@ $default_urls = $logo_helper->getLogoURLs();
         color: #000000;
         margin-bottom: 20px;
     }
+
+    .remove-logo{
+        display: block;
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        padding: 11px 11px;
+        background-color: rgba(255,255,255,.5);
+    }
 </style>
 <?php if (Yii::app()->user->hasFlash('success')) : ?>
     <div class="flash-success">
@@ -176,10 +185,9 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deletePrimaryLogo' => true,
                             ),
                             'csrf' => true,
-                            'class' =>'oe-i remove-circle small',
+                            'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
-                            'data-method'=>"POST",
-                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            'data-method'=>"POST"
                         ));
                         echo '</div>';
                     }
@@ -212,10 +220,9 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deleteSecondaryLogo' => true,
                             ),
                             'csrf' => true,
-                            'class' =>'oe-i remove-circle small',
+                            'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
-                            'data-method'=>"POST",
-                            'style'=>'display: block;position: absolute;top: 1px;right: 2px;padding: 11px 11px;background-color: rgba(255,255,255,.5);'
+                            'data-method'=>"POST"
                         ));
                         echo '</div>';
                     }
