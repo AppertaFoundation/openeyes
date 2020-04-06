@@ -12,10 +12,9 @@ $site = Site::model()->findByPk($site_id);
 $date_from = Yii::app()->request->getParam('date_from');
 $date_to = Yii::app()->request->getParam('date_to');
 
-if($date_from === "" && $date_to === "") {
+if ($date_from === "" && $date_to === "") {
     $date_range = "All dates";
-}
-else {
+} else {
     $date_range = "$date_from - $date_to";
 }
 
@@ -25,7 +24,7 @@ $logo_helper = new LogoHelper();
 
 <header class="print-header">
     <div class="logo">
-		<?= $logo_helper->render() ?>
+        <?= $logo_helper->render() ?>
     </div>
 </header>
 
@@ -49,7 +48,7 @@ $logo_helper = new LogoHelper();
         </tbody>
     </table>
 
-    <?php foreach ($worklists as $worklist): ?>
+    <?php foreach ($worklists as $worklist) : ?>
         <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_printing' => true)); ?>
     <?php endforeach; ?>
 </main>
