@@ -81,6 +81,6 @@ class SiteLogo extends BaseActiveRecord
         if ($logo_type) {
             $options['secondary_logo'] = $logo_type;
         }
-        return Yii::app()->createUrl('//sitelogo/view', $options);
+        return Yii::app()->createUrl('sitelogo/view', $options);
     }
 }
