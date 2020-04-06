@@ -193,6 +193,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $('#'+side+'_reason_entry').html(primaryReason.label);
                 $('#'+side+'_guarded_prognosis_entry').html(guardedPrognosis.label === 'No' ? 'No guarded prognosis' : 'Guarded prognosis');
                 $('#'+side+'_refraction_entry').html(refractiveTarget);
+                $('#'+side+'_refraction_entry').toggle(discussedLabel === '');
+                $('#'+side+'_refraction_entry').parents('td:first').toggle(discussedLabel === '');
                 $('#'+side+'_discussed_entry').html(discussedLabel);
 
                 // set hidden form elements

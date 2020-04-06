@@ -24,7 +24,7 @@ if ($expert) {
     $mode = 'Expert';
 }
 
-$doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession', 'Freehand', 'FreehandCopyForOE');
+$doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession', 'Freehand');
 $bindingArray = array(
     'Gonioscopy' => array(
         'mode' => array('id' => $side.'_gonioscopy_mode', 'attrivate' => 'data-value'),
