@@ -273,6 +273,7 @@ var analytics_cataract = (function () {
 
 	function toggleAllSurgeonOpt() {
 		$(this).toggleClass('green hint');
+        $(this).blur();
 		if ($('#analytics_allsurgeons').val() == 'on') {
 			$('#analytics_allsurgeons').val('');
 		} else {
