@@ -148,20 +148,20 @@ class EventImageController extends BaseController
 
         $model = EventImage::model()->find($criteria);
         if (isset($model)) {
-            $fileModTime = strtotime($model->last_modified_date);
+            $file_mod_time = strtotime($model->last_modified_date);
             $headers = $this->getRequestHeaders();
 
             header('Content-type: image/png');
             header('Cache-Control: public');
             header('Pragma:');
             // Check if the client is validating his cache and if it is current.
-            if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $fileModTime)) {
+            if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $file_mod_time)) {
                 // Client's cache IS current, so we just respond '304 Not Modified'.
-                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $file_mod_time) . ' GMT', true, 304);
             } else {
                 $image_data = $model->image_data;
                 // Image not cached or cache outdated, we respond '200 OK' and output the image.
-                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $file_mod_time) . ' GMT', true, 200);
 
                 header('Content-transfer-encoding: binary');
                 header('Content-length: ' . strlen($image_data));
