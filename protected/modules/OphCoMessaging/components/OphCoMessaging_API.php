@@ -187,7 +187,7 @@ class OphCoMessaging_API extends \BaseAPI
                 'sort' => $sort,
                 'criteria' => $criteria,
                 'pagination' => array(
-                    'pageSize' => 10,
+                    'pageSize' => 30,
                     'itemCount' => $total_messages
                 ),
             ));

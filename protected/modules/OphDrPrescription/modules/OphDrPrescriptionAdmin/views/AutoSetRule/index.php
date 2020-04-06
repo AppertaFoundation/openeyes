@@ -97,7 +97,6 @@
             {{#hidden}}<i class="oe-i tick medium"></i>{{/hidden}}
             {{^hidden}}<i class="oe-i remove medium"></i>{{/hidden}}
         </td>
-        <td></td>
         <td>
             <a href="/OphDrPrescription/admin/autoSetRule/edit/{{id}}" class="button">Edit</a>
             <a href="/OphDrPrescription/admin/autoSetRule/listMedications?set_id={{id}}" class="button">List medications</a>

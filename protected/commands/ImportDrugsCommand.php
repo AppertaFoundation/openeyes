@@ -41,6 +41,7 @@ class ImportDrugsCommand extends CConsoleCommand
         'LIC_AUTHCD' => 'LICENSING_AUTHORITY.CD',
         'LIC_AUTHCHANGECD' => 'LICENSING_AUTHORITY_CHANGE_REASON.CD',
         'SUPPCD' => 'SUPPLIER.CD',
+        'UNIT_DOSE_UOMCD' => 'UNIT_DOSE_UNIT_OF_MEASURE.CD'
     ];
     private $route_mapping = [
         '1_drug_route' => '54485002',
@@ -362,7 +363,7 @@ EOD;
         $cellsString = '';
         foreach ($cells as $cellName => $cellType) {
             if (in_array($cellName, $this->textCells)) {
-                $cellsString .= "`$cellName` " . 'TEXT,';
+                $cellsString .= "`$cellName` " . 'VARCHAR(300),';
             } else {
                 $cellsString .= "`$cellName` " . $this->getSqlColumnType($cellType) . ',';
             }
@@ -502,7 +503,7 @@ EOD;
                         } else {
                             if ($fieldType == 'date') {
                                 $value = "'0000-00-00'";
-                            } else if ($fieldType == 'float') {
+                            } elseif ($fieldType == 'float') {
                                 $value = 'NULL';
                             } else {
                                 $value = "''";
@@ -583,7 +584,7 @@ EOD;
 
         $scripts = [
             'delete', 'forms_routes', 'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'search_index',
-            'replace_legacy_with_dmd', 'laterality_mapping', 'preservative-free'
+            'replace_legacy_with_dmd', 'laterality_mapping'
         ];
 
         foreach ($scripts as $script) {
@@ -618,7 +619,7 @@ EOD;
             'PRICE_BASIS',
             'LEGAL_CATEGORY',
             'AVAILABILITY_RESTRICTION',
-            'LICENSING_AUTHORITY_CHANGE_REASON'
+            'LICENSING_AUTHORITY_CHANGE_REASON',
         ];
 
         Yii::app()->db->createCommand("DELETE FROM medication_attribute_assignment")->execute();
@@ -655,10 +656,20 @@ EOD;
         // validity as a prescribable product
         $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_status_id' AND `value` = '0001'")->queryScalar();
 
+        // Add UD UOM and copy options from UOM
+        $cmd = "INSERT INTO medication_attribute (`name`) VALUES ('UNIT_DOSE_UNIT_OF_MEASURE')";
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        $unit_uom_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'UNIT_DOSE_UNIT_OF_MEASURE'")->queryScalar();
+        $uom_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute WHERE `name` = 'UNIT_OF_MEASURE'")->queryScalar();
+        $cmd = "INSERT INTO medication_attribute_option (`medication_attribute_id`, `value`, `description`) 
+                SELECT {$unit_uom_id}, `value`, `description` FROM medication_attribute_option WHERE medication_attribute_id = {$uom_id}";
+        Yii::app()->db->createCommand($cmd)->execute();
+
         echo " OK" . PHP_EOL;
         $this->printMsg("Importing VMP form information", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
 						med.id,
 						mao.id
@@ -677,7 +688,7 @@ EOD;
 
         $this->printMsg("Importing VMP route information", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
 						med.id,
 						mao.id
@@ -694,7 +705,7 @@ EOD;
 
         $this->printMsg("Importing VMP preservative free information", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
 						med.id,
 						{$pres_free_opt_id}
@@ -704,11 +715,20 @@ EOD;
 						";
 
         Yii::app()->db->createCommand($cmd)->execute();
+
+        // Add the preservative free attribute to any drugs named preservative free that do not already explicitly have this attribute
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id )
+        SELECT m.id, {$pres_free_opt_id}
+        FROM medication m 
+        WHERE m.vmp_term like '%preservative free';";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
         echo " OK" . PHP_EOL;
 
         $this->printMsg("Importing VMP prescribable product information", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
                 SELECT
                        med.id,
                        {$validity_opt_id}
@@ -749,56 +769,52 @@ EOD;
 
         foreach ($tables as $table => $table_properties) {
             $this->printMsg("Importing attributes for $table .." . str_repeat(" ", 14), false);
-            $cmd = "SELECT * FROM $table";
-            $rows = Yii::app()->db->createCommand($cmd)->queryAll();
-            $total = count($rows);
-            $progress = 1;
+            
+            foreach ($this->attribs as $attr_key => $attrib) {
+                $attr_name_parts = explode(".", $attrib);
+                $attr_name = $attr_name_parts[0];
+                $attr_key = strtolower($attr_key);
+                
+                $attribute_in_table = Yii::app()->db->createCommand("SELECT COUNT(TABLE_NAME)
+                                                                    FROM INFORMATION_SCHEMA.COLUMNS
+                                                                    WHERE COLUMN_NAME = '" . $attr_key . "'
+                                                                        AND TABLE_NAME='" . $table . "';")->queryScalar();
 
-            $values = [];
-            $attribIndex = 0;
-            $row_count = count($rows);
-            foreach ($rows as $key => $row) {
-                $queryForMedicationId = "SELECT id FROM medication
-                        WHERE {$table_properties["medication_FK_column"]} = '{$row[$table_properties["id_column"]]}'";
-                $medicationId = Yii::app()->db->createCommand($queryForMedicationId)->queryScalar();
-
-                foreach ($this->attribs as $attr_key => $attrib) {
-                    $attr_name_parts = explode(".", $attrib);
-                    $attr_name = $attr_name_parts[0];
-                    $attr_key = strtolower($attr_key);
-                    if (array_key_exists($attr_key, $row) && !empty($row[$attr_key])) {
-                        $attr_value = $row[$attr_key];
-                        $values[] = "(
-								{$medicationId},
-								(   SELECT mao.id 
-									FROM medication_attribute_option mao
-									LEFT JOIN medication_attribute ma ON ma.id = mao.medication_attribute_id 
-									WHERE mao.`value`='{$attr_value}' AND ma.name = '{$attr_name}'
-								)
-								)";
-
-                        $attribIndex++;
-                    }
-                }
-
-                if (($attribIndex >= 500 || $key === $row_count - 1) && $values) {
-                    $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) VALUES" .
-                        implode(',', $values) . ";";
+                if ($attribute_in_table == '1') {
+                    $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id )
+                        SELECT DISTINCT m.id
+                            , (SELECT mao.id
+                                FROM medication_attribute_option mao 
+                                INNER JOIN medication_attribute ma 
+                                    ON ma.id = mao.medication_attribute_id
+                                WHERE mao.`value` = f.". $attr_key . " AND LOWER(ma.`name`) = LOWER('" . $attr_name . "')
+                                ) AS option_id
+                        FROM " . $table . " f INNER JOIN medication m ON m." . $table_properties['medication_FK_column'] . " = f." . $table_properties['id_column'] . "
+                        WHERE f.". $attr_key . " IS NOT NULL AND f.". $attr_key . " != ''
+                        ";
+                    $this->printMsg(".");
                     Yii::app()->db->createCommand($cmd)->execute();
-                    $values = [];
-                    $attribIndex = 0;
                 }
-
-                $progress++;
-                echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
             }
 
             echo PHP_EOL;
         }
 
-        $this->printMsg("Applying VTM attributes to VMPs", false);
+        $this->printMsg("Importing Controlled Drug status...  ", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd="INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id )
+        SELECT m.id, o.id
+        FROM {$this->tablePrefix}vmp_control_drug_info c INNER JOIN medication_attribute_option o
+            ON c.catcd = o.`value`
+            INNER JOIN medication m ON m.vmp_code = c.vpid 
+        WHERE o.medication_attribute_id = (SELECT id FROM medication_attribute WHERE `name` = 'CONTROL_DRUG_CATEGORY')
+        ";
+        $this->printMsg(Yii::app()->db->createCommand($cmd)->execute());
+        echo " OK" . PHP_EOL;
+
+        $this->printMsg("Applying VTM attributes to VMPs...  ", false);
+
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 				SELECT med_vmp.id, maa.medication_attribute_option_id
 				FROM medication_attribute_assignment AS maa
 				LEFT JOIN medication AS med_vtm ON maa.medication_id = med_vtm.id
@@ -810,15 +826,15 @@ EOD;
 				med_vmp.source_type = 'DM+D'
 				AND med_vmp.source_subtype = 'VMP'";
 
-        Yii::app()->db->createCommand($cmd)->execute();
+        $this->printMsg(Yii::app()->db->createCommand($cmd)->execute());
         echo " OK" . PHP_EOL;
 
         $this->convertMappedUOMsToPlural();
         $this->applyUOMToMedications();
 
-        $this->printMsg("Applying VMP attributes to AMPs", false);
+        $this->printMsg("Applying VMP attributes to AMPs...  ", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 				SELECT med_amp.id, maa.medication_attribute_option_id
 				FROM medication_attribute_assignment AS maa
 				LEFT JOIN medication AS med_vmp ON maa.medication_id = med_vmp.id
@@ -831,10 +847,10 @@ EOD;
 				  AND med_amp.source_subtype = 'AMP'
 					";
 
-        Yii::app()->db->createCommand($cmd)->execute();
+        $this->printMsg(Yii::app()->db->createCommand($cmd)->execute());
         echo " OK" . PHP_EOL;
 
-        $this->printMsg("Applying VMP form, route, unit properties to AMPs", false);
+        $this->printMsg("Applying VMP form, route, unit properties to AMPs...   ", false);
 
         $cmd = "UPDATE medication AS amp
 				LEFT JOIN medication vmp ON amp.vmp_code = vmp.preferred_code
@@ -845,7 +861,7 @@ EOD;
 				AND vmp.source_type = 'DM+D' AND vmp.source_subtype = 'VMP'
 				";
 
-        Yii::app()->db->createCommand($cmd)->execute();
+        $this->printMsg(Yii::app()->db->createCommand($cmd)->execute());
         echo " OK" . PHP_EOL;
 
         // Route mapping
@@ -881,6 +897,17 @@ EOD;
 
         @unlink('/tmp/ref_medication_set.csv');
 
+        $cmd = "UPDATE medication
+                SET default_dose_unit_term = 'drop' 
+	            WHERE m.preferred_term like '%eye drop%'";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        /*------------------------------- Rename 'Ocular' to 'Eye' ----------------------------------------------*/
+        $cmd = "UPDATE medication_route SET term = 'Eye' WHERE term='Ocular' AND source_type = 'DM+D'";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
         echo "Data imported to OE." . PHP_EOL;
     }
 
@@ -891,7 +918,7 @@ EOD;
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
             $this->printMsg("    Mapping: $uom", false);
             $uom_value = Yii::app()->db->createCommand('SELECT id FROM medication_attribute_option WHERE BINARY description = "' . $uom . '"')->queryRow();
-            $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+            $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
                         SELECT 
                             med.id,
                             {$uom_value['id']}
@@ -913,7 +940,6 @@ EOD;
             echo " OK" . PHP_EOL;
         }
         $this->printMsg("Unit of measurement mapped.");
-
     }
 
     private function convertMappedUOMsToPlural()
@@ -922,7 +948,9 @@ EOD;
 
         $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
-            $cmd .= "(BINARY description = \"$uom\") OR ";
+            if ($uom != "Drop"){ // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
+                $cmd .= "(BINARY description = \"$uom\") OR ";
+            }
         }
         if (count($this->uom_to_forms_mapping) > 0) {
             $cmd = substr($cmd, 0, -4);
@@ -936,7 +964,7 @@ EOD;
     {
         $this->printMsg("Applying unit of measurement to medications", false);
 
-        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
 					SELECT 
 						med.id,
 						mao.id
@@ -960,6 +988,15 @@ EOD;
                 WHERE ma.name = \"UNIT_OF_MEASURE\"
             ) AS uom_table ON med.id = uom_table.med_id
             SET med.default_dose_unit_term = uom_table.UOM";
+
+        Yii::app()->db->createCommand($cmd)->execute();
+
+        $cmd = "UPDATE medication 
+        SET default_dose = 1 
+        WHERE (preferred_term LIKE '%eye drop%'
+            OR default_form_id = (SELECT id 
+                FROM medication_form 
+                WHERE term = 'Eye drops')) AND default_dose IS NULL";
 
         Yii::app()->db->createCommand($cmd)->execute();
         echo " OK" . PHP_EOL;

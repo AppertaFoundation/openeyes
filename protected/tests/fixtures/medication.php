@@ -2,6 +2,7 @@
 return array(
     'drug1' => array(
         'id' => 1,
+        'source_type' => 'LOCAL',
         'preferred_term' => 'Abidec drops',
         'default_form_id' => 4,
         'default_dose_unit_term' => 'mL',
@@ -14,6 +15,7 @@ return array(
     ),
     'drug2' => array(
         'id' => 2,
+        'source_type' => 'LOCAL',
         'preferred_term' => 'Acetazolamide 250mg modified release capsules',
         'default_form_id' => 1,
         'default_dose_unit_term' => 'capsule(s)',
@@ -25,6 +27,7 @@ return array(
     ),
     'drug5' => array(
         'id' => 5,
+        'source_type' => 'LOCAL',
         'preferred_term' => 'Ibuprofen 250mg modified release capsules',
         'default_form_id' => 1,
         'default_dose_unit_term' => 'capsule(s)',

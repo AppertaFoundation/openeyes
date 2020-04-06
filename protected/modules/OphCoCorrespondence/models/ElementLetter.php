@@ -793,7 +793,7 @@ class ElementLetter extends BaseEventTypeElement
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.
-        return $this->purifyContent(preg_replace("/\n(?=<p><\/p>)/", "<br/>", $this->body));
+        return $this->purifyContent(preg_replace("/<p>(<?((span style=\"\D{0,40};\")|(em)|(strong))?>){0,3}(<\/?((span)|(em)|(strong))?>){0,3}<\/p>/", "<br/>", $this->body));
     }
 
     /**
@@ -989,6 +989,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($associated_content as $key => $ac) {
                 if ($ac->associated_protected_file_id) {
                     $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    file_put_contents($file->getPath(), $file->file_content);
                     $pdf_files[$key]['path'] = $file->getPath();
                     $pdf_files[$key]['name'] = $file->name;
                     $pdf_files[$key]['mime'] = $file->mimetype;

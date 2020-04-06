@@ -70,21 +70,16 @@ var analytics_toolbox = (function () {
 	function initDatePicker(def) {
 		var date_from = typeof (def) === 'undefined' ? false : new Date(def['date_from']);
 		var date_to = typeof (def) === 'undefined' ? false : new Date(def['date_to']);
-		if (date_from && date_to) {
-			date_from = processDate(date_from);
-
-			date_to = processDate(date_to);
-		}
 
 		pickmeup('#analytics_datepicker_from', {
-			format: 'Y-m-d',
+			format: 'd-b-Y',
 			date: date_from,
 			hide_on_select: true,
 			default_date: date_from,
 		});
 
 		pickmeup('#analytics_datepicker_to', {
-			format: 'Y-m-d',
+			format: 'd-b-Y',
 			date: date_to,
 			hide_on_select: true,
 			default_date: date_to,
