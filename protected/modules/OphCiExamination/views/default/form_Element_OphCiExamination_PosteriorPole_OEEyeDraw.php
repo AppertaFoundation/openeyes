@@ -32,6 +32,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Fovea',
             'RPEDetachment',
             'EpiretinalMembrane',
+            'MacularHole',
             'Macroaneurysm',
             'RetinalVeinOcclusionPostPole',
             'RetinalArteryOcclusionPostPole',
