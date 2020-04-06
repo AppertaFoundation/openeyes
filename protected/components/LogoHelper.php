@@ -49,12 +49,12 @@ class LogoHelper
         $url2 = 'sitelogo/secondary/';
         $options = array();
         if($get_base_64){
-            if(isset($logo->primary_logo)){
+            if($logo->primary_logo){
                 $imageData = base64_encode($logo->primary_logo);
                 // Format the image SRC:  data:{mime};base64,{data};
                 $logoOut['primaryLogo'] = 'data:;base64,'.$imageData;
             }
-            if(isset($logo->secondary_logo)){
+            if($logo->secondary_logo){
                 $imageData = base64_encode($logo->secondary_logo);
                 // Format the image SRC:  data:{mime};base64,{data};
                 $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
@@ -64,10 +64,10 @@ class LogoHelper
             if($site_id){
                 $options = array('id' => $logo_id);
             }
-            if(isset($logo->primary_logo)){
+            if($logo->primary_logo){
                 $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
             }
-            if(isset($logo->secondary_logo)){
+            if($logo->secondary_logo){
                 $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
             }
         }

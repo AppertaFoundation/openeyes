@@ -1028,7 +1028,7 @@ class AdminController extends BaseAdminController
 
         // get logos for site if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
         $logo = $site->logo;
-        if (!isset($logo)) {
+        if (!($logo)) {
             $logo = new SiteLogo();
         }
 

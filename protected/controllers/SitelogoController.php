@@ -39,7 +39,7 @@ class SiteLogoController extends BaseController
     {
         $site = Site::model()->findByPk($site_id);
         if (isset($site)) {
-            if (isset($site->logo_id)) {
+            if ($site->logo_id) {
                 // get logos for site
                 $logo = SiteLogo::model()->findByPk($site->logo_id);
             } else {
