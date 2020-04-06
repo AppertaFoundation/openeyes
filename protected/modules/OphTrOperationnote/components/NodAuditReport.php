@@ -374,6 +374,7 @@ class NodAuditReport extends Report implements ReportInterface
         $dataset = $this->dataSet();
         $incomplete_y = array();
         $complete_y = array();
+        $hovertemplate = '%{x} %{y} of Total ' . $dataset['total'] . ' Ops';
         if ($dataset['total'] !== 0) {
             $incomplete_y = array(
                 count($dataset['VA']['pre-incomplete'])/$dataset['total'],
@@ -438,6 +439,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['INDICATION_FOR_SURGERY']['incomplete'],
                 $dataset['E/I']['ineligible'],
             ),
+            'hovertemplate' => $hovertemplate,
         );
 
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
@@ -478,6 +480,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['INDICATION_FOR_SURGERY']['complete'],
                 $dataset['E/I']['eligible'],
             ),
+            'hovertemplate' => $hovertemplate,
         );
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             array_push($trace1['x'],
