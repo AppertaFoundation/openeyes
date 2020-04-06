@@ -20,20 +20,20 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
             FROM v_patient_va_converted va1
             WHERE va1.patient_id IN (" . implode(', ', $this->id_list) . ")
             AND va1.LogMAR_value = (SELECT MAX(va2.LogMAR_value) FROM v_patient_va_converted va2 WHERE va2.patient_id = va1.patient_id AND va2.eye = va1.eye)
-            AND (:start_date IS NULL OR reading_date > :start_date)
-            AND (:end_date IS NULL OR reading_date < :end_date)
-            AND logMAR_value REGEXP '[0-9]+(\.[0-9]*)?'
-            GROUP BY FLOOR(LogMAR_value / 0.3)
+            AND (:start_date IS NULL OR va1.reading_date > :start_date)
+            AND (:end_date IS NULL OR va1.reading_date < :end_date)
+            AND va1.logMAR_value REGEXP '[0-9]+(\.[0-9]*)?'
+            GROUP BY 0.3 * FLOOR(LogMAR_value / 0.3)
             ORDER BY 1";
                 break;
             case 'ADVANCED':
                 return "SELECT p.nhs_num, va1.LogMAR_value va, va1.side, DATE_FORMAT(MAX(va1.reading_date), '%d-%m-%Y'), DATE_FORMAT(MAX(va1.reading_date), '%H:%i:%s')
             FROM v_patient_va_converted va1
             JOIN patient p ON p.id = va1.patient_id
-            WHERE patient_id IN (" . implode(', ', $this->id_list) . ")
+            WHERE va1.patient_id IN (" . implode(', ', $this->id_list) . ")
             AND va1.LogMAR_value = (SELECT MAX(va2.LogMAR_value) FROM v_patient_va_converted va2 WHERE va2.patient_id = va1.patient_id AND va2.eye = va1.eye)
-            AND (:start_date IS NULL OR reading_date > :start_date)
-            AND (:end_date IS NULL OR reading_date < :end_date)
+            AND (:start_date IS NULL OR va1.reading_date > :start_date)
+            AND (:end_date IS NULL OR va1.reading_date < :end_date)
             GROUP BY p.nhs_num, va1.LogMAR_value, va1.side
             ORDER BY p.nhs_num, va1.LogMAR_value, va1.side";
                 break;
@@ -41,11 +41,11 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
                 return 'SELECT 0.3 * FLOOR(va1.LogMAR_value / 0.3) va, COUNT(*) frequency, GROUP_CONCAT(DISTINCT va1.patient_id) patient_id_list
             FROM v_patient_va_converted va1
             WHERE va1.patient_id IN (' . implode(', ', $this->id_list) . ')
-            AND (:start_date IS NULL OR reading_date > :start_date)
-            AND (:end_date IS NULL OR reading_date < :end_date)
-            AND logMAR_value REGEXP \'[0-9]+\.?[0-9]*\'
+            AND (:start_date IS NULL OR va1.reading_date > :start_date)
+            AND (:end_date IS NULL OR va1.reading_date < :end_date)
+            AND va1.logMAR_value REGEXP \'[0-9]+\.?[0-9]*\'
             AND va1.LogMAR_value = (SELECT MAX(va2.LogMAR_value) FROM v_patient_va_converted va2 WHERE va2.patient_id = va1.patient_id AND va2.eye = va1.eye)
-            GROUP BY FLOOR(LogMAR_value / 0.3)
+            GROUP BY 0.3 * FLOOR(LogMAR_value / 0.3)
             ORDER BY 1';
                 break;
         }

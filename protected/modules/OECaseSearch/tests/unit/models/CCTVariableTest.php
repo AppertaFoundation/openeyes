@@ -92,7 +92,7 @@ class CCTVariableTest extends CDbTestCase
     {
         $this->assertEquals('cct', $this->variable->field_name);
         $this->assertEquals('CCT', $this->variable->label);
-        $this->assertEquals('microns', $this->variable->unit);
+        $this->assertEquals('CCT (microns)', $this->variable->x_label);
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 

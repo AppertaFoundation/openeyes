@@ -81,7 +81,7 @@ class AgeVariableTest extends CDbTestCase
 
         $this->assertEquals('age', $this->variable->field_name);
         $this->assertEquals('Age', $this->variable->label);
-        $this->assertEquals('y', $this->variable->unit);
+        $this->assertEquals('Age (y)', $this->variable->x_label);
         $this->assertNotEmpty($this->variable->id_list);
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
