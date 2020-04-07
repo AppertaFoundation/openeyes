@@ -100,7 +100,7 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deletePrimaryLogo' => true,
                             ),
                             'csrf' => true,
-                            'class' =>'oe-i remove-circle small',
+                            'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the default primary logo?',
                             'data-method'=>"POST"
                         ));
