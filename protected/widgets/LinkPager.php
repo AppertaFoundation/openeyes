@@ -160,6 +160,6 @@ class LinkPager extends CLinkPager
     {
         $currentPage = $this->getCurrentPage(false);
         $pageCount = $this->getPageCount();
-        return '...' . $this->createPageButton("{$pageCount}", $pageCount - 1, $this->internalPageCssClass, $currentPage >= $pageCount - 1 , false);
+        return '...' . $this->createPageButton("{$pageCount}", $pageCount - 1, $this->internalPageCssClass, $currentPage >= $pageCount - 1, false);
     }
 }

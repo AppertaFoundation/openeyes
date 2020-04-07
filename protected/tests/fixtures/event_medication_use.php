@@ -2,6 +2,7 @@
  return array(
      'prescription_item1' => array(
          'id' => 1,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 1,
          'dose' => '10ml',
@@ -14,6 +15,7 @@
      ),
      'prescription_item2' => array(
          'id' => 2,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 2,
          'dose' => '10ml',
@@ -26,6 +28,7 @@
      ),
      'prescription_item3' => array(
          'id' => 3,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 1,
          'dose' => '10ml',
@@ -38,6 +41,7 @@
      ),
      'prescription_item4' => array(
          'id' => 4,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 1,
          'dose' => '10ml',
@@ -50,6 +54,7 @@
      ),
      'prescription_item5' => array(
          'id' => 5,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 1,
          'dose' => '10ml',
@@ -62,6 +67,7 @@
      ),
      'prescription_item6' => array(
          'id' => 6,
+         'usage_type' => 'test',
          'prescription_id' => 1,
          'medication_id' => 1,
          'dose' => '10ml',
