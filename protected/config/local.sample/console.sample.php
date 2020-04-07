@@ -31,18 +31,18 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $db_user = $db['username'];
     $db_pass = $db['password'];
 } else {
-     $db_host = getenv('DATABASE_HOST') ?: 'localhost';
-     $db_port = getenv('DATABASE_PORT') ?: '3306';
-     $db_name = getenv('DATABASE_NAME') ?: 'openeyes';
-     $db_user = getenv('DATABASE_USER') ?: rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: 'openeyes';
-     $db_pass = getenv('DATABASE_PASS') ?: rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: 'openeyes';
+     $db_host = getenv('DATABASE_HOST') ?? 'localhost';
+     $db_port = getenv('DATABASE_PORT') ?? '3306';
+     $db_name = getenv('DATABASE_NAME') ?? 'openeyes';
+     $db_user = getenv('DATABASE_USER') ?? rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?? 'openeyes';
+     $db_pass = getenv('DATABASE_PASS') ?? rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?? 'openeyes';
 }
 
- $db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_TEST_HOST') : 'localhost';
- $db_test_port = getenv('DATABASE_PORT') ?: '3306';
- $db_test_name = getenv('DATABASE_NAME') ?: 'openeyes_test';
- $db_test_user = getenv('DATABASE_USER') ?: rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: 'openeyes';
- $db_test_pass = getenv('DATABASE_PASS') ?: rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: 'openeyes';
+ $db_test_host = getenv('DATABASE_TEST_HOST') ?? 'localhost';
+ $db_test_port = getenv('DATABASE_PORT') ?? '3306';
+ $db_test_name = getenv('DATABASE_NAME') ?? 'openeyes_test';
+ $db_test_user = getenv('DATABASE_USER') ?? rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?? 'openeyes';
+ $db_test_pass = getenv('DATABASE_PASS') ?? rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?? 'openeyes';
 
 return array(
     'components' => array(
