@@ -13,7 +13,7 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
         'drug_routes' => MedicationRoute::class,
         'drug_frequencys' => MedicationFrequency::class,
         'medication_durations' => MedicationDuration::class,
-        'drug_durations' => DrugDuration::class,
+        'drug_durations' => MedicationDuration::class,
         'medications' => Medication::class,
     );
 
