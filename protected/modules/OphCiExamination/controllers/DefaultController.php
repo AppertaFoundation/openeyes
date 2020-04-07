@@ -393,7 +393,6 @@ class DefaultController extends \BaseEventTypeController
     {
         $step_id = \Yii::app()->request->getParam('step_id');
 
-        var_dump($step_id);
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js
