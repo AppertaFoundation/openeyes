@@ -1661,9 +1661,9 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
         //Find the groupings
-        for ($element_index = 0, $tile_index = 0, $row_index = 0; $element_index < $element_count; $element_index++) {
-            $element = $elements[$element_index];
-
+        $tile_index = 0;
+        $row_index = 0;
+        foreach ($elements as $element) {
             //if the tile size can't be determined assume a full row
             $sizeOfTile = $element->getTileSize($action) ?: $this->element_tiles_wide;
             if ($tile_index + $sizeOfTile > $this->element_tiles_wide) {

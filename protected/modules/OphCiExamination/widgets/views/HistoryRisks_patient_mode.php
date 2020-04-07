@@ -23,7 +23,7 @@
 
 <?php if (!$this->patient->hasRiskStatus() && !$this->patient->getDiabetes()) : ?>
     <div class="alert-box info">
-        <strong>Alerts</strong> - status unknown.
+        <strong>Alerts</strong> - none known.
     </div>
 <?php elseif ($element->no_risks_date) : ?>
     <div class="alert-box success">
