@@ -930,11 +930,11 @@ class AdminController extends BaseAdminController
 
     public function actionEditSite($new = false)
     {
-        if($new){
+        if ($new) {
             $site = new Site();
             $contact = new Contact();
             $address = new Address();
-            $logo = new SiteLogo();            
+            $logo = new SiteLogo();
             $errors = array();
             /*
             * Set default blank contact to fulfill the current relationship with a site
@@ -944,8 +944,7 @@ class AdminController extends BaseAdminController
             $contact->first_name = '';
             $contact->last_name = '';
             $contact->qualifications = null;
-        }
-        else{
+        } else {
             $id = @$_GET['site_id'];
             $site = Site::model()->findByPk($id);
             if (!$site) {
@@ -985,7 +984,7 @@ class AdminController extends BaseAdminController
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
-            if($new){
+            if ($new) {
                 $contact->save();
                 
                 $site->contact_id = $contact->id;
