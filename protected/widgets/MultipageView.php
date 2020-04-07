@@ -38,12 +38,11 @@ class MultipageView extends CWidget
 
     public function init()
     {
-    		if(isset($this->images[0]->document_number)) {
-
-    			foreach($this->images as $image) {
-    				$this->image_groups[$image->document_number][] = $image;
-					}
-				}
+        if (isset($this->images[0]->document_number)) {
+            foreach ($this->images as $image) {
+                $this->image_groups[$image->document_number][] = $image;
+            }
+        }
         $this->num_pages = count($this->images);
     }
 
