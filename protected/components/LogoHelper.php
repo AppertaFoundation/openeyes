@@ -33,6 +33,10 @@ class LogoHelper
     public function getLogoURLs($site_id = null, $get_base_64 = false)
     {
         $site = Site::model()->findByPk($site_id);
+        // default logo
+        $default_logo_id = 1;
+        $default_logo = SiteLogo::model()->findByPk(1);
+
         if(isset($site->logo_id)){
             // get logos for site
             $logo_id = $site->logo_id;
@@ -40,8 +44,8 @@ class LogoHelper
         }
         else{
             // use default logo
-            $logo_id = 1;
-            $logo = SiteLogo::model()->findByPk(1);
+            $logo_id = $default_logo_id;
+            $logo = $default_logo;
         }
 
         $logoOut = array();
@@ -54,8 +58,18 @@ class LogoHelper
                 // Format the image SRC:  data:{mime};base64,{data};
                 $logoOut['primaryLogo'] = 'data:;base64,'.$imageData;
             }
+            elseif($default_logo->primary_logo){
+                $imageData = base64_encode($default_logo->primary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['primaryLogo'] = 'data:;base64,'.$imageData;
+            }
             if($logo->secondary_logo){
                 $imageData = base64_encode($logo->secondary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
+            }
+            elseif($default_logo->secondary_logo){
+                $imageData = base64_encode($default_logo->secondary_logo);
                 // Format the image SRC:  data:{mime};base64,{data};
                 $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
             }
