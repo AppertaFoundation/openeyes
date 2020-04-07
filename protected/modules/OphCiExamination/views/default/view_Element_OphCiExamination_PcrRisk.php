@@ -14,7 +14,7 @@
                       <span class="highlighter large-text">PCR Risk
                         <span class="pcr-span"><?php echo $element->{$eye_side . '_pcr_risk'} ?: 'N/A' ?></span>%
                       </span>
-                        <span class="fade">&nbsp;<?= '(' . ($element->{$eye_side . '_doctor'}->short_name ?: 'N/A') . ')' ?></span>
+                        <span title="<?= ($element->{$eye_side . '_doctor'}->grade ?: 'N/A')?>" class="fade">&nbsp;<?= '(' . ($element->{$eye_side . '_doctor'}->short_name ?: 'N/A') . ')' ?></span>
                     </td>
                     <td>
                       <span>

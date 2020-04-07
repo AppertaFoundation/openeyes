@@ -14,14 +14,15 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugTest extends ActiveRecordTestCase
+class MedicationTest extends ActiveRecordTestCase
 {
     /**
-     *  @var Drug
+     *  @var Medication
      */
     protected $model;
     public $fixtures = array(
-        'drugs' => 'Drug',
+        'drugs' => 'Medication',
+        'medication_use' => EventMedicationUse::class,
     );
 
     public function getModel()
@@ -36,31 +37,30 @@ class DrugTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new    Drug();
+        $this->model = new Medication();
     }
 
     /**
-     *  @covers Drug::model
+     *  @covers Medication::model
      *
-     *  @todo Implement testModel().
      */
     public function testModel()
     {
-        $this->assertEquals('Drug', get_class(Drug::model()), 'Class name should match model.');
+        $this->assertEquals('Medication', get_class(Medication::model()), 'Class name should match model.');
     }
 
     /**
-     *  @covers DrugForm::tableName
+     *  @covers MedicationForm::tableName
      *
      *  @todo Implement testTableName().
      */
     public function testTableName()
     {
-        $this->assertEquals('drug', $this->model->tableName());
+        $this->assertEquals('medication', $this->model->tableName());
     }
 
     /**
-     * @covers DrugForm::rules
+     * @covers MedicationForm::rules
      *
      * @throws CException
      * @todo Implement testRules().
@@ -68,73 +68,62 @@ class DrugTest extends ActiveRecordTestCase
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->drugs('drug1')->validate());
+        $this->assertTrue($this->drugs('drug1')->validate(), var_export($this->drugs('drug1')->errors, true));
+
         $this->assertEmpty($this->drugs('drug2')->errors);
     }
 
     /**
-     *  @covers Drug::attributeLabels
+     *  @covers Medication::attributeLabels
      */
     public function testAttributeLabels()
     {
         $expected = array(
-            'type_id' => 'Type',
-            'default_duration_id' => 'Default Duration',
-            'default_frequency_id' => 'Default Frequency',
-            'default_route_id' => 'Default Route',
+            'default_route_id' => 'Default route',
+            'id' => 'ID',
+            'source_type' => 'Source Type',
+            'source_subtype' => 'Source Subtype',
+            'preferred_term' => 'Preferred Term',
+            'preferred_code' => 'Preferred Code',
+            'vtm_term' => 'VTM Term',
+            'vtm_code' => 'VTM Code',
+            'vmp_term' => 'VMP Term',
+            'vmp_code' => 'VMP Code',
+            'amp_term' => 'AMP Term',
+            'amp_code' => 'AMP Code',
+            'deleted_date' => 'Deleted Date',
+            'last_modified_user_id' => 'Last Modified User',
+            'last_modified_date' => 'Last Modified Date',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+            'will_copy' => 'Will copy',
+            'default_form_id' => 'Default form',
+            'default_dose_unit_term' => 'Default dose unit',
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels());
     }
 
     /**
-     * @covers Drug::getLabel
+     * @covers Medication::getLabel
      *
      * @todo Implement testGetLabel().
      */
     public function testGetLabel()
     {
-        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
         $result = $this->drugs('drug1')->getLabel();
+        $preservative_free = MedicationAttribute::model()->findByAttributes(array('name' => 'PRESERVATIVE_FREE'));
 
-        if ($this->drugs('drug1')->preservative_free) {
+        $preservative_free_attr = array_filter($this->drugs('drug1')->medicationAttributeAssignments, static function ($item) use ($preservative_free) {
+            return $item->id === $preservative_free->id;
+        });
+
+        if (!empty($preservative_free_attr)) {
             $expected = 'Abidec drops (No Preservative)';
             $this->assertEquals($expected, $result);
         } else {
             $expected = 'Abidec drops';
             $this->assertEquals($expected, $result);
         }
-    }
-
-     /**
-      * @covers Drug::getTallmanLabel
-      *
-      * @todo Implement testGetTallmanLabel().
-      */
-    public function testGetTallmanLabel()
-    {
-        $this->markTestIncomplete('Tags table no longer exists. This test should be refactored or deleted.');
-        $result = $this->drugs('drug1')->getTallmanLabel();
-
-        if ($this->drugs('drug1')->preservative_free) {
-            $expected = 'ABIDEC drops (No Preservative)';
-            $this->assertEquals($expected, $result);
-        } else {
-            $expected = 'ABIDEC drops';
-            $this->assertEquals($expected, $result);
-        }
-    }
-
-    /**
-     * @covers Drug::listBySubspecialty
-     *
-     * @todo    Implement testListBySubspecialty().
-     */
-    public function testListBySubspecialty()
-    {
-        $result = $this->model->listBySubspecialty('1');
-        $expected = $this->drugs('drug1')->listBySubspecialty('1');
-
-        $this->assertEquals($result, $expected);
     }
 }

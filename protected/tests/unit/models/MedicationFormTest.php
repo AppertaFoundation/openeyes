@@ -3,8 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,17 +12,17 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugRouteOptionTest extends ActiveRecordTestCase
+class MedicationFormTest extends ActiveRecordTestCase
 {
     /**
-     * @var DrugRouteOption
+     * @var MedicationForm
      */
     protected $model;
     public $fixtures = array(
-        'drugrouteoptions' => 'DrugRouteOption',
+        'drugforms' => 'MedicationForm',
     );
 
     public function getModel()
@@ -38,33 +37,53 @@ class DrugRouteOptionTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new DrugRouteOption();
+        $this->model = new MedicationForm();
     }
 
     /**
-     * @covers DrugForm::model
+     * @covers MedicationForm::model
      */
     public function testModel()
     {
-        $this->assertEquals('DrugRouteOption', get_class(DrugRouteOption::model()), 'Class name should match model.');
+        $this->assertEquals('MedicationForm', get_class(MedicationForm::model()), 'Class name should match model.');
     }
 
     /**
-     * @covers DrugForm::tableName
+     * @covers MedicationForm::tableName
      */
     public function testTableName()
     {
-        $this->assertEquals('drug_route_option', $this->model->tableName());
+        $this->assertEquals('medication_form', $this->model->tableName());
     }
 
     /**
-     * @covers DrugForm::rules
+     * @covers MedicationForm::rules
      * @throws CException
      */
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->drugrouteoptions('drugrouteoption1')->validate());
-        $this->assertEmpty($this->drugrouteoptions('drugrouteoption2')->errors);
+        $this->assertTrue($this->drugforms('drugform1')->validate());
+        $this->assertEmpty($this->drugforms('drugform2')->errors);
+    }
+
+    /**
+     * @covers MedicationForm::search
+     */
+    public function testSearch()
+    {
+        $this->model->setAttributes($this->drugforms('drugform1')->getAttributes());
+        $results = $this->model->search();
+        $data = $results->getData();
+
+        $expectedKeys = array('drugform1');
+        $expectedResults = array();
+        if (!empty($expectedKeys)) {
+            foreach ($expectedKeys as $key) {
+                $expectedResults[] = $this->drugforms($key);
+            }
+        }
+        $this->assertEquals(1, $results->getItemCount());
+        $this->assertEquals($expectedResults, $data);
     }
 }
