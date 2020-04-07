@@ -110,6 +110,24 @@ class MedicationDuration extends BaseActiveRecordVersioned
 		));
 	}
 
+
+    /**
+     * @param array $ids
+     * @return $this
+     *
+     * Returns active items or those that match $ids
+     */
+
+    public function activeOrPk($ids = [])
+    {
+        $crit = new CDbCriteria();
+        $crit->condition = "deleted_date IS NULL";
+        $crit->addInCondition('id', $ids, 'OR');
+        $this->getDbCriteria()->mergeWith($crit);
+
+        return $this;
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

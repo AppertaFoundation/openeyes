@@ -105,7 +105,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
         </td>
 
         <td>
-            <?php $drug_duration = DrugDuration::model()->findByPK($entry->duration_id); ?>
+            <?php $drug_duration = MedicationDuration::model()->findByPk($entry->duration_id); ?>
             <?= isset($drug_duration) ? $drug_duration->name : ""?>
 
             <?php if ($entry->dispense_condition_id) {
