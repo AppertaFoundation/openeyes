@@ -175,7 +175,7 @@ $default_urls = $logo_helper->getLogoURLs();
                     if (!isset($logo)||!isset($logo->primary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
-                    } else {
+                    } elseif(!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
                         echo '<br>'.CHtml::button( '',
@@ -206,7 +206,7 @@ $default_urls = $logo_helper->getLogoURLs();
                     if (!isset($logo)||!isset($logo->secondary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $default_urls['secondaryLogo']."' style='width:100%;'>";
-                    } else {
+                    } elseif(!$new) {
                         echo '<div style="
                         margin-top: 5px;
                         position: relative;

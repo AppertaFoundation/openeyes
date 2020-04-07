@@ -925,115 +925,41 @@ class AdminController extends BaseAdminController
 
     public function actionAddSite()
     {
-        $errors = array();
-        $site = new Site();
-        $contact = new Contact();
-        $address = new Address();
-        $logo = new SiteLogo();
-
-        /*
-         * Set default blank contact to fulfill the current relationship with a site
-         */
-
-        $contact->nick_name = 'NULL';
-        $contact->title = null;
-        $contact->first_name = '';
-        $contact->last_name = '';
-        $contact->qualifications = null;
-
-        $contact->save();
-
-        $site->contact_id = $contact->id;
-        $address->contact_id = $contact->id;
-
-        if (!empty($_POST)) {
-            $site->attributes = $_POST['Site'];
-
-            if (isset($_FILES['SiteLogo'])) {
-                if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
-                    $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
-                    $pl_file = file_get_contents($primary_logo->getTempName());
-                    // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
-                        $logo->primary_logo = $pl_file;
-                    }
-                }
-                if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
-                    $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
-                    $sl_file=file_get_contents($secondary_logo->getTempName());
-                    // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
-                        $logo->secondary_logo = $sl_file;
-                    }
-                }
-            }
-            if (!$site->validate()) {
-                $errors = $site->getErrors();
-            }
-
-            $address->attributes = $_POST['Address'];
-
-            if (!$address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
-
-            if (!$logo->validate()) {
-                $errors = array_merge($errors, $logo->getErrors());
-            }
-
-            if (empty($errors)) {
-                // Save the logo, and if sucsessful, add the logo ID to the site, so that the relation is established.
-                if (!$logo->save()) {
-                    throw new Exception('Unable to save Logo: ' . print_r($logo->getErrors(), true));
-                }
-                $site->logo_id = $logo->id;
-                
-                // revalidate site
-                if (!$site->validate()) {
-                    $errors = $site->getErrors();
-                }
-            }
-            if (empty($errors)) {
-                if (!$site->save()) {
-                    throw new Exception('Unable to save contact: ' . print_r($site->getErrors(), true));
-                }
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save address: ' . print_r($address->getErrors(), true));
-                }
-
-                Audit::add('admin-Site', 'add', $site->id);
-
-                Yii::app()->user->setFlash('success', "{$site->name} created.");
-                $this->redirect(array('/admin/editSite?site_id=' . $site->id));
-            }
-        }
-
-        $this->render('/admin/sites/edit', array(
-            'site' => $site,
-            'errors' => $errors,
-            'address' => $address,
-            'contact' => $contact,
-            'logo'=> $logo,
-        ));
+        $this->actionEditSite(true);
     }
 
-    public function actionEditsite()
+    public function actionEditSite($new = false)
     {
-        $id = @$_GET['site_id'];
-        $site = Site::model()->findByPk($id);
-        if (!$site) {
-            throw new Exception('Site not found: ' . $id);
+        if($new){
+            $site = new Site();
+            $contact = new Contact();
+            $address = new Address();
+            $logo = new SiteLogo();            
+            $errors = array();
+            /*
+            * Set default blank contact to fulfill the current relationship with a site
+            */
+            $contact->nick_name = 'NULL';
+            $contact->title = null;
+            $contact->first_name = '';
+            $contact->last_name = '';
+            $contact->qualifications = null;
         }
-
-        // get logos for site if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
-        $logo = $site->logo;
-        if (!($logo)) {
-            $logo = new SiteLogo();
+        else{
+            $id = @$_GET['site_id'];
+            $site = Site::model()->findByPk($id);
+            if (!$site) {
+                throw new Exception('Site not found: ' . $id);
+            }
+            $contact = $site->contact;
+            $address = $site->contact->address;
+            // get logos for site if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
+            $logo = $site->logo;
+            if (!($logo)) {
+                $logo = new SiteLogo();
+            }
+            $errors = array();
         }
-
-        $errors = array();
-
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
 
@@ -1059,9 +985,12 @@ class AdminController extends BaseAdminController
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
-
-            $address = $site->contact->address;
-
+            if($new){
+                $contact->save();
+                
+                $site->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+            }
             $address->attributes = $_POST['Address'];
 
             if (!$address->validate()) {
@@ -1096,16 +1025,19 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-Site', 'edit', $site->id);
                 Yii::app()->user->setFlash('success', "{$site->name} updated.");
+
+                $new = false;
+                $this->redirect(array('/admin/editSite?site_id=' . $site->id));
             }
         } else {
             Audit::add('admin-Site', 'view', @$_GET['site_id']);
         }
-
         $this->render('/admin/sites/edit', array(
             'site' => $site,
-            'address' => $site->contact->address,
             'errors' => $errors,
+            'address' => $address,
             'logo'=> $logo,
+            'new' => $new,
         ));
     }
 
