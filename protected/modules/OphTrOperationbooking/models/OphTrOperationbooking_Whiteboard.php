@@ -414,7 +414,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         // Anticoagulants and alpha blockers are excluded from this list as they are handled independently.
         foreach ($this->booking->getAllBookingRisks() as $risk) {
             if (!in_array($risk, $risks, true) && !in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
-                $display .= '<div class="alert-box success">' . "No {$risk->name}" . '</div>';
+                $display .= '<div class="alert-box success">' . "Absent: {$risk->name}" . '</div>';
             }
         }
 
