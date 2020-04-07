@@ -38,7 +38,7 @@ class m191029_172959_move_sets_to_autoset extends CDbMigration
                 i.default_dispense_location_id,
                 i.default_dispense_condition_id,
                 i.default_frequency_id,
-                i.default_dose_unit_term,
+                IF (i.default_dose_unit_term='drop(s)', 'drop', i.default_dose_unit_term ),
                 i.default_duration_id
             FROM medication_set_item i INNER JOIN medication_set s ON i.medication_set_id = s.id
             WHERE s.`automatic` = 0");
