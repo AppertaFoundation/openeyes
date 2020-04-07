@@ -689,7 +689,7 @@ class Event extends BaseActiveRecordVersioned
             }
         }
 
-        if($this->firstEventSubtypeItem) {
+        if ($this->firstEventSubtypeItem) {
             return $this->firstEventSubtypeItem->eventSubtype->display_name;
         }
         return $this->eventType ? $this->eventType->name : 'Event';
@@ -709,7 +709,8 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Validate the event date.
      */
-    public function eventDateValidator($attribute, $param){
+    public function eventDateValidator($attribute, $param)
+    {
         $event_date = Helper::mysqlDate2JsTimestamp($this->event_date);
         if (isset($this->episode)) {
             $episode = $this->episode;
