@@ -1593,14 +1593,14 @@ class AdminController extends BaseAdminController
             if ($commissioning_bt_id) {
                 $commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id);
                 if (!$commissioning_bt) {
-                    throw new CHttpException(400, 'Unrecognised Commissioning Body Type ID');
+                    throw new CHttpException(404, 'Unrecognised Commissioning Body Type ID');
                 }
             }
             $service_type_id = Yii::app()->request->getQuery('service_type_id');
             if ($service_type_id) {
                 $commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id);
                 if (!$commissioning_bst) {
-                    throw new CHttpException(400, 'Unrecognised Service Type ID');
+                    throw new CHttpException(404, 'Unrecognised Service Type ID');
                 };
                 $cbs->setAttribute('commissioning_body_service_type_id', $service_type_id);
             }
