@@ -169,7 +169,7 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
-                if (!($default_urls['primaryLogo']) && !($logo->primary_logo)) {
+                if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
                     if (!($logo)||!($logo->primary_logo)) {
@@ -200,7 +200,7 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'secondary_logo');
-                if (!($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
+                if (empty($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
                     if (!($logo)||!($logo->secondary_logo)) {
