@@ -33,13 +33,13 @@
 </style>
 <?php if (Yii::app()->user->hasFlash('success')) : ?>
     <div class="flash-success">
-        <?php echo Yii::app()->user->getFlash('success'); ?>
+        <?= Yii::app()->user->getFlash('success'); ?>
     </div>
 
 <?php endif; ?>
 <?php if (Yii::app()->user->hasFlash('error')) : ?>
     <div class="error">
-        <?php echo Yii::app()->user->getFlash('error'); ?>
+        <?= Yii::app()->user->getFlash('error'); ?>
     </div>
 
 <?php endif; ?>
@@ -65,9 +65,9 @@
         )?>
 
         <input type="text"
-           autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+           autocomplete="<?= Yii::app()->params['html_autocomplete']?>"
            name="search" id="search" placeholder="Enter search query..."
-           value="<?php echo strip_tags(Yii::app()->request->getParam('search', ''))?>" />
+           value="<?= strip_tags(Yii::app()->request->getParam('search', ''))?>" />
         <?php $this->endWidget()?>
     </div>
 
@@ -86,13 +86,13 @@
             <tbody>
                 <?php foreach ($sites as $i => $site) {?>
                     <tr class="clickable"
-                        data-id="<?php echo $site->id?>"
-                        data-uri="admin/editsite?site_id=<?php echo $site->id?>">
-                        <td><?php echo $site->id?></td>
-                        <td><?php echo $site->remote_id?></td>
-                        <td><?php echo $site->name?></td>
+                        data-id="<?= $site->id?>"
+                        data-uri="admin/editsite?site_id=<?= $site->id?>">
+                        <td><?= $site->id?></td>
+                        <td><?= $site->remote_id?></td>
+                        <td><?= $site->name?></td>
                         <td>
-                            <?php echo $site->getLetterAddress(
+                            <?= $site->getLetterAddress(
                                 ['delimiter' => ', ']
                             )?>
                         </td>

@@ -48,13 +48,13 @@ $default_urls = $logo_helper->getLogoURLs();
 </style>
 <?php if (Yii::app()->user->hasFlash('success')) : ?>
     <div class="flash-success">
-        <?php echo Yii::app()->user->getFlash('success'); ?>
+        <?= Yii::app()->user->getFlash('success'); ?>
     </div>
 
 <?php endif; ?>
 <?php if (Yii::app()->user->hasFlash('error')) : ?>
     <div class="error">
-        <?php echo Yii::app()->user->getFlash('error'); ?>
+        <?= Yii::app()->user->getFlash('error'); ?>
     </div>
 
 <?php endif; ?>
@@ -63,7 +63,7 @@ $default_urls = $logo_helper->getLogoURLs();
     <div class="row divider">
         <h2>Edit System Default logos</h2>
     </div>
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
