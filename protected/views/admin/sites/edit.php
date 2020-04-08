@@ -62,7 +62,7 @@ $default_urls = $logo_helper->getLogoURLs();
     <div class="row divider">
         <h2>
             <?php
-            if (!empty($site->id)) {
+            if ($site->id) {
                 echo "Edit site: ".$site->name;
             } else {
                 echo "Add Site";
@@ -169,10 +169,10 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
-                if (empty($default_urls['primaryLogo']) && !isset($logo->primary_logo)) {
+                if (!($default_urls['primaryLogo']) && !($logo->primary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
-                    if (!isset($logo)||!isset($logo->primary_logo)) {
+                    if (!($logo)||!($logo->primary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
                     } elseif (!$new) {
@@ -200,10 +200,10 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'secondary_logo');
-                if (empty($default_urls['secondaryLogo']) && empty($logo->secondary_logo)) {
+                if (!($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
-                    if (!isset($logo)||!isset($logo->secondary_logo)) {
+                    if (!($logo)||!($logo->secondary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
                         echo "<img src='". $default_urls['secondaryLogo']."' style='width:100%;'>";
                     } elseif (!$new) {
