@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphCoCorrespondence.assets'));
+$modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphCoCorrespondence.assets'), true);
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/siteSecretary.js');
 ?>
 

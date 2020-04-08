@@ -168,15 +168,15 @@ if ($cvi_api) {
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-          if(selectedItems.length==2){
+          if (selectedItems.length==2){
             var selected_data = {};
             for (let item of selectedItems) {
-              if(item['itemSet'].options['id'] == 'reading_val'){
+              if (item['itemSet'].options['id'] == 'reading_val'){
                 selected_data.reading_value = item['id'];
                 selected_data.reading_display = item['label'];
                 selected_data.tooltip =  <?= CJSON::encode($val_options)?>[item['id']]['data-tooltip'];
               }
-              if(item['itemSet'].options['id'] == 'method'){
+              if (item['itemSet'].options['id'] == 'method'){
                 selected_data.method_id = item['id'];
                 selected_data.method_display = item['label'];
               }
@@ -218,9 +218,9 @@ if ($cvi_api) {
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $baseAssetsPath = Yii::getPathOfAlias('application.assets');
-$assetManager->publish($baseAssetsPath . '/components/chosen/');
+$assetManager->publish($baseAssetsPath . '/components/chosen/', true);
 
-Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath . '/components/chosen/') . '/chosen.jquery.min.js');
+Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath . '/components/chosen/') . '/chosen.jquery.min.js', true);
 ?>
 <script type="text/javascript">
   $(document).ready(function () {

@@ -55,18 +55,7 @@ return array(
                 'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
             ),
             'Drugs' => array(
-                'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/commonDrug/list'),
-                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DrugSet/list'),
-                'Common Medications List ' => '/oeadmin/commonMedications/list',
-                'Medication List' => '/oeadmin/medication/list',
-                'Formulary Drugs' => '/oeadmin/drug/list',
-                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
-                'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
-                'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
-                'Tags' => '/TagsAdmin/list',
-                'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/drugType'),
-                'Dispense conditions' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseCondition/index'),
-                'Dispense locations' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseLocation/index'),
+            		// Hidden for now
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
@@ -75,6 +64,7 @@ return array(
                 'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
                 'Common Ophthalmic Disorders' => '/admin/editcommonophthalmicdisorder',
                 'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
+                'Common Systemic Disorders Groups' => '/oeadmin/CommonSystemicDisorderGroup/list',
                 'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
                 'Findings' => '/admin/managefindings',
                 'Disorders' => '/Admin/disorder/list',

@@ -25,7 +25,8 @@ class ComponentStubGenerator
 {
     /**
      * @param string $class_name
-     * @param array  $properties
+     * @param array $properties
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
     public static function generate($class_name, array $properties = array())
     {
@@ -41,7 +42,7 @@ class ComponentStubGenerator
      * iteratest through properties to set values on the stub that exists on the stub class. If $force is true,
      * will set the value regardless of whether or not the property exists on the element.
      *
-     * @param $stub
+     * @param $stub PHPUnit_Framework_MockObject_MockObject
      * @param array $properties
      * @param bool  $force
      */
@@ -72,26 +73,35 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
         echo 'Component stub matcher';
     }
 
+    /**
+     * @param PHPUnit_Framework_MockObject_Invocation $invocation
+     * @return bool|mixed|null
+     */
     public function matches(PHPUnit_Framework_MockObject_Invocation $invocation)
     {
-        if ($invocation->methodName == '__set') {
+        if ($invocation->methodName === '__set') {
             $this->properties[$invocation->parameters[0]] = $invocation->parameters[1];
-        } elseif ($invocation->methodName == '__get' || $invocation->methodName == '__isset') {
-            return array_key_exists($invocation->parameters[0], $this->properties);
-        } else {
-            return $this->methodNameToProperty($invocation, true);
+            return null;
         }
+
+        if ($invocation->methodName === '__get' || $invocation->methodName === '__isset') {
+            return array_key_exists($invocation->parameters[0], $this->properties);
+        }
+
+        return $this->methodNameToProperty($invocation, true);
     }
 
     public function invoked(PHPUnit_Framework_MockObject_Invocation $invocation)
     {
-        if ($invocation->methodName == '__get') {
+        if ($invocation->methodName === '__get') {
             return $this->properties[$invocation->parameters[0]];
-        } elseif ($invocation->methodName == '__isset') {
-            return isset($this->properties[$invocation->parameters[0]]);
-        } else {
-            return $this->methodNameToProperty($invocation, false);
         }
+
+        if ($invocation->methodName === '__isset') {
+            return isset($this->properties[$invocation->parameters[0]]);
+        }
+
+        return $this->methodNameToProperty($invocation, false);
     }
 
     public function verify()
@@ -100,10 +110,10 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
 
     protected function methodNameToProperty(PHPUnit_Framework_MockObject_Invocation $invocation, $return_bool)
     {
-        if (preg_match('/^get(.*)$/', $invocation->methodName, $matches) && count($invocation->parameters) == 0) {
+        if (preg_match('/^get(.*)$/', $invocation->methodName, $matches) && count($invocation->parameters) === 0) {
             $search = strtolower($matches[1]);
             foreach ($this->properties as $name => $value) {
-                if (strtolower($name) == $search) {
+                if (strtolower($name) === $search) {
                     return $return_bool ? true : $value;
                 }
             }

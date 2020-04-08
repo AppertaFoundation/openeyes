@@ -41,7 +41,7 @@ class DrugDuration extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'drug_duration';
+        return 'archive_drug_duration';
     }
 
     public function defaultScope()

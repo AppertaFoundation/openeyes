@@ -268,7 +268,7 @@ $this->pageTitle = 'Case Search';
 
 
 <?php
-$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
 Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
 ?>
 

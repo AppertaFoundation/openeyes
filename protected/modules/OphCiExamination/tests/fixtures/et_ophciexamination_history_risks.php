@@ -13,6 +13,6 @@ return array(
     'history_risk3' => array(
         'id' => 3,
         'event_id' => 21,
-        'no_risks_date' => '23-10-2019',
+        'no_risks_date' => '2019-01-23',
     ),
 );

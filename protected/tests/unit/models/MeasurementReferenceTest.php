@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class MeasurementReferenceTest extends CDbTestCase
+class MeasurementReferenceTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'ep' => 'Episode',
@@ -20,6 +20,11 @@ class MeasurementReferenceTest extends CDbTestCase
         'ref' => 'MeasurementReference',
         'pm' => 'PatientMeasurement',
     );
+
+    public function getModel()
+    {
+        return  MeasurementReference::model();
+    }
 
     /**
      * @expectedException Exception

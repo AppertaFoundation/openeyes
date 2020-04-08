@@ -54,10 +54,12 @@
                 $(document).ready(function () {
                     var $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function () {
-                      $date_input.show();
+                      if (!$(this).hasClass('disabled')) {
+                          $date_input.show();
                       $date_input.select();
-                      $('.js-event-date').hide();
-                      $('.js-change-event-date').hide();
+                          $('.js-event-date').hide();
+                          $('.js-change-event-date').hide();
+                      }
                     });
 
                     $date_input.on('keypress click', function(){

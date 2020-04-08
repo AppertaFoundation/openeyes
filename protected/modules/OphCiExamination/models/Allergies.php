@@ -110,7 +110,7 @@ class Allergies extends \BaseEventTypeElement
     public function afterValidate()
     {
         if (!$this->no_allergies_date && !$this->entries) {
-            $this->addError('no_allergies_date', 'Please confirm the patient has no allergies.');
+            $this->addError('no_allergies', 'Please confirm the patient has no allergies.');
         }
         return parent::afterValidate();
     }

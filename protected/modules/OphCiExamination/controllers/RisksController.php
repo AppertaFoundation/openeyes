@@ -36,6 +36,8 @@ class RisksController extends \BaseController
     /**
      * @param array $tag_ids
      * @return array
+     *
+     * @deprecated
      */
     protected function riskIdsForTagIds($tag_ids = array())
     {
@@ -48,11 +50,51 @@ class RisksController extends \BaseController
 
     /**
      * @param $tag_ids
+     *
+     * @deprecated
      */
+
     public function actionForTags($tag_ids)
     {
         echo \CJSON::encode($this->riskIdsForTagIds(explode(",", $tag_ids)));
     }
+
+    public function actionForSets($set_ids)
+    {
+        echo \CJSON::encode($this->riskIdsForMedicationSetIds(explode(",", $set_ids)));
+    }
+
+    /**
+     * @param array $medication_set_ids
+     * @return array
+     */
+
+    protected function riskIdsForMedicationSetIds($medication_set_ids = array())
+    {
+        return array_map(
+            function($r) { return $r->getAttributes(); },
+            OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids)
+        );
+    }
+
+    public function actionForRefMedication($id)
+    {
+        if (!$medication =\Medication::model()->findByPk($id)) {
+            throw new \CHttpException('Medication not found', 404);
+        }
+
+        /** @var \Medication $medication */
+        $med_set_ids = array_map(function($e){ return $e->id; }, $medication->medicationSets);
+
+        echo \CJSON::encode($this->riskIdsForMedicationSetIds($med_set_ids));
+    }
+
+    /**
+     * @param $obj
+     * @return array
+     *
+     * @deprecated
+     */
 
     protected function tagIdsForTagged($obj) {
         return array_map(
@@ -64,7 +106,10 @@ class RisksController extends \BaseController
 
     /**
      * @param $ids
+     *
+     * @deprecated
      */
+
     public function actionForDrugIds($ids)
     {
         $drugs = \Drug::model()->with('tags')->findAllByPk(explode(",", $ids));
@@ -81,7 +126,10 @@ class RisksController extends \BaseController
 
     /**
      * @param $ids
+     *
+     * @deprecated
      */
+
     public function actionForMedicationDrugIds($ids)
     {
         $meds = \MedicationDrug::model()->with('tags')->findAllByPk(explode(",", $ids));

@@ -24,7 +24,7 @@ $logo_helper = new LogoHelper();
 </header>
 
 <main class="print-main">
-    <div class="flex-layout">
+    <div class="flex-layout normal-font">
         <div>
             <p class="nowrap" <?= (!$clinicDate || strtotime('today') === $clinicDate ? 'style="visibility: hidden;"' : '') ?>>
                 Date of visit: <b><?php echo date(Helper::NHS_DATE_FORMAT, $clinicDate) ?></b>
@@ -39,7 +39,7 @@ $logo_helper = new LogoHelper();
             </div>
         </div>
 
-        <div class="address-from">
+        <div class="address-from change-font large-font">
             <?php if ($element->site) { ?>
                 <h5>
                     <?php

@@ -32,7 +32,7 @@ if (!Yii::app()->user->isGuest) {
     }
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
-    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
     ?>
 
     <div class="oe-user-banner">
@@ -56,7 +56,7 @@ if (!Yii::app()->user->isGuest) {
     <div class="oe-nav">
         <ul class="oe-big-icons">
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="/">
+                <a class="icon-btn" href="/" id="js-home-btn">
                     <svg viewBox="0 0 80 40" class="icon home">
                         <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
                     </svg>
@@ -83,7 +83,7 @@ if (!Yii::app()->user->isGuest) {
                 <?php $this->renderPartial('//base/_hotlist'); ?>
             </li>
             <li class="oe-nav-btn">
-                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+                <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>" id="js-logout-btn">
                     <svg viewBox="0 0 80 40" class="icon logout">
                         <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
                     </svg>

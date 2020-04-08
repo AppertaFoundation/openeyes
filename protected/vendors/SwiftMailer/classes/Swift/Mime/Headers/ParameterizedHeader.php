@@ -112,7 +112,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      */
     public function setParameters(array $parameters)
     {
-        $this->clearCachedValueIf($this->_params != $parameters);
+        $this->clearCachedValueif ($this->_params != $parameters);
         $this->_params = $parameters;
     }
 

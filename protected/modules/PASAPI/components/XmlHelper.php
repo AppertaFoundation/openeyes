@@ -32,7 +32,7 @@ class XmlHelper
 
         $this->_xml_reader = new \XMLReader();
 
-        if($xml){
+        if ($xml){
             $this->xml($xml);
         }
     }
@@ -55,7 +55,7 @@ class XmlHelper
     public function xml($xml)
     {
         $this->_xml = $xml;
-        if( !$this->isXMLContentValid($xml) || $this->_xml_reader->xml($xml) === false){
+        if ( !$this->isXMLContentValid($xml) || $this->_xml_reader->xml($xml) === false){
             return false;
         }
 
@@ -104,7 +104,7 @@ class XmlHelper
     {
         $count = 0;
 
-        if( !$this->isXMLContentValid($this->_xml) ){
+        if ( !$this->isXMLContentValid($this->_xml) ){
             return $count;
         }
 

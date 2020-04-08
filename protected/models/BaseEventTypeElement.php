@@ -296,6 +296,11 @@ class BaseEventTypeElement extends BaseElement
         echo json_encode($this->frontEndErrors);
     }
 
+    public function setFrontEndError($attribute)
+    {
+        $this->frontEndErrors[] = $attribute;
+    }
+
     public function requiredIfSide($attribute, $params)
     {
         if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {

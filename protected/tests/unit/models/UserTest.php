@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class UserTest extends CDbTestCase
+class UserTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'firms' => 'Firm',
@@ -27,6 +27,15 @@ class UserTest extends CDbTestCase
         'UserFirmRights',
         'UserServiceRights',
     );
+
+    protected $columns_to_skip = [
+        'title', 'qualifications', 'role', 'has_selected_firms'
+    ];
+
+    public function getModel()
+    {
+        return User::model();
+    }
 
     public function dataProvider_Search()
     {

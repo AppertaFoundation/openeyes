@@ -31,6 +31,7 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->event = $this->getMockBuilder('Event')->disableOriginalConstructor()->getMock();
         $this->event->expects($this->any())->method('__get')->will($this->returnCallback(array($this, 'getEventProperty')));
         $this->event_props = array(
@@ -54,6 +55,7 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
     public function tearDown()
     {
         Yii::app()->setComponent('moduleAPI', null);
+        parent::tearDown();
     }
 
     /**

@@ -50,15 +50,14 @@ class HistoryRisksManager
     }
 
     /**
-     * @param $tagged_list
+     * @param \Medication[] $tagged_list
      * @return array|mixed|null
      */
     protected function getRisksFromTagged($tagged_list) {
         $by_id = array();
         foreach ($tagged_list as $tagged) {
-            $tag_ids = array_map(function($t) { return $t->id;
-            }, $tagged->tags);
-            $risks = OphCiExaminationRisk::findForTagIds($tag_ids);
+            $medication_set_ids = array_map(function($e) { return $e->id; }, $tagged->medicationSets);
+            $risks = OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids);
             foreach ($risks as $risk) {
                 if (!array_key_exists($risk->id, $by_id)) {
                     $by_id[$risk->id] = array('risk' => $risk, 'comments_list' => array());
@@ -156,8 +155,15 @@ class HistoryRisksManager
             $entry->comments = implode(', ', $risk['comments_list']);
             $entries[] = $entry;
         }
-        $element->entries = $entries;
-        $element->save();
+
+        if ($element->save()) {
+            foreach ($entries as $entry) {
+                $entry->element_id = $element->id;
+                $entry->element = $element;
+                $entry->save();
+            }
+        }
+
     }
 
     /**
@@ -186,7 +192,7 @@ class HistoryRisksManager
      * A relatively simple handler for receiving notifications that drugs and/or medication drugs
      * have been added to the patient, so the relevant risks should be stored on the patient.
      *
-     * @param $params (['patient' => \Patient, 'drugs' => \Drug[], 'medication_drugs' => \MedicationDrug[])
+     * @param $params (['patient' => \Patient, 'medications' => \Medication[])
      * @throws \SystemException
      */
     public function addPatientMedicationRisks($params)
@@ -195,11 +201,8 @@ class HistoryRisksManager
             throw new \SystemException('Missing expected patient parameter for updating patient risks');
         }
         $risks = array();
-        if (array_key_exists('drugs', $params)) {
-            $risks = $this->getRisksFromTagged($params['drugs']);
-        }
-        if (array_key_exists('medication_drugs', $params)) {
-            $risks = array_merge($risks, $this->getRisksFromTagged($params['medication_drugs']));
+        if (array_key_exists('medications', $params)) {
+            $risks = $this->getRisksFromTagged($params['medications']);
         }
 
         $this->addRisksToPatient($params['patient'], $risks);

@@ -141,14 +141,15 @@ class DefaultController extends BaseEventTypeController
 
         $p_file = ProtectedFile::createFromFile($tmp_name);
         $p_file->name = $original_name;
+        $p_file->title = $original_name;
 
         if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        } else {
-            unlink($tmp_name);
-            return false;
         }
+
+        unlink($tmp_name);
+        return false;
     }
 
     public function actionRemoveDocuments()
@@ -158,7 +159,7 @@ class DefaultController extends BaseEventTypeController
             try {
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
-                    $doc->delete();
+                    unlink($doc->getFilePath() . '/' . $doc->uid);
                 } else {
                     OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
                 }
@@ -175,7 +176,7 @@ class DefaultController extends BaseEventTypeController
     {
         if ($this->sub_type) {
             if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets')) . '/';
+                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
                 return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
             }
         }
@@ -451,6 +452,9 @@ class DefaultController extends BaseEventTypeController
                 if (!$document) {
                     continue;
                 }
+
+                // Always write the file contents to the file, even if it already exists. This will ensure the contents are always up-to-date.
+                file_put_contents($document->getPath(), $document->file_content);
 
                 switch ($document->mimetype) {
                     case 'application/pdf':

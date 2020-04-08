@@ -23,6 +23,7 @@ class EyeLateralityWidget extends CWidget
     public $eye;
     public $size = 'small';
     public $pad = 'pad';
+    public $show_if_both_eyes_are_null = true;
 
     public function run()
     {
@@ -53,13 +54,15 @@ class EyeLateralityWidget extends CWidget
             }
         }
 
-        $this->beginWidget('CondenseHtmlWidget');
-        ?>
-      <span class="oe-eye-lat-icons">
-        <i class="oe-i laterality <?= $this->size . ' ' . $this->pad . ' ' . ($right ? 'R' : 'NA') ?>"></i>
-        <i class="oe-i laterality <?= $this->size . ' ' . $this->pad . ' ' . ($left ? 'L' : 'NA') ?>"></i>
-      </span>
-        <?php
-        $this->endWidget();
+        if ($this->show_if_both_eyes_are_null || $right || $left) {
+            $this->beginWidget('CondenseHtmlWidget');
+            ?>
+            <span class="oe-eye-lat-icons">
+                <i class="oe-i laterality <?= $this->size . ' ' . $this->pad . ' ' . ($right ? 'R' : 'NA') ?>"></i>
+                <i class="oe-i laterality <?= $this->size . ' ' . $this->pad . ' ' . ($left ? 'L' : 'NA') ?>"></i>
+            </span>
+            <?php
+            $this->endWidget();
+        }
     }
 }

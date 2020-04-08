@@ -28,7 +28,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $this->render(get_class($this).'_Right');
     }
 
-    public function run_oescape(){
+    public function run_oescape($widgets_no = 1){
         $va_unit_id = @$_GET[$this->va_unit_input] ?:
         SettingMetadata::model()->getSetting(
           'unit_id',

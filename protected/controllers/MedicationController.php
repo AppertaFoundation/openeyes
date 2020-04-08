@@ -34,11 +34,12 @@ class MedicationController extends BaseController
                 array(
                     'patient' => $this->fetchModel('Patient', $patientId),
                 ),
-                false, true
+                false,
+                true
             );
         } else {
             if ($medicationId) {
-                $medication = $this->fetchModel('Medication', $medicationId, true);
+                $medication = $this->fetchModel('ArchiveMedication', $medicationId, true);
             } elseif ($prescriptionItemId) {
                 if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
                     $medication = $api->getMedicationForPrescriptionItem($patientId, $prescriptionItemId);
@@ -49,17 +50,18 @@ class MedicationController extends BaseController
                     throw new CHttpException(400, 'Missing prescription item or module');
                 }
             } else {
-                $medication = new Medication();
+                $medication = new ArchiveMedication();
             }
 
             $this->renderPartial(
                 'form',
                 array(
                     'patient' => $this->fetchModel('Patient', $patientId),
-                    'medication' => $medication,
+                    'ArchiveMedication' => $medication,
                     'firm' => Firm::model()->findByPk($this->selectedFirmId),
                 ),
-                false, true
+                false,
+                true
             );
         }
     }
@@ -82,7 +84,7 @@ class MedicationController extends BaseController
             foreach (MedicationDrug::model()->with('tags')->findAll($criteria) as $md) {
                 $label = $md->name;
                 if (strpos(strtolower($md->name), $term) === false) {
-                    $label .= ' ('.$md->aliases.')';
+                    $label .= ' (' . $md->aliases . ')';
                 }
                 $return[] = array(
                     'name' => $md->name,
@@ -90,7 +92,8 @@ class MedicationController extends BaseController
                     'value' => $label,
                     'id' => $md->id,
                     'type' => 'md',
-                    'tags' => array_map(function($t) { return $t->id;
+                    'tags' => array_map(function ($t) {
+                        return $t->id;
                     }, $md->tags)
                 );
             }
@@ -98,7 +101,7 @@ class MedicationController extends BaseController
             foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
                 $label = $drug->tallmanlabel;
                 if (strpos(strtolower($drug->name), $term) === false) {
-                    $label .= ' ('.$drug->aliases.')';
+                    $label .= ' (' . $drug->aliases . ')';
                 }
                 $return[] = array(
                     'name' => $drug->tallmanlabel,
@@ -106,7 +109,8 @@ class MedicationController extends BaseController
                     'value' => $label,
                     'type' => 'd',
                     'id' => $drug->id,
-                    'tags' => array_map(function($t) { return $t->id;
+                    'tags' => array_map(function ($t) {
+                        return $t->id;
                     }, $drug->tags)
                 );
             }
@@ -127,7 +131,7 @@ class MedicationController extends BaseController
         $this->renderPartial(
             'route_option',
             array(
-                'medication' => new Medication(),
+                'ArchiveMedication' => new ArchiveMedication(),
                 'route' => $this->fetchModel('DrugRoute', $route_id),
             )
         );
@@ -135,10 +139,16 @@ class MedicationController extends BaseController
 
     public function actionRetrieveDrugRouteOptions($route_id)
     {
-        $route = DrugRoute::model()->findByPk($route_id);
-        echo json_encode(array_map(function($opt) {
-            return array('id' => $opt->id, 'name' => $opt->name);
-        }, $route->options));
+        $route = MedicationRoute::model()->findByPk($route_id);
+        if ($route->has_laterality) {
+            echo json_encode([
+                ['id' => 1, 'name' => 'Left'],
+                ['id' => 2, 'name' => 'Right'],
+                ['id' => 3, 'name' => 'Both'],
+            ]);
+        } else {
+            echo json_encode([]);
+        }
     }
 
     public function actionSave()
@@ -146,8 +156,10 @@ class MedicationController extends BaseController
         if (@$_POST['MedicationAdherence']) {
             $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 
-            $medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id',
-                array(':patient_id' => $patient->id));
+            $medication_adherence = MedicationAdherence::model()->find(
+                'patient_id=:patient_id',
+                array(':patient_id' => $patient->id)
+            );
             if (!$medication_adherence) {
                 $medication_adherence = new MedicationAdherence();
                 $medication_adherence->patient_id = $patient->id;
@@ -163,7 +175,7 @@ class MedicationController extends BaseController
             }
         } else {
             $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-            $medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
+            $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id'], true);
 
             $medication->patient_id = $patient->id;
 
@@ -196,7 +208,7 @@ class MedicationController extends BaseController
     public function actionStop()
     {
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-        $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
+        $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id']);
 
         if ($patient->id != $medication->patient_id) {
             throw new Exception('Patient ID mismatch');
@@ -212,7 +224,7 @@ class MedicationController extends BaseController
     public function actionDelete()
     {
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-        $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
+        $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id']);
 
         if ($patient->id != $medication->patient_id) {
             throw new Exception('Patient ID mismatch');

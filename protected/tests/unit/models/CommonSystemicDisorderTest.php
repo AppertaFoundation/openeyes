@@ -16,13 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class CommonSystemicDisorderTest extends CDbTestCase
+class CommonSystemicDisorderTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'Disorder',
         'specialties' => 'Specialty',
         'commonsystemicdisorder' => 'CommonSystemicDisorder',
     );
+
+    public function getModel()
+    {
+        return CommonSystemicDisorder::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -38,7 +43,7 @@ class CommonSystemicDisorderTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new CommonSystemicDisorder();
@@ -62,9 +67,11 @@ class CommonSystemicDisorderTest extends CDbTestCase
 
     /**
      * @covers CommonSystemicDisorder::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->commonsystemicdisorder('commonSystemicDisorder1')->validate());
         $this->assertEmpty($this->commonsystemicdisorder('commonSystemicDisorder1')->errors);
     }

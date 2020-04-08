@@ -16,7 +16,7 @@
  */
 use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_DilationTest extends CDbTestCase
+class Element_OphCiExamination_DilationTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'ep' => 'Episode',
@@ -26,9 +26,9 @@ class Element_OphCiExamination_DilationTest extends CDbTestCase
 
     public $delete_element_ids = array();
 
-    public function setUp()
+    public function getModel()
     {
-        parent::setUp();
+        return models\Element_OphCiExamination_Dilation::model();
     }
 
     public function tearDown()
@@ -40,6 +40,8 @@ class Element_OphCiExamination_DilationTest extends CDbTestCase
             models\Element_OphCiExamination_Dilation::model()->noVersion()->deleteByPk($id);
         }
         $this->delete_element_ids = array();
+
+        parent::tearDown();
     }
 
     public function getValidTreatmentMock()

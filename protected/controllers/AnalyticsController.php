@@ -91,7 +91,7 @@ class AnalyticsController extends BaseController
     public function actionAnalyticsReports()
     {
         $this->render('/analytics/analytics_report', null);
-        
+
     }
 
     private function reportDataDOM()
@@ -496,7 +496,7 @@ class AnalyticsController extends BaseController
         } elseif ($subspecialty_name == 'Glaucoma') {
             $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
             $op_proc_command = Yii::app()->db->createCommand()
-              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, if (eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
               ->from('et_ophtroperationnote_procedurelist eop')
               ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa', 'eop.id = opa.procedurelist_id')
               ->leftJoin('event e', 'eop.event_id = e.id')
@@ -505,7 +505,7 @@ class AnalyticsController extends BaseController
               ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
               ->group('patient_id, left_value, right_value');
             $laser_proc_command = Yii::app()->db->createCommand()
-              ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+              ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, if (eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
               ->from('et_ophtrlaser_treatment eot')
               ->leftJoin('ophtrlaser_laserprocedure_assignment ola', 'eot.id = ola.treatment_id')
               ->leftJoin('event e', 'eot.event_id = e.id')
@@ -541,7 +541,7 @@ class AnalyticsController extends BaseController
     {
         $basic_criteria = isset($this->filters['procedure'])? $this->filters['procedure']:null;
         $op_proc_command = Yii::app()->db->createCommand()
-          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, IF(eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eop.eye_id = 1 or eop.eye_id = 3, opa.proc_id, null) as left_value, if (eop.eye_id =2 or eop.eye_id = 3, opa.proc_id, null) as right_value, \'2event\' as t_name, eop.created_user_id as surgeon_id', 'DISTINCT')
           ->from('et_ophtroperationnote_procedurelist eop')
           ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment opa', 'eop.id = opa.procedurelist_id')
           ->leftJoin('event e', 'eop.event_id = e.id')
@@ -550,7 +550,7 @@ class AnalyticsController extends BaseController
           ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
           ->group('patient_id, left_value, right_value');
         $laser_proc_command = Yii::app()->db->createCommand()
-          ->select('p.id as patient_id, MIN(e.event_date) as event_date, IF(eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, IF(eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
+          ->select('p.id as patient_id, MIN(e.event_date) as event_date, if (eot.eye_id = 1 or eot.eye_id = 3, ola.procedure_id, null) as left_value, if (eot.eye_id =2 or eot.eye_id = 3, ola.procedure_id, null) as right_value, \'2event\' as t_name, eot.created_user_id as surgeon_id', 'DISTINCT')
           ->from('et_ophtrlaser_treatment eot')
           ->leftJoin('ophtrlaser_laserprocedure_assignment ola', 'eot.id = ola.treatment_id')
           ->leftJoin('event e', 'eot.event_id = e.id')
@@ -602,7 +602,7 @@ class AnalyticsController extends BaseController
         $extra_commands = clone $extra_command;
         $vaEyeId = $eye_side === 'right' ? 0 : 1;
         $command_va_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_visualacuity eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -612,11 +612,11 @@ class AnalyticsController extends BaseController
 
         if (isset($basic_criteria)) {
             if ($subspecialty === 'Medical Retina') {
-                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+                $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , if (eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, if (eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                     ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
             } elseif ($subspecialty === 'Glaucoma') {
-                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+                $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , if (et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, if (et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                     ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                     ->group('patient_id, left_value,right_value');
             }
@@ -685,7 +685,7 @@ class AnalyticsController extends BaseController
     {
         $extra_commands = clone $extra_command;
         $command_iop_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_intraocularpressure eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -693,7 +693,7 @@ class AnalyticsController extends BaseController
             ->where('ep.deleted = 0 and e.deleted=0 and p.deleted = 0')
             ->group('eov.id');
         if (isset($basic_criteria)) {
-            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , IF(et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, IF(et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+            $extra_commands->select('et.patient_id as patient_id, MIN(et.event_date) as event_date , if (et.left_value '.$basic_criteria.',et.left_value, null)  as left_value, if (et.right_value '.$basic_criteria.',et.right_value, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                 ->andwhere('et.'.$eye_side.'_value '.$basic_criteria)
                 ->group('patient_id, left_value,right_value');
         } else {
@@ -757,7 +757,7 @@ class AnalyticsController extends BaseController
     {
         $extra_commands = clone $extra_command;
         $command_crt_values = Yii::app()->db->createCommand()
-            ->select('ep.patient_id as patient_id, e.event_date as event_date,  IF(eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, IF(eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
+            ->select('ep.patient_id as patient_id, e.event_date as event_date,  if (eov.eye_id=3 OR eov.eye_id = 1, eov.id, null) AS left_value, if (eov.eye_id=3 OR eov.eye_id = 2, eov.id, null) AS right_value, \'1value\' as t_name', 'DISTINCT')
             ->from('et_ophciexamination_oct eov')
             ->leftJoin('event e', 'e.id = eov.event_id')
             ->leftJoin('episode ep', 'ep.id = e.episode_id')
@@ -766,7 +766,7 @@ class AnalyticsController extends BaseController
             ->group('eov.id');
 
         if (isset($basic_criteria)) {
-            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , IF(eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, IF(eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
+            $extra_commands->select('ep.patient_id as patient_id, MIN(e.event_date) as event_date , if (eot.left_drug_id '.$basic_criteria.',eot.left_drug_id, null)  as left_value, if (eot.right_drug_id '.$basic_criteria.',eot.right_drug_id, null) as right_value, \'2event\' as t_name', 'DISTINCT')
                 ->andwhere('eot.'.$eye_side.'_drug_id '.$basic_criteria)
                 ->group('ep.patient_id, eot.left_drug_id, eot.right_drug_id');
         } else {
@@ -914,7 +914,7 @@ class AnalyticsController extends BaseController
                     $initial_reading[$element['patient_id']]['event_date'] = $current_time;
                     continue;
                 }
-                
+
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
                 if ($this->validateAgeAndDateFilters( $element['age'], $current_time) && isset($reading) && isset($current_time)) {
@@ -1007,7 +1007,7 @@ class AnalyticsController extends BaseController
                 YEAR(p.date_of_death) - YEAR(p.dob) - IF( DATE_FORMAT(p.date_of_death,"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0),
                 YEAR(CURRENT_DATE())-YEAR(p.dob)-IF(DATE_FORMAT(CURRENT_DATE(),"%m-%d") < DATE_FORMAT(p.dob,\'%m-%d\'), 1, 0)) as age,
                 p.gender as gender,
-                proc.term as procedures,
+                GROUP_CONCAT(proc.term separator \', \') as procedures,
                 patient_diagnoses.diagnoses
             ')
             ->from('et_ophtroperationnote_cataract eoc')
@@ -1035,7 +1035,9 @@ class AnalyticsController extends BaseController
                     GROUP BY sd.patient_id
                  ) t2
                 GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
-            );
+            )
+            ->group('p.id, e.id, eye.name')
+            ->order('name, e.event_date DESC');
         if (isset($params['ids'])&&count($params['ids'] > 0)) {
             $params['ids'] = json_decode($params['ids']);
             $command->where('e.id IN (' . implode(', ', $params['ids']) . ')');
@@ -1684,11 +1686,11 @@ class AnalyticsController extends BaseController
             ($end_date && $event_time > $end_date)) {
                 continue;
             }
-            
+
             $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start'] : null;
 
             $latest_time = isset($latest_worklist_time)? max($event_time, $latest_worklist_time):$event_time;
-            
+
             $due_time = $followup_item['due_date'];
 
             if ( $followup_item['weeks'] <= 0) {
@@ -1946,7 +1948,7 @@ class AnalyticsController extends BaseController
         }, 0);
         $report_type = null;
         $report_type = $report_type === null ? 'overdue' : $report_type;
-        
+
         if (Yii::app()->request->isAjaxRequest) {
             $report_type = Yii::app()->request->getParam('report');
         }

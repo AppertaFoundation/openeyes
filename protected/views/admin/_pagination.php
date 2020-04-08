@@ -21,8 +21,9 @@ if (isset($pagination)) {
             'pages' => $pagination,
             'maxButtonCount' => 13,
             'cssFile' => false,
-            'selectedPageCssClass' => 'current',
+            'selectedPageCssClass' => 'current selected',
             'hiddenPageCssClass' => 'unavailable',
+            'includeFirstAndLastPageLabel' => isset($includeFirstAndLastPageLabel) ? $includeFirstAndLastPageLabel : false,
             'footer' => @$footer,
             'htmlOptions' => array(
                 'class' => 'pagination',

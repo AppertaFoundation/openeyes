@@ -338,6 +338,9 @@ class OphCoTherapyapplication_Processor
                 throw new Exception('Unable to write to file: '.$pfile->getPath());
             }
 
+            $pfile->size = filesize($pfile->getPath());
+            $pfile->file_content = file_get_contents($pfile->getPath());
+
             if (!$pfile->save()) {
                 throw new Exception('Unable to save file: '.print_r($pfile->errors, true));
             }

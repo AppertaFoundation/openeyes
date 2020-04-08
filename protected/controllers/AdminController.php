@@ -132,7 +132,7 @@ class AdminController extends BaseAdminController
         // end of handling the POST
 
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
@@ -222,7 +222,7 @@ class AdminController extends BaseAdminController
             $this->redirect(Yii::app()->request->url);
         }
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
@@ -1864,7 +1864,6 @@ class AdminController extends BaseAdminController
 
         $this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
     }
-
     public function actionSettings()
     {
         $this->group = "System";
@@ -2027,5 +2026,28 @@ class AdminController extends BaseAdminController
     public function actionPatientShortcodes()
     {
         $this->render('patient_shortcodes', ['short_codes' => PatientShortcode::model()->findAll()]);
+    }
+
+    public function actionAttachments($id = false)
+    {
+        if (!empty($_POST)) {
+            $event_types_post = $_POST['EventType'];
+
+            foreach ($event_types_post as $id => $event_type_post) {
+                $eventType = EventType::model()->findByPk($id);
+                $eventType->show_attachments = $event_type_post['show_attachments'];
+
+                if (!$eventType->saveOnlyIfDirty()->save() && $eventType->getErrors()) {
+                    throw new Exception('Unable to save attachment: ' . print_r($eventType->getErrors(), true));
+                }
+            }
+            Audit::add('admin-Attachments', 'edit');
+        } else {
+            Audit::add('admin-Attachments', 'list');
+        }
+
+        $this->render('/admin/attachments/index', array(
+            'event_types' => EventType::model()->findAll(),
+        ));
     }
 }

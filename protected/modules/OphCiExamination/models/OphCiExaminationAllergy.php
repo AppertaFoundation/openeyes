@@ -27,6 +27,9 @@ namespace OEModule\OphCiExamination\models;
  * @property string $name
  * @property int $display_order
  * @property boolean $is_other
+ * @property int $medication_set_id
+ *
+ * @property \MedicationSet $medicationSet
  */
 class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
 {
@@ -68,14 +71,21 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order', 'safe'),
+            array('name, display_order, medication_set_id, active', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
-    /**
+    public function relations()
+	{
+		return array(
+			"medicationSet" => array(self::HAS_ONE, \MedicationSet::class, "medication_set_id"),
+		);
+	}
+
+	/**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
@@ -118,4 +128,9 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
     function unchecked($element_id){
         return self::model()->findAll('id NOT IN (SELECT allergy_id FROM ophciexamination_allergy_entry WHERE element_id = ?) AND id != 17', array($element_id));
     }
+
+	public function __toString()
+	{
+		return $this->name;
+	}
 }
