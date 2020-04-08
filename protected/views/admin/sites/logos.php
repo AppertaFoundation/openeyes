@@ -66,14 +66,10 @@ $default_urls = $logo_helper->getLogoURLs();
     <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
-        'BaseEventTypeCActiveForm',
+        'CActiveForm',
         [
             'id' => 'adminform',
             'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 3,
-                'field' => 7,
-            ),
             'method'=> "POST",
             'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]

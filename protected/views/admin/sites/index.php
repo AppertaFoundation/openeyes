@@ -55,7 +55,7 @@
     <div class="row divider">
         <?php
         $form = $this->beginWidget(
-            'BaseEventTypeCActiveForm',
+            'CActiveForm',
             [
                 'id' => 'searchform',
                 'enableAjaxValidation' => false,
