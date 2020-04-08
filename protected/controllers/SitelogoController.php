@@ -133,7 +133,7 @@ class SiteLogoController extends BaseController
     }
 
     /**
-     * @return array|false
+     * @return array
      */
     private function getRequestHeaders()
     {
