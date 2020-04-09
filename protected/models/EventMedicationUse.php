@@ -179,7 +179,8 @@ class EventMedicationUse extends BaseElement
 
     public function validateDoseUnitTerm()
     {
-        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
+        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
         }
     }
