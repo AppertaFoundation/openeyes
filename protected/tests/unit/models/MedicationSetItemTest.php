@@ -3,7 +3,8 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2019
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,17 +13,17 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugFormTest extends ActiveRecordTestCase
+class MedicationSetItemTest extends ActiveRecordTestCase
 {
     /**
-     * @var DrugForm
+     * @var MedicationSetItem
      */
     protected $model;
     public $fixtures = array(
-        'drugforms' => 'DrugForm',
+        'drugsetitems' => 'MedicationSetItem',
     );
 
     public function getModel()
@@ -37,7 +38,7 @@ class DrugFormTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new DrugForm();
+        $this->model = new MedicationSetItem();
     }
 
     /**
@@ -45,7 +46,7 @@ class DrugFormTest extends ActiveRecordTestCase
      */
     public function testModel()
     {
-        $this->assertEquals('DrugForm', get_class(DrugForm::model()), 'Class name should match model.');
+        $this->assertEquals('MedicationSetItem', get_class(MedicationSetItem::model()), 'Class name should match model.');
     }
 
     /**
@@ -53,7 +54,7 @@ class DrugFormTest extends ActiveRecordTestCase
      */
     public function testTableName()
     {
-        $this->assertEquals('drug_form', $this->model->tableName());
+        $this->assertEquals('medication_set_item', $this->model->tableName());
     }
 
     /**
@@ -63,24 +64,24 @@ class DrugFormTest extends ActiveRecordTestCase
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->drugforms('drugform1')->validate());
-        $this->assertEmpty($this->drugforms('drugform2')->errors);
+        $this->assertTrue($this->drugsetitems('drugsetitem1')->validate());
+        $this->assertEmpty($this->drugsetitems('drugsetitem2')->errors);
     }
 
     /**
-     * @covers DrugForm::search
+     * @covers MedicationSetItem::search
      */
     public function testSearch()
     {
-        $this->model->setAttributes($this->drugforms('drugform1')->getAttributes());
+        $this->model->setAttributes($this->drugsetitems('drugsetitem1')->getAttributes());
         $results = $this->model->search();
         $data = $results->getData();
 
-        $expectedKeys = array('drugform1');
+        $expectedKeys = array('drugsetitem1');
         $expectedResults = array();
         if (!empty($expectedKeys)) {
             foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->drugforms($key);
+                $expectedResults[] = $this->drugsetitems($key);
             }
         }
         $this->assertEquals(1, $results->getItemCount());

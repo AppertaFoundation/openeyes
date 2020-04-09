@@ -16,14 +16,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugDurationTest extends ActiveRecordTestCase
+class MedicationDurationTest extends ActiveRecordTestCase
 {
     /**
-     * @var DrugDuration
+     * @var MedicationDuration
      */
     public $model;
     public $fixtures = array(
-        'drugduration' => 'DrugDuration',
+        'drugduration' => 'MedicationDuration',
     );
 
     public function getModel()
@@ -38,27 +38,27 @@ class DrugDurationTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new DrugDuration();
+        $this->model = new MedicationDuration();
     }
 
     /**
-     * @covers DrugDuration::model
+     * @covers MedicationDuration::model
      */
     public function testModel()
     {
-        $this->assertEquals('DrugDuration', get_class(DrugDuration::model()), 'Class name should match model.');
+        $this->assertEquals('MedicationDuration', get_class(MedicationDuration::model()), 'Class name should match model.');
     }
 
     /**
-     * @covers DrugDuration::tableName
+     * @covers MedicationDuration::tableName
      */
     public function testTableName()
     {
-        $this->assertEquals('drug_duration', $this->model->tableName());
+        $this->assertEquals('medication_duration', $this->model->tableName());
     }
 
     /**
-     * @covers DrugDuration::rules
+     * @covers MedicationDuration::rules
      * @throws CException
      */
     public function testRules()
@@ -69,7 +69,7 @@ class DrugDurationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugDuration::search
+     * @covers MedicationDuration::search
      */
     public function testSearch()
     {

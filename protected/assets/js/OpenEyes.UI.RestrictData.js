@@ -125,7 +125,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         Switch to array for better support
         */
         let arr = Array.prototype.slice.call(collapseData);
-        arr.forEach( ( elem ) => { hideShowBtn( elem ); });
+        arr.forEach( ( elem ) => { hideShowBtn( elem );$(elem).trigger('loaded'); });
     };
 
     exports.RestrictDataController = RestrictDataController;

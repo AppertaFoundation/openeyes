@@ -43,12 +43,16 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
     }
 
     /**
+     * @param $view
+     * @param $data
+     * @param $return
+     *
      * Renders the main content of the view.
      * The content is divided into sections, such as summary, items, pager.
      * Each section is rendered by a method named as "renderXyz", where "Xyz" is the section name.
      * The rendering results will replace the corresponding placeholders in {@link template}.
      */
-    public function render()
+    public function render($view, $data = null, $return = false)
     {
         ob_start();
         echo preg_replace_callback(

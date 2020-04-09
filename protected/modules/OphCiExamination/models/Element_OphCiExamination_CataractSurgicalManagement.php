@@ -172,11 +172,10 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
 
     public function getCorrectionDiscussed($side) {
         $discussed_attribute = $side . '_correction_discussed';
-        return isset($this->$discussed_attribute) && $this->$discussed_attribute !== '' ?
-          $this->$discussed_attribute ?
-            '' :
-            'Refractive target not discussed' :
-          '<span class="none">Not recorded</span>';
+        if (isset($this->$discussed_attribute) && $this->$discussed_attribute !== '') {
+            return ($this->$discussed_attribute) ? '' : '<span style="float:right;">Refractive target not discussed</span>';
+        }
+        return '';
     }
 
     public function beforeSave() {

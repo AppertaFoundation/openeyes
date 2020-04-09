@@ -17,8 +17,7 @@
 
 class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 {
-    private $_pid;
-    private $_pidfile = '/tmp/oe_populatesets.pid';
+    private $lock_name = "PopulateAutoMedicationSetsCommand_lock";
 
     public function getHelp()
     {
@@ -30,12 +29,14 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
         $t = microtime(true);
         echo "[" . (date("Y-m-d H:i:s")) . "] PopulateAutoMedicationSets ... ";
 
-        $this->_pid = getmypid();
-
-        if ($this->_isRunning()) {
+        if ($this->_isRunning() || !$this->acquireLock()) {
             echo "Another process is already being run." . PHP_EOL;
             exit(1);
         }
+
+        register_shutdown_function(function () {
+            $this->releaseLock();
+        });
 
         //populate whole set unless we are given specific set number to reduce time on rebuilding sets on admin page
         if (empty($args)) {
@@ -53,12 +54,33 @@ class PopulateAutoMedicationSetsCommand extends CConsoleCommand
 
     private function _isRunning()
     {
-        if (file_exists($this->_pidfile)) {
-            $pid = filter_var(file_get_contents($this->_pidfile), FILTER_SANITIZE_NUMBER_INT);
-            return file_exists("/proc/$pid");
-        } else {
-            return false;
-        }
+        return (bool) Yii::app()->db->createCommand(
+            'SELECT IS_USED_LOCK(:name)'
+        )->bindValue(':name', $this->lock_name)
+        ->queryScalar();
+    }
+
+    /**
+     * @return bool acquiring result
+     */
+    private function acquireLock()
+    {
+        return (bool) Yii::app()->db->createCommand(
+            'SELECT GET_LOCK(:name, :timeout)',
+        )->bindValue(':name', $this->lock_name)
+        ->bindValue(':timeout', 0) // timeout = 0 means that the method will return false immediately in case lock is used
+        ->queryScalar();
+    }
+
+    /**
+     * @return bool release result
+     */
+    private function releaseLock()
+    {
+        return (bool) Yii::app()->db->createCommand(
+            'SELECT RELEASE_LOCK(:name)'
+        )->bindValue(':name', $this->lock_name)
+        ->queryScalar();
     }
 
     public function actionCheckRunning()

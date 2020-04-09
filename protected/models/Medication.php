@@ -40,6 +40,7 @@
  * @property int $default_form_id
  * @property int $default_route_id
  * @property string $default_dose_unit_term
+ * @property string $default_dose
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
@@ -94,7 +95,7 @@ class Medication extends BaseActiveRecordVersioned
             ['source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10],
             ['source_subtype', 'length', 'max' => 45],
             ['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255],
-            ['id, deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
+            ['id, deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, 
@@ -157,6 +158,7 @@ class Medication extends BaseActiveRecordVersioned
             'will_copy' => 'Will copy',
             'default_form_id' => 'Default form',
             'default_route_id' => 'Default route',
+            'default_dose' => 'Default dose',
             'default_dose_unit_term' => 'Default dose unit'
         ];
     }
@@ -362,7 +364,7 @@ class Medication extends BaseActiveRecordVersioned
                     'name' => $item->medication->preferred_term,
                     'id' => $item->medication->id,
                     'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
-                    'dose' => $item->default_dose,
+                    'dose' => $item->default_dose ? $item->default_dose : $item->medication->default_dose,
                     'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
                     'frequency_id' => $item->default_frequency_id,
                     'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,

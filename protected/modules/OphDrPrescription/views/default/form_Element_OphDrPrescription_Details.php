@@ -145,7 +145,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         enableCustomSearchEntries: true,
         searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
         booleanSearchFilterEnabled: true,
-        booleanSearchFilterLabel: 'Include branded',
+        booleanSearchFilterLabel: 'Include brand names',
         booleanSearchFilterURLparam: 'include_branded'
     });
 

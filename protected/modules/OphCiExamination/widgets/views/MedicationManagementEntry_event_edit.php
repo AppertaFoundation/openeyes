@@ -182,7 +182,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     $field_prefix.'[duration_id]',
                     $entry->duration_id,
                     CHtml::listData(
-                        DrugDuration::model()->activeOrPk($entry->duration_id)->findAll(array('order' => 'display_order')),
+                        MedicationDuration::model()->activeOrPk([$entry->duration_id])->findAll(array('order' => 'display_order')),
                         'id',
                         'name'
                     ),

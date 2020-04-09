@@ -16,14 +16,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DrugSetTest extends ActiveRecordTestCase
+class MedicationRouteTest extends ActiveRecordTestCase
 {
     /**
-     * @var DrugSet
+     * @var MedicationRoute
      */
     protected $model;
     public $fixtures = array(
-        'drugsets' => 'DrugSet',
+        'drugroutes' => 'MedicationRoute',
     );
 
     public function getModel()
@@ -38,15 +38,15 @@ class DrugSetTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new DrugSet();
+        $this->model = new MedicationRoute();
     }
 
     /**
-     * @covers DrugSet::model
+     * @covers DrugForm::model
      */
     public function testModel()
     {
-        $this->assertEquals('DrugSet', get_class(DrugSet::model()), 'Class name should match model.');
+        $this->assertEquals('MedicationRoute', get_class(MedicationRoute::model()), 'Class name should match model.');
     }
 
     /**
@@ -54,7 +54,7 @@ class DrugSetTest extends ActiveRecordTestCase
      */
     public function testTableName()
     {
-        $this->assertEquals('drug_set', $this->model->tableName());
+        $this->assertEquals('medication_route', $this->model->tableName());
     }
 
     /**
@@ -64,27 +64,7 @@ class DrugSetTest extends ActiveRecordTestCase
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->drugsets('drugset1')->validate());
-        $this->assertEmpty($this->drugsets('drugset1')->errors);
-    }
-
-    /**
-     * @covers DrugSet::search
-     */
-    public function testSearch()
-    {
-        $this->model->setAttributes($this->drugsets('drugset1')->getAttributes());
-        $results = $this->model->search();
-        $data = $results->getData();
-
-        $expectedKeys = array('drugset1');
-        $expectedResults = array();
-        if (!empty($expectedKeys)) {
-            foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->drugsets($key);
-            }
-        }
-        $this->assertEquals(1, $results->getItemCount());
-        $this->assertEquals($expectedResults, $data);
+        $this->assertTrue($this->drugroutes('drugroute1')->validate());
+        $this->assertEmpty($this->drugroutes('drugroute2')->errors);
     }
 }

@@ -10,6 +10,8 @@
  * @property integer $default_form_id
  * @property double $default_dose
  * @property integer $default_route_id
+ * @property integer $default_dispense_location_id
+ * @property integer $default_dispense_condition_id
  * @property integer $default_frequency_id
  * @property string $default_dose_unit_term
  * @property integer $default_duration_id

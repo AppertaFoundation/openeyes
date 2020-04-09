@@ -319,7 +319,7 @@ $dispense_condition_options = array(
             const $table = $(drugSetController.options.tableSelector + ' tbody');
             selectedItems.forEach(item => {
                 //how nice that filter is coming back as a selected item
-                if (item.label && item.label === 'Include branded drugs in search results') {
+                if (item.label && item.label === 'Include brand names') {
                     return;
                 }
 
@@ -353,7 +353,7 @@ $dispense_condition_options = array(
         enableCustomSearchEntries: true,
         searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
         booleanSearchFilterEnabled: true,
-        booleanSearchFilterLabel: 'Include branded',
+        booleanSearchFilterLabel: 'Include brand names',
         booleanSearchFilterURLparam: 'include_branded'
     });
 
