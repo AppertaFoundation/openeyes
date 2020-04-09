@@ -75,9 +75,9 @@ EOH;
                      'site_subspecialty_drug',
                      'medication_drug',
                  ];
-        $tables_to_ignore = ['drug_duration'];
+
         foreach (Yii::app()->db->getSchema()->getTableNames() as $table_to_rename) {
-            if (((substr($table_to_rename, 0, strlen($drugTableSuffix)) === $drugTableSuffix) || in_array($table_to_rename, $tables_to_rename)) && !in_array($table_to_rename, $tables_to_ignore)) {
+            if (((substr($table_to_rename, 0, strlen($drugTableSuffix)) === $drugTableSuffix) || in_array($table_to_rename, $tables_to_rename))) {
                 Yii::app()->db->createCommand("RENAME TABLE " . $table_to_rename . " TO archive_" . $table_to_rename)->execute();
             }
         }

@@ -174,6 +174,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$element.closest('section')
         });
+
     };
 
     DiagnosesController.prototype.popupSearch = function () {

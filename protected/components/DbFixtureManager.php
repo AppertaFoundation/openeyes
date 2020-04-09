@@ -21,6 +21,10 @@ class DbFixtureManager extends CDbFixtureManager
 {
     protected $fixtures = array();
 
+    /**
+     * @throws CDbException
+     * @throws CException
+     */
     public function init()
     {
         $paths = array($this->basePath ?: Yii::getPathOfAlias('application.tests.fixtures'));
@@ -64,6 +68,7 @@ class DbFixtureManager extends CDbFixtureManager
 
     /**
      * @param string $tableName
+     * @throws CException
      */
     public function resetTable($tableName)
     {
@@ -79,6 +84,8 @@ class DbFixtureManager extends CDbFixtureManager
      * @param string $table_name
      *
      * @return array|false
+     * @throws CDbException
+     * @throws CException
      */
     public function loadFixture($table_name)
     {

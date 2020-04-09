@@ -20,42 +20,42 @@
 return array(
                          'drugform1' => array(
                                                   'id' => 1,
-                                                  'name' => 'Capsule',
+                                                  'term' => 'Capsule',
                          ),
                          'drugform2' => array(
                                                   'id' => 2,
-                                                  'name' => 'Cream',
+                                                  'term' => 'Cream',
                          ),
                          'drugform3' => array(
                                                   'id' => 3,
-                                                  'name' => 'Device',
+                                                  'term' => 'Device',
                          ),
       'drugform4' => array(
                                                   'id' => 4,
-                                                  'name' => 'Drop',
+                                                  'term' => 'Drop',
                          ),
                          'drugform5' => array(
                                                   'id' => 5,
-                                                  'name' => 'Eye  Ointment',
+                                                  'term' => 'Eye  Ointment',
                          ),
                          'drugform6' => array(
                                                   'id' => 6,
-                                                  'name' => 'Gas',
+                                                  'term' => 'Gas',
                          ),
      'drugform7' => array(
                                                   'id' => 7,
-                                                  'name' => 'Gel',
+                                                  'term' => 'Gel',
                          ),
                          'drugform8' => array(
                                                   'id' => 8,
-                                                  'name' => 'Implant',
+                                                  'term' => 'Implant',
                          ),
                          'drugform9' => array(
                                                   'id' => 9,
-                                                  'name' => 'Infusion',
+                                                  'term' => 'Infusion',
                          ),
       'drugform10' => array(
                                                   'id' => 10,
-                                                  'name' => 'Inhalation',
+                                                  'term' => 'Inhalation',
                          ),
 );

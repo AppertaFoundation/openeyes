@@ -143,15 +143,15 @@ class OphDrPrescription_Item extends EventMedicationUse
      */
     public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->drugDuration->name, array('Other', 'Ongoing'))) {
+        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing'))) {
             return null;
         }
 
         $start_date = new DateTime($this->prescription->event->event_date);
-        if ($this->drugDuration->name === 'Once') {
+        if ($this->medicationDuration->name === 'Once') {
             return $start_date;
         }
-        $end_date = $start_date->add(DateInterval::createFromDateString($this->drugDuration->name));
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->medicationDuration->name));
         if ($include_tapers) {
             foreach ($this->tapers as $taper) {
                 if (in_array($taper->duration->name, array('Other', 'Ongoing'))) {
@@ -282,11 +282,11 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public function fpTenFrequency()
     {
-        if (preg_match("/^\d+/", $this->drugDuration->name)) {
-            return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' FOR ' . strtoupper($this->drugDuration->name);
+        if (preg_match("/^\d+/", $this->medicationDuration->name)) {
+            return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' FOR ' . strtoupper($this->medicationDuration->name);
         }
 
-        return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' ' . strtoupper($this->drugDuration->name);
+        return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' ' . strtoupper($this->medicationDuration->name);
     }
 
     public function fpTenDose()
