@@ -111,7 +111,7 @@
             <?php
             echo $form->multiSelectList(
               $element,
-              'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement[reasonForSurgery]',
+              'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_Archive[reasonForSurgery]',
               'reasonForSurgery',
               'id',
               \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),

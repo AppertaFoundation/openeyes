@@ -59,7 +59,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property HistoryMedicationsStopReason $stopReason
  * @property EventMedicationUse $prescriptionItem
  * @property MedicationLaterality $medicationLaterality
- * @property DrugDuration $drugDuration
+ * @property MedicationDuration $medicationDuration
  */
 
 class EventMedicationUse extends BaseElement
@@ -179,7 +179,8 @@ class EventMedicationUse extends BaseElement
 
     public function validateDoseUnitTerm()
     {
-        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
+        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
         }
     }
@@ -221,7 +222,7 @@ class EventMedicationUse extends BaseElement
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
+            'medicationDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
             'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
         );

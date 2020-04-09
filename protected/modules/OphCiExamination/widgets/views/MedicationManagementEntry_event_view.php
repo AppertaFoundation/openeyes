@@ -39,7 +39,7 @@
     </td>
     <td>
 
-        <?php echo $entry->duration_id ? $entry->drugDuration->name : '' ?>
+        <?php echo $entry->duration_id ? $entry->medicationDuration->name : '' ?>
         <?php if ($entry->dispense_condition_id) {
             if ($entry->dispense_condition->name === 'Print to {form_type}') {
                 echo str_replace(

@@ -20,7 +20,7 @@ namespace OEModule\OphCiExamination\models;
 use Yii;
 
 /**
- * This is the model class for table "et_ophciexamination_cataractsurgicalmanagement".
+ * This is the model class for table "et_ophciexamination_cataractsurgicalmanagement_archive".
  *
  * The followings are the available columns in table:
  *
