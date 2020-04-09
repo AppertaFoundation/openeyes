@@ -49,7 +49,7 @@ class LogoHelper
         $logo = array();
 
         $directory = \Yii::getPathOfAlias('application.runtime');
-        $images = glob("$directory/*.{jpg,png,gif}", GLOB_BRACE);
+        $images = glob("$directory/*.{png,jpg,gif}", GLOB_BRACE);
 
         foreach($images as $image_path) {
             if (strpos($image_path, 'header') !== false) {

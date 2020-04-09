@@ -317,7 +317,7 @@ if ($is_prescription_set) {
         enableCustomSearchEntries: true,
         searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
         booleanSearchFilterEnabled: true,
-        booleanSearchFilterLabel: 'Include branded',
+        booleanSearchFilterLabel: 'Include brand names',
         booleanSearchFilterURLparam: 'include_branded'
     });
 </script>

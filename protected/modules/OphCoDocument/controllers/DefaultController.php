@@ -146,10 +146,10 @@ class DefaultController extends BaseEventTypeController
         if ($p_file->save()) {
             unlink($tmp_name);
             return $p_file->id;
-        } else {
-            unlink($tmp_name);
-            return false;
         }
+
+        unlink($tmp_name);
+        return false;
     }
 
     public function actionRemoveDocuments()
@@ -159,7 +159,7 @@ class DefaultController extends BaseEventTypeController
             try {
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
-                    $doc->delete();
+                    unlink($doc->getFilePath() . '/' . $doc->uid);
                 } else {
                     OELog::log(($doc ? "Failed to delete the document from " . $doc->getFilePath() : "Failed to find document"));
                 }
@@ -452,6 +452,9 @@ class DefaultController extends BaseEventTypeController
                 if (!$document) {
                     continue;
                 }
+
+                // Always write the file contents to the file, even if it already exists. This will ensure the contents are always up-to-date.
+                file_put_contents($document->getPath(), $document->file_content);
 
                 switch ($document->mimetype) {
                     case 'application/pdf':

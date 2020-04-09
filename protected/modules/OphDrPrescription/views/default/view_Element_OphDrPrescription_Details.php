@@ -52,7 +52,7 @@
                             } ?>
                         </td>
               <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
-              <td><?php echo $item->duration_id ? $item->drugDuration->name : '' ?></td>
+              <td><?php echo $item->duration_id ? $item->medicationDuration->name : '' ?></td>
                 <?php if ($item->dispense_condition->name === 'Print to {form_type}') : ?>
                 <td>
                     <?php echo str_replace(

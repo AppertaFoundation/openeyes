@@ -25,6 +25,6 @@ class OphCiExamination_ColourVision_ReadingTest extends ActiveRecordTestCase
     }
     public function testgetMethod()
     {
-        $this->markTestIncomplete('To be written');
+        $this->markTestIncomplete('TODO');
     }
 }

@@ -125,7 +125,7 @@ if ($footer_param !== null) {
                         echo ' (' . $item->dose_unit_term . ')';
                             } ?></td>
                 <td><?=$item->frequency->term; ?></td>
-                <td><?=$item->drugDuration->name ?></td>
+                <td><?=$item->medicationDuration->name ?></td>
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                             <td><?= $item->dispense_location->name ?></td>
                             <td></td>

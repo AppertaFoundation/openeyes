@@ -53,8 +53,10 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
         <?php
         $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         foreach ($element->items as $key => $item) {
-            $this->renderPartial('form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
+            $this->renderPartial(
+                'form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
+            );
         } ?>
         </tbody>
       </table>
@@ -126,10 +128,12 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         openButton: $('#add-prescription-btn'),
         itemSets: [
             new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                $common_systemic
+            ) ?>, {'multiSelect': true, header: "Common Systemic"})
             ,
             new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+                $common_ophthalmic
+            ) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
         ],
         onReturn: function (adderDialog, selectedItems) {
             addItems(selectedItems);
@@ -141,7 +145,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         enableCustomSearchEntries: true,
         searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
         booleanSearchFilterEnabled: true,
-        booleanSearchFilterLabel: 'Include branded',
+        booleanSearchFilterLabel: 'Include brand names',
         booleanSearchFilterURLparam: 'include_branded'
     });
 
@@ -154,9 +158,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         }, $element->drugSets())
     ) ?>;
 
-	<?php if (isset($this->patient)) : ?>
+    <?php if (isset($this->patient)) : ?>
     let patient_allergies = <?= CJSON::encode($this->patient->getAllergiesId()) ?>;
-	<?php endif; ?>
+    <?php endif; ?>
 
     // This case handles displaying the button correctly whenever changing the dispense condition.
     $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
@@ -177,8 +181,11 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
  */
 $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'), true);
 
-Yii::app()->getClientScript()->registerScript('scr_controllerName',
-    "controllerName = '" . get_class(Yii::app()->getController()) . "';", CClientScript::POS_HEAD);
+Yii::app()->getClientScript()->registerScript(
+    'scr_controllerName',
+    "controllerName = '" . get_class(Yii::app()->getController()) . "';",
+    CClientScript::POS_HEAD
+);
 
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/allergicDrugs.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/defaultprescription.js', CClientScript::POS_END);
