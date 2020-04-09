@@ -131,6 +131,26 @@ class DefaultController extends \BaseEventTypeController
         return $sortable_elements;
     }
 
+    public function getElements($action = 'edit')
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                $flow_order = $set->getSetElementOrder($element);
+                if ($element->getElementType()) {
+                    if ($flow_order) {
+                        $elements[$flow_order] = $element;
+                    } else {
+                        $elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+                    }
+                }
+            }
+        }
+        ksort($elements);
+        return $elements;
+    }
+
     /**
      * Check data in child elements
      *
@@ -371,6 +391,8 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        $step_id = \Yii::app()->request->getParam('step_id');
+
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js

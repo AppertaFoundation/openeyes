@@ -5,7 +5,7 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
     public function safeUp()
     {
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement TO et_ophciexamination_cataractsurgicalmanagement_archive');
-        $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_version TO et_ophciexamination_cataractsurgicalmanagement_version_archive');
+        $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_version TO et_ophciexamination_cataractsurgicalmanagement_archive_version');
         $this->createOETable('et_ophciexamination_cataractsurgicalmanagement',
             [
                 'id' => 'pk',
@@ -75,7 +75,7 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
             'et_ophciexamination_cataractsurgicalmanagement');
         $this->dropOETable('et_ophciexamination_cataractsurgicalmanagement', true);
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_archive TO et_ophciexamination_cataractsurgicalmanagement');
-        $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_version_archive TO et_ophciexamination_cataractsurgicalmanagement_version');
+        $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_archive_version TO et_ophciexamination_cataractsurgicalmanagement_version');
         return true;
     }
 }

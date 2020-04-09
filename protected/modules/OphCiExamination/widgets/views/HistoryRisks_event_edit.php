@@ -48,7 +48,7 @@ $required_risk_ids = array_map(function ($r) {
               <label class="inline highlight" for="<?= $model_name ?>_no_risks">
                 <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
                   array('class' => $model_name . '_no_risks')); ?>
-                  Confirm patient has no risks
+                  Confirm patient has no relevant risks
               </label>
          </td>
       </tr>

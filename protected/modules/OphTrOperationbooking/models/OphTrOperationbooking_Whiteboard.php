@@ -370,6 +370,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $risks = $patient->riskAssignments;
 
+        $alpha_or_anticoag = array_filter($risks, static function ($risk) {
+            return in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
+        });
+
         // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
 
         $risks = array_filter($risks, static function ($risk) {
@@ -401,7 +405,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $display .= '<div class="alert-box warning">' . $line . '</div>';
         }
 
-        if (!$patient->no_risks_date && !$risks) {
+        if (!$patient->no_risks_date && !$risks && empty($alpha_or_anticoag)) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }

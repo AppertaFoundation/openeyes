@@ -98,31 +98,34 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
               'class' => 'fixed-width-small'
             ]
           )?>
-          <td><span style="float:right;">Refractive target:</span></td>
-          <td id="<?= $side . '_refraction_entry' ?>"><?= $refractive_target ?></td>
+          <td style="<?= $element->{$side . '_correction_discussed'} == '1' ? '' : 'display:none'?>">
+              <span style="float:right;">Refractive target: <span id="<?= $side . '_refraction_entry' ?>" ><?= $refractive_target ?></span></span>
+          </td>
           <!-- CORRECTION DISCUSSED -->
             <?=\CHtml::activeHiddenField($element, $side . '_correction_discussed', [
             'id' => $side . '_discussed_hidden',
           ])?>
-          <td id="<?= $side . '_discussed_entry' ?>"><?= $discussed ?></td>
+          <td style="float:right;" id="<?= $side . '_discussed_entry' ?>"><?= $discussed ?></td>
         </tr>
       </tbody>
     </table>
-    <div id="csm-<?= $side ?>-comments" class="cols-full comment-group flex-layout flex-left js-comment-container"
-      style="<?= !$element->{$side . '_notes'} ? 'display: none;' : '' ?>"
-      data-comment-button="#csm-<?= $side ?>-comment-button"
-    >
-        <?=\CHtml::activeTextArea($element, $side . '_notes',
-        [
-          'rows' => 1,
-          'placeholder' => $element->getAttributeLabel($side . '_notes'),
-          'class' => 'cols-full js-comment-field',
-          'style' => 'overflow-wrap: break-word; height: 24px;',
-        ]
-      )?>
-      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-    </div>
     <div class="flex-layout flex-right">
+        <div class="cols-10">
+            <div id="csm-<?= $side ?>-comments" class="cols-full comment-group flex-layout flex-left js-comment-container"
+                 style="<?= !$element->{$side . '_notes'} ? 'display: none;' : '' ?>"
+                 data-comment-button="#csm-<?= $side ?>-comment-button"
+            >
+                <?=\CHtml::activeTextArea($element, $side . '_notes',
+                    [
+                        'rows' => 1,
+                        'placeholder' => 'Comments',
+                        'class' => 'cols-full js-comment-field',
+                        'style' => 'overflow-wrap: break-word; height: 24px;',
+                    ]
+                )?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+            </div>
+        </div>
       <div class="add-data-action flex-item-bottom">
         <button id="csm-<?= $side ?>-comment-button"
                 class="button js-add-comments"
