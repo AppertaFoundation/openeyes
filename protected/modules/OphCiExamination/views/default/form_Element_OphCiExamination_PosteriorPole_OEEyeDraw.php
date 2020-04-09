@@ -58,7 +58,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'SwollenDisc',
             'Telangiectasis',
             'ChoroidalHaemorrhage',
-            'ChoroidalNaevus',
+            'ChoroidalNaevusMelanoma',
             'PCV',
             'MacularDystrophy',
         ),
