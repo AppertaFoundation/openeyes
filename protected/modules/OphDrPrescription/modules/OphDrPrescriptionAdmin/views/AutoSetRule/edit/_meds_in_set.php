@@ -88,12 +88,15 @@ $dispense_condition_options = array(
                             <?= \CHtml::activeHiddenField($med, 'medication_id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
                         </td>
                         <td class="js-input-wrapper">
-                            <?= \CHtml::activeTextField($med, 'default_dose',
+                            <?= \CHtml::activeTextField(
+                                $med,
+                                'default_dose',
                                 [
                                     'class' => 'js-input cols-full',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dose]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td>
                             <span data-type="default_dose" data-id="<?= $med->default_dose_unit_term ? $med->default_dose_unit_term : ''; ?>"><?= $med->default_dose_unit_term ? $med->default_dose_unit_term : '-'; ?></span>
@@ -108,7 +111,8 @@ $dispense_condition_options = array(
                                     'empty' => '-- select --',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_route_id]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <?= \CHtml::activeDropDownList(
@@ -120,7 +124,8 @@ $dispense_condition_options = array(
                                     'empty' => '-- select --',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_frequency_id]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td class="js-input-wrapper">
 
@@ -148,7 +153,10 @@ $dispense_condition_options = array(
                                             . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                                             . ") or id='" . $med->default_dispense_condition_id . "'",
                                         'order' => 'display_order',
-                                    )), 'id', 'name'),
+                                    )),
+                                    'id',
+                                    'name'
+                                ),
                                 [
                                     'disabled' => !$is_prescription_set,
                                     'class' => 'js-input cols-full dispense-condition',
