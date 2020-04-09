@@ -327,10 +327,12 @@ foreach ($element->entries as $entry) {
             openButton: $('#add-medication-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                    $common_systemic
+                ) ?>, {'multiSelect': true, header: "Common Systemic"})
                 ,
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+                    $common_ophthalmic
+                ) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
             ],
             onReturn: function (adderDialog, selectedItems) {
                 medicationsController.addEntry(selectedItems, true);
