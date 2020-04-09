@@ -54,7 +54,7 @@ class EyeLateralityWidget extends CWidget
             }
         }
 
-        if($this->show_if_both_eyes_are_null || $right || $left) {
+        if ($this->show_if_both_eyes_are_null || $right || $left) {
             $this->beginWidget('CondenseHtmlWidget');
             ?>
             <span class="oe-eye-lat-icons">

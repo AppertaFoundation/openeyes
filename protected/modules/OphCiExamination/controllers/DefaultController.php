@@ -262,6 +262,8 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        $step_id = \Yii::app()->request->getParam('step_id');
+        
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js
@@ -280,7 +282,7 @@ class DefaultController extends \BaseEventTypeController
         });
         $visualAcuity = array_shift($visual_acuities);
 
-        // Render the CVI alert above all th other elements
+        // Render the CVI alert above all thr other elements
         if ($cvi_api) {
             echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
         }
@@ -630,6 +632,26 @@ class DefaultController extends \BaseEventTypeController
 
         ksort($sortable_elements);
         return $sortable_elements;
+    }
+
+    public function getElements($action = 'edit')
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                $flow_order = $set->getSetElementOrder($element);
+                if ($element->getElementType()) {
+                    if ($flow_order) {
+                        $elements[$flow_order] = $element;
+                    } else {
+                        $elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+                    }
+                }
+            }
+        }
+        ksort($elements);
+        return $elements;
     }
 
     /**

@@ -32,7 +32,7 @@
         </tr>
         <tr>
           <?php $primary_reason_attribute = $side . 'ReasonForSurgery'; ?>
-          <td class="priority-text"><?= $element->$primary_reason_attribute ? $element->$primary_reason_attribute->name : '<span class="non">N/A</span>' ?></td>
+          <td colspan="2" class="priority-text"><?= $element->$primary_reason_attribute ? $element->$primary_reason_attribute->name : '<span class="non">N/A</span>' ?></td>
         </tr>
         <tr>
           <td>
@@ -40,11 +40,11 @@
           </td>
             <?php if ($element->{$side . '_correction_discussed'} == '1') : ?>
               <td class="large-text">
+                  <small class="fade">Refractive target</small>
                 <?php $refractive_target_attribute = $side . '_target_postop_refraction'; ?>
                 <?= $element->$refractive_target_attribute
                   ? $element->$refractive_target_attribute . ' D'
-                  : '<span class="none">Not recorded</span>' ?> 
-                <small class="fade">Refractive target</small>
+                  : '<span class="none">Not recorded</span>' ?>
             <?php else : ?>
               <td>
                 <?= $element->getCorrectionDiscussed($side) ?>
@@ -55,8 +55,10 @@
     </table>
     <hr class="divider">
     <div>
+        <?php if ($element->{$side . '_notes'}) { ?>
         <i class="oe-i comments-who medium pad-right js-has-tooltip" data-tooltip-content="<?= $element->usermodified ? $element->usermodified->fullName : '' ?>"></i>
         <span class="user-comment"><?= $element->{$side . '_notes'} ?></span>
+        <?php } ?>
     </div>
   </div>
   <?php else : ?>
