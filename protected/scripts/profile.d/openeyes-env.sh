@@ -57,3 +57,6 @@
 # export OE_PORTAL_CLIENT_ID=""
 # export OE_PORTAL_CLIENT_SECRET=""
 # export OE_SIGNATUE_APP_URL=""
+
+## Will turn on automatic daily import of GP/Practice/CCG data (UK Only)
+# export OE_ENABLE_HSCIC_IMPORT
