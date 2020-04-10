@@ -1,3 +1,4 @@
 # /etc/cron.d/hotlist: hotlist item closer
 # Run every day just before midnight (so the items closed overnight don't look like they were closed "today")
+# pulls in environment variables from /etc/profile or /env.sh
 59 23 * * *	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; php $WROOT/protected/yiic.php closehotlistitems >/dev/null 2>&1
