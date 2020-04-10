@@ -35,7 +35,7 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     public $taper_support = true;
 
-		private $fpten_line_usage = array();
+        private $fpten_line_usage = array();
     /**
      * Returns the static model of the specified AR class.
      */

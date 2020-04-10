@@ -42,27 +42,27 @@ $lists = array(
             <tr>
                 <th colspan="5"><?=$header?></th>
             </tr>
-			<?php foreach ($$list as $entry) : ?>
-				<?php /** @var \EventMedicationUse $entry */ ?>
+            <?php foreach ($$list as $entry) : ?>
+                <?php /** @var \EventMedicationUse $entry */ ?>
                 <tr>
                     <td><?=$entry->getMedicationDisplay(true) ?></td>
                     <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                     <td>
-						<?php
+                        <?php
                         if ($laterality = $entry->getLateralityDisplay()) {
-							\Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-						}
-						else {
-							echo "N/A";
-						}
-						?>
+                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        }
+                        else {
+                            echo "N/A";
+                        }
+                        ?>
                     </td>
                     <td>
-						<?=$entry->frequency ? $entry->frequency : '';?>
+                        <?=$entry->frequency ? $entry->frequency : '';?>
                     </td>
                     <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
                 </tr>
-			<?php endforeach; ?>
+            <?php endforeach; ?>
         </tbody>
         <?php endif; ?>
     <?php endforeach; ?>
