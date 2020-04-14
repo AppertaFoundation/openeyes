@@ -430,7 +430,10 @@ class AutoSetRuleController extends BaseAdminController
             case 'attrs':
                 foreach ($tmp_set as $row => $med_attr) {
                     $set_m[$row] = MedicationSetAutoRuleAttribute::model()->findByPk($med_attr['id']) ?? new MedicationSetAutoRuleAttribute;
-                    $set_m[$row]->medicationAttributeOption = MedicationAttributeOption::model()->findByAttributes(['medication_attribute_id' => $med_attr['medication_attribute_id']]);
+                    $attribute_option = MedicationAttributeOption::model()->findByAttributes(['medication_attribute_id' => $med_attr['medication_attribute_id']]);
+                    if ($attribute_option) {
+                        $set_m[$row]->medication_attribute_option_id = $attribute_option->id;
+                    }
                 }
             break;
             
