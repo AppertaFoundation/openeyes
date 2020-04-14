@@ -344,6 +344,16 @@ $dispense_condition_options = array(
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);
                 $(drugSetController.options.tableSelector + ' tbody').append($tr_html);
+
+                const usage_code = $('.js-usage-rule-table').find('input[name$="usage_code_id]"]').val();
+                if ($('select.dispense-condition').prop('disabled') && typeof(usage_code) !== "undefined" && parseInt(usage_code) === prescriptionUsageRuleId) {
+                    for (const dropdownName of ['condition', 'location']) {
+                        let $dropdown = $('select.dispense-' + dropdownName);
+                        $dropdown.prop('disabled', false);
+                        $dropdown.prop('style', '');
+                    }
+                }
+
                 $('#meds-list').trigger('medicationAdded');
                 const $tr = $table.find('tr.js-row-of-' + medication_id);
                 $tr.css({'background-color': '#3ba93b'});
