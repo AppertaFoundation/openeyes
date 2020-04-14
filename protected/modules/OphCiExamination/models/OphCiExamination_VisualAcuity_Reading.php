@@ -108,9 +108,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
      */
     public function convertTo($base_value, $unit_id = null)
     {
-        $value = $this->getClosest($base_value, $unit_id);
-
-        return $value->value;
+        return $this->getClosest($base_value, $unit_id)->value;
     }
 
     /**

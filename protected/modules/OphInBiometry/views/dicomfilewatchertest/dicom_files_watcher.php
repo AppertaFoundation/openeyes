@@ -45,7 +45,7 @@
                     <select name="dicomfiles">
                         <?php
                         foreach ($dirlist as $file) {
-                            //if($file['ext'] == "dcm") {
+                            //if ($file['ext'] == "dcm") {
                                 echo '<option value='.$file['name'].'>'.$file['name'].'</option>';
                            // }
                         }

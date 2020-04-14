@@ -36,6 +36,8 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         $this->client = new Client(
             Yii::app()->params['rest_test_base_url'],
             array(
@@ -47,8 +49,6 @@ class RestTestCase extends PHPUnit_Framework_TestCase
                 ),
             )
         );
-
-        parent::setUp();
     }
 
     protected function setExpectedHttpError($code)

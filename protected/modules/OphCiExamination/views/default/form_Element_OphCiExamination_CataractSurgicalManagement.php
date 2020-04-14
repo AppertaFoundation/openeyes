@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,140 +9,165 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-fields">
-  <div class="data-group" style="position: relative; z-index: 3">
-        <?php echo $form->radioButtons($element, 'eye_id',
-          CHtml::listData(
-              \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
-              'id',
-              'name'
-          ),
-          null,
-          false,
-          false,
-          false,
-          false,
-          array('nowrapper' => true)
-      ) ?>
 
-  </div>
-  <div class="cols-12 data-group flex-layout flex-top">
-    <table class="cols-6">
-      <tbody>
-      <tr>
-        <td>
-          <div>
-                <?php
-                if ($active_check === 'on') {
-                    echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
-                    echo $form->checkbox($element, 'satellite', array('nowrapper' => true));
-                }
-                ?>
-                <?php echo $form->checkbox($element, 'fast_track', array('nowrapper' => true)) ?>
-          </div>
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td class="">
-            <?php echo $form->textfield($element, 'target_postop_refraction', array(), array(), array('label' => 8, 'field' => 4));?>
-
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>
-            <?php echo $form->radioBoolean($element, 'correction_discussed', array(), array('label' => 9, 'field' => 3)) ?>
-        </td><td></td>
-      </tr><tr></tr>
-      </tbody>
-    </table>
-    <table class="cols-6">
-      <tbody>
-      <tr class="flex-layout ">
-        <td>
-          <label for="<?php echo get_class($element) . '_suitable_for_surgeon_id'; ?>">
-                <?php echo $element->getAttributeLabel('suitable_for_surgeon_id') ?>:
-          </label>
-        </td>
-        <td class="flex-layout">
-          <div class="cols-6">
-                <?php echo $form->dropDownList(
-                  $element,
-                  'suitable_for_surgeon_id',
-                  '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
-                  array('class' => 'inline', 'empty' => 'Select', 'nowrapper' => true)
-              ) ?>
-          </div>
-          <label class="inline cols-6" style="padding-left: 4px">
-                <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true)) ?>
-                <?php echo $element->getAttributeLabel('supervised') ?>
-          </label>
-        </td>
-      </tr>
-      <tr>
-        <td>
-            <?php echo $form->radioBoolean($element, 'previous_refractive_surgery', array(), array('label' => 9, 'field' => 3)) ?>
-        </td><td></td>
-      </tr>
-      <tr>
-        <td>
-            <?php echo $form->radioBoolean($element, 'vitrectomised_eye', array(), array('label' => 9, 'field' => 3)) ?>
-        </td><td></td>
-      </tr>
-      <tr></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="data-group flex-layout cols-6 flex-left flex-top">
-    <div class="cols-6 column">
-        <label for="<?php echo get_class($element) . 'reasonForSurgery'; ?>">
-            <?php echo $element->getAttributeLabel('reasonForSurgery') ?>:
-        </label>
-    </div>
-    <div class="cols-6 column">
-            <?php
-            echo $form->multiSelectList(
-              $element,
-              'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement[reasonForSurgery]',
-              'reasonForSurgery',
-              'id',
-              \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),
-              array(),
-              array(
-                  'empty' => '',
-                  'label' => 'Primary Reason For Cataract Surgery',
-                  'nowrapper' => true,
-              ),
-              false,
-              true,
-              null,
-              false,
-              false,
-              array('label' => 3, 'field' => 9)
-            );
-            ?>
-    </div>
-  </div>
+<?php
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CataractSurgicalManagement.js", CClientScript::POS_HEAD);
+$primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAll();
+?>
+<div class="element-fields element-eyes">
+    <?= \CHtml::activeHiddenField($element, 'eye_id', [ 'class' => 'sideField' ]); ?>
+    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+    [
+      'element' => $element,
+      'side' => 'right',
+      'primary_reasons' => $primary_reasons,
+    ]
+  ) ?>
+    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+    [
+      'element' => $element,
+      'side' => 'left',
+      'primary_reasons' => $primary_reasons,
+    ]
+  ) ?>
 </div>
 
-<script type="text/javascript">
-    // $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function () {
-    //
-    //     if ($(this).val() < $('#refraction_slider').slider("option", "min")) {
-    //         $(this).val($('#refraction_slider').slider("option", "min"));
-    //     }
-    //     if ($(this).val() > $('#refraction_slider').slider("option", "max")) {
-    //         $(this).val($('#refraction_slider').slider("option", "max"));
-    //     }
-    //     $('#refraction_slider').slider("value", $(this).val());
-    //
-    // });
-    //
-    // $('#refraction_slider').after('<div style="width:410px;margin-top:-14px;margin-bottom:20px;margin-left:240px;font-size:10px;"><span>-10</span><span style="margin-left:194px;">0</span><span style="margin-left:194px;">10</span></div>');
+
+<script>
+let cataractSurgicalManagementController;
+$(document).ready(function () {
+  cataractSurgicalManagementController = new OpenEyes.OphCiExamination.CataractSurgicalManagementController({
+    element: $('.<?=CHtml::modelName($element)?>'),
+    <?php foreach (['left', 'right'] as $side) : ?>
+        <?= $side ?>PrimaryReasons:
+        <?=CJSON::encode(
+          array_map(function ($reason) use ($element, $side) {
+            return [
+              'label' => $reason->name,
+              'id' => $reason->id,
+              'type' => 'primary_reason',
+              'selected' => $reason->id === $element->{$side . '_reason_for_surgery_id'} ? 'selected' : '',
+            ];
+          }, $primary_reasons)
+        )?>,
+
+        <?= $side ?>Discussed: [
+          {
+            'label': 'Yes, discussed with Patient',
+            'id': 1,
+            'type': 'discussed',
+            'conditional-id': '<?=$side?>-discussed-1',
+            'selected': '<?= $element->{$side . '_correction_discussed'} === '1' ? 'selected' : ''?>'
+          },
+          {
+            'label': 'No, not discussed with Patient',
+            'id': 0,
+            'type': 'discussed',
+            'conditional-id': '<?=$side?>-discussed-0',
+            'selected': '<?= $element->{$side . '_correction_discussed'} === '0' ? 'selected' : ''?>'
+          }
+        ],
+        <?= $side ?>GuardedPrognosis: [
+          {
+            'label': 'Yes',
+            'id': 1,
+            'type': 'guarded_prognosis',
+            'selected': '<?= (string)$element->{$side . '_guarded_prognosis'} === '1' ? 'selected' : ''?>'
+          },
+          {
+            'label': 'No',
+            'id': 0,
+            'type': 'guarded_prognosis',
+            'selected': '<?= (string)$element->{$side . '_guarded_prognosis'} === '0' ? 'selected' : ''?>'
+          }
+        ],
+        <?= $side ?>RefractiveCategories: [
+          {
+            'label': 'Emmetropia',
+            'id': 0,
+            'conditional-id': '<?=$side?>-refractive-category-0',
+            'type': 'refractive_category',
+          },
+          {
+            'label': 'Myopic',
+            'id': 1,
+            'conditional-id': '<?=$side?>-refractive-category-1',
+            'type': 'refractive_category',
+          },
+          {
+            'label': 'Other',
+            'id': 2,
+            'conditional-id': '<?=$side?>-refractive-category-2',
+            'type': 'refractive_category',
+          },
+        ],
+        <?= $side ?>RefractiveEmmetropia: [
+          {
+            'label': '+0.00',
+            'value': '+0.00',
+            'type': 'refractive_emmetropia',
+            'selected': 'selected',
+          },
+        ],
+        <?= $side ?>RefractiveMyopic:
+        <?=CJSON::encode(
+          array_map(function ($value) {
+            return [
+              'label' => $value,
+              'value' => $value,
+              'type' => 'refractive_myopic',
+            ];
+          }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
+        )?>,
+        <?=$side?>RefractiveCategoriesOptions: {
+        'id': '<?=$side?>_refractive_categories_0',
+        'header': 'Refractive target',
+        'hideByDefault': true,
+        'conditionalFlowMaps': {
+          '<?=$side?>-refractive-category-0': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'emmetropia' }],
+          '<?=$side?>-refractive-category-1': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'myopic' }],
+          '<?=$side?>-refractive-category-2': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'other' }],
+        },
+      },
+        <?=$side?>RefractiveEmmetropiaOptions: {
+        'id': '<?=$side?>_refractive_group_emmetropia',
+        'hideByDefault': true,
+      },
+        <?=$side?>RefractiveMyopicOptions: {
+        'id': '<?=$side?>_refractive_group_myopic',
+        'hideByDefault': true,
+      },
+        <?=$side?>RefractiveTargetOptions: {
+        'id': '<?=$side?>_refractive_group_other',
+        'hideByDefault': true,
+        'supportSigns': true,
+        'splitIntegerNumberColumns': [{'min':0, 'max':1}, {'min':0, 'max':9}],
+        'splitIntegerNumberColumnsTypes': ['first_digit', 'second_digit'],
+        'decimalValues': ['.00', '.25', '.50', '.75'],
+        'decimalValuesType': 'decimal',
+        'supportDecimalValues': true,
+      },
+        <?=$side?>DiscussedOptions: {
+      'id': '<?=$side?>_discussed',
+      'header': 'Refractive target discussed with patient',
+      'mandatory': true,
+      'deselectOnReturn':'false',
+      'conditionalFlowMaps': {
+        '<?=$side?>-discussed-1': [{'target-group': '<?=$side?>_refractive_categories', 'target-id': '0' }],
+        '<?=$side?>-discussed-0': [
+          {'target-group': '<?=$side?>_refractive_categories', 'target-id': '' },
+          {'target-group': '<?=$side?>_refractive_group', 'target-id': '' },
+        ],
+      },
+    },
+    <?php endforeach; ?>
+      primaryReasonsOptions: {'id': 'primary_reason', 'header': 'Primary reason', 'mandatory':'true', 'deselectOnReturn':'false'},
+      guardedPrognosisOptions: {'id': 'guarded_prognosis', 'header': 'Guarded Prognosis', 'mandatory': 'true', 'deselectOnReturn':'false'},
+  });
+});
 </script>
+

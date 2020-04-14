@@ -239,23 +239,29 @@ if (!empty($subspecialty)) { ?>
                     break;
             };
             //For each chart, resize to fit aforementioned range
+            if (min !== max){
+                for(let key in charts){
 
-            for (let key in charts) {
+                    let updateParams = null;
 
-                let updateParams = {
-                    'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
-                };
-
-                if (key === 'IOP') {
-                    //set the iop target line
-                    let index = charts[key][eye_side].layout.shapes.length - 1;
-                    if (index >= 0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1) {
-                        Plotly.relayout(charts[key][eye_side], 'shapes[' + index + '].x0', limits[eye_side].min);
-                        Plotly.relayout(charts[key][eye_side], 'shapes[' + index + '].x1', limits[eye_side].max);
-                        Plotly.relayout(charts[key][eye_side], 'annotations[' + index + '].x', limits[eye_side].min);
+                    if (key==='IOP'){
+                        //set the iop target line
+                        let index = charts[key][eye_side].layout.shapes.length-1;
+                        if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+                        }
+                    }
+                    if(limits[eye_side].min || limits[eye_side].max){
+                        updateParams = {
+                            'xaxis.range': [limits[eye_side].min, limits[eye_side].max]
+                        };
+                    }
+                    if(updateParams){
+                        Plotly.relayout(charts[key][eye_side], updateParams);
                     }
                 }
-                Plotly.relayout(charts[key][eye_side], updateParams);
             }
 
 

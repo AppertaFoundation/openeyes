@@ -107,7 +107,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->iol_power = 'None';
         $this->axial_length = 'Unknown';
         $this->acd = 'Unknown';
-        $this->predicted_refractive_outcome = 'Unknown';
+        $this->predicted_refractive_outcome = 0.0;
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 
@@ -120,7 +120,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 $this->predicted_refractive_outcome = $biometry->attributes["predicted_refraction_$eyeLabel"];
                 $this->formula = $biometry->attributes["formula_$eyeLabel"];
                 $this->aconst = $biometry->attributes["lens_acon_$eyeLabel"];
-                $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"]; ;
+                $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
                 $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
                 $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
             }
@@ -170,8 +170,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $episode
-     * @throws CException
      * @return string
+     * @throws CException
      */
     protected function allergyString($episode)
     {
@@ -217,8 +217,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     /**
      * @param $id
-     * @throws CException
      * @return mixed
+     * @throws CException
      */
     protected function operation($id)
     {
@@ -292,7 +292,32 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $criteria->order = 't.last_modified_date DESC';
         $criteria->limit = 1;
 
-        return Element_OphCoDocument_Document::model()->find($criteria);
+        $recent_document = Element_OphCoDocument_Document::model()->find($criteria);
+
+        $criteria = new CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+        $criteria->join = "JOIN event ev ON t.event_id = ev.id";
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->join .= " RIGHT JOIN event_attachment_group eag ON eag.event_id = ev.id";
+        $criteria->params = array('patient_id' => $patient->id);
+        $criteria->order = 'ev.event_date DESC';
+        $criteria->limit = 1;
+
+        $recent_attachment_document = OphInBiometry_Imported_Events::model()->find($criteria);
+
+        if ($recent_document === null && $recent_attachment_document === null) {
+            return null;
+        }
+
+        if ($recent_document !== null && $recent_attachment_document === null) {
+            return $recent_document;
+        } else if ($recent_document === null && $recent_attachment_document !== null) {
+            return $recent_attachment_document;
+        } else {
+            return $recent_document->last_modified_date > $recent_attachment_document->last_modified_date ?
+                $recent_document :
+                $recent_attachment_document;
+        }
     }
 
     /**
@@ -345,6 +370,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $risks = $patient->riskAssignments;
 
+        $alpha_or_anticoag = array_filter($risks, static function ($risk) {
+            return in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
+        });
+
         // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
 
         $risks = array_filter($risks, static function ($risk) {
@@ -356,7 +385,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             array_map(
                 static function ($risk) {
                     if ($risk->comments !== '') {
-                        return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
+                        return '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->name . '</span>';
                     }
                     return $risk->name;
                 },
@@ -376,7 +405,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $display .= '<div class="alert-box warning">' . $line . '</div>';
         }
 
-        if (!$patient->no_risks_date && !$risks) {
+        if (!$patient->no_risks_date && !$risks && empty($alpha_or_anticoag)) {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }

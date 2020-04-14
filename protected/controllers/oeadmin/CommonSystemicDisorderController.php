@@ -22,92 +22,75 @@ class CommonSystemicDisorderController extends BaseAdminController
 
     public function actionList()
     {
-        $admin = new AdminListAutocomplete(CommonSystemicDisorder::model(), $this);
+        $models = CommonSystemicDisorderGroup::model()->findAll();
+        $data = array_map(function ($model) {
+            return $model->getAttributes(array("id", "name"));
+        }, $models);
+        $this->jsVars['common_systemic_disorder_group_options'] = $data;
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
 
-        $admin->setListFields(array(
-            'id',
-            'disorder.fully_specified_name',
-        ));
-
-        $admin->setCustomDeleteURL('/oeadmin/CommonSystemicDisorder/delete');
-        $admin->setCustomSaveURL('/oeadmin/CommonSystemicDisorder/add');
-
-        $admin->setModelDisplayName('Common Systemic Disorders');
-
-        $admin->setAutocompleteField(
-            array(
-                'fieldName' => 'disorder_id',
-                'jsonURL' => '/oeadmin/CommonSystemicDisorder/search',
-                'placeholder' => 'search for systemic disorders',
-            )
-        );
-        //$admin->searchAll();
-        $admin->div_wrapper_class = 'cols-5';
-        $admin->listModel();
+        $this->render('/admin/editcommonsystemicdisorder', [
+            'dataProvider' => new CActiveDataProvider('CommonSystemicDisorder', ['pagination' => false, 'criteria' => ['order' => 'display_order']]
+            )]);
     }
 
-    public function actionDelete($itemId)
+    public function actionSave()
     {
-        /*
-        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
-        */
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
-        } else {
-            if ($commonSystemicDisorder = CommonSystemicDisorder::model()->findByPk($itemId)) {
-                $commonSystemicDisorder->delete();
-                echo 'success';
-            } else {
-                $this->render('errorpage', array('errormessage' => 'recordmissing'));
+        $transaction = Yii::app()->db->beginTransaction();
+        $disorders = Yii::app()->request->getPost('CommonSystemicDisorder', array());
+
+        $ids = array();
+        foreach ($disorders as $disorder) {
+            $common_systemic_disorder = CommonSystemicDisorder::model()->findByPk($disorder['id']);
+            if (!$common_systemic_disorder) {
+                $common_systemic_disorder = new CommonSystemicDisorder;
             }
-        }
-    }
 
-    public function actionAdd()
-    {
-        $disorderId = $this->request->getParam('disorder_id');
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errormessage' => 'notajaxcall'));
-        } else {
-            if (!is_numeric($disorderId)) {
-                echo 'error';
-            } else {
-                $newCSD = new CommonSystemicDisorder();
-                $newCSD->disorder_id = $disorderId;
-                if ($newCSD->save()) {
-                    echo 'success';
-                } else {
-                    echo 'error';
+            $common_systemic_disorder->group_id = $disorder['group_id'];
+            $common_systemic_disorder->disorder_id = $disorder['disorder_id'];
+            $common_systemic_disorder->display_order = $disorder['display_order'];
+
+            if (!$common_systemic_disorder->save()) {
+                $errors[] = $common_systemic_disorder->getErrors();
+            }
+
+            $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
+        }
+
+        if (empty($errors)) {
+            //Delete items
+            $criteria = new CDbCriteria();
+            if ($ids) {
+                $criteria->addNotInCondition('id', array_map(function ($id) {
+                    return $id;
+                }, $ids));
+            }
+
+            $to_delete = CommonSystemicDisorder::model()->findAll($criteria);
+            foreach ($to_delete as $item) {
+                if (!$item->delete()) {
+                    $errors[] = $item->getErrors();
+                }
+                Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                    'model' => CommonSystemicDisorder::getShortModelName(),
+                ));
+            }
+
+            $transaction->commit();
+
+            Yii::app()->user->setFlash('success', 'List updated.');
+        }
+
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                foreach ($error as $attribute => $error_array) {
+                    $display_errors = '<strong>' . $common_systemic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                    Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                 }
             }
+            $transaction->rollback();
         }
-    }
-
-    public function actionSearch()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            $criteria = new CDbCriteria();
-            if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(fully_specified_name) LIKE :term', 'LOWER(term) LIKE :term'),
-                    'OR');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
-            }
-
-            $criteria->order = 'fully_specified_name';
-            $criteria->select = 'id, fully_specified_name';
-            $criteria->params = $params;
-
-            $disorders = Disorder::model()->active()->findAll($criteria);
-
-            $return = array();
-            foreach ($disorders as $disorder) {
-                $return[] = array(
-                    'label' => $disorder->fully_specified_name,
-                    'value' => $disorder->fully_specified_name,
-                    'id' => $disorder->id,
-                );
-            }
-            echo CJSON::encode($return);
-        }
+        $this->redirect(Yii::app()->request->urlReferrer);
     }
 }

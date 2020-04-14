@@ -43,7 +43,6 @@ class BaseReportController extends BaseController
 
         parent::beforeAction($action);
 
-        Yii::app()->assetManager->registerCssFile('css/reports.css', null, 10);
         Yii::app()->assetManager->registerScriptFile('js/reports.js');
 
         if ($this->module) {

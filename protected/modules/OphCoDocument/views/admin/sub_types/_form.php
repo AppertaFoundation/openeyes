@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php $model_name = CHtml::modelName($model); ?>
 <div class="cols-11">
     <table class="standard cols-full">
         <colgroup>
@@ -71,16 +72,13 @@
                     <div class="cols-11">
                         <?php
                         $sub_type_event_icons = EventIcon::model()->findAll();
-                        $icon_images = [];
-                        foreach ($sub_type_event_icons as $icon) {
-                            $icon_images[$icon->id] = '<i class="oe-i-e large ' . $icon->name. '"></i>';
-                        } ?>
-                        <?=\CHtml::activeRadioButtonList(
-                            $model,
-                            'sub_type_event_icon_id',
-                            $icon_images,
-                            ['separator' => ' ']
-                        ); ?>
+                        foreach ($sub_type_event_icons as $key => $icon) { ?>
+                            <label class="inline highlight" for="<?= $model_name . '_sub_type_event_icon_id_' . $key?>">
+                                <input type="radio" id="<?= $model_name . '_sub_type_event_icon_id_' . $key ?>" <?= $model->sub_type_event_icon_id === $icon->id ? 'checked="checked"' : '' ?>
+                                       name="<?=$model_name?>[sub_type_event_icon_id]" value="<?= $icon->id ?>">
+                                <i class="oe-i-e large <?= $icon->name ?>"></i>
+                            </label>
+                        <?php } ?>
                     </div>
                 </fieldset>
             </td>

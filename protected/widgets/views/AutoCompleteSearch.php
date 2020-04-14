@@ -1,7 +1,7 @@
 <div class="patient-activity">
-	<input placeholder="<?= $htmlOptions['placeholder'] ?>" class="cols-<?= $layoutColumns['field'] ?> search autocompletesearch" id="<?= $field_name; ?>" type="text" value="" name="<?= $field_name; ?>" autocomplete="off">
-	<ul class="oe-autocomplete hidden" id="ui-id-1" tabindex="0">
-	</ul>
+    <input placeholder="<?= $htmlOptions['placeholder'] ?>" class="cols-<?= $layoutColumns['field'] ?> search autocompletesearch" id="<?= $field_name; ?>" type="text" value="" name="<?= $field_name; ?>" autocomplete="off">
+    <ul class="oe-autocomplete hidden" id="ui-id-1" tabindex="0">
+    </ul>
     <?php if ($hide_no_result_msg === false): ?>
         <div class="data-group no-result warning alert-box hidden">
             <div class="small-12 column text-center">

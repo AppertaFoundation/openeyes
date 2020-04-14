@@ -33,7 +33,7 @@
   		<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
   	to the html. Then call
 		OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
-	Set NAME to what ever you want. If used correctly you will have 
+	Set NAME to what ever you want. If used correctly you will have
 		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?> and <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
 	on the same page along with
 		OpenEyes.UI.AutoCompleteSearch.init({input: $('#oe-autocompletesearch'), ...}); and OpenEyes.UI.AutoCompleteSearch.init({input: $('NAME'), ...});
@@ -63,8 +63,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     var onSelect = [];
     var timeout_id = null;
     var max_height = null;
-    
-    function initAutocomplete(input, autocomplete_url, autocomplete_max_height) {
+
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, extra_params, search_data_prefix) {
     	input.on('input',function(){
     		inputbox = input;
     		inputbox.parent().find('.alert-box').addClass('hidden');
@@ -90,11 +90,21 @@ OpenEyes.UI = OpenEyes.UI || {};
 					timeout_id = null;
 				}
 
-				xhr = $.getJSON(autocomplete_url, {
-				    term: search_term,
-				    ajax: 'ajax'
-				}, function(data,status){
-					if(status === 'success'){
+				let data = {
+					term: search_term
+				};
+				data = $.extend(true, {}, data, (extra_params || {}));
+
+				let params = {};
+				if (search_data_prefix) {
+					params[search_data_prefix] = data;
+				}
+
+				params.ajax = 'ajax';
+        params.term = search_term;
+
+				xhr = $.getJSON(autocomplete_url, params, function(data, status) {
+					if (status === 'success') {
 						response = data;
 						if(response.length > 0){
 							successResponse(response);
@@ -203,7 +213,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     	init: function (options) {
     		if(options.input){
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null);
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.extra_params, options.search_data_prefix);
 	    		return exports.AutoCompleteSearch;
     		}
     	},

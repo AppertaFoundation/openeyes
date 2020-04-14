@@ -27,7 +27,7 @@
                 for ($j = $this->current_item_index; $j < $this->getTotalItems(); $j++) {
                     $item = $this->items[$j];
                     if ($this->isPrintable($item)) {
-                        $drug_label = strtoupper($item->drug->label);
+                        $drug_label = strtoupper($item->medication->label);
                         $total_tapers = count($item->tapers);
 
                         $current_item_copy = $this->current_item_index ?: $current_item_copy;
@@ -191,12 +191,14 @@
                     }?>
                 </p>
                 <div class="fpten-form-row">
-                    <div class="fpten-form-column fpten-doctor-name">
-                        <?= $this->user->getFirstInitialFullNameAndTitle() ?>
-                    </div>
-                    <div class="fpten-form-column end fpten-registration-code">
-                        <?=  str_replace('GMC', '', $this->user->registration_code) ?>
-                    </div>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="fpten-doctor-name"><?= $this->user->getFirstInitialFullNameAndTitle() ?></td>
+                            <td class="fpten-registration-code"><?=  str_replace('GMC', '', $this->user->registration_code) ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

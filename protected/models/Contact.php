@@ -286,4 +286,3 @@ class Contact extends BaseActiveRecordVersioned
         return Contact::model()->with('label')->findAll($criteria);
     }
 }
-

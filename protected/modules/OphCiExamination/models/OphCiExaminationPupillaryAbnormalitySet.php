@@ -29,6 +29,13 @@ namespace OEModule\OphCiExamination\models;
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ *
+ * The followings are the available model relations:
+ * @property OphCiExaminationPupillaryAbnormalitySetEntry[] $entries
+ * @property Firm $firm
+ * @property \User $created_user
+ * @property \User $last_modified_user
+ * @property Subspecialty $subspecialty
  */
 
 class OphCiExaminationPupillaryAbnormalitySet extends \BaseActiveRecordVersioned
@@ -144,5 +151,12 @@ class OphCiExaminationPupillaryAbnormalitySet extends \BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    //TODO beforedelete?
+    public function beforeDelete()
+    {
+        foreach ($this->entries as $set_entry) {
+            $set_entry->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }

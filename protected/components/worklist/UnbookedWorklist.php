@@ -46,7 +46,7 @@ class UnbookedWorklist extends CComponent
         }
 
         $worklist = $this->getWorklist($date, $definition->id);
-        if(!is_null($worklist)) {
+        if (!is_null($worklist)) {
             return $worklist;
         } else {
             //generate worklist by definition
@@ -92,7 +92,7 @@ class UnbookedWorklist extends CComponent
         $criteria = new \CDbCriteria();
         $criteria->with = ['display_contexts', 'mappings.values'];
         $criteria->addCondition('display_contexts.site_id = :site_id');
-        if(\SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists')) {
+        if (\SettingMetadata::model()->getSetting('include_subspecialty_name_in_unbooked_worklists')) {
           $criteria->addCondition('display_contexts.subspecialty_id = :subspecialty_id');
           $criteria->params[':subspecialty_id'] = $subspecialty_id;
         } else {
@@ -129,7 +129,7 @@ class UnbookedWorklist extends CComponent
         $site = Site::model()->findByPk($site_id);
         $today = new \DateTime();
         $definition = new \WorklistDefinition();
-        if($include_subspecialty_name_in_unbooked_worklists) {
+        if ($include_subspecialty_name_in_unbooked_worklists) {
           $definition->name = "Unbooked - {$subspecialty->name} - {$site->name}";
         } else {
           $definition->name = "Unbooked - {$site->name}";
@@ -144,7 +144,7 @@ class UnbookedWorklist extends CComponent
         if ($definition->save()) {
             $context = new \WorklistDefinitionDisplayContext();
             $context->firm_id = $firm_id;
-            if($include_subspecialty_name_in_unbooked_worklists) {
+            if ($include_subspecialty_name_in_unbooked_worklists) {
               $context->subspecialty_id = $subspecialty_id;
             }
             $context->site_id = $site_id;

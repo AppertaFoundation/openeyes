@@ -23,6 +23,8 @@
  *
  * @property int $id
  * @property string $disorder_id
+ * @property int $display_order
+ * @property int $group_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
@@ -52,14 +54,10 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
         return array(
             array('disorder_id', 'required'),
-            array('disorder_id', 'length', 'max' => 10),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, disorder_id', 'safe', 'on' => 'search'),
+            array('disorder_id', 'length', 'max' => 20),
+            array('id, disorder_id, group_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -68,10 +66,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
         return array(
-            'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+            'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
         );
     }
 
@@ -107,7 +103,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return Disorders[]
+     * @return Disorder[]
      */
     public static function getDisorders()
     {
@@ -125,6 +121,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
             $diagnoses[] = [
                 'term' => $disorder->term,
                 'id' => $disorder->id,
+                'group_id' => $disorder->commonSystemicDisorder->group_id,
                 'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET)
             ];
         }

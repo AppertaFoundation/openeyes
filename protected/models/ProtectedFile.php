@@ -28,15 +28,13 @@
  * @property string $description
  * @property string $mimetype
  * @property int $size
+ * @property string $file_content
+ *
+ * @property ProtectedFileThumbnail $thumbnails
  */
 class ProtectedFile extends BaseActiveRecordVersioned
 {
     const THUMBNAIL_QUALITY = 85;
-    // used in model creation
-    protected $_source_path;
-    // used in model delete
-    protected $_stored_path;
-    protected $_thumbnail = array();
 
     /**
      * Create a new protected file from an existing file.
@@ -44,10 +42,12 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $path Path to file
      *
      * @return ProtectedFile
+     * @throws CException
      */
     public static function createFromFile($path)
     {
         $file = new self();
+        $file->file_content = file_get_contents($path);
         $file->setSource($path);
 
         return $file;
@@ -59,6 +59,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $name
      *
      * @return ProtectedFile
+     * @throws Exception
      */
     public static function createForWriting($name)
     {
@@ -67,11 +68,13 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         $file->generateUID();
 
-        $path = $file->getFilePath();
-        if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true)) {
-                throw new Exception("$path could not be created: permission denied");
+        if (!file_exists($file->getPath())) {
+            if (!file_exists($file->getFilePath())) {
+                if (!mkdir($file->getFilePath(), 0777, true)) {
+                    throw new RuntimeException(sprintf('Directory "%s" was not created', $file->getFilePath()));
+                }
             }
+            file_put_contents($file->getPath(), '');
         }
 
         return $file;
@@ -80,6 +83,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
+     * @param string $className
      * @return ProtectedFile the static model class
      */
     public static function model($className = __CLASS__)
@@ -101,7 +105,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('uid, name, mimetype, size', 'required'),
+                array('uid, name, title, mimetype, size', 'required'),
         );
     }
 
@@ -111,6 +115,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'thumbnails' => array(self::HAS_MANY, 'ProtectedFileThumbnail', 'file_id')
         );
     }
 
@@ -131,8 +136,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     public function getFilePath()
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1);
+        return self::getBasePath().'/'. $this->uid[0]
+        .'/'. $this->uid[1] .'/'. $this->uid[2];
     }
 
     /**
@@ -159,76 +164,6 @@ class ProtectedFile extends BaseActiveRecordVersioned
     }
 
     /**
-     * ensures that mimetype and size are set based on the file that's been stored (unless the file
-     * is being copied from elsewhere, in which case this should have been taken care of).
-     *
-     * (non-PHPdoc)
-     *
-     * @see BaseActiveRecord::beforeSave()
-     */
-    public function beforeValidate()
-    {
-        if (!$this->_source_path) {
-            // the file should be in place
-            $path = $this->getPath();
-
-            if (!$this->mimetype) {
-                $this->mimetype = $this->lookupMimetype($path);
-            }
-            if (!$this->size) {
-                $this->size = filesize($path);
-            }
-        }
-
-        return parent::beforeValidate();
-    }
-
-    /**
-     * (non-PHPdoc).
-     *
-     * @see BaseActiveRecord::beforeSave()
-     */
-    public function beforeSave()
-    {
-        if ($this->_source_path) {
-            if (!file_exists(dirname($this->getPath()))) {
-                mkdir(dirname($this->getPath()), 0777, true);
-            }
-            copy($this->_source_path, $this->getPath());
-            $this->_source_path = null;
-        } elseif (!file_exists($this->getPath())) {
-            throw new Exception('There has been an error with file storage');
-        }
-
-        return true;
-    }
-
-    /**
-     * ensure we keep track of path to file before deleting from database.
-     *
-     * @return bool
-     *              (non-PHPdoc)
-     *
-     * @see BaseActiveRecord::beforeDelete()
-     */
-    public function beforeDelete()
-    {
-        $this->_stored_path = $this->getPath();
-
-        return parent::beforeDelete();
-    }
-
-    /**
-     * ensures file is removed from filesystem when deleting.
-     */
-    public function afterDelete()
-    {
-        unlink($this->_stored_path);
-
-        return parent::afterDelete();
-    }
-
-    /**
      * generate the UID for the file from the file name.
      *
      * @throws Exception
@@ -241,9 +176,6 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         // Set UID
         $this->uid = sha1(microtime().$this->name);
-        while (file_exists($this->getPath())) {
-            $this->uid = sha1(microtime().$this->name);
-        }
     }
 
     /**
@@ -252,18 +184,17 @@ class ProtectedFile extends BaseActiveRecordVersioned
      * @param string $path
      *
      * @throws CException
+     * @throws Exception
      */
     public function setSource($path)
     {
         if (!file_exists($path) || is_dir($path)) {
             throw new CException("File doesn't exist: ".$path);
         }
-        $this->_source_path = $path;
 
         $this->name = basename($path);
 
         // Set MIME type
-        $path_parts = pathinfo($this->name);
         $this->mimetype = $this->lookupMimetype($path);
 
         // Set size
@@ -306,9 +237,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
      *
      * @param string $dimensions
      *
+     * @param bool $regenerate
+     * @return bool|ProtectedFile|null
      * @throws CException
-     *
-     * @return bool|array:
      */
     public function getThumbnail($dimensions, $regenerate = false)
     {
@@ -316,20 +247,29 @@ class ProtectedFile extends BaseActiveRecordVersioned
         if (!$matches) {
             throw new CException('Invalid thumbnail dimensions');
         }
-        if ($regenerate || !isset($this->_thumbnail[$dimensions])) {
-            $path = $this->getThumbnailPath($dimensions);
-            if ($regenerate || !file_exists($path)) {
-                if (!$this->generateThumbnail($dimensions)) {
-                    return false;
-                }
+        $dimensions_parts = explode('x', $dimensions);
+        $thumbnail = ProtectedFileThumbnail::model()->findByAttributes(
+            array(
+                'file_id' => $this->id,
+                'width' => $dimensions_parts[0],
+                'height' => $dimensions_parts[1],
+            )
+        );
+        if ($regenerate || !$thumbnail) {
+            if (!$this->generateThumbnail($dimensions)) {
+                return false;
             }
-            $this->_thumbnail[$dimensions] = array(
-                    'path' => $path,
-                    'size' => filesize($path),
+            $this->refresh();
+            $thumbnail = ProtectedFileThumbnail::model()->findByAttributes(
+                array(
+                    'file_id' => $this->id,
+                    'width' => $dimensions_parts[0],
+                    'height' => $dimensions_parts[1],
+                )
             );
         }
 
-        return $this->_thumbnail[$dimensions];
+        return $thumbnail;
     }
 
     /**
@@ -341,8 +281,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
      */
     protected function getThumbnailPath($dimensions)
     {
-        return self::getBasePath().'/'.substr($this->uid, 0, 1)
-        .'/'.substr($this->uid, 1, 1).'/'.substr($this->uid, 2, 1)
+        return self::getBasePath().'/'. $this->uid[0]
+        .'/'. $this->uid[1] .'/'. $this->uid[2]
         .'/'.$dimensions.'/'.$this->uid;
     }
 
@@ -351,9 +291,10 @@ class ProtectedFile extends BaseActiveRecordVersioned
      *
      * @param string $dimensions
      *
-     * @throws CException
-     *
      * @return bool
+     * @throws Exception
+     *
+     * @throws CException
      */
     protected function generateThumbnail($dimensions)
     {
@@ -363,6 +304,8 @@ class ProtectedFile extends BaseActiveRecordVersioned
         $src_height = $image_info[1];
         $ratio = $src_width / $src_height;
         $image_type = $image_info[2];
+
+        file_put_contents($this->getPath(), $this->file_content);
 
         // Work out thumbnail width/height
         $dimensions_parts = explode('x', $dimensions);
@@ -400,7 +343,10 @@ class ProtectedFile extends BaseActiveRecordVersioned
         imagecopyresampled($thumbnail, $src_image, 0, 0, 0, 0, $width, $height, $src_width, $src_height);
         $thumbnail_path = $this->getThumbnailPath($dimensions);
         if (!file_exists(dirname($thumbnail_path))) {
-            mkdir(dirname($thumbnail_path), 0777, true);
+            $concurrent_directory = dirname($thumbnail_path);
+            if (!mkdir($concurrent_directory, 0777, true) && !is_dir($concurrent_directory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrent_directory));
+            }
         }
         switch ($image_type) {
             case IMAGETYPE_JPEG:
@@ -413,6 +359,22 @@ class ProtectedFile extends BaseActiveRecordVersioned
                 imagegif($thumbnail, $thumbnail_path);
                 break;
         }
+
+        $thumbnail_obj = new ProtectedFileThumbnail();
+        $thumbnail_obj->file_id = $this->id;
+        $thumbnail_obj->width = $dimensions_parts[0];
+        $thumbnail_obj->height = $dimensions_parts[1];
+        $thumbnail_obj->size = filesize($thumbnail_path);
+        $thumbnail_obj->thumbnail_content = file_get_contents($thumbnail_path);
+
+        if (!$thumbnail_obj->save()) {
+            throw new CException('Unable to save thumbnail.');
+        }
+
+        $this->refresh();
+
+        unlink($thumbnail_path);
+        unlink($this->getPath());
 
         return true;
     }

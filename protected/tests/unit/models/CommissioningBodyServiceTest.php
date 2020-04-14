@@ -17,6 +17,10 @@
  */
 class CommissioningBodyServiceTest extends PHPUnit_Framework_TestCase
 {
+    public function getModel()
+    {
+        return CommissioningBodyService::model();
+    }
     /**
      * @covers CommissioningBodyService::getCorrespondenceName()
      */

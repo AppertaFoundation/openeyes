@@ -16,8 +16,8 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+
 use OEModule\OphCiExamination\components\OphCiExamination_API;
-use OEModule\PASAPI\resources\Patient;
 
 /**
  * Class SystemicDiagnoses
@@ -41,11 +41,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
-
-    protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicDiagnoses';
+    public $cached_tip_status = null;
+    protected $auto_update_relations = true;
     protected $default_from_previous = true;
-
     /**
      * @var bool flag to indicate whether we should update the patient level data
      */
@@ -90,7 +89,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             array('event_id, diagnoses, checked_required_diagnoses', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id',  'safe', 'on' => 'search')
+            array('id, event_id', 'safe', 'on' => 'search')
         );
     }
 
@@ -163,7 +162,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
-                $both = array(true, false);
+            $both = array(true, false);
             foreach ($both as $present) {
                 foreach ($patient->getSystemicDiagnoses($present) as $sd) {
                     $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
@@ -191,7 +190,25 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         return implode(' <br /> ', $this->orderedDiagnoses);
     }
 
-    public $cached_tip_status = null;
+    /**
+     * Call this method before updating any attributes on the instance.
+     */
+    public function storePatientUpdateStatus()
+    {
+        $this->update_patient_level = $this->isAtTip();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        // TODO: consolidate the cached status and the patient update flag
+        if ($this->cached_tip_status === null) {
+            $this->cached_tip_status = $this->calculateTipStatus();
+        }
+        return $this->cached_tip_status;
+    }
 
     protected function calculateTipStatus()
     {
@@ -215,40 +232,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             return count($this->diagnoses) === count($patient->getSystemicDiagnoses());
         }
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAtTip()
-    {
-        // TODO: consolidate the cached status and the patient update flag
-        if ($this->cached_tip_status === null) {
-            $this->cached_tip_status = $this->calculateTipStatus();
-        }
-        return $this->cached_tip_status;
-    }
-
-    /**
-     * Call this method before updating any attributes on the instance.
-     */
-    public function storePatientUpdateStatus()
-    {
-        $this->update_patient_level = $this->isAtTip();
-    }
-
-    /**
-     * Validate the diagnoses
-     */
-    protected function afterValidate()
-    {
-        foreach ($this->diagnoses as $i => $diagnosis) {
-            if (!$diagnosis->validate()) {
-                foreach ($diagnosis->getErrors() as $fld => $err) {
-                    $this->addError('diagnoses', 'Diagnosis ('.($i + 1).'): '.implode(', ', $err));
-                }
-            }
-        }
     }
 
     /**
@@ -351,7 +334,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public function getEntriesDisplay($category = 'entries')
     {
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
-            $category  = 'entries';
+            $category = 'entries';
         }
         return implode(', ', array_map(function ($e) {
             return $e->getDisplay();
@@ -361,6 +344,20 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
+    }
+
+    /**
+     * Validate the diagnoses
+     */
+    protected function afterValidate()
+    {
+        foreach ($this->diagnoses as $i => $diagnosis) {
+            if (!$diagnosis->validate()) {
+                foreach ($diagnosis->getErrors() as $fld => $err) {
+                    $this->addError('diagnoses', 'Diagnosis (' . ($i + 1) . '): ' . implode(', ', $err));
+                }
+            }
+        }
     }
 
 }

@@ -105,6 +105,8 @@ function setRecipientToInternalReferral(){
     } else {
         $('#yDocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
     }
+
+	$('#DocumentTarget_0_attributes_contact_id').val('');
 }
 
 function resetRecipientFromInternalReferral(){

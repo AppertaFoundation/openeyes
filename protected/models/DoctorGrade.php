@@ -25,7 +25,7 @@
  * @property string $medication_id
  *
  * The followings are the available model relations:
- * @property Medication $medication
+ * @property ArchiveMedication $medication
  */
 class DoctorGrade extends BaseActiveRecordVersioned
 {

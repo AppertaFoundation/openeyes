@@ -35,8 +35,10 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  * @property SurgicalHistorySetEntry[] $entries
- * @property \User $createdUser
- * @property \User $lastModifiedUser
+ * @property Firm $firm
+ * @property \User $created_user
+ * @property \User $last_modified_user
+ * @property Subspecialty $subspecialty
  */
 class SurgicalHistorySet extends \BaseActiveRecordVersioned
 {

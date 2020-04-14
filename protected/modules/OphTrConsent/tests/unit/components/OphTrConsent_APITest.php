@@ -22,15 +22,6 @@ class OphTrConsent_APITest extends CDbTestCase
         'episodes' => 'Episode',
     );
 
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
-    public function tearDown()
-    {
-    }
-
     public function testGetFooterProcedures_Just2()
     {
         $api = Yii::app()->moduleAPI->get('OphTrConsent');

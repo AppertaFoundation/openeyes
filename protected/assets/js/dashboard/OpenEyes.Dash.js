@@ -434,7 +434,7 @@
                 data['INDICATION_FOR_SURGERY']['incomplete'],
                 data['E/I']['ineligible'],
             ];
-            if(data['CATPROM5'] != 'undefined'){
+            if(data['CATPROM5']){
                 completedData.push(
                     data['CATPROM5']['pre-complete'],
                     data['CATPROM5']['post-complete']
@@ -456,6 +456,9 @@
             chart.data[1]['customdata'] = incompletedData.map(function (item) {
                 return item;
             });
+            hovertemplate = '%{x} %{y} of Total ' + data['total'] + ' Ops';
+            chart.data[0]['hovertemplate'] = hovertemplate;
+            chart.data[1]['hovertemplate'] = hovertemplate;
             Plotly.redraw(chart);
         },
         

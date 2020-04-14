@@ -33,7 +33,7 @@ PatientPanel.patientPopups = {
     if (parentElement.find('.js-trials-btn')) {
       var trials = new OpenEyes.UI.NavBtnPopup('trials',
         parentElement.find('.js-trials-btn'),
-        parentElement.find('.patient-popup-trials')
+          parentElement.find('.patient-popup-trials')
       );
       all.push(trials);
     }

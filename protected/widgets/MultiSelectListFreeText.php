@@ -126,13 +126,13 @@ class MultiSelectListFreeText extends BaseFieldWidget
 
         // if the widget has javascript, load it in
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
-            $this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
+            $this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js', true);
         }
 
         // if the widget has javascript, load it in
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
             $assetManager = Yii::app()->getAssetManager();
-            $asset_folder = $assetManager->publish('protected/widgets/js');
+            $asset_folder = $assetManager->publish('protected/widgets/js', true);
 
             // Workaround for ensuring js included with ajax requests that are using renderPartial
             if (Yii::app()->request->isAjaxRequest) {

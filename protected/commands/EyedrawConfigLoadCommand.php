@@ -207,7 +207,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         $cmd->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
         ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
         ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
-        ->bindValue(':eocto', $canvas_doodle->ON_TOOLBAR_ORDER)
+        ->bindValue(':eocto', (int)$canvas_doodle->ON_TOOLBAR_ORDER)
         ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
         ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
         ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
@@ -381,7 +381,7 @@ EOSQL;
             $path = $index->IMG_URL;
             $image_URL = '<?php
         if (file_exists(\'' . $path . '\')){
-          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\');
+          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\', true);
         } else {
           echo "";
         }
