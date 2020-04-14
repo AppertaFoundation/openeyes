@@ -105,7 +105,7 @@ class User extends BaseActiveRecordVersioned
                             'max' => 32,
                             'tooShort' => 'Passwords must be at least 8 characters long.',
                             'tooLong' => 'Passwords must be less than 32 characters long.',
-                        ),                
+                        ),
                         array('password','match','pattern'=> '%[A-Z]%','message'=> 'Password should include at least one upper case letter'),
                         array('password','match','pattern'=> '%[a-z]%','message'=> 'Password should include at least one lower case letter'),
                         array('password','match','pattern'=> '%[0-9]%','message'=> 'Password should include at least one number'),
@@ -136,7 +136,7 @@ class User extends BaseActiveRecordVersioned
                             'max' => 32,
                             'tooShort' => 'Passwords must be at least 8 characters long.',
                             'tooLong' => 'Passwords must be less than 32 characters long.',
-                        ),         
+                        ),
                         array('password','match','pattern'=> '%[A-Z]%','message'=> 'Password should include at least one upper case letter'),
                         array('password','match','pattern'=> '%[a-z]%','message'=> 'Password should include at least one lower case letter'),
                         array('password','match','pattern'=> '%[0-9]%','message'=> 'Password should include at least one number'),
@@ -209,7 +209,8 @@ class User extends BaseActiveRecordVersioned
      * @return mixed|null
      * @deprecated - since v2.2
      */
-    public function getIs_doctor(){
+    public function getIs_doctor()
+    {
         return $this->is_surgeon;
     }
 
