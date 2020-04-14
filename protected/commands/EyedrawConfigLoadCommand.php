@@ -22,17 +22,20 @@
 
 // TODO: Change IMG_URL to IMAGE_CLASS and place in DOODLE_USAGE_LIST????
 
-class EyedrawConfigLoadCommand extends CConsoleCommand {
+class EyedrawConfigLoadCommand extends CConsoleCommand
+{
     public $defaultAction = 'load';
     const DOODLE_TBL        = 'eyedraw_doodle';
     const CANVS_TBL         = 'eyedraw_canvas';
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
 
-    public function getName() {
+    public function getName()
+    {
         return 'Load eyedraw configuration';
     }
 
-    public function getHelp() {
+    public function getHelp()
+    {
         return "yiic eyedrawconfigload --filename=<filename>\n\n".
             "load/update the eyedraw configuration from the definition file <filename>";
     }
@@ -83,14 +86,14 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
         $this->refreshTuples();
-
     }
 
     /**
      * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
      * correctly for each doodle.
      */
-    private function refreshTuples() {
+    private function refreshTuples()
+    {
         $query_string = $this->getRefreshTuplesQuery();
         Yii::app()->db->createCommand(
             $query_string
@@ -101,7 +104,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
      * @param $canvas
      * @param $element_type
      */
-    private function insertOrUpdateCanvas($canvas, $element_type) {
+    private function insertOrUpdateCanvas($canvas, $element_type)
+    {
         $current = $this->getDb()
             ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL . ' WHERE container_element_type_id = :eid')
             ->bindValue(':eid', $element_type->id)
@@ -127,7 +131,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
      *
      * @param $doodle
      */
-    private function insertOrUpdateDoodle($doodle) {
+    private function insertOrUpdateDoodle($doodle)
+    {
         $current = $this->getDb()
             ->createCommand('SELECT count(*) FROM ' . static::DOODLE_TBL . ' WHERE eyedraw_class_mnemonic = :mnm')
             ->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
@@ -149,7 +154,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
      * @param $mnemonic
      * @return bool
      */
-    protected function isCanvasDefined($mnemonic) {
+    protected function isCanvasDefined($mnemonic)
+    {
         return $this->getDb()
                 ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
                     . ' WHERE canvas_mnemonic = :cvmn')
@@ -159,7 +165,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     /**
      * @param $canvas_doodle
      */
-    private function insertOrUpdateCanvasDoodle($canvas_doodle) {
+    private function insertOrUpdateCanvasDoodle($canvas_doodle)
+    {
         if (!$this->isCanvasDefined($canvas_doodle->CANVAS_MNEMONIC)) {
             // if the element is not part of the configuration (module not included)
             // then we don't load the canvas, and therefore don't load the canvas doodle
@@ -210,7 +217,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
      *
      * @param $canvas
      */
-    protected function processCanvasDefinition($canvas) {
+    protected function processCanvasDefinition($canvas)
+    {
         // verify that the element type exists for this definition
         if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $canvas->OE_ELEMENT_CLASS_NAME))) {
             $this->insertOrUpdateCanvas($canvas, $element_type);
@@ -220,14 +228,16 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     /**
      * @param $doodle
      */
-    protected function processDoodleDefinition($doodle) {
+    protected function processDoodleDefinition($doodle)
+    {
         $this->insertOrUpdateDoodle($doodle);
     }
 
     /**
      * @param $canvas_doodle
      */
-    protected function processCanvasDoodleDefinition($canvas_doodle) {
+    protected function processCanvasDoodleDefinition($canvas_doodle)
+    {
         //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
         $this->insertOrUpdateCanvasDoodle($canvas_doodle);
     }
@@ -235,7 +245,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     /**
      * @return string
      */
-    private function getRefreshTuplesQuery() {
+    private function getRefreshTuplesQuery()
+    {
         $doodle_tbl = static::DOODLE_TBL;
         $doodle_canvas_tbl = static::CANVAS_DOODLE_TBL;
 
@@ -259,4 +270,3 @@ WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
 }
-
