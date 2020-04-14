@@ -21,6 +21,20 @@ WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 HOSTNAME=`hostname`
 SCRIPT=`basename $0`
 
+extraparams=""
+
+while [[ $# -gt 0 ]]
+do
+    p="$1"
+
+    case $p in
+	    *)  [ ! -z $p ] && extraparams+="${p} " || :
+        ;;
+    esac
+	shift # move to next parameter
+done
+
+
 echo "$SCRIPT: Started at $(date)"
 
 function error_exit
@@ -44,39 +58,39 @@ yiicroot="${WROOT}/protected"
 
 # Do quarterly files first - belt and braces catch up in case of previous issues.
 
-if ! php $yiicroot/yiic processhscicdata downloadall
+if ! php $yiicroot/yiic processhscicdata downloadall $extraparams
 then
 	error_exit "Failed to download all data"
 fi
 
-if ! php $yiicroot/yiic processhscicdata import --type=gp --interval=full --audit=false
+if ! php $yiicroot/yiic processhscicdata import --type=gp --interval=full --audit=false $extraparams
 then
 	error_exit "Failed to import GP data"
 fi
 
-if ! php $yiicroot/yiic processhscicdata import --type=practice --interval=full --audit=false
+if ! php $yiicroot/yiic processhscicdata import --type=practice --interval=full --audit=false $extraparams
 then
 	error_exit "Failed to import Practice data"
 fi
 
-if ! php $yiicroot/yiic processhscicdata import --type=ccg --interval=full --audit=false
+if ! php $yiicroot/yiic processhscicdata import --type=ccg --interval=full --audit=false $extraparams
 then
 	error_exit "Failed to import CCG data"
 fi
 
-if ! php $yiicroot/yiic processhscicdata import --type=ccgAssignment --interval=full --audit=false
+if ! php $yiicroot/yiic processhscicdata import --type=ccgAssignment --interval=full --audit=false $extraparams
 then
 	error_exit "Failed to import CCG Assignment data"
 fi
 
 # Now do monthly updates.
 
-if ! php $yiicroot/yiic processhscicdata download --type=gp --interval=monthly
+if ! php $yiicroot/yiic processhscicdata download --type=gp --interval=monthly $extraparams
 then
 	error_exit "Failed to download monthly GP/Practice data"
 fi
 
-if ! php $yiicroot/yiic processhscicdata import --type=gp --interval=monthly
+if ! php $yiicroot/yiic processhscicdata import --type=gp --interval=monthly $extraparams
 then
 	error_exit "Failed to import monthly GP/Practice data"
 fi
