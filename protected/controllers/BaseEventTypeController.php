@@ -159,10 +159,13 @@ class BaseEventTypeController extends BaseModuleController
 
     public function getPageTitle()
     {
-        return ucfirst($this->getAction()->getId()) .
+        $action_type = ucfirst($this->getAction()->getId());
+        return ((in_array($action_type, ['Update', 'Create']) && (string)SettingMetadata::model()->getSetting('use_short_page_titles') == "on") ?
+            'Edit' : $action_type ) .
             ($this->event_type ? ' ' . $this->event_type->name : '') .
+            ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
             ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
-            ' - OE';
+             ' - OE' : '');
     }
 
     public function getTitle()
@@ -419,8 +422,11 @@ class BaseEventTypeController extends BaseModuleController
             if (!$this->isPrintAction($action->id)) {
                 // nested elements behaviour
                 //TODO: possibly put this into standard js library for events
-                Yii::app()->getClientScript()->registerScript('nestedElementJS',
-                    'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
+                Yii::app()->getClientScript()->registerScript(
+                    'nestedElementJS',
+                    'var moduleName = "' . $this->getModule()->name . '";',
+                    CClientScript::POS_HEAD
+                );
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
                 // disable buttons when clicking on save/save_draft/save_print
@@ -511,7 +517,8 @@ class BaseEventTypeController extends BaseModuleController
                 $api->getElements($element_type->class_name, $this->patient, false),
                 function ($el) use ($exclude_event_id) {
                     return $el->event_id != $exclude_event_id;
-                });
+                }
+            );
         } else {
             return array();
         }
@@ -879,7 +886,8 @@ class BaseEventTypeController extends BaseModuleController
 
         $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
         $this->event_actions = array(
-            EventAction::link('Cancel',
+            EventAction::link(
+                'Cancel',
                 Yii::app()->createUrl($cancel_url),
                 array('level' => 'cancel')
             ),
@@ -1298,7 +1306,13 @@ class BaseEventTypeController extends BaseModuleController
         //event date and parent validation
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
-            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $current_event_date = substr($event->event_date, 0, 10);
+
+            if ($event_date !== $current_event_date) {
+                $event->event_date = $event_date;
+            }
+
             if (isset($data['Event']['parent_id'])) {
                 $event->parent_id = $data['Event']['parent_id'];
             }
@@ -1587,13 +1601,15 @@ class BaseEventTypeController extends BaseModuleController
             if ($element->widgetClass) {
                 // only wrap the element in a widget if it's not already in one
                 $widget = $element->widget ?:
-                    $this->createWidget($element->widgetClass,
+                    $this->createWidget(
+                        $element->widgetClass,
                         array(
                             'patient' => $this->patient,
                             'element' => $view_data['element'],
                             'data' => $view_data['data'],
                             'mode' => $this->getElementWidgetMode($action),
-                        ));
+                        )
+                    );
                 $widget->form = $view_data['form'];
                 $this->renderPartial('//elements/widget_element', array('widget' => $widget), $return, $processOutput);
             } else {
@@ -1645,9 +1661,9 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
         //Find the groupings
-        for ($element_index = 0, $tile_index = 0, $row_index = 0; $element_index < $element_count; $element_index++) {
-            $element = $elements[$element_index];
-
+        $tile_index = 0;
+        $row_index = 0;
+        foreach ($elements as $element) {
             //if the tile size can't be determined assume a full row
             $sizeOfTile = $element->getTileSize($action) ?: $this->element_tiles_wide;
             if ($tile_index + $sizeOfTile > $this->element_tiles_wide) {

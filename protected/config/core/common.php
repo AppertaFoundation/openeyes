@@ -90,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202003121602',
+            'time' => '202003191634',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -619,7 +619,7 @@ return array(
         'Indigenous Australian',
         'Greek',
         'Italian'
-      ),
+        ),
         'gender_short' => 'Gen',
 //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
         'add_patient_fields' => [ 'title' => '',
@@ -657,7 +657,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
 //            'Worklist',
         ),
-      'oe_version' => 'develop',
+      'oe_version' => '4.0-a',
       // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)

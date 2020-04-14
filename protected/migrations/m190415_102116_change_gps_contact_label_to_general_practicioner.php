@@ -4,18 +4,28 @@ class m190415_102116_change_gps_contact_label_to_general_practicioner extends CD
 {
     public function up()
     {
-        $general_practicioner_label = ContactLabel::model()->find('name = ?', ["General Practitioner"]);
-        if ($general_practicioner_label == null) {
-            $general_practicioner_label = new ContactLabel();
-            $general_practicioner_label->name = "General Practitioner";
-            $general_practicioner_label->save();
+        Gp::$db = $this->dbConnection;
+        $general_practicioner_label = $this->dbConnection->createCommand('SELECT id FROM contact_label WHERE name = :name')
+            ->bindValues(array(':name' => 'General Practitioner'))
+            ->queryScalar();
+        if ($general_practicioner_label === null) {
+            $this->insert('contact_label', array(
+                'name' => 'General Practitioner',
+            ));
         }
-        $general_practicioners = Gp::model()->with('contact')->findAll(
-            'contact_label_id !=' . $general_practicioner_label->id . ' OR contact_label_id IS NULL'
-        );
+        $general_practicioners = $this->dbConnection->createCommand()
+            ->select('c.id')
+            ->from('gp')
+            ->join('contact c', 'c.id = gp.contact_id')
+            ->where('c.contact_label_id != :label_id OR c.contact_label_id IS NULL', array(':label_id' => $general_practicioner_label))
+            ->queryAll();
         foreach ($general_practicioners as $general_practicioner) {
-            $general_practicioner->contact->contact_label_id = $general_practicioner_label->id;
-            $general_practicioner->contact->save();
+            $this->update(
+                'contact',
+                array('contact_label_id' => $general_practicioner_label),
+                'id = :id',
+                array(':id' => $general_practicioner['id'])
+            );
         }
     }
 

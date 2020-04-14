@@ -18,7 +18,7 @@
 
 <?php Yii::app()->clientScript->registerPackage('tagsinput'); ?>
 
-<div class="admin box cols-8">
+<div class="admin box cols-6">
     <h2><?= $mapping->isNewRecord ? 'Create' : 'Edit'?> Worklist Definition Mapping</h2>
 
     <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
@@ -32,13 +32,21 @@
             'field' => 5,
         ),
     ))?>
-    <?php echo $form->checkbox($mapping, 'willdisplay'); ?>
-    <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-  <div class="cols-8 column large-push-2">
-    <i>If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.</i>
-  </div>
-    <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
-        null, array('field' => 2))?>
+    <div class="row">
+        <?php echo $form->checkbox($mapping, 'willdisplay', [], ['field' => 2]); ?>
+    </div>
+    <div class="row">
+        <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+    </div>
+    <div class="row">
+        <div class="cols-full column large-push-2">
+            <i>If no values are provided for a mapping, any value will be accepted. <br/> This is useful for adding information to each worklist entry without restricting matches.</i>
+        </div>
+    </div>
+    <div class="row">
+        <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
+            null, array('field' => 2))?>
+    </div>
 
     <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id))?>
     <?php $this->endWidget()?>

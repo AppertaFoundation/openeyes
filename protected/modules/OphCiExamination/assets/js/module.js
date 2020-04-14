@@ -1018,6 +1018,26 @@ $(document).ready(function() {
             OphCiExamination_InjectionManagementComplex_init();
         });
 
+        let date = new Date();
+        let todayDate = date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear();
+        let todayDateWithLeadingZero = "0" + todayDate;
+
+        let medicationManagementValidationFunction = function() {
+					if($('.js-event-date-input').val() === todayDate || $('.js-event-date-input').val() === todayDateWithLeadingZero) {
+						return true;
+					} else {
+						new OpenEyes.UI.Dialog.Alert({
+							content: "Medication Management cannot be added due to event date not being the current date"
+						}).open();
+						return false;
+					}
+				}
+
+				$('#episodes-and-events').on('sidebar_loaded', function() {
+					$('li#side-element-Medication-Management').find('a').data('validation-function', medicationManagementValidationFunction);
+				});
+
+
 });
     /** Post Operative Complication function **/
      function setPostOpComplicationTableText()
@@ -1910,6 +1930,22 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
     }
 });
 
+function registerElementController(controller, name, bindTo) {
+    window[name] = controller;
+    if(typeof window[bindTo] !== 'undefined') {
+        window[bindTo].bindController(controller, name);
+        controller.bindController(window[bindTo], bindTo);
+        window[bindTo].options.onControllerBound(controller, name);
+				controller.options.onControllerBound(window[bindTo], bindTo);
+    }
+}
+
+function unregisterElementController(controller, name, binded_controller) {
+    controller.unbindController(window[binded_controller], binded_controller);
+    window[binded_controller].unbindController(controller, name);
+    delete window[name];
+}
+
 /*
  * @params weight kg
  * @params height meters
@@ -1918,5 +1954,15 @@ function bmi_calculator( weight, height){
     height_meter = height / 100;
     result = weight / (height_meter * height_meter);
     return result;
-    
+
+}
+
+function decimal2heximal (decimal) {
+	return ('0' + decimal.toString(16)).substr(-2);
+}
+
+function generateId (length) {
+	let array = new Uint8Array((length || 10) / 2);
+	window.crypto.getRandomValues(array);
+	return Array.from(array, decimal2heximal).join('')
 }

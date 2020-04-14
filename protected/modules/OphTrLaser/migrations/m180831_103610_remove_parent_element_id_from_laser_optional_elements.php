@@ -4,7 +4,7 @@ class m180831_103610_remove_parent_element_id_from_laser_optional_elements exten
 {
     public function up()
     {
-        $element_type = Yii::app()->db->schema->getTable('element_type');
+        $element_type = $this->dbConnection->schema->getTable('element_type');
         if (isset($element_type->columns['element_group_id'])) {
             $this->update('element_type', ['element_group_id' => null], 'class_name = "Element_OphTrLaser_AnteriorSegment"');
             $this->update('element_type', ['element_group_id' => null], 'class_name = "Element_OphTrLaser_PosteriorPole"');
@@ -20,7 +20,7 @@ class m180831_103610_remove_parent_element_id_from_laser_optional_elements exten
             ->where('name = "Treatment"')
             ->queryScalar();
 
-        $element_type = Yii::app()->db->schema->getTable('element_type');
+        $element_type = $this->dbConnection->schema->getTable('element_type');
         if (isset($element_type->columns['element_group_id'])) {
             $this->update('element_type', ['element_group_id' => $treatmentId], 'class_name = "Element_OphTrLaser_AnteriorSegment"');
             $this->update('element_type', ['element_group_id' => $treatmentId], 'class_name = "Element_OphTrLaser_PosteriorPole"');

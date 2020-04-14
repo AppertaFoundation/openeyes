@@ -17,7 +17,7 @@ WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 quiet=0
 showhelp=0
 ignorewarnings=0
-
+connectionstring="--connectionID=db"
 
 while [[ $# -gt 0 ]]
 do
@@ -29,6 +29,9 @@ do
         --help) showhelp=1
         ;;
 	--ignore-warnings) ignorewarnings=1
+	  ;;
+	--connectionID) connectionstring="--connectionID=$2"
+	  shift;
 	;;
 	*)  echo "Unknown command line: $p"
         ;;
@@ -42,13 +45,14 @@ if [ $showhelp = 1 ]; then
     echo "DESCRIPTION:"
     echo "Migrates database to latest schema"
     echo ""
-    echo "usage: $0 [--help] [--quiet | -q]"
+    echo "usage: $0 [--help] [--quiet | -q] [--connectionID conn]"
     echo ""
     echo "COMMAND OPTIONS:"
 	echo ""
-	echo "  --help         : Show this help"
-    echo "  --quiet | -q   : Do not show console output"
-	echo "	--ignore-warnings: Don't break on warnings"
+	echo "  --help           : Show this help"
+  echo "  --quiet | -q     : Do not show console output"
+  echo "  --connectionID   : Apply migrations to a secondary configured database"
+	echo "  --ignore-warnings: Don't break on warnings"
 	echo ""
     exit 1
 fi
@@ -57,12 +61,12 @@ touch $WROOT/protected/runtime/migrate.log
 
 if [ $quiet = 0 ]; then
 	# Show output on screen AND write to log
-	php $WROOT/protected/yiic migrate --interactive=0 2>&1 | tee $WROOT/protected/runtime/migrate.log
-    php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
+	php $WROOT/protected/yiic migrate --interactive=0 $connectionstring 2>&1 | tee $WROOT/protected/runtime/migrate.log
+    php $WROOT/protected/yiic migratemodules --interactive=0 $connectionstring 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
 else
 	# Write output to log only (do not show on screen)
-	php $WROOT/protected/yiic migrate --interactive=0 > $WROOT/protected/runtime/migrate.log
-	php $WROOT/protected/yiic migratemodules --interactive=0 >> $WROOT/protected/runtime/migrate.log
+	php $WROOT/protected/yiic migrate --interactive=0 $connectionstring > $WROOT/protected/runtime/migrate.log
+	php $WROOT/protected/yiic migratemodules --interactive=0 $connectionstring >> $WROOT/protected/runtime/migrate.log
 fi
 
 founderrors=0

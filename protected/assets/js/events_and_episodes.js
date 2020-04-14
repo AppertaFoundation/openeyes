@@ -159,11 +159,13 @@ $(document).ready(function(){
               " element? All data in this element will be lost"
           });
           dialog.on('ok', function () {
+							$parent.trigger('element_removed');
               removeElement($parent);
               $(document).trigger('element_removed');
           }.bind(this));
           dialog.open();
       } else {
+					$parent.trigger('element_removed');
           removeElement($parent);
       }
   });

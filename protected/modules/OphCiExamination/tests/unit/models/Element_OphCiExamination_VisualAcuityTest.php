@@ -1,4 +1,8 @@
 <?php
+
+use OEModule\OphCiExamination\controllers\DefaultController;
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 /**
  * OpenEyes.
  *
@@ -16,41 +20,79 @@
  */
 use OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
+class Element_OphCiExamination_VisualAcuityTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return models\Element_OphCiExamination_VisualAcuity::model();
+    }
+
+    protected $columns_to_skip = [
+        'left_notes', 'right_notes'
+    ];
+
+    protected $fixtures = array(
+        'element_types' => ElementType::class,
+        'readings' => models\OphCiExamination_VisualAcuity_Reading::class,
+        'unit_values' => models\OphCiExamination_VisualAcuityUnitValue::class,
+    );
+
     public function letter_stringProvider()
     {
         return array(
             array(
-                array(null, true, false),
+                array(array('reading1'), false, false),
+                array(null, false, false),
+                '6/9',
                 null,
-                "Visual acuity:\nRight Eye: Unable to assess\nLeft Eye: not recorded\n",
             ),
             array(
-                    array('12/3', false, false),
-                    array(null, false, false),
-                    "Visual acuity:\nRight Eye: 12/3\nLeft Eye: not recorded\n",
+                array(null, true, true),
+                array(array('reading1', 'reading2'), false, false, ''),
+                '6/9',
+                '12/3',
             ),
-                array(
-                        array(null, true, true),
-                        array('3/6, 1/12', false, false, ''),
-                        "Visual acuity:\nRight Eye: Unable to assess, Eye missing\nLeft Eye: 3/6, 1/12\n",
-                ),
         );
     }
 
     /**
      * @dataProvider letter_stringProvider
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::getLetter_string
      */
-    public function testgetLetter_String($right_eye, $left_eye, $res)
+    public function testgetLetter_String($right_eye, $left_eye, $left_res, $right_res)
     {
-        $this->markTestSkipped('Testing this case requires a controller object, which has not been set and is not set when running unit tests.');
-        /*$test = $this->getMockBuilder('\OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-                ->disableOriginalConstructor()
-                ->setMethods(array('getCombined'))
-                ->getMock();
+        $test = new Element_OphCiExamination_VisualAcuity();
+        $test->_element_type = $this->element_types('va');
 
-        $combined_at = 0;
+        $left_reading_stub = $this->getMockBuilder(OphCiExamination_VisualAcuity_Reading::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('convertTo'))
+            ->getMock();
+        $left_reading_stub->value = 101;
+        $left_reading_stub->method = models\OphCiExamination_VisualAcuity_Method::model()->findByPk(1);
+
+        $left_reading_stub->method('convertTo')
+            ->with(101)
+            ->willReturn('6/9');
+
+        $right_reading_stub = $this->getMockBuilder(OphCiExamination_VisualAcuity_Reading::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('convertTo'))
+            ->getMock();
+        $right_reading_stub->value = 109;
+        $right_reading_stub->method = models\OphCiExamination_VisualAcuity_Method::model()->findByPk(1);
+
+        $right_reading_stub->method('convertTo')
+            ->with(109)
+            ->willReturn('12/3');
+
+        $test->left_readings = array($left_reading_stub);
+        if ($right_res) {
+            $test->right_readings = array($right_reading_stub);
+        }
+
+        // Unable to mock this class because the output from renderPartial is printed rather than returned as a string.
+        $controller = new OEModule\OphCiExamination\controllers\DefaultController(1);
 
         if ($right_eye) {
             if ($left_eye) {
@@ -61,20 +103,6 @@ class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
 
             $test->right_unable_to_assess = $right_eye[1];
             $test->right_eye_missing = $right_eye[2];
-
-            $combined = $right_eye[0];
-            $test->expects($this->at($combined_at))
-                    ->method('getCombined')
-                    ->with('right')
-                    ->will($this->returnValue($combined));
-            ++$combined_at;
-            if ($combined) {
-                $test->expects($this->at($combined_at))
-                        ->method('getCombined')
-                        ->with('right')
-                        ->will($this->returnValue($combined));
-                ++$combined_at;
-            }
         } else {
             $test->eye_id = Eye::LEFT;
         }
@@ -82,21 +110,14 @@ class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
         if ($left_eye) {
             $test->left_unable_to_assess = $left_eye[1];
             $test->left_eye_missing = $left_eye[2];
-            $combined = $left_eye[0];
-
-            $test->expects($this->at($combined_at))
-                    ->method('getCombined')
-                    ->with('left')
-                    ->will($this->returnValue($combined));
-            ++$combined_at;
-            if ($combined) {
-                $test->expects($this->at($combined_at))
-                        ->method('getCombined')
-                        ->with('left')
-                        ->will($this->returnValue($combined));
-            }
         }
-        $this->assertEquals($res, $test->getLetter_string());*/
+        Yii::app()->controller = $controller;
+        if ($left_res) {
+            $this->assertContains($left_res, trim(strip_tags($test->getLetter_string())));
+        }
+        if ($right_res) {
+            $this->assertContains($right_res, trim(strip_tags($test->getLetter_string())));
+        }
     }
 
     public function getTextForSide_Provider()
@@ -113,16 +134,16 @@ class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
 
     /**
      * @dataProvider getTextForSide_Provider
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::getTextForSide
      */
     public function testgetTextForSide($side, $readings, $unable, $eye_missing, $res)
     {
-        $readingMock = $this->getMockBuilder('\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading')
-            //->disableOriginalConstructor()
+        $readingMock = $this->getMockBuilder(OphCiExamination_VisualAcuity_Reading::class)
             ->setMethods(array('init'))
             ->getMock();
 
         $test = new models\Element_OphCiExamination_VisualAcuity();
-        if ($side == 'left') {
+        if ($side === 'left') {
             $test->eye_id = Eye::LEFT;
         } else {
             $test->eye_id = Eye::RIGHT;
@@ -138,49 +159,56 @@ class Element_OphCiExamination_VisualAcuityTest extends CDbTestCase
 
     public function validate_Provider()
     {
-        $readingMock = $this->getMockBuilder('\OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading')
-            ->setMethods(array('init'))
-            ->getMock();
-
         return array(
             array(
-                array('eye_id' => Eye::LEFT, 'left_readings' => array($readingMock), 'left_unable_to_assess' => true),
+                array('eye_id' => Eye::LEFT, 'left_readings' => 'reading1', 'left_unable_to_assess' => true),
                 false,
             ),
             array(
-                    array('eye_id' => Eye::RIGHT, 'left_readings' => array($readingMock)),
-                    false,
-            ),
-            array(
-                    array('eye_id' => Eye::RIGHT),
-                    false,
-            ),
-            array(
-                    array('eye_id' => Eye::LEFT, 'left_unable_to_assess' => true),
-                    true,
-            ),
-            array(
-                array('eye_id' => Eye::LEFT, 'right_readings' => array($readingMock)),
+                array('eye_id' => Eye::RIGHT, 'left_readings' => 'reading1'),
                 false,
             ),
             array(
-                    array('eye_id' => Eye::LEFT, 'left_readings' => array($readingMock), 'left_eye_missing' => true),
-                    false,
+                array('eye_id' => Eye::RIGHT),
+                false,
+            ),
+            array(
+                array('eye_id' => Eye::LEFT, 'left_unable_to_assess' => true),
+                true,
+            ),
+            array(
+                array('eye_id' => Eye::LEFT, 'right_readings' => 'reading1'),
+                false,
+            ),
+            array(
+                array('eye_id' => Eye::LEFT, 'left_readings' => 'reading1', 'left_eye_missing' => true),
+                false,
             ),
         );
     }
 
     /**
      * @dataProvider validate_Provider
+     * @covers \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::validate
+     * @param $attributes array
+     * @param $should_be_valid bool
      */
     public function testValidate(array $attributes, $should_be_valid)
     {
-        $this->markTestSkipped('Validation requires an element type to be set, which is not currently being done.');
-        /*$test = new models\Element_OphCiExamination_VisualAcuity();
+        //$this->markTestIncomplete('Validation requires complex reading data in $_POST for coverage.');
+        $test = new models\Element_OphCiExamination_VisualAcuity();
         foreach ($attributes as $attr => $v) {
             $test->$attr = $v;
         }
-
-        $this->assertEquals($should_be_valid, $test->validate());*/
+        $test->_element_type = $this->element_types('va');
+        $model = str_replace('\\', '_', $test->elementType->class_name);
+        $_POST[$model] = $test->attributes;
+        if (array_key_exists('left_readings', $attributes)) {
+            $_POST[$model]['left_readings'] = array($this->readings($attributes['left_readings'])->attributes);
+        }
+        if (array_key_exists('right_readings', $attributes)) {
+            $_POST[$model]['right_readings'] = array($this->readings($attributes['right_readings'])->attributes);
+        }
+        $this->assertEquals($should_be_valid, $test->validate());
     }
 }

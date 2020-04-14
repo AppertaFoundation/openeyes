@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCoTherapyapplication_EmailTest extends CDbTestCase
+class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
 {
     public static function setupBeforeClass()
     {
@@ -26,6 +26,15 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
     );
 
     private $event_type;
+
+    public function getModel()
+    {
+        return OphCoTherapyapplication_Email::model();
+    }
+
+    protected $columns_to_skip = [
+        'eye_id'
+    ];
 
     public function setUp()
     {
@@ -110,11 +119,16 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
         $this->assertEquals(0, $ev2_em2->archived);
     }
 
+    /**
+     * @return Event
+     * @throws Exception
+     */
     private function createEvent()
     {
         $event = new Event();
         $event->episode_id = $this->ep('episode1')->id;
         $event->event_type_id = $this->event_type->id;
+        $event->delete_pending = 0;
         $event->save();
 
         return $event;
@@ -124,6 +138,7 @@ class OphCoTherapyapplication_EmailTest extends CDbTestCase
     {
         $email = new OphCoTherapyapplication_Email();
         $email->event_id = $event->id;
+        $email->eye_id = Eye::LEFT;
         $email->save();
 
         return $email;

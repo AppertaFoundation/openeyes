@@ -19,6 +19,7 @@
 <div class="admin box cols-6">
     <h2>Mapping Items for <?= $definition->name ?></h2>
     <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
+    <?php echo EventAction::link('View Definition', '/Admin/worklist/definition/'.$definition->id, array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
     <?php if ($this->manager->canUpdateWorklistDefinition($definition)) {
         echo EventAction::link('Add Mapping', '/Admin/worklist/addDefinitionMapping/'.$definition->id, array('level' => 'primary'), array('class' => 'button small'))->toHtml();
     }?>

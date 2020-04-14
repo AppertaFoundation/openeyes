@@ -16,19 +16,24 @@
  */
 
 /**
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $current
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $stopped
+ * @var \OEModule\OphCiExamination\models\HistoryMedications $element
+ * @var \EventMedicationUse[] $current
+ * @var \EventMedicationUse[] $stopped
  */
 
 $model_name = CHtml::modelName($element);
 
-$systemic_filter = function ($entry) {
-    return $entry['route_id'] != 1;
+$eye_filter = function($e) {
+    /** @var EventMedicationUse $e */
+    return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
-$eye_filter = function ($entry) {
-    return $entry['route_id'] == 1;
+$systemic_filter = function ($entry) use ($eye_filter){
+    return !$eye_filter($entry);
 };
+
+$current = $element->current_entries;
+$stopped = $element->closed_entries;
 
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
@@ -47,14 +52,19 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_eye_meds as $entry) { ?>
                 <tr>
                     <td>
-                      <i class="oe-i start small pad-right"></i>
-                      <strong><?= $entry->getMedicationDisplay() ?></strong>
+                        <i class="oe-i start small pad-right"></i>
+                        <?= $entry->getMedicationDisplay() ?>
                     </td>
                     <td>
-                        <?php if ($entry->getDoseAndFrequency()) { ?>
-                            <i class="oe-i info small js-has-tooltip"
-                               data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                            </i>
+                        <?php
+                        $info_box = new MedicationInfoBox();
+                        $info_box->medication_id = $entry->medication->id;
+                        $info_box->init();
+
+                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
+                        if (!empty($tooltip_content)) { ?>
+                            <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip"
+                               data-tooltip-content="<?= $tooltip_content ?>">
                         <?php } ?>
                     </td>
                     <td class="nowrap">
@@ -65,7 +75,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td>
                         <?php
-                        $link = $entry->prescription_item ? $entry->getPrescriptionLink() : $entry->getExaminationLink();
+                        $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
                         $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                         <a href="<?= $link ?>">
                               <i class="js-has-tooltip fa oe-i direction-right-circle small pad"
@@ -81,7 +91,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             No current Eye Medications
         </div>
     <?php } ?>
-
     <?php if ($stopped_eye_meds) { ?>
         <div class="collapse-data">
             <div class="collapse-data-header-icon expand">
@@ -100,8 +109,20 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <?php foreach ($stopped_eye_meds as $entry) { ?>
                                 <tr>
                                     <td>
-                                      <i class="oe-i stop small pad-right"></i>
-                                      <strong><?= $entry->getMedicationDisplay() ?></strong>
+                                        <i class="oe-i stop small pad-right"></i>
+                                        <?= $entry->getMedicationDisplay() ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        $info_box = new MedicationInfoBox();
+                                        $info_box->medication_id = $entry->medication->id;
+                                        $info_box->init();
+
+                                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
+                                        if (!empty($tooltip_content)) { ?>
+                                            <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip"
+                                               data-tooltip-content="<?= $tooltip_content ?>">
+                                        <?php } ?>
                                     </td>
                                     <td class="nowrap">
                                         <?php $laterality = $entry->getLateralityDisplay();

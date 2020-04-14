@@ -39,6 +39,11 @@
       <TITLE>Anterior chamber IOL</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+<!--    <DOODLE>-->
+<!--      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>-->
+<!--      <TITLE>Conjunctival haemorrhage</TITLE>-->
+<!--      <INIT_DOODLE_JSON/>-->
+<!--    </DOODLE>-->
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>ACMaintainer</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>AC maintainer</TITLE>
@@ -576,11 +581,11 @@
       <TITLE>Macular grid laser</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
-    <DOODLE>
-      <EYEDRAW_CLASS_MNEMONIC>MacularHole</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Macular hole</TITLE>
-      <INIT_DOODLE_JSON/>
-    </DOODLE>
+<!--    <DOODLE>-->
+<!--      <EYEDRAW_CLASS_MNEMONIC>MacularHole</EYEDRAW_CLASS_MNEMONIC>-->
+<!--      <TITLE>Macular hole</TITLE>-->
+<!--      <INIT_DOODLE_JSON/>-->
+<!--    </DOODLE>-->
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>MacularThickening</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Macular thickening</TITLE>
@@ -782,6 +787,11 @@
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Fovea</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Fovea</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>RPEDetachment</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>RPE detachment</TITLE>
       <INIT_DOODLE_JSON/>
@@ -799,6 +809,11 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>RRD</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Rhegmatogenous retinal detachment</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChoroidalNaevusMelanoma</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Choroidal mass/pigment</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -1379,6 +1394,16 @@
       <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
+<!--    <DOODLE_USAGE>-->
+<!--      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalHaem</EYEDRAW_CLASS_MNEMONIC>-->
+<!--      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>-->
+<!--      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>-->
+<!--      <ON_TOOLBAR_ORDER>15</ON_TOOLBAR_ORDER>-->
+<!--      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>-->
+<!--      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>-->
+<!--      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>-->
+<!--      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>-->
+<!--    </DOODLE_USAGE>-->
     <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>LasikFlap</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
@@ -2030,11 +2055,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Medications</PRIMARY_TERM>
+          <PRIMARY_TERM>Medication History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>PMH</TERM>
             <TERM>Medical History</TERM>
-            <TERM>Medication History</TERM>
+            <TERM>Medications</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
@@ -2074,7 +2099,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
@@ -2133,12 +2158,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Accessible Information Standards</PRIMARY_TERM>
+          <PRIMARY_TERM>Communication Preferences</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
-            <TERM>Accessibility</TERM>
+            <TERM>Communication</TERM>
             <TERM>Large print</TERM>
           </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards</OPEN_ELEMENT_CLASS_NAME>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Contacts</PRIMARY_TERM>
@@ -2757,6 +2782,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments</GOTO_ID>
         </INDEX>
         <INDEX>
+          <PRIMARY_TERM>Medication Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicationManagement</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_MedicationManagement</GOTO_ID>
+        </INDEX>
+        <INDEX>
           <PRIMARY_TERM>Cataract Surgical Management</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
@@ -2935,16 +2965,81 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Geographic</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Choroidal new vessels</PRIMARY_TERM>
-              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CNV.png</IMG_URL>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
-            </INDEX>
-            <INDEX>
               <PRIMARY_TERM>RPE Atrophy</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RPEAtrophy.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>RPEAtrophy</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Extra-foveal CNV</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CNV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal neovascularisation</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fovea</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>type</GOTO_PROPERTY>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal neovascularisation</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Macular Hole</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>Macular Hole</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fovea</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New vessels</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>RPE detachment</PRIMARY_TERM>
@@ -2957,12 +3052,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/EpiretinalMembrane.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>EpiretinalMembrane</GOTO_DOODLE_CLASS_NAME>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Macular hole</PRIMARY_TERM>
-              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularHole.png</IMG_URL>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Macular dystrophy</PRIMARY_TERM>
@@ -3103,12 +3192,14 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>ChoroidalEffusion</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
-
             <INDEX>
-              <PRIMARY_TERM>Choroidal naevus</PRIMARY_TERM>
-              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ChoroidalNaevus.png</IMG_URL>
+              <PRIMARY_TERM>Choroidal mass/pigment</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Choroidal naevus</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ChoroidalNaevusMelanoma.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_DOODLE_CLASS_NAME>ChoroidalNaevus</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ChoroidalNaevusMelanoma</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Laser spot</PRIMARY_TERM>
@@ -3329,6 +3420,15 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>RRD</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
+              <PRIMARY_TERM>Choroidal mass/pigment</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Choroidal naevus</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ChoroidalNaevusMelanoma.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ChoroidalNaevusMelanoma</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
               <PRIMARY_TERM>Traction ‘U’ tear</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/UTear.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
@@ -3353,10 +3453,43 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>GRT</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Macular hole</PRIMARY_TERM>
-              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularHole.png</IMG_URL>
+              <PRIMARY_TERM>Fovea</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Macular Hole</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fovea.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal neovascularisation</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Macular Hole</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>Macular Hole</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Choroidal New Vessels</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>CNV</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Fovea</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Star fold</PRIMARY_TERM>
@@ -3446,6 +3579,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>ACIOL</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
+<!--            <INDEX>-->
+<!--              <PRIMARY_TERM>Conjunctival haemorrhage</PRIMARY_TERM>-->
+<!--              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ConjunctivalHaem.png</IMG_URL>-->
+<!--              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>-->
+<!--              <GOTO_DOODLE_CLASS_NAME>ConjunctivalHaem</GOTO_DOODLE_CLASS_NAME>-->
+<!--            </INDEX>-->
             <INDEX>
               <PRIMARY_TERM>Adenoviral keratitis</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AdenoviralKeratitis.png</IMG_URL>
@@ -3954,6 +4093,15 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               </INDEX_LIST>
             </INDEX>
             <INDEX>
+              <PRIMARY_TERM>Toric Posterior chamber IOL</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Intraocular lens</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ToricPCIOL.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ToricPCIOL</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
               <PRIMARY_TERM>Peripheral iridectomy</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PI.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
@@ -3973,6 +4121,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 </INDEX>
               </INDEX_LIST>
             </INDEX>
+
             <INDEX>
               <PRIMARY_TERM>Pingueculum</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Pingueculum.png</IMG_URL>

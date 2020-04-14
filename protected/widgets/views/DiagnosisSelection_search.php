@@ -56,7 +56,7 @@
     </div>
 </div>
 <?php if ($searchBtn) { ?>
-<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>
+    <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <script type="text/javascript">
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('<?="#{$class}_{$field}_searchbox";?>'),

@@ -135,6 +135,8 @@ class OphCoTherapyapplication_FileCollection extends BaseActiveRecordVersioned
             }
 
             $zip->close();
+            $pfile->size = filesize($pfile->getPath());
+            $pfile->file_content = file_get_contents($pfile->getPath());
             $pfile->save();
 
             // set up relation

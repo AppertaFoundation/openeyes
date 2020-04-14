@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactLabelTest extends CDbTestCase
+class ContactLabelTest extends ActiveRecordTestCase
 {
     /**
      * @var ContactLabel
@@ -27,6 +27,11 @@ class ContactLabelTest extends CDbTestCase
         'contactlabels' => 'ContactLabel',
         'Institution',
     );
+
+    public function getModel()
+    {
+        return ContactLabel::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -40,7 +45,7 @@ class ContactLabelTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new ContactLabel();
@@ -64,9 +69,11 @@ class ContactLabelTest extends CDbTestCase
 
     /**
      * @covers ContactLabel::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->contactlabels('contactlabel1')->validate());
         $this->assertEmpty($this->contactlabels('contactlabel1')->errors);
     }

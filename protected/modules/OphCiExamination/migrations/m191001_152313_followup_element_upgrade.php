@@ -23,17 +23,16 @@ class m191001_152313_followup_element_upgrade extends OEMigration
         $this->addForeignKey('ophciexamination_clinicoutcome_entry_ri_fk', 'ophciexamination_clinicoutcome_entry', 'role_id', 'ophciexamination_clinicoutcome_role', 'id');
 
         // Data migration
-        $data_provider = new CActiveDataProvider('OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome');
-        $iterator = new CDataProviderIterator($data_provider);
+        $data = $this->dbConnection->createCommand('SELECT * FROM et_ophciexamination_clinicoutcome')->queryAll();
 
-        foreach ($iterator as $item) {
+        foreach ($data as $item) {
             $this->insert('ophciexamination_clinicoutcome_entry', [
-                'element_id' => $item->id,
-                'status_id' => $item->status_id,
-                'followup_quantity' => $item->followup_quantity,
-                'followup_period_id' => $item->followup_period_id,
-                'followup_comments' => $item->role_comments,
-                'role_id' => $item->role_id
+                'element_id' => $item['id'],
+                'status_id' => $item['status_id'],
+                'followup_quantity' => $item['followup_quantity'],
+                'followup_period_id' => $item['followup_period_id'],
+                'followup_comments' => $item['role_comments'],
+                'role_id' => $item['role_id']
             ]);
         }
 

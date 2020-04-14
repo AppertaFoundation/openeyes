@@ -32,6 +32,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo2' => array(
         'event_id' => 2,
@@ -48,6 +49,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo3' => array(
         'event_id' => 3,
@@ -64,6 +66,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo4' => array(
         'event_id' => 4,
@@ -80,6 +83,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo5' => array(
         'event_id' => 5,
@@ -97,6 +101,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo6' => array(
         'event_id' => 6,
@@ -114,6 +119,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo7' => array(
         'event_id' => 7,
@@ -130,6 +136,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo8' => array(
         'event_id' => 8,
@@ -146,6 +153,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00', time() + 10),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo9' => array(
         'event_id' => 9,
@@ -162,6 +170,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00', time() + 20),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo10' => array(
         'event_id' => 10,
@@ -178,6 +187,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00', time() + 30),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo11' => array(
         'event_id' => 11,
@@ -194,6 +204,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00', time() + 40),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo12' => array(
         'event_id' => 12,
@@ -211,6 +222,7 @@ return array(
         'booking_cancellation_date' => '2013-05-05 12:30:00',
         'created_date' => date('Y-m-d 00:00:00', time() + 50),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo13' => array(
         'event_id' => 1,
@@ -227,6 +239,7 @@ return array(
         'operation_cancellation_date' => null,
         'created_date' => date('Y-m-d 00:00:00'),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo14' => array(
         'event_id' => 12,
@@ -244,6 +257,7 @@ return array(
         'booking_cancellation_date' => '2013-05-05 12:30:00',
         'created_date' => date('Y-m-d 00:00:00', time() + 50),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
     'eo15' => array(
         'event_id' => 26,
@@ -263,5 +277,6 @@ return array(
         'booking_cancellation_date' => '2013-05-05 12:30:00',
         'created_date' => date('Y-m-d 00:00:00', time() + 50),
         'last_modified_date' => date('Y-m-d 00:00:00'),
+        'cancellation_comment' => 'None',
     ),
 );

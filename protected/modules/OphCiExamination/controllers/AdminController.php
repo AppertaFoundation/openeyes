@@ -333,7 +333,7 @@ class AdminController extends \ModuleAdminController
     public function actionAddWorkflow()
     {
         $model = new models\OphCiExamination_Workflow();
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -355,7 +355,8 @@ class AdminController extends \ModuleAdminController
 
     public function actionEditWorkflow($id)
     {
-        Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
+
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
@@ -624,7 +625,7 @@ class AdminController extends \ModuleAdminController
             throw new \Exception("Workflow rule not found: $id");
         }
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -648,7 +649,7 @@ class AdminController extends \ModuleAdminController
     {
         $model = new models\OphCiExamination_Workflow_Rule();
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -992,26 +993,34 @@ class AdminController extends \ModuleAdminController
 
     public function actionSocialHistoryOccupation()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('occupation_id'),
-            'OEModule\OphCiExamination\models\SocialHistoryOccupation');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('occupation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryOccupation'
+        );
     }
 
     public function actionSocialHistoryDrivingStatus()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
-            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
+            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus'
+        );
     }
 
     public function actionSocialHistorySmokingStatus()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
-            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
+            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus'
+        );
     }
 
     public function actionSocialHistoryAccommodation()
     {
-        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
-            'OEModule\OphCiExamination\models\SocialHistoryAccommodation');
+        $this->genericAdmin(
+            models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryAccommodation'
+        );
     }
 
     public function actionFamilyHistory()
@@ -1021,23 +1030,38 @@ class AdminController extends \ModuleAdminController
 
     public function actionFamilyHistoryRelative()
     {
-        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']);
+        $this->genericAdmin(
+            models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']
+        );
     }
 
     public function actionFamilyHistoryCondition()
     {
-        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryCondition');
+        $this->genericAdmin(
+            models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryCondition'
+        );
     }
 
-    public function actionHistoryMedicationsStopReason()
+    public function actionMedicationManagementSets()
     {
-        $this->genericAdmin('Medication Stop Reason',
-            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
+        $this->genericAdmin(
+            'Medication Management drug sets',
+            models\MedicationManagementRefSet::class,
+            array(
+                'description' => 'Medications in these sets will be automatically be pulled into the medication management element.',
+                'label_field' => 'ref_set_id',
+                'extra_fields' => array(
+                    array('field' => 'ref_set_id', 'type' => 'lookup',
+                        'model' => \MedicationSet::class, ),
+                ),
+            )
+        );
     }
 
-    public function actionChangeWorkflowStepActiveStatus(){
+    public function actionChangeWorkflowStepActiveStatus()
+    {
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
         if (!$step) {
             throw new \Exception('Unknown element set '.$_POST['element_set_id'].' for workflow '.$_POST['workflow_id']);

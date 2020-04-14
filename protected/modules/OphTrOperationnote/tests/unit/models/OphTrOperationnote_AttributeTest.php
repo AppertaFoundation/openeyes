@@ -15,8 +15,12 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationnote_AttributeTest extends CDbTestCase
+class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return OphTrOperationnote_Attribute::model();
+    }
     /**
      * @covers OphTrOperationnote_Attribute::model
      *

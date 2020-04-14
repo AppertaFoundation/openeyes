@@ -87,7 +87,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         return array(
             array('name, rrule, worklist_name, start_time, end_time, description', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule', 'required'),
+            array('name, rrule, start_time, end_time', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
             array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),

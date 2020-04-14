@@ -191,7 +191,7 @@ class CaseSearchController extends BaseModuleController
 
     public function beforeAction($action)
     {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'));
+        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OECaseSearch.assets'), true);
         Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
 
         // Loading the following files from the package before calling each action as they are required by the zii AutoCompleteSearch widget (used for diagnosis)
@@ -201,7 +201,7 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->clientScript->registerCoreScript('cookie');
 
         // This is required when the search results return any records.
-        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'));
+        $path = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);

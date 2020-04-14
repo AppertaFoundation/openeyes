@@ -82,6 +82,7 @@ function addElement(element, animate, previous_id, params, callback) {
 
         var $inserted = container.children('section[data-element-type-id="' + element_type_id + '"]').first();
         autosize($inserted.find('textarea'));
+
         if (animate) {
             // note this flag is a bit of a misnomer now, as we've removed the animation in favour of moving straight to the
             // relevant element. This is an intentional change intended to reduce eyestrain for heavy OE users.

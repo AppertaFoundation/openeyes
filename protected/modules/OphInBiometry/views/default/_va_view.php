@@ -35,12 +35,14 @@ if ($api) {
     }
     $rightData = array();
     $leftData = array();
-    for ($i = 0; $i < count($VA_data); ++$i) {
-        if ($VA_data[$i]->side == 0) {
-            $rightData[] = $VA_data[$i];
-        }
-        if ($VA_data[$i]->side == 1) {
-            $leftData[] = $VA_data[$i];
+    if ($VA_data) {
+        for ($i = 0; $i < count($VA_data); ++$i) {
+            if ($VA_data[$i]->side == 0) {
+                $rightData[] = $VA_data[$i];
+            }
+            if ($VA_data[$i]->side == 1) {
+                $leftData[] = $VA_data[$i];
+            }
         }
     }
     $methodnameRight = array();

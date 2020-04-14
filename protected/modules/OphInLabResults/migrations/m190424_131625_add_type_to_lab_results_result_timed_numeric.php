@@ -4,7 +4,7 @@ class m190424_131625_add_type_to_lab_results_result_timed_numeric extends CDbMig
 {
     public function up()
     {
-        $default_result_type = \Yii::app()->db->createCommand()->select('id')->from('ophinlabresults_type')->where('type = :type', [':type' => 'INR'])->queryScalar();
+        $default_result_type = $this->dbConnection->createCommand()->select('id')->from('ophinlabresults_type')->where('type = :type', [':type' => 'INR'])->queryScalar();
 
         $this->addColumn('et_ophinlabresults_result_timed_numeric',
             'type',

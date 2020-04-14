@@ -243,15 +243,15 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     <?php }
                                 } ?>
 
-                                <?php $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient); ?>
+                                <?php $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
-                                            <h2>Accessibility</h2>
+                                            <h2>Communication Preferences</h2>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Large print:</td>
-                                        <td><span class="large-text"><?= ($examination_accessible_info_standards && $examination_accessible_info_standards->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
+                                        <td>Large print</td>
+                                        <td><span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
                                 </tbody>
                         </table>
@@ -417,7 +417,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                         <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
                                         if ($diagnosis) { ?>
                                             <?php $event_id = $diagnosis->element->event_id ?>
-                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
                                         <?php } ?>
                                     </td>
                                 </tr>

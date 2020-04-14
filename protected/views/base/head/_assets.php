@@ -9,17 +9,17 @@ else {
 }
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
-Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
+Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path, true) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3_dark.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/css/style_oe3_dark.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3_light.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/css/style_oe3_light.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
 
 <link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $assetManager->getPublishedUrl($basic_assets_path) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($basic_assets_path, true) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($basic_assets_path) . '/css/patient_panel_classic.css' ?>" media="<?= $display_theme !== 'dark' ? '' : 'none' ?>">
+      href="<?= $assetManager->getPublishedUrl($basic_assets_path, true) . '/css/patient_panel_classic.css' ?>" media="<?= $display_theme !== 'dark' ? '' : 'none' ?>">
 
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
@@ -47,6 +47,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.StickyElement.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Tooltip.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.LoadingOverlay.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>

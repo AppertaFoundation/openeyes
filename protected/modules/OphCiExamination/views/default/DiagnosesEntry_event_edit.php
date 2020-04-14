@@ -108,4 +108,3 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
         <?php endif; ?>
     </td>
 </tr>
-

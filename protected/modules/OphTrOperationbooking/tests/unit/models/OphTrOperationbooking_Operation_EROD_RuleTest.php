@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationbooking_Operation_EROD_RuleTest extends CDbTestCase
+class OphTrOperationbooking_Operation_EROD_RuleTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
         'specialties' => 'Specialty',
@@ -20,6 +20,11 @@ class OphTrOperationbooking_Operation_EROD_RuleTest extends CDbTestCase
         'service_subspecialty_assignment' => 'ServiceSubspecialtyAssignment',
         'firms' => 'Firm',
     );
+
+    public function getModel()
+    {
+        return OphTrOperationbooking_Operation_EROD_Rule::model();
+    }
 
     public static function setUpBeforeClass()
     {

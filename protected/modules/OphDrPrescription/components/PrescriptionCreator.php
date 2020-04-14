@@ -16,6 +16,8 @@
 class PrescriptionCreator extends \EventCreator
 {
 
+    private $items = [];
+
     public function __construct($episode)
     {
         $prescription_event_type = \EventType::model()->find('name = "Prescription"');
@@ -24,76 +26,62 @@ class PrescriptionCreator extends \EventCreator
         $this->elements['Element_OphDrPrescription_Details'] = new \Element_OphDrPrescription_Details();
     }
 
-    public function addDrugSet($drug_set_id)
+    public function addMedicationSet($medication_set_id, $laterality = null)
     {
-        $set = \DrugSet::model()->findByPk($drug_set_id);
-        $api = Yii::app()->moduleAPI->get('OphTrOperationnote');
+        $set = \MedicationSet::model()->findByPk($medication_set_id);
+        foreach ($set->medicationSetItems as $medication_set_item) {
+            $item = new \OphDrPrescription_Item();
 
-        if ($set) {
-            foreach ($set->items as $item) {
-                $item_model = new OphDrPrescription_Item();
-                $item_model->drug_id = $item->drug_id;
-                $item_model->loadDefaults();
-                $attr = $item->getAttributes();
-                unset($attr['drug_set_id']);
-                unset($attr['id']);
-                $item_model->attributes = $attr;
+            $item->dose = $medication_set_item->default_dose;
+            $item->dose_unit_term = $medication_set_item->default_dose_unit_term;
+            $item->frequency_id = $medication_set_item->default_frequency_id;
+            $item->route_id = $medication_set_item->default_route_id;
+            $item->medication_id = $medication_set_item->medication_id;
+            $item->duration_id = $medication_set_item->default_duration_id;
+            $item->dispense_condition_id = $medication_set_item->default_dispense_condition_id;
+            $item->dispense_location_id = $medication_set_item->default_dispense_location_id;
+            $item->start_date = date('Y-m-d');
+            $item->usage_type = \OphDrPrescription_Item::getUsageType();
+            $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
 
-                $tapers = [];
-                foreach ($item->tapers as $taper) {
-                    $taper_model = new OphDrPrescription_ItemTaper();
-                    $taper_attributes = $taper->getAttributes();
-                    unset($taper_attributes['id']);
+            $item->laterality = $laterality; // If default route is Eye or Ocular or ....
 
-                    unset($taper_attributes['last_modified_user_id']);
-                    unset($taper_attributes['last_modified_date']);
-                    unset($taper_attributes['created_date']);
-                    unset($taper_attributes['created_user_id']);
-                    $taper_model->attributes = $taper_attributes;
-
-                    $tapers[] = $taper_model;
+            $item_tapers = array();
+            if ($medication_set_item->tapers) {
+                foreach ($medication_set_item->tapers as $taper) {
+                    $new_taper = new \OphDrPrescription_ItemTaper();
+                    $new_taper->item_id = null;
+                    $new_taper->frequency_id = $taper->frequency_id;
+                    $new_taper->duration_id = $taper->duration_id;
+                    $new_taper->dose = $taper->dose;
+                    $item_tapers[] = $new_taper;
                 }
-
-                $item_model->tapers = $tapers;
-
-                if ($api) {
-                    $eye = $api->getLastEye($this->patient, false);
-                    if ($eye) {
-                        $item_model->route_option_id = $eye;
-                    }
-                }
-
-                $items[] = $item_model;
             }
-        }
+            $item->tapers = $item_tapers;
 
-        $this->elements['Element_OphDrPrescription_Details']->items = $items;
+            $this->addItem($item);
+        }
+    }
+
+    public function addItem(\OphDrPrescription_Item $item)
+    {
+        $this->items[] = $item;
     }
 
     protected function saveElements($event_id)
     {
-        foreach ($this->elements as $element) {
-            $element->event_id = $event_id;
-            $element->draft = 0;
+        // now this part is needed only because of the afterValidate() in Element_OphDrPrescription_Details
+        // the actual save of the items will be performed in $element->updateItems()
+        $this->elements['Element_OphDrPrescription_Details']->items = $this->items;
 
-            if (!$element->save()) {
-                $this->addErrors($element->getErrors());
-                \OELog::log("Element_OphDrPrescription_Details:" .  print_r($element->getErrors(), true));
-            } else {
-                foreach ($element->items as $item) {
-                    $item->prescription_id = $element->id;
-                    if (!$item->save()) {
-                        $this->addErrors($item->getErrors());
-                        \OELog::log("OphDrPrescription_Item: " .  print_r($item->getErrors(), true));
-                    } else {
-                        foreach ($item->tapers as $taper) {
-                            $taper->item_id = $item->id;
-                            if (!$taper->save()) {
-                                $this->addErrors($taper->getErrors());
-                                \OELog::log("OphDrPrescription_ItemTaper: " . print_r($taper->getErrors(), true));
-                            }
-                        }
-                    }
+        foreach ($this->elements as $element) {
+            if ($element instanceof Element_OphDrPrescription_Details) {
+                $element->event_id = $event_id;
+                if (!$element->save()) {
+                    $this->addErrors($element->getErrors());
+                    \OELog::log("Element_OphDrPrescription_Details:" . print_r($element->getErrors(), true));
+                } else {
+                    $element->updateItems($this->items);
                 }
             }
         }

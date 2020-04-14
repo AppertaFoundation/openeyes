@@ -46,13 +46,13 @@ $('#{$class}_elementName').bind('keyup change', function(){
     }
     if (!model.data('changed')) {
         var i=elementName.lastIndexOf('.');
-        if(i>=0)
+        if (i>=0)
             elementName=elementName.substring(i+1);
         var tablePrefix=$('#{$class}_tablePrefix').val();
-        if(tablePrefix!='' && elementName.indexOf(tablePrefix)==0)
+        if (tablePrefix!='' && elementName.indexOf(tablePrefix)==0)
             elementName=elementName.substring(tablePrefix.length);
         var tableName='element_' + '{$subspecialtyCode}' + '_';
-        if(elementName.length>0)
+        if (elementName.length>0)
                 tableName+=elementName.substring(0).toLowerCase();
         model.val(tableName);
     }
