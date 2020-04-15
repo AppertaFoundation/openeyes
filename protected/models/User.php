@@ -90,7 +90,7 @@ class User extends BaseActiveRecordVersioned
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
                 $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
-            }            
+            }
             return array_merge(
                 $commonRules,
                 $surgeonRules,
@@ -106,7 +106,7 @@ class User extends BaseActiveRecordVersioned
                     array(
                         'password',
                         'length',
-                        'min' => $pw_restrictions['min_length'],                            
+                        'min' => $pw_restrictions['min_length'],
                         'tooShort' => $pw_restrictions['min_length_message'],
                         'max' => $pw_restrictions['max_length'],
                         'tooLong' => $pw_restrictions['max_length_message'],
