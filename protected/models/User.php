@@ -113,8 +113,7 @@ class User extends BaseActiveRecordVersioned
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
                 return array_merge($commonRules, $surgeonRules, $generalUserRules);
-            }
-            else{
+            } else {
                 return array_merge($commonRules, $generalUserRules);
             }
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
