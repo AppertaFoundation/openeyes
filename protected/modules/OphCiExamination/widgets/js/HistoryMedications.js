@@ -253,7 +253,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       $second_part_of_row.on("click", ".js-start-date-display", function(){
           $(this).hide();
-          $(this).parent().find('input').show();
+          $full_row.find(".js-start-date-wrapper").show();
       });
 
 		$full_row.on("click", ".js-btn-prescribe", function () {
