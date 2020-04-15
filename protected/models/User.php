@@ -102,7 +102,7 @@ class User extends BaseActiveRecordVersioned
                         array(
                             'password',
                             'length',
-                            'min' => $pw_restrictions['min_length'],                            
+                            'min' => $pw_restrictions['min_length'],
                             'tooShort' => $pw_restrictions['min_length_message'],
                             'max' => $pw_restrictions['max_length'],
                             'tooLong' => $pw_restrictions['max_length_message'],
@@ -130,7 +130,7 @@ class User extends BaseActiveRecordVersioned
                         array(
                             'password',
                             'length',
-                            'min' => $pw_restrictions['min_length'],                            
+                            'min' => $pw_restrictions['min_length'],
                             'tooShort' => $pw_restrictions['min_length_message'],
                             'max' => $pw_restrictions['max_length'],
                             'tooLong' => $pw_restrictions['max_length_message'],
@@ -766,7 +766,7 @@ class User extends BaseActiveRecordVersioned
     {
         $pw_restrictions = Yii::app()->params['pw_restrictions'];
 
-        if($pw_restrictions===null){
+        if ($pw_restrictions===null) {
             $pw_restrictions = array(
                 'min_length' => 8, //max 0 chars with md5 hashing
                 'min_length_message' => 'Passwords must be at least 8 characters long',
@@ -776,22 +776,22 @@ class User extends BaseActiveRecordVersioned
                 'strength_message' => 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
             );
         }
-        if(!isset($pw_restrictions['min_length'])){
+        if (!isset($pw_restrictions['min_length'])) {
             $pw_restrictions['min_length'] = 8;
         }
-        if(!isset($pw_restrictions['min_length_message'])){
+        if (!isset($pw_restrictions['min_length_message'])) {
             $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
         }
-        if(!isset($pw_restrictions['max_length'])){
+        if (!isset($pw_restrictions['max_length'])) {
             $pw_restrictions['max_length'] = 32;
         }
-        if(!isset($pw_restrictions['max_length_message'])){
+        if (!isset($pw_restrictions['max_length_message'])) {
             $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
-        }        
-        if(!isset($pw_restrictions['strength_regex'])){
+        }
+        if (!isset($pw_restrictions['strength_regex'])) {
             $pw_restrictions['strength_regex'] = "%.*%";
-        } 
-        if(!isset($pw_restrictions['strength_message'])){
+        }
+        if (!isset($pw_restrictions['strength_message'])) {
             $pw_restrictions['strength_message'] = "N/A";
         }
         return $pw_restrictions;
