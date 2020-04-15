@@ -203,6 +203,14 @@ $config = array(
                         'Consultant Ophthalmologist',
                         'Other specialist',
                 ),
+        'pw_restrictions' =>array(
+            'min_length' => 8, //min 1 but recommended 8
+            'min_length_message' => 'Passwords must be at least 8 characters long',
+            'max_length' => 32, //max 32 chars with md5 password hashing
+            'max_length_message' => 'Passwords must be at most 32 characters long',
+            'strength_regex' => '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+            'strength_message' => 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+        ),
     ),
 );
 

@@ -85,6 +85,7 @@ class User extends BaseActiveRecordVersioned
 
         if (Yii::app()->params['auth_source'] == 'BASIC') {
             $user = Yii::app()->request->getPost('User');
+            $pw_restrictions = $this->getPasswordRestrictions();
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
                 return array_merge(
@@ -101,12 +102,12 @@ class User extends BaseActiveRecordVersioned
                         array(
                             'password',
                             'length',
-                            'min' => 8,
-                            'max' => 32,
-                            'tooShort' => 'Passwords must be at least 8 characters long.',
-                            'tooLong' => 'Passwords must be less than 32 characters long.',
+                            'min' => $pw_restrictions['min_length'],                            
+                            'tooShort' => $pw_restrictions['min_length_message'],
+                            'max' => $pw_restrictions['max_length'],
+                            'tooLong' => $pw_restrictions['max_length_message'],
                         ),
-                        array('password','match','pattern'=> '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%','message'=> 'Password should include at least one upper case letter, one lower case letter, a number, and a special character'),
+                        array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -129,12 +130,12 @@ class User extends BaseActiveRecordVersioned
                         array(
                             'password',
                             'length',
-                            'min' => 8,
-                            'max' => 32,
-                            'tooShort' => 'Passwords must be at least 8 characters long.',
-                            'tooLong' => 'Passwords must be less than 32 characters long.',
+                            'min' => $pw_restrictions['min_length'],                            
+                            'tooShort' => $pw_restrictions['min_length_message'],
+                            'max' => $pw_restrictions['max_length'],
+                            'tooLong' => $pw_restrictions['max_length_message'],
                         ),
-                        array('password','match','pattern'=> '%^(?=.*[A-Z])(?=.*[\W])(?=.*[0-9])(?=.*[a-z]).*$%','message'=> 'Password should include at least one upper case letter, one lower case letter, at least one number, and at least one special character'),
+                        array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -756,6 +757,44 @@ class User extends BaseActiveRecordVersioned
         $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => $this->id));
 
         return $userUniqueCode->unique_code_id;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPasswordRestrictions()
+    {
+        $pw_restrictions = Yii::app()->params['pw_restrictions'];
+
+        if($pw_restrictions===null){
+            $pw_restrictions = array(
+                'min_length' => 8, //max 0 chars with md5 hashing
+                'min_length_message' => 'Passwords must be at least 8 characters long',
+                'max_length' => 32, //max 32 chars with md5 hashing
+                'max_length_message' => 'Passwords must be at least 32 characters long',
+                'strength_regex' => '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+                'strength_message' => 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+            );
+        }
+        if(!isset($pw_restrictions['min_length'])){
+            $pw_restrictions['min_length'] = 8;
+        }
+        if(!isset($pw_restrictions['min_length_message'])){
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+        }
+        if(!isset($pw_restrictions['max_length'])){
+            $pw_restrictions['max_length'] = 32;
+        }
+        if(!isset($pw_restrictions['max_length_message'])){
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+        }        
+        if(!isset($pw_restrictions['strength_regex'])){
+            $pw_restrictions['strength_regex'] = "%.*%";
+        } 
+        if(!isset($pw_restrictions['strength_message'])){
+            $pw_restrictions['strength_message'] = "N/A";
+        }
+        return $pw_restrictions;
     }
 
     /**
