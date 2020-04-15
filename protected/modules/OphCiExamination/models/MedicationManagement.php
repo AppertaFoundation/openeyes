@@ -353,7 +353,8 @@ class MedicationManagement extends BaseMedicationElement
                         'dose_unit_term' => $entry->dose_unit_term,
                         'start_date' => $entry->start_date,
                         'dispense_location_id' => $entry->dispense_location_id,
-                        'dispense_condition_id' => $entry->dispense_condition_id
+                        'dispense_condition_id' => $entry->dispense_condition_id,
+                        'comments' => $entry->comments,
                     ));
                     $p_tapers = array();
                     foreach ($entry->tapers as $taper) {
@@ -456,6 +457,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->dispense_location_id = $entry->dispense_location_id;
         $item->laterality = $entry->laterality;
         $item->start_date = $entry->start_date;
+        $item->comments = $entry->comments;
 
         $item->usage_type = \OphDrPrescription_Item::getUsageType();
         $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
