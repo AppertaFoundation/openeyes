@@ -204,9 +204,9 @@ $config = array(
                         'Other specialist',
                 ),
         'pw_restrictions' =>array(
-            'min_length' => getenv('PW_RES_MIN_LEN') ?: 8, //min 1 but recommended 8
+            'min_length' => getenv('PW_RES_MIN_LEN') ?: 8,
             'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ?: 'Passwords must be at least 8 characters long',
-            'max_length' => getenv('PW_RES_MAX_LEN') ?: 32, //max 32 chars with md5 password hashing
+            'max_length' => getenv('PW_RES_MAX_LEN') ?: 32,
             'max_length_message' => getenv('PW_RES_MAX_LEN_MESS') ?: 'Passwords must be at most 32 characters long',
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ?: 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
