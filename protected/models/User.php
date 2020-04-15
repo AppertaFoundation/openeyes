@@ -86,64 +86,39 @@ class User extends BaseActiveRecordVersioned
         if (Yii::app()->params['auth_source'] == 'BASIC') {
             $user = Yii::app()->request->getPost('User');
             $pw_restrictions = $this->getPasswordRestrictions();
+            $surgeonRules = array();
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
-                return array_merge(
-                    $commonRules,
+                $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
+            }            
+            return array_merge(
+                $commonRules,
+                $surgeonRules,
+                array(
                     array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
-                        array('username, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => $pw_restrictions['min_length'],                            
-                            'tooShort' => $pw_restrictions['min_length_message'],
-                            'max' => $pw_restrictions['max_length'],
-                            'tooLong' => $pw_restrictions['max_length_message'],
-                        ),
-                        array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
-            } else {
-                return array_merge(
-                    $commonRules,
+                        'username',
+                        'match',
+                        'pattern' => '/^[\w|\.\-_\+@]+$/',
+                        'message' => 'Only letters, numbers and underscores are allowed for usernames.',
+                    ),
+                    array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+                    array('username, first_name, last_name', 'length', 'max' => 40),
                     array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                        array('username, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => $pw_restrictions['min_length'],                            
-                            'tooShort' => $pw_restrictions['min_length_message'],
-                            'max' => $pw_restrictions['max_length'],
-                            'tooLong' => $pw_restrictions['max_length_message'],
-                        ),
-                        array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
-            }
+                        'password',
+                        'length',
+                        'min' => $pw_restrictions['min_length'],                            
+                        'tooShort' => $pw_restrictions['min_length_message'],
+                        'max' => $pw_restrictions['max_length'],
+                        'tooLong' => $pw_restrictions['max_length_message'],
+                    ),
+                    array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
+                    array('email', 'length', 'max' => 80),
+                    array('email', 'email'),
+                    array('salt', 'length', 'max' => 10),
+                    // Added for password comparison functionality
+                    array('password_repeat', 'safe'),
+                )
+            );
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
             return array_merge(
                 $commonRules,
