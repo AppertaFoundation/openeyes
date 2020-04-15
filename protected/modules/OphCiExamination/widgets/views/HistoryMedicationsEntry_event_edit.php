@@ -186,22 +186,17 @@ $stop_fields_validation_error = array_intersect(
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
-            <i class="oe-i start small pad-right"></i>
-            <div class="alternative-display-element textual flex-meds-inputs" <?= $is_new || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
-                <div class="textual-display hint">
-                    <?= $entry->getStartDateDisplay(); ?>
-                </div>
-                &nbsp;&nbsp;
-                <button type='button' onclick="switch_alternative(this);">Change Start Date</button>
-            </div>
-            <div class="alternative-display-element" <?= !$is_new && empty($entry->errors) ? 'style="display: none;"' : '' ?>>
-                <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
-                       name="<?= $field_prefix ?>[start_date]"
-                       value="<?= $start_date_display ?>"
-                       style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date"
-                       autocomplete="off">
-            </div>
-            &nbsp;&nbsp;
+                <span id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>" >
+                    <i class="oe-i start small pad-right"></i>
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
+                               name="<?= $field_prefix ?>[start_date]"
+                               value="<?= $start_date_display ?>"
+                               style="width:80px; display: <?= $is_new || !empty($entry->errors) ? 'block' : 'none' ?>" placeholder="yyyy-mm-dd" class="js-start-date"
+                               autocomplete="off">
+                        <?php if (!$is_new && empty($entry->errors)) {
+                            echo  '<a class="js-start-date-display" href="javascript:void(0);">' . $entry->getStartDateDisplay() . '</a>';
+                        } ?>
+                </span>
             <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
                     <div class="alternative-display inline">
