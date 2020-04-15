@@ -164,7 +164,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getEntriesStoppedToday()
     {
-        $event_date = $this->event->event_date;
+        $event_date = date('Y-m-d', strtotime($this->event->event_date));
         return array_filter($this->visible_entries, function ($e) use ($event_date) {
             return ($e->end_date == $event_date);
         });
