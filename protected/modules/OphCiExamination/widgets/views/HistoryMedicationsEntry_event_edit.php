@@ -80,6 +80,8 @@ $stop_fields_validation_error = array_intersect(
 
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]"
                      value="<?= (int)$entry->is_copied_from_previous_event; ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[copied_from_med_use_id]"
+                        value="<?= (int) $entry->copied_from_med_use_id?>"/>
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>"/>
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
                      value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>"/>
