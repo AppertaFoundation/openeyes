@@ -27,7 +27,7 @@ class OphCiExaminationModule extends \BaseEventTypeModule
         $this->setImport(array(
             'application.modules.OphDrPrescription.models.*',
         ));
-		$this->setModules(['ExaminationAdmin']);
+        $this->setModules(['ExaminationAdmin']);
         parent::init();
     }
 }

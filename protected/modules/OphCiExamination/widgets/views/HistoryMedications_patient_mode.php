@@ -58,7 +58,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <?php foreach ($current_systemic_meds as $entry) : ?>
                         <tr data-key="<?= $index ?>">
                             <td>
-                                <i class="oe-i start small pad-right pro-theme"></i>
                                 <?= $entry->getMedicationDisplay() ?>
                             </td>
                             <td>
@@ -69,7 +68,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
                                 $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                 if (!empty($tooltip_content)) { ?>
-                                    <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip"
+                                    <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip pad-right"
                                        data-tooltip-content="<?= $tooltip_content ?>">
                                     </i>
                                 <?php } ?>
@@ -115,7 +114,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <?php foreach ($stopped_systemic_meds as $entry) : ?>
                                 <tr data-key="<?= $index ?>">
                                     <td>
-                                        <i class="oe-i stop small pad-right pro-theme"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
@@ -126,7 +124,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
                                         $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                                         if (!empty($tooltip_content)) { ?>
-                                            <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip"
+                                            <i class="oe-i <?=$info_box->getIcon();?> small pro-theme js-has-tooltip pad-right"
                                                data-tooltip-content="<?= $tooltip_content ?>">
                                             </i>
                                         <?php } ?>
@@ -178,7 +176,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                         <?php foreach ($current_eye_meds as $entry) : ?>
                             <tr data-key="<?= $index ?>">
                                 <td>
-                                    <i class="oe-i start small pad-right pro-theme"></i>
                                     <?= $entry->getMedicationDisplay() ?>
                                 </td>
                                 <td>
@@ -240,7 +237,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <?php foreach ($stopped_eye_meds as $entry) { ?>
                                     <tr data-key="<?= $index ?>">
                                         <td>
-                                            <i class="oe-i stop small pad-right pro-theme"></i>
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td></td>

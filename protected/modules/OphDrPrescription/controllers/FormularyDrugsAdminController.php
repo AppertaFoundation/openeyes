@@ -17,7 +17,7 @@
 
 class FormularyDrugsAdminController extends BaseAdminController
 {
-	public $group = 'Drugs';
+    public $group = 'Drugs';
 
     public function actionList()
     {

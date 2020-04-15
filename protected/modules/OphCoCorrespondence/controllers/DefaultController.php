@@ -932,14 +932,14 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-		protected function verifyActionAccess(CAction $action)
-		{
-			if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
-				return;
-			} else {
-				parent::verifyActionAccess($action);
-			}
-		}
+        protected function verifyActionAccess(CAction $action)
+        {
+            if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
+                return;
+            } else {
+                parent::verifyActionAccess($action);
+            }
+        }
 
     /**
      * After the event was soft deleted, we need to set the output_status' to DELETED
