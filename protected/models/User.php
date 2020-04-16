@@ -39,6 +39,7 @@ class User extends BaseActiveRecordVersioned
      * @var string
      */
     public $password_repeat;
+    public $password_hashed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -306,8 +307,9 @@ class User extends BaseActiveRecordVersioned
     {
         parent::afterValidate();
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             $this->password = $this->hashPassword($this->password, $this->salt);
+            !$this->password_hashed = true;
         }
     }
 
@@ -502,7 +504,7 @@ class User extends BaseActiveRecordVersioned
             $this->password_repeat = $password;
         }
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
             }
