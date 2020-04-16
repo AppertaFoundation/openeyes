@@ -1,0 +1,4 @@
+# /etc/cron.d/hscic: hscic updater
+# Run every at 04:15 to pull latest ODS / HSCIC GP and practice data
+# pulls in environment variables from /etc/profile or /env.sh
+15 4 * * *	root	[ ! -z ${OE_HSCIC_REGION} ] && { . /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; bash $WROOT/protected/scripts/import-hscic-data.sh --region ${OE_HSCIC_REGION};} || exit 0

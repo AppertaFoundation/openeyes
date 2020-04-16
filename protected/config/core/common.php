@@ -600,13 +600,12 @@ return array(
             ),
         ),*/
         'hos_num_label' => 'ID',
-        'nhs_num_label' => 'NHS',
         'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.4.1',
+      'oe_version' => '3.4.2b',
       // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
