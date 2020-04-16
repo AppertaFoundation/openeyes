@@ -274,33 +274,6 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * Saves or updates a db record and creates the salt for a new record of
-     *    authentication type 'basic'.
-     *
-     * @return bool
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
-    {
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
-            /*
-             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-             */
-            if ($this->getIsNewRecord() && !$this->salt) {
-                $salt = '';
-                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-                for ($i = 0; $i < 10; ++$i) {
-                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
-                }
-
-                $this->salt = $salt;
-            }
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-    }
-
-    /**
      * Hashes the user password for insertion into the db.
      */
     protected function afterValidate()
