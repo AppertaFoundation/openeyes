@@ -350,11 +350,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           return false;
       });
 
-      // if($row.find('.js-source-subtype').val() === "VTM") {
-      // 	$row.find('.js-medication-vtm-container').show();
-      // 	$row.find('.js-medication-non-vtm-container').hide();
-		// 	}
-
       let med = $row.data("medication");
       if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&
 				(typeof med.dose_unit_term === "undefined" || med.dose_unit_term === "" ||

@@ -219,10 +219,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             </td>
                 <!-- </td> -->
         <td>
-            <!-- PRESCRIBE -->
-
-
-            <div class="js-medication-container" style="display:block">
+            <div>
                 <?php if ($prescribe_access) { ?>
                     <label class="toggle-switch">
                         <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
