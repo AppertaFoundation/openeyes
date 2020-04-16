@@ -566,12 +566,12 @@ class EventMedicationUse extends BaseElement
         return implode(', ', $result);
     }
 
-    public function getChk_prescribe()
+    public function getChkPrescribe()
     {
         return $this->chk_prescribe;
     }
 
-    public function setChk_prescribe($prescribe)
+    public function setChkPrescribe($prescribe)
     {
         $this->chk_prescribe = $prescribe;
     }
