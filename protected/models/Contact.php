@@ -86,20 +86,11 @@ class Contact extends BaseActiveRecordVersioned
     {
         $scenario = $this->getScenario();
         if ($scenario === 'manualAddPatient' || $scenario === 'referral' || $scenario === 'self_register' || $scenario === 'other_register') {
-            if ( $this->isPatientPhoneNumberRequired() ) {
+            // add error based on the admin param and the attribute value.
+            if ( (Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone ) {
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank.');
             }
         }
-    }
-
-    /**
-    * @return bool Returns true or false based on the admin param and the attribute value.
-    */
-    public function isPatientPhoneNumberRequired() {
-        if ( (Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone ) {
-            return true;
-        }
-        return false;
     }
 
     /**
