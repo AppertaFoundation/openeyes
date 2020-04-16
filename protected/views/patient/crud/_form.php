@@ -372,9 +372,6 @@ foreach ($ethnic_list as $key => $item) {
                     </ul>
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
-<!--                --><?php //if (Yii::app()->user->checkAccess('Create GP')) { ?>
-<!--                    <a id="js-add-contact-btn1" href="#">Add Referring Practitioner</a>-->
-<!--                --><?php //} ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
@@ -414,9 +411,6 @@ foreach ($ethnic_list as $key => $item) {
                 <div id="no_practice_result" style="display: none;">
                     <div>No result</div>
                 </div>
-<!--                --><?php //if (Yii::app()->user->checkAccess('Create Practice')) { ?>
-<!--                    <a id="js-add-practice-btn" href="#">Add Practice</a>-->
-<!--                --><?php //} ?>
             </td>
         </tr>
         <tr>
@@ -535,6 +529,7 @@ foreach ($ethnic_list as $key => $item) {
   </div>
 </div>
 <?php $this->endWidget(); ?>
+
 <script>
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#autocomplete_extra_gps_id'),
@@ -560,7 +555,8 @@ foreach ($ethnic_list as $key => $item) {
             }
         }
     });
-  OpenEyes.UI.AutoCompleteSearch.init({
+
+    OpenEyes.UI.AutoCompleteSearch.init({
     input: $('#autocomplete_gp_id'),
     url: '/patient/gpListRp',
       maxHeight: '200px',
@@ -569,8 +565,9 @@ foreach ($ethnic_list as $key => $item) {
       removeSelectedGP();
       addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse}, true);
     }
-  });
-  OpenEyes.UI.AutoCompleteSearch.init({
+    });
+
+    OpenEyes.UI.AutoCompleteSearch.init({
     input: $('#autocomplete_practice_id'),
     url: '/patient/practiceList',
     maxHeight: '200px',
@@ -579,8 +576,8 @@ foreach ($ethnic_list as $key => $item) {
         removeSelectedPractice();
         addItemPatientForm('selected_practice_wrapper', {item: AutoCompleteResponse});
     }
-  });
-  OpenEyes.UI.AutoCompleteSearch.init({
+    });
+    OpenEyes.UI.AutoCompleteSearch.init({
       input: $('#autocomplete_user_id'),
       url: '/user/autocomplete',
       maxHeight: '200px',
@@ -589,110 +586,8 @@ foreach ($ethnic_list as $key => $item) {
           removeSelectedReferredto();
           addItemPatientForm('selected_referred_to_wrapper', {item: AutoCompleteResponse});
       }
-  });
-</script>
+    });
 
-<?php
-//$practicecontact = new Contact('manage_practice');
-//$practiceaddress = new Address('manage_practice');
-//$practice = new Practice('manage_practice');
-//$this->renderPartial('../practice/create_practice_form',
-//    array('model'=>$practice, 'address'=>$practiceaddress, 'contact'=>$practicecontact, 'context'=>'AJAX')
-//);
-//
-//?>
-<?php
-//$gpcontact = new Contact('manage_gp');
-//$patientReferralContact = new Contact('manage_gp');
-//$this->renderPartial('../gp/create_gp_form',
-//    array(
-//            'model' => $gpcontact,
-//        'context' => 'AJAX',
-//        'id' => 'js-add-gp-event'
-//    ),
-//    false);
-//?>
-
-
-<?php
-//$extra_gp_contact = new Contact('manage_gp');
-//$extra_practice = new Practice('manage_practice');
-//$extra_practice_address = new Address('manage_practice');
-//$extra_practice_contact = new Contact('manage_practice');
-//$extra_practice_associate = new ContactPracticeAssociate();
-//$this->renderPartial('../patient/crud/create_contact_form',
-//    array(
-//        'extra_gp_contact' => $extra_gp_contact,
-//        'extra_practice'=>$extra_practice,
-//        'extra_practice_address'=>$extra_practice_address,
-//        'extra_practice_contact'=>$extra_practice_contact,
-//        'extra_practice_associate' => $extra_practice_associate,
-//        'context' => 'AJAX',
-//    ),
-//    false);
-//?>
-
-
-
-
-
-<script>
-  //  $('.js-cancel-add-practitioner').click(function(event){
-  //      event.preventDefault();
-  //      $("#gp-form")[0].reset();
-  //      $("#errors").text("");
-  //      $(".alert-box").css("display","none");
-  //      $('.js-add-practitioner-event').css('display','none');
-  //
-  //  });
-  //  $('#js-add-gp-btn').click(function(event){
-  //      $('#js-add-gp-event').css('display','');
-  //      $('#gp_adding_title').data('type','gp');
-  //      $('#gp_adding_title').html('Add General Practitioner')
-  //      return false;
-  //  });
-  //
-  //  $('#js-add-contact-btn1').click(function(event){
-  //      $('#extra_gp_adding_title').text("Add Referring Practitioner");
-  //      $('#extra_gp_adding_form').css('display','');
-  //      return false;
-  //  });
-  //
-  //  $('#js-add-contact-btn2').click(function(event){
-  //      $('#extra_gp_adding_title').text("Add New Practitioner Contact");
-  //      $('#extra_gp_adding_form').css('display','');
-  //      return false;
-  //  });
-  //
-  //
-  //  $('.js-cancel-add-contact').click(function(event){
-  //      event.preventDefault();
-  //      extraContactFormCleaning();
-  //      $(".js-extra-practice-gp-id").val("");
-  //      // clearing the selected gp role id if user has closed the popup.
-  //      $(".js-extra-gp-contact-label-id").val("");
-  //      // enabling title, phone number and provider no on closing the popup.
-  //      $("#extra-gp-form #Contact_title").prop("readonly", false);
-  //      $("#extra-gp-form #Contact_primary_phone").prop("readonly", false);
-  //      // remove data from hidden fields.
-  //      $('.gp_data_retrieved').val("");
-  //
-  //      $('#extra-gp-message').hide();
-  //      // unsetting the variable (defined in create_contact_form inside the onselect function of autocompletesearch widget - firstname and lastname field)
-  //      gp = new Gp();
-  //  });
-  //
-  //  $('#js-add-extra-practice-btn').click(function(event){
-  //      event.preventDefault();
-  //      extraContactFormCleaning();
-  //      $('#extra_practice_adding_new_form').css('display','');
-  //  });
-  //
-  //  $('.js-remove-extra-gps').click(function(event){
-  //      event.preventDefault();
-  //      $(this).parent('li').remove();
-  //  });
-  //
     function findDuplicates(id) {
         var first_name = $('#Contact_first_name').val();
         var last_name = $('#Contact_last_name').val();
@@ -709,28 +604,7 @@ foreach ($ethnic_list as $key => $item) {
             });
         }
     }
-  //
-  //  $('#js-cancel-add-practice').click(function (event) {
-  //      event.preventDefault();
-  //      $("#practice-form")[0].reset();
-  //      $("#errors").text("");
-  //      $("#practice-alert-box").css("display","none");
-  //      $('#js-add-practice-event').css('display', 'none');
-  //  });
-  //  $('#js-add-practice-btn').click(function (event) {
-  //      $('#js-add-practice-event').css('display', '');
-  //      return false;
-  //  });
-  //
-  //
-  //  function addGpItem(type, ui){
-  //      var $wrapper = $('#selected_'+type+'_wrapper');
-  //      var JsonObj = JSON.parse(ui);
-  //      $wrapper.find('.js-name').text(JsonObj.label);
-  //      $wrapper.show();
-  //      $wrapper.find('.hidden_id').val(JsonObj.id);
-  //  }
-  //
+
     function addExtraGp(id, gpId, practiceId){
         $.ajax({
             url: "<?php echo Yii::app()->controller->createUrl('practiceAssociate/getGpWithPractice'); ?>",
@@ -769,28 +643,7 @@ foreach ($ethnic_list as $key => $item) {
         }
         )
     }
-  //
-  //  function extraContactFormCleaning(){
-  //      $("#extra-gp-form")[0].reset();
-  //      $("#extra_gp_errors").text("");
-  //      $("#extra_gp_practitioner-alert-box").css("display","none");
-  //      $('#extra_gp_adding_form').css('display','none');
-  //      $('#extra_gp_selected_contact_label_wrapper').css('display','none');
-  //      $('#extra_gp_selected_contact_label_wrapper').find('.js-name').html("");
-  //
-  //      $("#extra-adding-existing-practice-form")[0].reset();
-  //      $("#extra-existing-practice-errors").text("");
-  //      $("#extra-existing-practice-alert-box").css("display","none");
-  //      $('#extra_practice_adding_existing_form').css('display','none');
-  //      $('.js-selected-practice-associate').find('li').remove();
-  //
-  //
-  //      $("#extra-adding-practice-form")[0].reset();
-  //      $("#extra-practice-errors").text("");
-  //      $("#extra-practice-practice-alert-box").css("display","none");
-  //      $('#extra_practice_adding_new_form').css('display','none');
-  //      $("#extra_practice_adding_existing_form");
-  //  }
+
     //CERA-564 Ensuring pressing Enter key on First name, last name or dob does not submit the form and instead gives a chance for any duplicate patient warning messages to appear
     $("#Contact_first_name, #Contact_last_name").keypress(function(event){
         if (event.which == '13') {
