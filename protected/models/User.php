@@ -282,7 +282,7 @@ class User extends BaseActiveRecordVersioned
 
         if (!$this->password_hashed) {
             $this->password = $this->hashPassword($this->password, $this->salt);
-            !$this->password_hashed = true;
+            $this->password_hashed = true;
         }
     }
 
