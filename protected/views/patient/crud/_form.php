@@ -331,7 +331,7 @@ foreach ($ethnic_list as $key => $item) {
                 <tbody>
 
         <tr id="js-patient-gp-row">
-            <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+            <td>
                 <?php echo Yii::app()->params['gp_label']; ?>
                 <br/>
                 <?php
@@ -340,10 +340,6 @@ foreach ($ethnic_list as $key => $item) {
                  * If there are no errors on the  GP label from gp_id, then add the errors associated with practice to the gp label itself.
                  */
                 echo $form->error($patient, 'gp_id');
-                if (!empty($patient->gp_id)) {
-                    // No errors from GP, add errors from Practice.
-                    echo $form->error($patient, 'practice_id');
-                }
                 ?>
             </td>
             <td>
@@ -375,17 +371,6 @@ foreach ($ethnic_list as $key => $item) {
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
                 </div>
-
-                <ul class="oe-multi-select js-selected_practice" style="display: none;">
-                    <li>
-                  <span id="prac_id" class="js-name">
-                        <?= $patient->practice_id ? Practice::model()->findByPk(array('id' => $patient->practice_id))->getAddressLines() : '' ?>
-                  </span>
-                    </li>
-                </ul>
-                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                    array('class' => 'hidden_id')); ?>
-
             </td>
         </tr>
         <tr>
