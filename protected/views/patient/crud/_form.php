@@ -194,7 +194,7 @@ foreach ($ethnic_list as $key=>$item) {
         </td>
       </tr>
       <tr>
-        <td class="<?= ($contact->isPatientPhoneNumberRequired()) ? "required" : "" ?>">
+        <td class="<?= (Yii::app()->params['patient_phone_number_mandatory'] === '1') ? "required" : "" ?>">
             <?= $form->label($contact, 'primary_phone') ?>
           <br/>
             <?= $form->error($contact, 'primary_phone') ?>
