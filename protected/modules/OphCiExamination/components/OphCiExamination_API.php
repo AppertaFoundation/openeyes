@@ -22,6 +22,7 @@ namespace OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\Allergies;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -2489,7 +2490,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @param $patient
      * @param $risk_name
-     * @return mixed
+     * @return array|null
      */
     public function getRiskByName($patient, $risk_name)
     {
@@ -2510,6 +2511,39 @@ class OphCiExamination_API extends \BaseAPI
 
             return array(
                 'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param $patient
+     * @param $allergy_name
+     * @return mixed
+     */
+    public function getAllergyByName($patient, $allergy_name)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\Allergies',
+            array('mode' => Allergies::$DATA_MODE, 'patient' => $patient));
+        $entry = $widget->element->getAllergyEntryByName($allergy_name);
+        if ($entry) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\AllergyEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\AllergyEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->allergy,
                 'status' => $status,
                 'comments' => $entry->comments,
                 'date' => $entry->element->event->event_date

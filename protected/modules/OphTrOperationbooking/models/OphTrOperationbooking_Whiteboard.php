@@ -263,10 +263,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
-            if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
+            if ($alpha && $this->getDisplayHasRisk($alpha) === 'Present') {
                 return ($alpha['comments'] ?: '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
-            }
-            if (!$alpha) {
+            } elseif (!$alpha || $this->getDisplayHasRisk($alpha) === 'Not checked') {
                 return 'Not checked';
             }
             return 'No Alpha Blockers';
@@ -332,11 +331,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->inr = ($labResult) ? $labResult : 'None';
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
-            if ($anticoag && $this->getDisplayHasRisk($anticoag) !== 'Not present') {
+            if ($anticoag && $this->getDisplayHasRisk($anticoag) == 'Present') {
                 return ($anticoag['comments'] ?: '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
                     . Helper::convertMySQL2NHS($anticoag['date']) . ')';
-            }
-            if (!$anticoag) {
+            } elseif (!$anticoag || $this->getDisplayHasRisk($anticoag) === 'Not checked') {
                 return 'Not checked';
             }
             return 'No Anticoagulants';
@@ -353,8 +351,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public function getPatientRisksDisplay(&$total_risks)
     {
         /** @var Patient $patient */
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         $patient = $this->event->patient;
         $lines = array();
+        $whiteboard = $this;
 
         // Search for diabetes
 
@@ -362,7 +362,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if (!empty($diabetic_disorders)) {
             foreach ($diabetic_disorders as $disorder) {
-                $lines[] = $disorder;
+                $lines[] = array('type' => 'present', 'value' => $disorder);
             }
         }
 
@@ -383,11 +383,20 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $lines = array_merge(
             $lines,
             array_map(
-                static function ($risk) {
-                    if ($risk->comments !== '') {
-                        return '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->name . '</span>';
+                static function ($risk) use ($exam_api, $patient, $whiteboard) {
+                    $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                    $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
+                    $type = 'unknown';
+                    if ($risk_present === 'Present') {
+                        $type = 'present';
+                    } elseif ($risk_present === 'Not present') {
+                        $type = 'not_present';
                     }
-                    return $risk->name;
+
+                    if ($risk->comments !== '') {
+                        return array($type, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                    }
+                    return array($type, $exam_risk['name']);
                 },
                 array_filter(
                     $risks,
@@ -401,20 +410,41 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $display = '';
 
         foreach ($lines as $line) {
-            $total_risks++;
-            $display .= '<div class="alert-box warning">' . $line . '</div>';
+            switch ($line[0]) {
+                case 'present':
+                    $total_risks++;
+                    $display .= '<div class="alert-box warning">' . $line[1] . '</div>';
+                    break;
+                case 'not_present':
+                    // Do not display if not present.
+                    break;
+                default:
+                    $display .= '<div class="alert-box info">' . $line[1] . '</div>';
+                    break;
+            }
         }
 
-        if (!$patient->no_risks_date && !$risks && empty($alpha_or_anticoag)) {
+        if (!$patient->no_risks_date
+            && !$risks
+            && empty($alpha_or_anticoag)
+            && $this->alpha_blocker_name !== 'No Alpha Blockers'
+            && $this->anticoagulant_name !== 'No Anticoagulants') {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }
 
-        // Add positive risk labels for significant risks that are not present.
+        // Add positive/unknown risk labels for significant risks that are not present or are unchecked.
         // Anticoagulants and alpha blockers are excluded from this list as they are handled independently.
         foreach ($this->booking->getAllBookingRisks() as $risk) {
-            if (!in_array($risk, $risks, true) && !in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
-                $display .= '<div class="alert-box success">' . "Absent: {$risk->name}" . '</div>';
+            if (!in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
+                $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                $has_risk = $this->getDisplayHasRisk($exam_risk);
+                if ($has_risk === 'Not checked') {
+                    $display .= '<div class="alert-box info">' . "Unchecked: {$risk->name}" . '</div>';
+                } elseif ($has_risk === 'Not present') {
+                    $display .= '<div class="alert-box success">' . "Absent: {$risk->name}" . '</div>';
+                }
+                // Do not display anything if the risk is present.
             }
         }
 
