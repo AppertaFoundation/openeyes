@@ -145,9 +145,9 @@ $widgetOptionsJson = json_encode(array(
                           <?php echo $options[$id] ?>
                     </div>
                   </div>
-                  <div class="cols-4">
+                  <div class="cols-full">
                     <div class="data-value">
-                          <?=\CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
+                          <?=\CHtml::textArea($field . "[$i][description]", $descriptions[$id],array('class'=>"cols-full")) ?>
                     </div>
                   </div>
                 </div>
