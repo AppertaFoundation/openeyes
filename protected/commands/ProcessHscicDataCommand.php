@@ -48,6 +48,15 @@ class ProcessHscicDataCommand extends CConsoleCommand
     public $url = '';
 
     /**
+     * Override the default region setting (England)
+     * Options are:
+     * - england
+     * - scotland
+     * - ni
+     */
+    private $regionName = 'england';
+
+    /**
      * @var int
      */
     public $timeout = 30;
@@ -61,15 +70,15 @@ class ProcessHscicDataCommand extends CConsoleCommand
      *
      * @var string
      */
-    private static $base_url = 'https://digital.nhs.uk';
+    private static $base_url = 'https://www.digital.nhs.uk';
 
 
     /**
-     * Static config - note that any 'url' elements that do not begin with http will have $base_url prepended.
+     * Static config for England - note that any 'url' elements that do not begin with http will have $base_url prepended.
      *
      * @var array
      */
-    private static $file_config = array(
+    private static $file_config_england = array(
         'full' => array(
             'gp' => array(
                     'url' => 'egpcur',
@@ -102,6 +111,42 @@ class ProcessHscicDataCommand extends CConsoleCommand
         ),
     );
 
+    /**
+     * Static config for Scotland- note that any 'url' elements that do not begin with http will have $base_url prepended.
+     *
+     * @var array
+     */
+    private static $file_config_scotland = array(
+        'full' => array(
+            'gp' => array(
+                    'url' => 'scotgp',
+                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+             ),
+            'practice' => array(
+                    'url' => 'scotprac',
+                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
+        ),
+    );
+
+    /**
+     * Static config for Northern Ireland - note that any 'url' elements that do not begin with http will have $base_url prepended.
+     *
+     * @var array
+     */
+    private static $file_config_ni = array(
+        'full' => array(
+            'gp' => array(
+                    'url' => 'ngpcur',
+                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+             ),
+            'practice' => array(
+                    'url' => 'npraccur',
+                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
+        ),
+    );
+
     private $files = array();
 
     public function __construct()
@@ -116,14 +161,42 @@ class ProcessHscicDataCommand extends CConsoleCommand
         if (!file_exists($this->tempPath)) {
             mkdir($this->tempPath, 0777, true);
         }
+        parent::__construct(null, null);
+    }
 
+    private function getDynamicUrls()
+    {
         echo "Identifying dynamic file URLs...\n";
         $error_message = null;
 
-        $curl = curl_init(static::$base_url . '/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data');
+        // Set url for the relevant region's files (default is England)
+        switch ($this->regionName) {
+            case "scotland":
+                $services_path="/services/organisation-data-service/data-downloads/home-countries";
+                $other_path=null;
+                $file_config = static::$file_config_scotland;
+                break;
+            case "ni":
+                $services_path="/services/organisation-data-service/data-downloads/home-countries";
+                $other_path=null;
+                $file_config = static::$file_config_ni;
+                break;
+            case "england":
+            default:
+                $services_path="/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data";
+                $other_path='/services/organisation-data-service/data-downloads/other-nhs-organisations';
+                $file_config = static::$file_config_england;
+                break;
+        }
+
+
+        echo "Downloading from: " . static::$base_url . $services_path ."\n";
+
+        $curl = curl_init(static::$base_url . $services_path);
         curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         $output = curl_exec($curl);
 
         if (curl_errno($curl)) {
@@ -140,29 +213,33 @@ class ProcessHscicDataCommand extends CConsoleCommand
             throw new Exception($error_message, static::$DOWNLOAD_FAILED);
         }
 
-        $curl = curl_init(static::$base_url . '/services/organisation-data-service/data-downloads/other-nhs-organisations');
-        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $output2 = curl_exec($curl);
+        if ($other_path) {
+            echo "Downloading from: " . static::$base_url . $other_path . "\n";
+            $curl = curl_init(static::$base_url . $other_path);
+            curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            $output2 = curl_exec($curl);
 
-        if (curl_errno($curl)) {
-            $error_message = 'Curl error: '.curl_errno($curl);
-        } else {
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            if ($status != 200) {
-                $error_message = 'Bad Status Code: '.$status;
+            if (curl_errno($curl)) {
+                $error_message = 'Curl error: '.curl_errno($curl);
+            } else {
+                $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                if ($status != 200) {
+                    $error_message = 'Bad Status Code: '.$status;
+                }
             }
+            curl_close($curl);
+
+            if ($error_message) {
+                throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+            }
+        } else {
+            $output2 = null;
         }
-        curl_close($curl);
 
-        if ($error_message) {
-            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
-        }
-
-        $this->files = $this->mapFileConfig(static::$file_config, $output . $output2);
-
-        parent::__construct(null, null);
+        $this->files = $this->mapFileConfig($file_config, $output . $output2);
     }
 
     /**
@@ -178,7 +255,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
             } else {
                 switch ((string) $k) {
                     case 'url':
-                        if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match) ) {
+                        if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match)) {
                             echo "Found match for $v: $match[1]\n";
                             $struct[$k] = $match[1];
                         } else {
@@ -254,6 +331,7 @@ Following parameters are available:
  - url    : Override the default URL, e.g. to process a specific monthly file
             Usage: --url=http://systems.hscic.gov.uk/data/ods/datadownloads/monthamend/december/egpam.zip
  - timeout : Set the connection timeout value downloading a file (defaults to 30 seconds)
+ - region : Change between england, scotland, and ni files (note CCGs are only available in england)
 
 EXAMPLES
  * yiic.php processhscicdata download --type=practice --interval=full
@@ -281,8 +359,11 @@ EOH;
      * @param string $type     gp|Practice|Ccg|CcgAssignment
      * @param string $interval full|monthly|quarterly
      */
-    public function actionImport($type, $interval = 'full')
+    public function actionImport($type, $interval = 'full', $region = 'england')
     {
+        $this->regionName=strtolower($region);
+        $this->getDynamicUrls();
+
         if (!isset($this->files[$interval])) {
             $this->usageError("Interval not found: $interval");
         } elseif (!isset($this->files[$interval][$type])) {
@@ -313,8 +394,11 @@ EOH;
     /**
      * Imports all the full files listed in $this->files['full'], Gp, Practice, CCG, CCG Assignment.
      */
-    public function actionImportall()
+    public function actionImportall($region = 'england')
     {
+        $this->regionName=strtolower($region);
+        $this->getDynamicUrls();
+
         try {
             foreach ($this->files['full'] as $type => $file) {
                 $this->processFile($type, 'full', $file);
@@ -843,7 +927,7 @@ EOH;
             case 'gp':
             case 'practice':
                 $dbTable = $type;
-               break;
+                break;
             case 'ccg':
                 $dbTable = 'commissioning_body';
             default:
@@ -946,8 +1030,11 @@ EOH;
      * @param string $type     like 'Gp'
      * @param string $interval like 'monthly'
      */
-    public function actionDownload($type, $interval = 'full')
+    public function actionDownload($type, $interval = 'full', $region = 'england')
     {
+        $this->regionName=strtolower($region);
+        $this->getDynamicUrls();
+
         if (!isset($this->files[$interval])) {
             $this->usageError("Interval not found: $interval");
         } elseif (!isset($this->files[$interval][$type])) {
@@ -966,8 +1053,11 @@ EOH;
      * Downloads all the full files listed in $this->files['full'] , Gp, Practice, CCG, CCG Assignment
      * can be useful on the first run.
      */
-    public function actionDownloadall()
+    public function actionDownloadall($region = 'england')
     {
+        $this->regionName=strtolower($region);
+        $this->getDynamicUrls();
+
         try {
             foreach ($this->files['full'] as $file) {
                 $fileName = $this->getFileFromUrl($file['url']);
