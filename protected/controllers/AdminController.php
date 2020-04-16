@@ -466,7 +466,8 @@ class AdminController extends BaseAdminController
             $userAtt = $request->getPost('User');
 
             if ($id && empty($userAtt['password'])) {
-                unset($userAtt['password']);
+                unset($userAtt['password']);                
+                $user->password_hashed = true;
             } else {
                 $user->password_hashed = false;
             }
