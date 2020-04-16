@@ -158,7 +158,7 @@ foreach ($ethnic_list as $key => $item) {
           <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
             <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
             array(
-              'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
+              'options' => array($patient->getScenario() => array('selected' => 'selected')),
               'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
             )); ?>
         </td>
@@ -195,7 +195,7 @@ foreach ($ethnic_list as $key => $item) {
         </td>
       </tr>
       <tr>
-        <td class=<?= Yii::app()->params['add_patient_fields']['primary_phone'] === 'mandatory' ? 'required':'' ?>>
+        <td class="<?= (Yii::app()->params['patient_phone_number_mandatory'] === '1') ? "required" : "" ?>">
             <?= $form->label($contact, 'primary_phone') ?>
           <br/>
             <?= $form->error($contact, 'primary_phone') ?>
