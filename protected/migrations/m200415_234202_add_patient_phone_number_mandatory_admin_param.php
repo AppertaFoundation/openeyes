@@ -23,15 +23,4 @@ class m200415_234202_add_patient_phone_number_mandatory_admin_param extends CDbM
         $this->delete('setting_installation', '`key`="patient_phone_number_mandatory"');
         $this->delete('setting_metadata', '`key`="patient_phone_number_mandatory"');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
