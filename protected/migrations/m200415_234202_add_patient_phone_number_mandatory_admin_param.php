@@ -2,7 +2,7 @@
 
 class m200415_234202_add_patient_phone_number_mandatory_admin_param extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->insert('setting_metadata', [
             'field_type_id' => SettingFieldType::model()->find('name = ?', ["Radio buttons"])->id,
@@ -18,7 +18,7 @@ class m200415_234202_add_patient_phone_number_mandatory_admin_param extends CDbM
         ]);
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->delete('setting_installation', '`key`="patient_phone_number_mandatory"');
         $this->delete('setting_metadata', '`key`="patient_phone_number_mandatory"');

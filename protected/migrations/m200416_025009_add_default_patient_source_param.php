@@ -2,7 +2,7 @@
 
 class m200416_025009_add_default_patient_source_param extends CDbMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->insert('setting_metadata', [
             'field_type_id' => SettingFieldType::model()->find('name = ?', ["Dropdown list"])->id,
@@ -18,20 +18,9 @@ class m200416_025009_add_default_patient_source_param extends CDbMigration
         ]);
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->delete('setting_installation', '`key`="default_patient_source"');
         $this->delete('setting_metadata', '`key`="default_patient_source"');
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
