@@ -23,8 +23,10 @@ $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicati
     false, -1);
 
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+$widgetPath = $assetManager->publish('protected/widgets/js/EyeSelector.js');
+Yii::app()->clientScript->registerScriptFile($widgetPath);
+//  90 is priority that is used in the CWidget , using the same value over here to mimic it
+$assetManager->registerScriptFile('js/EyeSelector.js', 'application.widgets', 90);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
 
 $firm = Firm::model()->with(array(

@@ -39,11 +39,6 @@
 <body>
     <nav class="analytics-header flex-layout">
         <div class="title">Analytics</div>
-
-        <!-- exit oes and go back to previous page -->
-        <div id="js-exit-analytics">
-            <i class="oe-i remove-circle"></i>
-        </div>
     </nav>
     <main class="oe-analytics flex-layout flex-top cols-full">
         <div class="cols-3" style="position:sticky;top:0;z-index:5;">
@@ -81,11 +76,13 @@
             </div>
             <table>
                 <colgroup>
-                    <col style="width: 100px;">
-                    <col style="width: 100px">
-                    <col style="width: 200px;">
-                    <col style="width: 100px;">
-                    <col style="width: 50px;">
+                    <col style="width: 7%;">
+                    <col style="width: 7%">
+                    <col style="width: 14%;">
+                    <col style="width: 7%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 24%;">
                 </colgroup>
                 <thead>
                 <tr>

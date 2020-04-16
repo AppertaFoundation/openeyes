@@ -118,7 +118,7 @@ $guarded_prognosis = (string)$element->{$side . '_guarded_prognosis'} === '0' ? 
                 <?=\CHtml::activeTextArea($element, $side . '_notes',
                     [
                         'rows' => 1,
-                        'placeholder' => $element->getAttributeLabel($side . '_notes'),
+                        'placeholder' => 'Comments',
                         'class' => 'cols-full js-comment-field',
                         'style' => 'overflow-wrap: break-word; height: 24px;',
                     ]
