@@ -76,9 +76,30 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp', 'manage_practice')),
+            array('primary_phone', 'requiredValidator'),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
         );
+    }
+
+    public function requiredValidator($attribute, $params)
+    {
+        $scenario = $this->getScenario();
+        if ($scenario === 'manualAddPatient' || $scenario === 'referral' || $scenario === 'self_register' || $scenario === 'other_register') {
+            if ( $this->isPatientPhoneNumberRequired() ) {
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank.');
+            }
+        }
+    }
+
+    /**
+    * @return bool Returns true or false based on the admin param and the attribute value.
+    */
+    public function isPatientPhoneNumberRequired() {
+        if ( (Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone ) {
+            return true;
+        }
+        return false;
     }
 
     /**

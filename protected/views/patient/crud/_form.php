@@ -194,7 +194,7 @@ foreach ($ethnic_list as $key=>$item) {
         </td>
       </tr>
       <tr>
-        <td>
+        <td class="<?= ($contact->isPatientPhoneNumberRequired()) ? "required" : "" ?>">
             <?= $form->label($contact, 'primary_phone') ?>
           <br/>
             <?= $form->error($contact, 'primary_phone') ?>
