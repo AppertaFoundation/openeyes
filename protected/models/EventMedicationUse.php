@@ -34,7 +34,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property string $dose_unit_term
  * @property integer $route_id
  * @property integer $frequency_id
- * @property integer $duration
+ * @property integer $duration_id
  * @property integer $dispense_location_id
  * @property integer $dispense_condition_id
  * @property Date $start_date
@@ -46,6 +46,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property int $stop_reason_id
  * @property int $prescription_item_id
  * @property string $bound_key
+ * @property string $comments
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -59,7 +60,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property HistoryMedicationsStopReason $stopReason
  * @property EventMedicationUse $prescriptionItem
  * @property MedicationLaterality $medicationLaterality
- * @property DrugDuration $drugDuration
+ * @property MedicationDuration $medicationDuration
  */
 
 class EventMedicationUse extends BaseElement
@@ -141,7 +142,7 @@ class EventMedicationUse extends BaseElement
             array('end_date', 'OEFuzzyDateValidator'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
-            array('last_modified_date, created_date, event_id', 'safe'),
+            array('last_modified_date, created_date, event_id, comments', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
@@ -179,7 +180,8 @@ class EventMedicationUse extends BaseElement
 
     public function validateDoseUnitTerm()
     {
-        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != "") {
+        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
         }
     }
@@ -221,7 +223,7 @@ class EventMedicationUse extends BaseElement
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, OphDrPrescription_Item::class, 'prescription_item_id'),
             'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
-            'drugDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
+            'medicationDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
             'dispenseLocation' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
         );
@@ -453,15 +455,19 @@ class EventMedicationUse extends BaseElement
         }
 
         $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
-        if (!is_null($this->end_date)) {
+        if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
-        if (!is_null($this->stop_reason_id)) {
+        if ($this->stop_reason_id) {
             $data['Stop reason'] = $this->stopReason->name;
         }
 
-        if (!is_null($this->route)) {
+        if ($this->route_id) {
             $data['Route'] = $this->route->term;
+        }
+
+        if ($this->comments && !empty(trim($this->comments))) {
+            $data['Comments'] = $this->comments;
         }
 
         // Add a blank line if there is dose/date data
@@ -640,7 +646,7 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose','dose_unit_term', 'frequency_id', 'frequency'];
+                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'comments'];
 
         if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
             $attrs[] = 'start_date';

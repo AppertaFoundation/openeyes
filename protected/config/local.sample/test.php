@@ -17,11 +17,11 @@
 */
 
 
-$db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_HOST') : 'localhost';
-$db_test_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_PORT') : '3306';
-$db_test_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_NAME') : 'openeyes';
-$db_test_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_USER') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes' );
-$db_test_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_PASS') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes' );
+$db_test_host = getenv('DATABASE_TEST_HOST') ?? 'localhost';
+$db_test_port = getenv('DATABASE_PORT') ?? '3306';
+$db_test_name = getenv('DATABASE_NAME') ?? 'openeyes';
+$db_test_user = getenv('DATABASE_USER') ?? rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?? 'openeyes';
+$db_test_pass = getenv('DATABASE_PASS') ?: rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?? 'openeyes';
 
 return array(
     'components' => array(

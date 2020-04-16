@@ -121,7 +121,7 @@ $dispense_condition_options = array(
     </td>
     <td class="prescriptionItemDurationId">
         <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][duration_id]', $item->duration_id,
-            CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'),
+            CHtml::listData(MedicationDuration::model()->activeOrPk([$item->duration_id])->findAll(array('order' => 'display_order')), 'id', 'name'),
             array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
     </td>
     <td>
@@ -187,7 +187,7 @@ $dispense_condition_options = array(
         <td>
             <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][duration_id]',
                 $taper->duration_id,
-                CHtml::listData(DrugDuration::model()->activeOrPk($taper->duration_id)->findAll(array('order' => 'display_order asc')),
+                CHtml::listData(MedicationDuration::model()->activeOrPk([$taper->duration_id])->findAll(array('order' => 'display_order asc')),
                     'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
         </td>
         <td></td>

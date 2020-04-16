@@ -273,6 +273,7 @@ var analytics_cataract = (function () {
 
 	function toggleAllSurgeonOpt() {
 		$(this).toggleClass('green hint');
+        $(this).blur();
 		if ($('#analytics_allsurgeons').val() == 'on') {
 			$('#analytics_allsurgeons').val('');
 		} else {
@@ -282,10 +283,11 @@ var analytics_cataract = (function () {
 	}
 
 	function clearDate(event_date) {
-		var date_from = analytics_toolbox.processDate(new Date(event_date['date_from']))
-		var date_to = analytics_toolbox.processDate(new Date(event_date['date_to']))
-		$('#analytics_datepicker_from').val(date_from);
-		$('#analytics_datepicker_to').val(date_to);
+		var date_from = new Date(event_date['date_from']);
+		var date_to = new Date(event_date['date_to']);
+		pickmeup('#analytics_datepicker_from').set_date(date_from);
+
+		pickmeup('#analytics_datepicker_to').set_date(date_to);
 	}
 
 	var init = function (data) {

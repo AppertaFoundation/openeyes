@@ -73,7 +73,7 @@ class MedicationInfoBox extends \BaseCWidget
         if ($this->type === self::TYPE_LIGHT) {
             if ($medication->isAMP()) {
                 $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
-                $data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
+                //$data['Moiety'] = isset($medication->vtm_term) ? $medication->vtm_term : "N/A";
             }
 
             // VMPs : No tool-tip needed as the moiety is usually part of he name

@@ -98,6 +98,7 @@ class MedicationTest extends ActiveRecordTestCase
             'created_date' => 'Created Date',
             'will_copy' => 'Will copy',
             'default_form_id' => 'Default form',
+            'default_dose' => 'Default dose',
             'default_dose_unit_term' => 'Default dose unit',
             'default_dose' => 'Default dose'
         );

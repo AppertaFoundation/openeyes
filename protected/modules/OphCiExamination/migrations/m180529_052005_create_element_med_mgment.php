@@ -4,8 +4,8 @@ class m180529_052005_create_element_med_mgment extends OEMigration
 {
     private $_class_name = 'OEModule\OphCiExamination\models\MedicationManagement';
 
-	public function up()
-	{
+    public function up()
+    {
         $this->createElementType('OphCiExamination', 'Medication Management', array(
             'class_name' => $this->_class_name,
             'display_order' => 0,
@@ -19,14 +19,14 @@ class m180529_052005_create_element_med_mgment extends OEMigration
 
         $this->addForeignKey('et_ophciexamination_medmgmt_ev_fk',
             'et_ophciexamination_medicationmanagement', 'event_id', 'event', 'id');
-	}
+    }
 
-	public function down()
-	{
-		$this->dropForeignKey('et_ophciexamination_medmgmt_ev_fk', 'et_ophciexamination_medicationmanagement');
-		$this->dropOETable('et_ophciexamination_medicationmanagement', true);
+    public function down()
+    {
+        $this->dropForeignKey('et_ophciexamination_medmgmt_ev_fk', 'et_ophciexamination_medicationmanagement');
+        $this->dropOETable('et_ophciexamination_medicationmanagement', true);
 
-		$e_id = $this->getIdOfElementTypeByClassName($this->_class_name);
-		$this->execute("DELETE FROM element_type WHERE id = $e_id");
-	}
+        $e_id = $this->getIdOfElementTypeByClassName($this->_class_name);
+        $this->execute("DELETE FROM element_type WHERE id = $e_id");
+    }
 }

@@ -140,7 +140,7 @@ if [ "$composer" == "1" ]; then
     [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
-    npm list
+    npm list --depth=0
 
     cd - >/dev/null 2>&1
 

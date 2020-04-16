@@ -899,7 +899,7 @@ EOD;
 
         $cmd = "UPDATE medication
                 SET default_dose_unit_term = 'drop' 
-	            WHERE m.preferred_term like '%eye drop%'";
+	            WHERE preferred_term like '%eye drop%'";
 
         Yii::app()->db->createCommand($cmd)->execute();
 
@@ -948,7 +948,7 @@ EOD;
 
         $cmd = "UPDATE medication_attribute_option SET description = CONCAT(description,\"(s)\") WHERE ";
         foreach ($this->uom_to_forms_mapping as $uom => $forms) {
-            if ($uom != "Drop"){ // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
+            if (strtolower($uom) != "drop") { // we don't want plural for Drop(s) as they are almost always 1 drop in opthalmology (DA decision 02/04/2020)
                 $cmd .= "(BINARY description = \"$uom\") OR ";
             }
         }
@@ -976,20 +976,21 @@ EOD;
                 ";
         Yii::app()->db->createCommand($cmd)->execute();
 
-
-        $cmd = "UPDATE medication as med 
-            JOIN ( 
+        foreach (['UNIT_OF_MEASURE', 'UNIT_DOSE_UNIT_OF_MEASURE'] as $uom_attr) {
+            $cmd = "UPDATE medication as med 
+            INNER JOIN ( 
                 SELECT maa.medication_id AS med_id, mao.description AS UOM
                 FROM medication_attribute_option mao
-                JOIN medication_attribute_assignment maa
+                INNER JOIN medication_attribute_assignment maa
                     ON maa.medication_attribute_option_id = mao.id
-                JOIN medication_attribute ma
+                INNER JOIN medication_attribute ma
                     ON mao.medication_attribute_id = ma.id
-                WHERE ma.name = \"UNIT_OF_MEASURE\"
+                WHERE ma.name = \"{$uom_attr}\"
             ) AS uom_table ON med.id = uom_table.med_id
             SET med.default_dose_unit_term = uom_table.UOM";
 
-        Yii::app()->db->createCommand($cmd)->execute();
+            Yii::app()->db->createCommand($cmd)->execute();
+        }
 
         $cmd = "UPDATE medication 
         SET default_dose = 1 

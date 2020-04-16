@@ -87,7 +87,7 @@ $(document).ready(function () {
         ],
         <?= $side ?>RefractiveCategories: [
           {
-            'label': 'Emmentropia',
+            'label': 'Emmetropia',
             'id': 0,
             'conditional-id': '<?=$side?>-refractive-category-0',
             'type': 'refractive_category',

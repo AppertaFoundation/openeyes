@@ -451,38 +451,24 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     }
 
     /**
-     * returns the default letter string for the va readings. Converts all readings to Snellen Metre
-     * as this is assumed to be the standard for correspondence.
-     *
-     * @TODO: The units for correspondence should become a configuration variable
-     *
-     * @throws \Exception
+     * returns the default letter string for the va readings. Converts all readings to standard unit
+     * configured for VA.
      *
      * @return string
      */
     public function getLetter_string()
     {
         $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
-        if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
-            'name = ?',
-            array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
-        )) {
-            throw new \Exception(
-                'Configured visual acuity correspondence unit was not found: '
-                .Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']
-            );
-        }
 
-        ob_start();
-        Yii::app()->controller->renderPartial(
+        return Yii::app()->controller->renderPartial(
             'application.modules.OphCiExamination.views.default.letter.va',
             array(
                 'left' => $this->getNamedReadings('left', $va_unit->id),
                 'right' => $this->getNamedReadings('right', $va_unit->id),
                 'va_unit' => $va_unit->name
-            )
+            ),
+            true
         );
-        return ob_get_clean();
     }
 
     /**

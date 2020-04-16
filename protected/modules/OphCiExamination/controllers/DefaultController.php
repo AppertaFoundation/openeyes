@@ -262,6 +262,8 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        $step_id = \Yii::app()->request->getParam('step_id');
+        
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js
@@ -280,7 +282,7 @@ class DefaultController extends \BaseEventTypeController
         });
         $visualAcuity = array_shift($visual_acuities);
 
-        // Render the CVI alert above all th other elements
+        // Render the CVI alert above all thr other elements
         if ($cvi_api) {
             echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
         }
@@ -630,6 +632,26 @@ class DefaultController extends \BaseEventTypeController
 
         ksort($sortable_elements);
         return $sortable_elements;
+    }
+
+    public function getElements($action = 'edit')
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                $flow_order = $set->getSetElementOrder($element);
+                if ($element->getElementType()) {
+                    if ($flow_order) {
+                        $elements[$flow_order] = $element;
+                    } else {
+                        $elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+                    }
+                }
+            }
+        }
+        ksort($elements);
+        return $elements;
     }
 
     /**
@@ -1522,11 +1544,11 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 
-				if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
-					$errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
-				}
+                if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
+                    $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
+                }
 
-			return $errors;
+            return $errors;
     }
 
     /**
@@ -1577,52 +1599,52 @@ class DefaultController extends \BaseEventTypeController
         return $errors;
     }
 
-	/**
-	 * Custom validation on Pupillary Abnormalities element
-	 *
-	 * @param $data
-	 * @param $errors
-	 * @return mixed
-	 */
+    /**
+     * Custom validation on Pupillary Abnormalities element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
     protected function setAndValidatePupillaryAbnormalitiesFromData($data, $errors)
     {
-		$et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
-		$data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
-		$pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
+        $et_name = models\PupillaryAbnormalities::model()->getElementTypeName();
+        $data = $data['OEModule_OphCiExamination_models_PupillaryAbnormalities'];
+        $pupillary_abnormalities = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PupillaryAbnormalities');
 
-		$pupillary_abnormalities->eye_id = $data['eye_id'];
+        $pupillary_abnormalities->eye_id = $data['eye_id'];
 
-		foreach (['left', 'right'] as $side) {
-			if (isset($data['entries_' . $side])) {
-				$entries = [];
+        foreach (['left', 'right'] as $side) {
+            if (isset($data['entries_' . $side])) {
+                $entries = [];
 
-				foreach ($data['entries_' . $side] as $index => $value) {
-					$entry = new models\PupillaryAbnormalityEntry();
-					$entry->attributes = $value;
-					$entries[] = $entry;
-					if (!$entry->validate()) {
-						$entryErrors = $entry->getErrors();
-						foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
-							foreach ($entryErrorMessages as $entryErrorMessage) {
-								$pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
-								$errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
-							}
-						}
-					}
-				}
-				$pupillary_abnormalities->{'entries_' . $side} = $entries;
-			} else {
-				if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
-					$pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
-				} else {
-					$pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
-					$errors[$et_name][] = ucfirst($side) . ' side has no data.';
-				}
-			}
-		}
+                foreach ($data['entries_' . $side] as $index => $value) {
+                    $entry = new models\PupillaryAbnormalityEntry();
+                    $entry->attributes = $value;
+                    $entries[] = $entry;
+                    if (!$entry->validate()) {
+                        $entryErrors = $entry->getErrors();
+                        foreach ($entryErrors as $entryErrorAttributeName => $entryErrorMessages) {
+                            foreach ($entryErrorMessages as $entryErrorMessage) {
+                                $pupillary_abnormalities->addError("entries_{$side}_" . $index . '_' . $entryErrorAttributeName, $entryErrorMessage);
+                                $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality() . " - " . $entryErrorMessage;
+                            }
+                        }
+                    }
+                }
+                $pupillary_abnormalities->{'entries_' . $side} = $entries;
+            } else {
+                if (isset($data[$side . '_no_pupillaryabnormalities']) && $data[$side . '_no_pupillaryabnormalities'] === '1') {
+                    $pupillary_abnormalities->{'no_pupillaryabnormalities_date_' . $side} = date("Y-m-d H:i:s");
+                } else {
+                    $pupillary_abnormalities->addError("{$side}_no_pa_label", ucfirst($side) . ' side has no data.');
+                    $errors[$et_name][] = ucfirst($side) . ' side has no data.';
+                }
+            }
+        }
 
-		return $errors;
-	}
+        return $errors;
+    }
 
     /**
      * @param $errors
@@ -1726,8 +1748,8 @@ class DefaultController extends \BaseEventTypeController
             } else if (isset($entry['left_eye'])) {
                 $eye_id = \Eye::LEFT;
             } else {
-            	continue;
-						}
+                continue;
+                        }
 
             // create a string with concatenation of  the columns that must be unique
             $concat_data = $eye_id . $entry['disorder_id'] . $entry['date'];

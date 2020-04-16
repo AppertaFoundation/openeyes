@@ -417,7 +417,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                         <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
                                         if ($diagnosis) { ?>
                                             <?php $event_id = $diagnosis->element->event_id ?>
-                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
                                         <?php } ?>
                                     </td>
                                 </tr>

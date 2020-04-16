@@ -27,63 +27,63 @@
 
 class AllergicDrugEntriesBehavior extends CBehavior
 {
-	/**
-	 * @param $target			Audit entry target
-	 * @param string $action	Audit entry action
-	 * @throws Exception
-	 *
-	 * Search for interfering allergies and log an audit entry if found
-	 */
+    /**
+     * @param $target           Audit entry target
+     * @param string $action    Audit entry action
+     * @throws Exception
+     *
+     * Search for interfering allergies and log an audit entry if found
+     */
 
-	public function auditAllergicDrugEntries($target, $action = "allergy-override")
-	{
-		$patient = $this->owner->event->getPatient();
-		$patient_allergies = $patient->allergies;
-		$patient_allergies_from_drugs = [];
-		$allergic_drugs = [];
+    public function auditAllergicDrugEntries($target, $action = "allergy-override")
+    {
+        $patient = $this->owner->event->getPatient();
+        $patient_allergies = $patient->allergies;
+        $patient_allergies_from_drugs = [];
+        $allergic_drugs = [];
 
-		$drug_allergies_assignments = $this->getDrugAllergiesAssignments();
+        $drug_allergies_assignments = $this->getDrugAllergiesAssignments();
 
-		foreach ($patient_allergies as $allergy) {
-			foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
-				if ($allergy->id === $drug_allergy_assignment->allergy->id) {
-					$patient_allergies_from_drugs[$allergy->id] = $allergy->name;
-					$allergic_drugs[$drug_allergy_assignment->medication->id] = $drug_allergy_assignment->medication->preferred_term;
-				}
-			}
-		}
+        foreach ($patient_allergies as $allergy) {
+            foreach ($drug_allergies_assignments as $drug_allergy_assignment) {
+                if ($allergy->id === $drug_allergy_assignment->allergy->id) {
+                    $patient_allergies_from_drugs[$allergy->id] = $allergy->name;
+                    $allergic_drugs[$drug_allergy_assignment->medication->id] = $drug_allergy_assignment->medication->preferred_term;
+                }
+            }
+        }
 
-		if (isset($allergic_drugs) && sizeof($allergic_drugs) !== 0 &&
-			isset($patient_allergies_from_drugs) && sizeof($allergic_drugs) != 0) {
-			Audit::add(
-				$target, $action, 'Allergies: ' .
-				implode(' , ', $patient_allergies_from_drugs) . ' Drugs: ' . implode(' , ', $allergic_drugs),
-				null,
-				array('patient_id' => $patient->id)
-			);
-		}
-	}
+        if (isset($allergic_drugs) && sizeof($allergic_drugs) !== 0 &&
+            isset($patient_allergies_from_drugs) && sizeof($allergic_drugs) != 0) {
+            Audit::add(
+                $target, $action, 'Allergies: ' .
+                implode(' , ', $patient_allergies_from_drugs) . ' Drugs: ' . implode(' , ', $allergic_drugs),
+                null,
+                array('patient_id' => $patient->id)
+            );
+        }
+    }
 
-	/**
-	 * @return stdClass[]	returns an array of objects where each object
-	 * 						has an "allergy" property and a "medication" property
-	 */
+    /**
+     * @return stdClass[]   returns an array of objects where each object
+     *                      has an "allergy" property and a "medication" property
+     */
 
-	private function getDrugAllergiesAssignments()
-	{
-		$allergies = array();
-		/* TODO Would be nice to create an interface to force owner classes to implement getEntries */
-		foreach ($this->owner->getEntries() as $item) {
-			/** @var EventMedicationUse $item */
-			$item_allergies = $item->medication->allergies;
-			foreach ($item_allergies as $allergy) {
-				$obj = new stdClass();
-				$obj->allergy = clone $allergy;
-				$obj->medication = clone $item->medication;
-				$allergies[] = $obj;
-			}
-		}
+    private function getDrugAllergiesAssignments()
+    {
+        $allergies = array();
+        /* TODO Would be nice to create an interface to force owner classes to implement getEntries */
+        foreach ($this->owner->getEntries() as $item) {
+            /** @var EventMedicationUse $item */
+            $item_allergies = $item->medication->allergies;
+            foreach ($item_allergies as $allergy) {
+                $obj = new stdClass();
+                $obj->allergy = clone $allergy;
+                $obj->medication = clone $item->medication;
+                $allergies[] = $obj;
+            }
+        }
 
-		return $allergies;
-	}
+        return $allergies;
+    }
 }

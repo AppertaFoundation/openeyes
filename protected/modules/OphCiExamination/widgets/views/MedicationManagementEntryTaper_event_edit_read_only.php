@@ -20,18 +20,18 @@
 ?>
 
 <tr class="meds-taper col-gap js-taper-row" data-parent-key="<?=$row_count?>" data-taper-key="<?=$taper_count?>">
-	<td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
-	<td>
-		<input class="cols-2 js-dose" style="display: inline-block;"  type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-		<?= $entry->dose ?>
-		<?= Chtml::hiddenField($field_prefix . '[frequency_id]', $entry->frequency_id);?>
-		<?= isset($entry->frequency) ? $entry->frequency->term : "" ?>
-	</td>
-	<td>
-		<?= Chtml::hiddenField($field_prefix . '[duration_id]', $entry->duration_id);?>
-		<?= isset($entry->duration) ? $entry->duration->name : ""?>
-	</td>
-	<td></td>
-	<td>
-	</td>
+    <td><i class="oe-i child-arrow small no-click pad"></i><em class="fade">then</em></td>
+    <td>
+        <input class="cols-2 js-dose" style="display: inline-block;"  type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+        <?= $entry->dose ?>
+        <?= Chtml::hiddenField($field_prefix . '[frequency_id]', $entry->frequency_id);?>
+        <?= isset($entry->frequency) ? $entry->frequency->term : "" ?>
+    </td>
+    <td>
+        <?= Chtml::hiddenField($field_prefix . '[duration_id]', $entry->duration_id);?>
+        <?= isset($entry->duration) ? $entry->duration->name : ""?>
+    </td>
+    <td></td>
+    <td>
+    </td>
 </tr>
