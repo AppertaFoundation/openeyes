@@ -46,7 +46,8 @@ $entry_allergy_ids = !is_null($entry->medication_id) ?
 
 $stop_fields_validation_error = array_intersect(
     array("end_date", "stop_reason_id"),
-    array_keys($entry->errors));
+    array_keys($entry->errors)
+);
 
 ?>
 
@@ -135,9 +136,11 @@ $stop_fields_validation_error = array_intersect(
                                                                     <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : ""?>> L
                                                                 </label>
                                                             </span>
-                                                <?php echo CHtml::hiddenField($field_prefix . '[laterality]',
+                                                <?php echo CHtml::hiddenField(
+                                                    $field_prefix . '[laterality]',
                                                     $entry->laterality,
-                                                    array('class'=>'laterality-input')); ?>
+                                                    array('class'=>'laterality-input')
+                                                ); ?>
                     </div>
                 </div>
             </div>
@@ -179,7 +182,7 @@ $stop_fields_validation_error = array_intersect(
             $previous_event_created_same_day = isset($entry->previous_event_date) && ($entry->previous_event_date === date('Y-m-d'));
             if (!$entry->is_copied_from_previous_event || ($entry->is_copied_from_previous_event && $previous_event_created_same_day)) {
                 echo '<i class="oe-i trash js-remove"></i>';
-            } else if (!$stopped) {
+            } elseif (!$stopped) {
                 echo '<i class="oe-i trash js-has-tooltip" data-tooltip-content="This drug cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
             }
         }?>
