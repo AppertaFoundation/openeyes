@@ -1152,6 +1152,7 @@ class OphCiExamination_API extends \BaseAPI
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
                     $summary_obj->comments = $summaries->comments ?: $summaries->getSiblingString();
+                    $summary_obj->comments = preg_replace('/(\r\n\r\n|\r\r|\n\n)/', '<i class="oe-i d-slash small pad pro-theme"></i>', $summary_obj->comments);
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
