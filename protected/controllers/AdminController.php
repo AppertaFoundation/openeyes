@@ -467,8 +467,7 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
-            }
-            else{
+            } else {
                 $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
