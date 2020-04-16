@@ -220,12 +220,8 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <!-- </td> -->
         <td>
             <!-- PRESCRIBE -->
-            <?php $medication_is_vtm =  $entry->medication && $entry->medication->source_subtype === "VTM"; ?>
-            <div class="js-medication-vtm-container" style="display:<?= $medication_is_vtm ? "block" : "none";?>">
-                <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                        data-tooltip-content="This is a Vitual Theraputic Moeity and therefore cannot be prescribed"></i>
-            </div>
-            <div class="js-medication-non-vtm-container" style="display:<?= $medication_is_vtm ? "none" : "block";?>">
+
+            <div class="js-medication-non-vtm-container" style="display:block">
                 <?php if ($prescribe_access) { ?>
                     <label class="toggle-switch">
                         <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
