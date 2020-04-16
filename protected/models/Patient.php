@@ -336,15 +336,6 @@ class Patient extends BaseActiveRecordVersioned
         return $this->_pas_errors;
     }
 
-    public function getScenarioSourceCode()
-    {
-        return array(
-        'referral' => self::PATIENT_SOURCE_REFERRAL,
-        'self_register' => self::PATIENT_SOURCE_SELF_REGISTER,
-        'other_register' => self::PATIENT_SOURCE_OTHER,
-        );
-    }
-
   /**
    * @return array List of sources for display in a drop-down list.
    */
