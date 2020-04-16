@@ -2507,6 +2507,9 @@ class OphCiExamination_API extends \BaseAPI
                 case (models\HistoryRisksEntry::$NOT_PRESENT):
                     $status = false;
                     break;
+                default:
+                    $status = null;
+                    break;
             }
 
             return array(
@@ -2539,6 +2542,9 @@ class OphCiExamination_API extends \BaseAPI
                     break;
                 case (models\AllergyEntry::$NOT_PRESENT):
                     $status = false;
+                    break;
+                default:
+                    $status = null;
                     break;
             }
 

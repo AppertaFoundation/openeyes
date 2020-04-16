@@ -310,7 +310,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if ($recent_document !== null && $recent_attachment_document === null) {
             return $recent_document;
-        } else if ($recent_document === null && $recent_attachment_document !== null) {
+        } elseif ($recent_document === null && $recent_attachment_document !== null) {
             return $recent_attachment_document;
         } else {
             return $recent_document->last_modified_date > $recent_attachment_document->last_modified_date ?
@@ -386,17 +386,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 static function ($risk) use ($exam_api, $patient, $whiteboard) {
                     $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
                     $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
-                    $type = 'unknown';
-                    if ($risk_present === 'Present') {
-                        $type = 'present';
-                    } elseif ($risk_present === 'Not present') {
-                        $type = 'not_present';
-                    }
 
                     if ($risk->comments !== '') {
-                        return array($type, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                        return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
                     }
-                    return array($type, $exam_risk['name']);
+                    return array($risk_present, $exam_risk['name']);
                 },
                 array_filter(
                     $risks,
@@ -411,11 +405,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         foreach ($lines as $line) {
             switch ($line[0]) {
-                case 'present':
+                case 'Present':
                     $total_risks++;
                     $display .= '<div class="alert-box warning">' . $line[1] . '</div>';
                     break;
-                case 'not_present':
+                case 'Not present':
                     // Do not display if not present.
                     break;
                 default:
