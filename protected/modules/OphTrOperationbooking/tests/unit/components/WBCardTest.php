@@ -103,7 +103,7 @@ class WBCardTest extends CDbTestCase
     }
 
     /**
-     * @covers WBCard::init
+     * @covers WBCard
      * @param $title string
      * @param $data string|array
      * @param $colour string
@@ -122,7 +122,7 @@ class WBCardTest extends CDbTestCase
     }
 
     /**
-     * @covers WBCard::run
+     * @covers WBCard
      * @param $title string
      * @param $data string|array
      * @param $colour string
@@ -146,7 +146,7 @@ class WBCardTest extends CDbTestCase
     }
 
     /**
-     * @covers WBCard::getType
+     * @covers WBCard
      * @param $title string
      * @param $data string|array
      * @param $colour string

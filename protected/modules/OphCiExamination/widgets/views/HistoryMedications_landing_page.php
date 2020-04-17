@@ -52,7 +52,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_eye_meds as $entry) { ?>
                 <tr>
                     <td>
-                        <i class="oe-i start small pad-right"></i>
                         <?= $entry->getMedicationDisplay() ?>
                     </td>
                     <td>
@@ -109,7 +108,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <?php foreach ($stopped_eye_meds as $entry) { ?>
                                 <tr>
                                     <td>
-                                        <i class="oe-i stop small pad-right"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>
