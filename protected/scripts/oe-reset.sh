@@ -133,6 +133,7 @@ do
 		;;
 		--dmd) dmdimport="TRUE"
 			## Run the DMD import after database reset
+    ;;
 		--hscic|-hscic|-gp|--gp) hscic=1
 			# run the hscic import after reset
 		;;
