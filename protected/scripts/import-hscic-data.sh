@@ -22,7 +22,7 @@ HOSTNAME=`hostname`
 SCRIPT=`basename $0`
 
 extraparams=""
-region="england"
+region=${OE_HSCIC_REGION:-'england'}
 
 while [[ $# -gt 0 ]]
 do
