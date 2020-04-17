@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -27,6 +28,8 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     public $letters;
     public $site_id;
     public $statuses;
+    public $contact_type;
+    public $recipient_type;
 
     public function attributeNames()
     {
@@ -39,7 +42,9 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             'end_date',
             'author_id',
             'site_id',
-            'statuses'
+            'statuses',
+            'recipient_type',
+            'contact_type',
         );
     }
 
@@ -54,14 +59,16 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             'start_end' => 'Date end',
             'author_id' => 'Author',
             'site_id' => 'Site',
-            'statuses' => 'Status'
+            'statuses' => 'Status',
+            'recipient_type' => 'Recipient Type',
+            'contact_type' => 'Contact Type',
         );
     }
 
     public function rules()
     {
         return array(
-            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id,statuses, author_id', 'safe'),
+            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id, statuses, author_id, recipient_type, contact_type', 'safe'),
             array('condition_type', 'required'),
         );
     }
@@ -91,7 +98,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     {
         $where_clauses = array();
         $where_params = array();
-        $where_operator = ' '.($this->condition_type == 'and' ? 'and' : 'or').' ';
+        $where_operator = ' ' . ($this->condition_type == 'and' ? 'and' : 'or') . ' ';
 
         $select = array(
             'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name',
@@ -108,7 +115,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             $this->joinLetters('Legacy', $data, $select, $where_clauses, $where_params, $where_operator);
         }
 
-        $where = ' ( '.implode(' or ', $where_clauses).' ) ';
+        $where = ' ( ' . implode(' or ', $where_clauses) . ' ) ';
 
         if ($this->start_date) {
             $this->applyStartDate($where, $where_params);
@@ -138,6 +145,14 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
         }
 
+        if ($this->recipient_type) {
+            $data->andWhere(['in', 'document_target.ToCc', $this->recipient_type]);
+        }
+
+        if ($this->contact_type) {
+            $data->andWhere(['in', 'document_target.contact_type', $this->contact_type]);
+        }
+
         $data->select(implode(',', $select));
         $data->andWhere('e.deleted = 0');
 
@@ -149,10 +164,10 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         foreach ($data->queryAll() as $i => $row) {
             if (@$row['lid']) {
                 $row['type'] = 'Correspondence';
-                $row['link'] = 'http'.(@$_SERVER['https'] ? 's' : '').'://'.@$_SERVER['SERVER_NAME'].'/OphCoCorrespondence/default/view/'.$row['event_id'];
+                $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphCoCorrespondence/default/view/' . $row['event_id'];
             } else {
                 $row['type'] = 'Legacy letter';
-                $row['link'] = 'http'.(@$_SERVER['https'] ? 's' : '').'://'.@$_SERVER['SERVER_NAME'].'/OphLeEpatientletter/default/view/'.$row['l2_event_id'];
+                $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphLeEpatientletter/default/view/' . $row['l2_event_id'];
             }
 
             $this->letters[] = $row;
@@ -185,17 +200,17 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
         $data->leftJoin("{$letter_table[0]} {$letter_table[1]}", "{$letter_table[1]}.event_id = e.id");
 
-        if ($type == 'Correspondence'  ) {
+        if ($type == 'Correspondence') {
             $clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
             $where_params[":et_{$letter_table[1]}_id"] = $et->id;
         } else {
             $clause = "({$letter_table[1]}.id is not null";
         }
-        
+
         if ($this->phrases) {
             $clause .= ' and (';
             foreach ($this->phrases as $i => $phrase) {
-                $where_params[":body{$letter_table[1]}".$i] = '%'.strtolower($phrase).'%';
+                $where_params[":body{$letter_table[1]}" . $i] = '%' . strtolower($phrase) . '%';
                 if ($i > 0) {
                     $clause .= $where_operator;
                 }
@@ -206,7 +221,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         }
 
         //If user does NOT have the RBAC role 'Report' then select the current user
-        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
+        if (!Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) {
             $this->author_id = Yii::app()->user->id;
         }
 
@@ -220,14 +235,14 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
                 $where_params[':authorID'] = $this->author_id;
 
                 $clause .= " OR lower({$letter_table[1]}.footer) LIKE :authorName )";
-                $where_params[':authorName'] = '%'.strtolower($author->fullName).'%';
+                $where_params[':authorName'] = '%' . strtolower($author->fullName) . '%';
             } else {
                 $clause .= " and lower({$letter_table[1]}.$text_field) like :authorName";
-                $where_params[':authorName'] = '%'.strtolower($author->fullName).'%';
+                $where_params[':authorName'] = '%' . strtolower($author->fullName) . '%';
             }
         }
 
-        $where_clauses[] = $clause.' )';
+        $where_clauses[] = $clause . ' )';
         $select[] = "{$letter_table[1]}.id as {$letter_table[1]}id";
 
         if ($type == 'Correspondence') {
@@ -240,13 +255,13 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     public function applyStartDate(&$where, &$where_params)
     {
         $where .= ' and e.created_date >= :dateFrom';
-        $where_params[':dateFrom'] = date('Y-m-d', strtotime($this->start_date)).' 00:00:00';
+        $where_params[':dateFrom'] = date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00';
     }
 
     public function applyEndDate(&$where, &$where_params)
     {
         $where .= ' and e.created_date <= :dateTo';
-        $where_params[':dateTo'] = date('Y-m-d', strtotime($this->end_date)).' 23:59:59';
+        $where_params[':dateTo'] = date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59';
     }
 
     public function description()
@@ -264,11 +279,11 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         }
 
         if ($this->phrases) {
-            $description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";
+            $description .= ' containing ' . ($this->condition_type == 'and' ? 'all' : 'any') . " of these phrases:\n";
 
             foreach ($this->phrases as $phrase) {
                 if ($phrase) {
-                    $description .= $phrase."\n";
+                    $description .= $phrase . "\n";
                 }
             }
         }
@@ -277,15 +292,15 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             $description .= 'written';
 
             if ($this->start_date && $this->end_date) {
-                $description .= ' between '.$this->start_date.' and '.$this->end_date;
+                $description .= ' between ' . $this->start_date . ' and ' . $this->end_date;
             } elseif ($this->start_date) {
-                $description .= ' after '.$this->start_date;
+                $description .= ' after ' . $this->start_date;
             } elseif ($this->end_date) {
-                $description .= ' before '.$this->end_date;
+                $description .= ' before ' . $this->end_date;
             }
 
             if ($this->author_id) {
-                $description .= ' by '.User::model()->findByPk($this->author_id)->fullName;
+                $description .= ' by ' . User::model()->findByPk($this->author_id)->fullName;
             }
         }
 
@@ -299,12 +314,12 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
      */
     public function toCSV()
     {
-        $output = $this->description()."\n\n";
+        $output = $this->description() . "\n\n";
 
-        $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Status,Link\n";
+        $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ",Consultant's name,Site,Date,Type,Status,Link\n";
 
         foreach ($this->letters as $letter) {
-            $output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.ucfirst($letter['status']).'","'.$letter['link']."\"\n";
+            $output .= "\"{$letter['hos_num']}\",\"" . ($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown') . "\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"" . (isset($letter['name']) ? $letter['name'] : 'N/A') . '","' . date('j M Y', strtotime($letter['created_date'])) . '","' . $letter['type'] . '","' . ucfirst($letter['status']) . '","' . $letter['link'] . "\"\n";
         }
 
         return $output;
