@@ -243,11 +243,31 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show GP Practice address if available, otherwise fallback to GP address
+                                        if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                            echo $this->patient->practice->contact->address->letterLine;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                                echo $this->patient->gp->contact->address->letterLine;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show Practice phone number first, if not, fall back to GP phone number
+                                        if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                            echo $this->patient->practice->contact->primary_phone;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                                echo $this->patient->gp->contact->primary_phone;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td>
