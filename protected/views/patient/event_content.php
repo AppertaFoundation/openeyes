@@ -56,18 +56,19 @@
                     $('.js-change-event-date').on('click', function () {
                       if (!$(this).hasClass('disabled')) {
                           $date_input.show();
-                      $date_input.select();
+                          $date_input.select();
                           $('.js-event-date').hide();
                           $('.js-change-event-date').hide();
                       }
                     });
 
                     $date_input.on('keypress click', function(){
-                     $('.pickmeup.pmu-view-days').show();
+                     $date_input.closest('.pickmeup.pmu-view-days').show();
+
                     });
 
                     $date_input.on('blur', function(){
-                      $('.pickmeup.pmu-view-days').hide();
+                        $date_input.closest('.pickmeup.pmu-view-days').hide();
                     });
 
                     $('.pickmeup.pmu-view-days').on('click', function () {
@@ -76,7 +77,7 @@
                         $('.js-event-date').html($date_input.val());
                         $('.js-change-event-date').show();
                         $('.js-event-date').show();
-                        $('.pickmeup.pmu-view-days').hide();
+                        $(this).hide();
                       }
                     });
                 });
