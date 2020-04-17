@@ -187,15 +187,12 @@ class MedicationManagement extends BaseMedicationElement
     {
         $continued = array_map(function ($e) {
             return $e->id;
-
         }, $this->getContinuedEntries());
         $stopped = array_map(function ($e) {
             return $e->id;
-
         }, $this->getStoppedEntries());
         $prescribed = array_map(function ($e) {
             return $e->id;
-
         }, $this->getPrescribedEntries());
         $exclude = array_merge($continued, $stopped, $prescribed);
         $other = array();
@@ -321,7 +318,7 @@ class MedicationManagement extends BaseMedicationElement
                         }
                         $prescription_Item->delete();
                         $changed = true;
-                    } else if (!$mgment_item->compareToPrescriptionItem()) {
+                    } elseif (!$mgment_item->compareToPrescriptionItem()) {
                         //manaemenet item was updated
                         $prescription_Item->updateFromManagementItem();
                         $changed = true;
