@@ -607,6 +607,24 @@ class AdminController extends \ModuleAdminController
         echo '1';
     }
 
+    public function actionSaveWorkflowDisplayOrderEditStatus()
+    {
+        $workflow_id = Yii::app()->request->getParam('workflow_id');
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
+        if (!$step) {
+            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
+        }
+
+        $step->display_order_edited = Yii::app()->request->getParam('display_order_edited');
+
+        if (!$step->save()) {
+            throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
+        }
+
+        echo '1';
+    }
+
     public function actionViewWorkflowRules()
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow_Rule'));
