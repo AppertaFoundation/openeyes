@@ -90,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202003191634',
+            'time' => '202004171423',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -613,8 +613,6 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-        'hos_num_label' => 'ID',
-        'nhs_num_label' => 'NHS',
         'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',

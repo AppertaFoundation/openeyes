@@ -1801,7 +1801,7 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient_source = 'referral';
+        $patient_source = isset(Yii::app()->params['default_patient_source']) ? Yii::app()->params['default_patient_source'] : 'Referral';
         $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
