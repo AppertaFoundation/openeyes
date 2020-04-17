@@ -94,14 +94,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
      * @param $comment string
      * @param $complexity int
      * @dataProvider getBookings
-     * @covers OphTrOperationbooking_Whiteboard::loadData
-     * @covers OphTrOperationbooking_Whiteboard::recentBiometry
-     * @covers OphTrOperationbooking_Whiteboard::recentBiometryReport
-     * @covers OphTrOperationbooking_Whiteboard::allergyString
-     * @covers OphTrOperationbooking_Whiteboard::alphaBlockerStatusAndDate
-     * @covers OphTrOperationbooking_Whiteboard::anticoagsStatusAndDate
-     * @covers OphTrOperationbooking_Whiteboard::operation
-     * @covers OphTrOperationbooking_Whiteboard::getDisplayHasRisk
+     * @covers OphTrOperationbooking_Whiteboard
      * @throws CHttpException
      */
     public function testLoadData($booking_id, $fixtureId, $procedure, $aconst, $equipment, $comment, $complexity = 0)
@@ -131,7 +124,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
      * @param $complexity int
      * @param $expected_total_risks int
      * @dataProvider getBookings
-     * @covers OphTrOperationbooking_Whiteboard::getPatientRisksDisplay
+     * @covers OphTrOperationbooking_Whiteboard
      * @depends testLoadData
      * @throws CHttpException
      */

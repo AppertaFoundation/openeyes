@@ -29,7 +29,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $comments
  * @property int $has_allergy
  *
- * @property Allergy $allergy
+ * @property OphCiExaminationAllergy $allergy
  * @property Allergies $element
  */
 class AllergyEntry extends \BaseElement
