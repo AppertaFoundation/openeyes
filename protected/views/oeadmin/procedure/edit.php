@@ -120,7 +120,7 @@
                 ?>
             </tr>
             <tr>
-                <td>Risk/s</td>
+                <td>Whiteboard Risk/s</td>
                 <?php
                     $this->widget('application.widgets.MultiSelectDropDownList', [
                         'options' => [
