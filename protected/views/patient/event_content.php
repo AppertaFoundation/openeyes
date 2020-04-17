@@ -63,12 +63,12 @@
                     });
 
                     $date_input.on('keypress click', function(){
-                     $date_input.closest('.pickmeup.pmu-view-days').show();
+                     $(this).closest('.pickmeup.pmu-view-days').show();
 
                     });
 
                     $date_input.on('blur', function(){
-                        $date_input.closest('.pickmeup.pmu-view-days').hide();
+                        $(this).closest('.pickmeup.pmu-view-days').hide();
                     });
 
                     $('.pickmeup.pmu-view-days').on('click', function () {
