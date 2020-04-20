@@ -47,6 +47,13 @@ class MedicationDuration extends BaseActiveRecordVersioned
         );
     }
 
+    public function defaultScope()
+    {
+        return array(
+            'order' => $this->getTableAlias(true, false).'.display_order',
+        );
+    }
+
     /**
      * @return array relational rules.
      */
