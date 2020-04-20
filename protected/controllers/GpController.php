@@ -98,77 +98,32 @@ class GpController extends BaseController
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @param $context string The context through which create action is invoked. Is either 'AJAX' or null.
+     * @param $context string The context through which create action is invoked.
      */
-    public function actionCreate($context = null)
+    public function actionCreate()
     {
-        // if context is AJAX then it means that this action is called from add patient screen, or it will go
-        // to the else condition if it is called from the practitioners screen.
-        if ($context === 'AJAX') {
-            // manage_gp_role_req is used for CERA for validating roles as well.
-            $contact = new Contact(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
+        Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
+        $gp = new Gp();
 
-            $contactPracticeAssociate = new ContactPracticeAssociate();
+        // manage_gp_role_req is used for CERA for validating roles as well.
+        $contact = new Contact(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
 
-            if (isset($_POST['Contact'])) {
-                $contact->attributes = $_POST['Contact'];
-                if ($contact->validate()) {
-                    // checking for the duplicate provider no.
-                    if (!empty($_POST['ContactPracticeAssociate']['provider_no'])) {
-                        $contactPracticeAssociate->provider_no = $_POST['ContactPracticeAssociate']['provider_no'];
+        if (isset($_POST['Contact'])) {
+            $contact->attributes = $_POST['Contact'];
+            $gp->is_active = $_POST['Gp']['is_active'];
+            $this->performAjaxValidation($contact);
+            list($contact, $gp) = $this->performGpSave($contact, $gp);
 
-                        $query = Yii::app()->db->createCommand()
-                            ->select('cpa.id')
-                            ->from('contact_practice_associate cpa')
-                            ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
-                                array(':provider_no' => $contactPracticeAssociate->provider_no))
-                            ->queryAll();
-
-                        $isDuplicate = count($query);
-
-                        if ($isDuplicate !== 0) {
-                            echo CJSON::encode(array('error' => 'Duplicate Provider number detected. <br/> This provider number already exists.'));
-                            Yii::app()->end();
-                        }
-                    }
-
-                    echo CJSON::encode(array(
-                        'title' => $contact->title,
-                        'firstName' => $contact->first_name,
-                        'lastName' => $contact->last_name,
-                        'primaryPhone' => $contact->primary_phone,
-                        'labelId' => isset($contact->label) ? $contact->label->id : '',
-                        'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
-                    ));
-                } else {
-                    // get the error messages for the contact model.
-                    echo CJSON::encode(array('error' =>  CHtml::errorSummary($contact)));
-                }
+            if ($gp->id) {
+                $this->redirect(array('view', 'id' => $gp->id));
             }
-        } else {
-            Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
-            $gp = new Gp();
-
-            // manage_gp_role_req is used for CERA for validating roles as well.
-            $contact = new Contact(Yii::app()->params['use_contact_practice_associate_model'] === true ? 'manage_gp_role_req' : 'manage_gp');
-
-            if (isset($_POST['Contact'])) {
-                $contact->attributes = $_POST['Contact'];
-                $gp->is_active = $_POST['Gp']['is_active'];
-                $this->performAjaxValidation($contact);
-                list($contact, $gp) = $this->performGpSave($contact, $gp);
-
-                if ($gp->id) {
-                    $this->redirect(array('view', 'id' => $gp->id));
-                }
-            }
-
-            $this->render('create', array(
-               'model' => $contact,
-               'gp' => $gp,
-               'context' => null
-            ));
         }
+
+        $this->render('create', array(
+           'model' => $contact,
+           'gp' => $gp,
+           'context' => null
+        ));
     }
 
     /**
