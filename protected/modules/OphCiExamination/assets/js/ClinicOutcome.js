@@ -63,6 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         if (this.validateInputs($selected_status, $selected_period, $selected_role, selected_quantity)) {
             this.createRow($selected_status, $selected_period, $selected_role, selected_quantity);
+            $('#followup_comments').val('');
         }
     };
 
