@@ -143,7 +143,7 @@ class OphDrPrescription_Item extends EventMedicationUse
      */
     public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing'))) {
+        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing')) || is_null($this->prescription->event)) {
             return null;
         }
 
