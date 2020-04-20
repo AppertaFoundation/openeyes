@@ -183,7 +183,7 @@ $stop_fields_validation_error = array_intersect(
             if (!$entry->is_copied_from_previous_event || ($entry->is_copied_from_previous_event && $previous_event_created_same_day)) {
                 echo '<i class="oe-i trash js-remove"></i>';
             } elseif (!$stopped) {
-                echo '<i class="oe-i trash js-has-tooltip" data-tooltip-content="This drug cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
+                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This drug cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
             }
         }?>
 </tr>

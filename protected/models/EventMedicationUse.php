@@ -590,7 +590,7 @@ class EventMedicationUse extends BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null && $this->end_date < date('Y-m-d')) {
+        if ($this->end_date !== null && $this->end_date <= date('Y-m-d')) {
             $this->originallyStopped = true;
         }
         /* TODO Check what was happening here previously
@@ -750,5 +750,8 @@ class EventMedicationUse extends BaseElement
     {
         parent::afterFind();
         $this->updateStateProperties();
+        if ($this->copied_from_med_use_id) {
+            $this->is_copied_from_previous_event = true;
+        }
     }
 }
