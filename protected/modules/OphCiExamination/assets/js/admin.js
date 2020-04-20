@@ -14,6 +14,7 @@ $(document).ready(function() {
         });
 
         confirmationDialog.content.on('click', '.ok', () => {
+          workflow_edited = false;
           actionFunction(e, currentElement);
         });
 
@@ -137,150 +138,195 @@ $(document).ready(function() {
     setTimeout(()=>$('#workflow-flash').fadeOut(), duration);
   };
 
+  let changeWorkflowButton = () => {
+    let $workflow_contextual_button = $('#et_workflow_contextual_button');
+    $workflow_contextual_button.fadeOut( function () {
+      if (workflow_edited) {
+        if ($('#display_order_edited').val() === '1') {
+          $(this).html('Save new element order');
+        } else {
+          $(this).html('Save element order');
+        }
+        $(this).attr('name', 'save_workflow');
+      } else {
+        $(this).html('Reset element order to default');
+        $(this).attr('name', 'reset_workflow');
+      }
+      $(this).prop("disabled", false);
+    }).fadeIn();
+  };
+
+  let workflowResetHandler = e => {
+    e.preventDefault();
+    workflow_edited = false;
+    $('.spinner').css('display', 'block');
+
+    $.ajax({
+      'type': 'GET',
+      'url' : baseUrl + '/OphCiExamination/admin/setWorkflowToDefault?element_set_id=' + e.target.dataset['element_set_id'],
+      'success': function() {
+        workflowFlash('Worflow reset.');
+
+
+        $.ajax({
+          'type': 'GET',
+          'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
+          'success': function (html) {
+            $('#step_element_types').html(html);
+            bindWorkflowEditEventListeners();
+            $('.spinner').css('display', 'none');
+          },
+          'error': function () {
+            workflowFlash('Workflow reset, please refresh.');
+          }
+        });
+      },
+      'error': function (jqXHR, status) {
+        workflowFlash('Failed to reset workflow.');
+        alert(jqXHR.responseText);
+      }
+    }).then(setWorkflowDisplayOrderEditStatus(0));
+  };
+
+  let workflowSaveHandler = e => {
+    e.preventDefault();
+
+    $('#et_workflow_contextual_button').prop("disabled", true);
+    $('.spinner').css('display', 'block');
+    let $form = $('#et_sort').closest('form');
+    $.ajax({
+      'type': 'POST',
+      'url': $('#et_sort').data('uri'),
+      'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+      'success': function(){
+        workflowFlash();
+        $('.spinner').css('display', 'none');
+        workflow_edited = false;
+        changeWorkflowButton();
+      },
+      'error': function (jqXHR, status) {
+        workflowFlash('Failed to save workflow.');
+        alert(jqXHR.responseText);
+      }
+    }).then(setWorkflowDisplayOrderEditStatus(1));
+  };
+
+  let setWorkflowDisplayOrderEditStatus = status => {
+    $('#display_order_edited').val(status);
+    return $.ajax({
+      'type': 'POST',
+      'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+$('#admin_workflow_steps tbody tr.selected').data('id')+'&display_order_edited='+ status +'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+      'url': baseUrl+'/OphCiExamination/admin/saveWorkflowDisplayOrderEditStatus',
+      'success': function(resp) {
+        if (resp != "1") {
+          alert("Something went wrong trying to save the element display order.  Please try again or contact support for assistance.");
+        }
+      }
+    });
+  };
+
+  let workflowAddHandler = e => {
+    if ($('#element_type_id').val() === '') {
+      alert("Please select an element type to add");
+      return;
+    }
+
+    let data = {
+      'element_type_id': $('#element_type_id').val(),
+      'step_id': $('#admin_workflow_steps tr.selected').data('id'),
+      'YII_CSRF_TOKEN': YII_CSRF_TOKEN
+    };
+
+    $.ajax({
+      'type': 'POST',
+      'data': data,
+      'url': baseUrl+'/OphCiExamination/admin/addElementTypeToWorkflowStep',
+      'success': function(resp) {
+        if (resp !== "1") {
+          alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
+        } else {
+          $('#admin_workflow_steps tr.selected').click();
+        }
+      }
+    });
+  };
+
+  let workflowSaveNameHandler = e => {
+    if ($('#step_name').val() == '') {
+      alert("Name cannot be blank");
+      return;
+    }
+
+    $.ajax({
+      'type': 'POST',
+      'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+$('#admin_workflow_steps tbody tr.selected').data('id')+'&step_name='+$('#step_name').val()+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+      'url': baseUrl+'/OphCiExamination/admin/saveWorkflowStepName',
+      'success': function(resp) {
+        if (resp != "1") {
+          alert("Something went wrong trying to set the name for the step.  Please try again or contact support for assistance.");
+        } else {
+          $('#admin_workflow_steps tr.selected td:nth-child(2)').text($('#step_name').val());
+        }
+      }
+    });
+  };
+
+  let workflowRemoveElementHandler = function(e) {
+    e.preventDefault();
+
+    let row = $(this).parent().parent();
+    let element_type_name = row.children('td:first').text();
+    let element_type_id = $(this).data('element-type-id');
+
+    let data = {
+      'element_type_item_id': $(this).attr('rel'),
+      'step_id': $('#admin_workflow_steps tr.selected').data('id'),
+      'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
+    };
+
+    $.ajax({
+      'type': 'POST',
+      'data': data,
+      'url': baseUrl+'/OphCiExamination/admin/removeElementTypeFromWorkflowStep',
+      'success': function(resp) {
+        if (resp !== "1") {
+          alert("Something went wrong trying to remove the element type.	Please try again or contact support for assistance.");
+        } else {
+          row.remove();
+          $('#element_type_id').append('<option value="'+element_type_id+'">'+element_type_name+'</option>');
+          sort_selectbox($('#element_type_id'));
+        }
+      }
+    });
+  };
+
   let bindWorkflowEditEventListeners = () => {
     // Activate edit mode when a change is made
     $('#step_element_types tbody').sortable({
       stop: (event, ui) => {
-        workflow_edited = true;
-        $('#et_save_workflow').fadeIn();
+        if (!workflow_edited) {
+          workflow_edited = true;
+          changeWorkflowButton();
+        }
       }
     });
 
-    // Bind Reset button for current flow
-    $('#et_reset_workflow').click(e => {
+    $('#et_workflow_contextual_button').click( e => {
       e.preventDefault();
-      $('.spinner').css('display', 'block');
-
-      $.ajax({
-        'type': 'GET',
-        'url' : baseUrl + '/OphCiExamination/admin/setWorkflowToDefault?element_set_id=' + e.target.dataset['element_set_id'],
-        'success': function() {
-          workflowFlash('Worflow reset.');
-
-
-          $.ajax({
-            'type': 'GET',
-            'url' : baseUrl + '/OphCiExamination/admin/editWorkflowStep?step_id=' + e.target.dataset['element_set_id'],
-            'success': function (html) {
-              $('#step_element_types').html(html);
-              bindWorkflowEditEventListeners();
-              $('.spinner').css('display', 'none');
-            },
-            'error': function () {
-              workflowFlash('Workflow reset, please refresh.');
-            }
-          });
-        },
-        'error': function (jqXHR, status) {
-          workflowFlash('Failed to reset workflow.');
-          alert(jqXHR.responseText);
-        }
-      });
-    });
-
-    //Bind save for current flow
-    $('#et_save_workflow').click(e => {
-      e.preventDefault();
-
-      $('#et_save_workflow').prop("disabled", true);
-      $('.spinner').css('display', 'block');
-      let $form = $('#et_sort').closest('form');
-      $.ajax({
-        'type': 'POST',
-        'url': $('#et_sort').data('uri'),
-        'data': $form.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-        'success': function(){
-          workflowFlash();
-          $('.spinner').css('display', 'none');
-          $('#et_save_workflow').fadeOut();
-          $('#et_save_workflow').prop("disabled", false);
-          workflow_edited = false;
-        },
-        'error': function (jqXHR, status) {
-          workflowFlash('Failed to save workflow.');
-          alert(jqXHR.responseText);
-        }
-      });
+      if (e.target.name === 'save_workflow') {
+        workflowSaveHandler(e)
+      } else if (e.target.name === 'reset_workflow') {
+        workflowResetHandler(e);
+      }
     });
 
     // Bind Add element button to current flow.
-    bindActionWithWorkflowWarning('#et_add_element_type', 'click', function(e) {
-      if ($('#element_type_id').val() === '') {
-        alert("Please select an element type to add");
-        return;
-      }
+    bindActionWithWorkflowWarning('#et_add_element_type', 'click', workflowAddHandler);
 
-      let data = {
-        'element_type_id': $('#element_type_id').val(),
-        'step_id': $('#admin_workflow_steps tr.selected').data('id'),
-        'YII_CSRF_TOKEN': YII_CSRF_TOKEN
-      };
-
-      $.ajax({
-        'type': 'POST',
-        'data': data,
-        'url': baseUrl+'/OphCiExamination/admin/addElementTypeToWorkflowStep',
-        'success': function(resp) {
-          if (resp !== "1") {
-            alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
-          } else {
-            $('#admin_workflow_steps tr.selected').click();
-          }
-        }
-      });
-    });
-
-	  bindActionWithWorkflowWarning('#et_save_step_name', 'click', function (e) {
-		  if ($('#step_name').val() == '') {
-			  alert("Name cannot be blank");
-			  return;
-		  }
-
-		  $.ajax({
-			  'type': 'POST',
-			  'data': 'workflow_id='+$('#OEModule_OphCiExamination_models_OphCiExamination_Workflow_id').val()+'&element_set_id='+$('#admin_workflow_steps tbody tr.selected').data('id')+'&step_name='+$('#step_name').val()+'&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			  'url': baseUrl+'/OphCiExamination/admin/saveWorkflowStepName',
-			  'success': function(resp) {
-				  if (resp != "1") {
-					  alert("Something went wrong trying to set the name for the step.  Please try again or contact support for assistance.");
-				  } else {
-					  $('#admin_workflow_steps tr.selected td:nth-child(2)').text($('#step_name').val());
-				  }
-			  }
-		  });
-	  });
+	  bindActionWithWorkflowWarning('#et_save_step_name', 'click', workflowSaveNameHandler);
 
     // Bind Remove element action to current flow rows.
-    $('a.removeElementType').click(function(e) {
-      e.preventDefault();
-
-      let row = $(this).parent().parent();
-      let element_type_name = row.children('td:first').text();
-      let element_type_id = $(this).data('element-type-id');
-
-      let data = {
-        'element_type_item_id': $(this).attr('rel'),
-        'step_id': $('#admin_workflow_steps tr.selected').data('id'),
-        'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
-      };
-
-      $.ajax({
-        'type': 'POST',
-        'data': data,
-        'url': baseUrl+'/OphCiExamination/admin/removeElementTypeFromWorkflowStep',
-        'success': function(resp) {
-          if (resp !== "1") {
-            alert("Something went wrong trying to remove the element type.	Please try again or contact support for assistance.");
-          } else {
-            row.remove();
-            $('#element_type_id').append('<option value="'+element_type_id+'">'+element_type_name+'</option>');
-            sort_selectbox($('#element_type_id'));
-          }
-        }
-      });
-    });
-
-
+    $('a.removeElementType').click(workflowRemoveElementHandler);
   }
 
     $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function(){

@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-  <div class="furtherfindings-multi-select">
+  <div class="furtherfindings-multi-select cols-full">
         <?php
         $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
         echo $form->multiSelectListFreeText(

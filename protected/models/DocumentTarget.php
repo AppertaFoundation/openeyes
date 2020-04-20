@@ -78,10 +78,22 @@ class DocumentTarget extends BaseActiveRecord
     public function beforeSave()
     {
         // This check is only for the other and internal referral letter types
-        if ( $this->contact_id === '' && ($this->contact_type === 'INTERNALREFERRAL' || $this->contact_type === 'OTHER') ) {
+        if ($this->contact_id === '' && ($this->contact_type === 'INTERNALREFERRAL' || $this->contact_type === 'OTHER')) {
             $this->contact_id = null;
         }
 
         return parent::beforeSave();
+    }
+
+    public function getContactTypes()
+    {
+        $option_array = [];
+
+        $result = Yii::app()->db->createCommand('SHOW COLUMNS FROM document_target LIKE "contact_type"')->queryRow();
+        if ($result['Type']) {
+            $option_array = explode("','", preg_replace("/(enum)\('(.+?)'\)/", "$2", $result['Type']));
+        }
+
+        return array_combine($option_array, $option_array);
     }
 }
