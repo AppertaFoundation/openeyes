@@ -32,12 +32,7 @@ $all_risk_ids = $this->data->booking->getAllBookingRiskIds();
     } ?>
     <hr class="divider"/>
     <h3>Risks (<?= $total_risks ?>)</h3>
-    <?php if ($this->data->alpha_blocker_name !== 'No Alpha Blockers') { ?>
-        <div class="alert-box <?= $this->data->alpha_blocker_name === 'Not checked' ? 'info' : 'warning' ?>">
-            <?= $this->data->alpha_blocker_name === 'Not checked' ? 'Unchecked: Alphablocker' : "Alphablocker - {$this->data->alpha_blocker_name}"?>
-        </div>
-    <?php }
-    if ($this->data->anticoagulant_name !== 'No Anticoagulants') { ?>
+    <?php if ($this->data->anticoagulant_name !== 'No Anticoagulants') { ?>
         <div class="alert-box <?= $this->data->anticoagulant_name === 'Not checked' ? 'info' : 'warning' ?>">
             <?= $this->data->anticoagulant_name === 'Not checked' ? 'Unchecked: Anticoagulants' : "Anticoagulants - {$this->data->anticoagulant_name}"?>
         </div>
@@ -47,12 +42,6 @@ $all_risk_ids = $this->data->booking->getAllBookingRiskIds();
         && in_array($this->getAnticoagulantRisk()->id, $all_risk_ids, true)) { ?>
         <div class="alert-box success">
             Absent: Anticoagulants
-        </div>
-    <?php }
-    if ($this->data->alpha_blocker_name === 'No Alpha Blockers'
-        && in_array($this->getAlphaBlockerRisk()->id, $all_risk_ids, true)) { ?>
-        <div class="alert-box success">
-            Absent: Alpha Blockers
         </div>
     <?php } ?>
 </div>
