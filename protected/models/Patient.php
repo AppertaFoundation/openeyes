@@ -132,7 +132,7 @@ class Patient extends BaseActiveRecordVersioned
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => Yii::app()->params['pas_in_use'] === true ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
-            array('gp_id', 'required', 'on' => 'referral'),
+            array('practice_id', 'required', 'on' => 'referral'),
             array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
@@ -401,15 +401,6 @@ class Patient extends BaseActiveRecordVersioned
     public function getPasErrors()
     {
         return $this->_pas_errors;
-    }
-
-    public function getScenarioSourceCode()
-    {
-        return array(
-        'referral' => self::PATIENT_SOURCE_REFERRAL,
-        'self_register' => self::PATIENT_SOURCE_SELF_REGISTER,
-        'other_register' => self::PATIENT_SOURCE_OTHER,
-        );
     }
 
   /**
@@ -2212,7 +2203,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         $sql = '
             SELECT p.*
-            FROM patient p 
+            FROM patient p
             JOIN patient_identifier pid
               ON p.id = pid.patient_id
             WHERE pid.value = :identifier_value

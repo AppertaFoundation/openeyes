@@ -6,6 +6,9 @@ class m200331_013628_create_date_diff_function extends OEMigration
     public function up()
     {
         $this->execute("
+        DROP FUNCTION IF EXISTS date_diff;");
+        
+        $this->execute("
 		CREATE FUNCTION date_diff(unit VARCHAR(10) , start_date DATE, end_date DATE)
 			RETURNS DOUBLE
 			DETERMINISTIC
