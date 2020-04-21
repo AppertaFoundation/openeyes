@@ -83,6 +83,7 @@ class EventMedicationUse extends BaseElement
     public $prescription_not_synced = false;
 
     public $is_copied_from_previous_event = false;
+    public $previous_event_date;
 
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
@@ -310,6 +311,13 @@ class EventMedicationUse extends BaseElement
         if ($this->start_date && $this->end_date &&
             $this->start_date > $this->end_date) {
             $this->addError('end_date', 'Stop date must be on or after start date');
+        }
+
+        $this->updateStateProperties();
+        if ($this->copied_from_med_use_id !== '0') {
+            $this->is_copied_from_previous_event = true;
+            $previous_event_date = Event::model()->findByPk($this->copied_from_med_use_id)->event_date;
+            $this->previous_event_date = date('Y-m-d', strtotime($previous_event_date));
         }
         parent::afterValidate();
     }
@@ -558,12 +566,12 @@ class EventMedicationUse extends BaseElement
         return implode(', ', $result);
     }
 
-    public function getChk_prescribe()
+    public function getChkPrescribe()
     {
         return $this->chk_prescribe;
     }
 
-    public function setChk_prescribe($prescribe)
+    public function setChkPrescribe($prescribe)
     {
         $this->chk_prescribe = $prescribe;
     }
@@ -574,6 +582,7 @@ class EventMedicationUse extends BaseElement
         parent::loadFromExisting($element);
         $this->updateStateProperties();
         $this->is_copied_from_previous_event = true;
+        $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id :  $element->event->id;
     }
 
     /**
