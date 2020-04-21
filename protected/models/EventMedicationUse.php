@@ -314,7 +314,7 @@ class EventMedicationUse extends BaseElement
         }
 
         $this->updateStateProperties();
-        if ($this->copied_from_med_use_id !== '0') {
+        if ($this->copied_from_med_use_id !== '0' && !$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
             $previous_event_date = Event::model()->findByPk($this->copied_from_med_use_id)->event_date;
             $this->previous_event_date = date('Y-m-d', strtotime($previous_event_date));
@@ -581,8 +581,10 @@ class EventMedicationUse extends BaseElement
     {
         parent::loadFromExisting($element);
         $this->updateStateProperties();
-        $this->is_copied_from_previous_event = true;
-        $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id :  $element->event->id;
+        if (!$this->prescription_item_id) {
+            $this->is_copied_from_previous_event = true;
+            $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event->id;
+        }
     }
 
     /**
