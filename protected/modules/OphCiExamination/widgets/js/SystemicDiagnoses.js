@@ -26,7 +26,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element = this.options.element;
     this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
     this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
-    this.$popupSelector = $('#systemic-diagnoses-popup');
+    this.$popup = $('#systemic-diagnoses-popup');
     this.searchRequest = null;
     this.initialiseTriggers();
     this.initialiseDatepicker();
@@ -42,13 +42,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   SystemicDiagnosesController.prototype.initialiseTriggers = function () {
-    var controller = this;
-    var eye_selector;
+    let controller = this;
+    let eye_selector;
 
     // removal button for table entries
     controller.$table.on('click', 'i.trash', function (e) {
       e.preventDefault();
-      $(e.target).parents('tr').remove();
+      let $row = $(e.target).parents('tr');
+      let disorder_id = $row.find('input[name$="[disorder_id]"]').val();
+      this.$popup.find('li[data-id=' + disorder_id + ']').removeClass('js-already-used');
+      $row.remove();
       $(":input[name^='diabetic_diagnoses']").trigger('change');
     });
 

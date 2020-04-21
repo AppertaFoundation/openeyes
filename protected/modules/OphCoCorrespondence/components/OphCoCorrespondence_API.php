@@ -688,6 +688,12 @@ class OphCoCorrespondence_API extends BaseAPI
             'delimiter' => "\n",
         ));
 
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
+            if ($m[1] == 'ContactPracticeAssociate') {
+                    $contact = $contact->gp;
+            }
+        }
+
         if (!$address) {
             $address = '';
         }
@@ -714,7 +720,7 @@ class OphCoCorrespondence_API extends BaseAPI
         } else if ($m[1] == 'Optometrist') {
             $contact_type = 'Optometrist';
         }
-        
+
         if ( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ) {
             $contact_type = 'Other';
         }

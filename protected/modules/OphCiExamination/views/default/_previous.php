@@ -29,7 +29,7 @@
           data-element-type-id="<?php echo $element->elementType->id ?>"
           data-element-type-class="<?=\CHtml::modelName($element) ?>"
           data-element-type-name="<?php echo $element->elementType->name ?>"
-          data-element-display-order="<?php echo $element->elementType->display_order ?>">
+          data-element-display-order="<?php echo $element->display_order ?>">
 
         <div class="flex-layout flex-top data-group">
             <?php $this->renderPartial(

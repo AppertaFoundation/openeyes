@@ -1,9 +1,9 @@
 <li class="oe-nav-btn" id="js-nav-shortcuts">
-    <div class="nav-js-btn" id="js-nav-shortcuts-btn">
-        <svg viewBox="0 0 80 40" class="icon shortcuts">
-            <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
-        </svg>
-    </div>
+        <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn" onclick="returnFalse()">
+            <svg viewBox="0 0 80 40" class="icon shortcuts">
+                <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
+            </svg>
+        </a>
     <div class="oe-nav-shortcuts" id="js-nav-shortcuts-subnav">
         <ul>
             <?php foreach ($menu as $key => $item) { ?>
@@ -34,6 +34,11 @@
                     if (array_key_exists('options', $item)) {
                         $options = $item['options'];
                     }
+
+                    if ($item['title'] === 'Track patients in FORUM' && Yii::app()->user->getState('forum_enabled') === 'on') {
+                        $item['title'] = $item['alt_title'];
+                    }
+
                     echo CHtml::link($item['title'], $link, $options)
                     ?>
                     <?php if ($has_sub) : ?>

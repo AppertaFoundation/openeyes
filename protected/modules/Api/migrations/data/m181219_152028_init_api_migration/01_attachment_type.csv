@@ -1,0 +1,3 @@
+attachment_type,title_full,title_short,title_abbreviated
+NONE,"No attachment type",None,"N/A"
+dicom_header,dicom header,dicom header,dicom header

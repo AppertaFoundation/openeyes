@@ -94,7 +94,7 @@ var analytics_sidebar = (function () {
 						// enable csv download for custom data
 						// the parameter indicate if the csv download is for 
 						// custom data or not
-						analytics_csv_download(true)
+						analytics_csv_download()
 					},
 					complete: function () {
 						$('#js-analytics-spinner').hide();
@@ -162,6 +162,12 @@ var analytics_sidebar = (function () {
 				}
 			});
 		}
+
+		function clearDate() {
+			$('#analytics_datepicker_from').val('');
+			$('#analytics_datepicker_to').val('');
+		}
+		$('#js-clear-date-range').off('click').on('click', _.throttle(clearDate, throttleTime));
 		//Service, Clinical tab click
 		$('.analytics-section').off('click').on('click', _.throttle(selectSpecialtyOpt, throttleTime));
 

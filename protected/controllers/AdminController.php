@@ -247,11 +247,12 @@ class AdminController extends BaseAdminController
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
 
             foreach ($findings as $key => $finding) {
-                if (isset($finding['id'])) {
+                if ($finding['id']) {
                     $finding_object = Finding::model()->findByPk($finding['id']);
                 } else {
                     $finding_object = new Finding();
                 }
+
 
                 $finding_object->name = $finding['name'];
                 $finding_object->display_order = $finding['display_order'];
@@ -934,7 +935,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';
@@ -1787,8 +1787,9 @@ class AdminController extends BaseAdminController
             foreach ($filter as $logoKey => $logoName) {
                 $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
                 $fileInfo = pathinfo($logoName);
-                foreach (glob($savePath . $logoKey) as $existingLogo) {
-                    unlink($savePath . $existingLogo);
+
+                foreach (glob($savePath . $logoKey . '.*') as $existingLogo) {
+                    unlink($existingLogo);
                 }
 
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
@@ -1822,11 +1823,11 @@ class AdminController extends BaseAdminController
         $deleteSecondaryLogo = @$_GET['secondary_logo'];
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            @unlink($deleteHeaderLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            @unlink($deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         }
@@ -1994,5 +1995,28 @@ class AdminController extends BaseAdminController
     public function actionPatientShortcodes()
     {
         $this->render('patient_shortcodes', ['short_codes' => PatientShortcode::model()->findAll()]);
+    }
+
+    public function actionAttachments($id = false)
+    {
+        if (!empty($_POST)) {
+            $event_types_post = $_POST['EventType'];
+
+            foreach ($event_types_post as $id => $event_type_post) {
+                $eventType = EventType::model()->findByPk($id);
+                $eventType->show_attachments = $event_type_post['show_attachments'];
+
+                if (!$eventType->saveOnlyIfDirty()->save() && $eventType->getErrors()) {
+                    throw new Exception('Unable to save attachment: ' . print_r($eventType->getErrors(), true));
+                }
+            }
+            Audit::add('admin-Attachments', 'edit');
+        } else {
+            Audit::add('admin-Attachments', 'list');
+        }
+
+        $this->render('/admin/attachments/index', array(
+            'event_types' => EventType::model()->findAll(),
+        ));
     }
 }

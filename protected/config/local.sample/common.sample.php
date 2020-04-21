@@ -38,9 +38,9 @@ $config = array(
             'username' => $db['username'],
             'password' => $db['password'],
         ),
-        'session' => array(
-            'timeout' => 86400,
-        ),
+        // 'session' => array(
+        //     'timeout' => 86400,
+        // ),
         'mailer' => array(
             // Setting the mailer mode to null will suppress email
             //'mode' => null
@@ -48,9 +48,6 @@ $config = array(
             //'divert' => array('foo@example.org', 'bar@example.org')
         ),
         /*
-        'cacheBuster' => array(
-            'time' => '2013062101',
-        ),
         'log' => array(
             'routes' => array(
                  // SQL logging
@@ -121,8 +118,10 @@ $config = array(
         'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
+        'OphGeneric',
         'OECaseSearch',
         'OETrial',
+        'OphOuCatprom5'
     ),
 
     'params' => array(
