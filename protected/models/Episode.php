@@ -261,7 +261,7 @@ class Episode extends BaseActiveRecordVersioned
                 ->queryRow();
         }
 
-        if (!$episode) {
+        if (!$episode || !$episode['eid']) {
             // No episode found
             return;
         }
