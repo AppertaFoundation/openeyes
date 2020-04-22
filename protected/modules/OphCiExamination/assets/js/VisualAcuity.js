@@ -1,25 +1,25 @@
 function updateCviAlertState($section) {
-    // ensure jquery wrapped
+    // ensure jquery wrapped for backwards compatibility
     $section = $($section);
     if ($section.find('.cvi_alert_dismissed').val() !== "1") {
-        var $cviAlert = $('.cvi-alert');
-        var hasCvi = parseInt($cviAlert.data('hascvi')) === 1;
-        if (hasCvi) {
+        let $cviAlert = $('.cvi-alert');
+        if (parseInt($cviAlert.data('hascvi')) === 1) {
             return;
         }
 
-        var threshold = parseInt($cviAlert.data('threshold'));
-        var show_alert = null;
-        $section.find('.va-selector').each(function() {
-            var val = parseInt($(this).val());
-            if (val < threshold) {
-                show_alert = (show_alert === null) ? true : show_alert;
-            } else {
-                show_alert = false;
+        const threshold = parseInt($cviAlert.data('threshold'));
+        const showAlert = ['.right-eye', '.left-eye'].every(function(eyeClass) {
+            const values = $section.find(eyeClass + ' .va-selector')
+                .map(function() { return parseInt($(this).val()); })
+                .toArray();
+
+            if (!values.length) {
+                return false;
             }
+            return values.every(function(val) { return val < threshold; });
         });
 
-        if (show_alert) {
+        if (showAlert) {
             $cviAlert.slideDown(500);
         } else {
             $cviAlert.slideUp(500);
