@@ -26,7 +26,7 @@
 
     <div>
 
-    <table class="standard">
+    <table>
         <colgroup></colgroup>
         <tbody>
         <tr>
