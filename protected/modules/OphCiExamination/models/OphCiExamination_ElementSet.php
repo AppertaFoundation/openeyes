@@ -54,7 +54,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+                array('id, name, display_order_edited', 'safe', 'on' => 'search'),
         );
     }
 

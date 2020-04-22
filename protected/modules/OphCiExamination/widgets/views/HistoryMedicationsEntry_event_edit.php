@@ -46,7 +46,8 @@ $entry_allergy_ids = !is_null($entry->medication_id) ?
 
 $stop_fields_validation_error = array_intersect(
     array("end_date", "stop_reason_id"),
-    array_keys($entry->errors));
+    array_keys($entry->errors)
+);
 
 ?>
 
@@ -80,6 +81,8 @@ $stop_fields_validation_error = array_intersect(
 
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]"
                      value="<?= (int)$entry->is_copied_from_previous_event; ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[copied_from_med_use_id]"
+                        value="<?= (int) $entry->copied_from_med_use_id?>"/>
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>"/>
         <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]"
                      value="<?= !isset($entry->medication_id) ? "{{medication_id}}" : $entry->medication_id ?>"/>
@@ -133,9 +136,11 @@ $stop_fields_validation_error = array_intersect(
                                                                     <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : ""?>> L
                                                                 </label>
                                                             </span>
-                                                <?php echo CHtml::hiddenField($field_prefix . '[laterality]',
+                                                <?php echo CHtml::hiddenField(
+                                                    $field_prefix . '[laterality]',
                                                     $entry->laterality,
-                                                    array('class'=>'laterality-input')); ?>
+                                                    array('class'=>'laterality-input')
+                                                ); ?>
                     </div>
                 </div>
             </div>
@@ -172,10 +177,15 @@ $stop_fields_validation_error = array_intersect(
     </td>
     <td></td>
     <td class="edit-column">
-        <?php if ($removable) { ?>
-            <i class="oe-i trash js-remove"></i>
-        <?php } ?>
-    </td>
+        <?php
+        if ($removable) {
+            $previous_event_created_same_day = isset($entry->previous_event_date) && ($entry->previous_event_date === date('Y-m-d'));
+            if (!$entry->is_copied_from_previous_event || ($entry->is_copied_from_previous_event && $previous_event_created_same_day)) {
+                echo '<i class="oe-i trash js-remove"></i>';
+            } elseif (!$stopped) {
+                echo '<i class="oe-i no-permissions js-has-tooltip" data-tooltip-content="This drug cannot be deleted as it was added in a previous event. Please use the <strong><em>Stopped</em></strong> button to end this entry"></i>';
+            }
+        }?>
 </tr>
 <?php
     $start_date_display = str_replace('-00', '', $entry->start_date);
