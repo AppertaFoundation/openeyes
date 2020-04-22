@@ -32,6 +32,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
 
     /**

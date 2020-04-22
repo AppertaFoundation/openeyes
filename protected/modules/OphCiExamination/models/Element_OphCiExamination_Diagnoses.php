@@ -35,6 +35,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 10;
+
     protected $errorExceptions = [
             'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
     ];
@@ -374,14 +377,19 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         ) {
             foreach (OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)
-                         ) as $finding) {
+                         ) as $finding_assignment
+            ) {
+                $finding = $finding_assignment->finding;
                 $table_vals[] = array(
                     'finding_id' => $finding->id,
                     'date' => \Helper::convertDate2NHS($this->event->event_date),
                     'laterality' => '',
-                    'term' => $finding->description
+                    'term' => $finding->name .
+                        (isset($finding_assignment->description) && $finding_assignment->description ?
+                            " : " . $finding_assignment->description :
+                            "")
                 );
-                $finding_ids[] = $finding->finding_id;
+                $finding_ids[] = $finding->id;
                 $findings[] = $finding;
             }
         }
@@ -565,10 +573,5 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 }

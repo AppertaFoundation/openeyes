@@ -65,6 +65,7 @@ migrateparams="-q"
 nofix=0
 dwservrunning=0
 restorefile="/tmp/openeyes_sample_data.sql"
+hscic=0
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -119,6 +120,9 @@ do
 		-f|--custom-file) # use a custom database backup for the restore
 			restorefile="$2"
 			shift
+		;;
+		--hscic|-hscic|-gp|--gp) hscic=1
+			# run the hscic import after reset
 		;;
     	*)  if [ "$p" == "--hard" ]; then
                 echo "Unknown parameter $p $2"
@@ -186,6 +190,7 @@ if [ $showhelp = 1 ]; then
 	echo "	--custom-file"
 	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
 	echo "					  'oe-reset -f <filename>.sql' "
+	echo "  --hscic         : Run the hscic import after reset"
 	echo ""
     exit 1
 fi
@@ -354,6 +359,10 @@ fi
 
 if [ ! $nofix = 1 ]; then
 	bash $SCRIPTDIR/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
+fi
+
+if [ $hscic = 1 ]; then
+	bash $SCRIPTDIR/import-hscic-data.sh --force
 fi
 
 # restart the service if we stopped it

@@ -75,10 +75,27 @@ class Contact extends BaseActiveRecordVersioned
             array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name,
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
-            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp', 'manage_practice')),
+            array('first_name, last_name', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
+            array('title, first_name, last_name, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req')),
+            array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message'=>'Please select a Role.'),
+            array('primary_phone', 'requiredValidator'),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
             array('first_name', 'required', 'on' => array('manage_practice')),
+            array('first_name', 'length', 'max' => 300, 'on' => 'manage_practice'),
+            array('primary_phone','OEPhoneNumberValidator'),
         );
+    }
+
+    public function requiredValidator($attribute, $params)
+    {
+        $scenario = $this->getScenario();
+        if ($scenario === 'manualAddPatient' || $scenario === 'referral' || $scenario === 'self_register' || $scenario === 'other_register') {
+            // add error based on the admin param and the attribute value.
+            if ( (Yii::app()->params['patient_phone_number_mandatory'] === '1') && !$this->primary_phone ) {
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank.');
+            }
+        }
     }
 
     /**
@@ -264,6 +281,14 @@ class Contact extends BaseActiveRecordVersioned
         return false;
     }
 
+    protected function performAjaxValidation($model)
+        {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+    }
+
     public function getActiveContacts($patient_id)
     {
         $criteria = new CDbCriteria();
@@ -273,3 +298,4 @@ class Contact extends BaseActiveRecordVersioned
         return Contact::model()->with('label')->findAll($criteria);
     }
 }
+

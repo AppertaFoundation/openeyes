@@ -30,10 +30,10 @@ $event_type = $event->eventType->name;
             <?php echo $this->patient->getLetterAddress(array(
                 'delimiter' => '<br/>',
             ))?>
-            <br />
-            <br />
-            Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
-            <br />
+			<br />
+			<br />
+            <?php echo Yii::app()->params['hos_num_label'].': '?><strong><?php echo $this->patient->hos_num ?></strong>
+			<br />
             <?php echo Yii::app()->params['nhs_num_label']?> No: <strong><?php echo $this->patient->nhsnum ?></strong>
             <br />
             DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>

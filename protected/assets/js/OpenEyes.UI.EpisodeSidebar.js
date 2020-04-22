@@ -13,6 +13,9 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+var OpenEyes = OpenEyes || {};
+
+OpenEyes.UI = OpenEyes.UI || {};
 
 (function (exports) {
     /**
@@ -255,6 +258,9 @@
                                     data: {'event_id': event_id},
                                 }).success(function(response){
                                     setEventImageSrc(event_id, response);
+                                    setEventImageSrcFromData(
+                                        self.element.find('.events').find("li[data-event-id="+event_id+"]")
+                                    );
                                 });
                             }
                         }

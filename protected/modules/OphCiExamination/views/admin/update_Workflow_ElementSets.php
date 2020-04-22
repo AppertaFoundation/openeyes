@@ -56,7 +56,7 @@
 
         <tfoot class="pagination-container">
         <tr>
-            <td colspan="3">
+            <td colspan="5">
                 <?php echo EventAction::button('Add step', 'add_step', null, array('class' => 'small'))->toHtml() ?>
             </td>
         </tr>

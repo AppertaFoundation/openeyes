@@ -27,27 +27,19 @@
         foreach ($operations as $operation) {?>
         <tr>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
-          <td>
-                 <?php if (array_key_exists('link', $operation)) { ?>
-                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
-                    <?php } ?>
-          </td>
-          <td>
+          <td></td>
+          <td class="nowrap">
                  <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-          </td>
-          <td>
-          </td>
-          <td>
-            <span class="oe-date">
+              <span class="oe-date">
                  <?= array_key_exists('object', $operation) ?
                      $operation['object']->getDisplayDate() :
                      Helper::formatFuzzyDate($operation['date']); ?>
-          </span>
+              </span>
           </td>
             <td>
                 <?php if (array_key_exists('link', $operation)) { ?>
-                    <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle small pad"></i></a>
+                    <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>
                 <?php } ?>
             </td>
         </tr>

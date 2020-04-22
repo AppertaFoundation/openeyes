@@ -252,7 +252,7 @@ $(function () {
       searchFilter: prescriptionElementDrugTypes,
     },
     width: 600,
-    deselectOnReturn: false,
+    deselectOnReturn: true,
     onReturn: function (adderDialog, selectedItems) {
 				$('#event-content').trigger('change');
         if(typeof patientAllergies === 'undefined'){
@@ -279,6 +279,9 @@ $(function () {
         } else {
             addItems(selectedItems);
         }
+      adderDialog.popup.find('li').removeClass('selected');
+      adderDialog.runItemSearch("");
+
     },
   });
 
