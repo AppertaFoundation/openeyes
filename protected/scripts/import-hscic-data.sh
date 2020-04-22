@@ -18,8 +18,8 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-HOSTNAME=`hostname`
-SCRIPT=`basename $0`
+HOSTNAME=$(hostname)
+SCRIPT=$(basename $0)
 
 extraparams=""
 region=${OE_HSCIC_REGION:-'england'}
