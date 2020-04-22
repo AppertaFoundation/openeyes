@@ -43,11 +43,11 @@
         </tr>
         <tr>
             <th>Report Definition:</th>
-            <td><?=\CHtml::textArea('report_definition', $queue->report_definition, ['class' => 'cols-full']); ?></td>
+            <td><?=\CHtml::textArea('report_definition', $queue->report_definition, ['class' => 'cols-full autosize']); ?></td>
         </tr>
         <tr>
             <th>Assignment Fields:</th>
-            <td><?=\CHtml::textArea('assignment_fields', $queue->assignment_fields, ['class' => 'cols-full', 'rows' => 5]); ?></td>
+            <td><?=\CHtml::textArea('assignment_fields', $queue->assignment_fields, ['class' => 'cols-full autosize', 'rows' => 5]); ?></td>
         </tr>
         <tr>
             <th>Event types:</th>
@@ -84,3 +84,8 @@
 
     </div>
 </form>
+<script>
+    $(document).ready(function() {
+        setTimeout(() => autosize($('.autosize')), 0);
+    });
+</script>
