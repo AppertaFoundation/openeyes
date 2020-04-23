@@ -693,6 +693,7 @@ class DefaultController extends BaseEventTypeController
                          'duration_id',
                          'frequency_id',
                          'dose',
+                         'dose_unit_term',
                          'laterality',
                          'route_id',
                          'dispense_condition_id',
