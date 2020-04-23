@@ -251,6 +251,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.showStopControls($full_row);
       });
 
+      $second_part_of_row.on("click", ".js-start-date-display", function(){
+          $(this).hide();
+          $full_row.find(".js-start-date-wrapper").show();
+      });
+
 		$full_row.on("click", ".js-btn-prescribe", function () {
             let $input = $(this).closest(".toggle-switch").find("input");
             let checked = !$input.prop("checked");
