@@ -200,7 +200,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 </td>
                                 <td>
                                     <?php
-                                    $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
+                                    $link = $entry->prescription_item_id && isset($entry->prescriptionItem->prescription->event) ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
                                     $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                                     <a href="<?= $link ?>">
                                         <i class="js-has-tooltip fa pro-theme oe-i direction-right-circle small pad"
