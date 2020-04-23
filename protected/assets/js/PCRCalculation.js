@@ -130,8 +130,9 @@ function setSurgeonFromNote(ev, pcrEl) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
-
+		console.log('pcrEl '+pcrEl);
     var surgeonId = $(ev.target).val();
+		console.log('surgeon Id '+surgeonId);
     if (!surgeonId) {
         $(pcrEl).val('');
         $(pcrEl).trigger('change');
@@ -143,7 +144,13 @@ function setSurgeonFromNote(ev, pcrEl) {
         'url': '/user/surgeonGrade/',
         'data': {'id': surgeonId},
         'success': function (data) {
-            $(pcrEl).val(data.id);
+        		if($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked')){
+							$('#pcrrisk_left'+pcrEl).val(data.id);
+						}
+						else if($('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked')){
+							$('#pcrrisk_right'+pcrEl).val(data.id);
+						}
+
             $(pcrEl).trigger('change');
         }
     });
@@ -285,7 +292,7 @@ function mapExaminationToPcr() {
     var left_eyedraw, right_eyedraw, risk_element;
     var examinationMap = {
             "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
-                "pcr": '.pcr_doctor_grade',
+                "pcr": '_doctor_grade_id',
                 "func": setSurgeonFromNote,
                 "init": true
             },
