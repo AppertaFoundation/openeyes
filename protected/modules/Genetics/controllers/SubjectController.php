@@ -59,7 +59,7 @@ class SubjectController extends BaseModuleController
             }
             $this->jsVars['geneticsRelationships'] = $relationsForJson;
         }
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true);
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/subjects.js');
 
         return parent::beforeAction($action);
@@ -260,7 +260,7 @@ class SubjectController extends BaseModuleController
             Audit::add('Genetics patient list', 'search');
         }
 
-        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
+        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'), true);
         Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
 
         $model = new GeneticsPatient('search');

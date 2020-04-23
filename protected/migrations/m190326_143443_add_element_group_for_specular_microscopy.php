@@ -4,23 +4,28 @@ class m190326_143443_add_element_group_for_specular_microscopy extends CDbMigrat
 {
     public function up()
     {
-        $event_type = EventType::model()->findByAttributes(['class_name' => 'OphCiExamination']);
-        $element_group = ElementGroup::model()->findByAttributes(
-            [
-                'name' => 'Anterior Segment',
-                'event_type_id' => $event_type->id
-            ]
-        );
-        $this->update('element_type', ['element_group_id' => $element_group->id],
-            'class_name = :class_name', ['class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy']
-        );
+        $event_type = $this->dbConnection->createCommand("SELECT * FROM event_type WHERE class_name = 'OphCiExamination'")
+            ->queryAll();
+        $element_group = $this->dbConnection->createCommand('SELECT * FROM element_type')
+            ->where("name = 'Anterior Segment'")
+            ->andWhere('event_type_id = :event_type_id', array('event_type_id' => $event_type['id']))
+            ->queryRow();
 
+        $this->update(
+            'element_type',
+            ['element_group_id' => $element_group['id']],
+            'class_name = :class_name',
+            ['class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy']
+        );
     }
 
     public function down()
     {
-        $this->update('element_type', ['element_group_id' => null],
-            'class_name = :class_name', ['class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy']
+        $this->update(
+            'element_type',
+            ['element_group_id' => null],
+            'class_name = :class_name',
+            ['class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy']
         );
     }
 }

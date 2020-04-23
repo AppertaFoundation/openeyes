@@ -99,18 +99,21 @@ class PatientTicketing_APITest extends CDbTestCase
     {
         $event = new \Event();
         $ticket = new models\Ticket();
+        $ticket->patient_id = 1;
         $queue = new models\Queue();
 
         $assignment = $this->getMockBuilder('OEModule\PatientTicketing\models\TicketQueueAssignment')
             ->disableOriginalConstructor()
             ->setMethods(array('save'))
             ->getMock();
+        $ticket->save();
+        $assignment->ticket_id = $ticket->id;
 
         $assignment->queue = $queue;
 
         $assignment->expects($this->once())
             ->method('save')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $ticket->initial_queue_assignment = $assignment;
 
@@ -121,7 +124,7 @@ class PatientTicketing_APITest extends CDbTestCase
 
         $api->expects($this->once())
             ->method('getTicketForEvent')
-            ->will($this->returnValue($ticket));
+            ->willReturn($ticket);
 
         $api->updateTicketForEvent($event);
     }

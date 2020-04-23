@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\BaseMedicationWidget;
 
 /**
  * Class HistoryMedicationsEntry - Supports linking to prescription items as shadow records
@@ -66,7 +67,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function tableName()
     {
-        return 'ophciexamination_history_medications_entry';
+        return 'archive_ophciexamination_history_medications_entry';
     }
 
     /**
@@ -460,7 +461,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function __toString()
     {
         $res = array();
-        foreach (array('Medication', 'Administration', 'Dates') as $k) {
+        foreach (array('ArchiveMedication', 'Administration', 'Dates') as $k) {
             if ($str = $this->{'get' . $k . 'Display'}()) {
                 $res[] = $str;
             }

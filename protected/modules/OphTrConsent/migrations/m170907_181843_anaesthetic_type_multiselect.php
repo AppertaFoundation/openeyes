@@ -2,32 +2,63 @@
 
 class m170907_181843_anaesthetic_type_multiselect extends OEMigration
 {
+    /**
+     * @return bool|void
+     * @throws CException
+     * @throws Exception
+     */
     public function up()
     {
-
+        Audit::$db = $this->dbConnection;
         $this->createOETable('ophtrconsent_procedure_anaesthetic_type', array(
             'id' => 'pk',
             'et_ophtrconsent_procedure_id' => 'int(10) unsigned NOT NULL',
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtrconsent_procedure_to_anaest_type', 'ophtrconsent_procedure_anaesthetic_type', 'anaesthetic_type_id',
-            'anaesthetic_type', 'id');
+        $this->addForeignKey(
+            'ophtrconsent_procedure_to_anaest_type',
+            'ophtrconsent_procedure_anaesthetic_type',
+            'anaesthetic_type_id',
+            'anaesthetic_type',
+            'id'
+        );
 
-        $this->addForeignKey('ophtrconsent_procedure_to_anaest_type_to_el', 'ophtrconsent_procedure_anaesthetic_type', 'et_ophtrconsent_procedure_id',
-            'et_ophtrconsent_procedure', 'id');
+        $this->addForeignKey(
+            'ophtrconsent_procedure_to_anaest_type_to_el',
+            'ophtrconsent_procedure_anaesthetic_type',
+            'et_ophtrconsent_procedure_id',
+            'et_ophtrconsent_procedure',
+            'id'
+        );
 
         $this->dropForeignKey('et_ophtrconsent_procedure_anaesthetic_type_id_fk', 'et_ophtrconsent_procedure');
 
         $dataProvider = new CActiveDataProvider('Element_OphTrConsent_Procedure');
         $iterator = new CDataProviderIterator($dataProvider);
 
-        $anaesthetic_topical_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
-        $anaesthetic_LA_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
-        $anaesthetic_LAC_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
-        $anaesthetic_LAS_id = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+        $anaesthetic_topical_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'Topical'))
+            ->queryScalar();
+        $anaesthetic_LA_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'LA'))
+            ->queryScalar();
+        $anaesthetic_LAC_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'LAC'))
+            ->queryScalar();
+        $anaesthetic_LAS_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'LAS'))
+            ->queryScalar();
 
-        var_dump("Migrating Anaesthetic options...");
+        echo 'Migrating Anaesthetic options...';
 
         $transaction = $this->getDbConnection()->beginTransaction();
         try {
@@ -77,10 +108,19 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
 
                         $data['text'] = "Anaesthetic type {$text_type} became LA";
 
-                        Audit::add('admin', 'update', serialize($data),
+                        Audit::add(
+                            'admin',
+                            'update',
+                            serialize($data),
                             'Remove redundant Anaesthetic options',
-                            array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
-                                'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                            array(
+                                'module' => 'OphTrConsent',
+                                'model' => 'Element_OphTrConsent_Procedure',
+                                'event_id' => $element->event_id,
+                                'episode_id' => $event->episode_id,
+                                'patient_id' => $episode->patient_id
+                            )
+                        );
                 } else {
                     $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
                         'et_ophtrconsent_procedure_id' => $element->id,
@@ -103,10 +143,19 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
                         'text' => "Anaesthetic type moved to new table: ophtrconsent_procedure_anaesthetic_type"
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
-                        array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        array(
+                            'module' => 'OphTrConsent',
+                            'model' => 'Element_OphTrConsent_Procedure',
+                            'event_id' => $element->event_id,
+                            'episode_id' =>$event->episode_id,
+                            'patient_id' => $episode->patient_id
+                        )
+                    );
                 }
             }
             $transaction->commit();
@@ -115,21 +164,21 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
             \OELog::log($e->getMessage());
             throw $e;
         }
-
     }
 
+    /**
+     * @param $model_name
+     * @param $attributes
+     * @throws Exception
+     */
     private function createOrUpdate($model_name, $attributes)
     {
-        if (!$model = $model_name::model()->findByAttributes($attributes)) {
-            $model = new $model_name;
-        }
-
-        foreach ($attributes as $attribute => $value) {
-            $model->{$attribute} = $value;
-        }
-
-        if (!$model->save()) {
-            throw new Exception("Unable to save : $model_name" . print_r($model->getErrors(), true));
+        $model = $this->dbConnection->createCommand("SELECT * FROM {$model_name::model()->tableName}")
+            ->where($attributes);
+        if (!$model) {
+            $this->insert($model_name::model()->tableName, $attributes);
+        } else {
+            $this->update($model_name::model()->tableName, $attributes, 'id = :id', array(':id' => $model['id']));
         }
     }
 

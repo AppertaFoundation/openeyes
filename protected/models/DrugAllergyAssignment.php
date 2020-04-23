@@ -12,6 +12,7 @@
  * @property string $created_user_id
  * @property string $last_modified_date
  * @property string $created_date
+ * @deprecated
  *
  * The followings are the available model relations:
  * @property User $createdUser

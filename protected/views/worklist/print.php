@@ -25,7 +25,7 @@ $logoHelper = new LogoHelper();
 
 <header class="print-header">
     <div class="logo">
-		<?= $logoHelper->render() ?>
+        <?= $logoHelper->render() ?>
     </div>
 </header>
 

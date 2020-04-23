@@ -1,0 +1,146 @@
+<?php
+/**
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2019
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+class CommonSystemicDisorderGroupController extends BaseAdminController
+{
+    public $group = 'Disorders';
+
+    public function actionList()
+    {
+        $this->render('/admin/listcommonsystemicdisordergroup', [
+            'model' => CommonSystemicDisorderGroup::model(),
+            'model_list' => CommonSystemicDisorderGroup::model()->findAll(['order' => 'display_order']),
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new CommonSystemicDisorderGroup();
+        $values = \Yii::app()->request->getPost('CommonSystemicDisorderGroup', []);
+        if (!empty($values)) {
+            $model->name = $values['name'];
+            $last_item = $model::model()->find(['order'=>'display_order DESC']);
+            $model->display_order = $last_item ? $last_item->display_order + 1 : '1';
+            if ($model->save()) {
+                Audit::add('admin', 'create', serialize($model->attributes), false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']);
+                Yii::app()->user->setFlash('success', 'Common Systemic Disorder Group created');
+                $this->redirect(['list']);
+            } else {
+                $errors = $model->getErrors();
+            }
+        }
+        $this->render('/admin/editcommonsystemicdisordergroup', [
+            'model' => $model,
+            'errors' => isset($errors) ? $errors : null,
+        ]);
+    }
+
+    public function actionUpdate()
+    {
+        $request = Yii::app()->getRequest();
+        $model = CommonSystemicDisorderGroup::model()->findByPk($request->getParam('id'));
+        if (!$model) {
+            \OELog::log('CommonSystemicDisorderGroup not found with id ' . $request->getParam('id'));
+            $this->redirect(['list']);
+        }
+
+        $values = $request->getPost('CommonSystemicDisorderGroup', []);
+        if (!empty($values)) {
+            $model->name = $values['name'];
+            if ($model->save()) {
+                Yii::app()->user->setFlash('success', 'Common Systemic Disorder Group saved');
+                $this->redirect(['list']);
+            } else {
+                $errors = $model->getErrors();
+            }
+        }
+
+        $this->render('/admin/editcommonsystemicdisordergroup', [
+            'model' => $model,
+            'errors' => isset($errors) ? $errors : null,
+        ]);
+    }
+
+    public function actionDelete()
+    {
+        $delete_ids = \Yii::app()->request->getPost('select', []);
+        $transaction = \Yii::app()->db->beginTransaction();
+        $success = true;
+        $result = [];
+        $result['status'] = 1;
+        $result['errors'] = "";
+        try {
+            foreach ($delete_ids as $group_id) {
+                $group = CommonSystemicDisorderGroup::model()->deleteByPk($group_id);
+                if ($group) {
+                    Audit::add('admin-common-systemic-disorder-group', 'delete', $group);
+                } else {
+                    $success = false;
+                    $result['status'] = 0;
+                    $result['errors'][] = $group->getErrors();
+                    break;
+                }
+            }
+        } catch (Exception $e) {
+            \OELog::log($e->getMessage());
+            $result['status'] = 0;
+            $result['errors'][]= $e->getMessage();
+            $success = false;
+        }
+
+        if ($success) {
+            $transaction->commit();
+        } else {
+            $transaction->rollback();
+        }
+
+        echo json_encode($result);
+    }
+
+    public function actionSave()
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+        $disorder_groups = Yii::app()->request->getPost('CommonSystemicDisorderGroup') ?: [];
+        $errors = [];
+
+        foreach ($disorder_groups as $disorder_group) {
+            $group = CommonSystemicDisorderGroup::model()->findByPk($disorder_group['id']);
+            if ($group) {
+                $group->id = $disorder_group['id'];
+                $group->display_order = $disorder_group['display_order'];
+
+                if (!$group->save()) {
+                    $errors[] = $group->getErrors();
+                }
+            }
+        }
+
+        if (empty($errors)) {
+            $transaction->commit();
+            Yii::app()->user->setFlash('success', 'List updated.');
+        } else {
+            $transaction->rollback();
+        }
+
+        $this->render('/admin/listcommonsystemicdisordergroup', [
+            'model' => CommonSystemicDisorderGroup::model(),
+            'model_list' => CommonSystemicDisorderGroup::model()->findAll(['order' => 'display_order']),
+            'errors' => $errors
+        ]);
+    }
+}

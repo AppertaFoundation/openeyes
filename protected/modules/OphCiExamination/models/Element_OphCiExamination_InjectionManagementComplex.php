@@ -658,10 +658,10 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
     public function requiredIfSecondary($attribute, $params)
     {
         if (($params['side'] == 'left' && $this->eye_id != \Eye::RIGHT) || ($params['side'] == 'right' && $this->eye_id != \Eye::LEFT)) {
-            if ($this->$params['dependent'] && !$this->$attribute) {
+            if ($params['dependent'] && !$this->$attribute) {
                 if ($api = Yii::app()->moduleAPI->get('OphCoTherapyapplication')) {
-                    if (count($api->getLevel2Disorders($this->$params['dependent']))) {
-                        $disorder = \Disorder::model()->findByPk($this->$params['dependent']);
+                    if (count($api->getLevel2Disorders($params['dependent']))) {
+                        $disorder = \Disorder::model()->findByPk($params['dependent']);
                         $this->addError($attribute, $disorder->term.' must be associated with another diagnosis');
                     }
                 }

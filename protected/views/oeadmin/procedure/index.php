@@ -80,7 +80,7 @@
             <th>Aliases</th>
             <th>Has Benefits</th>
             <th>Has Complications</th>
-            <th>Risks</th>
+            <th>Whiteboard Risks</th>
             <th>Active</th>
         </tr>
         </thead>

@@ -15,8 +15,8 @@ class EDCardTest extends CDbTestCase
 
     public function setUp()
     {
-        $this->imageCard = new EDCard();
         parent::setUp();
+        $this->imageCard = new EDCard();
     }
 
     public function tearDown()
@@ -56,6 +56,7 @@ class EDCardTest extends CDbTestCase
      * @param $doodles array List of new doodle configurations.
      * @param $eye string Fixture ID for eye.
      * @dataProvider getData
+     * @covers EDCard
      */
     public function testInit($doodles, $eye)
     {

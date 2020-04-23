@@ -20,8 +20,8 @@
 <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'doodleToolBarArray' => array(
-            array('RRD', 'ChoroidalNaevusMelanoma', 'ChoroidalEffusion', 'UTear', 'RoundHole', 'Dialysis', 'GRT', 'MacularHole', 'StarFold', 'AntPVR', 'Lattice', 'Cryo', 'LaserCircle'),
-            array('DrainageRetinotomy', 'Retinoschisis', 'OuterLeafBreak', 'InnerLeafBreak', 'Freehand', 'FreehandCopyForOE'),
+            array('RRD', 'ChoroidalNaevusMelanoma', 'ChoroidalEffusion', 'UTear', 'RoundHole', 'Dialysis', 'GRT', 'StarFold', 'AntPVR', 'Lattice', 'Cryo', 'LaserCircle'),
+            array('DrainageRetinotomy', 'Retinoschisis', 'OuterLeafBreak', 'InnerLeafBreak', 'Fovea', 'Freehand'),
         ),
         'onReadyCommandArray' => array(
             array('addDoodle', array('Fundus')),

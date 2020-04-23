@@ -32,7 +32,7 @@ class DefaultController extends BaseEventTypeController
     protected function beforeAction($action)
     {
         //adding Anaestethic JS
-        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        $url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js'), true);
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
             'AnaestheticController',
@@ -202,8 +202,6 @@ class DefaultController extends BaseEventTypeController
         if ($this->booking_event || $this->unbooked) {
             parent::actionCreate();
         } else {
-            $bookings = array();
-
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $bookings = $api->getIncompleteOperationsForEpisode($this->patient);
             }
@@ -225,7 +223,7 @@ class DefaultController extends BaseEventTypeController
             $this->processJsVars();
             $this->render('select_event', array(
                 'errors' => $errors,
-                'bookings' => $bookings,
+                'bookings' => $bookings ? $bookings : [],
             ), false, true);
         }
     }

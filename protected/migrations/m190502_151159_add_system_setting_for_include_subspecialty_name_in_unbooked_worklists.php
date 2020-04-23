@@ -5,7 +5,8 @@ class m190502_151159_add_system_setting_for_include_subspecialty_name_in_unbooke
     public function safeUp()
     {
         $this->insert('setting_metadata', [
-        'field_type_id' => SettingFieldType::model()->find('name = ?', ["Radio buttons"])->id,
+        'field_type_id' => $this->dbConnection->createCommand('SELECT id FROM setting_field_type WHERE name = "Radio buttons"')
+            ->queryScalar(),
         'key' => 'include_subspecialty_name_in_unbooked_worklists',
         'name' => 'Include subspecialty name in unbooked worklists',
         'data' => serialize(['1' => 'Yes', '0' => 'No']),

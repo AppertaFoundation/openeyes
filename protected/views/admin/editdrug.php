@@ -35,7 +35,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 <?php echo $form->textField($drug, 'default_dose', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 <?php echo $form->textField($drug, 'dose_unit', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 <?php echo $form->dropDownList($drug, 'default_frequency_id', 'DrugFrequency', array('empty' => '')) ?>
-<?php echo $form->dropDownList($drug, 'default_duration_id', 'DrugDuration', array('empty' => '')) ?>
+<?php echo $form->dropDownList($drug, 'default_duration_id', 'MedicationDuration', array('empty' => '')) ?>
 <?php echo $form->multiSelectList(
     $drug,
     'allergies',

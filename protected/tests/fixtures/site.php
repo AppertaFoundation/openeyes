@@ -22,6 +22,10 @@ return array(
         'name' => 'City Road',
         'short_name' => 'City Road',
         'institution_id' => 1,
+        'remote_id' => getenv('OE_INSTITUTION_CODE') ?: 'NEW',
         'contact_id' => 1,
+        'location' => 'City',
+        'fax' => '123 456',
+        'telephone' => '123 456',
     ),
 );

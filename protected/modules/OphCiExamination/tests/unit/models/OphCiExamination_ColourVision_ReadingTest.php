@@ -1,4 +1,7 @@
 <?php
+
+use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Reading;
+
 /**
  * OpenEyes.
  *
@@ -14,10 +17,14 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCiExamination_ColourVision_ReadingTest extends PHPUnit_Framework_TestCase
+class OphCiExamination_ColourVision_ReadingTest extends ActiveRecordTestCase
 {
+    public function getModel()
+    {
+        return OphCiExamination_ColourVision_Reading::model();
+    }
     public function testgetMethod()
     {
-        $this->markTestIncomplete('To be written');
+        $this->markTestIncomplete('TODO');
     }
 }

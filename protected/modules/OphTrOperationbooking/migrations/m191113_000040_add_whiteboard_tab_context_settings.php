@@ -9,11 +9,11 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
             'field_type_id' => $id['id'],
             'key' => 'opbooking_whiteboard_display_mode',
             'name' => 'Operation Booking whiteboard display mode',
-            'default_value' => '',
             'data' => serialize(array(
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
+            'default_value' => 'CURRENT',
         ));
 
         $this->insert(
@@ -21,11 +21,11 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
             'field_type_id' => $id['id'],
             'key' => 'opnote_whiteboard_display_mode',
             'name' => 'Operation Note whiteboard display mode',
-            'default_value' => '',
             'data' => serialize(array(
                 'NEW' => 'Always open in new tab/window',
                 'CURRENT' => 'Reuse tab/window if already open',
             )),
+            'default_value' => 'CURRENT',
             )
         );
 

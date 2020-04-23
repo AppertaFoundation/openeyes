@@ -20,6 +20,7 @@
     <div class="data-group">
         <div class="column cols-2">
             <?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::hiddenField('display_order_edited', $step->display_order_edited)?>
         </div>
         <div class="column cols-2 end">
             <?php echo EventAction::button('Save', 'save_step_name', null, array('class' => 'small'))->toHtml()?>
@@ -59,15 +60,15 @@
             <div class="grid-view">
               <div id="workflow-edit-controls" class="data-group">
                 <div>
-                    <?php echo EventAction::button('Save workflow order', 'save_workflow', null, array('class' => 'small hint green', 'style' => 'display: none;'))->toHtml()?>
-                </div>
-                <div>
                     <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                     <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
+                    <button class="small button header-tab hint red" style="<?= ($step->display_order_edited == 0) ? 'display:none' : '' ?>" name="reset_workflow" data-element_set_id="<?=$step->id?>" type="submit" id="et_workflow_contextual_button">
+                    <?= ($step->display_order_edited == 1) ? 'Reset element order to default' : '' ?>
+              </button>
                 </div>
               </div>
               <div>
-                <?php echo EventAction::button('Reset workflow', 'reset_workflow', null, array('class' => 'small', 'data-element_set_id'=>$step->id))->toHtml()?>
+                
               </div>
             </div>
           </td>

@@ -231,7 +231,7 @@ if (!$nowrapper) {?>
                 if (obj.alternate && checkFilter(filterList, obj.alternate)) {
                     continue;
                 }
-                if(currentGroup !== group) {
+                if (currentGroup !== group) {
                     html += '<option disabled="disabled">----------</option>';
                 }
                 html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';

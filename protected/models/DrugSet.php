@@ -26,6 +26,7 @@
  * @property int $subspecialty_id
  * @property Subspecialty $subspecialty
  * @property DrugSetItem[] $items
+ * @deprecated
  */
 class DrugSet extends BaseActiveRecordVersioned
 {

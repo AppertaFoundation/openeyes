@@ -1,5 +1,5 @@
 <?php
-$this->pageTitle = Yii::app()->name . ' - Login';
+$this->pageTitle = ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ? Yii::app()->name . ' - ' : '') . 'Login';
 ?>
 
 <div class="oe-login">
@@ -18,8 +18,13 @@ $this->pageTitle = Yii::app()->name . ' - Login';
             'placeholder' => 'Username',
         )); ?>
 
-        <?php echo $form->passwordField($model, 'password',
-            array('autocomplete' => 'off', 'placeholder' => 'Password')); ?>
+        <?php echo $form->passwordField(
+            $model,
+            'password',
+            array('autocomplete' => 'off',
+            'placeholder' => 'Password'
+            )
+        ); ?>
 
       <i class="spinner" style="display:none"></i>
 

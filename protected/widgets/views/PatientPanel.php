@@ -19,7 +19,7 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
 /***
  * @var $trialContext TrialContext
  */
@@ -41,7 +41,7 @@ $deceased = $this->patient->isDeceased();
     <div class="patient-name">
         <?php if (!$this->patient->isDeleted()) : ?>
             <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
-            <?php else : ?>
+        <?php else : ?>
             <a>
         <?php endif; ?>
             <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
@@ -53,7 +53,9 @@ $deceased = $this->patient->isDeceased();
         </a>
     </div>
 
-
+    <?php if ($this->list_mode) {
+        ?><div class="flex-layout"> <?php
+    } ?>
     <div class="patient-details">
         <div class="hospital-number">
 <!--                Displaying only ID label (instead of CERA ID) to avoid overlapping issue for CERA, it should not affect UK's implementation-->
@@ -85,7 +87,10 @@ $deceased = $this->patient->isDeceased();
             echo $trialContext->renderAddToTrial();
         } ?>
     </div>
-    <?php if (!$deceased) { ?>
+    <?php if ($this->list_mode) {
+        ?><div class="flex-layout flex-right"> <?php
+    }
+    if (!$deceased) { ?>
         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
             <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
                 <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
@@ -128,7 +133,9 @@ $deceased = $this->patient->isDeceased();
 
     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
         <div class="patient-local-edit js-patient-local-edit-btn"
-        <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials))  echo 'style ="top: 35px; right: 0px"'?>
+        <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
+            echo 'style ="top: 35px; right: 0px"';
+        }?>
         >
             <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id'=>$this->patient->id, 'prevUrl'=>Yii::app()->request->url)); ?>" >
                 <svg viewBox="0 0 30 30" class="icon">
@@ -144,8 +151,9 @@ $deceased = $this->patient->isDeceased();
             </svg>
         </div>
     <?php } ?>
-
-
+<?php if ($this->list_mode) {?>
+        </div></div>
+<?php } ?>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
         <?php foreach ($this->widgets as $widget) {
@@ -155,7 +163,7 @@ $deceased = $this->patient->isDeceased();
 </div>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->publish('protected/widgets/js', true);
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 ?>
 <script type="text/javascript">

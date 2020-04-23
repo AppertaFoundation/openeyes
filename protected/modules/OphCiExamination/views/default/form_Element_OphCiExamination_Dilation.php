@@ -38,8 +38,8 @@ foreach ($dilation_drugs as $d_drug) {
              style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full dilation_table"
-                   style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
+            <table id="<?= CHtml::modelName($element) ?>_<?= $eye_side ?>_treatments" class="cols-full dilation_table"
+                   style="<?= (!$element->{$eye_side . '_treatments'} && !$element->hasErrors($eye_side . '_treatments')) ? 'display: none;' : '' ?>">
               <tbody class="plain" id="dilation_<?= $eye_side ?>">
               <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
                     $this->renderPartial(

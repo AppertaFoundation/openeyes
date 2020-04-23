@@ -16,7 +16,8 @@
  */
 Yii::app()->clientScript->registerCssFile(
     Yii::app()->assetManager->getPublishedUrl(
-        Yii::getPathOfAlias('application.modules.OphDrPrescription.assets')
+        Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'),
+        true
     ). '/css/fpten.css'
 );
 $this->renderOpenElements($this->action->id, null, array('copy' => @$copy, 'print_mode' => $print_mode, 'user' => $user));

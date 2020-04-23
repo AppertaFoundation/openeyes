@@ -183,13 +183,15 @@ if [ $force = 1 ]; then
     # END of cleanconfig
 fi
 
-# Fix permissions
-echo "Setting file permissions..."
-sudo gpasswd -a "$curuser" www-data
-sudo chown "$curuser":www-data -R $WROOT
+# Fix permissions (except in docker containers, where we always run as root)
+if [ "${DOCKER_CONTAINER^^}" != "TRUE" ]; then
+    echo "Setting file permissions..."
+    sudo gpasswd -a "$curuser" www-data
+    sudo chown "$curuser":www-data -R $WROOT
 
-sudo chmod 777 -R $WROOT
-sudo chmod g+s -R $WROOT
+    sudo chmod 777 -R $WROOT
+    sudo chmod g+s -R $WROOT
+fi
 
 # if this isn't a live install, then add the sample DB
 if [ "$nosample" == "0" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi

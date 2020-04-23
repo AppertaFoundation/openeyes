@@ -124,9 +124,13 @@ class Event extends BaseActiveRecordVersioned
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
             'previewImages' => array(self::HAS_MANY, 'EventImage', 'event_id'),
+            'previewWhiteboardImages' => [self::HAS_MANY, 'EventImage', 'event_id', 'condition' => 'document_number IS NOT NULL'],
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'eventSubtypeItems' => array(self::HAS_MANY, 'EventSubTypeItem', 'event_id'),
+            'firstEventSubtypeItem' => [self::HAS_ONE, 'EventSubTypeItem', 'event_id', 'order' => 'display_order'],
+            'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id']
         );
     }
 
@@ -684,6 +688,10 @@ class Event extends BaseActiveRecordVersioned
                 return $api->getEventName($this);
             }
         }
+
+        if ($this->firstEventSubtypeItem) {
+            return $this->firstEventSubtypeItem->eventSubtype->display_name;
+        }
         return $this->eventType ? $this->eventType->name : 'Event';
     }
 
@@ -701,7 +709,8 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Validate the event date.
      */
-    public function eventDateValidator($attribute, $param){
+    public function eventDateValidator($attribute, $param)
+    {
         $event_date = Helper::mysqlDate2JsTimestamp($this->event_date);
         if (isset($this->episode)) {
             $episode = $this->episode;

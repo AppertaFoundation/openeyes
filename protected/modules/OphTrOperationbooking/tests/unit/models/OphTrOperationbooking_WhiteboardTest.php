@@ -3,7 +3,7 @@
 use OEModule\OphCiExamination\models\HistoryRisks;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 
-class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
+class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
@@ -24,17 +24,26 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
         'history_risk_entry' => HistoryRisksEntry::class,
     );
 
+    public function getModel()
+    {
+        return OphTrOperationbooking_Whiteboard::model();
+    }
+
+    protected $columns_to_skip = [
+        'date_of_birth'
+    ];
+
     public static function setUpBeforeClass()
     {
         Yii::app()->getModule('OphCiExamination');
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->whiteboard);
         parent::tearDown();
@@ -85,14 +94,7 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
      * @param $comment string
      * @param $complexity int
      * @dataProvider getBookings
-     * @covers OphTrOperationbooking_Whiteboard::loadData
-     * @covers OphTrOperationbooking_Whiteboard::recentBiometry
-     * @covers OphTrOperationbooking_Whiteboard::recentBiometryReport
-     * @covers OphTrOperationbooking_Whiteboard::allergyString
-     * @covers OphTrOperationbooking_Whiteboard::alphaBlockerStatusAndDate
-     * @covers OphTrOperationbooking_Whiteboard::anticoagsStatusAndDate
-     * @covers OphTrOperationbooking_Whiteboard::operation
-     * @covers OphTrOperationbooking_Whiteboard::getDisplayHasRisk
+     * @covers OphTrOperationbooking_Whiteboard
      * @throws CHttpException
      */
     public function testLoadData($booking_id, $fixtureId, $procedure, $aconst, $equipment, $comment, $complexity = 0)
@@ -122,7 +124,7 @@ class OphTrOperationbooking_WhiteboardTest extends CDbTestCase
      * @param $complexity int
      * @param $expected_total_risks int
      * @dataProvider getBookings
-     * @covers OphTrOperationbooking_Whiteboard::getPatientRisksDisplay
+     * @covers OphTrOperationbooking_Whiteboard
      * @depends testLoadData
      * @throws CHttpException
      */

@@ -17,148 +17,70 @@
  */
 
 /**
- * The followings are the available columns in table 'ophdrprescription_item':.
- *
- * @property string $id
- * @property string $dose
- * @property DrugDuration $duration
- * @property DrugFrequency $frequency
- * @property DrugRoute $route
- * @property DrugRouteOption $route_option
- * @property Drug $drug
- * @property Prescription $prescription
+ * Class OphDrPrescription_Item
  * @property OphDrPrescription_ItemTaper[] $tapers
- * @property string $comments
+ * @property Element_OphDrPrescription_Details $prescription
+ * @property OphDrPrescription_DispenseCondition $dispense_condition
+ * @property OphDrPrescription_DispenseLocation $dispense_location
  */
-
-class OphDrPrescription_Item extends BaseActiveRecordVersioned
+class OphDrPrescription_Item extends EventMedicationUse
 {
-    private $fpten_line_usage = array();
-
     // Maximum characters per line on FP10 form is roughly 31.
     // Maximum characters per line on WP10 form is roughly 30.
     // Assuming the space left of the white margin can be used for printing, this could be expanded further.
     const MAX_FPTEN_LINE_CHARS = 31;
     const MAX_WPTEN_LINE_CHARS = 30;
 
+    public $original_item_id;
+
+    public $taper_support = true;
+
+        private $fpten_line_usage = array();
     /**
      * Returns the static model of the specified AR class.
-     *
-     * @return OphDrPrescription_Item the static model class
      */
+
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
 
-    /**
-     * @return string the associated database table name
-     */
-    public function tableName()
+    public static function getUsageType()
     {
-        return 'ophdrprescription_item';
+        return "OphDrPrescription";
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
+    public static function getUsageSubtype()
+    {
+        return "";
+    }
+
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-            array('drug_id, dose, route_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'required'),
-            array('route_option_id', 'validateRouteOption'),
-            array('comments', 'length', 'max'=>256),
-            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id,
-            last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
-            //array('', 'required'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id,
-            dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
-        );
-    }
-
-    public function validateRouteOption($attribute, $params)
-    {
-        if ($this->route && $this->route->options) {
-            foreach ($this->route->options as $option) {
-                if ($option->id == $this->route_option_id) {
-                    // Option is valid for this route
-                    return;
-                }
-            }
-        } else {
-            // Route options are ignored
-            return;
-        }
-        $this->addError($attribute, 'Route requires option selection');
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'tapers' => array(self::HAS_MANY, 'OphDrPrescription_ItemTaper', 'item_id'),
-            'prescription' => array(self::BELONGS_TO, 'Element_OphDrPrescription_Details', 'prescription_id'),
-            'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
-            'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
-            'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
-            'route_option' => array(self::BELONGS_TO, 'DrugRouteOption', 'route_option_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
-            'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
-            'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
-        );
-    }
-
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels()
-    {
-        return array(
-            'drug_id' => 'Drug',
-            'dose' => 'Dose',
-            'duration_id' => 'Duration',
-            'frequency_id' => 'Frequency',
-            'route_id' => 'Route',
-            'route_option_id' => 'Options',
-            'dispense_condition_id' => 'Dispense Condition',
-            'dispense_location_id' => 'Dispense Location',
-            'comments' => 'Comments',
-        );
-    }
-
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search()
-    {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
-
-        $criteria = new CDbCriteria();
-
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('dose', $this->dose, true);
-        $criteria->compare('prescription_id', $this->prescription_id, true);
-        $criteria->compare('drug_id', $this->drug_id, true);
-        $criteria->compare('duration_id', $this->duration_id, true);
-        $criteria->compare('frequency_id', $this->frequency_id, true);
-        $criteria->compare('route_id', $this->route_id, true);
-        return new CActiveDataProvider(get_class($this), array(
-            'criteria' => $criteria,
+        return array_merge(parent::rules(), array(
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
         ));
     }
+
+    public function relations()
+    {
+        return array_merge(parent::relations(), array(
+            'tapers' => array(self::HAS_MANY, OphDrPrescription_ItemTaper::class, 'item_id'),
+            'prescription' => array(
+                self::HAS_ONE,
+                Element_OphDrPrescription_Details::class,
+                array('event_id' => 'event_id'),
+            ),
+            'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
+            'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'parent' => array(self::HAS_MANY, OphDrPrescription_Item::class, 'prescription_item_id'),
+        ));
+    }
+
+    /**
+     * @return string
+     * Method to ensure backwards compatibility
+     */
 
     /**
      * Get the number of lines an attribute will use on an FP10 form.
@@ -172,29 +94,35 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     public function getDescription()
     {
-        $return = $this->drug->label;
-        $return .= ', '.$this->dose;
-        $return .= ' '.$this->frequency->name;
-        $return .= ' '.$this->route->name;
-        if ($this->route_option) {
-            $return .= ' ('.$this->route_option->name.')';
-        }
-        if (preg_match('/^[0-9]+/', $this->duration->name)) {
-            $return .= ' for '.$this->duration->name;
-        } else {
-            $return .= ' '.$this->duration->name;
-        }
-
-        return $return;
+        return $this->getMedicationDisplay();
     }
 
-    public function loadDefaults()
+    public function loadDefaults(MedicationSet $set = null)
     {
-        if ($this->drug) {
-            $this->duration_id = $this->drug->default_duration_id;
-            $this->frequency_id = $this->drug->default_frequency_id;
-            $this->route_id = $this->drug->default_route_id;
-            $this->dose = trim($this->drug->default_dose);
+        if ($this->medication_id) {
+            $defaults = false;
+
+            if (!is_null($set)) {
+                $defaults = MedicationSetItem::model()->find(array(
+                    'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
+                    'params' => array(':med_set_id' => $set->id, ':medication_id' => $this->medication_id)
+                ));
+            }
+
+            if ($defaults) {
+                /** @var MedicationSetItem $defaults */
+                $this->frequency_id = $defaults->default_frequency_id;
+                $this->route_id = $defaults->default_route_id ? $defaults->default_route_id : $this->medication->default_route_id;
+                $this->dose = $defaults->default_dose ? $defaults->default_dose : $this->medication->default_dose;
+                $this->dose_unit_term = $defaults->default_dose_unit_term ? $defaults->default_dose_unit_term : $this->medication->default_dose_unit_term;
+                $this->form_id = $defaults->default_form_id ? $defaults->default_form_id : $this->medication->default_form_id;
+            } else {
+                $this->frequency_id = null;
+                $this->route_id = $this->medication->default_route_id;
+                $this->dose = $this->medication->default_dose;
+                $this->dose_unit_term = $this->medication->default_dose_unit_term;
+                $this->form_id = $this->medication->default_form_id;
+            }
         }
     }
 
@@ -203,7 +131,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
                 }
             }
         }
@@ -215,15 +143,18 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->duration->name, array('Other', 'Once', 'Until review'))) {
+        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing')) || is_null($this->prescription->event)) {
             return null;
         }
 
         $start_date = new DateTime($this->prescription->event->event_date);
-        $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
+        if ($this->medicationDuration->name === 'Once') {
+            return $start_date;
+        }
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->medicationDuration->name));
         if ($include_tapers) {
             foreach ($this->tapers as $taper) {
-                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                if (in_array($taper->duration->name, array('Other', 'Ongoing'))) {
                     return null;
                 }
                 $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
@@ -241,7 +172,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $settings = new SettingMetadata();
         $max_lines = $settings->getSetting('prescription_form_format') === 'WP10' ? self::MAX_WPTEN_LINE_CHARS : self::MAX_FPTEN_LINE_CHARS;
         $item_lines_used = 0;
-        $drug_label = $this->drug->label;
+        $drug_label = $this->medication->label;
 
         foreach (array(
             'item_drug' => $drug_label,
@@ -281,34 +212,96 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
 
     public function getAdministrationDisplay()
     {
-        $dose = (string) $this->dose;
-        $freq = (string) $this->frequency;
+        $dose = (string)$this->dose;
+        $freq = (string)$this->frequency;
+        $route = (string)$this->route;
+
         if ($this->tapers) {
             $last_taper = array_slice($this->tapers, -1)[0];
-            $last_dose = (string) $last_taper->dose;
+            $last_dose = (string)$last_taper->dose;
             if ($last_dose != $dose) {
                 $dose .= ' - ' . $last_dose;
             }
-            $last_freq = (string) $last_taper->frequency;
+            $last_freq = (string)$last_taper->frequency;
             if ($last_freq != $freq) {
                 $freq .= ' - ' . $last_freq;
             }
         }
-        return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
+        return $dose . ($this->laterality ? ' ' . $this->getLateralityDisplay() : '') . ' ' . $route . ' ' . $freq;
+    }
+
+    /**
+     * Update the item based on its
+     * management item
+     */
+
+    public function updateFromManagementItem()
+    {
+        $attributes_to_check = array(
+            'medication_id',
+            'form_id',
+            'laterality',
+            'route_id',
+            'frequency_id',
+            'duration_id',
+            'dose',
+            'dispense_condition_id',
+            'dispense_location_id',
+            'comments',
+        );
+
+        if (!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" => $this->id))) {
+            return false;
+        }
+        /** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */
+        foreach ($attributes_to_check as $attribute) {
+            $this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
+        }
+
+        $this->save();
+        $this->updateTapers($mgment_item->tapers);
+    }
+
+    public function updateTapers(array $tapers)
+    {
+        foreach ($this->tapers as $taper) {
+            $taper->delete();
+        }
+
+        foreach ($tapers as $taper) {
+            $new_taper = new OphDrPrescription_ItemTaper();
+            $new_taper->setAttributes([
+                'item_id' => $this->id,
+                'frequency_id' => $taper->frequency_id,
+                'duration_id' => $taper->duration_id,
+                'dose' => $taper->dose
+            ]);
+
+            $new_taper->save();
+        }
     }
 
     public function fpTenFrequency()
     {
-        if (preg_match("/^\d+/", $this->duration->name)) {
-            return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' FOR ' . strtoupper($this->duration->name);
+        if (preg_match("/^\d+/", $this->medicationDuration->name)) {
+            return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' FOR ' . strtoupper($this->medicationDuration->name);
         }
 
-        return 'FREQUENCY: ' . strtoupper($this->frequency->long_name) . ' ' . strtoupper($this->duration->name);
+        return 'FREQUENCY: ' . strtoupper($this->frequency->term) . ' ' . strtoupper($this->medicationDuration->name);
     }
 
     public function fpTenDose()
     {
-        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->drug->dose_unit) : strtoupper($this->dose))
-            . ', ' . strtoupper($this->route->name) . ($this->route_option ? ' (' . strtoupper($this->route_option->name) . ')' : null);
+        return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->dose_unit_term) : strtoupper($this->dose))
+            . ', ' . strtoupper($this->route->term)
+            . ($this->medicationLaterality ? ' (' . strtoupper($this->medicationLaterality->name) . ')' : null);
+    }
+
+    protected function beforeDelete()
+    {
+        foreach ($this->tapers as $taper) {
+            $taper->delete();
+        }
+        return parent::beforeDelete();
     }
 }

@@ -274,9 +274,9 @@ class OEMigration extends CDbMigration
      * @param array  $columns
      * @param bool   $versioned
      */
-    protected function createOETable($name, array $columns, $versioned = false)
+    protected function createOETable($name, array $columns, $versioned = false, $fk_prefix = null)
     {
-        $fk_prefix = substr($name, 0, 56);
+        $fk_prefix = is_null($fk_prefix) ? substr($name, 0, 56) : $fk_prefix;
 
         $columns = array_merge(
             $columns,
@@ -371,8 +371,8 @@ class OEMigration extends CDbMigration
             'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ', '', $name),
             'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
-            'default' => isset($params['default']) ? $params['default'] : false,
-            'required' => isset($params['required']) ? $params['required'] : false,
+            'default' => isset($params['default']) ? $params['default'] : 0,
+            'required' => isset($params['required']) ? $params['required'] : 0,
         );
 
         if (isset($params['group_name'])) {
@@ -519,11 +519,11 @@ class OEMigration extends CDbMigration
                 );
 
             $element_type = Yii::app()->db->schema->getTable('element_type');
-            if(isset($element_type->columns['element_group_id'])) {
+            if (isset($element_type->columns['element_group_id'])) {
                 //this is needed to se the parent id for those elements set as children elements of another element type
                 $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
                 $to_insert['element_group_id'] = $thisGroupId;
-            } else if(isset($element_type->columns['parent_element_type_id'])) {
+            } else if (isset($element_type->columns['parent_element_type_id'])) {
                 $thisParentId = isset($element_type_data['parent_element_type_id']) ? $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
                 $to_insert['parent_element_type_id'] = $thisParentId;
             }
@@ -582,6 +582,23 @@ class OEMigration extends CDbMigration
                 "\nDeleted  in table : $tableName. Fields : "
                 . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
             );
+        }
+    }
+
+    /**
+     * @param $tableName
+     * @param $columnName
+     * @param $columnType
+     * @param bool $versioned
+     */
+    public function alterOEColumn($tableName, $columnName, $columnType, $versioned = false)
+    {
+        $this->alterColumn($tableName, $columnName, $columnType);
+
+        if ($versioned) {
+            if ($this->verifyTableVersioned($tableName)) {
+                $this->alterColumn($tableName . '_version', $columnName, $columnType);
+            }
         }
     }
 
@@ -727,7 +744,7 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        if(!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
+        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',array(':id' => $event_type_id))->queryScalar()){
             $event_type_id = NULL;
         }
 
@@ -812,27 +829,51 @@ class OEMigration extends CDbMigration
 
     /**
      * Add a column to an OE table and its corresponding versioning table.
+     *
      * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
      * @param $column string Column name.
      * @param $type string Column type.
+     * @param bool $versioned
      */
-    public function addOEColumn($table, $column, $type)
+    public function addOEColumn($table, $column, $type, $versioned = false)
     {
         $this->addColumn($table, $column, $type);
-        $this->addColumn($table . '_version', $column, $type);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->addColumn($table . '_version', $column, $type);
+        }
     }
 
     /**
      * Drop a column from an OE table and its corresponding versioning table.
+     *
      * @param $table string Table name (do not include 'version' at the end unless it appears twice in the table's name).
      * @param $column string Column name
+     * @param bool $versioned
      */
-    public function dropOEColumn($table, $column)
+    public function dropOEColumn($table, $column, $versioned = false)
     {
         $this->dropColumn($table, $column);
-        $this->dropColumn($table . '_version', $column);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->dropColumn($table . '_version', $column);
+        }
     }
 
+    /**
+     * Rename a column on an OE table and its corresponding versioning table
+     *
+     * @param $table
+     * @param $name
+     * @param $newName
+     * @param bool $versioned
+     */
+    public function renameOEColumn($table, $name, $newName, $versioned = false)
+    {
+        $this->renameColumn($table, $name, $newName);
+        if ($versioned && $this->verifyTableVersioned($table)) {
+            $this->renameColumn($table . '_version', $name, $newName);
+        }
+    }
+    
     public function removeOperationFromTask($oprn_name, $task_name)
     {
         $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name', array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
@@ -856,5 +897,23 @@ class OEMigration extends CDbMigration
     public function removeOperation($oprn_name)
     {
         $this->delete('authitem', "name = :name and type=0", array(':name' => $oprn_name));
+    }
+
+    /**
+     * @param $table_name
+     * @param bool $warn
+     * @return bool
+     */
+    protected function verifyTableVersioned($table_name, $warn = true)
+    {
+        if (Yii::app()->db->schema->getTable($table_name . '_version') !== null) {
+            return true;
+        }
+        if ($warn) {
+            $this->migrationEcho(
+                "\nWarning: $table_name specified as versioned but the version table does not exist"
+            );
+        }
+        return false;
     }
 }

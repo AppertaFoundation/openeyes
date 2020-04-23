@@ -32,10 +32,10 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'Fovea',
             'RPEDetachment',
             'EpiretinalMembrane',
-            'MacularHole',
             'Macroaneurysm',
             'RetinalVeinOcclusionPostPole',
             'RetinalArteryOcclusionPostPole',
+            'CNV',
         ),
         array(
             'Microaneurysm',
@@ -58,7 +58,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'SwollenDisc',
             'Telangiectasis',
             'ChoroidalHaemorrhage',
-            'ChoroidalNaevus',
+            'ChoroidalNaevusMelanoma',
             'PCV',
             'MacularDystrophy',
         ),
@@ -68,8 +68,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'MacularGrid',
             'SectorPRPPostPole',
             'PRPPostPole',
-            'Freehand',
-            'FreehandCopyForOE'
+            'Freehand'
         ),
     ),
     'onReadyCommandArray' => array(

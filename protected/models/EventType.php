@@ -105,6 +105,7 @@ class EventType extends BaseActiveRecordVersioned
                 array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
+        $criteria->addCondition('can_be_created_manually = 1');
 
         return self::model()->findAll($criteria);
     }
@@ -306,12 +307,15 @@ class EventType extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
         $criteria->compare('`default`', 1);
+        if ($this->show_attachments) {
+            $criteria->addCondition('t.event_type_id IS NULL', 'OR');
+        }
         $criteria->order = 'display_order';
 
         $elements = array();
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
             $element_class = $element_type->class_name;
-            $element  = new $element_class();
+            $element = new $element_class();
             if (method_exists($element, "isEnabled")) {
                 if (!$element->isEnabled()) {
                     continue;
@@ -353,8 +357,10 @@ class EventType extends BaseActiveRecordVersioned
             $ids[] = $parent->id;
         }
         $criteria->addInCondition('event_type_id', $ids);
+        if ($this->show_attachments) {
+            $criteria->addCondition('t.event_type_id IS NULL', 'OR');
+        }
         $criteria->order = 'display_order';
-
         return ElementType::model()->findAll($criteria);
     }
 
@@ -366,6 +372,10 @@ class EventType extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
         $criteria->order = 'display_order';
+
+        if ($this->show_attachments) {
+            $criteria->addCondition('t.event_type_id IS NULL', 'OR');
+        }
 
         return ElementGroup::model()->findAll($criteria);
     }
@@ -392,11 +402,16 @@ class EventType extends BaseActiveRecordVersioned
         if ($type === 'medium') {
             $type = 'large';
         }
-        if (isset($event->is_automated) && $event->eventType->class_name == 'OphCiExamination' && $event->is_automated == 1) {
-            return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
-        }
 
-        return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
+        if (isset($event) && $event->firstEventSubtypeItem) {
+            return "<i class=\"oe-i-e {$type} {$event->firstEventSubtypeItem->eventSubtype->icon_name} \" ></i > ";
+        } else {
+            if (isset($event->is_automated) && $event->eventType->class_name == 'OphCiExamination' && $event->is_automated == 1) {
+                return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
+            }
+
+            return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
+        }
     }
 
     /**
@@ -466,6 +481,7 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperationbooking' => 'i-TrOperation',
             'OphTrOperationnote' => 'i-TrOperationNotes',
             'OphCiDidNotAttend' => 'i-PatientDNA',
+            'OphGeneric' => 'i-ImOCT',
             'OphOuCatprom5' => 'i-CoCatPROM5',
         );
 
