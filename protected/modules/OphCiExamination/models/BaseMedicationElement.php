@@ -283,7 +283,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $unique_medication_ids = array();
 
         foreach ($this->entries as $key => $entry) {
-            if ($this->check_for_duplicate_entries) {
+            if ($this->check_for_duplicate_entries && !$entry->is_copied_from_previous_event && !$entry->prescription_item_id) {
                 if (in_array($entry->medication_id, $unique_medication_ids)) {
                     $processed_entries = array_slice($this->entries, 0, $key, true);
 
