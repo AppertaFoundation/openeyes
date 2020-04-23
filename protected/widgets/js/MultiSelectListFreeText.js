@@ -99,9 +99,9 @@ $(document).ready(function() {
 								selected.text() + ':' +
 							'</div>' +
 						'</div>' +
-						'<div class="cols-4">' +
+						'<div class="cols-full">' +
 							'<div class="data-value">' +
-								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '"></textarea>' +
+								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '" class="cols-full"></textarea>' +
 							'</div>' +
 						'</div>' +
 					'</div>');
