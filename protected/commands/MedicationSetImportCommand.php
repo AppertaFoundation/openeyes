@@ -36,7 +36,6 @@ USAGE
   php yiic medicationsetimport --filename=[filename.xlsx]
          
 EOH;
-
     }
 
     /**

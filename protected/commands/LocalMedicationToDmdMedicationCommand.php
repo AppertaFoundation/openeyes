@@ -40,7 +40,6 @@ USAGE
   php yiic localmedicationtodmdmedication 
          
 EOH;
-
     }
 
     public function actionIndex()
@@ -117,7 +116,6 @@ EOH;
         MedicationMerge::model()->mergeAll();
         EventMedicationUse::$local_to_dmd_conversion = false;
         echo "OK - took: " . (microtime(true) - $t) . "s\n";
-
     }
 
     /**

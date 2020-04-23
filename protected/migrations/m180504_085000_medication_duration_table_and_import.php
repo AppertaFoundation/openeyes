@@ -31,5 +31,4 @@ class m180504_085000_medication_duration_table_and_import extends OEMigration
     {
         $this->dropOETable('medication_duration', true);
     }
-
 }
