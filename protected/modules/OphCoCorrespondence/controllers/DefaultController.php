@@ -15,7 +15,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once './vendor/setasign/fpdi/pdf_parser.php';
 
 class DefaultController extends BaseEventTypeController
 {
