@@ -468,6 +468,9 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
 
@@ -527,6 +530,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
