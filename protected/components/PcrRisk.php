@@ -283,40 +283,42 @@ class PcrRisk
             ->limit(1)
             ->queryRow();
 
-        if ($side == 'right') {
-            $eyedraw = json_decode($anteriorsegment['right_eyedraw'], true);
-            $as['nuclear_id'] = $anteriorsegment['right_nuclear_id'];
-            $as['cortical_id'] = $anteriorsegment['right_cortical_id'];
-            $as['phakodonesis'] = $anteriorsegment['right_phako'];
-        } elseif ($side == 'left') {
-            $eyedraw = json_decode($anteriorsegment['left_eyedraw'], true);
-            $as['nuclear_id'] = $anteriorsegment['left_nuclear_id'];
-            $as['cortical_id'] = $anteriorsegment['left_cortical_id'];
-            $as['phakodonesis'] = $anteriorsegment['left_phako'];
-        }
+        if ($anteriorsegment) {
+            if ($side == 'right') {
+                $eyedraw = json_decode($anteriorsegment['right_eyedraw'], true);
+                $as['nuclear_id'] = $anteriorsegment['right_nuclear_id'];
+                $as['cortical_id'] = $anteriorsegment['right_cortical_id'];
+                $as['phakodonesis'] = $anteriorsegment['right_phako'];
+            } elseif ($side == 'left') {
+                $eyedraw = json_decode($anteriorsegment['left_eyedraw'], true);
+                $as['nuclear_id'] = $anteriorsegment['left_nuclear_id'];
+                $as['cortical_id'] = $anteriorsegment['left_cortical_id'];
+                $as['phakodonesis'] = $anteriorsegment['left_phako'];
+            }
 
-        if (is_array($eyedraw)) {
-            foreach ($eyedraw as $val) {
-                if (!empty($val['pupilSize'])) {
-                    $as['pupil_size'] = $val['pupilSize'];
-                }
+            if (is_array($eyedraw)) {
+                foreach ($eyedraw as $val) {
+                    if (!empty($val['pupilSize'])) {
+                        $as['pupil_size'] = $val['pupilSize'];
+                    }
 
-                if (!empty($val['pxe'])) {
-                    $as['pxe'] = $val['pxe'];
+                    if (!empty($val['pxe'])) {
+                        $as['pxe'] = $val['pxe'];
+                    }
                 }
             }
-        }
 
-        if (($as['phakodonesis']) || ($as['pxe'])) {
-            $as['pxf_phako'] = 'Y';
-        }
+            if (($as['phakodonesis']) || ($as['pxe'])) {
+                $as['pxf_phako'] = 'Y';
+            }
 
-        if (is_null($as['phakodonesis']) && is_null($as['pxe'])) {
-            $as['pxf_phako_nk'] = 1;
-        }
+            if (is_null($as['phakodonesis']) && is_null($as['pxe'])) {
+                $as['pxf_phako_nk'] = 1;
+            }
 
-        if ($as['nuclear_id'] == 4 || $as['cortical_id'] == 4) {
-            $as['brunescent_white_cataract'] = 'Y';
+            if ($as['nuclear_id'] == 4 || $as['cortical_id'] == 4) {
+                $as['brunescent_white_cataract'] = 'Y';
+            }
         }
 
         return $as;
@@ -346,10 +348,12 @@ class PcrRisk
 
             $axial_length = 0;
 
-            if (($side === 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
-                $axial_length = $biometry_measurement['axial_length_right'];
-            } elseif (($side === 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
-                $axial_length = $biometry_measurement['axial_length_left'];
+            if ($biometry_measurement) {
+                if (($side === 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
+                    $axial_length = $biometry_measurement['axial_length_right'];
+                } elseif (($side === 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
+                    $axial_length = $biometry_measurement['axial_length_left'];
+                }
             }
 
             if ($axial_length > 0) {
