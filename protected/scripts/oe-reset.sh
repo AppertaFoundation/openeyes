@@ -61,10 +61,13 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
-restorefile="/tmp/openeyes_sample_data.sql"
+restorefile=""
 customfile=0
 hscic=0
 eventimages=1
+
+# Pick default restore file based on what is available
+[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 
 PARAMS=()
 while [[ $# -gt 0 ]]; do
@@ -221,6 +224,11 @@ if [ $showhelp = 1 ]; then
   exit 1
 fi
 
+[ -z $restorefile ] && {
+  echo "No restore file was found. Please use --custom-file to specify the restore file"
+  exit 1
+} || :
+
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
   dbpassword="-p$dbpassword"
@@ -266,26 +274,26 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
-  # Extract or copy sample DB (since v3.2 db has been zipped)
-  rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  if [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ]; then
-    cp -f $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp
-  elif [ -f $MODULEROOT/sample/sql/sample_db.zip ]; then
-    unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp
-  fi
 
-  if [ $customfile = "0" ]; then
-    # Extract or copy sample DB (since v3.2 db has been zipped)
-    rm -f /tmp/openeyes_sample_data.sql >/dev/null
-    [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
-    [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
-  fi
-
-  [ $customfile = "0" ] && echo "Re-importing database" || echo "Re-importing database from $restorefile"
-  eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} <$restorefile || {
-    echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+  echo "importing $restorefile (may take a few minutes)...."
+  if [[ $restorefile =~ \.zip$ ]]; then
+    # If pv is installed then use it to show progress
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
+    eval $importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} || {
+      echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+      exit 1
+    }
+  elif [[ $restorefile =~ \.sql$ ]]; then
+    # If pv is installed then use it to show progress
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
+    eval $importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} || {
+      echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+      exit 1
+    }
+  else
+    echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
     exit 1
-  }
+  fi
 fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)

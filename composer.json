@@ -5,7 +5,8 @@
     "yiisoft/yii": "1.1.22",
     "rlanvin/php-rrule": "1.2.0",
     "endroid/qr-code": "^1.7",
-    "setasign/fpdi-fpdf": "1.6.1",
+    "setasign/fpdf": "1.8.*",
+    "setasign/fpdi": "^2.0",
     "xthiago/pdf-version-converter": "dev-master",
     "phpoffice/phpspreadsheet": "^1.6",
     "phpseclib/mcrypt_compat": "^1.0"
