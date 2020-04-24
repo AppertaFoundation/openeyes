@@ -37,6 +37,7 @@ services:
       ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
+      USE_DEMO_DATA: "FALSE"
       DATABASE_NAME: "phpunitdb"
     secrets:
       - source: SSH_PRIVATE_KEY
@@ -59,6 +60,7 @@ services:
       ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
+      USE_DEMO_DATA: "FALSE"
       DATABASE_NAME: "behatdb"
     secrets:
       - source: SSH_PRIVATE_KEY
