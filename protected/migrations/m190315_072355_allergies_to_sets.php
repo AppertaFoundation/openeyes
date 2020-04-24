@@ -7,8 +7,8 @@ class m190315_072355_allergies_to_sets extends OEMigration
         $transaction=$this->getDbConnection()->beginTransaction();
         try {
             // Make a link to sets in allergies table
-            $this->addColumn("ophciexamination_allergy", "medication_set_id", "INT(11) null");
-            $this->addColumn("ophciexamination_allergy_version", "medication_set_id", "INT(11) null");
+            $this->addColumn("ophciexamination_allergy", "medication_set_id", "INT null");
+            $this->addColumn("ophciexamination_allergy_version", "medication_set_id", "INT null");
             $this->addForeignKey("fk_allergy_to_set", "ophciexamination_allergy", "medication_set_id", "medication_set", "id");
 
             // Create an auto-set for each allergy

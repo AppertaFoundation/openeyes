@@ -6,8 +6,8 @@ class m180809_064900_medication_allergy_assignment extends OEMigration
     {
         $this->createOETable('medication_allergy_assignment', array(
             'id' => 'pk',
-            'medication_id' => 'INT(11) NOT NULL',
-            'allergy_id' => 'INT(11) NOT NULL'
+            'medication_id' => 'INT NOT NULL',
+            'allergy_id' => 'INT NOT NULL'
         ), true);
 
         $this->addForeignKey('fk_rmaa_ref_medication_id', 'medication_allergy_assignment', 'medication_id', 'medication', 'id');
