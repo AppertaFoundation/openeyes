@@ -82,8 +82,8 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#admin_workflow_steps tbody').sortable({
-		update: function(event, ui) {
+	$('#admin_workflow_steps tbody').sortable();
+	$('#admin_workflow_steps tbody').on('sortupdate',function(event, ui){
 			var i = 1;
 
 			var ids = {};
@@ -102,9 +102,13 @@ $(document).ready(function() {
 					if (resp != "1") {
 						alert("Something went wrong trying to save the new order.  Please refresh the page and try again or contact support for assistance.");
 					}
+
+					if (typeof ui === 'undefined') {
+						//ui is undefined when .trigger('sortupdate') is called
+						window.location.reload();
+					}
 				}
 			});
-		}
 	});
 
 	$('#et_add_element_type').live('click',function(e) {
@@ -215,7 +219,8 @@ $(document).ready(function() {
 				if (resp != "1") {
 					alert("Something went wrong trying to remove the workflow step.  Please try again or contact support for assistance.");
 				} else {
-					window.location.reload();
+					$("#admin_workflow_steps tbody > tr.selectable").filter("[data-id='"+element_set_id+"']").remove();
+					$('#admin_workflow_steps tbody').trigger('sortupdate');
 				}
 			}
 		});
