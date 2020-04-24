@@ -1814,83 +1814,87 @@ class AnalyticsController extends BaseController
 
         foreach ($tickets as $ticket) {
             $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
-            $current_event = $ticket['event_date'];
-            $assignment_time = strtotime($ticket_followup['assignment_date']);
-            if ( ($start_date && $assignment_time < $start_date) ||
-                ($end_date && $assignment_time > $end_date)) {
-                continue;
-            }
-            if (isset($this->surgeon, $current_event)) {
-                if ($this->surgeon !== $ticket['event_owner']) {
+
+            if ($ticket_followup) {
+                $current_event = $ticket['event_date'];
+                $assignment_time = strtotime($ticket_followup['assignment_date']);
+                if (($start_date && $assignment_time < $start_date) ||
+                    ($end_date && $assignment_time > $end_date)) {
                     continue;
                 }
-            }
-            $current_patient_id = $ticket['patient_id'];
-            if ($diagnosis) {
-                $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
-                if (!in_array($diagnosis, $current_patient_diagnoses)) {
-                    continue;
-                }
-            }
-            $latest_worklist_time = strtotime($ticket['worklist_date']);
-            $latest_examination = strtotime($ticket['event_date']);
-            if (isset($latest_examination)) {
-                $latest_examination_date = strtotime($latest_examination);
-            } else {
-                $latest_examination_date = null;
-            }
 
-            $latest_time = null;
-
-            if (isset($latest_worklist_time)) {
-                if (isset($latest_examination_date)) {
-                    $latest_time = max($latest_examination_date, $latest_worklist_time);
-                } else {
-                    $latest_time = $latest_worklist_time;
-                }
-            } else {
-                if (isset($latest_examination_date)) {
-                    $latest_time = $latest_examination_date;
-                }
-            }
-
-            $quantity = $ticket_followup['followup_quantity'];
-            if ($quantity > 0) {
-                $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
-                $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
-                if ($due_time < $current_time) {
-                    if (!isset($latest_time) || $latest_time > $assignment_time) {
+                if (isset($this->surgeon, $current_event)) {
+                    if ($this->surgeon !== $ticket['event_owner']) {
                         continue;
                     }
-                    //Follow up is overdue
-                    $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                    if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        $followup_csv_data['overdue'][] =
-                            array(
-                                'patient_id'=>$current_patient_id,
-                                'weeks'=>$over_weeks,
-                            );
-                        if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
-                        } else {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                }
+                $current_patient_id = $ticket['patient_id'];
+                if ($diagnosis) {
+                    $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
+                    if (!in_array($diagnosis, $current_patient_diagnoses)) {
+                        continue;
+                    }
+                }
+                $latest_worklist_time = strtotime($ticket['worklist_date']);
+                $latest_examination = strtotime($ticket['event_date']);
+                if (isset($latest_examination)) {
+                    $latest_examination_date = strtotime($latest_examination);
+                } else {
+                    $latest_examination_date = null;
+                }
+
+                $latest_time = null;
+
+                if (isset($latest_worklist_time)) {
+                    if (isset($latest_examination_date)) {
+                        $latest_time = max($latest_examination_date, $latest_worklist_time);
+                    } else {
+                        $latest_time = $latest_worklist_time;
+                    }
+                } else {
+                    if (isset($latest_examination_date)) {
+                        $latest_time = $latest_examination_date;
+                    }
+                }
+
+                $quantity = $ticket_followup['followup_quantity'];
+                if ($quantity > 0) {
+                    $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
+                    $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
+                    if ($due_time < $current_time) {
+                        if (!isset($latest_time) || $latest_time > $assignment_time) {
+                            continue;
                         }
-                    }
-                } else {
-                    if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time) {
-                        continue;
-                    }
-                    $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                    if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        $followup_csv_data['coming'][] =
-                            array(
-                                'patient_id'=>$current_patient_id,
-                                'weeks'=>$coming_weeks,
-                            );
-                        if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                            $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
-                        } else {
-                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
+                        //Follow up is overdue
+                        $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                        if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                            $followup_csv_data['overdue'][] =
+                                array(
+                                    'patient_id' => $current_patient_id,
+                                    'weeks' => $over_weeks,
+                                );
+                            if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
+                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                            } else {
+                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                            }
+                        }
+                    } else {
+                        if ($latest_worklist_time > $current_time && $latest_worklist_time < $due_time) {
+                            continue;
+                        }
+                        $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                        if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                            $followup_csv_data['coming'][] =
+                                array(
+                                    'patient_id' => $current_patient_id,
+                                    'weeks' => $coming_weeks,
+                                );
+                            if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
+                                $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
+                            } else {
+                                $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
+                            }
                         }
                     }
                 }
