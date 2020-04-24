@@ -130,9 +130,7 @@ function setSurgeonFromNote(ev, pcrEl) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
-		console.log('pcrEl '+pcrEl);
     var surgeonId = $(ev.target).val();
-		console.log('surgeon Id '+surgeonId);
     if (!surgeonId) {
         $(pcrEl).val('');
         $(pcrEl).trigger('change');
