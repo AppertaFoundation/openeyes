@@ -141,10 +141,10 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
     {
         foreach ($this->items as $index => $item) {
             if ($index === 3) {
-                $duration = strtoupper($item->drugDuration->name);
+                $duration = strtoupper($item->medicationDuration->name);
                 $expected = strtoupper("FREQUENCY: {$item->frequency->term} {$duration}");
             } else {
-                $expected = strtoupper("FREQUENCY: {$item->frequency->term} FOR {$item->drugDuration->name}");
+                $expected = strtoupper("FREQUENCY: {$item->frequency->term} FOR {$item->medicationDuration->name}");
             }
             $actual = $item->fpTenFrequency();
 

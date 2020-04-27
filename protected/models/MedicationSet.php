@@ -332,7 +332,8 @@ class MedicationSet extends BaseActiveRecordVersioned
         foreach ($relations as $relation => $relation_name) {
             foreach ($this->{$relation} as $k => $model) {
                 $attributes = array_keys($model->getAttributes());
-                unset($attributes[array_flip($attributes)['medication_set_id']]);
+                $attribute_to_unset = $relation === 'medicationSetAutoRuleSetMemberships' ? 'target_medication_set_id' : 'medication_set_id';
+                unset($attributes[array_flip($attributes)[$attribute_to_unset]]);
                 $model->validate($attributes);
                 $z = $k+1;
                 $has_error = $validation_processor($model, "$relation_name [$z] ");

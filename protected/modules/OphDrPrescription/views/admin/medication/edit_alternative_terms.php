@@ -7,8 +7,8 @@ $rowkey = 0;
 <script id="alt_terms_row_template" type="x-tmpl-mustache">
     <tr id="{{ key }}">
         <td>
-        	<input type="hidden" name="Medication[medicationSearchIndexes][id][]" value="-1" />
-			<?php echo CHtml::textField('Medication[medicationSearchIndexes][alternative_term][]', null, array('class' => 'cols-full')); ?>
+            <input type="hidden" name="Medication[medicationSearchIndexes][id][]" value="-1" />
+            <?php echo CHtml::textField('Medication[medicationSearchIndexes][alternative_term][]', null, array('class' => 'cols-full')); ?>
         </td>
         <td>
             <a href="javascript:void(0);" class="js-delete-alt-term"><i class="oe-i trash"></i></a>

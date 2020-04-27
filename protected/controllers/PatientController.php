@@ -1801,7 +1801,7 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient_source = 'referral';
+        $patient_source = isset(Yii::app()->params['default_patient_source']) ? Yii::app()->params['default_patient_source'] : 'Referral';
         $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
@@ -2177,80 +2177,80 @@ class PatientController extends BaseController
      * @return bool false for failure to save a file
      * @throws Exception
      */
-	public function actionPerformReferralDoc($patient, $referral)
-	{
-		// To get allowed file types from the model
-		$allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+    public function actionPerformReferralDoc($patient, $referral)
+    {
+        // To get allowed file types from the model
+        $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
 
-		$firm_id = Yii::app()->session['selected_firm_id'];
-		//Get or Create an episode
-		list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
-
-
-		$event = new Event();
-		$event->episode_id = $episode->id;
-		$event->firm_id = $firm_id;
-		$event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
-		$event->event_date = date('Y-m-d');
-		$referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
-
-		if (!$event->save()) {
-			throw new Exception('Could not save event');
-		}
-
-		$document_saved = false;
-		foreach ($_FILES as $file) {
-			$tmp_name = $file["tmp_name"]["uploadedFile"];
+        $firm_id = Yii::app()->session['selected_firm_id'];
+        //Get or Create an episode
+        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
 
 
-			//If no document is selected this can throw errors
-			if ($tmp_name == '') {
-				continue;
-			}
-			$p_file = ProtectedFile::createFromFile($tmp_name);
-			$p_file->name = $file["name"]["uploadedFile"];
+        $event = new Event();
+        $event->episode_id = $episode->id;
+        $event->firm_id = $firm_id;
+        $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+        $event->event_date = date('Y-m-d');
+        $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
-			if (!in_array($p_file->mimetype, $allowed_file_types) ) {
-				$message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
-				$referral->addError('uploadedFile', $message);
-			}
+        if (!$event->save()) {
+            throw new Exception('Could not save event');
+        }
 
-			if ($p_file->save()) {
-				unlink($tmp_name);
-				$document = new Element_OphCoDocument_Document();
-				$document->patientId = $patient->id;
-				$document->event_id = $event->id;
-				$document->event = $event;
-				$document->single_document_id = $p_file->id;
-				$document->event_sub_type = $referral_letter_type_id;
-				$document->single_document = $p_file;
-				if (!$document->save()) {
-					throw new Exception('Could not save Document');
-				} else {
-					$document_saved = true;
-				}
-			} else {
-				unlink($tmp_name);
-			}
-		}
+        $document_saved = false;
+        foreach ($_FILES as $file) {
+            $tmp_name = $file["tmp_name"]["uploadedFile"];
 
-		if (!$document_saved) {
-			$patient_source = $_POST['Patient']['patient_source'];
-			if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
-				//If there is no existing referral letter document, add an error
-				if ($this->checkExistingReferralLetter($patient)) {
-					$referral->addError('uploadedFile', 'Referral requires a letter file');
-				}
-			}
 
-			//Removed any extraneous models if we couldn't save a document
-			$event->delete();
-			if ($episode_is_new) {
-				$episode->delete();
-			}
-		}
-		return !$referral->hasErrors();
-	}
+            //If no document is selected this can throw errors
+            if ($tmp_name == '') {
+                continue;
+            }
+            $p_file = ProtectedFile::createFromFile($tmp_name);
+            $p_file->name = $file["name"]["uploadedFile"];
+
+            if (!in_array($p_file->mimetype, $allowed_file_types) ) {
+                $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
+                $referral->addError('uploadedFile', $message);
+            }
+
+            if ($p_file->save()) {
+                unlink($tmp_name);
+                $document = new Element_OphCoDocument_Document();
+                $document->patientId = $patient->id;
+                $document->event_id = $event->id;
+                $document->event = $event;
+                $document->single_document_id = $p_file->id;
+                $document->event_sub_type = $referral_letter_type_id;
+                $document->single_document = $p_file;
+                if (!$document->save()) {
+                    throw new Exception('Could not save Document');
+                } else {
+                    $document_saved = true;
+                }
+            } else {
+                unlink($tmp_name);
+            }
+        }
+
+        if (!$document_saved) {
+            $patient_source = $_POST['Patient']['patient_source'];
+            if ($patient_source == Patient::PATIENT_SOURCE_REFERRAL) {
+                //If there is no existing referral letter document, add an error
+                if ($this->checkExistingReferralLetter($patient)) {
+                    $referral->addError('uploadedFile', 'Referral requires a letter file');
+                }
+            }
+
+            //Removed any extraneous models if we couldn't save a document
+            $event->delete();
+            if ($episode_is_new) {
+                $episode->delete();
+            }
+        }
+        return !$referral->hasErrors();
+    }
 
     /**
      * @param Patient $patient

@@ -21,4 +21,3 @@ $this->widget('application.modules.OphGeneric.widgets.Attachment',
         'element' => $element,
     ]
 );
-

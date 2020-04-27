@@ -79,13 +79,13 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
     }
 
     public function relations()
-	{
-		return array(
-			"medicationSet" => array(self::HAS_ONE, \MedicationSet::class, "medication_set_id"),
-		);
-	}
+    {
+        return array(
+            "medicationSet" => array(self::HAS_ONE, \MedicationSet::class, "medication_set_id"),
+        );
+    }
 
-	/**
+    /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
@@ -129,8 +129,8 @@ class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
         return self::model()->findAll('id NOT IN (SELECT allergy_id FROM ophciexamination_allergy_entry WHERE element_id = ?) AND id != 17', array($element_id));
     }
 
-	public function __toString()
-	{
-		return $this->name;
-	}
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

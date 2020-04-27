@@ -24,8 +24,8 @@
 $model_name = CHtml::modelName($element);
 
 $eye_filter = function($e) {
-	/** @var EventMedicationUse $e */
-	return !is_null($e->route_id) && $e->route->has_laterality;
+    /** @var EventMedicationUse $e */
+    return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
 $systemic_filter = function ($entry) use ($eye_filter){
@@ -52,7 +52,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_eye_meds as $entry) { ?>
                 <tr>
                     <td>
-                        <i class="oe-i start small pad-right"></i>
                         <?= $entry->getMedicationDisplay() ?>
                     </td>
                     <td>
@@ -75,7 +74,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td>
                         <?php
-                        $link = $entry->prescription_item_id ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
+                        $link = $entry->prescription_item_id && isset($entry->prescriptionItem->prescription->event) ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
                         $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                         <a href="<?= $link ?>">
                               <i class="js-has-tooltip fa oe-i direction-right-circle small pad"
@@ -109,7 +108,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <?php foreach ($stopped_eye_meds as $entry) { ?>
                                 <tr>
                                     <td>
-                                        <i class="oe-i stop small pad-right"></i>
                                         <?= $entry->getMedicationDisplay() ?>
                                     </td>
                                     <td>

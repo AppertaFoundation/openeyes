@@ -130,6 +130,7 @@ class MedicationManagementEntry extends \EventMedicationUse
             'dose',
             'dispense_condition_id',
             'dispense_location_id',
+            'comments',
         );
 
         $identical = true;

@@ -114,8 +114,8 @@ foreach ($element->entries as $entry) {
         ?>
         </tbody>
     </table>
-        <div class="collapse-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
-            <div class="collapse-data-header-icon expand">
+        <div class="collapse-data js-stopped-medication-collapsed-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
+            <div class="collapse-data-header-icon expand ">
                 Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
@@ -138,7 +138,13 @@ foreach ($element->entries as $entry) {
                     </thead>
                     <tbody>
                     <?php
+                    $stopped_entries_has_errors = false;
                     foreach ($stopped_entries as $entry) {
+                        if (!$stopped_entries_has_errors) {
+                            if ($entry->hasErrors()) {
+                                $stopped_entries_has_errors = true;
+                            }
+                        }
                         if ($entry->prescription_item_id) {
                             $this->render(
                                 'HistoryMedicationsEntry_prescription_event_edit',
@@ -228,11 +234,24 @@ foreach ($element->entries as $entry) {
     </script>
 </div>
 <script type="text/javascript">
+    let showStoppedMedications = <?= $stopped_entries_has_errors ? $stopped_entries_has_errors : 0?>;
+
     $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
         delete window.HMController;
     });
     var medicationsController;
     $(document).ready(function () {
+
+        if(showStoppedMedications === 1) {
+            let $stoppedMedicationCollapsedData = $('.js-stopped-medication-collapsed-data')
+            let $stoppedMedicationCollapsedDataContent = $stoppedMedicationCollapsedData.find('.collapse-data-content');
+            if($stoppedMedicationCollapsedDataContent.css('display') == 'none') {
+                $stoppedMedicationCollapsedData.one('loaded', () => {
+                    $stoppedMedicationCollapsedData.find('.collapse-data-header-icon').trigger('click');
+                })
+            }
+        }
+
         medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
@@ -308,10 +327,12 @@ foreach ($element->entries as $entry) {
             openButton: $('#add-medication-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                    $common_systemic
+                ) ?>, {'multiSelect': true, header: "Common Systemic"})
                 ,
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+                    $common_ophthalmic
+                ) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
             ],
             onReturn: function (adderDialog, selectedItems) {
                 medicationsController.addEntry(selectedItems, true);

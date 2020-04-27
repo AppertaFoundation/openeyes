@@ -1,4 +1,6 @@
 <?php
+use setasign\Fpdi\Fpdi;
+
 class PDF_JavaScript extends FPDI {
 
 	protected $javascript;

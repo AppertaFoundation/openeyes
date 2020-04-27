@@ -15,7 +15,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once './vendor/setasign/fpdi/pdf_parser.php';
 
 class DefaultController extends BaseEventTypeController
 {
@@ -932,14 +931,14 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-		protected function verifyActionAccess(CAction $action)
-		{
-			if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
-				return;
-			} else {
-				parent::verifyActionAccess($action);
-			}
-		}
+        protected function verifyActionAccess(CAction $action)
+        {
+            if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
+                return;
+            } else {
+                parent::verifyActionAccess($action);
+            }
+        }
 
     /**
      * After the event was soft deleted, we need to set the output_status' to DELETED

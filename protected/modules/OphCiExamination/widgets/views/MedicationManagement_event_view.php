@@ -79,7 +79,7 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
                         <col class="cols-3">
                         <col class="cols-icon" span="2">
                     </colgroup>
-                    <thead>
+                    <thead style="display:none;">
                         <tr>
                             <th>Drug</th>
                             <th>Dose/frequency/route/start/stop</th>

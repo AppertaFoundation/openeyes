@@ -74,6 +74,11 @@ $dispense_condition_options = array(
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
             ?>
             <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
+                    <?php
+                    $med_dispense_locations = isset($med->defaultDispenseCondition) ?
+                        \CHtml::listData($med->defaultDispenseCondition->locations, 'id', 'name') :
+                        $default_dispense_location;
+                    ?>
                     <tr class="js-row-of-<?=$med->id?>" data-id="<?=$med->id?>" data-med_id="<?=$med->id?>" data-key="<?=$k;?>">
                         <td>
                             <input type="hidden" name="set_id" class="js-input js-medication-set-id" value="<?=$medication_set->id;?>">
@@ -83,12 +88,15 @@ $dispense_condition_options = array(
                             <?= \CHtml::activeHiddenField($med, 'medication_id', ['class' => 'js-input', 'name' => "MedicationSetAutoRuleMedication[$k][medication_id]"]); ?>
                         </td>
                         <td class="js-input-wrapper">
-                            <?= \CHtml::activeTextField($med, 'default_dose',
+                            <?= \CHtml::activeTextField(
+                                $med,
+                                'default_dose',
                                 [
                                     'class' => 'js-input cols-full',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_dose]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td>
                             <span data-type="default_dose" data-id="<?= $med->default_dose_unit_term ? $med->default_dose_unit_term : ''; ?>"><?= $med->default_dose_unit_term ? $med->default_dose_unit_term : '-'; ?></span>
@@ -103,7 +111,8 @@ $dispense_condition_options = array(
                                     'empty' => '-- select --',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_route_id]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td class="js-input-wrapper">
                             <?= \CHtml::activeDropDownList(
@@ -115,7 +124,8 @@ $dispense_condition_options = array(
                                     'empty' => '-- select --',
                                     'id' => null,
                                     'name' => "MedicationSetAutoRuleMedication[$k][default_frequency_id]"
-                                ]); ?>
+                                ]
+                            ); ?>
                         </td>
                         <td class="js-input-wrapper">
 
@@ -143,7 +153,10 @@ $dispense_condition_options = array(
                                             . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                                             . ") or id='" . $med->default_dispense_condition_id . "'",
                                         'order' => 'display_order',
-                                    )), 'id', 'name'),
+                                    )),
+                                    'id',
+                                    'name'
+                                ),
                                 [
                                     'disabled' => !$is_prescription_set,
                                     'class' => 'js-input cols-full dispense-condition',
@@ -161,7 +174,7 @@ $dispense_condition_options = array(
                             <?= \CHtml::activeDropDownList(
                                 $med,
                                 'default_dispense_location_id',
-                                $default_dispense_location,
+                                $med_dispense_locations,
                                 [
                                     'disabled' => !$is_prescription_set,
                                     'class' => 'js-input cols-full dispense-location',
@@ -331,6 +344,16 @@ $dispense_condition_options = array(
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);
                 $(drugSetController.options.tableSelector + ' tbody').append($tr_html);
+
+                const usage_code = $('.js-usage-rule-table').find('input[name$="usage_code_id]"]').val();
+                if ($('select.dispense-condition').prop('disabled') && typeof(usage_code) !== "undefined" && parseInt(usage_code) === prescriptionUsageRuleId) {
+                    for (const dropdownName of ['condition', 'location']) {
+                        let $dropdown = $('select.dispense-' + dropdownName);
+                        $dropdown.prop('disabled', false);
+                        $dropdown.prop('style', '');
+                    }
+                }
+
                 $('#meds-list').trigger('medicationAdded');
                 const $tr = $table.find('tr.js-row-of-' + medication_id);
                 $tr.css({'background-color': '#3ba93b'});
