@@ -9,8 +9,8 @@ class m200424_131331_replace_address_details extends OEMigration
         }
     }
 
-	public function safeDown()
-	{
-		echo "m200424_131331_replace_address_details does not support migration down.\n";
-	}
+    public function safeDown()
+    {
+        echo "m200424_131331_replace_address_details does not support migration down.\n";
+    }
 }
