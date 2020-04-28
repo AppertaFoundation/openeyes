@@ -146,4 +146,11 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
             }, $this->getSiblings())
         );
     }
+
+
+
+    public function canCopy()
+    {
+        return true;
+    }
 }
