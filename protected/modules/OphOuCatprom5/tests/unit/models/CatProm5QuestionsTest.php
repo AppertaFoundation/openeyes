@@ -1,10 +1,16 @@
 <?php
 
-class CatProm5QuestionsTest extends CDbTestCase {
+class CatProm5QuestionsTest extends ActiveRecordTestCase
+{
     public $model;
     public $fixtures = array(
-    'questions' => 'CatProm5Questions'
+        'questions' => 'CatProm5Questions'
     );
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 
     public function dataProvider_Search()
     {
@@ -43,9 +49,10 @@ class CatProm5QuestionsTest extends CDbTestCase {
    * Tears down the fixture, for example, closes a network connection.
    * This method is called after a test is executed.
    */
-    protected function tearDown()
+    public function tearDown()
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
+        parent::tearDown();
     }
 
 
@@ -65,11 +72,13 @@ class CatProm5QuestionsTest extends CDbTestCase {
         $this->assertEquals('cat_prom5_questions', $this->model->tableName());
     }
 
-  /**
-   * @covers CatProm5Questions::rules
-   */
+    /**
+     * @covers CatProm5Questions::rules
+     * @throws CException
+     */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->questions('question1')->validate());
         $this->assertEmpty($this->questions('question1')->errors);
     }

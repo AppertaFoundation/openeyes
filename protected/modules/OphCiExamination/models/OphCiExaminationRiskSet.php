@@ -42,7 +42,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment;
  * @property Firm $firm
  * @property User $createdUser
  * @property User $lastModifiedUser
- * @property OphCiExaminationRisk $ophciexaminationRisk
+ * @property OphCiExaminationRiskSetEntry $entries
  * @property Subspecialty $subspecialty
  */
 class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
@@ -151,11 +151,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
 
     public function beforeDelete()
     {
-        foreach ($this->ophciexamination_risk_set_assignments as $risk_set_assignment) {
-            $risk_set_assignment->delete();
-        }
-
-        foreach ($this->ophciexamination_risks_entry as $risks_set_entry) {
+        foreach ($this->entries as $risks_set_entry) {
             $risks_set_entry->delete();
         }
 

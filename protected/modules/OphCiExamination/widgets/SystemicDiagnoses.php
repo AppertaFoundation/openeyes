@@ -49,12 +49,13 @@ class SystemicDiagnoses extends \BaseEventElementWidget
 
     /**
      * Returns the required Disorders (Systemic Diagnoses)
+     * @param null $firm_id
      * @return array of Disorders
      */
-    public function getRequiredSystemicDiagnoses()
+    public function getRequiredSystemicDiagnoses($firm_id = null)
     {
         $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-        return $exam_api->getRequiredSystemicDiagnoses($this->patient);
+        return $exam_api->getRequiredSystemicDiagnoses($this->patient, $firm_id);
     }
 
     /**
@@ -66,8 +67,9 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         $current_ids = array_map(function ($e) { return $e->disorder_id;
         }, array_merge($this->element->diagnoses, $this->element->checked_required_diagnoses));
         $missing = array();
+        $firm_id = $this->element->event ? $this->element->event->firm_id : null;
 
-        foreach ($this->getRequiredSystemicDiagnoses() as $required) {
+        foreach ($this->getRequiredSystemicDiagnoses($firm_id) as $required) {
             if (!in_array($required->id, $current_ids)) {
                 $entry = new SystemicDiagnoses_Diagnosis();
                 $entry->disorder_id = $required->id;

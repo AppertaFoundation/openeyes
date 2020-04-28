@@ -188,7 +188,8 @@ class ElementLetter extends BaseEventTypeElement
     public function beforeValidate()
     {
         if (isset($_POST['ElementLetter'])) {
-            $_POST['ElementLetter']['body'] =  $this->purifyContent($_POST['ElementLetter']['body']);
+            $_POST['ElementLetter']['body'] = preg_replace("/\n(?=<p><\/p>)/", "<br/>", $_POST['ElementLetter']['body']);
+            $_POST['ElementLetter']['body'] = $this->purifyContent($_POST['ElementLetter']['body']);
         }
         return parent::beforeValidate();
     }
@@ -788,10 +789,11 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
+
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.
-        return $this->purifyContent($this->body);
+        return $this->purifyContent(preg_replace("/<p>(<?((span style=\"\D{0,40};\")|(em)|(strong))?>){0,3}(<\/?((span)|(em)|(strong))?>){0,3}<\/p>/", "<br/>", $this->body));
     }
 
     /**
@@ -807,7 +809,7 @@ class ElementLetter extends BaseEventTypeElement
         $config->set('HTML.DefinitionID', 'elementletter-customize.html input select option');
         // The HTML definitions are cached, so we need to increment this
         // whenever we make a change to flush the cache.
-        $config->set('HTML.DefinitionRev', 2);
+        $config->set('HTML.DefinitionRev', 4);
         $config->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
 
         if ($def = $config->maybeGetRawHTMLDefinition()) {
@@ -987,6 +989,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($associated_content as $key => $ac) {
                 if ($ac->associated_protected_file_id) {
                     $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    file_put_contents($file->getPath(), $file->file_content);
                     $pdf_files[$key]['path'] = $file->getPath();
                     $pdf_files[$key]['name'] = $file->name;
                     $pdf_files[$key]['mime'] = $file->mimetype;

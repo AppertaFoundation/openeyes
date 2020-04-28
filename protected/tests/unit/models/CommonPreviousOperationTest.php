@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class CommonPreviousOperationTest extends CDbTestCase
+class CommonPreviousOperationTest extends ActiveRecordTestCase
 {
     /**
      * @var CommonPreviousOperation
@@ -25,6 +25,11 @@ class CommonPreviousOperationTest extends CDbTestCase
     public $fixtures = array(
         'commonpreviousops' => 'CommonPreviousOperation',
     );
+
+    public function getModel()
+    {
+        return CommonPreviousOperation::model();
+    }
 
     public function dataProvider_Search()
     {
@@ -38,7 +43,7 @@ class CommonPreviousOperationTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new CommonPreviousOperation();
@@ -62,9 +67,11 @@ class CommonPreviousOperationTest extends CDbTestCase
 
     /**
      * @covers CommonPreviousOperation::rules
+     * @throws CException
      */
     public function testRules()
     {
+        parent::testRules();
         $this->assertTrue($this->commonpreviousops('commonpreviousop1')->validate());
         $this->assertEmpty($this->commonpreviousops('commonpreviousop1')->errors);
     }

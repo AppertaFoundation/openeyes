@@ -17,19 +17,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 return array(
-                         'commonpreviousop1' => array(
-                                                  'id' => 1,
-                                                  'name' => 'commonpreviousop 1',
-                                                  'last_modified_date' => '1900-01-01 00:00:00',
-                         ),
-                         'commonpreviousop2' => array(
-                                                  'id' => 2,
-                                                  'name' => 'commonpreviousop 2',
-                                                  'last_modified_date' => '1900-01-01 00:00:00',
-                         ),
-                         'commonpreviousop3' => array(
-                                                  'id' => 3,
-                                                  'name' => 'commonpreviousop 3',
-                                                  'last_modified_date' => '1900-01-01 00:00:00',
-                         ),
+    'commonpreviousop1' => array(
+        'id' => 1,
+        'name' => 'commonpreviousop 1',
+        'display_order' => 1,
+        'last_modified_date' => '1900-01-01 00:00:00',
+    ),
+    'commonpreviousop2' => array(
+        'id' => 2,
+        'name' => 'commonpreviousop 2',
+        'display_order' => 2,
+        'last_modified_date' => '1900-01-01 00:00:00',
+    ),
+    'commonpreviousop3' => array(
+        'id' => 3,
+        'name' => 'commonpreviousop 3',
+        'display_order' => 3,
+        'last_modified_date' => '1900-01-01 00:00:00',
+    ),
 );

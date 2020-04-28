@@ -43,7 +43,14 @@ return array(
         'application.gii.*',
         'system.gii.generators.module.*',
         'application.modules.OphTrOperationnote.components.*',
-        'application.modules.OECaseSearch.components.*',
+        //Import Api files to be available everywhere
+        'application.modules.Api.modules.Request.models.*',
+        'application.modules.Api.modules.Request.controllers.*',
+        'application.modules.Api.modules.Request.views.*',
+        'application.modules.Api.controllers.*',
+        'application.modules.Api.modules.Request.components.*',
+        'application.modules.Api.modules.Request.widgets.*',
+              'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(
@@ -60,6 +67,7 @@ return array(
         ),
         'oldadmin',
         'Admin',
+        'Api'
     ),
 
     // Application components
@@ -82,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201909131608',
+            'time' => '202004201050',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -195,6 +203,7 @@ return array(
             'noCsrfValidationRoutes' => array(
                 'site/login', //disabled csrf check on login form
                 'api/',
+                'Api/',
                 //If the user uploads a too large file (php.ini) then CSRF validation error comes back
                 //instead of the proper error message
                 'OphCoDocument/Default/create',
@@ -239,7 +248,7 @@ return array(
                 array('api/create', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'POST'),
                 array('api/search', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'GET'),
                 array('api/search', 'pattern' => 'api/<resource_type:\w+>/_search', 'verb' => 'GET,POST'),
-                array('api/badrequest', 'pattern' => 'api/(.*)'),
+                array('api/badrequest', 'pattern' => 'api/^(?!v1$).*$'),
 
                 '<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
                 '<module:\w+>/oeadmin/<controller:\w+>/<action:\w+>' => '<module>/oeadmin/<controller>/<action>',
@@ -568,6 +577,9 @@ return array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
+                            'Biometry' => array(
+                                'image_width' => 1200
+                            ),
             ),
         ),
 
@@ -601,13 +613,11 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-        'hos_num_label' => 'ID',
-        'nhs_num_label' => 'NHS',
         'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'
-      ),
+        ),
         'gender_short' => 'Gen',
 //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
         'add_patient_fields' => [ 'title' => '',
@@ -645,12 +655,14 @@ return array(
         'exclude_admin_structure_param_list' => array(
 //            'Worklist',
         ),
-      'oe_version' => '3.5-a',
+      'oe_version' => '4.0-a',
       // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
       'gp_label' => 'GP',
       // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
       'worklist_dashboard_future_days' => 0,
       // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-      'worklist_default_pagination_size' => 1000
+      'worklist_default_pagination_size' => 1000,
+      'tech_support_provider' => !empty(trim(getenv('OE_TECH_SUPPORT_PROVIDER'))) ? getenv('OE_TECH_SUPPORT_PROVIDER') :  '',
+      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  ''
     ),
 );

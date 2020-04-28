@@ -20,6 +20,21 @@ return [
         'reports' => [
             'Prescribed drugs' => '/OphDrPrescription/report/prescribedDrugs',
         ],
+
+        'admin_structure' => [
+            'Drugs' => [
+                // The 'All sets' screen is useful for debugging and may be required again in a later phase. So just commenting out for now
+                // 'All Sets' => '/OphDrPrescription/admin/DrugSet/index',
+                'Drug Sets' => '/OphDrPrescription/admin/AutoSetRule/index',
+                'Local Drugs' => '/OphDrPrescription/OphDrPrescriptionAdmin/localDrugsAdmin/list',
+                'DM+D Drugs' => '/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/list',
+                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+                'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
+                'Prescription Edit Options' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/default/PrescriptionEditOptions'),
+                'Routes' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/routesAdmin/list'),
+            ],
+        ]
+
     ],
     'aliases' => [
         'OphDrPrescriptionAdmin' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionAdmin',

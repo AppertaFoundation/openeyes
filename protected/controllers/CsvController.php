@@ -635,9 +635,9 @@ class CsvController extends BaseController
 
             $found_disorder_ids =
                 Yii::app()->db->createCommand(
-                    'SELECT id 
-								FROM  disorder 
-								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') = 
+                    'SELECT id
+								FROM  disorder
+								WHERE REGEXP_REPLACE(term, \'[^A-Za-z0-9]\', \'\') =
 								REGEXP_REPLACE(\''. $patient_raw_data['diagnosis'] . '\', \'[^A-Za-z0-9]\', \'\')')->queryAll();
 
             if (count($found_disorder_ids) == 0) {
@@ -745,7 +745,7 @@ class CsvController extends BaseController
         $errors = array();
         //trial
         $trial = null;
-        if(!empty($trial_patient['trial_name'])){
+        if (!empty($trial_patient['trial_name'])){
             $trial = Trial::model()->findByAttributes(array('name' => $trial_patient['trial_name']));
         }
         if ($trial === null){
@@ -755,7 +755,7 @@ class CsvController extends BaseController
 
         //patient
         $patient = null;
-        if(!empty($trial_patient['CERA_number'])){
+        if (!empty($trial_patient['CERA_number'])){
             $patient = Patient::model()->findByAttributes(array('hos_num' => $trial_patient['CERA_number']));
         }
         if ($patient === null){
@@ -776,7 +776,7 @@ class CsvController extends BaseController
                 !empty($new_trial_pat[$col['var_name']]) ? $new_trial_pat[$col['var_name']] : $col['default'];
         }
 
-        if(strlen($trial_patient['study_identifier'] > 100)) {
+        if(strlen($trial_patient['study_identifier']) > 100) {
             $errors[] = 'Study Identifier accepts maximum of 100 characters.';
             return $errors;
         }
@@ -787,7 +787,7 @@ class CsvController extends BaseController
         $new_trial_pat->patient_id = $patient->id;
         $new_trial_pat->trial_id = $trial->id;
 
-        if(!$new_trial_pat->save()){
+        if (!$new_trial_pat->save()){
             return $new_trial_pat->getErrors();
         }
 

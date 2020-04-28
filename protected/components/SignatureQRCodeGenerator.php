@@ -71,7 +71,7 @@ class SignatureQRCodeGenerator
         //imageloadfont("Arial.ttf");
         // TODO: check how to load font here!
         //imagestring($canvas, null, 10, 145, "This signature will be user for OpenEyes eCVI module to print.", $black);
-        if($returnObject){
+        if ($returnObject){
             return $canvas;
         }else {
             // Output and free from memory

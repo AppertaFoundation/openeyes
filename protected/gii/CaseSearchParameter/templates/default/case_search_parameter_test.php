@@ -11,7 +11,7 @@ class <?php echo $this->className; ?>ParameterTest extends CDbTestCase
     protected $searchProviders;
     protected $invalidProvider;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->searchProviders = array();
@@ -22,7 +22,7 @@ class <?php echo $this->className; ?>ParameterTest extends CDbTestCase
         $this->parameter->id = 0;
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->parameter, $this->searchProviders);

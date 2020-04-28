@@ -10,31 +10,34 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
         $this->addColumn('event', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
         $this->addColumn('event_version', 'worklist_patient_id', 'INT(11) DEFAULT NULL');
 
-        $dataProvider = new CActiveDataProvider('Event');
+        $events = $this->dbConnection->createCommand('SELECT * FROM event WHERE pas_visit_id IS NOT NULL')
+            ->queryAll();
 
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('t.pas_visit_id IS NOT NULL');
-        $dataProvider->setCriteria($criteria);
-
-        $iterator = new CDataProviderIterator($dataProvider);
-
-        foreach ($iterator as $event) {
-            \OELog::log("Event ID: {$event->id}, pas_visit_id: {$event->pas_visit_id}");
+        foreach ($events as $event) {
+            \OELog::log("Event ID: {$event['id']}, pas_visit_id: {$event['pas_visit_id']}");
             $worklist_patient_id = $this->getWorklistPatientId($event);
 
-            $event->saveAttributes(['worklist_patient_id' => $worklist_patient_id]);
+            $this->update(
+                'event',
+                array('worklist_patient_id' => $worklist_patient_id),
+                'id = :id',
+                array(':id' => $event['id'])
+            );
         }
 
         $this->dropColumn('event', 'pas_visit_id');
         $this->dropColumn('event_version', 'pas_visit_id');
 
         //refresh event table schema
-        Yii::app()->db->schema->getTable('event', true);
-        Yii::app()->db->schema->getTable('event_version', true);
+        $this->dbConnection->schema->getTable('event', true);
+        $this->dbConnection->schema->getTable('event_version', true);
 
         $this->addForeignKey('event_ibfk_worklist_patient', 'event', 'worklist_patient_id', 'worklist_patient', 'id');
 
-        $this->insert('setting_metadata', array('element_type_id' => null,
+        $this->insert(
+            'setting_metadata',
+            array(
+                'element_type_id' => null,
                 'field_type_id' => 4,
                 'key' => 'worklist_search_appt_within',
                 'name' => 'Search worklist appointment within (days)',
@@ -47,14 +50,16 @@ class m190321_141548_unbooked_worklist_data_migration extends OEMigration
 
     private function getWorklistPatientId($event)
     {
-        $assignment = PasApiAssignment::model()->findByAttributes(['resource_id' => $event->pas_visit_id]);
+        $assignment = $this->dbConnection->createCommand('SELECT * FROM pasapi_assignment WHERE resource_id = :resource_id')
+            ->bindValue(':resource_id', $event['pas_visit_id'])
+            ->queryRow();
 
         if ($assignment) {
-            return $assignment->internal_id;
+            return $assignment['internal_id'];
         }
 
         //could have been deleted by an appointment cancellation
-        $message = "PasApiAssignment could not found resource_id (pas_visit_id): " . $event->pas_visit_id . ", Event ID: " . $event->id;
+        $message = 'PasApiAssignment could not found resource_id (pas_visit_id): ' . $event['pas_visit_id'] . ', Event ID: ' . $event['id'];
         \OELog::log($message);
         return null;
     }

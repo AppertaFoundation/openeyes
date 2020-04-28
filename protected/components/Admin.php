@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -56,9 +56,9 @@ class Admin
      * @var array
      */
     protected $listFields = array();
-    
+
     /**
-     * @var type 
+     * @var type
      */
     protected $listFieldsAction = 'edit';
 
@@ -100,6 +100,12 @@ class Admin
     /**
      * @var string
      */
+
+    protected $customAddURL;
+
+    /**
+     * @var string
+     */
     protected $customCancelURL;
 
     /**
@@ -130,6 +136,58 @@ class Admin
      * @var array
      */
     protected $extraButtons = array();
+
+    /**
+     * Forces to display title even if this is a sublist
+     *
+     * @var bool
+     */
+
+    protected $forceTitleDisplay = false;
+
+    /**
+     * Forces to display form on list page even if this is a sublist
+     *
+     * @var bool
+     */
+
+    protected $forceFormDisplay = false;
+
+    /**
+     * @return bool
+     */
+    public function isForceTitleDisplay()
+    {
+        return $this->forceTitleDisplay;
+    }
+
+    /**
+     * @param bool $forceTitleDisplay
+     * @return Admin
+     */
+    public function setForceTitleDisplay($forceTitleDisplay)
+    {
+        $this->forceTitleDisplay = $forceTitleDisplay;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForceFormDisplay()
+    {
+        return $this->forceFormDisplay;
+    }
+
+    /**
+     * @param bool $forceFormDisplay
+     */
+    public function setForceFormDisplay($forceFormDisplay)
+    {
+        $this->forceFormDisplay = $forceFormDisplay;
+        return $this;
+    }
+
 
     /**
      * @param $filters
@@ -249,7 +307,7 @@ class Admin
     {
         $this->listFields = $listFields;
     }
-    
+
     /**
      * @return string
      */
@@ -345,6 +403,24 @@ class Admin
     public function getCustomSaveURL()
     {
         return $this->customSaveURL;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomAddURL()
+    {
+        return $this->customAddURL;
+    }
+
+    /**
+     * @param string $customAddURL
+     * @return Admin
+     */
+    public function setCustomAddURL($customAddURL)
+    {
+        $this->customAddURL = $customAddURL;
+        return $this;
     }
 
     /**
@@ -478,7 +554,7 @@ class Admin
         $this->assetManager->registerScriptFile('/js/oeadmin/list.js');
         $this->audit('list');
         $this->pagination = $this->getSearch()->initPagination();
-        if($this->request->isAjaxRequest){
+        if ($this->request->isAjaxRequest){
             $this->ajaxResponse();
         } else {
             $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
@@ -510,30 +586,30 @@ class Admin
 
             foreach($this->editFields as $editField => $type){
                 //widgets et al can be dealt with in the widget
-                if(is_array($type)){
+                if (is_array($type)){
                     continue;
                 }
-                if(method_exists($this, $type.'Format')){
+                if (method_exists($this, $type.'Format')){
                     $this->model->$editField = $this->{$type.'Format'}($this->model->attributes[$editField]);
                 }
             }
 
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
-                if(!$redirect){
+                if (!$redirect){
                     return false;
                 }
             } else {
 
                 // Model's id property must be null to be populated after save
-                if( empty($this->model->id) ){
+                if ( empty($this->model->id) ){
                     $this->model->id = null;
                 }
                 if (!$this->model->save()) {
                     throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
                 }
                 $this->audit('edit', $this->model->id);
-                if($redirect){
+                if ($redirect){
                     $this->redirect();
                 } else {
                     $this->model = $this->model->findByPk($this->model->id);
@@ -548,13 +624,13 @@ class Admin
                 }
             }
         }
-        
-        if($partial === false){
+
+        if ($partial === false){
             $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         } else {
             $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         }
-        
+
     }
 
     /**
@@ -580,7 +656,7 @@ class Admin
                         }
                     }
 
-                    if($response == 1){
+                    if ($response == 1){
                         Audit::add(get_class($model),'delete', serialize($attributes), get_class($model). ' deleted');
                     }
                 }
@@ -667,15 +743,15 @@ class Admin
         if (strpos($attribute, '.')) {
             $splitAttribute = explode('.', $attribute);
             $relationTable = $splitAttribute[0];
-            if (isset($row->$relationTable->$splitAttribute[1])) {
-                return $row->$relationTable->$splitAttribute[1];
+            if (isset($row->$relationTable->{$splitAttribute[1]})) {
+                return $row->$relationTable->{$splitAttribute[1]};
             }
 
             if (is_array($row->$relationTable)) {
                 $manyResult = array();
                 foreach ($row->$relationTable as $relationResult) {
-                    if (isset($relationResult->$splitAttribute[1])) {
-                        $manyResult[] = $relationResult->$splitAttribute[1];
+                    if (isset($relationResult->{$splitAttribute[1]})) {
+                        $manyResult[] = $relationResult->{$splitAttribute[1]};
                     }
                 }
 

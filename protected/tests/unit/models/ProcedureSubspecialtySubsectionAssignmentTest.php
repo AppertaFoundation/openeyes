@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
+class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
 {
     public $model;
     public $fixtures = array(
@@ -26,11 +26,16 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
             'assignments' => 'ProcedureSubspecialtySubsectionAssignment',
     );
 
+    public function getModel()
+    {
+        return $this->model;
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new ProcedureSubspecialtySubsectionAssignment();
@@ -42,14 +47,6 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
                 array(array('proc_id' => 1), 1, array('pssa1')),
                 array(array('specialty_subsection_id' => 1), 1, array('pssa1')),
         );
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
     }
 
     /**

@@ -45,7 +45,7 @@ class QueueAssign extends \CWidget
         $cls_name = explode('\\', get_class($this));
         $this->shortName = array_pop($cls_name);
         if (file_exists(dirname(__FILE__) . '/js/' . $this->shortName . '.js')) {
-            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/js/');
+            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/js/', true);
             Yii::app()->getClientScript()->registerScriptFile($this->assetFolder . '/' . $this->shortName . '.js');
         }
 

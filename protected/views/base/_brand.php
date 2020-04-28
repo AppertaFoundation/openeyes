@@ -15,10 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
+$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-logo.svg';
 $settings = new SettingMetadata();
-$tech_support_provider = $settings->getSetting('tech_support_provider');
-$tech_support_url = $settings->getSetting('tech_support_url')
+$tech_support_provider = Yii::App()->params['tech_support_provider'] ?: $settings->getSetting('tech_support_provider') ;
+$tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSetting('tech_support_url')
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -48,7 +48,7 @@ $tech_support_url = $settings->getSetting('tech_support_url')
     <h4>Legal</h4>
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
-    <p>OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.</p>
+    <p>OpenEyes is maintained by the <a href="http://apperta.org/" target="_blank">Apperta Foundation</a>. find out more at <a href='https://openeyes.org.uk' target='blank'>openeyes.org.uk</a></p>
     <p>Technical support is provided by <a href="<?= $tech_support_url?>" target="_blank"><?= $tech_support_provider ?></a>.</p>
   </div>
 

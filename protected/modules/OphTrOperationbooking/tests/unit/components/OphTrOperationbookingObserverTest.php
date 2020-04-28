@@ -24,6 +24,7 @@ class OphTrOperationbookingObserverTest extends CTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->observer = new OphTrOperationbookingObserver();
     }
 

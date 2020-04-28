@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2018
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -33,6 +33,11 @@ if (!isset($uniqueid)) {
     $returnUri = '';
     if ($admin->isSubList()) : ?>
     <div id="generic-admin-sublist">
+
+        <?php if ($admin->isForceFormDisplay()): ?>
+        <form id="generic-admin-list">
+            <?php endif; ?>
+
         <?php
         if ($admin->getSubListParent() && is_array($admin->getSubListParent())) :
             foreach ($admin->getSubListParent() as $key => $value) :
@@ -120,7 +125,7 @@ if (!isset($uniqueid)) {
                                 <td>
                                     <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color=''"
-                                           href="../../OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
+                                           href="/OphCiExamination/admin/manageElementAttributes?attribute_element_id=<?php echo $mappingId ?>">Manage Options</a>
                                     <?php endif; ?>
                                 </td>
                                 <?php
@@ -138,7 +143,7 @@ if (!isset($uniqueid)) {
                                 'Add',
                                 [
                                     'class' => 'button large',
-                                    'data-uri' => '/' . $uniqueid . '/edit',
+                                    'data-uri' => $admin->getCustomAddUrl() == '' ? '/' . $uniqueid . '/edit' : $admin->getCustomAddUrl(),
                                     'formmethod' => 'get',
                                     'name' => 'add',
                                     'id' => 'et_add'

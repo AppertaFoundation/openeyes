@@ -158,16 +158,12 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
 
     private function createOrUpdate($model_name, $attributes)
     {
-        if (!$model = $model_name::model()->findByAttributes($attributes)) {
-            $model = new $model_name;
-        }
-
-        foreach ($attributes as $attribute => $value) {
-            $model->{$attribute} = $value;
-        }
-
-        if (!$model->save()) {
-            throw new Exception("Unable to save : $model_name" . print_r($model->getErrors(), true));
+        $model = $this->dbConnection->createCommand("SELECT * FROM {$model_name::model()->tableName}")
+            ->where($attributes);
+        if (!$model) {
+            $this->insert($model_name::model()->tableName, $attributes);
+        } else {
+            $this->update($model_name::model()->tableName, $attributes, 'id = :id', array(':id' => $model['id']));
         }
     }
 }

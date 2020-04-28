@@ -23,6 +23,24 @@
         <table class="standard">
             <thead>
             <tr>
+                <th>
+                    <?= CHtml::link('Add Definition', '/Admin/worklist/definitionUpdate/', [
+                        'class' => 'button large green hint',
+                    ]) ?>
+                    <?php echo EventAction::button(
+                        'Sort',
+                        'sort',
+                        array(),
+                        array(
+                            'class' => 'button large',
+                            'style' => 'display:none;',
+                            'data-uri' => '/Admin/worklist/definitionSort/',
+                            'data-object' => 'WorklistDefinition',
+                        )
+                    )->toHtml() ?>
+                </th>
+            </tr>
+            <tr>
                 <th>Order</th>
                 <th>Name</th>
                 <th>Actions</th>
@@ -50,29 +68,10 @@
                 </tr>
             <?php } ?>
             </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="4">
-
-                    <?=\OEHtml::linkButton('Add Definition', '/Admin/worklist/definitionUpdate/');?>
-                    <?php echo EventAction::button(
-                        'Sort',
-                        'sort',
-                        array(),
-                        array(
-                            'class' => 'button large',
-                            'style' => 'display:none;',
-                            'data-uri' => '/Admin/worklist/definitionSort/',
-                            'data-object' => 'WorklistDefinition',
-                        )
-                    )->toHtml() ?>
-                </td>
-            </tr>
-            </tfoot>
         </table>
     </form>
     <?php } else {?>
-        <?= EventAction::link('Add Definition', '/worklistAdmin/definitionUpdate/', [], ['class' => 'button primary small'])->toHtml()?>
+        <?= EventAction::link('Add Definition', '/Admin/worklist/definitionUpdate/', [], ['class' => 'button primary small'])->toHtml()?>
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>

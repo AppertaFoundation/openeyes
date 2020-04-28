@@ -22,6 +22,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     {
         \Yii::app()->setComponent('moduleAPI', $this->_orig_moduleAPI);
         \Yii::app()->setController(null);
+        parent::tearDown();
     }
 
     public function testRender_misconfigured()

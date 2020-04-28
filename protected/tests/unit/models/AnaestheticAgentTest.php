@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class AnaestheticAgentTest extends CDbTestCase
+class AnaestheticAgentTest extends ActiveRecordTestCase
 {
     /**
      * @var AddressType
@@ -27,10 +27,15 @@ class AnaestheticAgentTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->model = new AnaestheticAgent();
+    }
+
+    public function getModel()
+    {
+        return $this->model;
     }
 
     /**

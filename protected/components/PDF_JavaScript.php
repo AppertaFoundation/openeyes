@@ -1,11 +1,13 @@
 <?php
+use setasign\Fpdi\Fpdi;
+
 class PDF_JavaScript extends FPDI {
 
 	protected $javascript;
 	protected $n_js;
 
 	function IncludeJS($script, $isUTF8=false) {
-		if(!$isUTF8)
+		if (!$isUTF8)
 			$script=utf8_encode($script);
 		$this->javascript=$script;
 	}

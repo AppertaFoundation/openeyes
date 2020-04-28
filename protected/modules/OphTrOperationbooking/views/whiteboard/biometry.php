@@ -14,7 +14,7 @@
     <?php $this->widget('MultipageView', array(
         'stack_class' => 'whiteboard',
         'nav_title' => 'Biometry',
-        'images' => $document->event->previewImages,
+        'images' => !empty($document->event->previewWhiteboardImages) ? $document->event->previewWhiteboardImages : $document->event->previewImages,
     ));?>
     <footer class="wb3-actions down">
         <?php $this->renderPartial('footer', array(

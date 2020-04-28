@@ -32,7 +32,7 @@ class RiskCardTest extends CDbTestCase
         Yii::import('application.modules.OphTrOperationbooking.models.*');
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->widget = new RiskCard();
@@ -40,14 +40,14 @@ class RiskCardTest extends CDbTestCase
         $this->widget->data->loadData($this->widget->data->event_id);
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         unset($this->widget);
         parent::tearDown();
     }
 
     /**
-     * @covers RiskCard::init
+     * @covers RiskCard
      */
     public function testInit()
     {
@@ -58,7 +58,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::getAlphaBlockerRisk
+     * @covers RiskCard
      */
     public function testGetAlphaBlockerRisk()
     {
@@ -70,7 +70,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::getAnticoagulantRisk
+     * @covers RiskCard
      */
     public function testGetAnticoagulantRisk()
     {
@@ -82,7 +82,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::run
+     * @covers RiskCard
      */
     public function testRun()
     {

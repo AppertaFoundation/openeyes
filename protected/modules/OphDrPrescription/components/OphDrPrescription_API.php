@@ -58,7 +58,7 @@ class OphDrPrescription_API extends BaseAPI
      * @param $patient_id
      * @param $item_id
      *
-     * @return Medication
+     * @return ArchiveMedication
      *
      * @throws Exception
      */
@@ -68,7 +68,7 @@ class OphDrPrescription_API extends BaseAPI
             if ($item->prescription->event->episode->patient_id != $patient_id) {
                 throw new Exception('prescription item id and patient id must match');
             }
-            $medication = new Medication();
+            $medication = new ArchiveMedication();
             $medication->createFromPrescriptionItem($item);
 
             return $medication;
@@ -88,7 +88,7 @@ class OphDrPrescription_API extends BaseAPI
         $prescriptionCriteria->addCondition('prescription.draft = 0');
         $prescriptionCriteria->addNotInCondition('t.id', $exclude);
         $prescriptionCriteria->params = array_merge($prescriptionCriteria->params, array(':id' => $patient->id));
-        $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
+        $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'medication', 'medicationDuration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
 
         return $prescriptionItems;
     }
@@ -106,4 +106,5 @@ class OphDrPrescription_API extends BaseAPI
         }
         return false;
     }
+
 }

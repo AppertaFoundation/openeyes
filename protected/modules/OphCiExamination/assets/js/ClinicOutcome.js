@@ -63,6 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         if (this.validateInputs($selected_status, $selected_period, $selected_role, selected_quantity)) {
             this.createRow($selected_status, $selected_period, $selected_role, selected_quantity);
+            $('#followup_comments').val('');
         }
     };
 
@@ -111,6 +112,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.$status_options.each(function () {
                 $(this).show();
             });
+        }
+
+        if ($row.is('tr:first-child')) {
+            $(this.entry_table_selector + ' tr:nth-child(2) td:first-child').html('');
         }
 
         $row.remove();

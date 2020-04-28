@@ -18,9 +18,12 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             ->queryAll();
 
         foreach ($assignments as $assignment) {
-            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['systemic_diagnoses_set_entry_id']);
-            $systemic_diagnoses_set_entry->set_id = $assignment['systemic_diagnoses_set_id'];
-            $systemic_diagnoses_set_entry->save();
+            $this->update(
+                'ophciexamination_systemic_diagnoses_set_entry',
+                array('set_id' => $assignment['systemic_diagnoses_set_id']),
+                'id = :id',
+                array('id' => $assignment['systemic_diagnoses_set_entry_id'])
+            );
         }
 
         $this->dropForeignKey('exam_systemic_diagnoses_set_assignment_diag_e', 'ophciexamination_systemic_diagnoses_set_assignment');
@@ -43,15 +46,15 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
         $this->addForeignKey('exam_systemic_diagnoses_set_assignment_diag_e', 'ophciexamination_systemic_diagnoses_set_assignment', 'ophciexamination_systemic_diagnoses_entry_id', 'ophciexamination_systemic_diagnoses_set_entry', 'id');
         $this->addForeignKey('exam_systemic_diagnoses_set_assignment_set', 'ophciexamination_systemic_diagnoses_set_assignment', 'systemic_diagnoses_set_id', 'ophciexamination_systemic_diagnoses_set', 'id');
 
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry');
-        $iterator = new CDataProviderIterator($dataProvider);
+        $iterator = $this->dbConnection->createCommand('SELECT * FROM ophciexamination_systemic_diagnoses_set_entry')
+            ->queryAll();
 
         foreach ($iterator as $systemic_diagnoses_entry) {
             $sql = "insert into ophciexamination_systemic_diagnoses_set_assignment (ophciexamination_systemic_diagnoses_entry_id, systemic_diagnoses_set_id)
             values (:ophciexamination_systemic_diagnoses_entry_id, :systemic_diagnoses_set_id)";
             $parameters = [
-                ":ophciexamination_systemic_diagnoses_entry_id"=>$systemic_diagnoses_entry->id,
-                ':systemic_diagnoses_set_id' => $systemic_diagnoses_entry->set_id
+                ":ophciexamination_systemic_diagnoses_entry_id"=>$systemic_diagnoses_entry['id'],
+                ':systemic_diagnoses_set_id' => $systemic_diagnoses_entry['set_id']
             ];
             $this->dbConnection->createCommand($sql)->execute($parameters);
 //
