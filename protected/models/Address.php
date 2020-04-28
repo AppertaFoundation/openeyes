@@ -217,6 +217,9 @@ class Address extends BaseActiveRecordVersioned
             if ($this->isNewRecord && !$this->address_type_id) {
                 // make correspondence the default address type
                 $this->address_type_id = AddressType::CORRESPOND;
+                $this->address1 = str_replace("\T\\", "&", $this->address1);
+                $this->address2 = str_replace("\T\\", "&", $this->address2);
+                $this->city = str_replace("\T\\", "&", $this->city);
             }
 
             return true;
