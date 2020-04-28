@@ -295,30 +295,30 @@ class PcrRisk
                 $as['cortical_id'] = $anteriorsegment['left_cortical_id'];
                 $as['phakodonesis'] = $anteriorsegment['left_phako'];
             }
+        }
 
-            if (is_array($eyedraw)) {
-                foreach ($eyedraw as $val) {
-                    if (!empty($val['pupilSize'])) {
-                        $as['pupil_size'] = $val['pupilSize'];
-                    }
+        if (isset($eyedraw) && is_array($eyedraw)) {
+            foreach ($eyedraw as $val) {
+                if (!empty($val['pupilSize'])) {
+                    $as['pupil_size'] = $val['pupilSize'];
+                }
 
-                    if (!empty($val['pxe'])) {
-                        $as['pxe'] = $val['pxe'];
-                    }
+                if (!empty($val['pxe'])) {
+                    $as['pxe'] = $val['pxe'];
                 }
             }
+        }
 
-            if (($as['phakodonesis']) || ($as['pxe'])) {
-                $as['pxf_phako'] = 'Y';
-            }
+        if (($as['phakodonesis']) || ($as['pxe'])) {
+            $as['pxf_phako'] = 'Y';
+        }
 
-            if (is_null($as['phakodonesis']) && is_null($as['pxe'])) {
-                $as['pxf_phako_nk'] = 1;
-            }
+        if (is_null($as['phakodonesis']) && is_null($as['pxe'])) {
+            $as['pxf_phako_nk'] = 1;
+        }
 
-            if ($as['nuclear_id'] == 4 || $as['cortical_id'] == 4) {
-                $as['brunescent_white_cataract'] = 'Y';
-            }
+        if (isset($as['nuclear_id']) && $as['nuclear_id'] == 4 || isset($as['cortical_id']) && $as['cortical_id'] == 4) {
+            $as['brunescent_white_cataract'] = 'Y';
         }
 
         return $as;
