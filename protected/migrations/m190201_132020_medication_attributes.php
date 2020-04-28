@@ -25,8 +25,8 @@ class m190201_132020_medication_attributes extends OEMigration
 
         $this->createOETable('medication_attribute_assignment', array(
             'id' => 'pk',
-            'medication_id' => 'INT(11)',
-            'medication_attribute_option_id' => 'INT(11)'
+            'medication_id' => 'INT',
+            'medication_attribute_option_id' => 'INT'
         ), true);
 
         $this->createIndex('med_attr_assign_unique_idx', 'medication_attribute_assignment', array('medication_id', 'medication_attribute_option_id'), true);
