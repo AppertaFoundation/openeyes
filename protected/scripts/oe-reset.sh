@@ -66,6 +66,8 @@ nofix=0
 dwservrunning=0
 restorefile="/tmp/openeyes_sample_data.sql"
 hscic=0
+nopost=0
+postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -111,6 +113,13 @@ do
     	--no-fix) nofix=1
     		## do not run oe-fix (useful when calling from other scripts)
     	;;
+		--no-post) nopost=1
+		    ## do not run local post reset scripts
+		;;
+		--post-path) # change the location of the local-post folder
+			postpath="$2"
+			shift
+		;;
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
@@ -187,6 +196,7 @@ if [ $showhelp = 1 ]; then
 	echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
 	echo "	--ignore-warnings	: Ignore warnings during migration"
 	echo "	--no-fix		: do not run oe-fix routines after reset"
+	echo "  --no-post       : do not run local post reset scripts"
 	echo "	--custom-file"
 	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
 	echo "					  'oe-reset -f <filename>.sql' "
@@ -340,19 +350,19 @@ if [ ! $nobanner = "1" ]; then
 fi
 
 # Run local post-migaration demo scripts
-if [ $demo = "1" ]; then
+if [ $nopost = "0" ]; then
 
 	echo "RUNNING POST RESET SCRIPTS..."
 
 	shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/local-post | sort -V)
+    for f in $(ls $postpath | sort -V)
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
+			bash -l "$postpath/$f"
 		fi
     done
 fi
