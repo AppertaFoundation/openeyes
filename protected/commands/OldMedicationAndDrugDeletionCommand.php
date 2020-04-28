@@ -38,7 +38,6 @@ USAGE
   php yiic oldmedicationanddrugdeletion
          
 EOH;
-
     }
 
     public function actionIndex()
@@ -54,12 +53,14 @@ EOH;
     {
         $medication_drugs = Medication::model()->findAll(
             'source_subtype = :source_subtype',
-            [':source_subtype' => 'medication_drug']);
+            [':source_subtype' => 'medication_drug']
+        );
 
         foreach ($medication_drugs as $medication_drug) {
             $event_medication_use = EventMedicationUse::model()->findAll(
                 'medication_id = :medication_id',
-                [":medication_id" => $medication_drug->id]);
+                [":medication_id" => $medication_drug->id]
+            );
             if (count($event_medication_use) === 0) {
                 $this->deleteMedication($medication_drug);
             }

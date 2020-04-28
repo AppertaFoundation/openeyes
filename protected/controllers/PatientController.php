@@ -636,7 +636,8 @@ class PatientController extends BaseController
         $header_data = [];
         if ($subspecialty->ref_spec == 'GL') {
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $cct_element = $exam_api->getLatestElement(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $this->patient,
                 false //use context
             );
@@ -976,8 +977,12 @@ class PatientController extends BaseController
     public function actionGenerateAllergySelect()
     {
         $this->patient = $this->loadModel(Yii::app()->getRequest()->getQuery('patient_id'));
-        echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'),
-            array('empty' => '-- Select --'));
+        echo CHtml::dropDownList(
+            'allergy_id',
+            null,
+            CHtml::listData($this->allergyList(), 'id', 'name'),
+            array('empty' => '-- Select --')
+        );
     }
 
     /**
@@ -1829,7 +1834,7 @@ class PatientController extends BaseController
                     if (isset($_POST['ExtraContact']['practice_id'])) {
                                     $practice_ids = $_POST['ExtraContact']['practice_id'];
                                     $pca_models = array();
-                        for ($i =0;$i<sizeof($gp_ids);$i++) {
+                        for ($i =0; $i<sizeof($gp_ids); $i++) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_ids[$i];
                             $pca_model->practice_id = $practice_ids[$i];
@@ -1970,9 +1975,10 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers, $prevUrl)
+        $patient_identifiers,
+        $prevUrl
+    ) {
 
-    {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
@@ -1991,7 +1997,7 @@ class PatientController extends BaseController
                     && $patient->isNewRecord
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
-                } else if ($prevUrl !== '') {
+                } elseif ($prevUrl !== '') {
                     $redirect = array($prevUrl);
                 } else {
                     $redirect = array('/patient/summary/' . $patient->id);
@@ -2040,9 +2046,10 @@ class PatientController extends BaseController
         Address &$address,
         PatientReferral &$referral,
         PatientUserReferral &$patient_user_referral,
-        &$patient_identifiers)
+        &$patient_identifiers
+    ) {
 
-    {if (!$this->checkForReferralFiles($referral, $patient)) {
+        (!$this->checkForReferralFiles($referral, $patient)) {
             return false;
         }
         if (!$contact->save()) {
@@ -2088,7 +2095,8 @@ class PatientController extends BaseController
         return true;
     }
 
-    private function performPatientContactAssociatesSave($patient){
+    private function performPatientContactAssociatesSave($patient)
+    {
         // Check if any contact selected for this patient.
         if (isset($_POST['ExtraContact'])) {
             // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
@@ -2138,8 +2146,9 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code))
+            if (empty($post_info->code)) {
                 continue;
+            }
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
@@ -2598,7 +2607,8 @@ class PatientController extends BaseController
         }
     }
 
-    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
+    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check)
+    {
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2666,7 +2676,8 @@ class PatientController extends BaseController
         );
     }
 
-    public function checkForReferralFiles($referral, $patient){
+    public function checkForReferralFiles($referral, $patient)
+    {
 
         // To get allowed file types from the model
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
@@ -2691,14 +2702,14 @@ class PatientController extends BaseController
                 }
 
                 // Check for compatible file types
-                else if (!in_array($type, $allowed_file_types)) {
+                elseif (!in_array($type, $allowed_file_types)) {
                     $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
                     $referral->addError('uploadedFile', $message);
                     return false;
                 }
             }
             // The file field is empty. It should throw error for referral scenario
-            else if ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+            elseif ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
                 $referral->addError('uploadedFile', 'Referral requires a letter file');
                 return false;
             }
@@ -2718,8 +2729,10 @@ class PatientController extends BaseController
             $criteria->addCondition("is_linked=0 AND patient_id='" . $this->patient->id . "'");
             $resultSet = OphInBiometry_Imported_Events::model()->findAll($criteria);
             if ($resultSet) {
-                Yii::app()->user->setFlash('alert.unlinked_biometry_event',
-                    'A new biometry report is available for this patient - please create a biometry event to view it ');
+                Yii::app()->user->setFlash(
+                    'alert.unlinked_biometry_event',
+                    'A new biometry report is available for this patient - please create a biometry event to view it '
+                );
             }
         }
     }
@@ -2728,7 +2741,8 @@ class PatientController extends BaseController
      * @param $patient
      * @return bool any existing referral letter for this patient will return false
      */
-    protected function checkExistingReferralLetter($patient){
+    protected function checkExistingReferralLetter($patient)
+    {
         if (!isset($patient->id)) {
             return true;
         }
@@ -2739,10 +2753,7 @@ class PatientController extends BaseController
                     join event e2 on e.id = e2.episode_id
                     join et_ophcodocument_document d on d.event_id = e2.id
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where e2.deleted = 0 and p.id = $patient->id;"
-        );
+                    where e2.deleted = 0 and p.id = $patient->id;");
         return ($command->queryScalar() == 0);
     }
-
-
 }
