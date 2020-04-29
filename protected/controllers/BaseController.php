@@ -122,7 +122,7 @@ class BaseController extends Controller
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
             $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3_print.min.css';
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true).'/css/style_oe3_print.min.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),
@@ -406,19 +406,24 @@ class BaseController extends Controller
 
     public function setPageTitle($pageTitle)
     {
-        parent::setPageTitle($pageTitle . ' - OE');
+        if ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on") {
+            parent::setPageTitle($pageTitle . ' - OE');
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = "<b><strong><p><input><option><select><table><thead><tbody><tr><th><td><i><em><span><br><ul><ol><li><div>";
+        $allowable_tags = ["b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div"];
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {
                     $input[$key] = $this->sanitizeInput($value);
                     continue;
                 }
-                $value = strip_tags($value, $allowable_tags);
+                $pattern = '/<(?:(?!\s|\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
+                $value = preg_replace($pattern, '', $value);
                 $input[$key] = $value;
             }
         }
