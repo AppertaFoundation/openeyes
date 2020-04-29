@@ -16,49 +16,41 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+
 namespace OEModule\OphCiExamination\models;
 
-
 /**
- * Class PastSurgery
+ * This is the model class for table "et_ophciexamination_systemicsurgery".
  *
- * @package OEModule\OphCiExamination\models
- *
- * @property int $id
- * @property int $event_id
- *
- * @property \EventType $eventType
- * @property \Event $event
- * @property \User $user
- * @property \User $usermodified
- * @property PastSurgery_Operation[] $operations
+ * The followings are the available columns in table 'et_ophciexamination_systemicsurgery':
+ * @property integer $id
+ * @property string $event_id
  * @property string $comments
+ * @property string $last_modified_user_id
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $created_date
+ *
+ * The followings are the available model relations:
+ * @property \User $createdUser
+ * @property \Event $event
+ * @property \User $lastModifiedUser
+ * @property SystemicSurgery_Operation[] $systemicSurgery_Operation
  */
-class PastSurgery extends \BaseEventTypeElement
+class SystemicSurgery extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
-    protected $default_view_order = 10;
-
     protected $auto_update_relations = true;
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
+    protected $auto_validate_relations = true;
+    public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicSurgery';
     protected $default_from_previous = true;
-
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
     /**
      * @return string the associated database table name
      */
     public function tableName()
     {
-        return 'et_ophciexamination_pastsurgery';
+        return 'et_ophciexamination_systemicsurgery';
     }
 
     /**
@@ -66,9 +58,9 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function behaviors()
     {
-        return array(
+        return [
             'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
-        );
+        ];
     }
 
     /**
@@ -78,56 +70,67 @@ class PastSurgery extends \BaseEventTypeElement
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('event_id, operations, comments', 'safe'),
+        return [
+            ['event_id, operations, comments', 'safe'],
             // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, event_id, comments',  'safe', 'on' => 'search')
-        );
+            ['id, event_id, comments', 'safe', 'on'=>'search'],
+        ];
     }
 
     /**
-     * @return array
+     * @return array relational rules.
      */
     public function relations()
     {
-        return array(
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'operations' => [self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation',
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return [
+            'event' => [self::BELONGS_TO, 'Event', 'event_id'],
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'operations' => [self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicSurgery_Operation',
                 'element_id', 'order' => 'operations.date desc, operations.last_modified_date'],
-        );
+        ];
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'comments' => 'Comments',
+            'last_modified_user_id' => 'Last Modified User',
+            'last_modified_date' => 'Last Modified Date',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+        ];
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return SystemicSurgery the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
     }
 
     public function beforeSave()
     {
         $entries = $this->operations;
-        foreach ($entries as $key=>$entry) {
-            if ($entry->had_operation == PastSurgery_Operation::$NOT_CHECKED) {
+        foreach ($entries as $key => $entry) {
+            if ($entry->had_operation == SystemicSurgery_Operation::$NOT_CHECKED) {
                 unset($entries[$key]);
             }
         }
         $this->operations = $entries;
         return parent::beforeSave();
     }
-
-    /**
-     * individual operation validation
-     */
-    public function afterValidate()
-    {
-        foreach ($this->operations as $i => $operation) {
-            if (!$operation->validate()) {
-                foreach ($operation->getErrors() as $fld => $err) {
-                    $this->addError('operations_' . ($i), 'Operation ('.($i + 1).'): '.implode(', ', $err));
-                }
-            }
-        }
-        parent::afterValidate();
-    }
-
 
     /**
      * Will duplicate values from the current socialhistory property of the given patient.
@@ -143,7 +146,7 @@ class PastSurgery extends \BaseEventTypeElement
         if (!$operations) {
             // add the entries from the DB
             foreach ($element->operations as $prev) {
-                $operation = new PastSurgery_Operation();
+                $operation = new SystemicSurgery_Operation();
                 $operation->operation = $prev->operation;
                 $operation->side_id = $prev->side_id;
                 $operation->date = $prev->date;
@@ -169,8 +172,13 @@ class PastSurgery extends \BaseEventTypeElement
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
+    }
+
     public function getViewTitle()
     {
-        return "Eye Procedures";
+        return "Systemic Procedures";
     }
 }

@@ -1,18 +1,15 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2018
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
- * version. OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
- * details. You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled
- * COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
@@ -22,7 +19,7 @@
 <div class="cols-5">
 
     <div class="row divider">
-        <h2>Required Ophthalmic Surgical History Sets</h2>
+        <h2>Required Systemic Surgical History Sets</h2>
     </div>
 
     <?php
@@ -32,7 +29,7 @@
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::checkBox(
-                    "OEModule_OphCiExamination_models_SurgicalHistorySet[]",
+                    "OEModule_OphCiExamination_models_SystemicSurgerySet[]",
                     false,
                     ['value' => $data->id]
                 );
@@ -83,7 +80,7 @@
         [
             'class' => 'button large',
             'name' => 'add',
-            'data-uri' => '/OphCiExamination/admin/SurgicalHistoryAssignment/create',
+            'data-uri' => '/OphCiExamination/admin/SystemicSurgicalHistoryAssignment/create',
             'id' => 'et_add'
         ]
     ); ?>
@@ -93,7 +90,7 @@
         [
             'class' => 'button large',
             'name' => 'delete',
-            'data-uri' => '/OphCiExamination/admin/SurgicalHistoryAssignment/delete',
+            'data-uri' => '/OphCiExamination/admin/SystemicSurgicalHistoryAssignment/delete',
             'id' => 'et_delete'
         ]
     ); ?>
@@ -104,7 +101,7 @@
     $(document).ready(function () {
         $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
-            window.location.href = '/OphCiExamination/admin/SurgicalHistoryAssignment/update/' + id;
+            window.location.href = '/OphCiExamination/admin/SystemicSurgicalHistoryAssignment/update/' + id;
         });
     });
 </script>
