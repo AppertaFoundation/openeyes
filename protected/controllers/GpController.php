@@ -200,7 +200,7 @@ class GpController extends BaseController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }
@@ -231,7 +231,7 @@ class GpController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }

@@ -220,13 +220,13 @@ class AdminController extends ModuleAdminController
         foreach (OphTrOperationbooking_Letter_Contact_Rule::model()->findAll($criteria) as $rule) {
             if ($rule->applies($site_id, $subspecialty_id, $theatre_id, $firm_id, false)) {
                 $final = $rule->parse($site_id, $subspecialty_id, $theatre_id, $firm_id, false);
-                echo json_encode(array($final->id));
+                $this->renderJSON(array($final->id));
 
                 return;
             }
         }
 
-        echo json_encode(array());
+        echo $this->renderJSON(array());
     }
 
     public function actionEditLetterContactRule($id)
@@ -344,13 +344,13 @@ class AdminController extends ModuleAdminController
         foreach (OphTrOperationbooking_Admission_Letter_Warning_Rule::model()->findAll($criteria) as $rule) {
             if ($rule->applies($site_id, $is_child, $theatre_id, $subspecialty_id, $firm_id)) {
                 $final = $rule->parse($site_id, $is_child, $theatre_id, $subspecialty_id, $firm_id);
-                echo json_encode(array($final->id));
+                $this->renderJSON(array($final->id));
 
                 return;
             }
         }
 
-        echo json_encode(array());
+        $this->renderJSON(array());
     }
 
     public function actionEditLetterWarningRule($id)
@@ -465,13 +465,13 @@ class AdminController extends ModuleAdminController
         foreach (OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAll($criteria) as $rule) {
             if ($rule->applies($site_id, $service_id, $firm_id, $is_child)) {
                 $final = $rule->parse($site_id, $service_id, $firm_id, $is_child);
-                echo json_encode(array($final->id));
+                $this->renderJSON(array($final->id));
 
                 return;
             }
         }
 
-        echo json_encode(array());
+        $this->renderJSON(array());
     }
 
     public function actionAddWaitingListContactRule()
@@ -884,13 +884,13 @@ class AdminController extends ModuleAdminController
             if ($changed) {
                 if (!empty($errors)) {
                     $sequence->validate();
-                    echo json_encode(array_merge($errors, $sequence->getErrors()));
+                    $this->renderJSON(array_merge($errors, $sequence->getErrors()));
 
                     return;
                 }
 
                 if (!$sequence->save()) {
-                    echo json_encode($sequence->getErrors());
+                    $this->renderJSON($sequence->getErrors());
 
                     return;
                 }
@@ -899,7 +899,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionEditSequence($id)
@@ -1181,15 +1181,15 @@ class AdminController extends ModuleAdminController
         if (empty($result['errors'])) {
             foreach ($result['sessions'] as $session) {
                 if (!$session->save()) {
-                    echo json_encode($session->getErrors());
+                    $this->renderJSON($session->getErrors());
 
                     return;
                 }
                 Audit::add('admin', 'update', $session->id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Session'));
             }
-            echo json_encode(array());
+            $this->renderJSON(array());
         } else {
-            echo json_encode($result['errors']);
+            $this->renderJSON($result['errors']);
         }
     }
 

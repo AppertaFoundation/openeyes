@@ -223,6 +223,6 @@ class AuditController extends BaseController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
     }
 }
