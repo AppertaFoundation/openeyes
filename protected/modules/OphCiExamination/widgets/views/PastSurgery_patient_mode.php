@@ -17,10 +17,10 @@
 
 ?>
 <table>
-    <tbody>
     <colgroup>
         <col class="cols-8"><col>
     </colgroup>
+    <tbody>
     <?php if (!$operations || sizeof($operations)==0) { ?>
       <div class="nil-recorded">Nil recorded.</div>
     <?php } else {

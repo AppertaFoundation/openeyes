@@ -100,7 +100,6 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return null;
-
     }
 
     /**
@@ -133,7 +132,8 @@ class DefaultController extends \BaseEventTypeController
             parent::getAllElementTypes(),
             function ($et) use ($remove) {
                 return !in_array($et->class_name, $remove);
-            });
+            }
+        );
     }
 
     public function getElementTree($remove_list = array())
@@ -263,7 +263,7 @@ class DefaultController extends \BaseEventTypeController
     public function renderOpenElements($action, $form = null, $date = null)
     {
         $step_id = \Yii::app()->request->getParam('step_id');
-        
+
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js
@@ -300,12 +300,14 @@ class DefaultController extends \BaseEventTypeController
                 // Ignore elements that are displayed in the view summary
                 models\Element_OphCiExamination_History::class,
                 models\PastSurgery::class,
+                models\SystemicSurgery::class,
                 models\SystemicDiagnoses::class,
                 models\Element_OphCiExamination_Diagnoses::class,
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
-                models\HistoryIOP::class,
+                models\Element_OphCiExamination_Management::class,
+                models\Element_OphCiExamination_ClinicOutcome::class,
                 models\OCT::class,
             ), true);
         });
@@ -376,7 +378,8 @@ class DefaultController extends \BaseEventTypeController
         $this->renderPartial(
             'form_Element_OphCiExamination_InjectionManagementComplex_questions',
             array('element' => $element, 'form' => $form, 'side' => $side, 'questions' => $questions),
-            false, false
+            false,
+            false
         );
     }
 
@@ -433,8 +436,10 @@ class DefaultController extends \BaseEventTypeController
         $this->step = $this->getCurrentStep();
 
         if (Yii::app()->request->getPost('patientticketing__notes', null) != null) {
-            $_POST['patientticketing__notes'] = htmlspecialchars(Yii::app()->request->getPost('patientticketing__notes',
-                null));
+            $_POST['patientticketing__notes'] = htmlspecialchars(Yii::app()->request->getPost(
+                'patientticketing__notes',
+                null
+            ));
         }
 
         parent::actionCreate();
@@ -524,8 +529,7 @@ class DefaultController extends \BaseEventTypeController
                 'left_values' => $left_data,
                 'right_select' => $right_select,
                 'left_select' => $left_select,
-            )
-        );
+            ));
     }
 
     public function actionGetPostOpComplicationAutocopleteList()
@@ -544,7 +548,12 @@ class DefaultController extends \BaseEventTypeController
 
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $select_values = models\OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
-                    $element_id, $operation_note_id, $subspecialty_id, $eye_id, $term);
+                    $element_id,
+                    $operation_note_id,
+                    $subspecialty_id,
+                    $eye_id,
+                    $term
+                );
 
                 $select = array();
                 foreach ($select_values as $select_value) {
@@ -1166,22 +1175,30 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCiExamination_InjectionManagementComplex($element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        $element->updateQuestionAnswers(\Eye::LEFT,
+        $element->updateQuestionAnswers(
+            \Eye::LEFT,
             $element->hasLeft() && isset($data[$model_name]['left_Answer']) ?
                 $data[$model_name]['left_Answer'] :
-                array());
-        $element->updateQuestionAnswers(\Eye::RIGHT,
+            array()
+        );
+        $element->updateQuestionAnswers(
+            \Eye::RIGHT,
             $element->hasRight() && isset($data[$model_name]['right_Answer']) ?
                 $data[$model_name]['right_Answer'] :
-                array());
-        $element->updateRisks(\Eye::LEFT,
+            array()
+        );
+        $element->updateRisks(
+            \Eye::LEFT,
             $element->hasLeft() && isset($data[$model_name]['left_risks']) ?
                 $data[$model_name]['left_risks'] :
-                array());
-        $element->updateRisks(\Eye::RIGHT,
+            array()
+        );
+        $element->updateRisks(
+            \Eye::RIGHT,
             $element->hasRight() && isset($data[$model_name]['right_risks']) ?
                 $data[$model_name]['right_risks'] :
-                array());
+            array()
+        );
     }
 
     /**
@@ -1378,7 +1395,6 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
         }
-
     }
 
     protected function saveComplexAttributes_HistoryIOP($element, $data, $index)
@@ -1544,9 +1560,9 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateOphthalmicDiagnosesFromData($data, $errors);
         }
 
-                if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
-                    $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
-                }
+        if (isset($data['OEModule_OphCiExamination_models_PupillaryAbnormalities'])) {
+            $errors = $this->setAndValidatePupillaryAbnormalitiesFromData($data, $errors);
+        }
 
             return $errors;
     }
@@ -1743,13 +1759,13 @@ class DefaultController extends \BaseEventTypeController
         foreach ($entries as $entry) {
             if (isset($entry['right_eye']) && isset($entry['left_eye'])) {
                 $eye_id = \Eye::BOTH;
-            } else if (isset($entry['right_eye'])) {
+            } elseif (isset($entry['right_eye'])) {
                 $eye_id = \Eye::RIGHT;
-            } else if (isset($entry['left_eye'])) {
+            } elseif (isset($entry['left_eye'])) {
                 $eye_id = \Eye::LEFT;
             } else {
                 continue;
-                        }
+            }
 
             // create a string with concatenation of  the columns that must be unique
             $concat_data = $eye_id . $entry['disorder_id'] . $entry['date'];
@@ -1855,7 +1871,9 @@ class DefaultController extends \BaseEventTypeController
             $contact_ids = [];
         }
         $patientContactAssignments = \PatientContactAssignment::model()->findAll(
-            "patient_id = ?", [$patient->id]);
+            "patient_id = ?",
+            [$patient->id]
+        );
 
 
         foreach ($contact_ids as $key => $contact_id) {
@@ -1986,7 +2004,8 @@ class DefaultController extends \BaseEventTypeController
                 'element' => null,
                 'show_titles' => true,
                 'is_examination' => true,
-            ]);
+            ]
+        );
     }
 
     protected function saveComplexAttributes_OCT($element, $data, $index)

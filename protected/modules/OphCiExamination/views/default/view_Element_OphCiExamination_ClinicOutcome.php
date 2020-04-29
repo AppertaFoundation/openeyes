@@ -20,47 +20,47 @@
 $row_count = 0;
 ?>
 <div class="element-data full-width">
-    <div class="data-group">
-        <table class="cols-full">
-            <tbody>
-            <?php foreach ($element->entries as $entry) { ?>
-                <tr>
-                    <td>
-                        <?= $row_count ? "AND" : "" ?>
-                    </td>
-                    <td class="large-text" style="text-align:left">
-                    <?php
-                    if ($entry->isPatientTicket()) {
-                        $api = Yii::app()->moduleAPI->get('PatientTicketing');
-                        $ticket = $api->getTicketForEvent($this->event);
-                        if ($ticket) {
-                            if ($ticket->priority) {?>
-                            <div class="priority">
-                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
-                            </div>
-                            <?php } ?>
-                            <div class="cols-7">
-                                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
-                            </div>
-                        <?php }
-                    } else {
-                        echo $entry->getInfos();
-                    }
-                    $row_count++;
-                    ?>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
+    <?php if (!$element->id) { ?>
+        <div class="data-value not-recorded">No follow-up comments recorded during this encounter</div>
+    <?php } else { ?>
+    <div class="data-value">
+        <div class="tile-data-overflow">
+            <table class="cols-full">
+                <tbody>
+                <?php foreach ($element->entries as $entry) { ?>
+                    <tr>
+                        <td>
+                            <?= $row_count ? "AND" : "" ?>
+                        </td>
+                        <td class="large-text" style="text-align:left">
+                            <?php
+                            if ($entry->isPatientTicket()) {
+                                $api = Yii::app()->moduleAPI->get('PatientTicketing');
+                                $ticket = $api->getTicketForEvent($this->event);
+                                if ($ticket) { ?>
+                                    <div class="cols-7">
+                                        <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+                                    </div>
+                                <?php }
+                            } else {
+                                echo $entry->getInfos();
+                            }
+                            $row_count++;
+                            ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <?php if ($element->comments) { ?>
+        <?php if ($element->comments) { ?>
         <div class="data-group">
             <span class="large-text">
                 <?= $element->getAttributeLabel('comments') ?>:
                 <?= Yii::app()->format->Ntext($element->comments); ?>
             </span>
-        </div>
+            </div>
+        <?php } ?>
     <?php } ?>
-
 </div>

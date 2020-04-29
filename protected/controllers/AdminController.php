@@ -34,7 +34,13 @@ class AdminController extends BaseAdminController
     public function actionEditPreviousOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
+        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation');
+    }
+
+    public function actionEditPreviousSystemicOperation()
+    {
+        $this->group = 'Examination';
+        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
@@ -457,7 +463,7 @@ class AdminController extends BaseAdminController
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
-        } else if (!$id) {
+        } elseif (!$id) {
             $user = new User();
         }
 
@@ -829,8 +835,10 @@ class AdminController extends BaseAdminController
                 $institution->addAddress($address);
 
                 if (!$institution->contact->save()) {
-                    throw new Exception('Institution contact could not be saved: ' . print_r($institution->contact->getErrors(),
-                            true));
+                    throw new Exception('Institution contact could not be saved: ' . print_r(
+                        $institution->contact->getErrors(),
+                        true
+                    ));
                 }
 
                 Audit::add('admin-Institution', 'add', $institution->id);
@@ -1553,13 +1561,17 @@ class AdminController extends BaseAdminController
                     $method = $cbs->id ? 'edit' : 'add';
 
                     if (!$cbs->save()) {
-                        throw new Exception('Unable to save CommissioningBodyService: ' . print_r($cbs->getErrors(),
-                                true));
+                        throw new Exception('Unable to save CommissioningBodyService: ' . print_r(
+                            $cbs->getErrors(),
+                            true
+                        ));
                     }
 
                     if (!$address->save()) {
-                        throw new Exception('Unable to save CommissioningBodyService address: ' . print_r($address->getErrors(),
-                                true));
+                        throw new Exception('Unable to save CommissioningBodyService address: ' . print_r(
+                            $address->getErrors(),
+                            true
+                        ));
                     }
 
                     Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
@@ -1639,8 +1651,10 @@ class AdminController extends BaseAdminController
 
             if (empty($errors)) {
                 if (!$cbs->save()) {
-                    throw new Exception('Unable to save CommissioningBodyServiceType: ' . print_r($cbs->getErrors(),
-                            true));
+                    throw new Exception('Unable to save CommissioningBodyServiceType: ' . print_r(
+                        $cbs->getErrors(),
+                        true
+                    ));
                 }
 
                 Audit::add('admin-CommissioningBodyServiceType', $method, $cbs->id);
