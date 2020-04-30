@@ -53,7 +53,9 @@ $non_ticket_entries = [];
             </table>
         </div>
     <?php } ?>
-    <?php if ($non_ticket_entries && $ticket_entries) {?><hr class="divider"><?php }?>
+    <?php if ($non_ticket_entries && $ticket_entries) {
+        ?><hr class="divider"><?php
+    }?>
     <?php foreach ($ticket_entries as $entry) { ?>
         <div class="flex-layout flex-top col-gap">
             <div class="cols-5">
@@ -152,6 +154,6 @@ $non_ticket_entries = [];
                     </div>
                 <?php } ?>
             </div>
-        <?php }  ?>
+    <?php }  ?>
     </div>
 </div>
