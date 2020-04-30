@@ -53,7 +53,7 @@ $non_ticket_entries = [];
             </table>
         </div>
     <?php } ?>
-    <hr class="divider">
+    <?php if ($non_ticket_entries && $ticket_entries) {?><hr class="divider"><?php }?>
     <?php foreach ($ticket_entries as $entry) { ?>
         <div class="flex-layout flex-top col-gap">
             <div class="cols-5">
@@ -87,26 +87,23 @@ $non_ticket_entries = [];
                 <hr class="divider">
                 <div class="oe-vc-mode in-element row">
                     <ul class="vc-steps">
-                        <li class="<?= $ticket->hasHistory() ? 'completed' : ''?>">
-                            <em><?= $ticket->user->getFullName() ?></em>
-                        </li>
                         <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
-                            $is_completed = $queue->id < $ticket->current_queue->id;
+                            $is_completed = $queue->id <= $ticket->current_queue->id;
                             $is_current = $queue->id === $ticket->current_queue->id; ?>
-                            <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
-                                <?= $step . '. ' . $queue->name; ?>
-                                <?php if ($is_completed || $is_current) {
-                                    $complete_or_current_steps_keys[$queue->id] = $step;
-                                } else {
-                                    $incomplete_steps[$step] = $queue;
-                                }?>
-                            </li>
+                            <?php if ($is_completed) {
+                                $complete_or_current_steps_keys[$queue->id] = $step;
+                            } else {
+                                $incomplete_steps[$step] = $queue;
+                            } ?>
                             <?php if ($is_completed) {
                                 $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
                                 <li class="completed">
                                     <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
                                 </li>
                             <?php } ?>
+                            <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
+                                <?= $step . '. ' . $queue->name; ?>
+                            </li>
                         <?php } ?>
                     </ul>
                 </div>
