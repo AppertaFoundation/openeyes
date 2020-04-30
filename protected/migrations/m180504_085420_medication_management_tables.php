@@ -165,7 +165,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'subspecialty_id'   => 'INT NULL',
             'site_id'           => 'INT NULL',
             'usage_code'        => 'VARCHAR(255) NULL',
-            'usage_code_id'     => 'INT(11) DEFAULT NULL',
+            'usage_code_id'     => 'INT DEFAULT NULL',
             'deleted_date'      => 'DATE NULL',
         ], true);
 

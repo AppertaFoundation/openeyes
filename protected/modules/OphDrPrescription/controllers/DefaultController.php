@@ -674,10 +674,10 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Render the form for a OphDrPrescription_Item, DrugSetItem or Drug (by id).
+     * Render the form for a OphDrPrescription_Item, MedicationSetItem or Medication (by id).
      *
      * @param $key
-     * @param OphDrPrescription_Item|DrugSetItem|int $source
+     * @param OphDrPrescription_Item|MedicationSetItem|int $source
      *
      * @throws CException
      * @throws Exception

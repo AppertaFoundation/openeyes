@@ -97,23 +97,6 @@ class MedicationController extends BaseController
                     }, $md->tags)
                 );
             }
-
-            foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
-                $label = $drug->tallmanlabel;
-                if (strpos(strtolower($drug->name), $term) === false) {
-                    $label .= ' (' . $drug->aliases . ')';
-                }
-                $return[] = array(
-                    'name' => $drug->tallmanlabel,
-                    'label' => $label,
-                    'value' => $label,
-                    'type' => 'd',
-                    'id' => $drug->id,
-                    'tags' => array_map(function ($t) {
-                        return $t->id;
-                    }, $drug->tags)
-                );
-            }
         }
 
         echo json_encode($return);
