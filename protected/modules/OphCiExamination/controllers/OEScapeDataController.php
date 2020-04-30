@@ -154,7 +154,7 @@ class OEScapeDataController extends \BaseController
             $output[] = array(strtotime($row['event_date']) * 1000, (int) $row['value']);
         }
 
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionDataSetVA($id, $side)
@@ -173,7 +173,7 @@ class OEScapeDataController extends \BaseController
             }
         }
 
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionDataSetMD($id, $side)
@@ -185,7 +185,7 @@ class OEScapeDataController extends \BaseController
             $output[] = array(strtotime($row['event_date']) * 1000, (float) $row['mean_deviation']);
         }
 
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionGetOperations($id)
@@ -197,7 +197,7 @@ class OEScapeDataController extends \BaseController
             $output[] = array(strtotime($row['event_date']) * 1000, $row['term'], (int) $row['eye_id']);
         }
 
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionGetMedications($id)
@@ -212,7 +212,7 @@ class OEScapeDataController extends \BaseController
             $output[] = array((int) strtotime($medication->start_date) * 1000, (int) strtotime($medication->end_date) * 1000, (int) $medication->option_id, explode(' ', $medication->getDrugLabel())[0]);
         }
 
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionLoadImage($id, $eventDate, $side, $eventType, $mediaType)
@@ -246,7 +246,7 @@ class OEScapeDataController extends \BaseController
         foreach ($allData as $row) {
             $output[strtotime($row['event_date'])][$row['eye_id']] = array($row['fileid'], $row['plot_values']);
         }
-        echo json_encode($output);
+        $this->renderJSON($output);
     }
 
     public function actionGetImage($id)

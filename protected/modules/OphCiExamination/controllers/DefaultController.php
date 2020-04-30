@@ -701,9 +701,8 @@ class DefaultController extends \BaseEventTypeController
             throw new \Exception('Unable to find disorder: ' . @$_GET['disorder_id']);
         }
 
-        header('Content-type: application/json');
         // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
-        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
+        $this->renderJSON(array('id' => $disorder->id, 'name' => $disorder->term));
         Yii::app()->end();
     }
 
@@ -1928,7 +1927,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        echo json_encode($assessments);
+        $this->renderJSON($assessments);
     }
 
     public function actionGetAttachment($assessment_ids)
