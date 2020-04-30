@@ -22,6 +22,7 @@ $api = Yii::app()->moduleAPI->get('PatientTicketing');
 $ticket = $api->getTicketForEvent($this->event);
 $display_queue = $ticket->getDisplayQueueAssignment();
 $incomplete_steps = [];
+$complete_or_current_steps_keys = [];
 ?>
 <div class="element-data full-width">
     <?php foreach ($element->entries as $entry) { ?>
@@ -65,6 +66,7 @@ $incomplete_steps = [];
                                     echo $step . '. ' . $queue->name;
                                 } ?>
                                 <?php if ($queue->id <= $ticket->current_queue->id) {
+                                    $complete_or_current_steps_keys[$queue->id] = $step;
                                     echo '(' . $queue->usermodified->getFullName() . ')';
                                 } else {
                                     $incomplete_steps[$step] = $queue;
@@ -80,9 +82,9 @@ $incomplete_steps = [];
                         <div class="collapse-data">
                             <div class="collapse-data-header-icon collapse">
                                 <?php if ($old_assignment->queue->id < $ticket->current_queue->id) {
-                                    echo $step + 1 . '. <del>' . $old_assignment->queue->name . '</del>';
+                                    echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. <del>' . $old_assignment->queue->name . '</del>';
                                 } else {
-                                    echo $step + 1 . '. ' . $old_assignment->queue->name;
+                                    echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. ' . $old_assignment->queue->name;
                                 } ?>
                                 <?php if ($old_assignment->assignment_date) {
                                     echo Helper::convertDate2NHS($old_assignment->assignment_date);
