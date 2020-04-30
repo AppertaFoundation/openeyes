@@ -23,32 +23,65 @@ $ticket = $api->getTicketForEvent($this->event);
 $display_queue_assignment = $ticket->getDisplayQueueAssignment();
 $incomplete_steps = [];
 $complete_or_current_steps_keys = [];
+$queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
+$ticket_entries = [];
+$non_ticket_entries = [];
 ?>
 <div class="element-data full-width">
-    <?php foreach ($element->entries as $entry) { ?>
+    <?php foreach ($element->entries as $entry) {
+        if ($entry->isPatientTicket() && $ticket) {
+            $ticket_entries[] = $entry;
+        } else {
+            $non_ticket_entries[] = $entry;
+        }
+    } ?>
+    <?php if ($non_ticket_entries) { ?>
+        <div class="cols-10">
+            <table class="last-left large-text">
+                <colgroup>
+                    <col class="cols-1">
+                </colgroup>
+                <tbody>
+                <?php foreach ($non_ticket_entries as $entry) { ?>
+                    <tr>
+                        <td><?= $row_count ? 'AND' : ''?></td>
+                        <td><?= $entry->getInfos(); ?></td>
+                    </tr>
+                    <?php $row_count++; ?>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    <?php } ?>
+    <hr class="divider">
+    <?php foreach ($ticket_entries as $entry) { ?>
         <div class="flex-layout flex-top col-gap">
-            <div class="cols-4">
+            <div class="cols-5">
                 <table class="last-left">
                     <colgroup>
                         <col class="cols-4">
                     </colgroup>
                     <tbody>
-                        <tr>
-                            <th>Priority</th>
-                            <?php if ($entry->isPatientTicket() && $ticket && $ticket->priority) {?>
-                                <td>
-                                    <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
-                                </td>
-                            <?php } ?>
-                        </tr>
-                        <tr>
-                            <th>State</th>
-                            <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
-                        </tr>
-                        <tr>
-                            <th>Comments</th>
-                            <td><?= $element->comments ? $element->comments : '<span class="none">None</span>' ?></td>
-                        </tr>
+                    <tr>
+                        <th>Priority</th>
+                        <?php if ($ticket->priority) {?>
+                            <td>
+                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Virtual Clinic</th>
+                        <td><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name?></td>
+                    </tr>
+                    <tr>
+                        <th>Comments</th>
+                        <td><?= $element->comments ? $element->comments : '<span class="none">None</span>' ?></td>
+                    </tr>
                     </tbody>
                 </table>
                 <hr class="divider">
@@ -101,7 +134,7 @@ $complete_or_current_steps_keys = [];
                                         </div>
                                         <div class="cols-4">
                                             <span class="user-comment">
-                                                <i class="oe-i comments small-icon pad-right disabled"></i>
+                                                <i class="oe-i comments small pad-right disabled"></i><br />
                                                 <?= $old_assignment->notes ?>
                                             </span>
                                         </div>
@@ -122,6 +155,6 @@ $complete_or_current_steps_keys = [];
                     </div>
                 <?php } ?>
             </div>
-        </div>
-    <?php } ?>
+        <?php }  ?>
+    </div>
 </div>
