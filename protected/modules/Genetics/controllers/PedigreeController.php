@@ -248,7 +248,7 @@ class PedigreeController extends BaseModuleController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }

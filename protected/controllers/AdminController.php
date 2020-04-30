@@ -342,7 +342,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -399,6 +400,9 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
 
@@ -458,6 +462,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
@@ -703,7 +708,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)

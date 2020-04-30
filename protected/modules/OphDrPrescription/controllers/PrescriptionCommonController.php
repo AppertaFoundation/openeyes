@@ -64,7 +64,7 @@ class PrescriptionCommonController extends DefaultController
                 }, $drug->allergies),
             ];
         }
-        echo CJSON::encode($drugs);
+        $this->renderJSON($drugs);
     }
 
     /**
