@@ -74,8 +74,8 @@ $incomplete_steps = [];
                     </ul>
                 </div>
             </div>
-            <?php if ($ticket->hasHistory()) { ?>
-                <div class="cols-7">
+            <div class="cols-7">
+                <?php if ($ticket->hasHistory() || $ticket->hasRecordedQueueAssignments()) { ?>
                     <?php foreach ($ticket->queue_assignments as $step => $old_assignment) { ?>
                         <div class="collapse-data">
                             <div class="collapse-data-header-icon collapse">
@@ -108,18 +108,18 @@ $incomplete_steps = [];
                             </div>
                         </div>
                     <?php } ?>
-                    <?php foreach ($incomplete_steps as $step => $queue) { ?>
-                        <div class="collapse-data">
-                            <div class="collapse-data-header-icon expand">
-                                <?= $step  . '. ' . $queue->name ?> - <em class="fade">still to do</em>
-                            </div>
-                            <div class="collapse-data-content" style="display: none">
-                                <div class="alert-box info">Virtual Clinic step not started yet</div>
-                            </div>
+                <?php }  ?>
+                <?php foreach ($incomplete_steps as $step => $queue) { ?>
+                    <div class="collapse-data">
+                        <div class="collapse-data-header-icon expand">
+                            <?= $step  . '. ' . $queue->name ?> - <em class="fade">still to do</em>
                         </div>
-                    <?php } ?>
-                </div>
-            <?php }  ?>
+                        <div class="collapse-data-content" style="display: none">
+                            <div class="alert-box info">Virtual Clinic step not started yet</div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
     <?php } ?>
 </div>
