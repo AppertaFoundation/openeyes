@@ -23,7 +23,10 @@ class DisorderController extends BaseAdminController
         Audit::add('admin', 'list', null, false,
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
-        $query = \Yii::app()->request->getQuery('q');
+        $query = \Yii::app()->request->getQuery('searchQuery');
+
+        \ OELog::log( 'searchQuery ' . print_r($query, true) );
+
         $specialty = \Yii::app()->request->getQuery('specialty');
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
