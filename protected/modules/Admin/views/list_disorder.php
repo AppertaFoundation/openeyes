@@ -53,7 +53,7 @@
                         ) ?>
                     </td>
                     <td>
-                        <button class="blue hint" id="search-button" name="search" type="submit">Search</button>
+                        <button class="blue hint" id="search-button" type="submit">Search</button>
                     </td>
                 </tr>
             </table>
