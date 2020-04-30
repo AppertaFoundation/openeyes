@@ -84,9 +84,6 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
 
               <div class="row divider">
                 <ul class="vc-steps">
-                    <li class="<?= $ticket->hasHistory() ? 'completed' : ''?>">
-                        <em><?= $ticket->user->getFullName() ?></em>
-                    </li>
                     <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
                         $is_completed = $queue->id <= $ticket->current_queue->id;
                         $is_current = $queue->id === $ticket->current_queue->id; ?>
