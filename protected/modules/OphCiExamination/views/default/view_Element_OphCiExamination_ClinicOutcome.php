@@ -20,50 +20,106 @@
 $row_count = 0;
 $api = Yii::app()->moduleAPI->get('PatientTicketing');
 $ticket = $api->getTicketForEvent($this->event);
+$display_queue = $ticket->getDisplayQueueAssignment();
+$incomplete_steps = [];
 ?>
 <div class="element-data full-width">
-    <div class="data-group">
-        <table class="cols-full">
-            <tbody>
-            <?php foreach ($element->entries as $entry) { ?>
-                <tr>
-                    <td>
-                        <?= $row_count ? "AND" : "" ?>
-                    </td>
-                    <td class="large-text" style="text-align:left">
-                    <?php
-                    if ($entry->isPatientTicket() && $ticket && $ticket->priority) { ?>
-                            <div class="priority">
-                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+    <?php foreach ($element->entries as $entry) { ?>
+        <div class="flex-layout flex-top col-gap">
+            <div class="cols-4">
+                <table class="last-left">
+                    <colgroup>
+                        <col class="cols-4">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th>Priority</th>
+                            <?php if ($entry->isPatientTicket() && $ticket && $ticket->priority) {?>
+                                <td>
+                                    <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                        <tr>
+                            <th>Review</th>
+                            <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Clinic Report</th>
+                            <td><?= $display_queue->report ?></td>
+                        </tr>
+                        <tr>
+                            <th>Notes</th>
+                            <td><?= $display_queue->notes ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr class="divider">
+                <div class="oe-vc-mode in-element row">
+                    <ul class="vc-steps">
+                        <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) { ?>
+                            <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
+                                <?php if ($queue->id < $ticket->current_queue->id) {
+                                    echo $step . '. <del>' . $queue->name . '</del>';
+                                } else {
+                                    echo $step . '. ' . $queue->name;
+                                } ?>
+                                <?php if ($queue->id <= $ticket->current_queue->id) {
+                                    echo '(' . $queue->usermodified->getFullName() . ')';
+                                } else {
+                                    $incomplete_steps[$step] = $queue;
+                                }?>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </div>
+            <?php if ($ticket->hasHistory()) { ?>
+                <div class="cols-7">
+                    <?php foreach ($ticket->queue_assignments as $step => $old_assignment) { ?>
+                        <div class="collapse-data">
+                            <div class="collapse-data-header-icon collapse">
+                                <?php if ($old_assignment->queue->id < $ticket->current_queue->id) {
+                                    echo $step + 1 . '. <del>' . $old_assignment->queue->name . '</del>';
+                                } else {
+                                    echo $step + 1 . '. ' . $old_assignment->queue->name;
+                                } ?>
+                                <?php if ($old_assignment->assignment_date) {
+                                    echo Helper::convertDate2NHS($old_assignment->assignment_date);
+                                } ?>
+                                <?php if ($old_assignment->queue->id <= $ticket->current_queue->id) {
+                                    echo '(' . $old_assignment->queue->usermodified->getFullName() . ')';
+                                }?>
                             </div>
-                    <?php }
-                    ?>
-                    </td>
-                    <td class="large-text" style="text-align:left">
-                    <?php
-                    if ($entry->isPatientTicket() && $ticket) { ?>
-                            <div class="cols-7">
-                                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+                            <div class="collapse-data-content" style="display: block">
+                                <div class="vc-data">
+                                    <div class="flex-layout flex-top flex-left col-gap">
+                                        <div class="cols-7">
+                                            <?= $old_assignment->report ?>
+                                        </div>
+                                        <div class="cols-5">
+                                            <span class="user-comment">
+                                                <i class="oe-i comments small-icon pad-right disabled"></i>
+                                                <?= $old_assignment->notes ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        <?php
-                    } else {
-                        echo $entry->getInfos();
-                    }
-                    $row_count++;
-                    ?>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-    </div>
-    <?php if ($element->comments) { ?>
-        <div class="data-group">
-            <span class="large-text">
-                <?= $element->getAttributeLabel('comments') ?>:
-                <?= Yii::app()->format->Ntext($element->comments); ?>
-            </span>
+                        </div>
+                    <?php } ?>
+                    <?php foreach ($incomplete_steps as $step => $queue) { ?>
+                        <div class="collapse-data">
+                            <div class="collapse-data-header-icon expand">
+                                <?= $step  . '. ' . $queue->name ?> - <em class="fade">still to do</em>
+                            </div>
+                            <div class="collapse-data-content" style="display: none">
+                                <div class="alert-box info">Virtual Clinic step not started yet</div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php }  ?>
         </div>
     <?php } ?>
-
 </div>
