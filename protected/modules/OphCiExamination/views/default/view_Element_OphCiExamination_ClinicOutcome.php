@@ -18,6 +18,8 @@
 ?>
 <?php
 $row_count = 0;
+$api = Yii::app()->moduleAPI->get('PatientTicketing');
+$ticket = $api->getTicketForEvent($this->event);
 ?>
 <div class="element-data full-width">
     <div class="data-group">
@@ -30,19 +32,20 @@ $row_count = 0;
                     </td>
                     <td class="large-text" style="text-align:left">
                     <?php
-                    if ($entry->isPatientTicket()) {
-                        $api = Yii::app()->moduleAPI->get('PatientTicketing');
-                        $ticket = $api->getTicketForEvent($this->event);
-                        if ($ticket) {
-                            if ($ticket->priority) {?>
+                    if ($entry->isPatientTicket() && $ticket && $ticket->priority) { ?>
                             <div class="priority">
                                 <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
                             </div>
-                            <?php } ?>
+                    <?php }
+                    ?>
+                    </td>
+                    <td class="large-text" style="text-align:left">
+                    <?php
+                    if ($entry->isPatientTicket() && $ticket) { ?>
                             <div class="cols-7">
                                 <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
                             </div>
-                        <?php }
+                        <?php
                     } else {
                         echo $entry->getInfos();
                     }
