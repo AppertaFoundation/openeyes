@@ -92,15 +92,13 @@ $non_ticket_entries = [];
                             $is_current = $queue->id === $ticket->current_queue->id; ?>
                             <?php if ($is_completed) {
                                 $complete_or_current_steps_keys[$queue->id] = $step;
-                            } else {
-                                $incomplete_steps[$step] = $queue;
-                            } ?>
-                            <?php if ($is_completed) {
                                 $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
                                 <li class="completed">
                                     <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
                                 </li>
-                            <?php } ?>
+                            <?php } else {
+                                $incomplete_steps[$step] = $queue;
+                            } ?>
                             <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
                                 <?= $step . '. ' . $queue->name; ?>
                             </li>
