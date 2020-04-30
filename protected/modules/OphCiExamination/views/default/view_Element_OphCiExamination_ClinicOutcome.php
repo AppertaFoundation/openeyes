@@ -20,7 +20,7 @@
 $row_count = 0;
 $api = Yii::app()->moduleAPI->get('PatientTicketing');
 $ticket = $api->getTicketForEvent($this->event);
-$display_queue = $ticket->getDisplayQueueAssignment();
+$display_queue_assignment = $ticket->getDisplayQueueAssignment();
 $incomplete_steps = [];
 $complete_or_current_steps_keys = [];
 ?>
@@ -42,64 +42,64 @@ $complete_or_current_steps_keys = [];
                             <?php } ?>
                         </tr>
                         <tr>
-                            <th>Review</th>
-                            <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?></td>
+                            <th>State</th>
+                            <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
                         </tr>
                         <tr>
-                            <th>Clinic Report</th>
-                            <td><?= $display_queue->report ?></td>
-                        </tr>
-                        <tr>
-                            <th>Notes</th>
-                            <td><?= $display_queue->notes ?></td>
+                            <th>Comments</th>
+                            <td><?= $element->comments ? $element->comments : '<span class="none">None</span>' ?></td>
                         </tr>
                     </tbody>
                 </table>
                 <hr class="divider">
                 <div class="oe-vc-mode in-element row">
                     <ul class="vc-steps">
-                        <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) { ?>
-                            <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
-                                <?php if ($queue->id < $ticket->current_queue->id) {
-                                    echo $step . '. <del>' . $queue->name . '</del>';
-                                } else {
-                                    echo $step . '. ' . $queue->name;
-                                } ?>
-                                <?php if ($queue->id <= $ticket->current_queue->id) {
+                        <li class="<?= $ticket->hasHistory() ? 'completed' : ''?>">
+                            <em><?= $ticket->user->getFullName() ?></em>
+                        </li>
+                        <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
+                            $is_completed = $queue->id < $ticket->current_queue->id;
+                            $is_current = $queue->id === $ticket->current_queue->id; ?>
+                            <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
+                                <?= $step . '. ' . $queue->name; ?>
+                                <?php if ($is_completed || $is_current) {
                                     $complete_or_current_steps_keys[$queue->id] = $step;
-                                    echo '(' . $queue->usermodified->getFullName() . ')';
                                 } else {
                                     $incomplete_steps[$step] = $queue;
                                 }?>
                             </li>
+                            <?php if ($is_completed) {
+                                $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
+                                <li class="completed">
+                                    <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
+                                </li>
+                            <?php } ?>
                         <?php } ?>
                     </ul>
                 </div>
             </div>
             <div class="cols-7">
                 <?php if ($ticket->hasHistory() || $ticket->hasRecordedQueueAssignments()) { ?>
-                    <?php foreach ($ticket->queue_assignments as $step => $old_assignment) { ?>
+                    <?php foreach ($ticket->queue_assignments as $step => $old_assignment) {
+                        $is_current_queue = $old_assignment->queue->id === $ticket->current_queue->id;
+                        ?>
                         <div class="collapse-data">
-                            <div class="collapse-data-header-icon collapse">
-                                <?php if ($old_assignment->queue->id < $ticket->current_queue->id) {
-                                    echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. <del>' . $old_assignment->queue->name . '</del>';
-                                } else {
-                                    echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. ' . $old_assignment->queue->name;
-                                } ?>
+                            <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand'?>">
+                                <?php echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. ' . $old_assignment->queue->name . ' -'; ?>
                                 <?php if ($old_assignment->assignment_date) {
                                     echo Helper::convertDate2NHS($old_assignment->assignment_date);
                                 } ?>
                                 <?php if ($old_assignment->queue->id <= $ticket->current_queue->id) {
-                                    echo '(' . $old_assignment->queue->usermodified->getFullName() . ')';
+                                    echo '(' . $old_assignment->assignment_user->getFullName() . ')';
                                 }?>
                             </div>
-                            <div class="collapse-data-content" style="display: block">
+                            <div class="collapse-data-content" style="display: <?= $is_current_queue ? 'block' : 'none'?>">
                                 <div class="vc-data">
                                     <div class="flex-layout flex-top flex-left col-gap">
-                                        <div class="cols-7">
+                                        <div class="cols-8">
                                             <?= $old_assignment->report ?>
                                         </div>
-                                        <div class="cols-5">
+                                        <div class="cols-4">
                                             <span class="user-comment">
                                                 <i class="oe-i comments small-icon pad-right disabled"></i>
                                                 <?= $old_assignment->notes ?>
