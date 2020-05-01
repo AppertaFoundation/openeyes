@@ -21,7 +21,7 @@ class DefaultController extends \AdminController
     public function accessRules()
     {
         // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(array('allow', 'users' => array('@')));
+        return array(array('allow',  'roles' => array('admin')));
     }
 
     public function actionIndex()
