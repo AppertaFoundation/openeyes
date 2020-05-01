@@ -131,8 +131,10 @@ $non_ticket_entries = [];
                                         </div>
                                         <div class="cols-4">
                                             <span class="user-comment">
-                                                <i class="oe-i comments small pad-right disabled"></i><br />
-                                                <?= $old_assignment->notes ?>
+                                                <?php if ($old_assignment->notes) { ?>
+                                                    <i class="oe-i comments small pad-right disabled"></i><br />
+                                                    <?= $old_assignment->notes ?>
+                                                <?php } ?>
                                             </span>
                                         </div>
                                     </div>
