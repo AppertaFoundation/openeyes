@@ -20,7 +20,7 @@
 $row_count = 0;
 $api = Yii::app()->moduleAPI->get('PatientTicketing');
 $ticket = $api->getTicketForEvent($this->event);
-$display_queue_assignment = $ticket->getDisplayQueueAssignment();
+$display_queue_assignment = $ticket ? $ticket->getDisplayQueueAssignment() : null;
 $incomplete_steps = [];
 $complete_or_current_steps_keys = [];
 $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
