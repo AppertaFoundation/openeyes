@@ -312,7 +312,6 @@ class BaseController extends Controller
     protected function renderJSON($data)
     {
         header('Content-type: application/json');
-        // echo CJSON::encode($data);
         echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {

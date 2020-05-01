@@ -203,7 +203,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            echo json_encode($return_data);
+            $this->renderJSON($return_data);
         }
     }
 

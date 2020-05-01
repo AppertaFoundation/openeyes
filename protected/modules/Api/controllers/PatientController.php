@@ -61,7 +61,7 @@ class PatientController extends BaseApiController
             }
         }
 
-        echo CJavaScript::jsonEncode($result);
+        $this->renderJSON(200, $result);
         Yii::app()->end();
     }
 }
