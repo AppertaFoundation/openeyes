@@ -88,7 +88,7 @@ $roles = $qs_svc->getQueueSetRoles();
                 input: $('#oe-autocompletesearch'),
                 url: '<?=Yii::app()->createUrl('/admin/userfind');?>',
                 onSelect: function(){
-                    const autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     let $current_user_list = $('#current-users-list');
                     let current_user_ids = [];
                     $current_user_list.find('input[name*=user_ids]').each(function () {
