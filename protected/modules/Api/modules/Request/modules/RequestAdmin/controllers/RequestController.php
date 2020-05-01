@@ -22,11 +22,6 @@ class RequestController extends \AdminController
         'show_incomplete', 'show_failed', 'extra-filters',
         'show_trycount_higher_than_one', 'routine_and_status_filter'];
 
-    public function accessRules()
-    {
-        // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(array('allow', 'users' => array('@')));
-    }
 
     public function actionIndex()
     {
