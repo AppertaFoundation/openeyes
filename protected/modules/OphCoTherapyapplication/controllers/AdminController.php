@@ -605,12 +605,12 @@ class AdminController extends ModuleAdminController
         try {
             if ($collection = OphCoTherapyapplication_FileCollection::model()->findByPk(@$_GET['filecollection_id'])) {
                 if ($collection->removeFileById(@$_GET['file_id'])) {
-                    echo json_encode(array('success' => true));
+                    $this->renderJSON(array('success' => true));
                 }
             }
         } catch (Exception $e) {
             Yii::log("couldn't remove file (".@$_GET['file_id'].') from collection ('.@$_GET['filecollection_id'].')'.$e->getMessage(), 'error');
-            echo json_encode(array('success' => false));
+            $this->renderJSON(array('success' => false));
         }
     }
 

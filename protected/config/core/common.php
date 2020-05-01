@@ -294,7 +294,7 @@ return array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => false,
         'ldap_update_email' => true,
-        'environment' => 'dev',
+        'environment' => getenv('OE_MODE') == "LIVE" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),

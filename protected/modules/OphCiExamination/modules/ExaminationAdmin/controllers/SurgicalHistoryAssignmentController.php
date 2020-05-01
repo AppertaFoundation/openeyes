@@ -58,7 +58,7 @@ class SurgicalHistoryAssignmentController extends BaseAssignmentController
         $this->render('/surgicalhistoryassignment/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create Required Surgical History Set',
+            'title' => 'Create Required Ophthalmic Surgical History Set',
         ]);
     }
 
@@ -74,7 +74,7 @@ class SurgicalHistoryAssignmentController extends BaseAssignmentController
         $this->render('/surgicalhistoryassignment/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Edit Required Surgical History Set',
+            'title' => 'Edit Required Ophthalmic Surgical History Set',
         ]);
     }
 
