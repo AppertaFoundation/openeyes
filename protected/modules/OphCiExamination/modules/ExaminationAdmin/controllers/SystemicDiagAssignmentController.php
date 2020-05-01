@@ -65,7 +65,7 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
         $this->render('/systemicdiagnosesassignment/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create required risk set',
+            'title' => 'Create required Systematical Diagnoses',
         ]);
     }
 
