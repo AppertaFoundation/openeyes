@@ -96,7 +96,7 @@ class ProcedureController extends BaseController
             $benefits[] = $row['name'];
         }
 
-        echo json_encode($benefits);
+        $this->renderJSON($benefits);
     }
 
     public function actionComplications($id)
@@ -117,6 +117,6 @@ class ProcedureController extends BaseController
             $complications[] = $row['name'];
         }
 
-        echo json_encode($complications);
+        $this->renderJSON($complications);
     }
 }

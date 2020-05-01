@@ -404,7 +404,7 @@ class DefaultController extends \BaseModuleController
         list($data, $errs) = $api->extractQueueData($to_queue, $_POST, true);
 
         if (count($errs)) {
-            echo json_encode(array('errors' => array_values($errs)));
+            $this->renderJSON(array('errors' => array_values($errs)));
             Yii::app()->end();
         }
 
@@ -442,7 +442,7 @@ class DefaultController extends \BaseModuleController
         $queueset_id = $queueset->getId();
         $queueset_model = models\QueueSet::model()->findByPk($queueset_id);
         $queueset_category_id = $queueset_model->category_id;
-        echo json_encode(array('redirectURL' => "/PatientTicketing/default/?queueset_id=$queueset_id&cat_id=$queueset_category_id"));
+        $this->renderJSON(array('redirectURL' => "/PatientTicketing/default/?queueset_id=$queueset_id&cat_id=$queueset_category_id"));
     }
 
     /**
