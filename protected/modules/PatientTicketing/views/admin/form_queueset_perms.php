@@ -81,7 +81,7 @@ $roles = $qs_svc->getQueueSetRoles();
             ?>
     </script>
 </div>
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         if(OpenEyes.UI.AutoCompleteSearch !== undefined){
             OpenEyes.UI.AutoCompleteSearch.init({
