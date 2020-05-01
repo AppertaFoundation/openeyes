@@ -66,6 +66,9 @@ nofix=0
 dwservrunning=0
 restorefile="/tmp/openeyes_sample_data.sql"
 hscic=0
+nopost=0
+postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
+eventimages=1
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -79,6 +82,9 @@ do
     	--no-migrate|-nm|--nomigrate) migrate=0
     		## nomigrate will prevent database migrations from running automatically at the end of reset
     		;;
+		--no-event-images|-ni) eventimages=0
+			## Do not generate event lightning images after demo import
+			;;
     	--banner) # set banner textr and move to next param
             bannertext="$2"
             shift
@@ -111,6 +117,13 @@ do
     	--no-fix) nofix=1
     		## do not run oe-fix (useful when calling from other scripts)
     	;;
+		--no-post) nopost=1
+		    ## do not run local post reset scripts
+		;;
+		--post-path) # change the location of the local-post folder
+			postpath="$2"
+			shift
+		;;
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
@@ -187,6 +200,7 @@ if [ $showhelp = 1 ]; then
 	echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
 	echo "	--ignore-warnings	: Ignore warnings during migration"
 	echo "	--no-fix		: do not run oe-fix routines after reset"
+	echo "  --no-post       : do not run local post reset scripts"
 	echo "	--custom-file"
 	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
 	echo "					  'oe-reset -f <filename>.sql' "
@@ -232,15 +246,22 @@ echo ""
 
 if [ $nofiles = "0" ]; then
 	echo Deleting protected files
+	# remove protected/files
 	sudo rm -rf $WROOT/protected/files/*
+	# remove any docman process files
 	sudo rm -rf /tmp/docman
+	# remove hscic import history (otherwise hscic import requires --force to run after reset)
+	sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
 fi
 
 if [ $cleanbase = "0" ]; then
   # Extract or copy sample DB (since v3.2 db has been zipped)
   rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
-  [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
+  if [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ]; then 
+  	cp -f $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp
+  elif [ -f $MODULEROOT/sample/sql/sample_db.zip ]; then
+  	unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp
+  fi
 
 	echo "Re-importing database"
 	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
@@ -291,21 +312,24 @@ if [ $migrate = "1" ]; then
 fi
 
 # Run demo scripts
+# Actual scripts are in sample module, for greater flexibility
 if [ $demo = "1" ]; then
 
 	echo "RUNNING DEMO SCRIPTS..."
 
+	basefolder="$MODULEROOT/sample/sql/demo"
+
 	shopt -s nullglob
-	for f in $(ls $MODULEROOT/sample/sql/demo | sort -V)
-	do
+	for f in $(ls $basefolder | sort -V)
+    do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/$f"
+			bash -l "$basefolder/$f"
 		fi
-	done
+    done
 fi
 
 # Run genetics scripts if genetics is enabled
@@ -313,15 +337,17 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
 
 	echo "RUNNING Genetics files..."
 
+	basefolder="$MODULEROOT/sample/sql/demo/genetics"
+
 	shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/genetics | sort -V)
+    for f in $(ls $basefolder | sort -V)
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
+			bash -l "$basefolder/$f"
 		fi
     done
 
@@ -340,19 +366,21 @@ if [ ! $nobanner = "1" ]; then
 fi
 
 # Run local post-migaration demo scripts
-if [ $demo = "1" ]; then
+if [ $nopost = "0" ]; then
 
 	echo "RUNNING POST RESET SCRIPTS..."
 
+	basefolder="$MODULEROOT/sample/sql/demo/local-post"
+
 	shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/local-post | sort -V)
+    for f in $(ls $postpath | sort -V)
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
+			bash -l "$postpath/$f"
 		fi
     done
 fi
@@ -363,6 +391,25 @@ fi
 
 if [ $hscic = 1 ]; then
 	bash $SCRIPTDIR/import-hscic-data.sh --force
+fi
+
+# Generate lightning event images for demo patients
+# Actual script(s) are in sample module, for greater flexibility
+if [[ $eventimages = 1 && $demo = 1 ]]; then
+	echo "RUNNING POST RESET SCRIPTS..."
+
+	basefolder="$MODULEROOT/sample/sql/demo/event-image"
+	shopt -s nullglob
+    for f in $(ls $basefolder | sort -V)
+    do
+		if [[ $f == *.sql ]]; then
+			echo "importing $f"
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
+		elif [[ $f == *.sh ]]; then
+			echo "running $f"
+			bash -l "$basefolder/$f"
+		fi
+    done
 fi
 
 # restart the service if we stopped it

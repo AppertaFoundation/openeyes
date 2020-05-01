@@ -44,7 +44,7 @@ class AllergyController extends BaseController
             foreach ($allergies as $allergy) {
                 $return[] = $this->allergyStructure($allergy);
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 

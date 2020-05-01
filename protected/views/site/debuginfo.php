@@ -69,8 +69,8 @@ if ($thisEnv == 'DEV') {
         Date: <?php echo date('d.m.Y H:i:s')?><br />
         Commit: <?php echo $commit?><br />
         Branch: <?php echo $branch?><br/>
-        User agent: <?php echo wordwrap((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''), 80, "<br />\n");?>
-        Client IP: <?php echo (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '')?><br />
+        User agent: <?php echo htmlspecialchars(@$_SERVER['HTTP_USER_AGENT']) . "<br/>";?>
+        Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
 
