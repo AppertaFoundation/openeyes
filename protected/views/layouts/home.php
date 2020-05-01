@@ -27,7 +27,7 @@
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
 
-<?php $this->renderPartial('//base/_debug'); ?>
+<?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
 <div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>

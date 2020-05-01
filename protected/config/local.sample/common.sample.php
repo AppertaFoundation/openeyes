@@ -134,7 +134,6 @@ $config = array(
         'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => '',
         'ldap_dn' => 'CN=Users,dc=example,dc=com',
-        'environment' => getenv('OE_MODE') == "LIVE" ? 'live' : 'dev',
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
