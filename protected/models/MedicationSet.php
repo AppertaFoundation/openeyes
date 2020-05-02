@@ -311,7 +311,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function validateRelations()
     {
-        $validation_processor = function($model, $prepend = null) {
+        $validation_processor = function ($model, $prepend = null) {
             $has_error = false;
             foreach ($model->getErrors() as $attribute => $errors) {
                 foreach ($errors as $k => $error) {
@@ -391,7 +391,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
-
         }, MedicationSetAutoRuleAttribute::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = array();
         foreach ($this->medicationAutoRuleAttributes as $attr) {
@@ -493,7 +492,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($rule) {
             return $rule->id;
-
         }, MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = [];
 
@@ -537,7 +535,6 @@ class MedicationSet extends BaseActiveRecordVersioned
         $cmd->select('id', 'DISTINCT')->from('medication');
         $attribute_option_ids = array_map(function ($e) {
             return $e->id;
-
         }, $this->autoRuleAttributes);
 
         $auto_set_ids = array_map(function ($e) {
@@ -545,16 +542,14 @@ class MedicationSet extends BaseActiveRecordVersioned
         },
             array_filter($this->autoRuleSets, function ($e) {
                 return $e->automatic == 1;
-            })
-        );
+            }));
 
         $nonauto_set_ids = array_map(function ($e) {
             return $e->id;
         },
             array_filter($this->autoRuleSets, function ($e) {
                 return $e->automatic == 0;
-            })
-        );
+            }));
 
         $no_condition = true;
 
@@ -648,8 +643,7 @@ class MedicationSet extends BaseActiveRecordVersioned
                         INNER JOIN medication_set_auto_rule_medication mam ON mat.medication_set_auto_rule_id = mam.id
                         INNER JOIN medication_set_item msi ON msi.medication_set_id = mam.medication_set_id 
                 WHERE mam.medication_id = msi.medication_id 
-                    AND mam.medication_set_id = ". $this->id
-                )->execute();
+                    AND mam.medication_set_id = ". $this->id)->execute();
 
             // Set defaults for each medication_set_item from medication_set_auto_rule medication
             $this->dbConnection->getCommandBuilder()->createSqlCommand("
@@ -664,8 +658,7 @@ class MedicationSet extends BaseActiveRecordVersioned
                     , msi.default_route_id = msam.default_route_id 
                 WHERE msi.medication_id = msam.medication_id 
                     AND msi.medication_set_id = msam.medication_set_id
-                    AND msi.medication_set_id = ". $this->id
-                )->execute();
+                    AND msi.medication_set_id = ". $this->id)->execute();
         }
 
         $msg = "Processed non-auto rules in " . $this->name . "\n";
@@ -810,7 +803,8 @@ class MedicationSet extends BaseActiveRecordVersioned
             array(
                 'medication_attribute_id' => $medication_attribute->id,
                 'value' => $value
-            ))->id;
+            )
+        )->id;
         $medication_set_auto_rule_attribute->medication_set_id = $this->id;
         $medication_set_auto_rule_attribute->medication_attribute_option_id = $medication_set_auto_rule_attribute->medication_attribute_option_id;
         if ($medication_attribute_option) {
