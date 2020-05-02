@@ -65,4 +65,5 @@ $ticket = $api->getTicketForEvent($this->event);
             </span>
             </div>
         <?php } ?>
+    <?php } ?>
 </div>
