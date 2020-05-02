@@ -221,13 +221,13 @@ class AdminController extends ModuleAdminController
                 $instruction->site_id = $_POST['site_id'];
                 $instruction->subspecialty_id = $_POST['subspecialty_id'];
 
-                echo json_encode(array(
+                $this->renderJSON(array(
                     'success' => (int)$instruction->save()
                 ));
             } elseif (isset($_POST['action']) && $_POST['action'] == 'delete') {
                 $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
 
-                echo json_encode(array(
+                $this->renderJSON(array(
                     'success' => (int)$instruction->delete()
                 ));
             }

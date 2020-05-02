@@ -97,32 +97,15 @@ class MedicationController extends BaseController
                     }, $md->tags)
                 );
             }
-
-            foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
-                $label = $drug->tallmanlabel;
-                if (strpos(strtolower($drug->name), $term) === false) {
-                    $label .= ' (' . $drug->aliases . ')';
-                }
-                $return[] = array(
-                    'name' => $drug->tallmanlabel,
-                    'label' => $label,
-                    'value' => $label,
-                    'type' => 'd',
-                    'id' => $drug->id,
-                    'tags' => array_map(function ($t) {
-                        return $t->id;
-                    }, $drug->tags)
-                );
-            }
         }
 
-        echo json_encode($return);
+        $this->renderJSON($return);
     }
 
     public function actionDrugDefaults($drug_id)
     {
         if (strpos($drug_id, '@@M') === false) {
-            echo json_encode($this->fetchModel('Drug', $drug_id)->getDefaults());
+            $this->renderJSON($this->fetchModel('Drug', $drug_id)->getDefaults());
         }
     }
 
@@ -141,13 +124,13 @@ class MedicationController extends BaseController
     {
         $route = MedicationRoute::model()->findByPk($route_id);
         if ($route->has_laterality) {
-            echo json_encode([
+            $this->renderJSON([
                 ['id' => 1, 'name' => 'Left'],
                 ['id' => 2, 'name' => 'Right'],
                 ['id' => 3, 'name' => 'Both'],
             ]);
         } else {
-            echo json_encode([]);
+            $this->renderJSON([]);
         }
     }
 
@@ -171,7 +154,7 @@ class MedicationController extends BaseController
                 $this->renderPartial('lists', array('patient' => $patient));
             } else {
                 header('HTTP/1.1 422');
-                echo json_encode($medication_adherence->errors);
+                $this->renderJSON($medication_adherence->errors);
             }
         } else {
             $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
@@ -200,7 +183,7 @@ class MedicationController extends BaseController
                 $this->renderPartial('lists', array('patient' => $patient));
             } else {
                 header('HTTP/1.1 422');
-                echo json_encode($medication->errors);
+                $this->renderJSON($medication->errors);
             }
         }
     }

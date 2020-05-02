@@ -32,12 +32,11 @@ if (!isset($values)) {
 }
 ?>
 
-<tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
-    data-status="<?= $values['status_id'] ?>">
+<tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>" data-status="<?= $values['status_id'] ?>">
     <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
-        <?= Chtml::activeHiddenField($entry, 'id'); ?>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
-        <?php if (!$patient_ticket) : ?>
+        <?php if (!$patient_ticket) { ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
                    value="<?= $values['followup_quantity'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_period_id]"
@@ -45,13 +44,13 @@ if (!isset($values)) {
             <input type="hidden" name="<?= $field_prefix ?>[followup_comments]"
                    value="<?= $values['followup_comments'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[role_id]" value="<?= $values['role_id'] ?>"/>
-        <?php endif; ?>
+        <?php } ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>">
         <?php if (!$patient_ticket) {
             echo $values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];
-        } else if ($patient_ticket && $ticket_api) { ?>
+        } elseif ($patient_ticket && $ticket_api) { ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
@@ -75,8 +74,12 @@ if (!isset($values)) {
                                 ?>
                                 <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
                             <?php } else {
-                                echo CHtml::dropDownList('patientticket_queue', \Yii::app()->request->getParam('patientticket_queue', ''), $queues,
-                                    array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));
+                                echo CHtml::dropDownList(
+                                    'patientticket_queue',
+                                    \Yii::app()->request->getParam('patientticket_queue', ''),
+                                    $queues,
+                                    array('empty' => 'Select', 'nowrapper' => true, 'options' => array())
+                                );
                             } ?>
                         </div>
                         <div class="cols-1">

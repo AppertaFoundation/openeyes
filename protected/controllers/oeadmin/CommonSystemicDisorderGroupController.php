@@ -114,7 +114,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $transaction->rollback();
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function actionSave()

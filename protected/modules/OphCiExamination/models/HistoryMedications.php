@@ -68,7 +68,8 @@ class HistoryMedications extends BaseMedicationElement
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array_merge(array(
+        return array_merge(
+            array(
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -77,7 +78,7 @@ class HistoryMedications extends BaseMedicationElement
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
             ),
-        ),
+            ),
             $this->getEntryRelations()
         );
     }
@@ -102,6 +103,10 @@ class HistoryMedications extends BaseMedicationElement
             $new->loadFromExisting($entry);
             $new->usage_type = \EventMedicationUse::getUsageType();
             $new->usage_subtype = \EventMedicationUse::getUsageSubtype();
+            if (!$entry->prescription_item_id) {
+                $existing_event_date = $entry->copied_from_med_use_id ? \Event::model()->findByPk($entry->copied_from_med_use_id)->event_date : $entry->event->event_date;
+                $new->previous_event_date = date('Y-m-d', strtotime($existing_event_date));
+            }
             $prescription_end_date = isset($entry->prescription_item_id) ? $entry->prescriptionItem->stopDateFromDuration() : null;
             if (!isset($new->end_date) && $prescription_end_date) {
                 $new->end_date = $prescription_end_date->format('Y-m-d');
@@ -238,5 +243,4 @@ class HistoryMedications extends BaseMedicationElement
 
         return $untracked;
     }
-
 }

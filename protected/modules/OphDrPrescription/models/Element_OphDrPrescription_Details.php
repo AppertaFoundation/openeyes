@@ -31,9 +31,6 @@
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
     public $check_for_duplicate_entries = false;
-    protected $errorExceptions = array(
-        'Element_OphDrPrescription_Details_items' => 'prescription_items',
-    );
 
     /**
      * Returns the static model of the specified AR class.
@@ -266,7 +263,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         foreach ($this->items as $i => $item) {
             if (!$item->validate()) {
                 foreach ($item->getErrors() as $fld => $err) {
-                    $this->addError('items', 'Item ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError("items_{$i}_{$fld}", 'Item ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }
