@@ -185,8 +185,40 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!--                  Added a timestamp for create date and modified date -- CERA-490 -->
                                 <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
                             </td>
-                    </tr>
-                    <tr>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td>
+                                <?php
+                                // Show GP Practice address if available, otherwise fallback to GP address
+                                if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                    echo $this->patient->practice->contact->address->letterLine;
+                                } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                        echo $this->patient->gp->contact->address->letterLine;
+                                } else {
+                                    echo 'Unknown';
+                                } ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td>
+                                <?php
+                                // Show Practice phone number first, if not, fall back to GP phone number
+                                if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                    echo $this->patient->practice->contact->primary_phone;
+                                } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                        echo $this->patient->gp->contact->primary_phone;
+                                } else {
+                                    echo 'Unknown';
+                                } ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
                                     Last Modified Date:
                             </td>
@@ -211,11 +243,31 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show GP Practice address if available, otherwise fallback to GP address
+                                        if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                            echo $this->patient->practice->contact->address->letterLine;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                                echo $this->patient->gp->contact->address->letterLine;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show Practice phone number first, if not, fall back to GP phone number
+                                        if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                            echo $this->patient->practice->contact->primary_phone;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                                echo $this->patient->gp->contact->primary_phone;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td>
@@ -431,7 +483,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
           <div class="group">
-              <div class="label">Surgical History</div>
+              <div class="label">Eye Procedures</div>
               <div class="data">
                     <?php $this->widget(
                         \OEModule\OphCiExamination\widgets\PastSurgery::class,
@@ -441,6 +493,19 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             'pro_theme' => 'pro-theme',
                         ]
                     ); ?>
+              </div>
+          </div>
+
+          <div class="group">
+              <div class="label">Systemic Procedures</div>
+              <div class="data">
+                  <?php $this->widget(
+                      \OEModule\OphCiExamination\widgets\SystemicSurgery::class,
+                      [
+                          'patient' => $this->patient,
+                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                      ]
+                  ); ?>
               </div>
           </div>
 

@@ -7,18 +7,21 @@ $historyElement = $this->event->getElementByClass(models\Element_OphCiExaminatio
 
 // Find the elements for each tile, or create dummy elements so they will still render, but without any data
 $pastSurgeryElement = $this->event->getElementByClass(models\PastSurgery::class) ?: new models\PastSurgery();
+$systemicSurgeryElement = $this->event->getElementByClass(models\SystemicSurgery::class) ?: new models\SystemicSurgery();
 $systemicDiagnosesElement = $this->event->getElementByClass(models\SystemicDiagnoses::class) ?: new models\SystemicDiagnoses();
 $diagnosesElement = $this->event->getElementByClass(models\Element_OphCiExamination_Diagnoses::class) ?: new models\Element_OphCiExamination_Diagnoses();
 $medicationsElement = $this->event->getElementByClass(models\HistoryMedications::class) ?: new models\HistoryMedications();
 $familyHistoryElement = $this->event->getElementByClass(models\FamilyHistory::class) ?: new models\FamilyHistory();
 $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::class) ?: new models\SocialHistory();
+$managementElement = $this->event->getElementByClass(models\Element_OphCiExamination_Management::class) ?: new models\Element_OphCiExamination_Management();
+$followupElement = $this->event->getElementByClass(models\Element_OphCiExamination_ClinicOutcome::class) ?: new models\Element_OphCiExamination_ClinicOutcome();
 
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
 ?>
 
-<div class="element-tile-group" data-collapse="expanded">
+<div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
     <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
 
@@ -52,7 +55,6 @@ if ($historyElement) {
                                 </colgroup>
                               <thead style="display:none;">
                                 <th>Drug</th>
-                                <th></th>
                                 <th>Tooltip</th>
                                 <th>Laterality</th>
                                 <th>Date</th>
@@ -61,10 +63,8 @@ if ($historyElement) {
                                 <?php foreach ($current_eye_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <i class="oe-i start small pad-right"></i>
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
-                                        <td></td>
                                         <td>
                                             <?php
                                                 $info_box = new MedicationInfoBox();
@@ -84,7 +84,9 @@ if ($historyElement) {
                                             $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                                             ?>
                                         </td>
-                                        <td><?= $entry->getStartDateDisplay() ?></td>
+                                        <td>
+                                            </i><?= $entry->getStartDateDisplay() ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
@@ -105,44 +107,45 @@ if ($historyElement) {
                         <div class="collapse-data-content">
                             <div class="restrict-data-shown">
                                 <div class="restrict-data-content rows-10">
-                          <table id="view-Eye-Medications-Stopped">
+                                    <table id="view-Eye-Medications-Stopped">
                                         <colgroup>
                                             <col class="cols-7">
                                         </colgroup>
-                              <thead style="display:none;">
-                                <th>Drug</th>
-                                <th>Tooltip</th>
-                                <th>Laterality</th>
-                                <th>Date</th>
-                              </thead>
+                                        <thead style="display:none;">
+                                            <th>Drug</th>
+                                            <th>Tooltip</th>
+                                            <th>Laterality</th>
+                                            <th>Date</th>
+                                        </thead>
                                         <tbody>
-                                        <?php foreach ($stopped_eye_medications as $entry) { ?>
-                                            <tr>
-                                                <td>
-                                                    <i class="oe-i stop small pad-right"></i>
-                                                    <?= $entry->getMedicationDisplay() ?>
-                                                </td>
-                                                <td>
-                                                    <?php
-                                                    $info_box = new MedicationInfoBox();
-                                                    $info_box->medication_id = $entry->medication->id;
-                                                    $info_box->init();
+                                            <?php foreach ($stopped_eye_medications as $entry) { ?>
+                                                <tr>
+                                                    <td>
+                                                        <?= $entry->getMedicationDisplay() ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                        $info_box = new MedicationInfoBox();
+                                                        $info_box->medication_id = $entry->medication->id;
+                                                        $info_box->init();
 
-                                                    $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
-                                                    if ($tooltip_content) { ?>
-                                              <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
-                                                        </i>
-                                                    <?php } ?>
-                                                </td>
-                                                <td>
-                                                    <?php
-                                                    $laterality = $entry->getLateralityDisplay();
-                                                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                                                    ?>
-                                                </td>
-                                      <td><?= $entry->getEndDateDisplay() ?></td>
-                                            </tr>
-                                        <?php } ?>
+                                                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
+                                                        if ($tooltip_content) { ?>
+                                                    <i class="oe-i <?=$info_box->getIcon();?> small js-has-tooltip" data-tooltip-content="<?= $tooltip_content ?>">
+                                                            </i>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                        $laterality = $entry->getLateralityDisplay();
+                                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                                        ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $entry->getEndDateDisplay() ?>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -159,37 +162,11 @@ if ($historyElement) {
     </div>
 </div>
 
-<div class="element-tile-group" data-collapse="expanded">
+<div class="element-tile-group" id="tile-group-exam-systemic" data-collapse="expanded">
 
     <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
 
-    <section class="element tile view-family-social-history">
-        <header class="element-header">
-            <h3 class="element-title">Family-Social</h3>
-        </header>
-        <div class="element-data">
-            <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
-            if (!$entries) { ?>
-                <div class="data-value not-recorded">
-                    No family or social history recorded during this encounter
-                </div>
-            <?php } else { ?>
-                <div class="data-value">
-                    <div class="tile-data-overflow">
-                        <table class="last-left">
-                            <tbody>
-                            <?php foreach ($entries as $entry) { ?>
-                                <tr>
-                                    <td><?= $entry ?></td>
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            <?php } ?>
-        </div>
-    </section>
+    <?php $this->renderElement($systemicSurgeryElement, $action, $form, $data) ?>
 
     <section class="element view-Systemic-Medications tile"
              data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
@@ -228,13 +205,13 @@ if ($historyElement) {
                                 <thead style="display:none;">
                                     <th>Drug</th>
                                     <th>Tooltip</th>
+                                    <th></th>
                                     <th>Date</th>
                                 </thead>
                             <tbody>
                             <?php foreach ($current_systemic_medications as $entry) { ?>
                                 <tr>
                                     <td>
-                                        <i class="oe-i start small pad"></i>
                                         <?php if (isset($patient) && $this->patient->hasDrugAllergy($entry->medication_id)) {
                                             echo '<i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to ' . implode(',', $patient->getPatientDrugAllergy($entry->medication_id)) . '"></i>';
                                         } ?>
@@ -253,6 +230,12 @@ if ($historyElement) {
                                             </i>
                                         <?php } ?>
                                     </td>
+                                    <td>
+                                        <?php
+                                        $laterality = $entry->getLateralityDisplay();
+                                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                        ?>
+                                    </td>
                                     <td><?= $entry->getStartDateDisplay() ?></td>
                                 </tr>
                             <?php } ?>
@@ -260,7 +243,7 @@ if ($historyElement) {
                         </table>
                     </div>
                 </div>
-                <?php } else { ?>
+                    <?php } else { ?>
             </div>
                 <div class="data-value none">
                     No current Systemic Medications
@@ -283,13 +266,14 @@ if ($historyElement) {
                                     <thead style="display:none;">
                                         <th>Drug</th>
                                         <th>Tooltip</th>
+                                        <th>Laterality</th>
                                         <th>Date</th>
                                     </thead>
                                 <tbody>
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            <i class="oe-i stop small pad"></i>
+                                            
                                             <?= $entry->getMedicationDisplay() ?>
                                         </td>
                                         <td>
@@ -305,7 +289,15 @@ if ($historyElement) {
                                                 </i>
                                             <?php } ?>
                                         </td>
-                                            <td><?= $entry->getEndDateDisplay() ?></td>
+                                        <td>
+                                            <?php
+                                            $laterality = $entry->getLateralityDisplay();
+                                            $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?= $entry->getEndDateDisplay() ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
@@ -318,6 +310,59 @@ if ($historyElement) {
             </div>
         </div>
     </section>
+
+    <div class="collapse-tile-group">
+        <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    </div>
+</div>
+
+<div class="element-tile-group" id="tile-group-exam-patient" data-collapse="expanded">
+    <section class="element tile">
+        <header class="element-header">
+            <h3 class="element-title">Family Social</h3>
+        </header>
+        <div class="element-data full-width">
+            <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
+            if (!$entries) { ?>
+                <div class="data-value not-recorded">
+                    No family or social history recorded during this encounter
+                </div>
+            <?php } else { ?>
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table class="last-left">
+                            <tbody>
+                            <?php foreach ($entries as $entry) { ?>
+                                <tr>
+                                    <td><?= $entry ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </section>
+
+    <section class="element tile">
+        <header class="element-header">
+            <h3 class="element-title">Management</h3>
+        </header>
+        <div class="element-data full-width">
+            <?php if (!$managementElement->comments) { ?>
+            <div class="data-value not-recorded">
+                No management comments recorded during this encounter
+            </div>
+            <?php } else { ?>
+                <div class="data-value">
+                    <?= $managementElement->comments ?>
+                </div>
+            <?php } ?>
+        </div>
+    </section>
+
+    <?php $this->renderElement($followupElement, $action, $form, $data) ?>
 
     <div class="collapse-tile-group">
         <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>

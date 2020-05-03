@@ -1,9 +1,61 @@
 <?php
 
-class m200218_161000_add_more_report_views extends CDbMigration
+class m200218_161001_add_more_report_views extends CDbMigration
 {
     public function safeUp()
     {
+
+        // update v_patient_episodes to include status
+        $this->execute("CREATE OR REPLACE
+        ALGORITHM = UNDEFINED VIEW `v_patient_episodes` AS
+        select
+            `p`.`id` AS `patient_id`,
+            `ep`.`id` AS `episode_id`,
+            `p`.`hos_num` AS `hos_num`,
+            `p`.`nhs_num` AS `nhs_num`,
+            `c`.`title` AS `patient_title`,
+            `c`.`first_name` AS `patient_first_name`,
+            `c`.`last_name` AS `patient_last_name`,
+            `p`.`dob` AS `patient_dob`,
+            `f`.`name` AS `firm_name`,
+            `f`.`id` AS `firm_id`,
+            `ep`.`eye_id` AS `eye_id`,
+            (case
+                `ep`.`eye_id`
+                when 1 then 'L'
+                when 2 then 'R'
+                when 3 then 'B' end) AS `side`,
+            `s`.`id` AS `subspecialty_id`,
+            `s`.`name` AS `subspecialty`,
+            `ep`.`start_date` AS `start_date`,
+            `ep`.`end_date` AS `end_date`,
+            `d`.`id` AS `disorder_id`,
+            `d`.`term` AS `disorder_term`,
+            `ep`.`disorder_date` AS `disorder_date`,
+            `ep`.`episode_status_id` AS `episode_status_id`,
+            `es`.`name` AS `episode_status`
+        from
+            (((((((`patient` `p`
+        join `episode` `ep` on
+            ((`ep`.`patient_id` = `p`.`id`)))
+        join `episode_status` `es` on
+            ((`es`.`id` = `ep`.`episode_status_id`)))
+        join `contact` `c` on
+            ((`c`.`id` = `p`.`contact_id`)))
+        join `firm` `f` on
+            ((`f`.`id` = `ep`.`firm_id`)))
+        join `service_subspecialty_assignment` `ssa` on
+            ((`ssa`.`id` = `f`.`service_subspecialty_assignment_id`)))
+        join `subspecialty` `s` on
+            ((`s`.`id` = `ssa`.`subspecialty_id`)))
+        left join `disorder` `d` on
+            ((`d`.`id` = `ep`.`disorder_id`)))
+        where
+            (`ep`.`deleted` = 0)
+        order by
+            `p`.`id`");
+
+
         // v_patient_IOP
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_iop` AS
@@ -270,6 +322,8 @@ class m200218_161000_add_more_report_views extends CDbMigration
             `pe`.`event_created_date`,
             `pe`.`event_last_modified_date`");
 
+        // v_anon_patient_details
+        // Can be used in place of v_patient_details to provide anonymisation
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_anon_patient_details` AS
         select
@@ -340,6 +394,8 @@ class m200218_161000_add_more_report_views extends CDbMigration
         where
             (`p`.`deleted` = 0)");
 
+        // v_patient_iop_max
+        // Selects the highest ever IOP reading per patient, per eye
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_max_iop` AS
         select
@@ -368,6 +424,48 @@ class m200218_161000_add_more_report_views extends CDbMigration
             `iop`.`patient_id`,
             `iop`.`side`");
 
+        // v_patient_iop_max_active_episodes
+        // Similar to v_patient_max_iop, except excludes discharged patients
+        $this->execute("CREATE OR REPLACE
+        ALGORITHM = UNDEFINED VIEW `v_patient_max_iop_active_episodes` AS
+        select
+            `iop`.`patient_id` AS `patient_id`,
+            `iop`.`event_id` AS `event_id`,
+            `iop`.`event_date` AS `event_date`,
+            `iop`.`reading_time` AS `reading_time`,
+            `iop`.`value` AS `value`,
+            `iop`.`Instrument` AS `instrument`,
+            `iop`.`side` AS `side`,
+            `iop`.`eye` AS `eye`,
+            `iop`.`Comment` AS `comment`,
+            `vep`.`subspecialty` AS `subspecialty`,
+            `vep`.`episode_status` AS `episode_status`
+        from
+            ((`v_patient_iop` `iop`
+        join `v_patient_events` `vev` on
+            ((`vev`.`event_id` = `iop`.`event_id`)))
+        join `v_patient_episodes` `vep` on
+            ((`vep`.`episode_id` = `vev`.`episode_id`)))
+        where
+            ((`iop`.`value` = (
+            select
+                max(`iopmax`.`value`)
+            from
+                `v_patient_iop` `iopmax`
+            where
+                ((`iopmax`.`patient_id` = `iop`.`patient_id`)
+                and (`iopmax`.`side` = `iop`.`side`)
+                and (`iop`.`event_name` = 'Examination'))))
+            and (`vep`.`episode_status` <> 'Discharged'))
+        group by
+            `iop`.`patient_id`,
+            `iop`.`side`
+        order by
+            `iop`.`event_date`,
+            `iop`.`reading_time`");
+
+        // v_patient_min_iop
+        // Selects the lowest ever IOP reading per patient, per eye
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_min_iop` AS
         select
@@ -395,6 +493,28 @@ class m200218_161000_add_more_report_views extends CDbMigration
         group by
             `iop`.`patient_id`,
             `iop`.`side`");
+
+        // v_patient_latest_iop
+        $this->execute("CREATE OR REPLACE
+        ALGORITHM = UNDEFINED VIEW `v_patient_latest_iop` AS
+        select
+            `iop`.`patient_id` AS `patient_id`,
+            `iop`.`event_id` AS `event_id`,
+            `iop`.`event_date` AS `event_date`,
+            `iop`.`reading_time` AS `reading_time`,
+            `iop`.`value` AS `value`,
+            `iop`.`Instrument` AS `instrument`,
+            `iop`.`side` AS `side`,
+            `iop`.`eye` AS `eye`,
+            `iop`.`Comment` AS `comment`
+        from
+            (`v_patient_iop` `iop`
+        left join `v_patient_iop` `x` on
+            (((`iop`.`patient_id` = `x`.`patient_id`)
+            and (`iop`.`side` = `x`.`side`)
+            and (`iop`.`event_date` < `x`.`event_date`))))
+        where
+            isnull(`x`.`event_date`)");
 
         // v_patient_cvi_status
         $this->execute("CREATE OR REPLACE

@@ -535,7 +535,7 @@ class AdminController extends \ModuleAdminController
             throw new \Exception('Unable to save element set: '.print_r($set->getErrors(), true));
         }
 
-        echo json_encode(array(
+        $this->renderJSON(array(
             'id' => $set->id,
             'position' => $set->position,
             'name' => $set->name,
@@ -600,6 +600,24 @@ class AdminController extends \ModuleAdminController
         }
 
         $step->name = Yii::app()->request->getParam('step_name');
+
+        if (!$step->save()) {
+            throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
+        }
+
+        echo '1';
+    }
+
+    public function actionSaveWorkflowDisplayOrderEditStatus()
+    {
+        $workflow_id = Yii::app()->request->getParam('workflow_id');
+        $element_set_id = Yii::app()->request->getParam('element_set_id');
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
+        if (!$step) {
+            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
+        }
+
+        $step->display_order_edited = Yii::app()->request->getParam('display_order_edited');
 
         if (!$step->save()) {
             throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));

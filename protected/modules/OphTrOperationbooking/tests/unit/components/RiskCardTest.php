@@ -47,7 +47,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::init
+     * @covers RiskCard
      */
     public function testInit()
     {
@@ -58,7 +58,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::getAlphaBlockerRisk
+     * @covers RiskCard
      */
     public function testGetAlphaBlockerRisk()
     {
@@ -70,7 +70,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::getAnticoagulantRisk
+     * @covers RiskCard
      */
     public function testGetAnticoagulantRisk()
     {
@@ -82,7 +82,7 @@ class RiskCardTest extends CDbTestCase
     }
 
     /**
-     * @covers RiskCard::run
+     * @covers RiskCard
      */
     public function testRun()
     {

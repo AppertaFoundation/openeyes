@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-require_once '../vendor/setasign/fpdi/pdf_parser.php';
+require_once '../vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path

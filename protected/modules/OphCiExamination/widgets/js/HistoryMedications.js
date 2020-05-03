@@ -251,6 +251,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.showStopControls($full_row);
       });
 
+      $second_part_of_row.on("click", ".js-start-date-display", function(){
+          $(this).hide();
+          $full_row.find(".js-start-date-wrapper").show();
+      });
+
 		$full_row.on("click", ".js-btn-prescribe", function () {
             let $input = $(this).closest(".toggle-switch").find("input");
             let checked = !$input.prop("checked");
@@ -349,11 +354,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.addTaper($second_part_of_row);
           return false;
       });
-
-      if($row.find('.js-source-subtype').val() === "VTM") {
-      	$row.find('.js-medication-vtm-container').show();
-      	$row.find('.js-medication-non-vtm-container').hide();
-			}
 
       let med = $row.data("medication");
       if($row.find(".js-unit-dropdown").length > 0 && typeof med !== "undefined" &&

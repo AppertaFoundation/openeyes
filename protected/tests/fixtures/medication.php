@@ -12,6 +12,7 @@ return array(
         'aliases' => 'ABIDEC',
         'short_term' => 'ABIDEC drops',
         'discontinued' => 0,
+        'preferred_code' => 1
     ),
     'drug2' => array(
         'id' => 2,
@@ -24,6 +25,7 @@ return array(
         'is_prescribable' => 1,
         'short_term' => 'acetazolamide 250mg modified release capsules',
         'discontinued' => 0,
+        'preferred_code' => 2
     ),
     'drug5' => array(
         'id' => 5,
@@ -36,5 +38,6 @@ return array(
         'is_prescribable' => 1,
         'short_term' => 'ibuprofen 250mg modified release capsules',
         'discontinued' => 0,
+        'preferred_code' => 5
     ),
 );

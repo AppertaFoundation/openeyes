@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -34,7 +35,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property string $dose_unit_term
  * @property integer $route_id
  * @property integer $frequency_id
- * @property integer $duration
+ * @property integer $duration_id
  * @property integer $dispense_location_id
  * @property integer $dispense_condition_id
  * @property Date $start_date
@@ -46,6 +47,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property int $stop_reason_id
  * @property int $prescription_item_id
  * @property string $bound_key
+ * @property string $comments
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -82,6 +84,7 @@ class EventMedicationUse extends BaseElement
     public $prescription_not_synced = false;
 
     public $is_copied_from_previous_event = false;
+    public $previous_event_date;
 
     /** @var bool Whether tapers can be added */
     public $taper_support = false;
@@ -141,14 +144,14 @@ class EventMedicationUse extends BaseElement
             array('end_date', 'OEFuzzyDateValidator'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
-            array('last_modified_date, created_date, event_id', 'safe'),
+            array('last_modified_date, created_date, event_id, comments', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
             array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
-                    last_modified_date, created_user_id, created_date, bound_key', 'safe', 'on'=>'search'
+                    last_modified_date, created_user_id, created_date, bound_key', 'safe', 'on' => 'search'
             ),
         );
     }
@@ -179,8 +182,10 @@ class EventMedicationUse extends BaseElement
 
     public function validateDoseUnitTerm()
     {
-        if (!$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
-            && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)) {
+        if (
+            !$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)
+        ) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
         }
     }
@@ -275,7 +280,7 @@ class EventMedicationUse extends BaseElement
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('copied_from_med_use_id', $this->copied_from_med_use_id, true);
@@ -306,9 +311,18 @@ class EventMedicationUse extends BaseElement
 
     public function afterValidate()
     {
-        if ($this->start_date && $this->end_date &&
-            $this->start_date > $this->end_date) {
+        if (
+            $this->start_date && $this->end_date &&
+            $this->start_date > $this->end_date
+        ) {
             $this->addError('end_date', 'Stop date must be on or after start date');
+        }
+
+        $this->updateStateProperties();
+        if ($this->copied_from_med_use_id && $this->copied_from_med_use_id !== '0' && !$this->prescription_item_id) {
+            $this->is_copied_from_previous_event = true;
+            $previous_event_date = Event::model()->findByPk($this->copied_from_med_use_id)->event_date;
+            $this->previous_event_date = date('Y-m-d', strtotime($previous_event_date));
         }
         parent::afterValidate();
     }
@@ -421,7 +435,7 @@ class EventMedicationUse extends BaseElement
     public function saveTapers()
     {
         // delete existing tapers
-        OphDrPrescription_ItemTaper::model()->deleteAllByAttributes(['item_id'=> $this->id]);
+        OphDrPrescription_ItemTaper::model()->deleteAllByAttributes(['item_id' => $this->id]);
 
         // add new ones
         foreach ($this->tapers as $taper) {
@@ -454,15 +468,19 @@ class EventMedicationUse extends BaseElement
         }
 
         $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
-        if (!is_null($this->end_date)) {
+        if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
-        if (!is_null($this->stop_reason_id)) {
+        if ($this->stop_reason_id) {
             $data['Stop reason'] = $this->stopReason->name;
         }
 
-        if (!is_null($this->route)) {
+        if ($this->route_id) {
             $data['Route'] = $this->route->term;
+        }
+
+        if ($this->comments && !empty(trim($this->comments))) {
+            $data['Comments'] = $this->comments;
         }
 
         // Add a blank line if there is dose/date data
@@ -486,7 +504,7 @@ class EventMedicationUse extends BaseElement
 
         $content = array();
         foreach ($data as $key => $value) {
-            $content[] = (($key) ? "<b>$key: </b> " : ""). htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            $content[] = (($key) ? "<b>$key: </b> " : "") . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
         }
 
         return implode("<br/>", $content);
@@ -553,12 +571,12 @@ class EventMedicationUse extends BaseElement
         return implode(', ', $result);
     }
 
-    public function getChk_prescribe()
+    public function getChkPrescribe()
     {
         return $this->chk_prescribe;
     }
 
-    public function setChk_prescribe($prescribe)
+    public function setChkPrescribe($prescribe)
     {
         $this->chk_prescribe = $prescribe;
     }
@@ -568,7 +586,10 @@ class EventMedicationUse extends BaseElement
     {
         parent::loadFromExisting($element);
         $this->updateStateProperties();
-        $this->is_copied_from_previous_event = true;
+        if (!$this->prescription_item_id) {
+            $this->is_copied_from_previous_event = true;
+            $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event->id;
+        }
     }
 
     /**
@@ -576,7 +597,7 @@ class EventMedicationUse extends BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null && $this->end_date < date('Y-m-d')) {
+        if ($this->end_date !== null && $this->end_date <= date('Y-m-d')) {
             $this->originallyStopped = true;
         }
         /* TODO Check what was happening here previously
@@ -641,7 +662,7 @@ class EventMedicationUse extends BaseElement
     private function clonefromPrescriptionItem($item)
     {
         $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose','dose_unit_term', 'frequency_id', 'frequency'];
+                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'comments'];
 
         if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
             $attrs[] = 'start_date';
@@ -671,10 +692,12 @@ class EventMedicationUse extends BaseElement
      */
     public function hasRecordableData()
     {
-        foreach ([
+        foreach (
+            [
             'medication_id', 'route_id', 'option_id', 'dose',
             'units', 'frequency_id', 'end_date', 'stop_reason_id'
-        ] as $attr) {
+            ] as $attr
+        ) {
             if ($this->$attr) {
                 return true;
             }
@@ -736,5 +759,8 @@ class EventMedicationUse extends BaseElement
     {
         parent::afterFind();
         $this->updateStateProperties();
+        if ($this->copied_from_med_use_id) {
+            $this->is_copied_from_previous_event = true;
+        }
     }
 }

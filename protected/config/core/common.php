@@ -90,7 +90,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202003191634',
+            'time' => '202004201050',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -294,7 +294,7 @@ return array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => false,
         'ldap_update_email' => true,
-        'environment' => 'dev',
+        'environment' => getenv('OE_MODE') == "LIVE" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -613,8 +613,6 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-        'hos_num_label' => 'ID',
-        'nhs_num_label' => 'NHS',
         'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
