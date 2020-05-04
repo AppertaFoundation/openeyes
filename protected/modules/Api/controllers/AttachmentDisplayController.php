@@ -72,7 +72,7 @@ class AttachmentDisplayController extends BaseApiController
                 // Client's cache IS current, so we just respond '304 Not Modified'.
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $file_mod_time) . ' GMT', true, 304);
             } else {
-                $data = isset($model->$_GET['attachment']) ? $model->$_GET['attachment'] : null;
+                $data = $model[$_GET['attachment']]??  null;
                 // not cached or cache outdated, we respond '200 OK' and output the attachment.
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $file_mod_time) . ' GMT', true, 200);
 
