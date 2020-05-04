@@ -64,8 +64,6 @@ if ($thisEnv == 'DEV') {
     <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
     <code class="js-to-copy-to-clipboard">
         Served by: <?php echo $hostname?><br />
-        Docroot: <?php echo (isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '')?><br />
-        Base dir: <?php echo Yii::app()->basePath?><br />
         Date: <?php echo date('d.m.Y H:i:s')?><br />
         Commit: <?php echo $commit?><br />
         Branch: <?php echo $branch?><br/>
