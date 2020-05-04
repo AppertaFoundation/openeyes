@@ -2644,11 +2644,15 @@ class OphCiExamination_API extends \BaseAPI
                 }
                 $str .= '<td>' . $entry->status->name;
                 if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
                 }
-                $str .= '</td></tr>';
+                $str .= "</td></tr>";
             }
             $str .= '</table></tbody>';
+
+            if ($element->comments) {
+                $str .= "<strong>Comments:</strong> {$element->comments}";
+            }
         }
         return $str;
     }

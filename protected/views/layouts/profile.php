@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,37 +19,41 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <?php $this->renderPartial('//base/head/_meta'); ?>
-    <?php $this->renderPartial('//base/head/_assets'); ?>
-    <?php $this->renderPartial('//base/head/_tracking'); ?>
+  <?php $this->renderPartial('//base/head/_meta'); ?>
+  <?php $this->renderPartial('//base/head/_assets'); ?>
+  <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
+
 <body class="open-eyes oe-grid">
-<!-- Minimum screed width warning -->
-<div id="oe-minimum-width-warning">Device width not supported</div>
-<?php $this->renderPartial('//base/_debug'); ?><!-- Branding (logo) -->
-<div class="openeyes-brand">
+  <!-- Minimum screed width warning -->
+  <div id="oe-minimum-width-warning">Device width not supported</div>
+  <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
+  <!-- Branding (logo) -->
+  <div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
-</div>
-<div id="oe-restrict-print">
-    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
-</div>
-<?php $this->renderPartial('//base/_header'); ?>
-<div class="oe-full-header flex-layout">
-  <div class="title wordcaps">User:
-    <b><?php
-        $user = Yii::app()->session['user'];
-        echo $user->title.' '.$user->first_name . ' ' . $user->last_name; ?>
-    </b>
   </div>
-</div>
-    <div class="oe-full-content oe-user-profile subgrid">
-      <nav class="oe-full-side-panel">
-            <?php $this->renderPartial('//profile/sidebar'); ?>
-      </nav>
-      <main class="oe-full-main">
-            <?php echo $content; ?>
-      </main>
+  <div id="oe-restrict-print">
+    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+  </div>
+  <?php $this->renderPartial('//base/_header'); ?>
+  <div class="oe-full-header flex-layout">
+    <div class="title wordcaps">User:
+      <b><?php
+          $user = Yii::app()->session['user'];
+          echo $user->title . ' ' . $user->first_name . ' ' . $user->last_name; ?>
+      </b>
+    </div>
+  </div>
+  <div class="oe-full-content oe-user-profile subgrid">
+    <nav class="oe-full-side-panel">
+      <?php $this->renderPartial('//profile/sidebar'); ?>
+    </nav>
+    <main class="oe-full-main">
+      <?php echo $content; ?>
+    </main>
   </div><!-- /.content -->
 </body>
+
 </html>
