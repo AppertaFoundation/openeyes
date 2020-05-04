@@ -36,7 +36,7 @@ var analytics_csv_download = (function () {
             }
             
             if (anonymise_flag) {
-                temp = temp.slice(3);
+                temp = temp.slice(4);
             }
             csv_file += temp.join(', ');
             csv_file += '\n';
