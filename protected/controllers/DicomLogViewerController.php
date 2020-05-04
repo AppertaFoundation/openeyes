@@ -25,6 +25,15 @@ class DicomLogViewerController extends BaseController
 
     public $group = 'System';
 
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'roles' => array('admin'),
+            ),
+        );
+    }
+
     public function beforeAction($action)
     {
         $userid = Yii::app()->session['user']->id;
