@@ -231,15 +231,15 @@ class DefaultController extends \BaseModuleController
         unset(Yii::app()->session['patientticket_ticket_in_review']);
         AutoSaveTicket::clear();
 
-        $cat_id = Yii::app()->request->getParam('cat_id');
-        $qs_id = Yii::app()->request->getParam('queueset_id');
-        $reset_filters = Yii::app()->request->getParam('reset_filters', false);
+        $cat_id = htmlspecialchars(Yii::app()->request->getParam('cat_id'));
+        $qs_id = htmlspecialchars(Yii::app()->request->getParam('queueset_id'));
+        $reset_filters = htmlspecialchars(Yii::app()->request->getParam('reset_filters', false));
         if ($reset_filters) {
             Yii::app()->session['patientticket_filter'] = [];
             unset($_GET['reset_filters']);
         }
 
-        $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing');
+        $unset_patientticketing = htmlspecialchars(Yii::app()->request->getParam('unset_patientticketing'));
         $patient_ids = Yii::app()->request->getParam('patient-ids', []);
 
         if ($unset_patientticketing === "true") {
