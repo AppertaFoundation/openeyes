@@ -2482,32 +2482,77 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string
      */
-    public function getCataractSurgicalManagement(\Patient $patient, $use_context = false)
+    public function getCataractSurgicalManagementAsText(\Patient $patient, $use_context = false)
     {
+        $first_eye_id = (string) \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
         $str = '';
         $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
             $patient,
             $use_context);
 
         if ($element) {
+            $end = '.';
             foreach (['right', 'left'] as $side) {
-                $str .= ucfirst($side) . " Eye: {" .
-                    ($element->{$side . 'Eye'} ? $element->{$side . 'Eye'}->name :
-                    'Not recorded')
-                    . "}" . PHP_EOL;
-
-                $str .= ucfirst($side) . " Post Operative Target: {" .
-                    ($element->{$side . '_target_postop_refraction'} ? $element->{$side . '_target_postop_refraction'} :
-                    'Not recorded')
-                    . "}D" . PHP_EOL;
-
-                $str .= ucfirst($side) . " Post Operative Target: {" .
-                    ($element->{$side . 'ReasonForSurgery'} ? $element->{$side . 'ReasonForSurgery'}->name :
-                    'N/A')
-                    . "}D" . PHP_EOL . PHP_EOL;
+                if ($element->{$side . '_eye_id'} === $first_eye_id) {
+                    $str = "Listed for {$side} cataract surgery";
+                } else if ($element->eye_id === (string) \Eye::BOTH) {
+                    $end = " followed by {$side} cataract surgery.";
+                }
             }
+            $str .= $end . PHP_EOL;
         }
         return $str;
+    }
+
+    public function getCataractSurgicalManagementAsTable(Patient $patient, $use_context = false)
+    {
+        $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+            $patient,
+            $use_context);
+
+        $first_eye_id = (string) \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+        $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopic', 2 => 'Other'];
+
+        if ($element) {
+            $is_both_eyes = $element->eye_id === (string) \Eye::BOTH;
+            $eye_sides = [];
+
+            if ($element->left_eye_id === $first_eye_id) {
+                $eye_sides = $is_both_eyes ? ['1st' =>'left', '2nd' => 'right'] : ['left'];
+            } else if ($element->right_eye_id === $first_eye_id) {
+                $eye_sides = $is_both_eyes ? ['1st' => 'right', '2nd' => 'left'] : ['right'];
+            }
+
+            ob_start(); ?>
+                <table style="border-collapse: collapse; width: 80%;" border="1">
+                    <tbody>
+                    <?php foreach ($eye_sides as $key => $side) { ?>
+                        <tr>
+                            <th style="width: 10%;"><strong><?= ucfirst($side) ?> eye <?= $is_both_eyes ? "({$key})" : ''?></strong></th>
+                            <th style="width: 30%;"> </th>
+                        </tr>
+                        <tr>
+                            <th style="width: 10%;">Reason for surgery:</th>
+                            <th style="width: 30%;"><?=($element->{$side . 'ReasonForSurgery'} ? $element->{$side . 'ReasonForSurgery'}->name : 'N/A')?></th>
+                        </tr>
+                        <tr>
+                            <th style="width: 10%;">Guarded prognosis:</th>
+                            <th style="width: 30%;"><?= (string) $element->{$side . '_guarded_prognosis'} === '1' ? 'Yes' : 'No'?></th>
+                        </tr>
+                        <tr>
+                            <th style="width: 10%;">Refractive target:</th>
+                            <?php $refractive_target = 'Not recorded';
+                            if ($element->{$side . '_target_postop_refraction'}) {
+                                $refractive_target = $element->{$side . '_target_postop_refraction'} . 'D' . " ({$refractive_categories[$element->{$side . '_refraction_category'}]})";
+                            } ?>
+                            <th style="width: 30%;"><?= $refractive_target ?></th>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+  <?php }
+
+        return ob_get_clean();
     }
 
     /**
