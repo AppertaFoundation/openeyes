@@ -310,7 +310,7 @@ class PcrRisk
             $as['pxf_phako_nk'] = 1;
         }
 
-        if (isset($as['nuclear_id']) && $as['nuclear_id'] == 4 || isset($as['cortical_id']) && $as['cortical_id'] == 4) {
+        if (isset($as['nuclear_id']) && $as['nuclear_id'] === "4" || isset($as['cortical_id']) && $as['cortical_id'] === "4") {
             $as['brunescent_white_cataract'] = 'Y';
         }
 
@@ -341,8 +341,9 @@ class PcrRisk
 
             $axial_length = 0;
 
+            var_dump($biometry_measurement['eye_id']);
             if ($biometry_measurement) {
-                if (($biometry_measurement['eye_id'] == Eye::getIdFromName($side) || $biometry_measurement['eye_id'] == Eye::BOTH)) {
+                if (($biometry_measurement['eye_id'] === (string) Eye::getIdFromName($side) || $biometry_measurement['eye_id'] === (string) Eye::BOTH)) {
                     $axial_length = $biometry_measurement["axial_length_{$side}"];
                 }
             }
