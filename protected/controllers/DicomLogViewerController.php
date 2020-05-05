@@ -79,7 +79,7 @@ class DicomLogViewerController extends BaseController
             $result['data'] = $data['items'];
         }
 
-        echo CJSON::encode($result);
+        $this->renderJSON($result);
         Yii::app()->end();
 
         Yii::app()->assetManager->registerScriptFile('js/audit.js');

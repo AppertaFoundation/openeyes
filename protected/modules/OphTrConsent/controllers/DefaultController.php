@@ -318,7 +318,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
     }
 
     public function actionDoPrint($id)

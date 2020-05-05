@@ -61,10 +61,15 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
-restorefile="/tmp/openeyes_sample_data.sql"
+restorefile=""
 customfile=0
 hscic=0
+nopost=0
+postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
+
+# Pick default restore file based on what is available
+[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 
 PARAMS=()
 while [[ $# -gt 0 ]]; do
@@ -128,6 +133,14 @@ while [[ $# -gt 0 ]]; do
     migrateparams="-q --connectionID $2"
     shift
     ;;
+  --no-post)
+    nopost=1
+    ## do not run local post reset scripts
+    ;;
+  --post-path) # change the location of the local-post folder
+    postpath="$2"
+    shift
+    ;;
   --clean-base)
     cleanbase=1
     ## Do not import base data (migrate from clean db instead)
@@ -138,7 +151,6 @@ while [[ $# -gt 0 ]]; do
     ;;
   -f | --custom-file) # use a custom database backup for the restore
     restorefile="$2"
-    customfile="1"
     shift
     ;;
   --dmd)
@@ -187,8 +199,8 @@ if [ $showhelp = 1 ]; then
   echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword] [--genetics-enable] [--genetics-disable]"
   echo ""
   echo "COMMAND OPTIONS:"
-  echo "        --help         : Display this help text"
-  echo "        --no-migrate "
+  echo "	--help         : Display this help text"
+  echo "	--no-migrate "
   echo "          | -nm   : Prevent database migrations running automatically after"
   echo "                   checkout"
   echo "	--branch       : Download sample database on the specified branch"
@@ -196,6 +208,7 @@ if [ $showhelp = 1 ]; then
   echo "	--develop    "
   echo "          |-d    : If specified branch is not found, fallback to develop branch"
   echo "                   - default would fallback to master"
+  echo "  --host <name>  : Specify a different database host"
   echo "	--no-banner  "
   echo "          |-nb   : Remove the user banner text after resetting"
   echo "	--no-files     : Do not clear protected/files during reset"
@@ -210,9 +223,8 @@ if [ $showhelp = 1 ]; then
   echo "                  : disable genetics modules (if currently enabled)"
   echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
   echo "	--ignore-warnings	: Ignore warnings during migration"
-  echo "        --no-fix                : do not run oe-fix routines after reset"
-  echo "        --host                  : Reset database on specified host. Defaults to DATABASE_HOST"
-  echo "        --connectionID          : run migrations against the specified Yii database connection. Defaults to db"
+  echo "	--no-fix		: do not run oe-fix routines after reset"
+  echo "  --no-post       : do not run local post reset scripts"
   echo "	--custom-file"
   echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
   echo "					  'oe-reset -f <filename>.sql' "
@@ -220,6 +232,11 @@ if [ $showhelp = 1 ]; then
   echo ""
   exit 1
 fi
+
+[ -z $restorefile ] && {
+  echo "No restore file was found. Please use --custom-file to specify the restore file"
+  exit 1
+} || :
 
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
@@ -261,31 +278,35 @@ echo ""
 
 if [ $nofiles = "0" ]; then
   echo Deleting protected files
+  # remove protected/files
   sudo rm -rf $WROOT/protected/files/*
+  # remove any docman process files
   sudo rm -rf /tmp/docman
+  # remove hscic import history (otherwise hscic import requires --force to run after reset)
+  sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
 fi
 
 if [ $cleanbase = "0" ]; then
-  # Extract or copy sample DB (since v3.2 db has been zipped)
-  rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  if [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ]; then
-    cp -f $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp
-  elif [ -f $MODULEROOT/sample/sql/sample_db.zip ]; then
-    unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp
-  fi
 
-  if [ $customfile = "0" ]; then
-    # Extract or copy sample DB (since v3.2 db has been zipped)
-    rm -f /tmp/openeyes_sample_data.sql >/dev/null
-    [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
-    [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
-  fi
-
-  [ $customfile = "0" ] && echo "Re-importing database" || echo "Re-importing database from $restorefile"
-  eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} <$restorefile || {
-    echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+  echo "importing $restorefile (may take a few minutes)...."
+  if [[ $restorefile =~ \.zip$ ]]; then
+    # If pv is installed then use it to show progress
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
+    eval $importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} || {
+      echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+      exit 1
+    }
+  elif [[ $restorefile =~ \.sql$ ]]; then
+    # If pv is installed then use it to show progress
+    [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
+    eval $importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} || {
+      echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+      exit 1
+    }
+  else
+    echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
     exit 1
-  }
+  fi
 fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
@@ -384,20 +405,20 @@ if [ ! $nobanner = "1" ]; then
 fi
 
 # Run local post-migaration demo scripts
-if [ $demo = "1" ]; then
+if [ $nopost = "0" ]; then
 
   echo "RUNNING POST RESET SCRIPTS..."
 
   basefolder="$MODULEROOT/sample/sql/demo/local-post"
 
   shopt -s nullglob
-  for f in $(ls $basefolder | sort -V); do
+  for f in $(ls $postpath | sort -V); do
     if [[ $f == *.sql ]]; then
       echo "importing $f"
-      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} <$basefolder/$f
+      eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} <$postpath/$f
     elif [[ $f == *.sh ]]; then
       echo "running $f"
-      bash -l "$basefolder/$f"
+      bash -l "$postpath/$f"
     fi
   done
 fi
