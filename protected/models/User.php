@@ -98,13 +98,14 @@ class User extends BaseActiveRecordVersioned
                             'message' => 'Only letters, numbers and underscores are allowed for usernames.',
                         ),
                         array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array('username, first_name, last_name', 'length', 'max' => 40),
                         array(
                             'password',
                             'length',
                             'min' => 5,
                             'message' => 'Passwords must be at least 6 characters long.',
                         ),
+                        array('password', 'length', 'max' => 255),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -123,13 +124,14 @@ class User extends BaseActiveRecordVersioned
                             'message' => 'Only letters, numbers and underscores are allowed for usernames.',
                         ),
                         array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array('username, first_name, last_name', 'length', 'max' => 40),
                         array(
                             'password',
                             'length',
                             'min' => 5,
                             'message' => 'Passwords must be at least 6 characters long.',
                         ),
+                        array('password', 'length', 'max' => 255),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -491,6 +493,7 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
+        
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
