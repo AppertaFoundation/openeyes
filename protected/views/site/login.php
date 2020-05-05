@@ -1,5 +1,8 @@
 <?php
 $this->pageTitle = Yii::app()->name . ' - Login';
+$settings = new SettingMetadata();
+$tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']): htmlspecialchars($settings->getSetting('tech_support_provider'));
+$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
 ?>
 
 <div class="oe-login">
@@ -34,22 +37,15 @@ $this->pageTitle = Yii::app()->name . ' - Login';
     </div>
     <div class="info">
       <div class="flex-layout">
-        <span>Need Help?
-
-            <?php if (Yii::app()->params['helpdesk_email']) : ?>
-                <?php echo Yii::app()->params['helpdesk_email'] ?>
-            <?php endif; ?>
-
-            <?php if (Yii::app()->params['helpdesk_phone']) : ?>
-              <strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong>
-            <?php endif; ?>
-
-            <?php if (Yii::app()->params['help_url']) : ?>
-                <?=\CHtml::link('Help Documentation', Yii::app()->params['help_url'],
-                      array('target' => '_blank')) ?>
-            <?php endif; ?>
-
-        </span>
+      <span class="large-text"> Need Help?&nbsp;
+        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
+          <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . htmlspecialchars(Yii::app()->params['helpdesk_phone']) . "</strong>": null ?></strong>
+          <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . htmlspecialchars(Yii::app()->params['helpdesk_email']) : null ?>
+          <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (". htmlspecialchars(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+        <?php elseif ($tech_support_provider) : ?>
+          <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
+        <?php endif; ?>
+      </span>
         <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
       </div>
       <!-- info -->
