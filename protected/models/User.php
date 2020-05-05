@@ -471,6 +471,7 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
+        
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
