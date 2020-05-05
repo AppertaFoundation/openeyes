@@ -27,7 +27,7 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 <body class="open-eyes oe-grid">
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
-<?php $this->renderPartial('//base/_debug'); ?>
+<?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
 <!-- Branding (logo) -->
 <div class="openeyes-brand">

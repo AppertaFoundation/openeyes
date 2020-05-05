@@ -68,37 +68,7 @@ $roles = $qs_svc->getQueueSetRoles();
     <div id="new-user-col" class="column large-6 end">
         <h3>Add User(s)</h3>
         <div class="autocomplete-row">
-            <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'new_user',
-                            'id' => 'new-user',
-                            'value' => '',
-                            'source' => "js:function(request, response) {
-							console.log(request);
-							$.ajax({
-								'url': '".Yii::app()->createUrl('/admin/userfind')."',
-								'type':'GET',
-								'data':{'search': request.term},
-								'success':function(data) {
-									data = $.parseJSON(data);
-									response(data);
-								}
-							});
-						}",
-                            'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
-								console.log(ui);
-								$('#current-users-list').append(Mustache.render($('#user-template').html(), {fullname: ui.item.value, username: ui.item.username, id: ui.item.id}));
-								$('#new-user').val('');
-								return false;
-							}",
-                            ),
-                            'htmlOptions' => array(
-                                    'placeholder' => 'search by name or username',
-                            ),
-                    ));
-            ?>
+            <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Search by name or user'], 'layoutColumns' => ['field' => '4']]); ?>
         </div>
     </div>
     <script id="user-template" type="x-tmpl-mustache">
@@ -111,6 +81,42 @@ $roles = $qs_svc->getQueueSetRoles();
             ?>
     </script>
 </div>
+<script>
+    $(document).ready(function () {
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#oe-autocompletesearch'),
+                url: '<?=Yii::app()->createUrl('/admin/userfind');?>',
+                onSelect: function(){
+                    let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let $current_user_list = $('#current-users-list');
+                    let current_user_ids = [];
+                    $current_user_list.find('input[name*=user_ids]').each(function () {
+                        current_user_ids.push($(this).val());
+                    });
+                    if (!current_user_ids.includes(autoCompleteResponse.id)) {
+                        $current_user_list.append(
+                            Mustache.render($('#user-template').html(),
+                                {
+                                    fullname: autoCompleteResponse.value,
+                                    username: autoCompleteResponse.username,
+                                    id: autoCompleteResponse.id
+                                }
+                            )
+                        );
+                    } else {
+                        let $alert = $('<div>',{'class':'alert-box issue'}).text(autoCompleteResponse.value + ' has already been added to the list').hide();
+                        let $alert_div = $('#queueset-form').find('.data-group').first();
+                        $alert.appendTo($alert_div).slideDown();
+                        setTimeout(function () { $alert.slideUp(); }, 2000);
+                        setTimeout(function () { $alert.remove(); }, 3000);
+                    }
+                    return false;
+                }
+            });
+        }
+    });
+</script>
 
 <?php
 $this->endWidget();

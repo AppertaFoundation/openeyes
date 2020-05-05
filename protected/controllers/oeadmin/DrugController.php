@@ -144,7 +144,6 @@ class DrugController extends BaseAdminController
             $tnames[] = $tag->name;
         }
 
-        header('content-type: application/json');
-        echo CJSON::encode($tnames);
+        $this->renderJSON($tnames);
     }
 }
