@@ -7,15 +7,15 @@
  */
 class m200505_042308_expand_size_of_password_column extends CDbMigration
 {
-	public function up()
-	{
-	    $this->alterColumn('user', 'password', 'varchar(255)');
+    public function up()
+    {
+        $this->alterColumn('user', 'password', 'varchar(255)');
         $this->alterColumn('user_version', 'password', 'varchar(255)');
-	}
+    }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->alterColumn('user', 'password', 'varchar(40)');
         $this->alterColumn('user_version', 'password', 'varchar(40)');
-	}
+    }
 }
