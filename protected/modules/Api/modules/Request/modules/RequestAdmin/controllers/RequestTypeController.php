@@ -24,12 +24,6 @@ class RequestTypeController extends \AdminController
      */
     public $layout = '//layouts/admin';
 
-    public function accessRules()
-    {
-        // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(array('allow', 'users' => array('@')));
-    }
-
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

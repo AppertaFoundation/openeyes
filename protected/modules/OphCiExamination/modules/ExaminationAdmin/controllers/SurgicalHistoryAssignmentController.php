@@ -27,15 +27,6 @@ class SurgicalHistoryAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\SurgicalHistorySetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\SurgicalHistorySet';
 
-    /**
-     * @inheritdoc
-     */
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
 
     public function actionIndex()
     {
