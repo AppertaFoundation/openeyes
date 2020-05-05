@@ -185,26 +185,22 @@ if [ $noperms = 0 ]; then
     sudo gpasswd -a "$curuser" www-data # add current user to www-data group
 
     # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
-    if [ "$DOCKER_CONTAINER" != "TRUE" ]; then
-      echo "Resetting file permissions..."
-      if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
+    if [[ "$DOCKER_CONTAINER" != "TRUE" ]] || [ $forceperms == 1 ]; then
+      echo -e "\nResetting file permissions..."
+      if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
           echo "updaing ownership on $WROOT"
           sudo chown -R $curuser:www-data $WROOT
       else
           echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
       fi
 
-
       folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
 
       for i in "${folders774[@]}"
       do
-          if [[ $(stat -c %a "$i") != *"774" ]] || [ $forceperms == 1 ]; then
-              echo "updating $i to 774..."
+            echo "updating $i to 774..."
               sudo chmod -R 774 $i
-          else
-              echo "Permissions look ok for $i, skipping. Use --force-perms to override"
-          fi
+          
       done
 
       touch $WROOT/protected/runtime/testme

@@ -129,8 +129,6 @@ $config = array(
         //'ab_testing' => false,
         'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
         // This is used in contact page
-        'ldap_server' => getenv('OE_LDAP_SERVER'),
-        //'ldap_port' => '',
         'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => '',
         'ldap_dn' => 'CN=Users,dc=example,dc=com',
