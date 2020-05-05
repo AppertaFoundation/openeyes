@@ -104,7 +104,7 @@ class BaseReportController extends BaseController
             }
 
             if (!$report->validate()) {
-                echo json_encode($report->errors);
+                $this->renderJSON($report->errors);
 
                 return;
             }
@@ -115,7 +115,7 @@ class BaseReportController extends BaseController
 
             $report->run();
 
-            echo json_encode(array(
+            $this->renderJSON(array(
                 '_report' => $this->renderPartial($report->getView(), array('report' => $report), true),
             ));
         }
@@ -151,9 +151,9 @@ class BaseReportController extends BaseController
 
         if (@$_POST['validate_only']) {
             if (!$report->validate()) {
-                echo json_encode($report->errors);
+                $this->renderJSON($report->errors);
             } else {
-                echo json_encode(array());
+                $this->renderJSON(array());
             }
 
             return;

@@ -27,6 +27,9 @@ $(document).ready(function () {
   if ($patientTicketingPopup.length > 0) {
     // ... then set it up to use the hotlist nav button
     var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
+    let $icon_href = $hotlistNavButton.find('use').attr('xlink:href');
+    $icon_href = $icon_href.replace('#hotlist-icon', '#hotlist-vc-icon');
+    $hotlistNavButton.find('use').attr('xlink:href', $icon_href);
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
     $('#js-hotlist-panel').hide();
   } else if ($('#js-hotlist-panel').length > 0) {

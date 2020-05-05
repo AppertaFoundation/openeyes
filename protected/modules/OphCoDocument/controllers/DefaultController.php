@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once './vendor/setasign/fpdi/pdf_parser.php';
+require_once './vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 
 use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
 
@@ -204,7 +204,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            echo json_encode($return_data);
+            $this->renderJSON($return_data);
         }
     }
 

@@ -74,7 +74,7 @@ class ReportController extends BaseReportController
                 );
             }
         }
-        echo CJSON::encode($commonDrugs);
+        $this->renderJSON($commonDrugs);
         Yii::app()->end();
     }
 }

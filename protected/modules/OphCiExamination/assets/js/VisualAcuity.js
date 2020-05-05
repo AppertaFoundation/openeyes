@@ -1,3 +1,32 @@
+function updateCviAlertState($section) {
+    // ensure jquery wrapped for backwards compatibility
+    $section = $($section);
+    if ($section.find('.cvi_alert_dismissed').val() !== "1") {
+        let $cviAlert = $('.cvi-alert');
+        if (parseInt($cviAlert.data('hascvi')) === 1) {
+            return;
+        }
+
+        const threshold = parseInt($cviAlert.data('threshold'));
+        const showAlert = ['.right-eye', '.left-eye'].every(function(eyeClass) {
+            const values = $section.find(eyeClass + ' .va-selector')
+                .map(function() { return parseInt($(this).val()); })
+                .toArray();
+
+            if (!values.length) {
+                return false;
+            }
+            return values.every(function(val) { return val < threshold; });
+        });
+
+        if (showAlert) {
+            $cviAlert.slideDown(500);
+        } else {
+            $cviAlert.slideUp(500);
+        }
+    }
+}
+
 $(document).ready(function () {
   function visualAcuityChange(target, near) {
     var suffix = 'VisualAcuity';
@@ -39,28 +68,10 @@ $(document).ready(function () {
       var activeForm = $(this).closest('.active-form');
 
       var $section =  $(this).parents('section');
-      var $cviAlert = $('.cvi-alert');
-      var threshold = parseInt($cviAlert.data('threshold'));
 
       $(this).closest('tr').remove();
 
-      if( $section.find('.cvi_alert_dismissed').val() !== "1"){
-        var show_alert = false;
-        $section.find('.va-selector').each(function(){
-          var val = parseInt($(this).val());
-          if (val < threshold) {
-            show_alert = true;
-          } else {
-            show_alert = false;
-          }
-          return;
-        });
-        if (show_alert) {
-          $cviAlert.slideDown(500);
-        } else {
-          $cviAlert.slideUp(500);
-        }
-      }
+      updateCviAlertState($section);
 
       if ($('.va_readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
@@ -114,30 +125,8 @@ $(document).ready(function () {
     $('.cvi-alert').slideUp(500);
   });
 
-  $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
-    var $section =  $(this).closest('section');
-    var $cviAlert = $('.cvi-alert');
-    var hasCvi = parseInt($cviAlert.data('hascvi')) === 1;
-    var threshold = parseInt($cviAlert.data('threshold'));
-
-    if( $section.find('.cvi_alert_dismissed').val() !== "1"){
-      var show_alert = null;
-      $section.find('.va-selector').each(function(){
-        var val = parseInt($(this).val());
-        if (val < threshold && !hasCvi) {
-          show_alert = (show_alert === null) ? true : show_alert;
-        } else {
-          show_alert = false;
-        }
-        return;
-      });
-
-      if (show_alert) {
-        $cviAlert.slideDown(500);
-      } else {
-        $cviAlert.slideUp(500);
-      }
-    }
+  $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function() {
+    updateCviAlertState($(this).closest('section'));
   });
 
 

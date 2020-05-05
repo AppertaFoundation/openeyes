@@ -91,7 +91,7 @@ class DefaultController extends BaseEventTypeController
 
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
-        echo json_encode($data);
+        $this->renderJSON($data);
 
         return;
     }
@@ -119,7 +119,7 @@ class DefaultController extends BaseEventTypeController
             $data['sel_address_target'] = 'Patient' . $patient->id;
             $contact = $patient;
             if ($patient->isDeceased()) {
-                echo json_encode(array('error' => 'DECEASED'));
+                $this->renderJSON(array('error' => 'DECEASED'));
 
                 return;
             }
@@ -247,7 +247,7 @@ class DefaultController extends BaseEventTypeController
             ), true);
         }
 
-        echo json_encode($data);
+        $this->renderJSON($data);
     }
 
     /**
@@ -340,7 +340,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if ($contact->isDeceased()) {
-            echo json_encode(array('errors' => 'DECEASED'));
+            $this->renderJSON(array('errors' => 'DECEASED'));
 
             return;
         }
@@ -668,7 +668,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
         \Yii::app()->end();
     }
 
@@ -744,7 +744,7 @@ class DefaultController extends BaseEventTypeController
     public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
     {
         $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
-        echo CJSON::encode($firms);
+        $this->renderJSON($firms);
 
         Yii::app()->end();
     }
@@ -770,7 +770,7 @@ class DefaultController extends BaseEventTypeController
             $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
         }
 
-        echo CJSON::encode($salutation);
+        $this->renderJSON($salutation);
         Yii::app()->end();
     }
 
@@ -784,7 +784,7 @@ class DefaultController extends BaseEventTypeController
 
         $attributes = $site->attributes;
         $attributes['correspondence_name'] = $site->getCorrespondenceName();
-        echo CJSON::encode($attributes);
+        $this->renderJSON($attributes);
 
         Yii::app()->end();
     }
