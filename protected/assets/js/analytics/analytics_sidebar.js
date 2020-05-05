@@ -138,11 +138,12 @@ var analytics_sidebar = (function () {
 					// data[0]: clinical data
 					// data[1]: service data
 					// data[2]: custom data
+					// data[va_final_ticks]: va_final_ticks
 
 					// for updating service and clinical data
 					analytics_dataCenter.clinical.setClinicalData(data[0]);
 					analytics_dataCenter.service.setServiceData(data[1]);
-
+					analytics_dataCenter.custom.setCustomData({custom_data:data[2], va_final_ticks: data['va_final_ticks']});
 					current_plot.show();
 
 					// update plot and refresh csv download
