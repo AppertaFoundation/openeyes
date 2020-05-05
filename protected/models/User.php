@@ -281,7 +281,8 @@ class User extends BaseActiveRecordVersioned
         parent::afterValidate();
 
         if (!$this->password_hashed) {
-            $this->password = $this->hashPassword($this->password, $this->salt);
+            $this->salt = null;
+            $this->password = $this->hashPassword($this->password, null);
             $this->password_hashed = true;
         }
     }
@@ -296,6 +297,9 @@ class User extends BaseActiveRecordVersioned
      */
     public function hashPassword($password, $salt)
     {
+        if (!$salt) {
+            return password_hash($password, PASSWORD_BCRYPT);
+        }
         return md5($salt . $password);
     }
 
@@ -306,12 +310,28 @@ class User extends BaseActiveRecordVersioned
      * else return false.
      *
      * @param string $password
+     * @throws Exception
      *
      * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->hashPassword($password, $this->salt) === $this->password;
+        if (!$this->salt) {
+            return password_verify($password, $this->password);
+        }
+        if ($this->hashPassword($password, $this->salt) === $this->password) {
+            // Regenerate the hash using the new method.
+            $this->password = $password;
+            $this->password_repeat = $password;
+            $this->password_hashed = false;
+            if (!$this->save()) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}");
+                return false;
+            }
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
+            return password_verify($password, $this->password);
+        }
+        return false;
     }
 
     /**
