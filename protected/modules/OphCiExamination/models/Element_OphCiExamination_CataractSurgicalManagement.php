@@ -216,6 +216,22 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
     {
         $this->right_eye_id = \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
         $this->left_eye_id = \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::SECOND_EYE;
+
+        $api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $previous_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement', $patient, false);
+
+        if ($previous_element) {
+            $this->eye_id = $previous_element->eye_id;
+            foreach (['left', 'right'] as $side) {
+                $this->{$side . '_target_postop_refraction'} = $previous_element->{$side . '_target_postop_refraction'};
+                $this->{$side . '_correction_discussed'} = $previous_element->{$side . '_correction_discussed'};
+                $this->{$side . '_refraction_category'} = $previous_element->{$side . '_refraction_category'};
+                $this->{$side . '_eye_id'} = $previous_element->{$side . '_eye_id'};
+                $this->{$side . '_reason_for_surgery_id'} = $previous_element->{$side . '_reason_for_surgery_id'};
+                $this->{$side . '_notes'} = $previous_element->{$side . '_notes'};
+                $this->{$side . '_guarded_prognosis'} = $previous_element->{$side . '_guarded_prognosis'};
+            }
+        }
     }
 
     public function __toString()
