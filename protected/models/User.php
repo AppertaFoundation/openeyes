@@ -327,7 +327,7 @@ class User extends BaseActiveRecordVersioned
             if (!$this->save()) {
                 throw new Exception('Unable to re-encrypt legacy password using bcrypt.');
             }
-            $this->audit('login', 'auto-encrypt-password');
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
             return password_verify($password, $this->password);
         }
         return false;
