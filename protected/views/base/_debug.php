@@ -51,9 +51,9 @@ Date: <?php echo date('d.m.Y H:i:s')?>
 
 Commit: <?php echo $commit?>
 
-User agent: <?php echo @$_SERVER['HTTP_USER_AGENT']?>
+User agent: <?php echo htmlspecialchars(@$_SERVER['HTTP_USER_AGENT'])?>
 
-Client IP: <?php echo @$_SERVER['REMOTE_ADDR']?>
+Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?>
 
 Username: <?php echo $username?>
 

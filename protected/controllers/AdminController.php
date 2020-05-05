@@ -328,11 +328,11 @@ class AdminController extends BaseAdminController
     public function actionUserFind()
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -342,7 +342,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -399,6 +400,9 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
 
@@ -458,6 +462,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
@@ -703,7 +708,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)
