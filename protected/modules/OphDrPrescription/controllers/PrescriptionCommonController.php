@@ -64,36 +64,7 @@ class PrescriptionCommonController extends DefaultController
                 }, $drug->allergies),
             ];
         }
-        echo CJSON::encode($drugs);
-    }
-
-    /**
-     * Ajax function to get drug set for admin page (we do not have patient_id there), and we also load the
-     * name and subspecialty here.
-     *
-     * @param $key
-     * @param $set_id
-     *
-     * @throws CException
-     */
-    public function actionSetFormAdmin($key, $set_id)
-    {
-        $drugset = DrugSet::model()->findByPk($set_id);
-        $returnData = array();
-
-        $returnData['drugsetName'] = $drugset->name;
-        $returnData['drugsetSubspecialtyId'] = $drugset->subspecialty_id;
-        $returnData['tableRows'] = ''; // the HTML content for the prescription items table
-
-        $key = (integer)$key;
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
-
-        foreach ($drug_set_items as $drug_set_item) {
-            $returnData['tableRows'] .= $this->renderPrescriptionItem($key, $drug_set_item);
-            ++$key;
-        }
-
-        echo json_encode($returnData);
+        $this->renderJSON($drugs);
     }
 
     /**

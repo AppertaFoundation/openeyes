@@ -129,6 +129,6 @@ class DisorderController extends BaseAdminController
             }
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 }

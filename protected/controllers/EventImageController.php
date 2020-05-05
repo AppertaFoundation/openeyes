@@ -119,10 +119,10 @@ class EventImageController extends BaseController
             $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
             if ($page_count != 0) {
                 $image_info = ['page_count' => $page_count, 'url' => $url];
-                echo CJSON::encode($image_info);
+                $this->renderJSON($image_info);
             }
         } catch (Exception $exception) {
-            echo CJSON::encode(['error' => $exception->getMessage()]);
+            $this->renderJSON(['error' => $exception->getMessage()]);
         }
     }
 

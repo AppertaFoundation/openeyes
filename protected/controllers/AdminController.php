@@ -34,7 +34,13 @@ class AdminController extends BaseAdminController
     public function actionEditPreviousOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
+        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation');
+    }
+
+    public function actionEditPreviousSystemicOperation()
+    {
+        $this->group = 'Examination';
+        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
@@ -280,18 +286,6 @@ class AdminController extends BaseAdminController
         ]);
     }
 
-    public function actionDrugs()
-    {
-        $criteria = new CDbCriteria();
-        if (isset($_REQUEST['search'])) {
-            $criteria->compare('name', $_REQUEST['search'], true);
-        }
-        $pagination = $this->initPagination(Drug::model(), $criteria);
-        $this->render('/admin/drugs', array(
-            'drugs' => Drug::model()->findAll($criteria),
-            'pagination' => $pagination,
-        ));
-    }
 
     public function actionAddDrug()
     {
@@ -397,11 +391,11 @@ class AdminController extends BaseAdminController
     public function actionUserFind()
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -411,7 +405,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -468,6 +463,9 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
 
@@ -527,6 +525,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
@@ -772,7 +771,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)
@@ -829,7 +828,9 @@ class AdminController extends BaseAdminController
                 $institution->addAddress($address);
 
                 if (!$institution->contact->save()) {
+
                     throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
+
                         $institution->contact->getErrors(),
                         true
                     ));
@@ -1654,14 +1655,18 @@ class AdminController extends BaseAdminController
                     $method = $cbs->id ? 'edit' : 'add';
 
                     if (!$cbs->save()) {
+
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
+
                             $cbs->getErrors(),
                             true
                         ));
                     }
 
                     if (!$address->save()) {
+
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
+
                             $address->getErrors(),
                             true
                         ));
