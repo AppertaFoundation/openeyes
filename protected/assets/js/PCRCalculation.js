@@ -243,39 +243,6 @@ function setPcrPupil(ev, pcrEl) {
 
 }
 
-/**
- * Sets values related to risks
- *
- * @param ev
- * @param pcrEl
- */
-function setRisks(ev) {
-    var controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
-    var alphaState = controller.getRiskStatus('alpha');
-    var lieFlatState = controller.getRiskStatus('lie flat');
-
-    var alphaPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcrrisk_arb');
-    var originalAlpha = alphaPcr.val();
-    if (alphaState === '0') {
-        alphaPcr.val('N');
-    } else if (alphaState === '1') {
-        alphaPcr.val('Y');
-    }
-    if (alphaPcr.val() !== originalAlpha) {
-        alphaPcr.trigger('change');
-    }
-
-    var lieFlatPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcr_lie_flat');
-    var originalLieFlat = lieFlatPcr.val();
-    if (lieFlatState === '0') {
-        lieFlatPcr.val('Y');
-    } else if (lieFlatState === '1') {
-        lieFlatPcr.val('N');
-    }
-    if (lieFlatPcr.val() !== originalLieFlat) {
-        lieFlatPcr.trigger('change');
-    }
-}
 
 /**
  * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
@@ -346,11 +313,6 @@ function mapExaminationToPcr() {
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
                 "pcr": '.pcrrisk_no_fundal_view',
                 "func": setFundalView,
-                "init": true
-            },
-            "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
-                "pcr": undefined,
-                "func": setRisks,
                 "init": true
             },
             ".oe-eye-lat-icons :checkbox": {

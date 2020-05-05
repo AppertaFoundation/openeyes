@@ -99,26 +99,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             {
                 name: "Cannot Lie Flat",
                 selector: "select.pcr_lie_flat",
-                "function": function (is_present, selector, req_risk_value = undefined) {
+                "function": function (is_present, selector, is_checked, req_risk_value = undefined) {
                     if (req_risk_value) {
                         HistoryRisksController.prototype.editPcrRiskValues(is_present, selector, req_risk_value);
                     } else if (is_present) {
                         $(selector).val("N");
-                    } else {
+                    } else if (is_checked) {
                         $(selector).val("Y");
+                    } else {
+                        $(selector).val("NK");
                     }
                 }
             },
             {
                 name: "Alpha blockers",
                 selector: "select.pcrrisk_arb",
-                function: function (is_present, selector, req_risk_value = undefined) {
+                function: function (is_present, selector, is_checked, req_risk_value = undefined) {
                     if (req_risk_value) {
                         HistoryRisksController.prototype.editPcrRiskValues(is_present, selector, req_risk_value);
                     } else if (is_present) {
                         $(selector).val("Y");
-                    } else {
+                    } else if (is_checked){
                         $(selector).val("N");
+                    } else {
+                        $(selector).val("NK");
                     }
                 }
             }]
@@ -187,8 +191,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController.prototype.setPcrRisk = function ($req_risk_input = undefined) {
         var controller = this;
         let is_present;
-        let present_risks = controller.$table.find('tbody tr .risk-display').map(function () {
-            return $(this).text().trim();
+        let is_checked;
+        let not_checked_risks = [];
+        let present_risks = [];
+        controller.$table.find('tbody tr .risk-display').each(function () {
+            if ($(this).parents('tr').find('.risks-read-only').length) {
+                let checked_value = $(this).parents('tr').find('input[type=radio]:checked').val();
+                if (checked_value === controller.riskYesValue) {
+                    present_risks.push($(this).text().trim());
+                } else if (checked_value === controller.riskNotCheckedValue) {
+                    not_checked_risks.push($(this).text().trim());
+                }
+            } else {
+                present_risks.push($(this).text().trim());
+            }
         }).get();
 
         if ($req_risk_input) {
@@ -199,13 +215,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             });
             if (pcr_link) {
                 is_present = pcr_link.name === req_risk_display_name;
-                pcr_link.function(is_present, pcr_link.selector, req_risk_value);
+                pcr_link.function(is_present, pcr_link.selector, true, req_risk_value);
             }
         } else { // non-required risk input
             controller.pcrRiskLinks.forEach(function (pcr_link) {
                is_present = $.inArray(pcr_link.name, present_risks) !== -1;
+               is_checked = $.inArray(pcr_link.name, not_checked_risks) === -1;
                 if (typeof pcr_link.function === 'function') {
-                    pcr_link.function(is_present, pcr_link.selector);
+                    pcr_link.function(is_present, pcr_link.selector, is_checked);
                 }
             });
         }
