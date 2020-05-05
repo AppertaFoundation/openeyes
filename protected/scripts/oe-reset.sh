@@ -252,7 +252,7 @@ if [ $nofiles = "0" ]; then
 	sudo rm -rf /tmp/docman
 	# remove hscic import history (otherwise hscic import requires --force to run after reset)
 	if [ -d $WROOT/protected/data/hscic ]; then
-		sudo { find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
+		sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
 	fi
 fi
 
