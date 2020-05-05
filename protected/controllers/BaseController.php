@@ -418,7 +418,7 @@ class BaseController extends Controller
                     $input[$key] = $this->sanitizeInput($value);
                     continue;
                 }
-                $pattern = '/<(?:(?!\s|\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
+                $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
                 $value = preg_replace($pattern, '', $value);
                 $input[$key] = $value;
             }
