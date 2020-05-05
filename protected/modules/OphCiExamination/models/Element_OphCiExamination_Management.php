@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Management extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -57,11 +58,11 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('comments', 'safe'),
-                array('comments', 'required', 'message' => '{attribute} cannot be blank when there are no child elements', 'on' => 'formHasNoChildren'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id, comments', 'safe', 'on' => 'search'),
+            array('comments', 'safe'),
+            array('comments', 'required', 'message' => '{attribute} cannot be blank when there are no child elements', 'on' => 'formHasNoChildren'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id, comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -73,10 +74,10 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -86,9 +87,9 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'comments' => 'Comments',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'comments' => 'Comments',
         );
     }
 
@@ -109,7 +110,7 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
         $criteria->compare('comments', $this->comments);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -122,12 +123,12 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
     {
         $res = '';
         if ($this->comments) {
-            $res .= 'Clinical management: '.$this->comments."\n";
+            $res .= 'Clinical management: ' . $this->comments . "\n";
         }
 
         foreach ($this->getSiblings() as $el) {
             if (method_exists($el, 'getLetter_string')) {
-                $res .= $el->getLetter_string()."\n";
+                $res .= $el->getLetter_string() . "\n";
             }
         }
 
@@ -141,13 +142,11 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
     public function getSiblingString($delimiter = ' // ')
     {
         return implode($delimiter, array_map(
-            function($el) {
-                return $el->elementType->name . ': ' . $el;
-            }, $this->getSiblings())
+                function ($el) {
+                    return $el->elementType->name . ': ' . $el;
+                }, $this->getSiblings())
         );
     }
-
-
 
     public function canCopy()
     {
