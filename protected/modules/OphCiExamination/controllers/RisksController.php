@@ -110,26 +110,6 @@ class RisksController extends \BaseController
      * @deprecated
      */
 
-    public function actionForDrugIds($ids)
-    {
-        $drugs = \Drug::model()->with('tags')->findAllByPk(explode(",", $ids));
-
-        $result = array();
-        foreach ($drugs as $drug) {
-            $result[$drug->id] = $this->riskIdsForTagIds(
-                $this->tagIdsForTagged($drug)
-            );
-        }
-
-        echo \CJSON::encode($result);
-    }
-
-    /**
-     * @param $ids
-     *
-     * @deprecated
-     */
-
     public function actionForMedicationDrugIds($ids)
     {
         $meds = \MedicationDrug::model()->with('tags')->findAllByPk(explode(",", $ids));

@@ -1612,15 +1612,22 @@ class OphCiExamination_API extends \BaseAPI
     {
         $follow_up_text = '';
 
-        $o = $this->getElementFromLatestVisibleEvent(
+        $element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context
         );
 
-        if ($o) {
-            if ($o->followup_quantity) {
-                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+        if ($element) {
+            $index = 0;
+            foreach ($element->entries as $entry) {
+                if ($entry->followup_quantity) {
+                    if ($index > 0) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $entry->followup_quantity . ' ' . $entry->followup_period;
+                    $index++;
+                }
             }
         }
 
@@ -1635,8 +1642,11 @@ class OphCiExamination_API extends \BaseAPI
                     );
                 }
 
-                if (!isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])) {
-                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if (!isset($patient_ticket_followup['assignment_date']) || !isset($element->event->event_date) || ($element->event->event_date < $patient_ticket_followup['assignment_date'])) {
+                    if (!empty($follow_up_text)) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
         }
@@ -2625,9 +2635,23 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($element) {
-            $str = $element->status->name;
-            if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period}";
+            $str .= '<table><tbody>';
+            foreach ($element->entries as $index => $entry) {
+                if ($index > 0) {
+                    $str .= '<tr><td>AND</td>';
+                } else {
+                    $str .= '<tr><td></td>';
+                }
+                $str .= '<td>' . $entry->status->name;
+                if ($entry->status->followup) {
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
+                }
+                $str .= "</td></tr>";
+            }
+            $str .= '</table></tbody>';
+
+            if ($element->comments) {
+                $str .= "<strong>Comments:</strong> {$element->comments}";
             }
         }
         return $str;

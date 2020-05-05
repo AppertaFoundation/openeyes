@@ -176,7 +176,7 @@ class ResultTypeController extends BaseAdminController
             $transaction->commit();
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function actions() {

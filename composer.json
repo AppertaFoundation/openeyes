@@ -9,7 +9,8 @@
     "setasign/fpdi": "^2.0",
     "xthiago/pdf-version-converter": "dev-master",
     "phpoffice/phpspreadsheet": "^1.6",
-    "phpseclib/mcrypt_compat": "^1.0"
+    "phpseclib/mcrypt_compat": "^1.0",
+    "symfony/polyfill-ctype": "@stable"
   },
   "require-dev": {
     "behat/behat": "2.*@stable",
