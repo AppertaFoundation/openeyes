@@ -31,5 +31,4 @@ class m180509_130331_medication_laterality_and_import extends OEMigration
     {
         $this->dropOETable('medication_laterality', true);
     }
-
 }

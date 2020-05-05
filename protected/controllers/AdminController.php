@@ -828,9 +828,7 @@ class AdminController extends BaseAdminController
                 $institution->addAddress($address);
 
                 if (!$institution->contact->save()) {
-
                     throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
-
                         $institution->contact->getErrors(),
                         true
                     ));
@@ -1655,18 +1653,14 @@ class AdminController extends BaseAdminController
                     $method = $cbs->id ? 'edit' : 'add';
 
                     if (!$cbs->save()) {
-
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
-
                             $cbs->getErrors(),
                             true
                         ));
                     }
 
                     if (!$address->save()) {
-
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
-
                             $address->getErrors(),
                             true
                         ));
