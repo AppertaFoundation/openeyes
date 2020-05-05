@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -56,26 +56,26 @@ class OEHtml extends CHtml
         );
     }
 
-    public static function cancelButton($text = "Cancel", $htmlOption = [])
+    public static function cancelButton($name = 'Cancel', $options = [])
     {
         return \CHtml::submitButton(
-            $text,
+            $name,
             array_merge([
-                "class" => "warning button large",
-                "name" => "cancel",
-                "id" => "et_cancel"
-            ], $htmlOption)
+                'class' => 'warning button large',
+                'name' => 'cancel',
+                'id' => 'et_cancel'
+            ], $options)
         );
     }
 
-    public static function linkButton($text = "Add", $url = '#', $htmlOption = [])
+    public static function linkButton($name = "Add", $url = '#', $options = [])
     {
         return \CHtml::link(
-            $text,
+            $name,
             $url,
             array_merge([
                 "class" => "button large green hint",
-            ], $htmlOption)
+            ], $options)
         );
     }
 }

@@ -96,8 +96,8 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
 
                 break;
             }
- 
-            echo json_encode($result);
+
+            $this->renderJSON($result);
         }
     }
 }

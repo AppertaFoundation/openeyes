@@ -1,0 +1,2 @@
+request_type,title_full,title_short,default_routine_name,default_request_queue
+dicom_request,dicom request full,dicom request,DICOM_SEED,dicom_queue

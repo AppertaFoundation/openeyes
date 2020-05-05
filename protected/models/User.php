@@ -39,6 +39,7 @@ class User extends BaseActiveRecordVersioned
      * @var string
      */
     public $password_repeat;
+    public $password_hashed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -253,41 +254,16 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * Saves or updates a db record and creates the salt for a new record of
-     *    authentication type 'basic'.
-     *
-     * @return bool
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
-    {
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
-            /*
-             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-             */
-            if ($this->getIsNewRecord() && !$this->salt) {
-                $salt = '';
-                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-                for ($i = 0; $i < 10; ++$i) {
-                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
-                }
-
-                $this->salt = $salt;
-            }
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-    }
-
-    /**
      * Hashes the user password for insertion into the db.
      */
     protected function afterValidate()
     {
         parent::afterValidate();
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
-            $this->password = $this->hashPassword($this->password, $this->salt);
+        if (!$this->password_hashed) {
+            $this->salt = null;
+            $this->password = $this->hashPassword($this->password, null);
+            $this->password_hashed = true;
         }
     }
 
@@ -301,6 +277,9 @@ class User extends BaseActiveRecordVersioned
      */
     public function hashPassword($password, $salt)
     {
+        if (!$salt) {
+            return password_hash($password, PASSWORD_BCRYPT);
+        }
         return md5($salt . $password);
     }
 
@@ -311,12 +290,28 @@ class User extends BaseActiveRecordVersioned
      * else return false.
      *
      * @param string $password
+     * @throws Exception
      *
      * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->hashPassword($password, $this->salt) === $this->password;
+        if (!$this->salt) {
+            return password_verify($password, $this->password);
+        }
+        if ($this->hashPassword($password, $this->salt) === $this->password) {
+            // Regenerate the hash using the new method.
+            $this->password = $password;
+            $this->password_repeat = $password;
+            $this->password_hashed = false;
+            if (!$this->save()) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}");
+                return false;
+            }
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
+            return password_verify($password, $this->password);
+        }
+        return false;
     }
 
     /**
@@ -482,7 +477,7 @@ class User extends BaseActiveRecordVersioned
             $this->password_repeat = $password;
         }
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
             }
@@ -598,10 +593,44 @@ class User extends BaseActiveRecordVersioned
 
         foreach ($added_roles as $role) {
             Yii::app()->authManager->assign($role, $this->id);
+//            If one of the roles added is an admin, then provide the user with permissions to manage all trials - CERA -523
+            if ($role == 'admin'){
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $newPermission = new UserTrialAssignment();
+                    $newPermission->user_id = $this->id;
+                    $newPermission->trial_id = $trial->id;
+                    $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
+                    if (UserTrialAssignment::model()->exists($criteria) == false){
+                        if (!$newPermission->save()) {
+                            throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                                . print_r($newPermission->getErrors(), true));
+                        }
+                    }
+                }
+            }
         }
 
         foreach ($removed_roles as $role) {
             Yii::app()->authManager->revoke($role, $this->id);
+//            If one of the roles removed from the user is that of an admin, thhn remove ability to manage trials not owned by the user - CERA-523
+            if ($role == 'admin'){
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id AND role IS NULL AND is_principal_investigator=:is_principal_investigator AND is_study_coordinator=:is_study_coordinator';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id,':is_principal_investigator'=>0,':is_study_coordinator'=>0 );
+                    if (UserTrialAssignment::model()->exists($criteria)){
+                        if(!UserTrialAssignment::model()->deleteAll($criteria)) {
+                            throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
+                                . print_r(UserTrialAssignment::model()->getErrors(), true));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -828,5 +857,14 @@ class User extends BaseActiveRecordVersioned
         }
 
         return $users_with_roles;
+    }
+
+    public function getUserActiveStatus($user){
+      if($user->active){
+        $active = '1';
+      } else {
+        $active = '0';
+      }
+      return $active;
     }
 }

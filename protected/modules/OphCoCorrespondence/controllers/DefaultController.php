@@ -166,7 +166,7 @@ class DefaultController extends BaseEventTypeController
 
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
-        echo json_encode($data);
+        $this->renderJSON($data);
 
         return;
     }
@@ -194,7 +194,7 @@ class DefaultController extends BaseEventTypeController
             $data['sel_address_target'] = 'Patient'.$patient->id;
             $contact = $patient;
             if ($patient->isDeceased()) {
-                echo json_encode(array('error' => 'DECEASED'));
+                $this->renderJSON(array('error' => 'DECEASED'));
 
                 return;
             }
@@ -322,7 +322,7 @@ class DefaultController extends BaseEventTypeController
             ), true);
         }
 
-        echo json_encode($data);
+        $this->renderJSON($data);
     }
 
     /**
@@ -390,7 +390,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         if ($contact->isDeceased()) {
-            echo json_encode(array('errors' => 'DECEASED'));
+            $this->renderJSON(array('errors' => 'DECEASED'));
 
             return;
         }
@@ -450,13 +450,15 @@ class DefaultController extends BaseEventTypeController
      *
      * @param $letter
      * @param $recipient_address
+     * @param $contact_type
      * @return string
      */
-    private function renderOneRecipient($letter, $recipient_address)
+    private function renderOneRecipient($letter, $recipient_address, $contact_type)
     {
         return $this->render('print', array(
             'element' => $letter,
-            'letter_address' => $recipient_address
+            'letter_address' => $recipient_address,
+            'contact_type' => $contact_type
         ), true);
     }
 
@@ -464,6 +466,7 @@ class DefaultController extends BaseEventTypeController
      * Gets all the recipients for a letter based on the ElementLetter model
      *
      * @param $id
+     * @param $is_view
      * @return array
      */
     private function getRecipients($id, $is_view = false)
@@ -483,7 +486,7 @@ class DefaultController extends BaseEventTypeController
                 if ($to_recipient_gp) {
                     // print an extra copy to note
                     if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                        $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
+                        $recipients[$to_recipient_gp->id] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                     }
                 }
             }
@@ -492,12 +495,12 @@ class DefaultController extends BaseEventTypeController
             if ($print_outputs) {
                 foreach ($print_outputs as $print_output) {
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
-                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
+                    $recipients[$document_target->id] = ($document_target->contact_name . "\n" . $document_target->address);
 
                     //extra printout for note when the main recipient is NOT GP
                     if ($document_target->ToCc == 'To' && $document_target->contact_type != Yii::app()->params['gp_label']) {
                         if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
+                            $recipients[$document_target->id] = $document_target->contact_name . "\n" . $document_target->address;
                         }
                     }
                 }
@@ -646,8 +649,15 @@ class DefaultController extends BaseEventTypeController
 
         $this->pdf_output = new PDF_JavaScript();
 
-        foreach ($recipients as $recipient) {
-            $html_letter =  $this->renderOneRecipient($letter, $recipient);
+        foreach ($recipients as $target_id => $recipient) {
+            $contact_type = null;
+
+            $target = DocumentTarget::model()->findByPk($target_id);
+            if ($target) {
+                $contact_type = $target->contact_type;
+            }
+
+            $html_letter =  $this->renderOneRecipient($letter, $recipient, $contact_type);
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
             if (!isset($_GET['html']) || !$_GET['html']) {
                 $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
@@ -741,7 +751,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
         \Yii::app()->end();
     }
 
@@ -842,7 +852,7 @@ class DefaultController extends BaseEventTypeController
     public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
     {
         $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
-        echo CJSON::encode($firms);
+        $this->renderJSON($firms);
 
         Yii::app()->end();
     }
@@ -868,7 +878,7 @@ class DefaultController extends BaseEventTypeController
             $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
         }
 
-        echo CJSON::encode($salutation);
+        $this->renderJSON($salutation);
         Yii::app()->end();
     }
 
@@ -882,7 +892,7 @@ class DefaultController extends BaseEventTypeController
 
         $attributes = $site->attributes;
         $attributes['correspondence_name'] = $site->getCorrespondenceName();
-        echo CJSON::encode($attributes);
+        $this->renderJSON($attributes);
 
         Yii::app()->end();
     }
@@ -1050,6 +1060,7 @@ class DefaultController extends BaseEventTypeController
 
             return $errors;
         }
+        return $errors;
     }
 
     /**

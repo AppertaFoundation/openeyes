@@ -4,40 +4,46 @@ var analytics_drill_down = (function () {
 	var start = 0;
 	var limit = 300;
 
+	// post data
+	var params = {};
+	
 	// flag to indicate if reach max
 	var reachedMax = false;
 
 	// for deep copy of data
 	var g_data = [];
 
+	// DB query offset multiplier
+	var offset = 0;
+
+	// diagnosis type
+	var diagnosis = '';
+
+	var request_url = '/analytics/getdrilldown';
 	function patientDetails() {
-		$('#js-analytics-spinner').show();
 		var link = $(this).data('link');
-		window.location.href = link;
+		$(this).css('background-color', '#28303b');
+		window.open(link, '_blank');
 	}
 
 	function getPatient() {
-		// if reach max, exit immediately
-		if (reachedMax && g_data.length <= 0) {
-			$('#js-analytics-spinner').hide();
-			return;
-		}
+		$('#js-analytics-spinner').show();
 		$.ajax({
-			url: '/analytics/getdrilldown',
+			url: request_url,
 			type: "POST",
 			data: {
 				drill: true,
 				YII_CSRF_TOKEN: YII_CSRF_TOKEN,
-				ids: JSON.stringify(g_data.splice(start, limit)),
+				params: params,
 				specialty: analytics_toolbox.getCurrentSpecialty(),
 			},
 			dataType: 'json',
 			success: function (response) {
-				if (response == "reachedMax") {
+				if (response == "reachedMax" || response['count'] < limit) {
 					reachedMax = true;
-					$('#js-analytics-spinner').hide();
-				} else {
-					$("#p_list").append(response);
+				}
+				if (response['dom']){
+					$("#p_list").append(response['dom']);
 				}
 				$('#p_list tr.analytics-patient-list-row.clickable').on("click", _.throttle(patientDetails, ajaxThrottleTime))
 			},
@@ -53,13 +59,18 @@ var analytics_drill_down = (function () {
 	function scrollPatientList() {
 		// get screen hight (header not included)
 		var scroll_h = document.querySelector("main.oe-analytics").scrollHeight;
-
+		if(reachedMax){
+			return
+		}
 		// if scroll bar reach 2/3 height of the screen, send out request
 		if ($(this).scrollTop() > scroll_h - scroll_h / 3) {
-			if ($('#js-analytics-spinner').css('display') === 'block') {
-				return;
+			if(params['ids']){
+				params['ids'] = JSON.stringify(g_data.splice(start, limit));
+			} else {
+				offset += 1;
+				params['offset'] = offset * limit;
+				params['limit'] = limit;
 			}
-			$('#js-analytics-spinner').show();
 			getPatient();
 		}
 	}
@@ -92,6 +103,7 @@ var analytics_drill_down = (function () {
 								prev_leavel_name = diagnoses_item;
 							}
 							var str_ending =  data.data['name'] ? data.data['name'] : prev_leavel_name;
+							patient_total = data.x
 							additional_info = patient_total + ' ' + patient_str + diagnoses_item + ' for ' + str_ending;
 							break;
 						case 'Change in vision':
@@ -133,6 +145,7 @@ var analytics_drill_down = (function () {
 
 		var custom_data = null;
 		$(plot_patient).off('plotly_click').on('plotly_click', function (e, data) {
+			params = {};
 			var selected_cataract = $('.js-cataract-report-type.selected');
 			if(selected_cataract.text().trim() === 'PCR Risk'){
 				return;
@@ -165,7 +178,7 @@ var analytics_drill_down = (function () {
 			var colGroup = $('.analytics-patient-list table colgroup');
 
 			if (Array.isArray(custom_data)) {
-				$('#js-analytics-spinner').show();
+
 				$('.analytics-charts').hide();
 				patient_list_container.show();
 
@@ -174,17 +187,37 @@ var analytics_drill_down = (function () {
 					patient_list_container.addClass('analytics-event-list');
 					$('<th class="text-left" style="vertical-align: center;">Eye</th>').insertBefore('.analytics-patient-list .patient_procedures');
 					$('<th style="vertical-align: center;">Date</th>').insertAfter('.analytics-patient-list .patient_procedures');
-					colGroup.append('<col style="width: 350px;"><col style="width: 50px;"><col style="width: 400px;"><col style="width: 100px;">');
+					// the width for eye, procedures, date columns
+					colGroup.append('<col style="width: 3.5%x;"><col style="width: 24%;"><col style="width: 7%;">');
 				} else {
 					// set up patient list dom layout for non cataract
-					colGroup.append('<col style="width: 450px;"><col style="width: 450px;">');
+					// for procedures column
+					colGroup.append('<col style="width: 24%;">');
 				}
 				// deep copy from passed in data
 				g_data = custom_data.slice();
+				if(!parseInt(g_data[0])){
+					diagnosis = g_data[0];
+					var user_list = analytics_dataCenter.user.getSidebarUser();
+					if(user_list){
+						var user = $('#js-chart-filter-clinical-surgeon-diagnosis').text().trim();
+						if(user !== 'All' && user !== 'Admin Admin'){
+							params['clinical_surgeon'] = user_list[user];
+						}
+					}
+					params['diagnosis'] = diagnosis;
+					params['offset'] = offset;
+					params['limit'] = limit;
+				} else {
+					params['ids'] = JSON.stringify(g_data.splice(start, limit));
+				}
+				params['from'] = $('#analytics_datepicker_from').val();
+				params['to'] = $('#analytics_datepicker_to').val();
 				getPatient();
 			} else {
 				// clicked item has further plot
 				analytics_clinical('update', custom_data);
+				return;
 			}
 		});
 		$('main.oe-analytics').off('scroll').on('scroll', _.throttle(scrollPatientList, ajaxThrottleTime));
@@ -193,7 +226,7 @@ var analytics_drill_down = (function () {
 			// reset
 			reachedMax = false;
 			start = 0;
-			
+			offset = 0;
 			analytics_toolbox.hideDrillDownShowChart();
 		})
 

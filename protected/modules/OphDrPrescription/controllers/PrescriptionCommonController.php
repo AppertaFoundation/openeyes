@@ -65,7 +65,7 @@ class PrescriptionCommonController extends DefaultController
                 ];
             }
         }
-        echo CJSON::encode($drugs);
+        $this->renderJSON($drugs);
     }
 
     /**
@@ -94,7 +94,7 @@ class PrescriptionCommonController extends DefaultController
             ++$key;
         }
 
-        echo json_encode($returnData);
+        $this->renderJSON($returnData);
     }
 
     /**
@@ -124,7 +124,7 @@ class PrescriptionCommonController extends DefaultController
 
     public function actionGetDispenseLocation($condition_id)
     {
-        $dispense_condition = OphDrPrescription_DispenseCondition::model()->with('locations')->findByPk($condition_id);
+        $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
         foreach ($dispense_condition->locations as $location) {
             echo '<option value="'.$location->id.'">'.$location->name.'</option>';
         }

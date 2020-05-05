@@ -72,7 +72,7 @@ class TheatreDiaryController extends BaseModuleController
             $theatre_searchoptions = Yii::app()->session['theatre_searchoptions'];
 
             if (!empty($theatre_searchoptions)) {
-                foreach (Yii::app()->session['theatre_searchoptions'] as $key => $value) {
+                foreach ($theatre_searchoptions as $key => $value) {
                     $_POST[$key] = $value;
                 }
 
@@ -138,7 +138,7 @@ class TheatreDiaryController extends BaseModuleController
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
         ), true, true);
-        echo json_encode(array('status' => 'success', 'data' => $list));
+        $this->renderJSON(array('status' => 'success', 'data' => $list));
     }
 
     /**
@@ -182,7 +182,7 @@ class TheatreDiaryController extends BaseModuleController
         }
 
         if ($error) {
-            echo json_encode(array('status' => 'error', 'message' => $errorMessage));
+            $this->renderJSON(array('status' => 'error', 'message' => $errorMessage));
             Yii::app()->end();
         }
 
@@ -470,7 +470,7 @@ class TheatreDiaryController extends BaseModuleController
             }
 
             if (!empty($errors)) {
-                echo json_encode($errors);
+                $this->renderJSON($errors);
 
                 return;
             }
@@ -569,7 +569,7 @@ class TheatreDiaryController extends BaseModuleController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     /**

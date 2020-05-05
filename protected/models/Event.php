@@ -106,6 +106,7 @@ class Event extends BaseActiveRecordVersioned
             // Please remove those attributes that should not be searched.
             array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
+            array('event_date','eventDateValidator'),
         );
     }
 
@@ -122,9 +123,14 @@ class Event extends BaseActiveRecordVersioned
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
+            'previewImages' => array(self::HAS_MANY, 'EventImage', 'event_id'),
+            'previewWhiteboardImages' => [self::HAS_MANY, 'EventImage', 'event_id', 'condition' => 'document_number IS NOT NULL'],
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'eventSubtypeItems' => array(self::HAS_MANY, 'EventSubTypeItem', 'event_id'),
+            'firstEventSubtypeItem' => [self::HAS_ONE, 'EventSubTypeItem', 'event_id', 'order' => 'display_order'],
+            'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id']
         );
     }
 
@@ -682,6 +688,10 @@ class Event extends BaseActiveRecordVersioned
                 return $api->getEventName($this);
             }
         }
+
+        if ($this->firstEventSubtypeItem) {
+            return $this->firstEventSubtypeItem->eventSubtype->display_name;
+        }
         return $this->eventType ? $this->eventType->name : 'Event';
     }
 
@@ -696,4 +706,22 @@ class Event extends BaseActiveRecordVersioned
             return $this->episode->patient;
         }
     }
+    /**
+     * Validate the event date.
+     */
+    public function eventDateValidator($attribute, $param)
+    {
+        $event_date = Helper::mysqlDate2JsTimestamp($this->event_date);
+        if (isset($this->episode)) {
+            $episode = $this->episode;
+            if (isset($episode->patient)) {
+                $patient = $episode->patient;
+                $event_date_limitation = Helper::mysqlDate2JsTimestamp($patient->dob) - (Helper::EPOCHMONTH*9);
+                if ($event_date < $event_date_limitation) {
+                    $this->addError($attribute, 'The event date cannot be earlier than '.date('Y-m-d', ($event_date_limitation/1000)).'.');
+                }
+            }
+        }
+    }
+
 }

@@ -76,6 +76,7 @@ $layoutColumns = array(
     </div>
         <script type="text/javascript">
             $(function () {
+                let $table = $('.<?= $eye_side ?>-eye .procedures');
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-procedure-btn-<?= $eye_side?>'),
                     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
@@ -83,17 +84,23 @@ $layoutColumns = array(
                             return ['label' => $procedure->term, 'id' => $procedure->id];
                         }, $procs  ) ) ?> ,{'multiSelect': true}),
                     ],
+                    onOpen: function (adderDialog) {
+                        adderDialog.popup.find('li').each(function() {
+                            let procedure_id = $(this).data('id');
+                            let alreadyUsed = $table.find('input[type="hidden"][name="treatment_<?=$eye_side?>_procedures[]"][value="' + procedure_id + '"]').length > 0;
+                            $(this).toggle(!alreadyUsed);
+                        });
+                    },
                     onReturn: function (adderDialog, selectedItems) {
-                        var $table = $('.<?= $eye_side ?>-eye .procedures');
                         if (selectedItems.length) {
-                            for(let index in selectedItems) {
+                            selectedItems.forEach(function (selectedItem) {
                                 let selected_data = [];
-                                selected_data.id = selectedItems[index]['id'];
-                                selected_data.term = selectedItems[index]['label'];
+                                selected_data.id = selectedItem.id;
+                                selected_data.term = selectedItem.label;
                                 selected_data.eye_side = '<?=$eye_side?>';
-                                var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
+                                let form = Mustache.render($('#laser_procedure_template').html(), selected_data);
                                 $table.find('tbody').append(form);
-                            }
+                            });
                             return true;
                         } else {
                             return false;

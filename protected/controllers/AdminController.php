@@ -253,6 +253,7 @@ class AdminController extends BaseAdminController
                     $finding_object = new Finding();
                 }
 
+
                 $finding_object->name = $finding['name'];
                 $finding_object->display_order = $finding['display_order'];
                 $finding_object->requires_description = $finding['requires_description'];
@@ -393,14 +394,14 @@ class AdminController extends BaseAdminController
         ));*/
     }
 
-    public function actionUserFind()
+    public function actionUserFind($term)
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -410,7 +411,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -467,6 +469,9 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
             
@@ -526,6 +531,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
@@ -771,7 +777,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)
@@ -934,7 +940,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';
@@ -1787,8 +1792,9 @@ class AdminController extends BaseAdminController
             foreach ($filter as $logoKey => $logoName) {
                 $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
                 $fileInfo = pathinfo($logoName);
-                foreach (glob($savePath . $logoKey) as $existingLogo) {
-                    unlink($savePath . $existingLogo);
+
+                foreach (glob($savePath . $logoKey . '.*') as $existingLogo) {
+                    unlink($existingLogo);
                 }
 
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
@@ -1822,11 +1828,11 @@ class AdminController extends BaseAdminController
         $deleteSecondaryLogo = @$_GET['secondary_logo'];
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            @unlink($deleteHeaderLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            @unlink($deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         }
@@ -1994,5 +2000,28 @@ class AdminController extends BaseAdminController
     public function actionPatientShortcodes()
     {
         $this->render('patient_shortcodes', ['short_codes' => PatientShortcode::model()->findAll()]);
+    }
+
+    public function actionAttachments($id = false)
+    {
+        if (!empty($_POST)) {
+            $event_types_post = $_POST['EventType'];
+
+            foreach ($event_types_post as $id => $event_type_post) {
+                $eventType = EventType::model()->findByPk($id);
+                $eventType->show_attachments = $event_type_post['show_attachments'];
+
+                if (!$eventType->saveOnlyIfDirty()->save() && $eventType->getErrors()) {
+                    throw new Exception('Unable to save attachment: ' . print_r($eventType->getErrors(), true));
+                }
+            }
+            Audit::add('admin-Attachments', 'edit');
+        } else {
+            Audit::add('admin-Attachments', 'list');
+        }
+
+        $this->render('/admin/attachments/index', array(
+            'event_types' => EventType::model()->findAll(),
+        ));
     }
 }

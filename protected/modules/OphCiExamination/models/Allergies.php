@@ -27,13 +27,16 @@ namespace OEModule\OphCiExamination\models;
  * @property datetime $no_allergies_date
  *
  * @property \Event $event
- * @property Allergy_Entry[] $entries
+ * @property AllergyEntry[] $entries
  * @property \EventType $eventType
  * @property \User $user
  * @property \User $usermodified
  */
 class Allergies extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 50;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -206,11 +209,6 @@ class Allergies extends \BaseEventTypeElement
         return $entries;
     }
 
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 50 : parent::getDisplayOrder($action);
-    }
-
     /**
      * @return string
      */
@@ -227,5 +225,15 @@ class Allergies extends \BaseEventTypeElement
     public function softDelete()
     {
         $this->updateAll(array('deleted' => 1), 'event_id = :event_id', array(':event_id' => $this->event_id));
+    }
+
+    public function getAllergyEntryByName($name)
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->allergy->name === $name) {
+                return $entry;
+            }
+        }
+        return null;
     }
 }

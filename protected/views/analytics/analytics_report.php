@@ -39,11 +39,6 @@
 <body>
     <nav class="analytics-header flex-layout">
         <div class="title">Analytics</div>
-
-        <!-- exit oes and go back to previous page -->
-        <div id="js-exit-analytics">
-            <i class="oe-i remove-circle"></i>
-        </div>
     </nav>
     <main class="oe-analytics flex-layout flex-top cols-full">
         <div class="cols-3" style="position:sticky;top:0;z-index:5;">
@@ -81,15 +76,18 @@
             </div>
             <table>
                 <colgroup>
-                    <col style="width: 100px;">
-                    <col style="width: 100px">
-                    <col style="width: 200px;">
-                    <col style="width: 100px;">
-                    <col style="width: 50px;">
+                    <col style="width: 7%;">
+                    <col style="width: 7%">
+                    <col style="width: 14%;">
+                    <col style="width: 7%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 24%;">
                 </colgroup>
                 <thead>
                 <tr>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Hospital No</th>
+                    <th class="drill_down_patient_list text-left" style="vertical-align: center;">NHS No</th>
                     <th class="drill_down_patient_list text-left" style="vertical-align: center;">Name</th>
                     <th class="text-left" style="vertical-align: center;">DOB</th>
                     <th class="text-left" style="vertical-align: center;">Age</th>
@@ -107,9 +105,9 @@
     </main>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
-    <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_dataCenter.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('js/dashboard/OpenEyes.Dash.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_custom.js')?>"></script>

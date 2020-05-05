@@ -60,10 +60,11 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
             array('subspecialty_id, name', 'required'),
             array('subspecialty_id', 'length', 'max' => 10),
             array('name', 'length', 'max' => 255),
+            array('name', 'filter', 'filter' => 'htmlspecialchars'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, subspecialty_id, name', 'safe', 'on' => 'search'),
-            array('subspecialty_id, name', 'safe'),
+            array('subspecialty_id, name, display_order', 'safe'),
         );
     }
 
@@ -126,7 +127,7 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
             ->select('id, name')
             ->from('subspecialty_subsection')
             ->where('subspecialty_id = :id and active = 1', array(':id' => $subspecialtyId))
-            ->order('name ASC')
+            ->order('display_order ASC')
             ->queryAll();
 
         $data = array();
@@ -136,5 +137,10 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
         }
 
         return $data;
+    }
+
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
     }
 }
