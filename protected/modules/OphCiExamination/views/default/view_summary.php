@@ -43,7 +43,7 @@ if ($historyElement) {
             ?>
             <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
                 <div class="data-value not-recorded">
-                    No medications recorded during this encounter
+                    Nil recorded this examination
                 </div>
             <?php } else { ?>
                 <?php if ($current_eye_medications) { ?>
@@ -191,7 +191,7 @@ if ($historyElement) {
                 ?>
                 <?php if (!$current_systemic_medications && !$stopped_systemic_medications) { ?>
                     <div class="data-value not-recorded">
-                        No medications recorded during this encounter
+                        Nil recorded this examination
                     </div>
                 <?php } else { ?>
                     <?php if ($current_systemic_medications) { ?>
@@ -325,7 +325,7 @@ if ($historyElement) {
             <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
             if (!$entries) { ?>
                 <div class="data-value not-recorded">
-                    No family or social history recorded during this encounter
+                    Nil recorded this examination
                 </div>
             <?php } else { ?>
                 <div class="data-value">
@@ -352,7 +352,7 @@ if ($historyElement) {
         <div class="element-data full-width">
             <?php if (!$managementElement->comments) { ?>
             <div class="data-value not-recorded">
-                No management comments recorded during this encounter
+                Nil recorded this examination
             </div>
             <?php } else { ?>
                 <div class="data-value">
@@ -369,7 +369,7 @@ if ($historyElement) {
         <div class="element-data full-width">
             <?php if (!$followupElement->entries) { ?>
                 <div class="data-value not-recorded">
-                    No follow-up event recorded during this encounter
+                    Nil recorded this examination
                 </div>
             <?php } else { ?>
                 <div class="data-value restrict-data-shown">
@@ -406,6 +406,9 @@ if ($historyElement) {
                                         <a href="#vc-clinic-outcome">
                                             <i class="oe-i direction-down-circle small pad-right"></i>
                                             <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
+                                            <?php if ($ticket->priority) {?>
+                                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                                            <?php } ?>
                                         </a>
                                     </td>
                                 </tr>
