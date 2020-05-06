@@ -112,7 +112,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
-            if (isset($biometry->attributes["lens_display_name_$eyeLabel"])) {
                 $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
                 $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
                 $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
@@ -123,7 +122,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
                 $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
                 $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
-            }
         }
 
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
