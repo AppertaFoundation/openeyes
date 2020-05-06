@@ -43,7 +43,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             'biometry_report' => array(
                 self::BELONGS_TO,
                 'Element_OphCoDocument_Document',
-                'id',
+                'biometry_report_id',
             ),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
