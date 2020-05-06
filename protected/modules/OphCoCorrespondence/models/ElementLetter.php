@@ -534,29 +534,12 @@ class ElementLetter extends BaseEventTypeElement
         $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
         $criteria = new CDbCriteria();
-        $criteria->compare('firm_id', $firm->id);
-        $criteria->order = 'display_order asc';
-
-        foreach (LetterMacro::model()->findAll($criteria) as $macro) {
-            if (!in_array($macro->name, $macro_names)) {
-                $macros[$macro->id] = $macro_names[] = $macro->name;
-            }
-        }
-
+        $criteria->condition = 'firm_id = :firm_id OR site_id = :site_id';
+        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria = new CDbCriteria();
-            $criteria->compare('subspecialty_id', $firm->serviceSubspecialtyAssignment->subspecialty_id);
-            $criteria->order = 'display_order asc';
-
-            foreach (LetterMacro::model()->findAll($criteria) as $macro) {
-                if (!in_array($macro->name, $macro_names)) {
-                    $macros[$macro->id] = $macro_names[] = $macro->name;
-                }
-            }
+            $criteria->condition .= ' OR subspecialty_id = :subspecialty_id';
+            $criteria->params = array_merge($criteria->params, [':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id]);
         }
-
-        $criteria = new CDbCriteria();
-        $criteria->compare('site_id', Yii::app()->session['selected_site_id']);
         $criteria->order = 'display_order asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {
