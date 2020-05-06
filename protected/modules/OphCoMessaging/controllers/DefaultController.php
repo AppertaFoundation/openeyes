@@ -150,7 +150,7 @@ class DefaultController extends \BaseEventTypeController
             $this->redirectAfterAction();
         } else {
             $exam_api = new OphCoMessaging_API();
-            echo json_encode($exam_api->updateMessagesCount(\Yii::app()->user));
+            $this->renderJSON($exam_api->updateMessagesCount(\Yii::app()->user));
         }
     }
 

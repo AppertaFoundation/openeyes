@@ -178,10 +178,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     }
 
     public function deleteRelatedTicket($ticket) {
-        $queue_assignment = TicketQueueAssignment::model()->find('ticket_id=:ticket_id', [':ticket_id' => $ticket->id]);
-        if ($queue_assignment) {
-            $queue_assignment->delete();
-            $ticket->delete();
-        }
+        TicketQueueAssignment::model()->deleteAllByAttributes(array('ticket_id' => $ticket->id));
+        $ticket->delete();
     }
 }

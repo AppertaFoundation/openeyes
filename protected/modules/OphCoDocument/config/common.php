@@ -29,7 +29,8 @@ return array(
                 'mp4'   => 'video/mp4',
                 'mpeg4' => 'video/mp4',
                 'ogg'   => 'video/ogg',
-        'mov'   => 'video/quicktime',
+                'webm'  => 'video/webm',
+                'mov'   => 'video/quicktime'
             )
         ),
         'admin_structure' => array(

@@ -65,7 +65,7 @@ class PrescriptionCommonController extends DefaultController
                 ];
             }
         }
-        echo CJSON::encode($drugs);
+        $this->renderJSON($drugs);
     }
 
     /**
@@ -94,7 +94,7 @@ class PrescriptionCommonController extends DefaultController
             ++$key;
         }
 
-        echo json_encode($returnData);
+        $this->renderJSON($returnData);
     }
 
     /**

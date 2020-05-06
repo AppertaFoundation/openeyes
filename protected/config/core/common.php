@@ -279,8 +279,8 @@ return array(
         'ab_testing' => false,
         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
         // This is used in contact page
-        'ldap_server' => '',
-        'ldap_port' => '',
+        'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
+        'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
         'ldap_admin_dn' => '',
         'ldap_password' => '',
         'ldap_dn' => '',
@@ -294,7 +294,7 @@ return array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => false,
         'ldap_update_email' => true,
-        'environment' => getenv('OE_MODE') == "LIVE" ? 'live' : 'dev',
+        'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -662,7 +662,7 @@ return array(
       'worklist_dashboard_future_days' => 0,
       // page size of worklists - recommended to be very large by default, as paging is not generally needed here
       'worklist_default_pagination_size' => 1000,
-      'tech_support_provider' => !empty(trim(getenv('OE_TECH_SUPPORT_PROVIDER'))) ? getenv('OE_TECH_SUPPORT_PROVIDER') :  '',
-      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  ''
+      'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
+      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org'
     ),
 );
