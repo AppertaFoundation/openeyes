@@ -395,7 +395,7 @@ if ($historyElement) {
                                     <td><?= $row_count === 0 ? '' : 'AND' ?></td>
                                     <td><?= $entry->getInfos(); ?></td>
                                 </tr>
-                            <?php $row_count++; ?>
+                                <?php $row_count++; ?>
                             <?php }
                             foreach ($ticket_entries as $entry) { ?>
                                 <tr>
