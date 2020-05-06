@@ -308,7 +308,6 @@ class DefaultController extends \BaseEventTypeController
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
                 models\Element_OphCiExamination_Management::class,
-                models\Element_OphCiExamination_ClinicOutcome::class,
                 models\OCT::class,
             ), true);
         });
