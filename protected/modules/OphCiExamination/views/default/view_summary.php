@@ -383,6 +383,8 @@ if ($historyElement) {
                             $api = Yii::app()->moduleAPI->get('PatientTicketing');
                             $ticket = $api->getTicketForEvent($this->event);
                             $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
+                            $ticket_entries = [];
+                            $non_ticket_entries = [];
                             foreach ($followupElement->entries as $entry) {
                                 if ($entry->isPatientTicket() && $ticket) {
                                     $ticket_entries[] = $entry;
