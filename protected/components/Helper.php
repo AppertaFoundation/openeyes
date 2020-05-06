@@ -26,7 +26,7 @@ class Helper
     const NHS_DATE_FORMAT_JS = 'd M yy';
     const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
     const NHS_DATE_EXAMPLE = '5 Dec 2011';
-    const SHORT_DATE_FORMAT = 'd/m/Y';
+    const SHORT_DATE_FORMAT = 'd/m/y';
     const EPOCHDAY = 86400000;
     const EPOCHWEEK = 604800000;
     const EPOCHMONTH = 2629743000;
