@@ -99,11 +99,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             {
                 name: "Cannot Lie Flat",
                 selector: "select.pcr_lie_flat",
-                "function": function (is_present) {
-                    if (is_present) {
-                        $('select.pcr_lie_flat').val("N");
+                "function": function (is_present, selector, is_checked, req_risk_value = undefined) {
+                    if (req_risk_value) {
+                        HistoryRisksController.prototype.editPcrRiskValues(is_present, selector, req_risk_value);
+                    } else if (is_present) {
+                        $(selector).val("N");
+                    } else if (is_checked) {
+                        $(selector).val("Y");
                     } else {
-                        $('select.pcr_lie_flat').val("Y");
+                        $(selector).val("NK");
+                    }
+                }
+            },
+            {
+                name: "Alpha blockers",
+                selector: "select.pcrrisk_arb",
+                function: function (is_present, selector, is_checked, req_risk_value = undefined) {
+                    if (req_risk_value) {
+                        HistoryRisksController.prototype.editPcrRiskValues(is_present, selector, req_risk_value);
+                    } else if (is_present) {
+                        $(selector).val("Y");
+                    } else if (is_checked){
+                        $(selector).val("N");
+                    } else {
+                        $(selector).val("NK");
                     }
                 }
             }]
@@ -135,6 +154,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$table.on('change', 'input[type=radio]', function () {
             controller.updateNoRisksState();
+            controller.setPcrRisk($(this));
         });
 
         this.$popupSelector.on('click', '.js-add-select-search', function (e) {
@@ -168,20 +188,50 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    HistoryRisksController.prototype.setPcrRisk = function () {
+    HistoryRisksController.prototype.setPcrRisk = function ($req_risk_input = undefined) {
         var controller = this;
-
-        let present_risks = controller.$table.find('tbody tr .risk-display').map(function () {
-            return $(this).text().trim();
+        let is_present;
+        let is_checked;
+        let not_checked_risks = [];
+        let present_risks = [];
+        controller.$table.find('tbody tr .risk-display').each(function () {
+            if ($(this).parents('tr').find('.risks-read-only').length) {
+                let checked_value = $(this).parents('tr').find('input[type=radio]:checked').val();
+                if (checked_value === controller.riskYesValue) {
+                    present_risks.push($(this).text().trim());
+                } else if (checked_value === controller.riskNotCheckedValue) {
+                    not_checked_risks.push($(this).text().trim());
+                }
+            } else {
+                present_risks.push($(this).text().trim());
+            }
         }).get();
 
-        for (let idx in controller.pcrRiskLinks) {
-            let pcr_link = controller.pcrRiskLinks[idx];
-
-            if (typeof pcr_link.function === 'function') {
-                pcr_link.function($.inArray(pcr_link.name, present_risks) !== -1);
+        if ($req_risk_input) {
+            let req_risk_value = $req_risk_input.val();
+            let req_risk_display_name = $req_risk_input.parents('tr').find('.risk-display').data('label');
+            let pcr_link = controller.pcrRiskLinks.find(function (riskLink) {
+                return riskLink.name === req_risk_display_name && typeof riskLink.function === 'function';
+            });
+            if (pcr_link) {
+                is_present = pcr_link.name === req_risk_display_name;
+                pcr_link.function(is_present, pcr_link.selector, true, req_risk_value);
             }
+        } else { // non-required risk input
+            controller.pcrRiskLinks.forEach(function (pcr_link) {
+               is_present = $.inArray(pcr_link.name, present_risks) !== -1;
+               is_checked = $.inArray(pcr_link.name, not_checked_risks) === -1;
+                if (typeof pcr_link.function === 'function') {
+                    pcr_link.function(is_present, pcr_link.selector, is_checked);
+                }
+            });
         }
+
+    };
+
+    HistoryRisksController.prototype.editPcrRiskValues = function (is_present, selector, req_risk_value) {
+        let values_converted = {'-9': 'NK', '1': 'Y', '0': 'N'};
+        $(selector).val(values_converted[req_risk_value]);
     };
 
 
