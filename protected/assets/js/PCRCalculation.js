@@ -6,13 +6,6 @@
  */
 function getPcrContainer(ev) {
     var side = $(ev.target).closest('.js-element-eye').attr('data-side');
-
-    //for future debugging
-    if (!side) {
-        console.log(ev);
-        console.error('.js-element-eye or it\'s data attribute not found');
-    }
-
     return $('.js-pcr-' + side.toLowerCase()).parent();
 }
 
