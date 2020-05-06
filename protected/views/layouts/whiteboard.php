@@ -25,7 +25,7 @@
         <?php $this->renderPartial('//base/head/_assets'); ?>
     </head>
     <body class="open-eyes oe-grid">
-        <?php $this->renderPartial('//base/_debug'); ?>
+        <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
         <div class="openeyes-brand">
             <?php $this->renderPartial('//base/_brand'); ?>

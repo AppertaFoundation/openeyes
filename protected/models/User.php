@@ -39,6 +39,7 @@ class User extends BaseActiveRecordVersioned
      * @var string
      */
     public $password_repeat;
+    public $password_hashed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -97,13 +98,14 @@ class User extends BaseActiveRecordVersioned
                             'message' => 'Only letters, numbers and underscores are allowed for usernames.',
                         ),
                         array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array('username, first_name, last_name', 'length', 'max' => 40),
                         array(
                             'password',
                             'length',
                             'min' => 5,
                             'message' => 'Passwords must be at least 6 characters long.',
                         ),
+                        array('password', 'length', 'max' => 255),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -122,13 +124,14 @@ class User extends BaseActiveRecordVersioned
                             'message' => 'Only letters, numbers and underscores are allowed for usernames.',
                         ),
                         array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
+                        array('username, first_name, last_name', 'length', 'max' => 40),
                         array(
                             'password',
                             'length',
                             'min' => 5,
                             'message' => 'Passwords must be at least 6 characters long.',
                         ),
+                        array('password', 'length', 'max' => 255),
                         array('email', 'length', 'max' => 80),
                         array('email', 'email'),
                         array('salt', 'length', 'max' => 10),
@@ -273,41 +276,16 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * Saves or updates a db record and creates the salt for a new record of
-     *    authentication type 'basic'.
-     *
-     * @return bool
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
-    {
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
-            /*
-             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-             */
-            if ($this->getIsNewRecord() && !$this->salt) {
-                $salt = '';
-                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-                for ($i = 0; $i < 10; ++$i) {
-                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
-                }
-
-                $this->salt = $salt;
-            }
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-    }
-
-    /**
      * Hashes the user password for insertion into the db.
      */
     protected function afterValidate()
     {
         parent::afterValidate();
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
-            $this->password = $this->hashPassword($this->password, $this->salt);
+        if (!$this->password_hashed) {
+            $this->salt = null;
+            $this->password = $this->hashPassword($this->password, null);
+            $this->password_hashed = true;
         }
     }
 
@@ -321,6 +299,9 @@ class User extends BaseActiveRecordVersioned
      */
     public function hashPassword($password, $salt)
     {
+        if (!$salt) {
+            return password_hash($password, PASSWORD_BCRYPT);
+        }
         return md5($salt . $password);
     }
 
@@ -331,12 +312,28 @@ class User extends BaseActiveRecordVersioned
      * else return false.
      *
      * @param string $password
+     * @throws Exception
      *
      * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->hashPassword($password, $this->salt) === $this->password;
+        if (!$this->salt) {
+            return password_verify($password, $this->password);
+        }
+        if ($this->hashPassword($password, $this->salt) === $this->password) {
+            // Regenerate the hash using the new method.
+            $this->password = $password;
+            $this->password_repeat = $password;
+            $this->password_hashed = false;
+            if (!$this->save()) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}");
+                return false;
+            }
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
+            return password_verify($password, $this->password);
+        }
+        return false;
     }
 
     /**
@@ -496,13 +493,14 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
+        
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
         }
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
             }

@@ -70,6 +70,7 @@ class Firm extends BaseActiveRecordVersioned
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
             array('name', 'length', 'max' => 40),
+            array('name', 'filter', 'filter' => 'htmlspecialchars'),
             array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
