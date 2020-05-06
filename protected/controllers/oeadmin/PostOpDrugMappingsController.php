@@ -195,7 +195,7 @@ class PostOpDrugMappingsController extends BaseAdminController
                     'id' => $resultRow->id,
                 );
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 }

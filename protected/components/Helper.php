@@ -533,8 +533,9 @@ class Helper
      * @return int|string
      */
     public static function return_bytes($val) {
-        $val = (int)trim($val);
+        $val = trim($val);
         $last = strtolower($val[strlen($val)-1]);
+        $val = (int) $val;
         switch($last) {
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824

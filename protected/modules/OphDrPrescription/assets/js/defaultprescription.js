@@ -231,16 +231,6 @@ function addSet(set_id) {
       $('#prescription_items').find('tbody').append(data);
         fpTenPrintOption();
     });
-  } else {
-    $.getJSON(baseUrl + "/OphDrPrescription/PrescriptionCommon/SetFormAdmin", {
-      key: getNextKey(),
-      set_id: set_id
-    }, function (data) {
-      $('#set_name').val(data.drugsetName);
-      $('#subspecialty_id').val(data.drugsetSubspecialtyId);
-      clear_prescription();
-      $('#prescription_items').find('tbody').append(data.tableRows);
-    });
   }
 }
 

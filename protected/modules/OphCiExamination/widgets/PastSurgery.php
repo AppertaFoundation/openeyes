@@ -36,7 +36,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function getRequiredOperation()
     {
         $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-        return $exam_api->getRequiredSurgicalHistory($this->patient);
+        return $exam_api->getRequiredOphthalmicSurgicalHistory($this->patient);
     }
 
     public function getMissingRequiredOperation()
@@ -127,7 +127,9 @@ class PastSurgery extends \BaseEventElementWidget
                 return array_key_exists('object', $op) ?
                     $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($op);
-            }, $this->getMergedOperations());
+            },
+            $this->getMergedOperations()
+        );
         return implode($this->popupListSeparator, $res);
     }
 
@@ -196,7 +198,9 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".operation.$row.had_operation", $_POST)
+            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+            $_POST
+        )
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }
