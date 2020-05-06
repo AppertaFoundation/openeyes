@@ -47,16 +47,16 @@
                     <h3>Select options</h3>
                     <ul class="oescape-icon-btns">
                         <li class="icon-btn">
-                            <a href="allsubspecialties" id="js-all-specialty-tab" class="active" data-specialty="All">All</a>
+                            <a href="#" data-link="allsubspecialties" id="js-all-specialty-tab" class="active" data-specialty="All">All</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="cataract" id="js-ca-specialty-tab" class="active" data-specialty="Cataract">CA</a>
+                            <a href="#" data-link="cataract" id="js-ca-specialty-tab" class="active" data-specialty="Cataract">CA</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="glaucoma" id="js-gl-specialty-tab" class="active" data-specialty="Glaucoma">GL</a>
+                            <a href="#" data-link="glaucoma" id="js-gl-specialty-tab" class="active" data-specialty="Glaucoma">GL</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="medicalretina" id="js-mr-specialty-tab" class="active" data-specialty="Medical Retina">MR</a>
+                            <a href="#" data-link="medicalretina" id="js-mr-specialty-tab" class="active" data-specialty="Medical Retina">MR</a>
                         </li>
                     </ul>
                 </div>
