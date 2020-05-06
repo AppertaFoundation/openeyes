@@ -373,7 +373,7 @@ if ($historyElement) {
                 </div>
             <?php } else { ?>
                 <div class="data-value restrict-data-shown">
-                    <div class="tile-data-overflow">
+                    <div class="tile-data-overflow restrict-data-content">
                         <table class="last-left">
                             <colgroup>
                                 <col class="cols-2">
