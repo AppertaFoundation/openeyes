@@ -11,9 +11,9 @@ var analytics_init = (function () {
 
 			$(this).addClass('selected');
 
-			$('.icon-btn a').not(this).removeClass('selected');
+			$('.select-analytics .oescape-icon-btns a').not(this).removeClass('selected');
 
-			var target = this.href;
+			var target = $(this).data('link');
 
 			analytics_dataCenter.ajax.setAjaxURL(target);
 
