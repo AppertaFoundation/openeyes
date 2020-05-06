@@ -39,10 +39,10 @@ $cataract_card_list = array(
     ),
     'Lens' => array(
         'data' => array(
-            'content' => ((float) $data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power,
-            'extra_data' => $data->iol_model
+            'content' => $data->iol_model ?((float) $data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power : '',
+            'extra_data' => $data->iol_model ? ($data->iol_model
                 . ' '
-                . ($data->iol_model !== 'Unknown' ? $aconst : null),
+                . ($data->iol_model !== 'Unknown' ? $aconst : null)) : 'Lens not selected',
         )
     ),
     'Anaesthesia' => array(
@@ -85,10 +85,10 @@ $cataract_card_list = array(
     ),
     'Predicted Outcome' => array(
         'data' => array(
-            'content' => $data->predicted_refractive_outcome !== 'Unknown' ?
+            'content' => $data->iol_model ? ($data->predicted_refractive_outcome !== 'Unknown' ?
                 $data->predicted_refractive_outcome . ' D' :
-                $data->predicted_refractive_outcome,
-            'extra_data' => $data->formula,
+                $data->predicted_refractive_outcome) : '',
+            'extra_data' => $data->iol_model ? $data->formula : 'Lens not selected',
         )
     ),
     'Equipment' => array(
@@ -184,7 +184,6 @@ $other_card_list = array(
 <main class="oe-whiteboard">
     <div class="wb3">
         <?php
-        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             foreach ($cataract_card_list as $title => $card) {
                 $this->widget('WBCard', array(
                     'title' => $title,
@@ -194,17 +193,6 @@ $other_card_list = array(
                     'event_id' => $data->event_id,
                 ));
             }
-        } else {
-            foreach ($other_card_list as $title => $card) {
-                $this->widget('WBCard', array(
-                    'title' => $title,
-                    'data' => $card['data'],
-                    'colour' => isset($card['colour']) ? $card['colour'] : null,
-                    'editable' => isset($card['editable']) ? $card['editable'] : false,
-                    'event_id' => $data->event_id,
-                ));
-            }
-        }
         if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             $this->widget('EDCard', array(
                 'title' => 'Axis',
