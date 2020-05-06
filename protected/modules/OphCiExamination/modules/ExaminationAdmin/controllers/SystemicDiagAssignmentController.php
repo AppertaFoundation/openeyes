@@ -26,13 +26,6 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet';
 
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
-
     /**
      * Lists all models.
      */

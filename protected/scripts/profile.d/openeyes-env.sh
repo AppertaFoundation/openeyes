@@ -61,3 +61,6 @@
 ## Will turn on automatic daily import of GP/Practice/CCG data (UK Only).
 ## Options are england, scotland, ni
 # export OE_HSCIC_REGION="england"
+
+## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
+# export OE_LDAP_SERVER='ldap.example.com'
