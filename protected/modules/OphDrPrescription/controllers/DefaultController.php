@@ -316,7 +316,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 

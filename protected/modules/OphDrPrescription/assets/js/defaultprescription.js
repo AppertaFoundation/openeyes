@@ -138,7 +138,7 @@ function processSetEntries(set_id)
         set_id: set_id
     }, function (data) {
         let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
-        allergicDrugsController.addEntries(JSON.parse(data));
+        allergicDrugsController.addEntries(data);
         let allergicDrugs = allergicDrugsController.getAllergicDrugs();
         if (allergicDrugs) {
             let dialog = new OpenEyes.UI.Dialog.Confirm({

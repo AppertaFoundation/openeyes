@@ -4,6 +4,11 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
 <script type="text/javascript">
   $.getScript('<?=$jsPath?>', function(){
     //Map the elements
+    let $historyRisksElement = $('#OEModule_OphCiExamination_models_HistoryRisks_element');
+    if ($historyRisksElement.length) {
+        let controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
+        controller.setPcrRisk();
+    }
     mapExaminationToPcr();
     //Make the initial calculations
     var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
@@ -89,7 +94,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
             'class' => 'pcr_doctor_grade',
         ],
         'can_lie_flat' => [
-            'options' => ['N' => 'No', 'Y' => 'Yes'],
+            'options' => ['NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'],
             'class' => 'pcr_lie_flat',
         ],
     ];

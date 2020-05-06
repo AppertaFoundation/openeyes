@@ -140,6 +140,6 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
             $transaction->rollback();
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 }
