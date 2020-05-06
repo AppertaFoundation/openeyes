@@ -60,6 +60,7 @@ class SubspecialtySubsection extends BaseActiveRecordVersioned
             array('subspecialty_id, name', 'required'),
             array('subspecialty_id', 'length', 'max' => 10),
             array('name', 'length', 'max' => 255),
+            array('name', 'filter', 'filter' => 'htmlspecialchars'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, subspecialty_id, name', 'safe', 'on' => 'search'),

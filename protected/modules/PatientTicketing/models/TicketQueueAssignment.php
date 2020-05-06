@@ -144,7 +144,7 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
             preg_match_all('/\[pt_([a-z_]+)\]/is', $text, $m);
 
             foreach ($m[1] as $el) {
-                $text = preg_replace('/\[pt_'.$el.'\]/is', @$by_id[$el] ? $by_id[$el] : 'Unknown', $text);
+                $text = preg_replace('/\[pt_'.$el.'\]/is', @$by_id[$el] ? $by_id[$el] : 'Not recorded', $text);
             }
         }
         return $text;

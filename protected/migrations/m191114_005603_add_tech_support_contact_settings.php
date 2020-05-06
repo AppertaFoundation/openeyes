@@ -10,7 +10,6 @@ class m191114_005603_add_tech_support_contact_settings extends OEMigration
                 'field_type_id' => 4,
                 'key' => 'tech_support_url',
                 'name' => 'Technical Support URL',
-                'default_value' => 'Apperta Foundation',
             )
         );
 
@@ -20,7 +19,6 @@ class m191114_005603_add_tech_support_contact_settings extends OEMigration
                 'field_type_id' => 4,
                 'key' => 'tech_support_provider',
                 'name' => 'Technical Support provider',
-                'default_value' => 'https://apperta.org.uk',
             )
         );
     }

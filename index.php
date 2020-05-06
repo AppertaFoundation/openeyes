@@ -37,7 +37,7 @@ foreach (array($common_config, $local_common_config) as $configfile) {
     }
 }
 
-if (isset ($environment) && $environment === 'dev') {
+if ((getenv('OE_MODE') && strtolower(getenv('OE_MODE')) !== 'live') || (isset ($environment) && $environment === 'dev')) {
     define('YII_DEBUG', true);
 }
 
