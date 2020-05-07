@@ -186,7 +186,6 @@ $other_card_list = array(
         <?php
         if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             foreach ($cataract_card_list as $title => $card) {
-
                 $this->widget('WBCard', array(
                     'title' => $title,
                     'data' => $card['data'],
