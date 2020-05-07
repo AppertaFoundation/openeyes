@@ -1,10 +1,10 @@
 <?php
-    /**
-     * @var $booking_id int
-     * @var $cataract_opnote ElementType
-     */
-    $complexity_colour = 'green';
-    $aconst = ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst);
+/**
+ * @var $booking_id int
+ * @var $cataract_opnote ElementType
+ */
+$complexity_colour = 'green';
+$aconst = ((float)$data->aconst === (int)$data->aconst ? (float)$data->aconst . '.0' : (float)$data->aconst);
 
 switch ($data->complexity) {
     case Element_OphTrOperationbooking_Operation::COMPLEXITY_LOW:
@@ -39,7 +39,7 @@ $cataract_card_list = array(
     ),
     'Lens' => array(
         'data' => array(
-            'content' => $data->iol_model ?((float) $data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power : '',
+            'content' => $data->iol_model ? ((float)$data->iol_power >= 0.0 && !in_array($data->iol_power, ['Unknown', 'None']) ? '+' : null) . $data->iol_power : '',
             'extra_data' => $data->iol_model ? ($data->iol_model
                 . ' '
                 . ($data->iol_model !== 'Unknown' ? $aconst : null)) : 'Lens not selected',
@@ -69,11 +69,11 @@ $cataract_card_list = array(
             )
         )
     ),
-    'Biometry' =>array(
+    'Biometry' => array(
         'data' => array(
             array(
                 'content' => $data->axial_length,
-                'small_data' => $data->axial_length !== 'Unknown' && isset($data->axial_length)  ? 'mm' : null,
+                'small_data' => $data->axial_length !== 'Unknown' && isset($data->axial_length) ? 'mm' : null,
                 'extra_data' => isset($data->axial_length) ? 'Axial Length' : null,
             ),
             array(
@@ -111,7 +111,7 @@ $other_card_list = array(
     ),
     (int)$data->eye_id === Eye::BOTH ? 'Procedure (1st)' : 'Procedure' => array(
         'data' => array(
-            'content' =>  (int)$data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
+            'content' => (int)$data->eye_id === Eye::BOTH ? 'Left' : $data->eye->name,
             'extra_data' => $data->procedure,
             'deleted' => $is_deleted,
         ),
@@ -179,12 +179,14 @@ $other_card_list = array(
 <header class="oe-header">
     <?php $this->renderPartial($this->getHeaderTemplate(), array(
         'data' => $data
-    ));?>
+    )); ?>
 </header>
 <main class="oe-whiteboard">
     <div class="wb3">
         <?php
+        if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             foreach ($cataract_card_list as $title => $card) {
+
                 $this->widget('WBCard', array(
                     'title' => $title,
                     'data' => $card['data'],
@@ -193,6 +195,17 @@ $other_card_list = array(
                     'event_id' => $data->event_id,
                 ));
             }
+        } else {
+            foreach ($other_card_list as $title => $card) {
+                $this->widget('WBCard', array(
+                    'title' => $title,
+                    'data' => $card['data'],
+                    'colour' => isset($card['colour']) ? $card['colour'] : null,
+                    'editable' => isset($card['editable']) ? $card['editable'] : false,
+                    'event_id' => $data->event_id,
+                ));
+            }
+        }
         if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             $this->widget('EDCard', array(
                 'title' => 'Axis',
@@ -210,7 +223,7 @@ $other_card_list = array(
             ));
         }
         $this->widget('RiskCard', array(
-                'data' => $data,
+            'data' => $data,
         )); ?>
     </div>
     <!--
