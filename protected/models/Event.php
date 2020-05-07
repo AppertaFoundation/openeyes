@@ -133,7 +133,6 @@ class Event extends BaseActiveRecordVersioned
         );
     }
 
-
     /**
      * Make sure event date is set.
      */
