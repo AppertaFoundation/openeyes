@@ -1,14 +1,15 @@
 language: generic
 dist: bionic
 
+
+before_script:
+    - echo 'Europe/London' | sudo tee /etc/timezone
+    - sudo dpkg-reconfigure --frontend noninteractive tzdata
+    - sudo ntpdate ntp.ubuntu.com
+
 services:
   - docker
   - xvfb
-
- before_script:
-      - echo 'Europe/London' | sudo tee /etc/timezone
-      - sudo dpkg-reconfigure --frontend noninteractive tzdata
-      - sudo ntpdate ntp.ubuntu.com
 
 jobs:
   include:
