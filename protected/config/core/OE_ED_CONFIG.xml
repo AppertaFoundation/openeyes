@@ -2094,7 +2094,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Surgical History</PRIMARY_TERM>
+          <PRIMARY_TERM>Ophthalmic Surgical History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
@@ -2104,6 +2104,18 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PastSurgery</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Systemic Surgical History</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Past Surgical History</TERM>
+            <TERM>Past Surgery</TERM>
+            <TERM>Previous Surgery</TERM>
+            <TERM>Previous Systemic Surgery</TERM>
+            <TERM>POH</TERM>
+            <TERM>SSH</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicSurgery</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>CVI Status</PRIMARY_TERM>

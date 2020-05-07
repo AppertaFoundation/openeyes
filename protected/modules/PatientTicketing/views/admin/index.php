@@ -55,3 +55,4 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
     <div id="chart" class="column large-8 end orgChart" style="color:white;overflow-y: auto;"></div>
 </form>
 </div>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', false, -1); ?>"></script>

@@ -40,7 +40,7 @@ class AutoCompleteController extends BaseModuleController
             $values[] = $disorder->term;
         }
 
-        echo CJSON::encode($values);
+        $this->renderJSON($values);
     }
 
     /**
@@ -73,7 +73,7 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
 
         sort($values);
 
-        echo CJSON::encode($values);
+        $this->renderJSON($values);
     }
 
     /***
@@ -103,7 +103,7 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
             $options[] = $op->operation;
         }
 
-        echo CJSON::encode($options);
+        $this->renderJSON($options);
     }
 
     /**
@@ -121,6 +121,6 @@ WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . _AUTOCOMPLETE_L
             $values[] = $allergy->name;
         }
 
-        echo CJSON::encode($values);
+        $this->renderJSON($values);
     }
 }

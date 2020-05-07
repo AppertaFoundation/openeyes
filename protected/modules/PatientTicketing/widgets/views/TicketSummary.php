@@ -19,7 +19,8 @@ $display_queue = $ticket->getDisplayQueueAssignment();
         </div>
     </div>
 <?php } ?>
-
+</td>
+<td>
 <div class="row">
     <div class="data-value">
         <textarea class="noresize cols-full" readonly cols="35" rows="5"><?php echo $display_queue->notes; ?></textarea>

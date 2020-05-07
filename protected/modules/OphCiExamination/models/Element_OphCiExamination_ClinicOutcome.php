@@ -80,8 +80,8 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     {
         return array(
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\ClinicOutcomeEntry', 'element_id'),
         );
     }
@@ -178,10 +178,17 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     }
 
     public function deleteRelatedTicket($ticket) {
-        $queue_assignment = TicketQueueAssignment::model()->find('ticket_id=:ticket_id', [':ticket_id' => $ticket->id]);
-        if ($queue_assignment) {
-            $queue_assignment->delete();
-            $ticket->delete();
-        }
+        TicketQueueAssignment::model()->deleteAllByAttributes(array('ticket_id' => $ticket->id));
+        $ticket->delete();
+    }
+
+    public function getTileSize($action)
+    {
+        return $action === 'view' || $action === 'createImage' ? 1 : null;
+    }
+
+    public function getViewTitle()
+    {
+        return "Follow up";
     }
 }
