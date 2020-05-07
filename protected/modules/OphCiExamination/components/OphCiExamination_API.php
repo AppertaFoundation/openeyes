@@ -2484,23 +2484,30 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getCataractSurgicalManagementAsText(\Patient $patient, $use_context = false)
     {
-        $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
         $str = '';
         $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
             $patient,
             $use_context);
 
         if ($element) {
-            $end = '.';
-            foreach (['right', 'left'] as $side) {
-                if ($element->{$side . '_eye_id'} === $first_eye_id) {
-                    $str = "Listed for {$side} cataract surgery";
-                } else if ($element->eye_id === (string)\Eye::BOTH) {
-                    $end = " followed by {$side} cataract surgery.";
+            if ($element->eye_id === (string) \Eye::BOTH) {
+                $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+                if ($element->right_eye_id === $first_eye_id) {
+                    $first_eye = 'right';
+                    $second_eye = 'left';
+                } else {
+                    $first_eye = 'left';
+                    $second_eye = 'right';
                 }
+
+                $str = "Listed for {$first_eye} cataract surgery followed by {$second_eye} cataract surgery.";
+            } else {
+                $str = "Listed for {$element->eye->name} cataract surgery.";
             }
-            $str .= $end . PHP_EOL;
+
+            $str .= PHP_EOL;
         }
+
         return $str;
     }
 
