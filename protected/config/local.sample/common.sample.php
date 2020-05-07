@@ -38,9 +38,6 @@ $config = array(
             'username' => $db['username'],
             'password' => $db['password'],
         ),
-        // 'session' => array(
-        //     'timeout' => 86400,
-        // ),
         'mailer' => array(
             // Setting the mailer mode to null will suppress email
             //'mode' => null
@@ -127,10 +124,8 @@ $config = array(
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
-        'auth_source' => 'BASIC',    // BASIC or LDAP
+        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
         // This is used in contact page
-        'ldap_server' => 'ldap.example.com',
-        //'ldap_port' => '',
         'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => '',
         'ldap_dn' => 'CN=Users,dc=example,dc=com',

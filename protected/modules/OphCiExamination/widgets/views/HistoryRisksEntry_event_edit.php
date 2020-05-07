@@ -125,6 +125,6 @@ if (!isset($values)) {
             <i class="oe-i trash"></i>
         </td>
     <?php else : ?>
-        <td>read only</td>
+        <td class="risks-read-only">read only</td>
     <?php endif; ?>
 </tr>

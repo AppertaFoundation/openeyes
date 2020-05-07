@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,8 +18,8 @@
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-logo.svg';
 $settings = new SettingMetadata();
-$tech_support_provider = Yii::App()->params['tech_support_provider'] ?: $settings->getSetting('tech_support_provider') ;
-$tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSetting('tech_support_url')
+$tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']): htmlspecialchars($settings->getSetting('tech_support_provider'));
+$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -27,21 +28,20 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSett
 </div>
 
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
-  <h3>OpenEyes <?=Yii::App()->params['oe_version']?></h3>
+  <h3>OpenEyes <?= Yii::App()->params['oe_version'] ?></h3>
 
   <div class="group">
     <h4>Theme</h4>
 
     <p>
-      <a href="#" id="js-theme-dark" class="theme-picker" data-theme="dark"
-         style="display: block; margin-bottom: 4px;">Dark theme (recommended)</a>
+      <a href="#" id="js-theme-dark" class="theme-picker" data-theme="dark" style="display: block; margin-bottom: 4px;">Dark theme (recommended)</a>
       <a href="#" id="js-theme-light" class="theme-picker" data-theme="light">Light theme (default)</a>
     </p>
   </div>
 
   <div class="group">
     <h4>Feedback</h4>
-        <p>Send us <a href="<?= Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
+    <p>Send us <a href="<?= Yii::app()->params['feedback_link'] ?>">feedback or suggestions.</a></p>
   </div>
 
   <div class="group">
@@ -49,17 +49,19 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSett
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
     <p>OpenEyes is maintained by the <a href="http://apperta.org/" target="_blank">Apperta Foundation</a>. find out more at <a href='https://openeyes.org.uk' target='blank'>openeyes.org.uk</a></p>
-    <p>Technical support is provided by <a href="<?= $tech_support_url?>" target="_blank"><?= $tech_support_provider ?></a>.</p>
+    <p>Technical support is provided by <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>.</p>
   </div>
 
   <div class="group">
     <h4>Support</h4>
     <p>
+    <span class="large-text"> Need Help?&nbsp;
         <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-          <span class="large-text"> Need Help?
-              <?= Yii::app()->params['helpdesk_phone'] ?: null ?>
-              <?= Yii::app()->params['helpdesk_email'] ?: null ?>
-          </span>
+          <?= Yii::app()->params['helpdesk_phone'] ? htmlspecialchars(Yii::app()->params['helpdesk_phone']): null ?>
+          <?= Yii::app()->params['helpdesk_email'] ? htmlspecialchars(Yii::app()->params['helpdesk_email']): null ?>
+          <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(". htmlspecialchars(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+        <?php elseif ($tech_support_provider) : ?>
+          <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
         <?php endif; ?>
     </p>
   </div>
@@ -74,11 +76,10 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSett
 </div>
 
 <script>
-
-  $(function () {
+  $(function() {
 
     // swap the stylesheet, when the user picks a different theme,
-    $('.theme-picker').click(function () {
+    $('.theme-picker').click(function() {
       var theme = $(this).data('theme');
 
       var $light_theme = $('link[data-theme="light"]');
@@ -90,19 +91,23 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ?: $settings->getSett
       $light_theme.prop('media', theme === 'light' ? '' : 'none');
       $dark_theme.prop('media', theme === 'dark' ? '' : 'none');
       // show all elements
-      setTimeout(function () {$('.open-eyes').show();}, 100);
+      setTimeout(function() {
+        $('.open-eyes').show();
+      }, 100);
 
-        <?php if (!Yii::app()->user->isGuest) : ?>
-      // Change the user's theme setting if they are logged in
-      $.ajax({
-        'type': 'GET',
-        'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
-        'data': {'display_theme': theme}
-      });
-        <?php endif; ?>
+      <?php if (!Yii::app()->user->isGuest) : ?>
+        // Change the user's theme setting if they are logged in
+        $.ajax({
+          'type': 'GET',
+          'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
+          'data': {
+            'display_theme': theme
+          }
+        });
+      <?php endif; ?>
     });
 
-    $('#support-info-link').click(function (e) {
+    $('#support-info-link').click(function(e) {
       e.preventDefault();
       new OpenEyes.UI.Dialog({
         url: this.href,
