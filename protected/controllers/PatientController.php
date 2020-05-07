@@ -2049,7 +2049,7 @@ class PatientController extends BaseController
         &$patient_identifiers
     ) {
 
-        if(!$this->checkForReferralFiles($referral, $patient)) {
+        if (!$this->checkForReferralFiles($referral, $patient)) {
             return false;
         }
         if (!$contact->save()) {
