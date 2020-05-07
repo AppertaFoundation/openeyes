@@ -2754,6 +2754,6 @@ class PatientController extends BaseController
                     join et_ophcodocument_document d on d.event_id = e2.id
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
                     where e2.deleted = 0 and p.id = $patient->id;");
-        return ($command->queryScalar() == 0);
+        return ($command->queryScalar() === 0);
     }
 }
