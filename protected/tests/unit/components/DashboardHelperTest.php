@@ -29,7 +29,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     {
         $user = $this->createMock('OEWebUser', array('checkAccess'));
         $test = new DashboardHelper(array('restricted' => 1), $user);
-        $this->setExpectedException('Exception', 'Invalid dashboard configuration: module, static or object definition required');
+        $this->expectException('Exception', 'Invalid dashboard configuration: module, static or object definition required');
 
         $test->render();
     }

@@ -36,7 +36,7 @@ class TrialPatientTest extends ActiveRecordTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_2');
-        $this->setExpectedException(CHttpException::class, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
+        $this->expectException(CHttpException::class, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
         $trialPatient->changeStatus(TrialPatientStatus::model()->find('code = "ACCEPTED"'));
         $this->assertEquals('SHORTLISTED', $trialPatient->status);
     }
@@ -66,7 +66,7 @@ class TrialPatientTest extends ActiveRecordTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_1');
-        $this->setExpectedException('Exception', 'You cannot change the treatment type until the trial is closed.');
+        $this->expectException('Exception', 'You cannot change the treatment type until the trial is closed.');
         $trialPatient->updateTreatmentType($this->treatment_type('treatment_type_intervention'));
     }
 

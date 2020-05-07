@@ -38,7 +38,7 @@ class ExampleSummaryTest extends CDbTestCase
 
     public function testRun_NoEpisodeId_ThrowsException()
     {
-        $this->setExpectedException('CHttpException', 'No episode id provided.');
+        $this->expectException('CHttpException', 'No episode id provided.');
         $this->widget->run();
     }
 
@@ -46,7 +46,7 @@ class ExampleSummaryTest extends CDbTestCase
     {
         $this->widget->episode_id = 99999999;
 
-        $this->setExpectedException('CHttpException', 'There is no episode of that id.');
+        $this->expectException('CHttpException', 'There is no episode of that id.');
         $this->widget->run();
     }
 

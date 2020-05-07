@@ -14,7 +14,7 @@
  */
 require_once __DIR__.DIRECTORY_SEPARATOR.'HelperTestNS.php';
 
-class HelperTest extends CTestCase
+class HelperTest extends PHPUnit_Framework_TestCase
 {
     private static $tz;
 
@@ -188,7 +188,7 @@ class HelperTest extends CTestCase
     public function testLineLimit($expected, $args, $exception = null)
     {
         if ($exception) {
-            $this->setExpectedException($exception);
+            $this->expectException($exception);
             forward_static_call_array(array('Helper', 'lineLimit'), $args);
         } else {
             $this->assertEquals($expected, forward_static_call_array(array('Helper', 'lineLimit'), $args));
