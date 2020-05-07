@@ -16,7 +16,7 @@
 
 <?php
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CataractSurgicalManagement.js", CClientScript::POS_HEAD);
-$primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAll();
+$primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAll('active = 1');
 ?>
 <div class="element-fields element-eyes">
     <?= \CHtml::activeHiddenField($element, 'eye_id', [ 'class' => 'sideField' ]); ?>
