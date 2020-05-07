@@ -406,8 +406,8 @@ if ($historyElement) {
                                         <a href="#vc-clinic-outcome">
                                             <i class="oe-i direction-down-circle small pad-right"></i>
                                             <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
-                                            <?php if ($ticket->priority) {?>
-                                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                                            <?php if ($ticket->priority) { ?>
+                                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name[0] ?></span> //gets first letter of word
                                             <?php } ?>
                                         </a>
                                     </td>
