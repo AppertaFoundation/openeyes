@@ -48,4 +48,13 @@ class OphCiExamination_Primary_Reason_For_Surgery extends \BaseEventTypeElement
             array('id, name', 'safe'),
         );
     }
+
+    public function defaultScope()
+    {
+        $table_alias = $this->getTableAlias(false, false);
+
+        return array(
+            'condition' => $table_alias . '.active = 1',
+        );
+    }
 }
