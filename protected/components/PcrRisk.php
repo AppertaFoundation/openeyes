@@ -283,19 +283,14 @@ class PcrRisk
             ->limit(1)
             ->queryRow();
 
-        if ($side == 'right') {
-            $eyedraw = json_decode($anteriorsegment['right_eyedraw'], true);
-            $as['nuclear_id'] = $anteriorsegment['right_nuclear_id'];
-            $as['cortical_id'] = $anteriorsegment['right_cortical_id'];
-            $as['phakodonesis'] = $anteriorsegment['right_phako'];
-        } elseif ($side == 'left') {
-            $eyedraw = json_decode($anteriorsegment['left_eyedraw'], true);
-            $as['nuclear_id'] = $anteriorsegment['left_nuclear_id'];
-            $as['cortical_id'] = $anteriorsegment['left_cortical_id'];
-            $as['phakodonesis'] = $anteriorsegment['left_phako'];
+        if ($anteriorsegment) {
+            $eyedraw = json_decode($anteriorsegment["{$side}_eyedraw"], true);
+            $as['nuclear_id'] = $anteriorsegment["{$side}_nuclear_id"];
+            $as['cortical_id'] = $anteriorsegment["{$side}_cortical_id"];
+            $as['phakodonesis'] = $anteriorsegment["{$side}_phako"];
         }
 
-        if (is_array($eyedraw)) {
+        if (isset($eyedraw) && is_array($eyedraw)) {
             foreach ($eyedraw as $val) {
                 if (!empty($val['pupilSize'])) {
                     $as['pupil_size'] = $val['pupilSize'];
@@ -315,7 +310,7 @@ class PcrRisk
             $as['pxf_phako_nk'] = 1;
         }
 
-        if ($as['nuclear_id'] == 4 || $as['cortical_id'] == 4) {
+        if (isset($as['nuclear_id']) && $as['nuclear_id'] === "4" || isset($as['cortical_id']) && $as['cortical_id'] === "4") {
             $as['brunescent_white_cataract'] = 'Y';
         }
 
@@ -346,10 +341,10 @@ class PcrRisk
 
             $axial_length = 0;
 
-            if (($side === 'right') && ($biometry_measurement['eye_id'] == 2 || $biometry_measurement['eye_id'] == 3)) {
-                $axial_length = $biometry_measurement['axial_length_right'];
-            } elseif (($side === 'left') && ($biometry_measurement['eye_id'] == 1 || $biometry_measurement['eye_id'] == 3)) {
-                $axial_length = $biometry_measurement['axial_length_left'];
+            if ($biometry_measurement) {
+                if (($biometry_measurement['eye_id'] === (string) Eye::getIdFromName($side) || $biometry_measurement['eye_id'] === (string) Eye::BOTH)) {
+                    $axial_length = $biometry_measurement["axial_length_{$side}"];
+                }
             }
 
             if ($axial_length > 0) {

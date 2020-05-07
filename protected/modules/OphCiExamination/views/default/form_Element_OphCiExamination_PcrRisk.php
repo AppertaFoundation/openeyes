@@ -38,7 +38,9 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
         });
     }
 
-    pcr_init();
+    $(document).ready(function () {
+        pcr_init();
+    });
 </script>
 <div class="element-eyes element-fields flex-layout full-width">
     <?php
