@@ -3,8 +3,8 @@ dist: bionic
 
 
 before_script:
-    - echo 'Europe/London' | sudo tee /etc/timezone
-    - sudo dpkg-reconfigure --frontend noninteractive tzdata
+    - export TZ=Europe/London
+    - date
     - sudo ntpdate ntp.ubuntu.com
 
 services:
