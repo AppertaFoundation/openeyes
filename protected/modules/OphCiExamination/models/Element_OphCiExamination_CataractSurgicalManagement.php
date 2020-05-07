@@ -17,17 +17,44 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use Yii;
-
 /**
  * This is the model class for table "et_ophciexamination_cataractsurgicalmanagement".
  *
  * The followings are the available columns in table:
  *
- * @property string $id
+ * @property int $id
  * @property int $event_id
+ * @property int $eye_id
+ * @property float $left_target_postop_refraction
+ * @property float $right_target_postop_refraction
+ * @property int $left_correction_discussed
+ * @property int $right_correction_discussed
+ * @property int $left_refraction_category
+ * @property int $right_refraction_category
+ * @property int $left_eye_id
+ * @property int $right_eye_id
+ * @property int $left_reason_for_surgery_id
+ * @property int $right_reason_for_surgery_id
+ * @property string $left_notes
+ * @property string $right_notes
+ * @property int $left_guarded_prognosis
+ * @property int $right_guarded_prognosis
+ * @property int $last_modified_user_id
+ * @property \DateTime $last_modified_date
+ * @property int $created_user_id
+ * @property \DateTime $created_date
  *
  * The followings are the available model relations:
+ *
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \User $user
+ * @property \User $usermodified
+ * @property \Eye $eye
+ * @property OphCiExamination_CataractSurgicalManagement_Eye $leftEye
+ * @property OphCiExamination_CataractSurgicalManagement_Eye $rightEye
+ * @property OphCiExamination_Primary_Reason_For_Surgery $leftReasonForSurgery
+ * @property OphCiExamination_Primary_Reason_For_Surgery $rightReasonForSurgery
  */
 class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTypeElement
 {
@@ -86,12 +113,11 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'eventType' => [ self::BELONGS_TO, 'EventType', 'event_type_id' ],
-            'event' => [ self::BELONGS_TO, 'Event', 'event_id' ],
-            'user' => [ self::BELONGS_TO, 'User', 'created_user_id' ],
-            'usermodified' => [ self::BELONGS_TO, 'User', 'last_modified_user_id' ],
-            'eye' => [ self::BELONGS_TO, 'Eye', 'eye_id' ],
-
+            'eventType' => [self::BELONGS_TO, 'EventType', 'event_type_id'],
+            'event' => [self::BELONGS_TO, 'Event', 'event_id'],
+            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'eye' => [self::BELONGS_TO, 'Eye', 'eye_id'],
             'leftEye' => [
                 self::BELONGS_TO,
                 'OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye',
@@ -102,7 +128,6 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
                 'OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye',
                 'right_eye_id'
             ],
-
             'leftReasonForSurgery' => [
                 self::BELONGS_TO,
                 'OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery',
@@ -128,6 +153,10 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
             'right_target_postop_refraction' => 'Post op refractive target',
             'left_correction_discussed' => 'The post operative refractive target has been discussed with the patient',
             'right_correction_discussed' => 'The post operative refractive target has been discussed with the patient',
+            'right_guarded_prognosis' => 'Guarded Prognosis',
+            'left_guarded_prognosis' => 'Guarded Prognosis',
+            'left_reason_for_surgery_id' => 'Reason For Surgery',
+            'right_reason_for_surgery_id' => 'Reason For Surgery',
             'leftReasonForSurgery' => 'Primary reason for cataract surgery',
             'rightReasonForSurgery' => 'Primary reason for cataract surgery',
         ];
@@ -153,12 +182,12 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         $is_zero = $raw_target_refraction === '0.00';
         $index = 0;
         $output = '';
-        if (!in_array($raw_target_refraction{$index}, ['-', '+']) && !$is_zero ) {
+        if (!in_array($raw_target_refraction{$index}, ['-', '+']) && !$is_zero) {
             $output .= '+';
         } else if (in_array($raw_target_refraction{$index}, ['-', '+'])) {
             $output .= $raw_target_refraction{$index++};
         }
-        if ($raw_target_refraction{$index+1} === '.') {
+        if ($raw_target_refraction{$index + 1} === '.') {
             $output .= '0';
         }
         while ($index < strlen($raw_target_refraction)) {
@@ -170,7 +199,8 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         return $output;
     }
 
-    public function getCorrectionDiscussed($side) {
+    public function getCorrectionDiscussed($side)
+    {
         $discussed_attribute = $side . '_correction_discussed';
         if (isset($this->$discussed_attribute) && $this->$discussed_attribute !== '') {
             return ($this->$discussed_attribute) ? '' : '<span style="float:right;">Refractive target not discussed</span>';
@@ -178,7 +208,8 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         return '';
     }
 
-    public function beforeSave() {
+    public function beforeSave()
+    {
         foreach ($this->sidedFields() as $field_suffix) {
             foreach (['left_', 'right_'] as $field_prefix) {
                 if ($this->{$field_prefix . $field_suffix} === '') {
@@ -208,7 +239,7 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         $criteria->compare('description', $this->description);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -216,6 +247,22 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
     {
         $this->right_eye_id = \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
         $this->left_eye_id = \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::SECOND_EYE;
+
+        $api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $previous_element = $api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement', $patient, false);
+
+        if ($previous_element) {
+            $this->eye_id = $previous_element->eye_id;
+            foreach (['left', 'right'] as $side) {
+                $this->{$side . '_target_postop_refraction'} = $previous_element->{$side . '_target_postop_refraction'};
+                $this->{$side . '_correction_discussed'} = $previous_element->{$side . '_correction_discussed'};
+                $this->{$side . '_refraction_category'} = $previous_element->{$side . '_refraction_category'};
+                $this->{$side . '_eye_id'} = $previous_element->{$side . '_eye_id'};
+                $this->{$side . '_reason_for_surgery_id'} = $previous_element->{$side . '_reason_for_surgery_id'};
+                $this->{$side . '_notes'} = $previous_element->{$side . '_notes'};
+                $this->{$side . '_guarded_prognosis'} = $previous_element->{$side . '_guarded_prognosis'};
+            }
+        }
     }
 
     public function __toString()
