@@ -244,6 +244,10 @@ class HistoryMedications extends \BaseEventElementWidget
             $current = array();
             foreach ($this->element->entries as $entry) {
                 $end_date_including_tapers = $entry->prescription_item_id ? $entry->prescription_item->stopDateFromDuration() : $entry->end_date;
+                if ($entry->end_date && $entry->stop_reason_id) {
+                    // in case the end date has been manually set in an exam event
+                    $end_date_including_tapers = $entry->end_date;
+                }
                 if ($end_date_including_tapers && $end_date_including_tapers <= date("Y-m-d")) {
                     $stopped[] = $entry;
                 } else {
