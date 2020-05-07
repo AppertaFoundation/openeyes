@@ -38,9 +38,6 @@ $config = array(
             'username' => $db['username'],
             'password' => $db['password'],
         ),
-        // 'session' => array(
-        //     'timeout' => 86400,
-        // ),
         'mailer' => array(
             // Setting the mailer mode to null will suppress email
             //'mode' => null
