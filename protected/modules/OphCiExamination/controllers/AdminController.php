@@ -769,7 +769,7 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Edit Surgery Management Options',
             'OEModule\OphCiExamination\models\OphCiExamination_ManagementSurgery',
-            ['div_wrapper_class' => 'cols-5']
+            ['div_wrapper_class' => 'cols-5' ,'input_class' => 'cols-full']
         );
     }
 
