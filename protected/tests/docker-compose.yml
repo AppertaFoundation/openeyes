@@ -14,6 +14,7 @@ services:
   phpunit:
     image: appertaopeneyes/ci:php7
     environment:
+      TZ: "Europe/London"
       TESTS_TO_RUN: "PHPUNIT"
     secrets:
       - source: SSH_PRIVATE_KEY
@@ -25,6 +26,7 @@ services:
   behat:
     image: appertaopeneyes/ci:latest
     environment:
+      TZ: "Europe/London"
       SELENIUM_BASE_URL: "http://behat"
       SELENIUM_WD_HOST: http://selenium:4444/wd/hub
       TESTS_TO_RUN: "BEHAT"
