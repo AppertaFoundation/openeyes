@@ -66,11 +66,11 @@ $model_name = CHtml::modelName($element);
           </div>
           <div class="column">
                 <?= CHtml::activeDropDownList(
-                  $element,
-                  $eye.'_laser_status_id',
-                  CHtml::listData($statuses, 'id', 'name'),
-                  $status_options
-              )?>
+                    $element,
+                    $eye.'_laser_status_id',
+                    CHtml::listData($statuses, 'id', 'name'),
+                    $status_options
+                )?>
             <span id="<?=$eye?>_laser_booking_hint"
                   class="field-info hint"
                   style="<?= (!$show_booking_hint) ? "style=display:none;": ""?>">
@@ -134,11 +134,11 @@ $model_name = CHtml::modelName($element);
           </div>
           <div class="column end lasertype">
                 <?=\CHtml::activeDropDownList(
-                  $element,
-                  $eye.'_lasertype_id',
-                  CHtml::listData($lasertypes, 'id', 'name'),
-                  array('options' => $lasertype_options, 'empty' => 'Select')
-              )?>
+                    $element,
+                    $eye.'_lasertype_id',
+                    CHtml::listData($lasertypes, 'id', 'name'),
+                    array('options' => $lasertype_options, 'empty' => 'Select')
+                )?>
           </div>
         </div>
       </td>
@@ -147,7 +147,8 @@ $model_name = CHtml::modelName($element);
     $show_other = false;
     if (@$_POST[$model_name]) {
         if ($lasertype = \OEModule\OphCiExamination\models\OphCiExamination_LaserManagement_LaserType::model()->findByPk(
-            (int) @$_POST[$model_name][$eye.'_lasertype_id'])) {
+            (int) @$_POST[$model_name][$eye.'_lasertype_id']
+        )) {
             $show_other = $lasertype->other;
         }
     } else {
@@ -187,13 +188,13 @@ $model_name = CHtml::modelName($element);
           </div>
           <div class="cols-9">
                 <?= $form->textArea(
-                  $element,
-                  $eye.'_comments',
-                  array('rows' => 1, 'nowrapper' => true),
-                  false,
-                  array('placeholder' => $element->getAttributeLabel($eye.'_comments')),
-                  array('field' => 10, 'label' => 2)
-              )?>
+                    $element,
+                    $eye.'_comments',
+                    array('rows' => 1, 'nowrapper' => true),
+                    false,
+                    array('placeholder' => $element->getAttributeLabel($eye.'_comments')),
+                    array('field' => 10, 'label' => 2)
+                )?>
           </div>
         </div>
       </td>

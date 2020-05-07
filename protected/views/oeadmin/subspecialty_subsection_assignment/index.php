@@ -21,10 +21,10 @@
 <?php
 if (isset($model)) {
     echo \CHtml::errorSummary(
-      $model,
-      null,
-      null,
-      ["class" => "alert-box alert with-icon"]
+        $model,
+        null,
+        null,
+        ["class" => "alert-box alert with-icon"]
     );
 }
 ?>
@@ -54,7 +54,8 @@ if (isset($model)) {
                         [
                             'id' => 'subspecialty-select',
                             'empty' => 'Select a subspecialty'
-                        ])?>
+                        ]
+                    )?>
                     </td>
                 </tr>
                 <tr>
@@ -72,7 +73,8 @@ if (isset($model)) {
                         [
                             'id' => 'subsection-select',
                             'empty' => 'Select a subsection'
-                        ])?>
+                        ]
+                    )?>
                     </td>
                 </tr>
             </tbody>
@@ -127,7 +129,8 @@ if (isset($model)) {
                         [
                             'id' => 'procedure-add',
                             'empty' => 'Select a procedure'
-                        ])
+                        ]
+                    )
                     ?>
                     </td>
                 </tr>

@@ -159,8 +159,12 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
             }
         }
         if ($other_comp) {
-            $v = CValidator::createValidator('requiredIfSide', $this, array($params['side'].'_oth_descrip'),
-                    array('side' => $params['side'], 'message' => ucfirst($params['side']).' {attribute} required when '.$other_comp->name.' is selected'));
+            $v = CValidator::createValidator(
+                'requiredIfSide',
+                $this,
+                array($params['side'].'_oth_descrip'),
+                array('side' => $params['side'], 'message' => ucfirst($params['side']).' {attribute} required when '.$other_comp->name.' is selected')
+            );
             $v->validate($this);
         }
     }

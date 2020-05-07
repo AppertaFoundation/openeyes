@@ -4,11 +4,13 @@ class m190419_132252_ophinlabresults_migrate_results_type_to_new_structure exten
 {
     public function safeUp()
     {
-        $this->createOETable('ophinlabresults_field_type',
+        $this->createOETable(
+            'ophinlabresults_field_type',
             [
                 'id' => 'int(10) unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT',
                 'name' => 'varchar(64)'
-            ]);
+            ]
+        );
 
         $this->insert('ophinlabresults_field_type', ['name' => 'Text Field']);
         $this->insert('ophinlabresults_field_type', ['name' => 'Numeric Field']);

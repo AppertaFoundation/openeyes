@@ -137,7 +137,8 @@ class OphCoTherapyapplication_API extends BaseAPI
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphCoTherapyapplication_Therapydiagnosis',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             return $el->getDiagnosisStringForSide($side);
         }
@@ -205,7 +206,8 @@ class OphCoTherapyapplication_API extends BaseAPI
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphCoTherapyapplication_PatientSuitability',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             if ($drug = $el->{$side.'_treatment'}) {
                 return $drug->name;

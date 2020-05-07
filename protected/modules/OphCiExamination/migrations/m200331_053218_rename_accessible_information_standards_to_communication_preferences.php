@@ -19,15 +19,23 @@ class m200331_053218_rename_accessible_information_standards_to_communication_pr
         $this->update('element_group', array('name' => 'Communication Preferences'), "name = 'Accessible Information Standards'");
 
         $elementTypeId = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name = :name', array(':name' => 'Accessible Information Standards'))->queryScalar();
-        $this->update('element_type', array('name' => 'Communication Preferences', 'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences'), 'id = :id',
-            array(':id' => $elementTypeId));
+        $this->update(
+            'element_type',
+            array('name' => 'Communication Preferences', 'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences'),
+            'id = :id',
+            array(':id' => $elementTypeId)
+        );
     }
 
     public function safeDown()
     {
         $elementTypeId = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name = :name', array(':name' => 'Communication Preferences'))->queryScalar();
-        $this->update('element_type', array('name' => 'Accessible Information Standards', 'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences'), 'id = :id',
-            array(':id' => $elementTypeId));
+        $this->update(
+            'element_type',
+            array('name' => 'Accessible Information Standards', 'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences'),
+            'id = :id',
+            array(':id' => $elementTypeId)
+        );
         $this->update('element_group', array('name' => 'Accessible Information Standards'), "name = 'Communication Preferences'");
 
         $this->dropForeignKey('et_ophciexamination_communication_preferences_lmui_fk', 'et_ophciexamination_communication_preferences');

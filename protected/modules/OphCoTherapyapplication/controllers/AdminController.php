@@ -458,8 +458,7 @@ class AdminController extends ModuleAdminController
         Audit::add('admin', 'view', $id, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_FileCollection'));
 
         $this->render('view_'.get_class($model), array(
-                'model' => $model, )
-        );
+                'model' => $model, ));
     }
 
     /**
@@ -596,8 +595,7 @@ class AdminController extends ModuleAdminController
                 'model' => $model,
                 'title' => 'File Collection',
                 'cancel_uri' => '/OphCoTherapyapplication/admin/viewFileCollections',
-            )
-        );
+            ));
     }
 
     public function actionRemoveFileCollection_File()

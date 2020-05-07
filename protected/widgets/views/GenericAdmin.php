@@ -26,10 +26,11 @@
                     <div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
                     <div class="cols-5 column end"><?=
                         CHtml::dropDownList(
-                            $filter_field['field'], $filter_field['value'],
+                            $filter_field['field'],
+                            $filter_field['value'],
                             SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-                                                   );
+                        );
                                                     ?></div>
                 </div>
             <?php } ?>

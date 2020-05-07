@@ -2699,9 +2699,11 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getCataractSurgicalManagementAsTable(Patient $patient, $use_context = false)
     {
-        $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+        $element = $this->getElementFromLatestVisibleEvent(
+            'models\Element_OphCiExamination_CataractSurgicalManagement',
             $patient,
-            $use_context);
+            $use_context
+        );
 
         $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
         $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopic', 2 => 'Other'];

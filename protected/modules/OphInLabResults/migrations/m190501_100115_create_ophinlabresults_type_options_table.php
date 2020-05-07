@@ -9,8 +9,13 @@ class m190501_100115_create_ophinlabresults_type_options_table extends OEMigrati
             'value' => 'varchar(255) NOT NULL',
             'type' => 'int(11) NOT NULL',
         ]);
-        $this->addForeignKey('lab_results_type_options_fk_lab_results_type', 'ophinlabresults_type_options',
-            'type','ophinlabresults_type' , 'id');
+        $this->addForeignKey(
+            'lab_results_type_options_fk_lab_results_type',
+            'ophinlabresults_type_options',
+            'type',
+            'ophinlabresults_type' ,
+            'id'
+        );
     }
 
     public function down()

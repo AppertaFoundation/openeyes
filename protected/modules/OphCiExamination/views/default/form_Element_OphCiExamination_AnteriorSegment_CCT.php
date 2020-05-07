@@ -31,12 +31,14 @@
             Yii::app()->params['html_autocomplete'],
             'nowrapper' => true,
             'append-text'=>'&nbsp; &micro;m, using',
-            'class' => 'cct_value')) ?>
+            'class' => 'cct_value')
+        ) ?>
         <?php echo $form->dropDownList(
             $element,
             $eye_side.'_method_id',
             $methods,
-            array('nowrapper' => true, 'class' => 'inline')) ?>
+            array('nowrapper' => true, 'class' => 'inline')
+        ) ?>
         </div>
       </div>
       <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : ""?>">

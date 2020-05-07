@@ -22,23 +22,29 @@ $permission = TrialController::getCurrentUserPermission();
         <?= $data->trialPermission->name ?>
   </td>
   <td>
-        <?= CHtml::checkBox('principal_investigator', $data->is_principal_investigator,
-        array(
-          'class' => 'is_principal_investigator',
-          'data-user' => $data->user_id,
-          'data-trial' => $data->trial_id,
-          'disabled' => !$permission || !$permission->can_manage)); ?>
+        <?= CHtml::checkBox(
+            'principal_investigator',
+            $data->is_principal_investigator,
+            array(
+            'class' => 'is_principal_investigator',
+            'data-user' => $data->user_id,
+            'data-trial' => $data->trial_id,
+            'disabled' => !$permission || !$permission->can_manage)
+        ); ?>
     <span id="pi-change-loader-<?= $data->user_id; ?>" class="js-spinner-as-icon" style="display: none;">
       <i class="spinner as-icon"></i>
     </span>
   </td>
   <td>
-    <?= CHtml::checkBox('principal_investigator', $data->is_study_coordinator,
-      array(
+    <?= CHtml::checkBox(
+        'principal_investigator',
+        $data->is_study_coordinator,
+        array(
         'class'=>'is_coordinator',
         'data-user' => $data->user_id,
         'data-trial' => $data->trial_id,
-        'disabled' => !$permission || !$permission->can_manage)); ?>
+        'disabled' => !$permission || !$permission->can_manage)
+    ); ?>
 
     <span id="coordinator-change-loader-<?= $data->user_id; ?>" class="js-spinner-as-icon" style="display: none;">
       <i class="spinner as-icon"></i>

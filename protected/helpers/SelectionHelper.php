@@ -36,7 +36,8 @@ class SelectionHelper
 
         return CHtml::listData(
             $lookup->cache(60)->with($lookup::SELECTION_WITH)->findAll(array('order' => $lookup::SELECTION_ORDER)),
-            'id', method_exists($lookup, 'getSelectionLabel') ? 'selectionLabel' : $lookup::SELECTION_LABEL_FIELD
+            'id',
+            method_exists($lookup, 'getSelectionLabel') ? 'selectionLabel' : $lookup::SELECTION_LABEL_FIELD
         );
     }
 }

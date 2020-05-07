@@ -640,7 +640,8 @@ class PatientController extends BaseController
         $header_data = [];
         if ($subspecialty->ref_spec == 'GL') {
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $cct_element = $exam_api->getLatestElement(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $this->patient,
                 false //use context
             );
@@ -980,8 +981,12 @@ class PatientController extends BaseController
     public function actionGenerateAllergySelect()
     {
         $this->patient = $this->loadModel(Yii::app()->getRequest()->getQuery('patient_id'));
-        echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'),
-            array('empty' => '-- Select --'));
+        echo CHtml::dropDownList(
+            'allergy_id',
+            null,
+            CHtml::listData($this->allergyList(), 'id', 'name'),
+            array('empty' => '-- Select --')
+        );
     }
 
     /**
@@ -2722,8 +2727,10 @@ class PatientController extends BaseController
             $criteria->addCondition("is_linked=0 AND patient_id='" . $this->patient->id . "'");
             $resultSet = OphInBiometry_Imported_Events::model()->findAll($criteria);
             if ($resultSet) {
-                Yii::app()->user->setFlash('alert.unlinked_biometry_event',
-                    'A new biometry report is available for this patient - please create a biometry event to view it ');
+                Yii::app()->user->setFlash(
+                    'alert.unlinked_biometry_event',
+                    'A new biometry report is available for this patient - please create a biometry event to view it '
+                );
             }
         }
     }
@@ -2743,8 +2750,7 @@ class PatientController extends BaseController
                     join event e2 on e.id = e2.episode_id
                     join et_ophcodocument_document d on d.event_id = e2.id
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where e2.deleted = 0 and p.id = $patient->id;"
-        );
+                    where e2.deleted = 0 and p.id = $patient->id;");
         return ($command->queryScalar() == 0);
     }
 

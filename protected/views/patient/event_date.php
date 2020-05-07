@@ -8,7 +8,9 @@ $error_class = isset($errors['event_date'])? 'error' :'';
   <div class="element-fields full-width">
     <div>
         <?php
-        echo $form->datePicker($this->event, 'event_date',
+        echo $form->datePicker(
+            $this->event,
+            'event_date',
             array('maxDate' => 'today'),
             array(
                 'style' => 'margin-left:8px',

@@ -9,8 +9,7 @@ class m200424_133000_add_hos_num_label extends CDbMigration
             'key' => 'hos_num_label',
             'name' => 'Hospital Number label',
             'default_value' => 'ID'
-            )
-        );
+            ));
 
         $this->insert('setting_installation', array('key' => 'hos_num_label', 'value' => 'ID'));
     }

@@ -15,14 +15,18 @@ class m130930_145832_injection_mgmt_no_treatment_both_eyes extends CDbMigration
                      ->from('et_ophciexamination_injectionmanagementcomplex')
                      ->where('no_treatment = true')
                      ->order('id desc')->queryAll() as $imc) {
-            $this->update('et_ophciexamination_injectionmanagementcomplex', array(
+            $this->update(
+                'et_ophciexamination_injectionmanagementcomplex',
+                array(
                     'left_no_treatment' => true,
                     'right_no_treatment' => true,
                     'left_no_treatment_reason_id' => $imc['no_treatment_reason_id'],
                     'right_no_treatment_reason_id' => $imc['no_treatment_reason_id'],
                     'left_no_treatment_reason_other' => $imc['no_treatment_reason_other'],
                     'right_no_treatment_reason_other' => $imc['no_treatment_reason_other'], ),
-                'id = :id', array(':id' => $imc['id']));
+                'id = :id',
+                array(':id' => $imc['id'])
+            );
         }
 
         $this->dropColumn('et_ophciexamination_injectionmanagementcomplex', 'no_treatment');
@@ -45,11 +49,15 @@ class m130930_145832_injection_mgmt_no_treatment_both_eyes extends CDbMigration
             // before it has been used interactively.
             $side = $imc['left_no_treatment'] ? 'left' : 'right';
 
-            $this->update('et_ophciexamination_injectionmanagementcomplex', array(
+            $this->update(
+                'et_ophciexamination_injectionmanagementcomplex',
+                array(
                     'no_treatment' => true,
                     'no_treatment_reason_id' => $imc[$side.'_no_treatment_reason_id'],
                     'no_treatment_reason_other' => $imc[$side.'_no_treatment_reason_other'], ),
-                'id = :id', array(':id' => $imc['id']));
+                'id = :id',
+                array(':id' => $imc['id'])
+            );
         }
 
         $this->dropColumn('et_ophciexamination_injectionmanagementcomplex', 'left_no_treatment');

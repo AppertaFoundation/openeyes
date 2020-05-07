@@ -20,8 +20,10 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <?php if ($element->hasEye($eye_side)) { ?>
         <div class="<?= $eye_side ?>-eye ">
-            <?php $this->renderPartial($element->view_view.'_fields',
-                array('side' => $eye_side, 'element' => $element)); ?>
+            <?php $this->renderPartial(
+                $element->view_view.'_fields',
+                array('side' => $eye_side, 'element' => $element)
+            ); ?>
         </div>
         <?php } else { ?>
         <div class="data-value not-recorded">Not recorded </div>

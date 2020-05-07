@@ -257,7 +257,8 @@ class Trial extends BaseActiveRecordVersioned
    */
     public function hasShortlistedPatients()
     {
-        return TrialPatient::model()->exists('trial_id = :trialId AND status_id = :patientStatus',
+        return TrialPatient::model()->exists(
+            'trial_id = :trialId AND status_id = :patientStatus',
             array(
                 ':trialId' => $this->id,
                 ':patientStatus' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id,
@@ -349,7 +350,8 @@ class Trial extends BaseActiveRecordVersioned
             return CHtml::listData(Trial::model()->findAll(), 'id', 'name');
         }
 
-        return CHtml::listData(Trial::model()->findAll('trial_type_id=:type', array(':type' => $type)),
+        return CHtml::listData(
+            Trial::model()->findAll('trial_type_id=:type', array(':type' => $type)),
             'id',
             'name'
         );
@@ -373,7 +375,8 @@ class Trial extends BaseActiveRecordVersioned
 
         if (!$trialPatient->save()) {
             throw new Exception(
-            'Unable to create TrialPatient: ' . print_r($trialPatient->getErrors(), true));
+                'Unable to create TrialPatient: ' . print_r($trialPatient->getErrors(), true)
+            );
         }
 
         $this->audit('trial', 'add-patient');
@@ -410,7 +413,8 @@ class Trial extends BaseActiveRecordVersioned
     {
         return @UserTrialAssignment::model()->find(
             'user_id = :user_id AND trial_id = :trial_id',
-        array(':user_id' => $user_id, ':trial_id' => $this->id))->trialPermission;
+            array(':user_id' => $user_id, ':trial_id' => $this->id)
+        )->trialPermission;
     }
 
     /**
@@ -482,7 +486,8 @@ class Trial extends BaseActiveRecordVersioned
 
       // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
         if ($assignment->trialPermission->can_manage) {
-            $managerCount = UserTrialAssignment::model()->count('trial_id = :trialId AND EXISTS (
+            $managerCount = UserTrialAssignment::model()->count(
+                'trial_id = :trialId AND EXISTS (
             SELECT tp.id FROM trial_permission tp WHERE tp.id = trial_permission_id AND tp.can_manage)',
                 array(
                 ':trialId' => $this->id,

@@ -226,7 +226,7 @@ class HelperTest extends PHPUnit_Framework_TestCase
     {
         $random_string = '';
         for ($i = 0; $i < 5; $i++) {
-            $random_string .= substr( md5(mt_rand()), 0, mt_rand(1, 32));
+            $random_string .= substr(md5(mt_rand()), 0, mt_rand(1, 32));
         }
 
         $checksum = md5($random_string);

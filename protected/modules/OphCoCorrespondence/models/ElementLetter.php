@@ -647,7 +647,7 @@ class ElementLetter extends BaseEventTypeElement
                     if (isset($attachments_short_code[$key])) {
                         $eventAssociatedContent->short_code  = $attachments_short_code[$key];
                     } else {
-                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId( $attachments_last_event_id[$key] );
+                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId($attachments_last_event_id[$key]);
                     }
 
                     if (isset($attachments_protected_file_id[$key])) {
@@ -678,8 +678,8 @@ class ElementLetter extends BaseEventTypeElement
 
     private function generateShortcodeByEventId($event_id)
     {
-        $event = Event::model()->findByPk( $event_id );
-        $name = strtoupper (str_replace(' ', '_', $event->eventType->name));
+        $event = Event::model()->findByPk($event_id);
+        $name = strtoupper(str_replace(' ', '_', $event->eventType->name));
 
         return $name.'_'.$event->eventType->id;
     }

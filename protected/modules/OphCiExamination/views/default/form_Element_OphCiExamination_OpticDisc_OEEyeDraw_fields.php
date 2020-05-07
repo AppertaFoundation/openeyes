@@ -21,14 +21,18 @@
     <label for="<?php echo $side . '_opticdisc_mode'; ?>">
       Mode:
     </label>
-        <?=\CHtml::dropDownList($side . '_opticdisc_mode', 'Basic',
-          array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
+        <?=\CHtml::dropDownList(
+            $side . '_opticdisc_mode',
+            'Basic',
+            array('Basic' => 'Basic', 'Expert' => 'Expert'),
+            array(
               'class' => 'opticdisc-mode',
               'options' => array(
                   'Basic' => array('data-value' => 'Basic'),
                   'Expert' => array('data-value' => 'Expert'),
               ),
-          )) ?>
+            )
+        ) ?>
   </div>
   <div class="data-group">
     <label for="<?=\CHtml::modelName($element) . '_' . $side . '_cd_ratio_id'; ?>">
@@ -41,8 +45,12 @@
             $cd_ratio_html_options['options'][(string)$ratio->id] = array('data-value' => $ratio->name);
         }
         ?>
-        <?=\CHtml::activeDropDownList($element, $side . '_cd_ratio_id', CHtml::listData($options, 'id', 'name'),
-          $cd_ratio_html_options) ?>
+        <?=\CHtml::activeDropDownList(
+            $element,
+            $side . '_cd_ratio_id',
+            CHtml::listData($options, 'id', 'name'),
+            $cd_ratio_html_options
+        ) ?>
   </div>
   <div class="data-group">
     <label for="<?=\CHtml::modelName($element) . '_' . $side . '_diameter'; ?>">
@@ -50,14 +58,20 @@
     </label>
     <div class="data-group collapse in">
       <div class="cols-3 column">
-            <?=\CHtml::activeTextField($element, $side . '_diameter',
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')) ?>
+            <?=\CHtml::activeTextField(
+                $element,
+                $side . '_diameter',
+                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')
+            ) ?>
       </div>
       <div class="cols-9 column">
         <div class="field-info postfix align">
-          mm (lens <?= $form->dropDownList($element, $side . '_lens_id',
-                '\OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_Lens',
-                array('empty' => '--', 'class' => 'inline', 'nowrapper' => true)) ?>)
+          mm (lens <?= $form->dropDownList(
+              $element,
+              $side . '_lens_id',
+              '\OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_Lens',
+              array('empty' => '--', 'class' => 'inline', 'nowrapper' => true)
+          ) ?>)
         </div>
       </div>
     </div>

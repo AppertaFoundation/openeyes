@@ -129,8 +129,7 @@ class MedicationManagementController extends BaseController
                     'allergy_ids' => array_map(function ($e) {
                         return $e->id;
                     }, $med->allergies),
-                ]
-            );
+                ]);
         }
 
         header('Content-type: application/json');

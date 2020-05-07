@@ -12,7 +12,8 @@
           $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(
               array(
                   'id' => $this->selectionValues[0]->{"formula_id_$side"},
-              ));
+              )
+          );
       } ?>
         <div class="data-group">
             <table class="cols-11 large-text borders">

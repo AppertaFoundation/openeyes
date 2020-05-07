@@ -28,13 +28,15 @@
             <?php else : ?>
                 <?php
                 $user = User::model()->findByPk(Yii::app()->user->id);
-                echo CHtml::dropDownList(null, '',
-                  array(Yii::app()->user->id => $user->fullName),
-                  array(
+                echo CHtml::dropDownList(
+                    null,
+                    '',
+                    array(Yii::app()->user->id => $user->fullName),
+                    array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
-                  ) //for some reason the chrome doesn't gray out
+                    ) //for some reason the chrome doesn't gray out
                 );
                 echo CHtml::hiddenField('surgeon_id', Yii::app()->user->id);
                 ?>

@@ -6,11 +6,13 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
     {
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry_version', 'set_id', 'int(11)');
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry', 'set_id', 'int(11)');
-        $this->addForeignKey('systemic_diagnoses_set_entry_systemic_diagnoses_set',
+        $this->addForeignKey(
+            'systemic_diagnoses_set_entry_systemic_diagnoses_set',
             'ophciexamination_systemic_diagnoses_set_entry',
             'set_id',
             'ophciexamination_systemic_diagnoses_set',
-            'id');
+            'id'
+        );
 
         $assignments = $this->dbConnection->createCommand()
             ->select()
@@ -34,12 +36,14 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
 
     public function safeDown()
     {
-        $this->createOETable('ophciexamination_systemic_diagnoses_set_assignment',
+        $this->createOETable(
+            'ophciexamination_systemic_diagnoses_set_assignment',
             array(
                 'id' => 'pk',
                 'ophciexamination_systemic_diagnoses_entry_id' => 'int(11)',
                 'systemic_diagnoses_set_id' => 'int(11)',
-            ), true
+            ),
+            true
         );
 
         $this->dropForeignKey('systemic_diagnoses_set_entry_systemic_diagnoses_set', 'ophciexamination_systemic_diagnoses_set_entry');

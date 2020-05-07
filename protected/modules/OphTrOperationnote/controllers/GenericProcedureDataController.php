@@ -19,9 +19,14 @@ class GenericProcedureDataController extends ModuleAdminController
 
     public function actionList()
     {
-        Audit::add('admin', 'list', null, false,
+        Audit::add(
+            'admin',
+            'list',
+            null,
+            false,
             array('module' => 'OphTrOperationnote',
-                'model' => 'OphTrOperationNote_Generic_Procedure_Data'));
+            'model' => 'OphTrOperationNote_Generic_Procedure_Data')
+        );
 
         $search = \Yii::app()->request->getPost('search', ['query' => '']);
         $criteria = new \CDbCriteria();
@@ -62,7 +67,9 @@ class GenericProcedureDataController extends ModuleAdminController
         if ($request->getPost('OphTrOperationNote_Generic_Procedure_Data')) {
             $model->attributes = $request->getPost('OphTrOperationNote_Generic_Procedure_Data');
             if ($model->save()) {
-                Audit::add('admin', 'edit_saved',
+                Audit::add(
+                    'admin',
+                    'edit_saved',
                     serialize($model->attributes),
                     false,
                     array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationNote_Generic_Procedure_Data')
@@ -71,13 +78,19 @@ class GenericProcedureDataController extends ModuleAdminController
 
                 $this->redirect(array('List'));
             }
-            Audit::add('admin', 'edit_error', serialize($model->attributes),
+            Audit::add(
+                'admin',
+                'edit_error',
+                serialize($model->attributes),
                 false,
                 array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationNote_Generic_Procedure_Data')
             );
             Yii::app()->user->setFlash('success', 'Generic Operation data: error saving');
         }
-        Audit::add('admin', 'edit', serialize($model->attributes),
+        Audit::add(
+            'admin',
+            'edit',
+            serialize($model->attributes),
             false,
             array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationNote_Generic_Procedure_Data')
         );

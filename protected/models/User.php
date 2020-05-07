@@ -212,8 +212,10 @@ class User extends BaseActiveRecordVersioned
         $criteria->order = 'position DESC';
         $criteria->params = array(':user_id' => $this->id);
         $top_preference = UserFirmPreference::model()->find($criteria);
-        $preference = UserFirmPreference::model()->find('user_id = :user_id AND firm_id = :firm_id',
-            array(':user_id' => $this->id, ':firm_id' => $firm_id));
+        $preference = UserFirmPreference::model()->find(
+            'user_id = :user_id AND firm_id = :firm_id',
+            array(':user_id' => $this->id, ':firm_id' => $firm_id)
+        );
         if (!$preference) {
             $preference = new UserFirmPreference();
             $preference->user_id = $this->id;
@@ -725,8 +727,10 @@ class User extends BaseActiveRecordVersioned
      */
     public function portalUser()
     {
-        $username = (array_key_exists('portal_user',
-            Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
+        $username = (array_key_exists(
+            'portal_user',
+            Yii::app()->params
+        )) ? Yii::app()->params['portal_user'] : 'portal_user';
         $crit = new CDbCriteria();
         $crit->compare('username', $username);
 

@@ -30,21 +30,28 @@
       <td>
             <?php
             echo $form->dropDownList(
-              $element,
-              'site_id',
-              CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
-                  'short_name'),
-              array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
-              false,
-              array('label' => 2, 'field' => 8)
+                $element,
+                'site_id',
+                CHtml::listData(
+                    OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id),
+                    'id',
+                    'short_name'
+                ),
+                array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                false,
+                array('label' => 2, 'field' => 8)
             );
             ?>
       </td>
       <td>
             <?php
-            if (array_key_exists('OphTrOperationbooking',
-                  Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre',
-                  Yii::app()->db->getSchema()->getTableNames())) {
+            if (array_key_exists(
+                'OphTrOperationbooking',
+                Yii::app()->modules
+            ) && in_array(
+                'ophtroperationbooking_operation_theatre',
+                Yii::app()->db->getSchema()->getTableNames()
+            )) {
                 $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
                 $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
                   'condition' => 'active=1 and site_id=' . $siteId,
@@ -53,21 +60,21 @@
 
                 if (count($getTheatreData) == 1) {
                     echo $form->dropDownList(
-                      $element,
-                      'theatre_id',
-                      CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => false, 'class' => 'cols-full'),
-                      false,
-                      array('label' => 2, 'field' => 8)
+                        $element,
+                        'theatre_id',
+                        CHtml::listData($getTheatreData, 'id', 'name'),
+                        array('nowrapper' => false, 'class' => 'cols-full'),
+                        false,
+                        array('label' => 2, 'field' => 8)
                     );
                 } else {
                     echo $form->dropDownList(
-                      $element,
-                      'theatre_id',
-                      CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
-                      false,
-                      array('label' => 2, 'field' => 8)
+                        $element,
+                        'theatre_id',
+                        CHtml::listData($getTheatreData, 'id', 'name'),
+                        array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                        false,
+                        array('label' => 2, 'field' => 8)
                     );
                 }
             }
@@ -88,9 +95,11 @@
       openButton: $('#change-site-theatre-btn'),
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($item) {
+            array_map(function ($item) {
               return ['label' => $item->short_name, 'id' => $item->id];
-          }, OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) ) ?>,
+            },
+            OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) 
+        ) ?>,
           {'header':'site', 'id':'site_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {

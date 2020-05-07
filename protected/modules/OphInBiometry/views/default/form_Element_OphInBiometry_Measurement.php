@@ -23,7 +23,8 @@ if ($element->event != null && $element->event->id > 0) {
     $iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
         array(
             'event_id' => $element->event->id,
-        ));
+        )
+    );
 } else {
     $iolRefValues = array();
 }

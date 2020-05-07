@@ -28,8 +28,12 @@
         <?= $form->error($address, 'address_type_id') ?>
   </td>
   <td>
-        <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
-          array('empty' => '-- select --')); ?>
+        <?php echo $form->dropDownList(
+            $address,
+            'address_type_id',
+            $address_type_ids,
+            array('empty' => '-- select --')
+        ); ?>
   </td>
 <tr>
 <tr>

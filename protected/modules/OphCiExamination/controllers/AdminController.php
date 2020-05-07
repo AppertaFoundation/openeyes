@@ -1050,7 +1050,8 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin(
             models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative',
+            ['div_wrapper_class' => 'cols-6']
         );
     }
 

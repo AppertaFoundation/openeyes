@@ -185,7 +185,7 @@ foreach ($this->patient->episodes as $ep) {
                         ];
                     },
                     $filteredOphthalmicDisorderGroups)
-                                                    ) ?>, {
+                ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

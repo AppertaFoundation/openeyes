@@ -26,11 +26,18 @@
             <?php echo $element->getAttributeLabel('power_id'); ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'power_id',
-              CHtml::listData(OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(),
-                  'id',
-                  'name'),
-              array('empty' => 'Select', 'nolabel' => true), false, array('field' => 3)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'power_id',
+                CHtml::listData(
+                    OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(),
+                    'id',
+                    'name'
+                ),
+                array('empty' => 'Select', 'nolabel' => true),
+                false,
+                array('field' => 3)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -38,8 +45,11 @@
             <?php echo $element->getAttributeLabel('blood_reflux'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'blood_reflux',
-              array('class' => 'clearWithEyedraw', 'no-label' => true)) ?>
+            <?php echo $form->checkbox(
+                $element,
+                'blood_reflux',
+                array('class' => 'clearWithEyedraw', 'no-label' => true)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -55,8 +65,11 @@
             <?php echo $element->getAttributeLabel('description'); ?>
       </td>
       <td>
-            <?php echo $form->textArea($element, 'description',
-              array('rows' => 4, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->textArea(
+                $element,
+                'description',
+                array('rows' => 4, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -74,19 +87,19 @@
                 );
             }
             echo $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[complications]',
-              'complications',
-              'id',
-              CHtml::listData($complications, 'id', 'name'),
-              null,
-              $html_options,
-              false,
-              false,
-              null,
-              false,
-              false,
-              array('field' => 4)
+                $element,
+                CHtml::modelName($element) . '[complications]',
+                'complications',
+                'id',
+                CHtml::listData($complications, 'id', 'name'),
+                null,
+                $html_options,
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('field' => 4)
             )
             ?>
       </td>
@@ -99,8 +112,11 @@
         </label>
       </td>
       <td>
-            <?php $form->textArea($element, 'complication_other',
-              array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true)); ?>
+            <?php $form->textArea(
+                $element,
+                'complication_other',
+                array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true)
+            ); ?>
       </td>
     </tr>
     </tbody>

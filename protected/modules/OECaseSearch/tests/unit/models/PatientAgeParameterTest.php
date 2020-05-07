@@ -61,7 +61,8 @@ class PatientAgeParameterTest extends CDbTestCase
             }
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider))));
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+            );
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.

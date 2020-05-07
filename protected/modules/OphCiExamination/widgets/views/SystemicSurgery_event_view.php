@@ -31,8 +31,10 @@ $widget = $this;
                     <?php foreach ($operations as $operation) { ?>
                         <tr>
                             <td>
-                                <?= array_key_exists('object',
-                                    $operation) ? $operation['object']->operation : $operation['operation']; ?>
+                                <?= array_key_exists(
+                                    'object',
+                                    $operation
+                                ) ? $operation['object']->operation : $operation['operation']; ?>
                             </td>
                             <td>
                                 <?php if (array_key_exists('link', $operation)) { ?>

@@ -54,8 +54,11 @@ class ExampleSummaryTest extends CDbTestCase
     {
         $episode = $this->episodes('episode1');
 
-        $mockWidget = $this->getMock('ExampleSummary', array('render'),
-            array('ExampleSummary'));
+        $mockWidget = $this->getMock(
+            'ExampleSummary',
+            array('render'),
+            array('ExampleSummary')
+        );
 
         $mockWidget->episode_id = $episode->id;
 

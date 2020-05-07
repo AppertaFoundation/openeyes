@@ -31,9 +31,9 @@ foreach ($address_targets as $key=>$value) {
 }
     echo \CHtml::dropDownList(
         '',
-            null,
-            $address_targets,
-            array(
+        null,
+        $address_targets,
+        array(
                 'empty' => '- Recipient -',
                 'nowrapper' => true,
                 'class' => 'full-width docman_recipient cols-full',
@@ -44,10 +44,13 @@ foreach ($address_targets as $key=>$value) {
                 'disabled' => !$is_editable_contact_targets,
                 'style' => (!$is_editable_contact_targets ? 'background-color: lightgray' : ''),
             )
-        );
+    );
         echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_nickname]', (isset($contact_nickname) ? $contact_nickname : ''));
         echo \CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full', 'placeholder' => 'Name'));
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
+    echo CHtml::dropDownList(
+        'DocumentTarget['.$row_index.'][attributes][contact_type]',
+        $contact_type,
+        $contact_types,
         [       'empty' => '- Type -',
                 'nowrapper' => true,
                 'class' => 'full-width docman_contact_type',
@@ -59,8 +62,7 @@ foreach ($address_targets as $key=>$value) {
 
     if (!$is_editable) {
         echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
-            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
-        );
+            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type'));
     }
 
 

@@ -76,8 +76,11 @@
           <tr class="col-gap">
             <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
             <td>
-                <?= CHtml::link(CHtml::encode($trial->external_data_link),
-                    CHtml::encode($trial->external_data_link), array('target' => '_blank')) ?>
+                <?= CHtml::link(
+                    CHtml::encode($trial->external_data_link),
+                    CHtml::encode($trial->external_data_link),
+                    array('target' => '_blank')
+                ) ?>
             </td>
           </tr>
         <?php endif; ?>

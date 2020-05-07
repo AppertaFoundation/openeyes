@@ -124,8 +124,10 @@
             $model = $element_type->class_name;
             $object = $model::model()->find('event_id=?', array($event->id));
 
-            $this->renderFile("protected/modules/{$event->eventType->class_name}/views/default/view_{$element_type->class_name}.php",
-                array('element' => $object));
+            $this->renderFile(
+                "protected/modules/{$event->eventType->class_name}/views/default/view_{$element_type->class_name}.php",
+                array('element' => $object)
+            );
         }
     } ?>
 <?php } ?>

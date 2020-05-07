@@ -29,8 +29,10 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
 
     public function test_save_success()
     {
-        $pa = $this->getMockResource('PatientAppointment',
-            array('getAssignment', 'validate', 'startTransaction', 'saveModel', 'audit'));
+        $pa = $this->getMockResource(
+            'PatientAppointment',
+            array('getAssignment', 'validate', 'startTransaction', 'saveModel', 'audit')
+        );
 
         $papi_ass = $this->getMockBuilder('OEModule\\PASAPI\\models\\PasApiAssignment')
             ->disableOriginalConstructor()
@@ -72,8 +74,10 @@ class PatientAppointmentTest extends PHPUnit_Framework_TestCase
 
     public function test_saveModel_update()
     {
-        $pa = $this->getMockResource('PatientAppointment',
-            array('resolvePatient', 'resolveWhen', 'resolveAttributes'));
+        $pa = $this->getMockResource(
+            'PatientAppointment',
+            array('resolvePatient', 'resolveWhen', 'resolveAttributes')
+        );
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
