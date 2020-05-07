@@ -50,14 +50,14 @@ return array(
 
             // The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-            $result = curl_exec ($ch);
+            $result = curl_exec($ch);
 
             $message = '';
             if (curl_error($ch)) {
                 $message = curl_error($ch);
             }
 
-            curl_close ($ch);
+            curl_close($ch);
 
             return $result === false ? json_encode(['valid' => 'failed', 'message' => $message ]) : $result;
         },

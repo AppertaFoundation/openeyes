@@ -36,8 +36,11 @@
         <tr>
             <td><?= RequestType::model()->getAttributeLabel('request_type'); ?></td>
             <td>
-                <?= \CHtml::dropDownList('request_type', null,
-                    CHtml::listData(RequestType::model()->findAll(), 'request_type', 'title_short')); ?>
+                <?= \CHtml::dropDownList(
+                    'request_type',
+                    null,
+                    CHtml::listData(RequestType::model()->findAll(), 'request_type', 'title_short')
+                ); ?>
             </td>
         </tr>
         <tr>

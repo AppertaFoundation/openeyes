@@ -39,8 +39,12 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
                   'data-code' => $clinical->code,
                 );
             }
-            echo CHtml::activeDropDownList($element, $side . '_clinicalret_id',
-              CHtml::listData($clinical_retinopathys, 'id', 'name'), $html_options);
+            echo CHtml::activeDropDownList(
+                $element,
+                $side . '_clinicalret_id',
+                CHtml::listData($clinical_retinopathys, 'id', 'name'),
+                $html_options
+            );
             ?>
       </div>
       <span class="grade-info-icon" data-info-type="clinicalret">
@@ -99,8 +103,12 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
                   'data-code' => $retin->code,
                 );
             }
-            echo CHtml::activeDropDownList($element, $side . '_nscretinopathy_id',
-              CHtml::listData($nsc_retinopathys, 'id', 'name'), $nscretinopathy_html_options);
+            echo CHtml::activeDropDownList(
+                $element,
+                $side . '_nscretinopathy_id',
+                CHtml::listData($nsc_retinopathys, 'id', 'name'),
+                $nscretinopathy_html_options
+            );
             ?>
       </div>
       <span class="grade-info-icon" data-info-type="retinopathy">
@@ -169,8 +177,12 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
                   'data-code' => $clinical->code,
                 );
             }
-            echo CHtml::activeDropDownList($element, $side . '_clinicalmac_id',
-              CHtml::listData($clinical_maculopathys, 'id', 'name'), $html_options);
+            echo CHtml::activeDropDownList(
+                $element,
+                $side . '_clinicalmac_id',
+                CHtml::listData($clinical_maculopathys, 'id', 'name'),
+                $html_options
+            );
             ?>
       </div>
       <!-- REMOVED UNTIL WE ARE PROVIDED WITH APPROPRIATE TEXT FOR THE DESCRIPTIONS
@@ -218,8 +230,12 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
                   'data-code' => $macu->code,
                 );
             }
-            echo CHtml::activeDropDownList($element, $side . '_nscmaculopathy_id',
-              CHtml::listData($nsc_maculopathys, 'id', 'name'), $nscmaculopathy_html_options);
+            echo CHtml::activeDropDownList(
+                $element,
+                $side . '_nscmaculopathy_id',
+                CHtml::listData($nsc_maculopathys, 'id', 'name'),
+                $nscmaculopathy_html_options
+            );
             ?>
       </div>
       <span class="grade-info-icon" data-info-type="maculopathy">

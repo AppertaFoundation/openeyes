@@ -25,18 +25,19 @@
   </header>
   <div class="element-fields full-width">
         <?php echo $form->dropDownList(
-          $element, 'site_id',
-          Site::model()->getListForCurrentInstitution(),
-          array(
+            $element,
+            'site_id',
+            Site::model()->getListForCurrentInstitution(),
+            array(
               'empty' => 'Select',
               'style' => 'margin-left:8px',
               'nowrapper' => true
-          ),
-          false,
-          array(
+            ),
+            false,
+            array(
               'label' => 2,
               'field' => 3
-          )
-      ) ?>
+            )
+        ) ?>
   </div>
 </section>

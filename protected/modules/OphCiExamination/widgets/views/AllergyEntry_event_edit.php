@@ -50,14 +50,19 @@ if (!isset($values)) {
         <?php if ($removable) {
             if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
-                    <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
-                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT, array('value' => AllergyEntry::$PRESENT)); ?>
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
+                        array('value' => AllergyEntry::$PRESENT)
+                    ); ?>
                     yes
                 </label>
                 <label class="inline highlight">
-                    <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
                         $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                        array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+                        array('value' => AllergyEntry::$NOT_PRESENT)
+                    ); ?>
                     no
                 </label>
             <?php } else {
@@ -65,21 +70,27 @@ if (!isset($values)) {
             }
         } else { ?>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
-                array('value' => AllergyEntry::$NOT_CHECKED)); ?>
+                array('value' => AllergyEntry::$NOT_CHECKED)
+            ); ?>
           Not checked
         </label>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
-                array('value' => AllergyEntry::$PRESENT)); ?>
+                array('value' => AllergyEntry::$PRESENT)
+            ); ?>
           yes
         </label>
         <label class="inline highlight">
-            <?=\CHtml::radioButton($field_prefix . '[has_allergy]',
+            <?=\CHtml::radioButton(
+                $field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+                array('value' => AllergyEntry::$NOT_PRESENT)
+            ); ?>
           no
         </label>
         <?php } ?>

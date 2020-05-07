@@ -32,8 +32,7 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     {
         return array_merge(parent::attributeNames(), array(
                 'patient_name',
-            )
-        );
+            ));
     }
 
     public function attributeLabels()

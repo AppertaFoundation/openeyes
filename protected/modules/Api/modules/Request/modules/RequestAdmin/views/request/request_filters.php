@@ -59,19 +59,23 @@
                 <tr>
                     <td colspan="2">Request Routine Name</td>
                     <td>
-                        <?= CHtml::dropDownList("routine_and_status_filter[routine_name]",
+                        <?= CHtml::dropDownList(
+                            "routine_and_status_filter[routine_name]",
                             $http_request->getParam('routine_and_status_filter')['routine_name'],
                             CHtml::listData(RoutineLibrary::model()->findAll(array('order' => 'routine_name asc')), 'routine_name', 'routine_name'),
-                            ['empty' => '- Empty -', 'class' => 'filter_field cols-12'])?>
+                            ['empty' => '- Empty -', 'class' => 'filter_field cols-12']
+                        )?>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">Request Routine Status</td>
                     <td>
-                        <?= CHtml::dropDownList("routine_and_status_filter[routine_status]",
+                        <?= CHtml::dropDownList(
+                            "routine_and_status_filter[routine_status]",
                             $http_request->getParam('routine_and_status_filter')['routine_status'],
                             ['COMPLETE' => 'COMPLETE', 'NEW' => 'NEW', 'VOID' => 'VOID', 'RETRY' => 'RETRY', 'FAILED' => 'FAILED'],
-                            ['empty' => '- All -', 'class' => 'filter_field'])?>
+                            ['empty' => '- All -', 'class' => 'filter_field']
+                        )?>
                     </td>
                 </tr>
                 </tbody>

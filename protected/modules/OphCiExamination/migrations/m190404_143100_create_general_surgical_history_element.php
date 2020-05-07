@@ -18,8 +18,13 @@ class m190404_143100_create_general_surgical_history_element extends OEMigration
             'comments' => 'text'
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_systemicsurgery_ev_fk',
-            'et_ophciexamination_systemicsurgery', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_systemicsurgery_ev_fk',
+            'et_ophciexamination_systemicsurgery',
+            'event_id',
+            'event',
+            'id'
+        );
 
         $this->createOETable('et_ophciexamination_systemicsurgery_op', array(
             'id' => 'pk',
@@ -30,11 +35,21 @@ class m190404_143100_create_general_surgical_history_element extends OEMigration
             'had_operation' => 'tinyint(1) NOT NULL DEFAULT -9'
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_systemicsurgery_op_el_fk',
-            'et_ophciexamination_systemicsurgery_op', 'element_id', 'et_ophciexamination_systemicsurgery', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_systemicsurgery_op_el_fk',
+            'et_ophciexamination_systemicsurgery_op',
+            'element_id',
+            'et_ophciexamination_systemicsurgery',
+            'id'
+        );
 
-        $this->addForeignKey('et_ophciexamination_systemicsurgery_op_side_fk',
-            'et_ophciexamination_systemicsurgery_op', 'side_id', 'eye', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_systemicsurgery_op_side_fk',
+            'et_ophciexamination_systemicsurgery_op',
+            'side_id',
+            'eye',
+            'id'
+        );
 
         $this->createOETable('common_previous_systemic_operation', [
             'id' => 'pk',
@@ -80,18 +95,28 @@ class m190404_143100_create_general_surgical_history_element extends OEMigration
         $this->dropOETable('common_previous_systemic_operation', true);
         $this->dropOETable('et_ophciexamination_systemicsurgery_op', true);
         $this->dropOETable('et_ophciexamination_systemicsurgery', true);
-        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
-            array(':class_name' => 'OphCiExamination'))->queryScalar();
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OphCiExamination')
+        )->queryScalar();
         $element_type_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('element_type')
-            ->where('class_name = :class_name AND event_type_id = :eid',
-                array(':class_name' => 'OEModule\OphCiExamination\models\SystemicSurgery', ':eid' => $event_type_id))
+            ->where(
+                'class_name = :class_name AND event_type_id = :eid',
+                array(':class_name' => 'OEModule\OphCiExamination\models\SystemicSurgery', ':eid' => $event_type_id)
+            )
             ->queryScalar();
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
-            array(':element_type_id' => $element_type_id));
-        $this->delete('element_type', 'id = :id',
-            array(':id' => $element_type_id));
+        $this->delete(
+            'ophciexamination_element_set_item',
+            'element_type_id = :element_type_id',
+            array(':element_type_id' => $element_type_id)
+        );
+        $this->delete(
+            'element_type',
+            'id = :id',
+            array(':id' => $element_type_id)
+        );
 
         $this->execute("UPDATE element_type SET `name` = 'Surgical History' WHERE `class_name` = 'OEModule\\\\OphCiExamination\\\\models\\\\SystemicSurgery'");
     }

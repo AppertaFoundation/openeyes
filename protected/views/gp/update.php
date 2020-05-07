@@ -105,10 +105,10 @@ $this->pageTitle = 'Update Practitioner';
                                 <td>
                                   <?=
                                   \CHtml::activeRadioButtonList(
-                                    $gp,
-                                    'is_active',
-                                    [1 => 'Yes', 0 => 'No'],
-                                    ['separator' => ' ']
+                                      $gp,
+                                      'is_active',
+                                      [1 => 'Yes', 0 => 'No'],
+                                      ['separator' => ' ']
                                   );
                                   ?>
                                 </td>

@@ -40,7 +40,7 @@ class ReportController extends BaseReportController
 
     public function actionOperation()
     {
-        Audit::add('Reports', 'view', print_r(['report-name' => 'Operationnote Operation'], true) );
+        Audit::add('Reports', 'view', print_r(['report-name' => 'Operationnote Operation'], true));
         $this->pageTitle = 'Operations report';
         $this->render('operation', array(
             'surgeons' => CHtml::listData(User::model()->findAll(array('condition' => 'is_surgeon = 1', 'order' => 'first_name,last_name')), 'id', 'fullname'),

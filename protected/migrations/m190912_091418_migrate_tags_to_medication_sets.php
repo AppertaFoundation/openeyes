@@ -6,8 +6,7 @@ class m190912_091418_migrate_tags_to_medication_sets extends OEMigration
     {
         $this->execute('UPDATE ophciexamination_risk_tag t
                          JOIN tag tg ON tg.id = t.`tag_id`
-                         SET medication_set_id = (SELECT id FROM medication_set mst WHERE mst.name = tg.name)'
-        );
+                         SET medication_set_id = (SELECT id FROM medication_set mst WHERE mst.name = tg.name)');
 
         $this->dropForeignKey('ophciexamination_risk_tag_tag_fk', 'ophciexamination_risk_tag');
         $this->dropColumn('ophciexamination_risk_tag', 'tag_id');

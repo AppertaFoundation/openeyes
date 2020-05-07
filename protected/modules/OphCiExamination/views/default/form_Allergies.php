@@ -46,9 +46,12 @@
                     'order' => 'display_order',
                     'condition' => 'active=1',
                 ));
-                echo CHtml::dropDownList('allergy_id',
+                echo CHtml::dropDownList(
+                    'allergy_id',
                     null,
-                    CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
+                    CHtml::listData($allAllergies, 'id', 'name'),
+                    array('empty' => '-- Select --')
+                ); ?>
             </div>
           </div>
           <div id="allergy_other" class="data-group hidden">
@@ -56,8 +59,11 @@
               <label for="allergy_id">Other allergy:</label>
             </div>
             <div class="<?php echo $form->columns('field'); ?>">
-                <?= CHtml::textField('other_allergy', '',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+                <?= CHtml::textField(
+                    'other_allergy',
+                    '',
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                ); ?>
             </div>
           </div>
           <div class="data-group allergy_field">
@@ -65,8 +71,11 @@
               <label for="comments">Comments:</label>
             </div>
             <div class="<?php echo $form->columns('field'); ?>">
-                <?=\CHtml::textField('comments', '',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                <?=\CHtml::textField(
+                    'comments',
+                    '',
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                ) ?>
             </div>
           </div>
 

@@ -12,7 +12,8 @@ class m190814_013145_add_import_log_tables extends OEMigration
                 'enddatetime' => 'datetime',
                 'status' => 'string NOT NULL',
                 'import_user_id' => 'int(10) NOT NULL'
-                ));
+            )
+        );
 
         $this->createOETable(
             'import',
@@ -21,7 +22,8 @@ class m190814_013145_add_import_log_tables extends OEMigration
                 'parent_log_id' => 'int NOT NULL',
                 'message' => 'string NOT NULL',
                 'import_status_id' => 'int NOT NULL'
-            ));
+            )
+        );
         $builder = $this->getDbConnection()->schema->commandBuilder;
         $builder->createMultipleInsertCommand(
             'import_status',
@@ -32,7 +34,8 @@ class m190814_013145_add_import_log_tables extends OEMigration
                 array('id' => 9, 'status_value' => 'Invalid Patient Data'),
                 array('id' => 10, 'status_value' => 'Invalid Contact Data'),
                 array('id' => 11, 'status_value' => 'Invalid Diagnosis')
-            ))->execute();
+            )
+        )->execute();
     }
 
     public function down()

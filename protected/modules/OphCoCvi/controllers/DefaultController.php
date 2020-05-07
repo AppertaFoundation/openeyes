@@ -130,11 +130,14 @@ class DefaultController extends \BaseEventTypeController
             // because we are using this check for clinical edit access checks, we need to handle new events as well
             return $this->checkCreateAccess();
         } else {
-            return !$this->getManager()->isIssued($this->event) && $this->checkAccess('OprnEditCvi',
-                $this->getApp()->user->id, array(
+            return !$this->getManager()->isIssued($this->event) && $this->checkAccess(
+                'OprnEditCvi',
+                $this->getApp()->user->id,
+                array(
                     'firm' => $this->firm,
                     'event' => $this->event,
-                ));
+                )
+            );
         }
     }
 
@@ -290,10 +293,14 @@ class DefaultController extends \BaseEventTypeController
                     foreach ($data[$model_name][$key] as $idx => $data_disorder) {
                         $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
                         $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                        $cvi_ass->affected = array_key_exists('affected',
-                            $data_disorder) ? $data_disorder['affected'] : false;
-                        $cvi_ass->main_cause = array_key_exists('main_cause',
-                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        $cvi_ass->affected = array_key_exists(
+                            'affected',
+                            $data_disorder
+                        ) ? $data_disorder['affected'] : false;
+                        $cvi_ass->main_cause = array_key_exists(
+                            'main_cause',
+                            $data_disorder
+                        ) ? $data_disorder['main_cause'] : false;
                         $cvi_assignments[] = $cvi_ass;
                     }
                 }
@@ -329,8 +336,10 @@ class DefaultController extends \BaseEventTypeController
             $side_data = array_key_exists($key, $data[$model_name]) ? $data[$model_name][$key] : array();
             $element->updateDisorders($side, $side_data);
         }
-        $comments_data = array_key_exists('cvi_disorder_section',
-            $data[$model_name]) ? $data[$model_name]['cvi_disorder_section'] : array();
+        $comments_data = array_key_exists(
+            'cvi_disorder_section',
+            $data[$model_name]
+        ) ? $data[$model_name]['cvi_disorder_section'] : array();
         $element->updateDisorderSectionComments($comments_data);
     }
 

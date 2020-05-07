@@ -52,7 +52,9 @@ class DefaultController extends OphTrOperationbookingEventController
             Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
             Yii::app()->clientScript->registerScript(
                 'AnaestheticController',
-                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});', CClientScript::POS_END);
+                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',
+                CClientScript::POS_END
+            );
 
             $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
             $this->jsVars['op_booking_inc_time_high_complexity'] = SettingMetadata::model()->getSetting('op_booking_inc_time_high_complexity');
@@ -603,7 +605,8 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->layout = '//layouts/print';
 
         $this->pdf_print_suffix = 'admission_form';
-        $this->pdf_print_html = $this->render('../letters/admission_form',
+        $this->pdf_print_html = $this->render(
+            '../letters/admission_form',
             array(
                 'operation' => $this->operation,
                 'site' => $this->operation->site,

@@ -18,10 +18,12 @@
 <?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
     <div>
         <?php
-        $this->event_actions[] = EventAction::link('Cancel Scheduling',
+        $this->event_actions[] = EventAction::link(
+            'Cancel Scheduling',
             Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $this->operation->event_id),
             array(),
-            array('id' => 'cancel_scheduling', 'class' => 'red warning'));
+            array('id' => 'cancel_scheduling', 'class' => 'red warning')
+        );
 
         $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
@@ -110,8 +112,10 @@
                     <?php if (Yii::app()->params['ophtroperationbooking_referral_link']) { ?>
                         <tr>
                             <td>
-                                <?=\CHtml::label($operation->getAttributeLabel('referral_id') . ':',
-                                    'referral_id'); ?>
+                                <?=\CHtml::label(
+                                    $operation->getAttributeLabel('referral_id') . ':',
+                                    'referral_id'
+                                ); ?>
                             </td>
                             <td>
                                 <?php
@@ -133,9 +137,14 @@
                                             }
                                         }
                                     }
-                                    echo CHtml::activedropDownList($operation, 'referral_id',
-                                        CHtml::listData($this->getReferralChoices(), 'id', 'description'), $html_options, false,
-                                        array('field' => 2));
+                                    echo CHtml::activedropDownList(
+                                        $operation,
+                                        'referral_id',
+                                        CHtml::listData($this->getReferralChoices(), 'id', 'description'),
+                                        $html_options,
+                                        false,
+                                        array('field' => 2)
+                                    );
                                     ?>
                                     <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
                                                 id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>

@@ -44,8 +44,10 @@ EOH;
         if ($debug) {
             echo "Cleaning EventImages with invalid statuses.";
         }
-        EventImage::model()->deleteAll('status_id != ?',
-            array(EventImageStatus::model()->find('name = "CREATED"')->id));
+        EventImage::model()->deleteAll(
+            'status_id != ?',
+            array(EventImageStatus::model()->find('name = "CREATED"')->id)
+        );
     }
 
     public function actionReset()

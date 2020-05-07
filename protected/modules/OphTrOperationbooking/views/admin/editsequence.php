@@ -33,8 +33,12 @@
                     <?= $form->labelEx($sequence, 'firm_id'); ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($sequence, 'firm_id', Firm::model()->getListWithSpecialties(),
-                    ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12', ])?>
+                    <?= $form->dropDownList(
+                        $sequence,
+                        'firm_id',
+                        Firm::model()->getListWithSpecialties(),
+                        ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12', ]
+                    )?>
                 </td>
             </tr>
             <tr>
@@ -42,10 +46,13 @@
                     <?= $form->labelEx($sequence, 'theatre_id'); ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($sequence, 'theatre_id',
-                    CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->
-                    activeOrPk($sequence->theatre_id)->findAll(['order' => 'name']), 'id', 'nameWithSite'),
-                    ['empty' => '- None -', 'nowrapper' => true])?>
+                    <?= $form->dropDownList(
+                        $sequence,
+                        'theatre_id',
+                        CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->
+                        activeOrPk($sequence->theatre_id)->findAll(['order' => 'name']), 'id', 'nameWithSite'),
+                        ['empty' => '- None -', 'nowrapper' => true]
+                    )?>
                 </td>
             </tr>
             <tr>
@@ -53,8 +60,12 @@
                     <?= $form->labelEx($sequence, 'start_date'); ?>
                 </td>
                 <td>
-                    <?= $form->datePicker($sequence, 'start_date', [],
-                    ['null' => true, 'nowrapper' => true]) ?>
+                    <?= $form->datePicker(
+                        $sequence,
+                        'start_date',
+                        [],
+                        ['null' => true, 'nowrapper' => true]
+                    ) ?>
                 </td>
             </tr>
             <tr>
@@ -62,8 +73,12 @@
                     <?= $form->labelEx($sequence, 'end_date'); ?>
                 </td>
                 <td>
-                    <?= $form->datePicker($sequence, 'end_date', [],
-                    ['null' => true, 'nowrapper' => true]) ?>
+                    <?= $form->datePicker(
+                        $sequence,
+                        'end_date',
+                        [],
+                        ['null' => true, 'nowrapper' => true]
+                    ) ?>
                 </td>
             </tr>
             <tr>
@@ -71,7 +86,10 @@
                     <?= $form->labelEx($sequence, 'weekday'); ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($sequence, 'weekday', [
+                    <?= $form->dropDownList(
+                        $sequence,
+                        'weekday',
+                        [
                             1 => 'Monday',
                             2 => 'Tuesday',
                             3 => 'Wednesday',
@@ -80,7 +98,8 @@
                             6 => 'Saturday',
                             7 => 'Sunday',
                         ],
-                        ['empty' => '- Weekday -', 'nowrapper' => true]) ?>
+                        ['empty' => '- Weekday -', 'nowrapper' => true]
+                    ) ?>
                 </td>
             </tr>
             <tr>
@@ -204,10 +223,11 @@
     <div class="data-group">
         <div class="cols-10 large-offset-2 column">
             <?php echo EventAction::button('Save', 'save', array('level' => 'save'))->toHtml()?>
-            <?php echo EventAction::link('Cancel',
-                    Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
-                    array('level' => 'cancel')
-                )->toHtml();
+            <?php echo EventAction::link(
+                'Cancel',
+                Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),
+                array('level' => 'cancel')
+            )->toHtml();
 ?>
             <?php if ($sequence->id) {?>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -65,8 +65,9 @@
             <tr>
                 <td>
                     <a href="<?=Yii::app()->createUrl(
-                            '/OphCoTherapyapplication/Default/downloadFileCollection',
-                            ['id' => $model->id]) ?>"
+                        '/OphCoTherapyapplication/Default/downloadFileCollection',
+                        ['id' => $model->id]
+                    ) ?>"
                        class="button small"
                     >Download zip file
                     </a>

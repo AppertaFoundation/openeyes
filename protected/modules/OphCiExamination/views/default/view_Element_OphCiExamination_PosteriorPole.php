@@ -21,8 +21,10 @@
       <div class="js-element-eye cols-6 <?= $eye_side ?>-eye ">
         <div class="data-group">
             <?php if ($element->hasEye($eye_side)) : ?>
-                <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
-                    array('side' => $eye_side, 'element' => $element)); ?>
+                <?php $this->renderPartial(
+                    $element->view_view . '_OEEyeDraw',
+                    array('side' => $eye_side, 'element' => $element)
+                ); ?>
             <?php else : ?>
               <div class="data-value not-recorded">Not recorded</div>
             <?php endif; ?>

@@ -42,8 +42,11 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             $is_checked = (!is_null($value) && $value == $id) && (!is_string($value) || $value != '');
         }
         ?>
-        <?=\CHtml::checkBox("{$name}[]",
-            $is_checked, $options); ?>
+        <?=\CHtml::checkBox(
+            "{$name}[]",
+            $is_checked,
+            $options
+        ); ?>
         <?=\CHtml::encode($data_value) ?>
     </label>
     <?php } ?>

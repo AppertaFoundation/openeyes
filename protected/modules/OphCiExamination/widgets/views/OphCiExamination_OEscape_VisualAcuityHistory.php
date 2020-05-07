@@ -20,14 +20,15 @@
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
         <?= CHtml::dropDownList(
-        'va_history_unit_id',
-        $va_unit->id,
-        CHtml::listData(
-          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-          model()->active()->findAllByAttributes(array('is_near'=>0)),
-          'id',
-          'name')
-      )?>
+            'va_history_unit_id',
+            $va_unit->id,
+            CHtml::listData(
+                OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+                model()->active()->findAllByAttributes(array('is_near'=>0)),
+                'id',
+                'name'
+            )
+        )?>
   </form>
   <div id="plotly-VA-right" class="plotly-VA plotly-right plotly-section" data-eye-side="right"></div>
   <div id="plotly-VA-left" class="plotly-VA plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>

@@ -14,14 +14,26 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
     private function migrateVisualFunction($versioned)
     {
         // Move columns from visual function to pupillary abnormalities
-        $this->addColumn('et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
-            'left_comments', 'text');
-        $this->addColumn('et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
-            'right_comments', 'text');
-        $this->addColumn('et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
-            'left_rapd', 'tinyint(1) unsigned');
-        $this->addColumn('et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
-            'right_rapd', 'tinyint(1) unsigned');
+        $this->addColumn(
+            'et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
+            'left_comments',
+            'text'
+        );
+        $this->addColumn(
+            'et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
+            'right_comments',
+            'text'
+        );
+        $this->addColumn(
+            'et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
+            'left_rapd',
+            'tinyint(1) unsigned'
+        );
+        $this->addColumn(
+            'et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
+            'right_rapd',
+            'tinyint(1) unsigned'
+        );
 
         $visual_functions = $this->dbConnection->createCommand()
             ->select('*')
@@ -49,7 +61,8 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
             }
 
             // Update the existing/new element with the visual function data
-            $this->update('et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
+            $this->update(
+                'et_ophciexamination_pupillaryabnormalities' . ($versioned ? '_version' : ''),
                 array(
                     'left_comments' => $visualfunction['left_comments'],
                     'right_comments' => $visualfunction['right_comments'],
@@ -57,7 +70,8 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
                     'right_rapd' => $visualfunction['right_rapd'],
                     'eye_id' => $visualfunction['eye_id'] & $pupil_element['eye_id'],
                 ),
-                'id = :id', array(':id' => $pupil_element['id'])
+                'id = :id',
+                array(':id' => $pupil_element['id'])
             );
         }
     }
@@ -67,17 +81,24 @@ class m180613_015714_merge_visual_function_element_into_pupils extends OEMigrati
         $this->migrateVisualFunction(false);
         $this->migrateVisualFunction(true);
 
-        $pa_element_type = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('class_name = :class_name',
-            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities'))->queryRow();
+        $pa_element_type = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities')
+        )->queryRow();
 
-        $vf_element_type = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('class_name = :class_name',
-            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction'))->queryRow();
+        $vf_element_type = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction')
+        )->queryRow();
 
         $vf_element_type_children = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('parent_element_type_id = :parent_element_type_id', array(':parent_element_type_id' => $vf_element_type['id']))->queryAll();
 
         // Remove element sets
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_id OR element_type_id IN (SELECT id FROM element_type WHERE parent_element_type_id = :element_id)',
-            array(':element_id' => $vf_element_type['id']));
+        $this->delete(
+            'ophciexamination_element_set_item',
+            'element_type_id = :element_id OR element_type_id IN (SELECT id FROM element_type WHERE parent_element_type_id = :element_id)',
+            array(':element_id' => $vf_element_type['id'])
+        );
 
         // Remove element type
         $this->delete('setting_metadata', 'element_type_id in ('.implode(",", array_column($vf_element_type_children, 'id')).')');

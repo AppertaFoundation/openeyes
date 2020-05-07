@@ -22,8 +22,10 @@
         <div class="data-group">
             <?php if ($element->hasEye($eye_side)) : ?>
               <div class="eyedraw flex-layout flex-top anterior-segment">
-                  <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
-                      array('side' => $eye_side, 'element' => $element));
+                  <?php $this->renderPartial(
+                      $element->view_view . '_OEEyeDraw',
+                      array('side' => $eye_side, 'element' => $element)
+                  );
                     ?>
               </div>
             <?php else : ?>

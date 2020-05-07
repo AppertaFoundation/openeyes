@@ -322,8 +322,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 unset($data[$assignment->ophcocvi_clinicinfo_disorder_id]);
             } else {
                 if (!$assignment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r($assignment->getErrors(),
-                            true));
+                    throw new \Exception('Unable to delete CVI Disorder Assignment: ' . print_r(
+                        $assignment->getErrors(),
+                        true
+                    ));
                 }
             }
         }
@@ -355,14 +357,18 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 $comment_data = $data[$section_comment->ophcocvi_clinicinfo_disorder_section_id];
                 $section_comment->comments = isset($comment_data['comments']) ? $comment_data['comments'] : "";
                 if (!$section_comment->save()) {
-                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
-                            true));
+                    throw new \Exception('Unable to save CVI Disorder Section Comment: ' . print_r(
+                        $section_comment->getErrors(),
+                        true
+                    ));
                 }
                 unset($data[$section_comment->ophcocvi_clinicinfo_disorder_section_id]);
             } else {
                 if (!$section_comment->delete()) {
-                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r($section_comment->getErrors(),
-                            true));
+                    throw new \Exception('Unable to delete CVI Disorder Section Comment: ' . print_r(
+                        $section_comment->getErrors(),
+                        true
+                    ));
                 }
             }
         }
@@ -373,8 +379,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             $section_comment->comments = isset($values['comments']) ? $values['comments'] : "";
             $section_comment->element_id = $this->id;
             if (!$section_comment->save()) {
-                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r($section_comment->getErrors(),
-                        true));
+                throw new \Exception("Unable to save CVI Disorder Section Comment: " . print_r(
+                    $section_comment->getErrors(),
+                    true
+                ));
             }
         }
     }
@@ -588,8 +596,10 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         );
 
         for ($k = 0, $k_max = count($field_of_vision_data); $k < $k_max; $k++) {
-            $data[$k + 1] = array_merge($field_of_vision_data[$k],
-                $low_vision_data[$k]);
+            $data[$k + 1] = array_merge(
+                $field_of_vision_data[$k],
+                $low_vision_data[$k]
+            );
         }
 
         return $data;

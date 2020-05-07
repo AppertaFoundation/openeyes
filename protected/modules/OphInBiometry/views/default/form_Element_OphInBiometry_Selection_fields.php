@@ -75,9 +75,12 @@
                             $htmlOptions['disabled'] = 'disabled';
                         }
                         echo $form->dropDownList(
-                            $element, 'lens_id_' . $side,
+                            $element,
+                            'lens_id_' . $side,
                             CHtml::listData(
-                                $lenses, 'id', 'display_name'
+                                $lenses,
+                                'id',
+                                'display_name'
                             ),
                             $htmlOptions,
                             null,

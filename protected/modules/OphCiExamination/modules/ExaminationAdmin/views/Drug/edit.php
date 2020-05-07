@@ -26,8 +26,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
 ]);
 
 $this->renderPartial(
-  '/Drug/_form',
-  ['form' => $form, 'model' => $model]
+    '/Drug/_form',
+    ['form' => $form, 'model' => $model]
 );
 
 $this->endWidget();

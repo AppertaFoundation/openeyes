@@ -25,13 +25,17 @@
     </td>
     <td>
         <?php echo $form->radioButtons(
-          $element,
-          'eye_id',
-          CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-          null, false, false, false, false,
-          array('nowrapper' => true),
-          array()
-      )?>
+            $element,
+            'eye_id',
+            CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+            null,
+            false,
+            false,
+            false,
+            false,
+            array('nowrapper' => true),
+            array()
+        )?>
     </td>
     <td></td>
   </tr>
@@ -45,10 +49,12 @@
             'AnaestheticType',
             array_map(function($element){
                 return $element['id'];
-            }, $element->anaesthetic_type
-            ),
+            }, $element->anaesthetic_type),
             'Anaesthetic Type',
-            false, false, false, false,
+            false,
+            false,
+            false,
+            false,
             array(
                 'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                 'nowrapper' => true
@@ -60,7 +66,8 @@
   <tr>
     <td>Procedures</td>
     <td>
-        <?php $form->widget('application.widgets.ProcedureSelection',
+        <?php $form->widget(
+            'application.widgets.ProcedureSelection',
             array(
                 'element' => $element,
                 'durations' => false,

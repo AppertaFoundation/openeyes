@@ -31,8 +31,10 @@
             <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
                 <div class="<?= $eye_side ?>-eye">
                     <?php if ($element->hasEye($eye_side)) {
-                        $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
-                            array('side' => $eye_side, 'element' => $element));
+                        $this->renderPartial(
+                            'view_Element_OphInBiometry_Calculation_fields',
+                            array('side' => $eye_side, 'element' => $element)
+                        );
                     } else { ?>
                         <div class="data-value not-recorded">Not recorded</div>
                     <?php } ?>

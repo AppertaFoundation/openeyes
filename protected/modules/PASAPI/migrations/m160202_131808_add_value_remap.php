@@ -17,8 +17,14 @@ class m160202_131808_add_value_remap extends OEMigration
             'output' => 'varchar(31) default NULL',
         ), true);
 
-        $this->addForeignKey('pasapi_remap_value_xpath_id_fk', 'pasapi_remap_value',
-            'xpath_id', 'pasapi_xpath_remap', 'id', 'CASCADE');
+        $this->addForeignKey(
+            'pasapi_remap_value_xpath_id_fk',
+            'pasapi_remap_value',
+            'xpath_id',
+            'pasapi_xpath_remap',
+            'id',
+            'CASCADE'
+        );
     }
 
     public function down()

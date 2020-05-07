@@ -50,7 +50,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
+        $this->expectException(CHttpException::class);
         foreach ($invalidOps as $operator) {
             $this->parameter->operation = $operator;
             $this->parameter->query($this->searchProvider);

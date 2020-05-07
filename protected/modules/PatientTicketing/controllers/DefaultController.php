@@ -123,8 +123,9 @@ class DefaultController extends \BaseModuleController
         } else {
             if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
                 foreach ($qs_svc->getQueueSetQueues(
-                            $queueset,
-                            @$filter_options['closed-tickets'] ? true : false) as $queue) {
+                    $queueset,
+                    @$filter_options['closed-tickets'] ? true : false
+                ) as $queue) {
                             $queue_ids[] = $queue->id;
                 }
             }
@@ -756,8 +757,12 @@ class DefaultController extends \BaseModuleController
             throw new Exception('Subspecialty not found: ' . @$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+        echo \CHtml::dropDownList(
+            'firm-id',
+            '',
+            \Firm::model()->getList($subspecialty->id),
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']
+        );
     }
 
     public function actionUndoLastStep($id)

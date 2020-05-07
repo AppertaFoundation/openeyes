@@ -62,8 +62,11 @@
 
         if (!empty($links)) {
             foreach ($links as $link) {
-                echo '<span class="field-info">' . CHtml::link($link['title'], $link['href'],
-                        array('id' => $link['id'])) . '</span>';
+                echo '<span class="field-info">' . CHtml::link(
+                    $link['title'],
+                    $link['href'],
+                    array('id' => $link['id'])
+                ) . '</span>';
             }
         } ?>
     </div>

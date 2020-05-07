@@ -32,8 +32,7 @@ class SplitEventTypeElementTest extends CDbTestCase
         Yii::app()->db->createCommand()->createTable('split_element_test', array('id' => 'pk',
             'title' => 'string NOT NULL',
             'eye_id' => 'int(10) unsigned NOT NULL',
-            ' CONSTRAINT `split_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)', )
-        );
+            ' CONSTRAINT `split_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)', ));
         parent::setUpBeforeClass();
     }
 

@@ -29,7 +29,7 @@ class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigra
           'KEY `et_ophindnasample_sample_version_vi_fk` (`version_id`)',
           
            
-        ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin' );
+        ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
     }
 
     public function down()

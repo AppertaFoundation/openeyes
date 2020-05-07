@@ -208,7 +208,9 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
     {
         if ($this->enable_version) {
             $this->getCommandBuilder()->createInsertFromTableCommand(
-                $this->getVersionTableSchema(), $this->getTableSchema(), $criteria
+                $this->getVersionTableSchema(),
+                $this->getTableSchema(),
+                $criteria
             )->execute();
         }
     }

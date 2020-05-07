@@ -72,8 +72,10 @@
           </td>
         </tr>
         <?php
-        $preferredInfoFormatEmail = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll('`require_email` = ?',
-            array(1));
+        $preferredInfoFormatEmail = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(
+            '`require_email` = ?',
+            array(1)
+        );
         if (sizeof($preferredInfoFormatEmail) == 1) {
             ?>
           <tr>

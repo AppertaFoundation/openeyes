@@ -82,7 +82,9 @@ $layoutColumns = array(
                     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($procedure) {
                             return ['label' => $procedure->term, 'id' => $procedure->id];
-                        }, $procs  ) ) ?> ,{'multiSelect': true}),
+                        },
+                        $procs) 
+                    ) ?> ,{'multiSelect': true}),
                     ],
                     onOpen: function (adderDialog) {
                         adderDialog.popup.find('li').each(function() {
@@ -117,7 +119,6 @@ $layoutColumns = array(
             'id' => '{{id}}',
             'term' => '{{term}}',
             'eye_side' => '{{eye_side}}',
-        )
-    );
+        ));
     ?>
     </script>

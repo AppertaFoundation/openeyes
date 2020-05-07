@@ -13,11 +13,12 @@
 
                 <tr>
                     <td>Reason for putting on hold:</td>
-                    <td><?= \CHtml::dropDownList('on_hold_reason',
-                            false,
-                            CHtml::listData(OphTrOperationBooking_Operation_On_Hold_Reason::model()->findAll(), 'reason', 'reason') + ['Other' => 'Other'],
-                            ['empty' => 'Please Select']
-                        ) ?></textarea></td>
+                    <td><?= \CHtml::dropDownList(
+                        'on_hold_reason',
+                        false,
+                        CHtml::listData(OphTrOperationBooking_Operation_On_Hold_Reason::model()->findAll(), 'reason', 'reason') + ['Other' => 'Other'],
+                        ['empty' => 'Please Select']
+                    ) ?></textarea></td>
                 </tr>
                 <tr class="js-other-reason-box" style="display:none;">
                     <td>Other reason:</td>

@@ -307,10 +307,12 @@ class ElementCode extends CCodeModel
 
             // Add view files
             $this->files[] = new CCodeFile(
-                $_formFilePath, $this->render($this->templatePath.'/_form.php', $params)
+                $_formFilePath,
+                $this->render($this->templatePath.'/_form.php', $params)
             );
             $this->files[] = new CCodeFile(
-                $_viewFilePath, $this->render($this->templatePath.'/_view.php', $params)
+                $_viewFilePath,
+                $this->render($this->templatePath.'/_view.php', $params)
             );
         }
     }

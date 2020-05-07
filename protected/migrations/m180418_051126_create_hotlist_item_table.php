@@ -9,12 +9,15 @@ class m180418_051126_create_hotlist_item_table extends OEMigration
             'patient_id' => 'int(10) unsigned NOT NULL',
             'is_open' => 'boolean NOT NULL DEFAULT true',
             'user_comment' => 'text',
-        ), true
-        );
+        ), true);
 
-        $this->addForeignKey('user_hotlist_item_user_fk',
-            'user_hotlist_item', 'patient_id',
-            'patient', 'id');
+        $this->addForeignKey(
+            'user_hotlist_item_user_fk',
+            'user_hotlist_item',
+            'patient_id',
+            'patient',
+            'id'
+        );
     }
 
     public function safeDown()

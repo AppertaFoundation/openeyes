@@ -4,8 +4,12 @@ class m200120_135611_add_unique_constraint_on_attachment_element extends CDbMigr
 {
     public function safeUp()
     {
-        $this->createIndex('generic_attachment_element_unique_index', 'et_ophgeneric_attachment',
-            'event_id', 1);
+        $this->createIndex(
+            'generic_attachment_element_unique_index',
+            'et_ophgeneric_attachment',
+            'event_id',
+            1
+        );
     }
 
     public function safeDown()

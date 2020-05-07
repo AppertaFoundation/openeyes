@@ -21,7 +21,8 @@ if ($element->event->id > 0) {
     $iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
         array(
             'event_id' => $element->event->id,
-        ));
+        )
+    );
 }
 ?>
 
@@ -33,8 +34,10 @@ if ($element->event->id > 0) {
                   <div class="eye-icon-header">
                       <?php $this->widget('EyeLateralityWidget', array('laterality' => $eye_side, 'size' => null)) ?>
                   </div>
-                    <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
-                        array('side' => $eye_side, 'element' => $element));
+                    <?php $this->renderPartial(
+                        'view_Element_OphInBiometry_Measurement_fields',
+                        array('side' => $eye_side, 'element' => $element)
+                    );
                 } else { ?>
                     <div class="data-value not-recorded">Not recorded</div>
                 <?php } ?>

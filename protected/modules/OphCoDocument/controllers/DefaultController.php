@@ -193,7 +193,7 @@ class DefaultController extends BaseEventTypeController
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key])>0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
                     if ( $handler == null) {
-                        $return_data[$file_key] = $this->uploadFile( $file["tmp_name"][$file_key], $file["name"][$file_key]);
+                        $return_data[$file_key] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
                     } else {
                         $return_data = array(
                             's'     => 0,
@@ -262,7 +262,7 @@ class DefaultController extends BaseEventTypeController
                 'file_id'   => $pf->id,
             );
 
-            if ( !isset( $_GET['ajax'])) {
+            if ( !isset($_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
@@ -347,7 +347,7 @@ class DefaultController extends BaseEventTypeController
                             $auto_print = Yii::app()->request->getParam('auto_print', true);
                             $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-                            $pdf_route = $this->setPDFprintData( $id, $inject_autoprint_js );
+                            $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
 
                             $pdf = $this->event->getPDF($pdf_route);
                             $this->addPDFToOutput($pdf);

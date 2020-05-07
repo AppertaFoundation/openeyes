@@ -116,9 +116,11 @@
                             'name' => 'printForSignature',
                             'class' => 'small button primary event-action',
                         )); ?> <br/><br/>
-                        <?=\CHtml::link('Retrieve Signature',
+                        <?=\CHtml::link(
+                            'Retrieve Signature',
                             '/OphCoCvi/default/retrieveConsentSignature/' . $this->event->id,
-                            array('class' => 'button small secondary')); ?>
+                            array('class' => 'button small secondary')
+                        ); ?>
                     </div>
                   </div>
                     <?php }

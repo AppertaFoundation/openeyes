@@ -23,13 +23,22 @@
       <div class="cols-3">
           <section class="box dashboard">
                 <?php
-                echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
-                      array('class' => 'button small')) . ' ';
-                echo CHtml::link('edit', array('patientMergeRequest/update', 'id' => $model->id),
-                  array('class' => 'button small secondary'));
+                echo CHtml::link(
+                    'Back to Patient Merge list',
+                    array('patientMergeRequest/index'),
+                    array('class' => 'button small')
+                ) . ' ';
+                echo CHtml::link(
+                    'edit',
+                    array('patientMergeRequest/update', 'id' => $model->id),
+                    array('class' => 'button small secondary')
+                );
                 if (Yii::app()->user->checkAccess('Patient Merge')) {
-                    echo ' ' . CHtml::link('merge', array('patientMergeRequest/merge', 'id' => $model->id),
-                          array('class' => 'button small warning '));
+                    echo ' ' . CHtml::link(
+                        'merge',
+                        array('patientMergeRequest/merge', 'id' => $model->id),
+                        array('class' => 'button small warning ')
+                    );
                 }
                 ?>
           </section>
@@ -45,8 +54,10 @@
     <div class="cols-12 flex-layout">
       <div class="cols-5">
         <h2 class="secondaryPatient">Secondary</h2>
-            <?php $this->renderPartial('//patientmergerequest/_patient_details',
-              array('model' => $model, 'type' => 'secondary')) ?>
+            <?php $this->renderPartial(
+                '//patientmergerequest/_patient_details',
+                array('model' => $model, 'type' => 'secondary')
+            ) ?>
       </div>
 
       <div class="cols-2" style="text-align: center">
@@ -58,8 +69,10 @@
 
       <div class="cols-5">
         <h2 class="primaryPatient">Primary</h2>
-            <?php $this->renderPartial('//patientmergerequest/_patient_details',
-              array('model' => $model, 'type' => 'primary')) ?>
+            <?php $this->renderPartial(
+                '//patientmergerequest/_patient_details',
+                array('model' => $model, 'type' => 'primary')
+            ) ?>
       </div>
     </div>
     <hr>

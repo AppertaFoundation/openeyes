@@ -273,8 +273,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                     }
                 }
                 if (($filter_complications_method == 'AND' && $matched_complications < count(
-                            $filter_complications
-                        )) || !$matched_complications
+                    $filter_complications
+                )) || !$matched_complications
                 ) {
                     continue;
                 }
@@ -295,8 +295,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                     }
                 }
                 if (($filter_procedures_method == 'AND' && $matched_procedures < count(
-                            $filter_procedures
-                        )) || !$matched_procedures
+                    $filter_procedures
+                )) || !$matched_procedures
                 ) {
                     continue;
                 }

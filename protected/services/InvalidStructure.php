@@ -22,7 +22,9 @@ class InvalidStructure extends ServiceException
     public function toFhirOutcome()
     {
         return FhirOutcome::singleIssue(
-            \FhirValueSet::ISSUESEVERITY_FATAL, \FhirValueSet::ISSUETYPE_INVALID_STRUCTURE, $this->message
+            \FhirValueSet::ISSUESEVERITY_FATAL,
+            \FhirValueSet::ISSUETYPE_INVALID_STRUCTURE,
+            $this->message
         );
     }
 }

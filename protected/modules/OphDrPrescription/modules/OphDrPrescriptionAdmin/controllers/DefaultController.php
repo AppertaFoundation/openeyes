@@ -81,17 +81,22 @@ class DefaultController extends BaseAdminController
 
     public function actionTags()
     {
-        $this->genericAdmin('Edit tags', 'Tag',
+        $this->genericAdmin(
+            'Edit tags',
+            'Tag',
             array(
                 'extra_fields'=>array(
                     array('field')
                 )
-            ));
+            )
+        );
     }
 
     public function actionDrugType()
     {
-        $this->genericAdmin('Edit drug types', 'DrugType',
+        $this->genericAdmin(
+            'Edit drug types',
+            'DrugType',
             array(
                 'extra_fields' => array(
                     array('field' => 'tag_id',
@@ -99,7 +104,8 @@ class DefaultController extends BaseAdminController
                     'model' => 'Tag')
                 ),
                 'div_wrapper_class' => 'cols-5',
-            ));
+            )
+        );
     }
 
     public function actionDispenseCondition()
