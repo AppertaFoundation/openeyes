@@ -15,7 +15,7 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
-function gitbranch {    
+function gitbranch {
     if ! branch=$(git -C $1 rev-parse --abbrev-ref HEAD 2>/dev/null); then
         branch=""
     else
