@@ -89,7 +89,7 @@ class ProfileController extends BaseController
             if (Yii::app()->params['profile_user_can_change_password']) {
                 if (empty($_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Please enter your current password');
-                } elseif ($user->password !== md5($user->salt . $_POST['User']['password_old'])) {
+                } elseif (!$user->validatePassword($_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Password is incorrect');
                 }
 
