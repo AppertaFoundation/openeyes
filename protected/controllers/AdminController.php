@@ -478,7 +478,7 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if (!$user->save()) {
+                if (!$user->save(false)) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
