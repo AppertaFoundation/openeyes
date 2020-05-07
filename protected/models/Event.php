@@ -133,10 +133,6 @@ class Event extends BaseActiveRecordVersioned
         );
     }
 
-    public function getPreviewWhiteboardImages() {
-        Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' . $this->id );
-        return EventImage::model()->findAll('event_id = ? AND document_number IS NOT NULL', [$this->id]);
-    }
 
     /**
      * Make sure event date is set.
