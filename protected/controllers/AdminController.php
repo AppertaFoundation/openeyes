@@ -474,7 +474,7 @@ class AdminController extends BaseAdminController
                 $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
-            
+
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
