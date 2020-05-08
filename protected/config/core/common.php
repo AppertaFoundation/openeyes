@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -50,7 +51,7 @@ return array(
         'application.modules.Api.controllers.*',
         'application.modules.Api.modules.Request.components.*',
         'application.modules.Api.modules.Request.widgets.*',
-              'application.modules.OECaseSearch.components.*',
+        'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(
@@ -331,80 +332,80 @@ return array(
             'pagebreak_separator' => '<div class="pageBreak" />',
         ),
         'menu_bar_items' => array(
-                'admin' => array(
-                    'title' => 'Admin',
-                    'uri' => 'admin',
-                    'position' => 1,
-                    'restricted' => array('admin'),
-                ),
-                'audit' => array(
-                    'title' => 'Audit',
-                    'uri' => 'audit',
-                    'position' => 2,
-                    'restricted' => array('TaskViewAudit'),
-                ),
-                'reports' => array(
-                    'title' => 'Reports',
-                    'uri' => 'report',
-                    'position' => 3,
-                    'restricted' => array('Report'),
-                ),
-                'nodexport' => array(
-                    'title' => 'NOD Export',
-                    'uri' => 'NodExport',
-                    'position' => 5,
-                    'restricted' => array('NOD Export'),
-                ),
-                'cxldataset' => array(
-                    'title' => 'CXL Dataset',
-                    'uri' => 'CxlDataset',
-                    'position' => 6,
-                    'restricted' => array('CXL Dataset'),
-                ),
-
-                'patientmergerequest' => array(
-                    'title' => 'Patient Merge',
-                    'uri' => 'patientMergeRequest/index',
-                    'position' => 17,
-                    'restricted' => array('Patient Merge', 'Patient Merge Request'),
-                ),
-                'patient' => array(
-                    'title' => 'Add Patient',
-                    'uri' => 'patient/create',
-                    'position' => 46,
-                    'restricted' => array('TaskAddPatient'),
-                ),
-                'practices' => array(
-                    'title' => 'Practices',
-                    'uri' => 'practice/index',
-                    'position' => 11,
-                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
-                ),
-                'forum' => array(
-                    'title' => 'Track patients in FORUM',
-                    'alt_title' => 'Stop tracking in FORUM',
-                    'uri' => "forum/toggleForumTracking",
-                    'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
-                    'position' => 90,
-                ),
-                'disorder' => array(
-                    'title' => 'Manage Disorders',
-                    'uri' => "/disorder/index",
-                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
-                    'position' => 91,
+            'admin' => array(
+                'title' => 'Admin',
+                'uri' => 'admin',
+                'position' => 1,
+                'restricted' => array('admin'),
             ),
-                'gps' => array(
-                    'title' => 'Practitioners',
-                    'uri' => 'gp/index',
-                    'position' => 10,
-                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-                ),
-                'analytics' => array(
-                  'title' => 'Analytics',
-                  'uri' => '/Analytics/analyticsReports',
-                  'position' => 11,
-                ),
-                /*
+            'audit' => array(
+                'title' => 'Audit',
+                'uri' => 'audit',
+                'position' => 2,
+                'restricted' => array('TaskViewAudit'),
+            ),
+            'reports' => array(
+                'title' => 'Reports',
+                'uri' => 'report',
+                'position' => 3,
+                'restricted' => array('Report'),
+            ),
+            'nodexport' => array(
+                'title' => 'NOD Export',
+                'uri' => 'NodExport',
+                'position' => 5,
+                'restricted' => array('NOD Export'),
+            ),
+            'cxldataset' => array(
+                'title' => 'CXL Dataset',
+                'uri' => 'CxlDataset',
+                'position' => 6,
+                'restricted' => array('CXL Dataset'),
+            ),
+
+            'patientmergerequest' => array(
+                'title' => 'Patient Merge',
+                'uri' => 'patientMergeRequest/index',
+                'position' => 17,
+                'restricted' => array('Patient Merge', 'Patient Merge Request'),
+            ),
+            'patient' => array(
+                'title' => 'Add Patient',
+                'uri' => 'patient/create',
+                'position' => 46,
+                'restricted' => array('TaskAddPatient'),
+            ),
+            'practices' => array(
+                'title' => 'Practices',
+                'uri' => 'practice/index',
+                'position' => 11,
+                'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
+            ),
+            'forum' => array(
+                'title' => 'Track patients in FORUM',
+                'alt_title' => 'Stop tracking in FORUM',
+                'uri' => "forum/toggleForumTracking",
+                'requires_setting' => array('setting_key' => 'enable_forum_integration', 'required_value' => 'on'),
+                'position' => 90,
+            ),
+            'disorder' => array(
+                'title' => 'Manage Disorders',
+                'uri' => "/disorder/index",
+                'requires_setting' => array('setting_key' => 'user_add_disorder', 'required_value' => 'on'),
+                'position' => 91,
+            ),
+            'gps' => array(
+                'title' => 'Practitioners',
+                'uri' => 'gp/index',
+                'position' => 10,
+                'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+            ),
+            'analytics' => array(
+                'title' => 'Analytics',
+                'uri' => '/Analytics/analyticsReports',
+                'position' => 11,
+            ),
+            /*
                  //TODO: not yet implemented
                  'worklist' => array(
                   'title' => 'Worklists',
@@ -412,24 +413,21 @@ return array(
                   'position' => 3,
                 ),
                 */
-                'imagenet' => array(
-                    'title' => 'ImageNET',
-                    'uri' => '',
-                    'requires_setting' => array('setting_key'=>'imagenet_url', 'required_value'=>'not-empty'),
-                    'position' => 92,
-                    'options' => ['target' => '_blank'],
-                ),
+            'imagenet' => array(
+                'title' => 'ImageNET',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'imagenet_url', 'required_value' => 'not-empty'),
+                'position' => 92,
+                'options' => ['target' => '_blank'],
+            ),
         ),
-        'admin_menu' => array(
-        ),
-        'dashboard_items' => array(
-        ),
+        'admin_menu' => array(),
+        'dashboard_items' => array(),
         'admin_email' => '',
         'enable_transactions' => true,
         'event_lock_days' => 0,
         'event_lock_disable' => false,
-        'reports' => array(
-        ),
+        'reports' => array(),
         'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
@@ -449,11 +447,11 @@ return array(
         'hscic' => array(
             'data' => array(
                 // to store processed zip files
-                'path' => realpath(dirname(__FILE__).'/../..').'/data/hscic',
+                'path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic',
 
                 // to store downloaded zip files which will be processed if they are different from the already processed ones
                 // otherwise ignored and will be overwritten on then next download
-                'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
+                'temp_path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic/temp',
             ),
         ),
 
@@ -507,13 +505,13 @@ return array(
          * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
-                'OphCoCorrespondence_event_actions' => array(
-                    'create' => array(
-                        'savedraft' => 'Save draft',
-                        'save' => null,
-                        'saveprint' => 'Save and print'
-                    )
-                ),
+        'OphCoCorrespondence_event_actions' => array(
+            'create' => array(
+                'savedraft' => 'Save draft',
+                'save' => null,
+                'saveprint' => 'Save and print'
+            )
+        ),
 
         /**
          * Enable or disable the draft printouts DRAFT background
@@ -578,9 +576,9 @@ return array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
-                            'Biometry' => array(
-                                'image_width' => 1200
-                            ),
+                'Biometry' => array(
+                    'image_width' => 1200
+                ),
             ),
         ),
 
@@ -615,13 +613,14 @@ return array(
             ),
         ),*/
         'ethnic_group_filters' => array(
-        'Indigenous Australian',
-        'Greek',
-        'Italian'
+            'Indigenous Australian',
+            'Greek',
+            'Italian'
         ),
         'gender_short' => 'Gen',
-//        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
-        'add_patient_fields' => [ 'title' => '',
+        //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
+        'add_patient_fields' => [
+            'title' => '',
             'first_name' => 'mandatory',
             'last_name' => 'mandatory',
             'dob' => 'mandatory',
@@ -629,11 +628,11 @@ return array(
             'hos_num' => 'mandatory',
             'nhs_num_status' => 'hidden'
         ],
-//        Set the parameter below to true if you want to use practitioner praactice associations feature
+        //        Set the parameter below to true if you want to use practitioner praactice associations feature
         'use_contact_practice_associate_model' => false,
         //        Set the parameter below to indicate whether PAS is being used or not
         'pas_in_use' => true,
-//        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
+        //        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
         'demographics_content' => [
             'mobile' => true,
             'next_of_kin' => true,
@@ -652,18 +651,26 @@ return array(
         'default_country' => 'United Kingdom',
         'default_patient_import_context' => 'Historic Data Entry',
         'default_patient_import_subspecialty' => 'GL',
-//        Add elements that need to be excluded from the admin sidebar in settings
+        //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => array(
-//            'Worklist',
+            //            'Worklist',
         ),
-      'oe_version' => '4.0-a',
-      // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
-      'gp_label' => 'GP',
-      // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
-      'worklist_dashboard_future_days' => 0,
-      // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-      'worklist_default_pagination_size' => 1000,
-      'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
-      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org'
+        'oe_version' => '4.0a',
+        // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
+        'gp_label' => 'GP',
+        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
+        'worklist_dashboard_future_days' => 0,
+        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+        'worklist_default_pagination_size' => 1000,
+        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
+        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org',
+        'pw_restrictions' => array(
+            'min_length' => getenv('PW_RES_MIN_LEN') ?: 8,
+            'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MIN_LEN_MESS')) : 'Passwords must be at least 8 characters long',
+            'max_length' => getenv('PW_RES_MAX_LEN') ?: 70,
+            'max_length_message' => getenv('PW_RES_MAX_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MAX_LEN_MESS')) : 'Passwords must be at most 70 characters long',
+            'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+            'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+        ),
     ),
 );
