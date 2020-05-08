@@ -259,7 +259,7 @@ if [ "${OE_MODE^^}" != "BUILD" ]; then
         CustomLog /var/log/apache2/access.log combined
         Header always set Strict-Transport-Security \"max-age=31536000\"
         Header always set Referrer-Policy \"no-referrer-when-downgrade\"
-        Header always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'\"
+        Header always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src filesystem: blob: data: 'self'\"
     </VirtualHost>
     " | sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
 
