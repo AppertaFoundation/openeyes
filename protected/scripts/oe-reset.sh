@@ -69,6 +69,7 @@ hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
+fallbackbranch="--master"
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -96,6 +97,9 @@ do
     	--demo) demo=1
     		## Install demo scripts (worklists, etc)
     		;;
+		--develop|-d) fallbackbranch="--develop"
+			## fallback to the develop branch if the named branch does not exist
+			;;
     	--help) showhelp=1
     		;;
     	--no-files) nofiles=1
@@ -230,7 +234,7 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
-    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
+    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams $fallbackbranch
 fi
 
 echo "Clearing current database..."
