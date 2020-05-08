@@ -57,8 +57,8 @@ $model_name = CHtml::modelName($element);
           array_map(function ($leaflet) {
               return ['label' => $leaflet->name, 'id' => $leaflet->id];
           },
-              OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues)
-          )) ?>, {multiSelect: true})],
+              OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues))
+      ) ?>, {multiSelect: true})],
       onReturn: function (dialog, selectedItems) {
         $.each(selectedItems, function (key, item) {
           var leaflet_id = item['id'];

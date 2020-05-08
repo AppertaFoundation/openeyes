@@ -54,23 +54,27 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 ?>
                 <option
                         value="<?=
-                        $this->createUrl('view',
+                        $this->createUrl(
+                            'view',
                             array(
                                 'id' => $trial->id,
                                 'sort_by' => $field,
                                 'sort_dir' => $new_sort_dir,
                                 'page_num' => $page_num,
-                            )) ?>"
+                            )
+                        ) ?>"
                 >
                     <?= CHtml::link(
                         $field . $sort_symbol,
-                        $this->createUrl('view',
+                        $this->createUrl(
+                            'view',
                             array(
                                 'id' => $trial->id,
                                 'sort_by' => $field,
                                 'sort_dir' => $new_sort_dir,
                                 'page_num' => $page_num,
-                            ))
+                            )
+                        )
                     ); ?>
                 </option>
             <?php endforeach; ?>

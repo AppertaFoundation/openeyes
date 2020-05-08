@@ -34,13 +34,12 @@ if (isset($element->hrt_id)) {
 
 $overallPeriods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod::model()
     ->activeOrPk($usedOverallPeriods)->findAll(
-        array('order' => 'display_order asc')), 'id', 'name'
-);
+        array('order' => 'display_order asc')
+    ), 'id', 'name');
 
 $intervalVisits = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_VisitInterval::model()
     ->activeOrPk(@$element->gonio_id)
-    ->findAll(array('order' => 'display_order asc')), 'id', 'name'
-);
+    ->findAll(array('order' => 'display_order asc')), 'id', 'name');
 
 $usedTargetIOPS = array();
 if (isset($element->right_target_iop_id)) {
@@ -71,18 +70,54 @@ $label_width = 5;
         </colgroup>
       <tbody>
       <tr>
-        <td><?= $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false,
-                array('label' => 6, 'field' => 6)) ?></td>
-        <td><?= $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
-        <td><?= $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
-        <td><?= $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
-        <td><?= $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
-        <td><?= $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false,
-                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'clinic_interval_id',
+            $overallPeriods,
+            array(),
+            false,
+            array('label' => 6, 'field' => 6)
+        ) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'photo_id',
+            $overallPeriods,
+            array(),
+            false,
+            array('label' => $label_width, 'field' => $field_width)
+        ) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'oct_id',
+            $overallPeriods,
+            array(),
+            false,
+            array('label' => $label_width, 'field' => $field_width)
+        ) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'hfa_id',
+            $overallPeriods,
+            array(),
+            false,
+            array('label' => $label_width, 'field' => $field_width)
+        ) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'gonio_id',
+            $intervalVisits,
+            array(),
+            false,
+            array('label' => $label_width, 'field' => $field_width)
+        ) ?></td>
+        <td><?= $form->dropDownList(
+            $element,
+            'hrt_id',
+            $overallPeriods,
+            array(),
+            false,
+            array('label' => $label_width, 'field' => $field_width)
+        ) ?></td>
         <td>
           <button id="<?= CHtml::modelName($element) ?>_comment_button"
                   type="button"
@@ -104,12 +139,18 @@ $label_width = 5;
                 ?>display: none<?php
                 endif; ?>;"
          data-comment-button="#<?= CHtml::modelName($element) ?>_comment_button">
-        <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
+        <?php echo $form->textArea(
+            $element,
+            'comments',
+            array('nowrapper' => true),
+            false,
             array(
                 'rows' => 1,
                 'placeholder' => 'Comments',
                 'class' => 'js-comment-field',
-            ), array('field' => 12)) ?>
+            ),
+            array('field' => 12)
+        ) ?>
       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
     </div>
   </div>
@@ -128,8 +169,12 @@ $label_width = 5;
                 <label for="<?= CHtml::modelName($element) . '[' . $eye . '_target_iop_id]' ?>">
                   Target IOP:
                 </label>
-                  <?= $form->dropDownList($element, $eye . '_target_iop_id', $targetIOPS,
-                      array('nowrapper' => true, 'empty' => '- Select -')) ?>
+                  <?= $form->dropDownList(
+                      $element,
+                      $eye . '_target_iop_id',
+                      $targetIOPS,
+                      array('nowrapper' => true, 'empty' => '- Select -')
+                  ) ?>
                 mmHg
               </div>
             </div>

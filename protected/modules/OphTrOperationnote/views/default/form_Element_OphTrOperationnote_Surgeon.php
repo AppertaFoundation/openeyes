@@ -34,33 +34,33 @@
     <tr class="col-gap">
       <td>
             <?php echo $form->dropDownList(
-              $element,
-              'surgeon_id',
-              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
-              false,
-              array('field' => 8)
-          ); ?>
+                $element,
+                'surgeon_id',
+                CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+                array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
+                false,
+                array('field' => 8)
+            ); ?>
       </td>
       <td>
             <?php echo $form->dropDownList(
-              $element,
-              'assistant_id',
-              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
-              false,
-              array('field' => 8)
-          ); ?>
+                $element,
+                'assistant_id',
+                CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+                array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+                false,
+                array('field' => 8)
+            ); ?>
       </td>
       <td>
             <?php echo $form->dropDownList(
-              $element,
-              'supervising_surgeon_id',
-              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
-              false,
-              array('field' => 8)
-          ); ?>
+                $element,
+                'supervising_surgeon_id',
+                CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+                array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+                false,
+                array('field' => 8)
+            ); ?>
       </td>
     </tr>
     </tbody>
@@ -84,17 +84,23 @@
             array_map(function ($item) {
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
-            }, $surgeons) ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
+            },
+            $surgeons) 
+        ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
-            }, $surgeons) ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
+            },
+            $surgeons) 
+        ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
-            }, $surgeons) ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
+            },
+            $surgeons) 
+        ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {

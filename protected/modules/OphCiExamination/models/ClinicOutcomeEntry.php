@@ -174,15 +174,15 @@ class ClinicOutcomeEntry extends \BaseElement
     }
 
     public function getRoleLabel() {
-        if ($this->isFollowUp()) {
+        if ($this->status->followup && $this->role) {
             return ' with ' . $this->role->name;
         }
         return '';
     }
 
     public function getPeriodLabel() {
-        if ($this->isFollowUp()) {
-            return $this->followupPeriod->name;
+        if ($this->status->followup && $this->followup_period) {
+            return $this->followup_period->name;
         }
         return '';
     }

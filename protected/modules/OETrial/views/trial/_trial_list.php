@@ -42,10 +42,12 @@
             }
 
             echo CHtml::link(
-              $field . $sort_symbol,
-              Yii::app()->createUrl('/OETrial/trial/index',
-                  array('sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
-          );
+                $field . $sort_symbol,
+                Yii::app()->createUrl(
+                    '/OETrial/trial/index',
+                    array('sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
+                )
+            );
             ?>
       </th>
     <?php } ?>

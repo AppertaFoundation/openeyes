@@ -52,7 +52,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
             ->join('et_ophtroperationnote_cataract', 'ophtroperationnote_cataract_complication.cataract_id = et_ophtroperationnote_cataract.id')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->join('ophtroperationnote_cataract_complications',
+            ->join(
+                'ophtroperationnote_cataract_complications',
                 'ophtroperationnote_cataract_complication.complication_id = ophtroperationnote_cataract_complications.id'
             )
             ->where('ophtroperationnote_cataract_complications.name <> "None"')
@@ -81,7 +82,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
             ->join('et_ophtroperationnote_cataract', 'ophtroperationnote_cataract_complication.cataract_id = et_ophtroperationnote_cataract.id')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->join('ophtroperationnote_cataract_complications',
+            ->join(
+                'ophtroperationnote_cataract_complications',
                 'ophtroperationnote_cataract_complication.complication_id = ophtroperationnote_cataract_complications.id'
             )
             ->where('ophtroperationnote_cataract_complications.name <> "None"')

@@ -43,8 +43,10 @@
             </div>
           </div>
           <div class="grid-view" id="inbox-table">
-                <?php $this->renderPartial('//patientmergerequest/_list',
-                  array('data_provider' => $data_provider, 'filters' => $filters)) ?>
+                <?php $this->renderPartial(
+                    '//patientmergerequest/_list',
+                    array('data_provider' => $data_provider, 'filters' => $filters)
+                ) ?>
           </div>
       </div>
     </form>

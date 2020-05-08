@@ -22,15 +22,21 @@
     <label><?php echo $element->getAttributeLabel('specular_microscope_id') ?>:</label>
         <?php
         $allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
-        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
-          $element->specular_microscope_id,
-          CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+        echo CHtml::dropDownList(
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
+            $element->specular_microscope_id,
+            CHtml::listData($allSpecularMicroscope, 'id', 'name'),
+            array('class' => 'MultiSelectList')
+        ); ?>
     <label><?php echo $element->getAttributeLabel('scan_quality_id') ?>:</label>
         <?php
         $allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
-          $element->scan_quality_id,
-          CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+        echo CHtml::dropDownList(
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
+            $element->scan_quality_id,
+            CHtml::listData($allScanQuality, 'id', 'name'),
+            array('class' => 'MultiSelectList')
+        ); ?>
   </div>
 </div>
 <div class="element-fields element-eyes">
@@ -46,8 +52,11 @@
                 <label><?php echo $element->getAttributeLabel($eye_side . '_endothelial_cell_density_value') ?>:</label>
               </td>
               <td>
-                  <?= $form->textField($element, $eye_side . "_endothelial_cell_density_value",
-                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 4)) ?>
+                  <?= $form->textField(
+                      $element,
+                      $eye_side . "_endothelial_cell_density_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 4)
+                  ) ?>
               </td>
             </tr>
             <tr>
@@ -55,8 +64,11 @@
                 <label><?php echo $element->getAttributeLabel($eye_side . '_coefficient_variation_value') ?>:</label>
               </td>
               <td>
-                  <?= $form->textField($element, $eye_side . "_coefficient_variation_value",
-                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 6)) ?>
+                  <?= $form->textField(
+                      $element,
+                      $eye_side . "_coefficient_variation_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 6)
+                  ) ?>
               </td>
             </tr>
             </tbody>

@@ -84,8 +84,13 @@ class ClinicOutcomeRolesController extends \ModuleAdminController
             $model->attributes = $request->getPost('OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role');
 
             if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false,
-                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role']);
+                Audit::add(
+                    'admin',
+                    'create',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_ClinicOutcome_Role']
+                );
                 Yii::app()->user->setFlash('success', 'Clinic Outcome Role created');
                 $this->redirect(['index']);
             } else {

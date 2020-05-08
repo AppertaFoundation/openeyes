@@ -47,12 +47,21 @@ class m140513_101425_add_trabectome_element extends OEMigration
                         'complication_other' => 'text',
                 ), true);
 
-        $this->addForeignKey('et_ophtroperationnote_trabectome_ev_fk',
-            'et_ophtroperationnote_trabectome', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophtroperationnote_trabectome_ev_fk',
+            'et_ophtroperationnote_trabectome',
+            'event_id',
+            'event',
+            'id'
+        );
 
-        $this->addForeignKey('et_ophtroperationnote_trabectome_power_id',
-            'et_ophtroperationnote_trabectome', 'power_id',
-            'ophtroperationnote_trabectome_power', 'id');
+        $this->addForeignKey(
+            'et_ophtroperationnote_trabectome_power_id',
+            'et_ophtroperationnote_trabectome',
+            'power_id',
+            'ophtroperationnote_trabectome_power',
+            'id'
+        );
 
         $this->createOETable('ophtroperationnote_trabectome_comp_ass', array(
                         'id' => 'pk',
@@ -60,12 +69,20 @@ class m140513_101425_add_trabectome_element extends OEMigration
                         'complication_id' => 'integer NOT NULL',
                 ), true);
 
-        $this->addForeignKey('ophtroperationnote_trabectome_comp_ass_elui_fk',
-                'ophtroperationnote_trabectome_comp_ass',
-                'element_id', 'et_ophtroperationnote_trabectome', 'id');
-        $this->addForeignKey('ophtroperationnote_trabectome_comp_ass_cmpui_fk',
-                'ophtroperationnote_trabectome_comp_ass',
-                'complication_id', 'ophtroperationnote_trabectome_complication', 'id');
+        $this->addForeignKey(
+            'ophtroperationnote_trabectome_comp_ass_elui_fk',
+            'ophtroperationnote_trabectome_comp_ass',
+            'element_id',
+            'et_ophtroperationnote_trabectome',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophtroperationnote_trabectome_comp_ass_cmpui_fk',
+            'ophtroperationnote_trabectome_comp_ass',
+            'complication_id',
+            'ophtroperationnote_trabectome_complication',
+            'id'
+        );
 
         $migrations_path = dirname(__FILE__);
         $this->initialiseData($migrations_path);

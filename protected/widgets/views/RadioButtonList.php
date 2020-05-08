@@ -35,8 +35,11 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             }
         } ?>
     <label class="inline highlight <?= $label_class ?>">
-        <?=\CHtml::radioButton($name,
-            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
+        <?=\CHtml::radioButton(
+            $name,
+            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''),
+            $options
+        ); ?>
       <span><?=\CHtml::encode($data_value) ?></span>
     </label>
     <?php } ?>
@@ -83,8 +86,11 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                 $class = isset($options['class']) ? ($options['class'] . " ") : '';
                 $options['class'] = $class . str_replace(' ', '', $data_value);
 
-                echo CHtml::radioButton($name,
-                  (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
+                echo CHtml::radioButton(
+                    $name,
+                    (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''),
+                    $options
+                );
                 ?>
             <span><?=\CHtml::encode($data_value) ?></span>
           </label>

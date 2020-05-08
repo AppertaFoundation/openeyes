@@ -17,7 +17,8 @@ class m191113_000040_add_whiteboard_tab_context_settings extends CDbMigration
         ));
 
         $this->insert(
-            'ophtroperationbooking_whiteboard_settings', array(
+            'ophtroperationbooking_whiteboard_settings',
+            array(
             'field_type_id' => $id['id'],
             'key' => 'opnote_whiteboard_display_mode',
             'name' => 'Operation Note whiteboard display mode',

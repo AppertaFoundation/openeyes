@@ -72,8 +72,7 @@ class OphCoMessaging_API extends \BaseAPI
                 'number_query_unread' => $query_messages['number_unread'],
                 'default_folder' => $this::DEFAULT_MESSAGES_FOLDER,
                 'module_class' => $this->getModuleClass(),
-            )
-        );
+            ));
 
         return array(
             'content' => $dashboard_view,
@@ -182,7 +181,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
-        $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+        $dp = new \CActiveDataProvider(
+            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
@@ -190,7 +190,8 @@ class OphCoMessaging_API extends \BaseAPI
                     'pageSize' => 30,
                     'itemCount' => $total_messages
                 ),
-            ));
+            )
+        );
 
         $unread_criteria = new \CDbCriteria();
         $unread_criteria->addCondition('(t.marked_as_read != 1  AND t.for_the_attention_of_user_id = :uid)
@@ -265,7 +266,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
-        $dataProvider = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
+        $dataProvider = new \CActiveDataProvider(
+            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
@@ -273,7 +275,8 @@ class OphCoMessaging_API extends \BaseAPI
                     'pageSize' => 10,
                     'itemCount' => $total_messages
                 ),
-            ));
+            )
+        );
 
 
         $unread_criteria = new \CDbCriteria();

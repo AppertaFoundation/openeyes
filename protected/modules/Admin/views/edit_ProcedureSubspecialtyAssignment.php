@@ -28,12 +28,13 @@
                 <td>Subspecialty</td>
                 <td>
                     <?=\CHtml::dropDownList(
-                    'subspecialty_id',
-                    $subspecialty_id,
-                    CHtml::listData($subspecialities, 'id', 'name'), [
-                      'empty' => '- Select a subspecialty -',
-                    ]
-                  ); ?>
+                        'subspecialty_id',
+                        $subspecialty_id,
+                        CHtml::listData($subspecialities, 'id', 'name'),
+                        [
+                        'empty' => '- Select a subspecialty -',
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tbody>
@@ -59,8 +60,11 @@
                   'name' => 'procedure.term',
                   'type' => 'raw',
                   'value' => function ($data, $row) use ($procedure_list) {
-                    return CHtml::dropDownList((get_class($data) . "[$row][procedure_id]"), $data->procedure->id,
-                        CHtml::listData($procedure_list, 'id', 'term'));
+                    return CHtml::dropDownList(
+                        (get_class($data) . "[$row][procedure_id]"),
+                        $data->procedure->id,
+                        CHtml::listData($procedure_list, 'id', 'term')
+                    );
                   }
                 ],
                 [

@@ -22,25 +22,26 @@
   </div>
   <div class="large-2 column">
         <?php $form->radioButtons(
-          $element,
-          'asthma_id',
-          array(
+            $element,
+            'asthma_id',
+            array(
               0 => 'No',
               1 => 'Yes',
-          ),
-           ($element->asthma_id !== null) ? $element->asthma_id : 0,
-           false,
-           false,
-           false,
-           false,
-           array(
+            ),
+            ($element->asthma_id !== null) ? $element->asthma_id : 0,
+            false,
+            false,
+            false,
+            false,
+            array(
               'text-align' => 'right',
               'nowrapper' => true,
-          ),
-           array(
+            ),
+            array(
               'label' => 4,
               'field' => 8,
-          ));
+            )
+        );
             ?>
   </div>
   <div class="large-1 column">
@@ -48,25 +49,26 @@
   </div>
   <div class="large-2 column">
         <?php $form->radioButtons(
-          $element,
-          'eczema_id',
-          array(
+            $element,
+            'eczema_id',
+            array(
               0 => 'No',
               1 => 'Yes',
-          ),
-           ($element->eczema_id !== null) ? $element->eczema_id : 0,
-           false,
-           false,
-           false,
-           false,
-           array(
+            ),
+            ($element->eczema_id !== null) ? $element->eczema_id : 0,
+            false,
+            false,
+            false,
+            false,
+            array(
               'text-align' => 'right',
               'nowrapper' => true,
-          ),
-           array(
+            ),
+            array(
               'label' => 4,
               'field' => 8,
-          ));
+            )
+        );
             ?>
   </div>
   <div class="large-1 column">
@@ -74,25 +76,26 @@
   </div>
   <div class="large-2 column">
         <?php $form->radioButtons(
-          $element,
-          'eye_rubber_id',
-          array(
+            $element,
+            'eye_rubber_id',
+            array(
               0 => 'No',
               1 => 'Yes',
-          ),
-           ($element->eye_rubber_id !== null) ? $element->eye_rubber_id : 0,
-           false,
-           false,
-           false,
-           false,
-           array(
+            ),
+            ($element->eye_rubber_id !== null) ? $element->eye_rubber_id : 0,
+            false,
+            false,
+            false,
+            false,
+            array(
               'text-align' => 'right',
               'nowrapper' => true,
-          ),
-           array(
+            ),
+            array(
               'label' => 4,
               'field' => 8,
-          ));
+            )
+        );
             ?>
   </div>
   <div class="large-1 column">
@@ -100,25 +103,26 @@
   </div>
   <div class="large-2 column">
         <?php $form->radioButtons(
-          $element,
-          'hayfever_id',
-          array(
+            $element,
+            'hayfever_id',
+            array(
               0 => 'No',
               1 => 'Yes',
-          ),
-           ($element->hayfever_id !== null) ? $element->hayfever_id : 0,
-           false,
-           false,
-           false,
-           false,
-           array(
+            ),
+            ($element->hayfever_id !== null) ? $element->hayfever_id : 0,
+            false,
+            false,
+            false,
+            false,
+            array(
               'text-align' => 'right',
               'nowrapper' => true,
-          ),
-           array(
+            ),
+            array(
               'label' => 4,
               'field' => 8,
-          ));
+            )
+        );
             ?>
   </div>
 </div>
@@ -144,19 +148,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                       ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
-                       false,
-                       false,
-                       false,
-                       false,
-                       array(
+                      ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                       array(
+                      array(
                           'label' => 4,
                           'field' => 8,
-                      ));
+                      )
+                  );
                     ?>
               </td>
             </tr>
@@ -172,19 +177,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                       ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
-                       false,
-                       false,
-                       false,
-                       false,
-                       array(
+                      ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                       array(
+                      array(
                           'label' => 4,
                           'field' => 8,
-                      ));
+                      )
+                  );
                     ?>
               </td>
             </tr>
@@ -200,19 +206,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                       ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
-                       false,
-                       false,
-                       false,
-                       false,
-                       array(
+                      ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                       array(
+                      array(
                           'label' => 4,
                           'field' => 8,
-                      ));
+                      )
+                  );
                     ?>
               </td>
             </tr>
@@ -228,19 +235,20 @@
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                       ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
-                       false,
-                       false,
-                       false,
-                       false,
-                       array(
+                      ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
                           'text-align' => 'right',
                           'nowrapper' => true,
                       ),
-                       array(
+                      array(
                           'label' => 4,
                           'field' => 8,
-                      ));
+                      )
+                  );
                     ?>
               </td>
             </tr>

@@ -75,7 +75,8 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
         <input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
         <input type="hidden" name="element_type_id" value="<?php echo $element->getElementType()->id ?>" />
 
-        <?php $this->render('FamilyHistory_form',
+        <?php $this->render(
+            'FamilyHistory_form',
             array(
                 'element' => $element,
                 'model_name' => $model_name,

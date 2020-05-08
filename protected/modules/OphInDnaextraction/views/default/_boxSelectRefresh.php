@@ -6,6 +6,6 @@
  * and open the template in the editor.
  */
 $storage = new OphInDnaextraction_DnaExtraction_Storage();
-echo json_encode(CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ));
+echo json_encode(CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'));
 ?>
 

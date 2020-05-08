@@ -40,11 +40,12 @@ NICE Status: <?php echo($suitability->{$side.'_nice_compliance'} ? 'COMPLIANT' :
 Diagnosis: <?php echo $diagnosis->getDiagnosisStringForSide($side)."\n" ?>
 <?php
 if ($exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
-        $patient,
-        $use_context = true,
-        $side,
-        $diagnosis->{$side.'_diagnosis1_id'},
-        $diagnosis->{$side.'_diagnosis2_id'})) {
+    $patient,
+    $use_context = true,
+    $side,
+    $diagnosis->{$side.'_diagnosis1_id'},
+    $diagnosis->{$side.'_diagnosis2_id'}
+)) {
     foreach ($exam_info->{$side.'_answers'} as $answer) {
         echo $answer->question->question.': ';
         echo ($answer->answer) ? "Yes\n" : "No\n";

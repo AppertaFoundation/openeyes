@@ -11,12 +11,19 @@
                 </tr>
                 <tr>
                     <td>
-                        <?php echo $form->dropDownList($element, 'result',
+                        <?php echo $form->dropDownList(
+                            $element,
+                            'result',
                             CHtml::listData(
                                 OphInLabResults_Type_Options::model()->findAll(array(
                                     'condition' => 'type = ' . $element->type,
                                 )),
-                                'value', 'value'), array('empty' => 'Select'), false);?>
+                                'value',
+                                'value'
+                            ),
+                            array('empty' => 'Select'),
+                            false
+                        );?>
                     </td>
                 </tr>
                 <?php if ($element->resultType->show_units) { ?>

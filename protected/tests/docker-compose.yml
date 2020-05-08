@@ -48,43 +48,6 @@ services:
     volumes:
       - "../..:/var/www/openeyes:delegated"
 
-  behat:
-    image: appertaopeneyes/web:php7
-    environment:
-      OE_MODE: "TEST"
-      TESTS_TO_RUN: "BEHAT"
-      SELENIUM_BASE_URL: "http://behat"
-      SELENIUM_WD_HOST: http://selenium:4444/wd/hub
-      DATABASE_HOST: "db"
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-example}
-      ENABLE_CRON: "FALSE"
-      WAIT_HOSTS_TIMEOUT: "120"
-      WAIT_SLEEP_INTERVAL: "2"
-      USE_DEMO_DATA: "FALSE"
-      DATABASE_NAME: "behatdb"
-    secrets:
-      - source: SSH_PRIVATE_KEY
-    stdin_open: true
-    tty: true
-    depends_on:
-      - db
-      - selenium
-    volumes:
-      - "../..:/var/www/openeyes:delegated"
-
-  selenium:
-    image: selenium/standalone-chrome-debug:3.14
-    ports:
-      - "4444:4444"
-      - "5900:5900"
-      - "9515:9515"
-    environment:
-      VNC_NO_PASSWORD: "1"
-      SCREEN_WIDTH: "1920"
-      SCREEN_HEIGHT: "1080"
-    volumes:
-      - /dev/shm:/dev/shm
-
 secrets:
   SSH_PRIVATE_KEY:
     file: ~/.ssh/id_rsa

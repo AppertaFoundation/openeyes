@@ -25,7 +25,7 @@
 
         <?php
         $value = Yii::app()->request->getQuery('OphInDnaextraction_DnaTests_Transaction');
-        $dateTime = new DateTime( $transaction->date ? $transaction->date : $value);
+        $dateTime = new DateTime($transaction->date ? $transaction->date : $value);
         $this->widget('zii.widgets.jui.CJuiDatePicker', array(
           'name'  => "OphInDnaextraction_DnaTests_Transaction[$i][date]",
           'value' => isset($value[$i]['date']) ? $value[$i]['date'] : $dateTime->format('j M Y'),
@@ -48,10 +48,11 @@
   </td>
   <td>
         <?=\CHtml::activeDropDownList(
-          $transaction, "[$i]study_id",
-          CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(), 'id', 'name'),
-          array('empty' => '- Select -', 'disabled' => $disabled, 'class' => "study",)
-      ) ?>
+            $transaction,
+            "[$i]study_id",
+            CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(), 'id', 'name'),
+            array('empty' => '- Select -', 'disabled' => $disabled, 'class' => "study",)
+        ) ?>
   </td>
   <td>
         <?=\CHtml::activeTextField($transaction, "[$i]volume", array('class' => "volume", 'disabled' => $disabled)) ?>

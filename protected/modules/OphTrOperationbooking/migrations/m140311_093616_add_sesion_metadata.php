@@ -15,18 +15,29 @@ class m140311_093616_add_sesion_metadata extends CDbMigration
                         'created_date' => "datetime DEFAULT '1900-01-01 00:00:00'",
                 ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
-        $this->addForeignKey('ophtroperationbooking_operation_session_unavailreas_lmui_fk',
-                'ophtroperationbooking_operation_session_unavailreason',
-                'last_modified_user_id', 'user', 'id');
-        $this->addForeignKey('ophtroperationbooking_operation_session_unavailreas_cui_fk',
-                'ophtroperationbooking_operation_session_unavailreason',
-                'created_user_id', 'user', 'id');
+        $this->addForeignKey(
+            'ophtroperationbooking_operation_session_unavailreas_lmui_fk',
+            'ophtroperationbooking_operation_session_unavailreason',
+            'last_modified_user_id',
+            'user',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophtroperationbooking_operation_session_unavailreas_cui_fk',
+            'ophtroperationbooking_operation_session_unavailreason',
+            'created_user_id',
+            'user',
+            'id'
+        );
 
         $this->addColumn('ophtroperationbooking_operation_session', 'unavailablereason_id', 'integer');
-        $this->addForeignKey('ophtroperationbooking_operation_session_uari_fk',
-                'ophtroperationbooking_operation_session',
-                'unavailablereason_id',
-                'ophtroperationbooking_operation_session_unavailreason', 'id');
+        $this->addForeignKey(
+            'ophtroperationbooking_operation_session_uari_fk',
+            'ophtroperationbooking_operation_session',
+            'unavailablereason_id',
+            'ophtroperationbooking_operation_session_unavailreason',
+            'id'
+        );
 
         $this->addColumn('ophtroperationbooking_operation_session', 'max_procedures', 'integer DEFAULT NULL');
     }

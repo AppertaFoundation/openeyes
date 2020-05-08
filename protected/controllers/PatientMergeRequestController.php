@@ -279,8 +279,7 @@ class PatientMergeRequestController extends BaseController
                             'is_local' => $primary->is_local,
                             'nhsnum' => $primary->nhsnum,
                             'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary))),
-                        )
-                    ),
+                        )),
 
             'secondary_patient_JSON' => CJavaScript::jsonEncode(array(
                             'id' => $secondary->id,
@@ -294,8 +293,7 @@ class PatientMergeRequestController extends BaseController
                             'is_local' => $secondary->is_local,
                             'nhsnum' => $secondary->nhsnum,
                             'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary))),
-                        )
-                    ),
+                        )),
             ));
     }
 

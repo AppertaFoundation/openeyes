@@ -17,11 +17,11 @@ class OEHtml extends CHtml
 {
     public static function __callStatic($name, $arguments)
     {
-        if (substr($name, 0, 4 ) === "icon") {
+        if (substr($name, 0, 4) === "icon") {
             $text = substr($name, 4);
             // $arguments[0] will be the html_options
             // this $arguments[0] might be wrong here but no time to implement properly
-            return self::icon(strtolower($text),isset( $arguments[0]) ?  $arguments[0] : []);
+            return self::icon(strtolower($text),isset($arguments[0]) ?  $arguments[0] : []);
         }
     }
 

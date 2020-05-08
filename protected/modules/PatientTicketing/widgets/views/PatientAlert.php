@@ -117,8 +117,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
                     if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
                         $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
                               'ticket' => $ticket,
-                          )
-                        );
+                          ));
                     }
                     ?>
               </div>

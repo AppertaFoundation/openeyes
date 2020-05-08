@@ -25,9 +25,11 @@ class m170420_183805_add_ode_shortcode extends CDbMigration
     public function down()
     {
         $event_type = $this->_getEventType();
-        $this->execute('DELETE FROM patient_shortcode
+        $this->execute(
+            'DELETE FROM patient_shortcode
                         WHERE code = :code
                         AND event_type_id = :event_type_id',
-            array(':code'=>'ode', ':event_type_id'=>$event_type['id']));
+            array(':code'=>'ode', ':event_type_id'=>$event_type['id'])
+        );
     }
 }

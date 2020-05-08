@@ -19,7 +19,8 @@
 <div class="element-fields flex-layout full-width ">
   <div class="cols-10 flex-layout col-gap">
     <div class="cols-half">
-        <?php echo $form->textArea($element,
+        <?php echo $form->textArea(
+            $element,
             'description',
             array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
             false,

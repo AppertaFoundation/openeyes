@@ -174,8 +174,10 @@ class Ticket extends \BaseActiveRecordVersioned
                 return Yii::app()->createURL("/patient/summary/", array("id" => $this->patient_id));
             }
 
-            return Yii::app()->createURL('/' . $this->event->eventType->class_name . '/default/view/',
-                array('id' => $this->event_id));
+            return Yii::app()->createURL(
+                '/' . $this->event->eventType->class_name . '/default/view/',
+                array('id' => $this->event_id)
+            );
         }
 
         return Yii::app()->createURL('/patient/view/', array('id' => $this->patient_id));
@@ -287,10 +289,12 @@ class Ticket extends \BaseActiveRecordVersioned
 
         // Restrict to only queue items that are within $stepsBeforeAndAfter steps of the current step
         if ($stepsBeforeAndAfter >= 0) {
-            $allowedKeys = array_filter(array_keys($stepToQueueMap),
+            $allowedKeys = array_filter(
+                array_keys($stepToQueueMap),
                 function ($key) use ($currentQueueStep, $stepsBeforeAndAfter) {
                     return abs($key - $currentQueueStep) <= $stepsBeforeAndAfter;
-                });
+                }
+            );
 
             return array_intersect_key($stepToQueueMap, array_flip($allowedKeys));
         }

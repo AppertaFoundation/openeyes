@@ -47,8 +47,13 @@ class m170526_062300_create_user_trial_permission_table extends OEMigration
 
         $this->addForeignKey('user_trial_assignment_trial_fk', 'user_trial_assignment', 'trial_id', 'trial', 'id');
         $this->addForeignKey('user_trial_assignment_user_fk', 'user_trial_assignment', 'user_id', 'user', 'id');
-        $this->addForeignKey('user_trial_assignment_trial_permission_fk', 'user_trial_assignment',
-            'trial_permission_id', 'trial_permission', 'id');
+        $this->addForeignKey(
+            'user_trial_assignment_trial_permission_fk',
+            'user_trial_assignment',
+            'trial_permission_id',
+            'trial_permission',
+            'id'
+        );
     }
 
     public function down()

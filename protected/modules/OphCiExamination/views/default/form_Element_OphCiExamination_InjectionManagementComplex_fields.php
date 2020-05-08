@@ -49,12 +49,12 @@ $el_model_name = CHtml::modelName($element);
       </td>
       <td>
             <?=$form->dropDownlist(
-              $element,
-              $eye . '_no_treatment_reason_id',
-              CHtml::listData($no_treatment_reasons, 'id', 'name'),
-              $no_treatment_reasons_opts,
-              array('nowrapper' => true)
-          )?>
+                $element,
+                $eye . '_no_treatment_reason_id',
+                CHtml::listData($no_treatment_reasons, 'id', 'name'),
+                $no_treatment_reasons_opts,
+                array('nowrapper' => true)
+            )?>
       </td>
     </tr>
     <tr class="<?php echo $el_model_name ?>_no_treatment_reason_other"
@@ -143,15 +143,15 @@ $el_model_name = CHtml::modelName($element);
     >
       <td>
             <?php $this->renderPartial(
-              $element->form_view . '_questions',
-              array(
+                $element->form_view . '_questions',
+                array(
                   'side' => $eye,
                   'element' => $element,
                   'bottom_pad' => true,
                   'form' => $form,
                   'questions' => $questions
-              )
-          )?>
+                )
+            )?>
       </td><td></td>
     </tr>
     <?php if ($treatments = $element->getInjectionTreatments($eye)) :?>
@@ -215,7 +215,8 @@ $el_model_name = CHtml::modelName($element);
                    endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $eye ?>_comment_button">
             <?php echo $form->textArea(
-                $element, $eye . '_comments',
+                $element,
+                $eye . '_comments',
                 array('nowrapper' => true),
                 false,
                 array(

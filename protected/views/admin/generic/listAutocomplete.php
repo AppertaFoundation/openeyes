@@ -57,15 +57,19 @@
                         $htmlClass = 'filterfieldselect cols-full';
                     }
 
-                    echo CHtml::dropDownList($fieldName,
+                    echo CHtml::dropDownList(
+                        $fieldName,
                         $selectedValue[$params['dropDownName']],
-                        CHtml::listData($params['listModel']->findAll($filterQuery),
+                        CHtml::listData(
+                            $params['listModel']->findAll($filterQuery),
                             $params['listIdField'],
-                            $params['listDisplayField']),
+                            $params['listDisplayField']
+                        ),
                         array(
                             'class' => $htmlClass,
                             'empty' => $params['emptyLabel'],
-                        ));
+                        )
+                    );
                     ?>
                 </td>
                 </tr>

@@ -13,14 +13,16 @@ class m171005_170953_track_tourstates extends CDbMigration
         $this->addPrimaryKey(
             'user_feature_tour_state_pk',
             'user_feature_tour_state',
-            'user_id, tour_id');
+            'user_id, tour_id'
+        );
         $this->addForeignKey(
             'user_feature_tour_state_user_fk',
             'user_feature_tour_state',
             'user_id',
             'user',
             'id',
-            'CASCADE');
+            'CASCADE'
+        );
     }
 
     public function down()

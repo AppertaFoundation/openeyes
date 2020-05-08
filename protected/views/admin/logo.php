@@ -53,7 +53,8 @@
     </div>
     <?php
     $form = $this->beginWidget(
-            'BaseEventTypeCActiveForm', array(
+        'BaseEventTypeCActiveForm',
+        array(
         'id' => 'upload-form',
         'enableAjaxValidation' => false,
         'htmlOptions' => array('enctype' => 'multipart/form-data'),

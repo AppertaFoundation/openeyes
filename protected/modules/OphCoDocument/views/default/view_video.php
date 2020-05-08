@@ -8,6 +8,6 @@
     controls
     data-setup='{"fluid": true, "playbackRates": [0.5, 1, 1.5, 2], "liveui": true}'
   >
-    <source src="/file/view/<?php echo $element->{$index}->id?>/image<?php echo strrchr ($element->{$index}->name, '.') ?>">
+    <source src="/file/view/<?php echo $element->{$index}->id?>/image<?php echo strrchr($element->{$index}->name, '.') ?>">
 </video>
 <script src="<?php echo Yii::app()->createURL('/node_modules/video.js/dist/video.js') ?>" ></script>

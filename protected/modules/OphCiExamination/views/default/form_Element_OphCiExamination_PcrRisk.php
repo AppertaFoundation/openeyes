@@ -38,7 +38,9 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
         });
     }
 
-    pcr_init();
+    $(document).ready(function () {
+        pcr_init();
+    });
 </script>
 <div class="element-eyes element-fields flex-layout full-width">
     <?php
@@ -89,7 +91,7 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
             'class' => 'pcr_doctor_grade',
         ],
         'can_lie_flat' => [
-            'options' => ['N' => 'No', 'Y' => 'Yes'],
+            'options' => ['NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'],
             'class' => 'pcr_lie_flat',
         ],
     ];

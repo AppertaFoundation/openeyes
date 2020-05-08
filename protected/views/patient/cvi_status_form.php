@@ -35,11 +35,15 @@
                 <label for="PatientOphInfo_cvi_status_id">Status:</label>
             </div>
             <div class="<?php echo $form->columns('field'); ?>">
-                <?=\CHtml::activeDropDownList($info, 'cvi_status_id',
+                <?=\CHtml::activeDropDownList(
+                    $info,
+                    'cvi_status_id',
                     CHtml::listData(
                         PatientOphInfoCviStatus::model()->active()->findAll(array('order' => 'display_order')),
                         'id',
-                        'name')) ?>
+                        'name'
+                    )
+                ) ?>
                 <?php echo $form->error($info, 'cvi_status_date'); ?>
             </div>
         </div>

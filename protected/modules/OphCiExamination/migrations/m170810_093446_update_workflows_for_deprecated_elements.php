@@ -13,13 +13,18 @@ class m170810_093446_update_workflows_for_deprecated_elements extends OEMigratio
             $deprecated_id = $this->getIdOfElementTypeByClassName($deprecated);
             if ($replacement !== null) {
                 $replacement_id = $this->getIdOfElementTypeByClassName($replacement);
-                $this->update('ophciexamination_element_set_item',
+                $this->update(
+                    'ophciexamination_element_set_item',
                     array('element_type_id' => $replacement_id),
-                    'element_type_id = :deprecated_id', array(':deprecated_id' => $deprecated_id));
-            } else {
-                $this->delete('ophciexamination_element_set_item',
                     'element_type_id = :deprecated_id',
-                    array(':deprecated_id' => $deprecated_id));
+                    array(':deprecated_id' => $deprecated_id)
+                );
+            } else {
+                $this->delete(
+                    'ophciexamination_element_set_item',
+                    'element_type_id = :deprecated_id',
+                    array(':deprecated_id' => $deprecated_id)
+                );
             }
         }
     }

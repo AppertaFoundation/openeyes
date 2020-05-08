@@ -1,6 +1,12 @@
 language: generic
 dist: bionic
 
+
+before_script:
+    - export TZ=Europe/London
+    - date
+    - sudo ntpdate ntp.ubuntu.com
+
 services:
   - docker
   - xvfb

@@ -10,8 +10,11 @@
         <div class="cols-4">
             <section class="box dashboard">
                 <?php
-                echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
-                        array('class' => 'button small')) . ' ';
+                echo CHtml::link(
+                    'Back to Patient Merge list',
+                    array('patientMergeRequest/index'),
+                    array('class' => 'button small')
+                ) . ' ';
                 echo CHtml::link('add', array('patientMergeRequest/create'), array('class' => 'button small'));
                 ?>
             </section>

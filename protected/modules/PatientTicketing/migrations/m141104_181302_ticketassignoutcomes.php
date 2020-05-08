@@ -12,8 +12,13 @@ class m141104_181302_ticketassignoutcomes extends OEMigration
                 'followup' => 'boolean DEFAULT false',
             ), true);
 
-        $this->addForeignKey('patientticketing_ticketassignoutcomeoption_epstid', 'patientticketing_ticketassignoutcomeoption', 'episode_status_id',
-            'episode_status', 'id');
+        $this->addForeignKey(
+            'patientticketing_ticketassignoutcomeoption_epstid',
+            'patientticketing_ticketassignoutcomeoption',
+            'episode_status_id',
+            'episode_status',
+            'id'
+        );
     }
 
     public function down()

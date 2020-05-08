@@ -21,7 +21,7 @@ $widget = $this;
     <div class="data-value">
         <div class="tile-data-overflow">
             <?php if (!$operations || count($operations) === 0) { ?>
-                <div class="data-value not-recorded">No procedures recorded during this encounter</div>
+                <div class="data-value not-recorded">Nil recorded this examination</div>
             <?php } else { ?>
                 <table>
                     <colgroup>
@@ -31,8 +31,10 @@ $widget = $this;
                     <?php foreach ($operations as $operation) { ?>
                         <tr>
                             <td>
-                                <?= array_key_exists('object',
-                                    $operation) ? $operation['object']->operation : $operation['operation']; ?>
+                                <?= array_key_exists(
+                                    'object',
+                                    $operation
+                                ) ? $operation['object']->operation : $operation['operation']; ?>
                             </td>
                             <td>
                                 <?php if (array_key_exists('link', $operation)) { ?>
