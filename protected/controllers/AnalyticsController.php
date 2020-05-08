@@ -97,11 +97,12 @@ class AnalyticsController extends BaseController
     private function reportDataDOM()
     {
         $this->checkAuth();
+        $this->obtainFilters();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
         // different user and different subspecialty
         // should have different result
-        $follow_patient_list = $this->getFollowUps($subspecialty_id, null, null, null, $this->surgeon);
+        $follow_patient_list = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
         if (Yii::app()->request->getParam('report')) {
             $this->renderJSON(array(
                 'plot_data'=>$follow_patient_list['plot_data'],
@@ -122,7 +123,7 @@ class AnalyticsController extends BaseController
         );
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
         $side_bar_user_list = null;
@@ -1394,7 +1395,7 @@ class AnalyticsController extends BaseController
         if ($dateTo) {
             $dateTo = strtotime($dateTo);
         } else {
-            $dateTo = strtotime(date("Y-m-d h:i:s"));
+            $dateTo = strtotime(date("Y-m-d H:i:s"));
         }
         if ($dateFrom) {
             $dateFrom = strtotime($dateFrom);
@@ -1548,7 +1549,7 @@ class AnalyticsController extends BaseController
           'text' => $disorder_data['text'],
           'customdata' =>$disorder_data['customdata'],
         );
-        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis']);
+        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
         $this->renderJSON(array($clinical_data, $service_data, $custom_data, 'va_final_ticks'=>$va_final_ticks));
     }
 
@@ -2041,7 +2042,7 @@ class AnalyticsController extends BaseController
         $subspecialty_id = $this->getSubspecialtyID($speciality_name);
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $this->custom_csv_data = array();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
