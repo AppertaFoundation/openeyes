@@ -21,9 +21,11 @@
     <div class="element-fields full-width flex-layout flex-top col-gap element">
         <div class="cols-3">
             <section class="box dashboard">
-                <?php echo CHtml::link('Back to Patient Merge list',
+                <?php echo CHtml::link(
+                    'Back to Patient Merge list',
                     array('patientMergeRequest/index'),
-                    array('class' => 'button small')); ?>
+                    array('class' => 'button small')
+                ); ?>
             </section>
         </div>
         <div class="cols-9">

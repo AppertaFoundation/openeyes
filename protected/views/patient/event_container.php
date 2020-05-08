@@ -6,7 +6,7 @@
 
 <?php $this->renderSidebar('//patient/episodes_sidebar') ?>
 
-<?php $this->renderPartial( ($this->getViewFile('event_content') ? '' : '//patient/') . 'event_content', [
+<?php $this->renderPartial(($this->getViewFile('event_content') ? '' : '//patient/') . 'event_content', [
     'content' => $content,
     'form_id' => isset($form_id) ? $form_id : ''
 ]); ?>

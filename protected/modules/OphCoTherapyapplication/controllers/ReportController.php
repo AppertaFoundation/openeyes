@@ -89,7 +89,7 @@ class ReportController extends BaseReportController
             echo $this->array2Csv($results);
 
             $get = array('report-name' => 'Therapy applications') + $_GET;
-            Audit::add('Reports', 'download', "<pre>" . print_r($get, true) . "</pre>" );
+            Audit::add('Reports', 'download', "<pre>" . print_r($get, true) . "</pre>");
         } else {
             $subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
 
@@ -99,7 +99,7 @@ class ReportController extends BaseReportController
                 'date_to' => $date_to,
             );
 
-            Audit::add('Reports', 'view', "<pre>" . print_r(['report-name' => 'Therapy applications'], true) . "</pre>" );
+            Audit::add('Reports', 'view', "<pre>" . print_r(['report-name' => 'Therapy applications'], true) . "</pre>");
             $this->pageTitle = 'Therapy Application report';
             $this->render('applications', $context);
         }
@@ -296,7 +296,8 @@ class ReportController extends BaseReportController
                         ->join('site', 'insite.site_id = site.id')
                         ->join('event e', 'e.id = treat.event_id')
                         ->join('episode ep', 'e.episode_id = ep.id')
-                        ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
+                        ->where(
+                            'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
                             array(':patient_id' => $patient_id, ':drug_id' => $treatment->drug_id)
                         )
                         ->order('treat.created_date desc')
@@ -328,7 +329,8 @@ class ReportController extends BaseReportController
                         ->from('et_ophtrintravitinjection_treatment treat')
                         ->join('event e', 'e.id = treat.event_id')
                         ->join('episode ep', 'e.episode_id = ep.id')
-                        ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
+                        ->where(
+                            'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and treat.'.$side.'_drug_id = :drug_id',
                             array(':patient_id' => $patient_id, ':drug_id' => $treatment->drug_id)
                         )
                         ->order('treat.created_date asc')
@@ -359,10 +361,10 @@ class ReportController extends BaseReportController
                 \OELog::log($e->getMessage());
                 $get['error'] = $e->getMessage();
             } finally {
-                Audit::add('Reports', 'send', "<pre>" . print_r($get, true) . "</pre>" );
+                Audit::add('Reports', 'send', "<pre>" . print_r($get, true) . "</pre>");
             }
         } else {
-            Audit::add('Reports', 'view', "<pre>" . print_r($get, true) . "</pre>" );
+            Audit::add('Reports', 'view', "<pre>" . print_r($get, true) . "</pre>");
         }
 
         $this->pageTitle = 'Pending Applications report';
@@ -372,7 +374,7 @@ class ReportController extends BaseReportController
     public function canUseTherapyReport()
     {
         $has_role = Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id);
-        $is_consultant = Firm::model()->findByAttributes( array('consultant_id' => Yii::app()->user->id));
+        $is_consultant = Firm::model()->findByAttributes(array('consultant_id' => Yii::app()->user->id));
 
         return $has_role || $is_consultant;
     }

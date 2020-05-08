@@ -13,16 +13,23 @@
                 <td>
                     <?php
                     $element->to_subspecialty_id = $element->to_subspecialty_id != "" ? $element->to_subspecialty_id : Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->getSubspecialtyID() ?>
-                    <?=\CHtml::activeDropDownList($element, "to_subspecialty_id",
+                    <?=\CHtml::activeDropDownList(
+                        $element,
+                        "to_subspecialty_id",
                         CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'),
-                        array('empty' => '- None -', 'class' => 'cols-full')) ?>
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ) ?>
                 </td>
             </tr>
             <tr>
                 <td>Consultant</td>
                 <td>
-                    <?=\CHtml::activeDropDownList($element, "to_firm_id", Firm::model()->getListWithSpecialties(),
-                        array('empty' => '- None -', 'class' => 'cols-full')) ?>
+                    <?=\CHtml::activeDropDownList(
+                        $element,
+                        "to_firm_id",
+                        Firm::model()->getListWithSpecialties(),
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ) ?>
                 </td>
             </tr>
             <tr>
@@ -34,8 +41,12 @@
                         $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $site_id));
                         $element->to_location_id = $to_location ? $to_location->id : null;
                     }
-                    echo CHtml::activeDropDownList($element, "to_location_id",
-                        $element->getToLocations(true), array('empty' => '- None -', 'class' => 'cols-full')) ?>
+                    echo CHtml::activeDropDownList(
+                        $element,
+                        "to_location_id",
+                        $element->getToLocations(true),
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ) ?>
                 </td>
             </tr>
             <tr>

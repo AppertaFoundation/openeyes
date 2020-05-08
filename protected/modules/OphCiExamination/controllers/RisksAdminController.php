@@ -33,8 +33,7 @@ class RisksAdminController extends \ModuleAdminController
                 'id',
                 'name',
                 'active'
-            )
-        );
+            ));
 
         $admin->listModel(true);
     }
@@ -150,8 +149,10 @@ class RisksAdminController extends \ModuleAdminController
         if (\Yii::app()->request->isAjaxRequest) {
             $criteria = new \CDbCriteria();
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
+                $criteria->addCondition(
+                    array('LOWER(name) LIKE :term'),
+                    'OR'
+                );
                 $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 

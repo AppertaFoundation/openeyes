@@ -34,8 +34,7 @@ class ReferralTest extends ActiveRecordTestCase
         $referral->rtts = array(
             ComponentStubGenerator::generate('RTT', array(
                         'active' => false,
-                    )
-            ),
+                    )),
         );
 
         $this->assertEmpty($referral->getActiveRTT());
@@ -63,16 +62,13 @@ class ReferralTest extends ActiveRecordTestCase
         $referral->rtts = array(
                 ComponentStubGenerator::generate('RTT', array(
                                 'active' => true,
-                        )
-                ),
+                        )),
                 ComponentStubGenerator::generate('RTT', array(
                                 'active' => false,
-                        )
-                ),
+                        )),
                 ComponentStubGenerator::generate('RTT', array(
                                 'active' => true,
-                        )
-                ),
+                        )),
         );
 
         $active = $referral->getActiveRTT();

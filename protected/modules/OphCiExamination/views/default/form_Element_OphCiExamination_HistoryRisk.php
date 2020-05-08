@@ -40,7 +40,8 @@
                 array(
                     'label' => 4,
                     'field' => 8,
-                ));
+                )
+            );
 ?>
         </div>
         <div class="cols-4 column end">
@@ -78,7 +79,8 @@
                 array(
                     'label' => 4,
                     'field' => 8,
-                ));
+                )
+            );
 ?>
         </div>
         <div class="cols-4 column end">
@@ -90,7 +92,8 @@
                 array(
                     'label' => 4,
                     'field' => 8,
-                )); ?>
+                )
+            ); ?>
         </div>
     </div>
 </div>

@@ -6,7 +6,8 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
     {
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement TO et_ophciexamination_cataractsurgicalmanagement_archive');
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_version TO et_ophciexamination_cataractsurgicalmanagement_archive_version');
-        $this->createOETable('et_ophciexamination_cataractsurgicalmanagement',
+        $this->createOETable(
+            'et_ophciexamination_cataractsurgicalmanagement',
             [
                 'id' => 'pk',
                 'event_id' => 'INT(10) UNSIGNED NOT NULL DEFAULT 0',
@@ -27,28 +28,32 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
             true
         );
         
-        $this->addForeignKey('fk_ophciexamination_csm_eye',
+        $this->addForeignKey(
+            'fk_ophciexamination_csm_eye',
             'et_ophciexamination_cataractsurgicalmanagement',
             'eye_id',
             'eye',
             'id'
         );
 
-        $this->addForeignKey('fk_ophciexamination_csm_lefteye',
+        $this->addForeignKey(
+            'fk_ophciexamination_csm_lefteye',
             'et_ophciexamination_cataractsurgicalmanagement',
             'left_eye_id',
             'ophciexamination_cataractsurgicalmanagement_eye',
             'id'
         );
 
-        $this->addForeignKey('fk_ophciexamination_csm_righteye',
+        $this->addForeignKey(
+            'fk_ophciexamination_csm_righteye',
             'et_ophciexamination_cataractsurgicalmanagement',
             'right_eye_id',
             'ophciexamination_cataractsurgicalmanagement_eye',
             'id'
         );
 
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             [
                 'element_group_id' => null,
                 'class_name' => 'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_CataractSurgicalManagement_Archive'
@@ -69,10 +74,14 @@ class m191115_145450_create_v2_cataractsurgicalmanagement_table extends OEMigrat
 
     public function safeDown()
     {
-        $this->dropForeignKey('fk_ophciexamination_csm_lefteye',
-            'et_ophciexamination_cataractsurgicalmanagement');
-        $this->dropForeignKey('fk_ophciexamination_csm_righteye',
-            'et_ophciexamination_cataractsurgicalmanagement');
+        $this->dropForeignKey(
+            'fk_ophciexamination_csm_lefteye',
+            'et_ophciexamination_cataractsurgicalmanagement'
+        );
+        $this->dropForeignKey(
+            'fk_ophciexamination_csm_righteye',
+            'et_ophciexamination_cataractsurgicalmanagement'
+        );
         $this->dropOETable('et_ophciexamination_cataractsurgicalmanagement', true);
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_archive TO et_ophciexamination_cataractsurgicalmanagement');
         $this->execute('RENAME TABLE et_ophciexamination_cataractsurgicalmanagement_archive_version TO et_ophciexamination_cataractsurgicalmanagement_version');

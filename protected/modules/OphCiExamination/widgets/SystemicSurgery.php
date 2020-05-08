@@ -124,7 +124,9 @@ class SystemicSurgery extends \BaseEventElementWidget
                 return array_key_exists('object', $operation) ?
                     $operation['object']->getDisplayDate() . ' ' .$operation['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($operation);
-            }, $this->getMergedOperations());
+            },
+            $this->getMergedOperations()
+        );
         return implode($this->popupListSeparator, $result);
     }
 
@@ -188,7 +190,9 @@ class SystemicSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".operation.$row.had_operation", $_POST)
+            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+            $_POST
+        )
             == SystemicSurgery_Operation::$NOT_CHECKED;
     }
 }

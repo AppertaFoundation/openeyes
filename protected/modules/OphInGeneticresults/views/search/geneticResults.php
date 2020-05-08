@@ -51,19 +51,31 @@
                 </td>
 
                 <td>
-                    <?=\CHtml::dropDownList('gene-id', @$_GET['gene-id'], CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-                        array('empty' => '- All -')) ?>
+                    <?=\CHtml::dropDownList(
+                        'gene-id',
+                        @$_GET['gene-id'],
+                        CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                        array('empty' => '- All -')
+                    ) ?>
                 </td>
                 <td>
-                    <?=\CHtml::dropDownList('method-id', @$_GET['method-id'],
-                        CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -')) ?>
+                    <?=\CHtml::dropDownList(
+                        'method-id',
+                        @$_GET['method-id'],
+                        CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                        array('empty' => '- All -')
+                    ) ?>
                 </td>
                 <td>
                     <?=\CHtml::dropDownList('homo', @$_GET['homo'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- All -')) ?>
                 </td>
                 <td>
-                    <?=\CHtml::dropDownList('effect-id', @$_GET['effect-id'],
-                        CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -')) ?>
+                    <?=\CHtml::dropDownList(
+                        'effect-id',
+                        @$_GET['effect-id'],
+                        CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                        array('empty' => '- All -')
+                    ) ?>
                 </td>
               </tr>
               </tbody>
@@ -190,7 +202,7 @@
                         <?php if ($i > 0) {
                             echo ", ";
                         } ?>
-                        <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
+                        <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id); ?>
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>

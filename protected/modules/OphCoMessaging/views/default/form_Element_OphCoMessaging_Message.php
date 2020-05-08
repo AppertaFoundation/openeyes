@@ -52,10 +52,18 @@
             Type:
           </td>
           <td>
-                <?php echo $form->dropDownList($element, 'message_type_id',
-                  CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
-                      'id', 'name'), array('empty' => 'Select', 'nolabel' => true), false,
-                  array('label' => 0, 'field' => 12)) ?>
+                <?php echo $form->dropDownList(
+                    $element,
+                    'message_type_id',
+                    CHtml::listData(
+                        OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
+                        'id',
+                        'name'
+                    ),
+                    array('empty' => 'Select', 'nolabel' => true),
+                    false,
+                    array('label' => 0, 'field' => 12)
+                ) ?>
 
           </td>
         </tr>
@@ -64,8 +72,12 @@
             Urgent:
           </td>
           <td style="text-align: right;">
-                <?php echo $form->checkbox($element, 'urgent', array('nowrapper' => true, 'no-label' => true),
-                  array('field' => 11)) ?>
+                <?php echo $form->checkbox(
+                    $element,
+                    'urgent',
+                    array('nowrapper' => true, 'no-label' => true),
+                    array('field' => 11)
+                ) ?>
           </td>
         </tr>
         </tbody>
@@ -83,9 +95,14 @@
             Message
           </td>
           <td>
-                <?php echo $form->textArea($element, 'message_text',
-                  array('rows' => 4, 'cols' => 500, 'no_label' => true), false,
-                  array('placeholder' => 'Your Message...', 'class' => 'autosize'), array('label' => 2, 'field' => 12)) ?>
+                <?php echo $form->textArea(
+                    $element,
+                    'message_text',
+                    array('rows' => 4, 'cols' => 500, 'no_label' => true),
+                    false,
+                    array('placeholder' => 'Your Message...', 'class' => 'autosize'),
+                    array('label' => 2, 'field' => 12)
+                ) ?>
           </td>
         </tr>
         </tbody>

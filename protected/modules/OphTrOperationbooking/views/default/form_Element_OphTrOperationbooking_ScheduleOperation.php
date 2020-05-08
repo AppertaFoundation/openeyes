@@ -24,8 +24,17 @@
                     Schedule options
                 </td>
                 <td>
-                    <?php echo $form->radioButtons($element, 'schedule_options_id', 'OphTrOperationbooking_ScheduleOperation_Options', null,
-                        false, false, false, false, array('nowrapper' => true)); ?>
+                    <?php echo $form->radioButtons(
+                        $element,
+                        'schedule_options_id',
+                        'OphTrOperationbooking_ScheduleOperation_Options',
+                        null,
+                        false,
+                        false,
+                        false,
+                        false,
+                        array('nowrapper' => true)
+                    ); ?>
                 </td>
             </tr>
             </tbody>

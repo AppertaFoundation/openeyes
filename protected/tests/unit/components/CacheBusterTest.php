@@ -38,19 +38,27 @@ class CacheBusterTest extends PHPUnit_Framework_TestCase
         $urlMatch3 = preg_quote($url1, '/');
 
         // Test we have a question mark following by at least 1 char at end the url.
-        $this->assertTrue((bool) preg_match('/('.$urlMatch1.')\?[^\?]+$/', $bustedUrl1),
-            'The URL contains the cache busting string');
+        $this->assertTrue(
+            (bool) preg_match('/('.$urlMatch1.')\?[^\?]+$/', $bustedUrl1),
+            'The URL contains the cache busting string'
+        );
 
         // Test we have an ampersand followed by at least 1 char at end of url.
-        $this->assertTrue((bool) preg_match('/('.$urlMatch2.')&[^&]+$/', $bustedUrl2),
-            'The URL with query string params contains the cache busting');
+        $this->assertTrue(
+            (bool) preg_match('/('.$urlMatch2.')&[^&]+$/', $bustedUrl2),
+            'The URL with query string params contains the cache busting'
+        );
 
         // Test we can specify the time string when creating the URL.
-        $this->assertTrue((bool) preg_match('/('.$urlMatch3.')\?hello$/', $bustedUrl3),
-            'The URL should contain the correct cache busting string when specifying the time when creating the URL');
+        $this->assertTrue(
+            (bool) preg_match('/('.$urlMatch3.')\?hello$/', $bustedUrl3),
+            'The URL should contain the correct cache busting string when specifying the time when creating the URL'
+        );
 
         // Test that the custom time string is not added globally.
-        $this->assertTrue($cacheBuster->time !== 'hello',
-            'The custom time string should not be added globally. The global time string should be set in the config');
+        $this->assertTrue(
+            $cacheBuster->time !== 'hello',
+            'The custom time string should not be added globally. The global time string should be set in the config'
+        );
     }
 }

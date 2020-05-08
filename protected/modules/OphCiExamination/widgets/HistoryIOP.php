@@ -48,7 +48,8 @@ class HistoryIOP extends \BaseEventElementWidget
             $this->patient,
             false,
             null,
-            null);
+            null
+        );
 
         return $iops;
     }

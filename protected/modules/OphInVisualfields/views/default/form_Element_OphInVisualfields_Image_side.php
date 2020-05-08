@@ -13,7 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $fields = OphInVisualfields_Field_Measurement::model()->getUnattachedForPatient(
-    $this->patient, $side == 'left' ? Eye::LEFT : Eye::RIGHT, $this->event
+    $this->patient,
+    $side == 'left' ? Eye::LEFT : Eye::RIGHT,
+    $this->event
 );
 if (!$element->{"{$side}_field_id"} && $fields) {
     $element->{"{$side}_field_id"} = end($fields)->id;
@@ -43,8 +45,12 @@ Yii::app()->clientScript->registerScript(
     <?php if ($current_field) : ?>
       <div class="data-group">
         <div class="cols-5 column">
-            <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
-                array('nowrapper' => true)) ?>
+            <?= $form->dropDownList(
+                $element,
+                "{$side}_field_id",
+                CHtml::listData($field_data, 'id', 'date'),
+                array('nowrapper' => true)
+            ) ?>
         </div>
         <div class="cols-7 column OphInVisualfields_field_image_wrapper">
           <a id="Element_OphInVisualfields_Image_image_<?= $side ?>" class="OphInVisualfields_field_image"

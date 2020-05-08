@@ -66,7 +66,7 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
         }
 
         if (is_null($expected)) {
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         }
         $when = $app->getWhen();
 

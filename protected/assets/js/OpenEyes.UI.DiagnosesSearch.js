@@ -219,7 +219,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                     'beforeSend': function(){
                     },
                     'success':function(data) {
-                        data = $.parseJSON(data);
+                        var temp = $.parseJSON(data);
+                        data = temp ? temp : data;
                         response(data);
                     }
                 });

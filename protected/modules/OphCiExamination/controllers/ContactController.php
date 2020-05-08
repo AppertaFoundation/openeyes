@@ -37,8 +37,7 @@ class ContactController extends \BaseController
                     $contact_label = \ContactLabel::model()->findByPk($contact_label_id);
                     $criteria->addCondition(array(
                             'cl.name = ' . '"' . $contact_label->name . '"'
-                        )
-                    );
+                        ));
                 }
             }
             $criteria->addCondition(array('cl.is_private = 0'));
@@ -86,7 +85,8 @@ class ContactController extends \BaseController
         if (isset($_GET['selected_contact_type'])) {
             $selected_contact_type = $_GET['selected_contact_type'];
         }
-        $this->renderPartial('//contacts/add_new_contact_assignment',
+        $this->renderPartial(
+            '//contacts/add_new_contact_assignment',
             array('selected_contact_type' => $selected_contact_type),
             false,
             true

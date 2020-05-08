@@ -18,9 +18,11 @@
 ?>
 <tr class="dilationTreatment" data-key="<?php echo $key ?>" data-order="<?php echo $data_order ?>">
   <td>
-        <?=\CHtml::textField($name_stub . '[' . $key . '][treatment_time]',
-          isset($treatment) ? substr($treatment->treatment_time, 0, 5) : $treatment_time,
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time')) ?>
+        <?=\CHtml::textField(
+            $name_stub . '[' . $key . '][treatment_time]',
+            isset($treatment) ? substr($treatment->treatment_time, 0, 5) : $treatment_time,
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time')
+        ) ?>
   </td>
   <td>
         <?php if (isset($treatment) && $treatment->id) {

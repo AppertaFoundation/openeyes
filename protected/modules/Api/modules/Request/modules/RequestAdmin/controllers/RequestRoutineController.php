@@ -18,13 +18,6 @@ class RequestRoutineController extends \AdminController
     public $layout = '//layouts/admin';
     public $group = 'API';
 
-    public function accessRules()
-    {
-        // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(array('allow', 'users' => array('@')));
-    }
-
-
     public function actionEdit($id)
     {
         $request = Yii::app()->getRequest();

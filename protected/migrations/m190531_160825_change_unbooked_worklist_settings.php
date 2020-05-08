@@ -13,8 +13,7 @@ class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
                 'name' => 'Search worklist past appointment within (days)',
                 'default_value' => '30',
                 'data' => ''
-            ]
-        );
+            ]);
 
         $this->insert('setting_metadata', ['element_type_id' => null,
                 'field_type_id' => 4,
@@ -22,8 +21,7 @@ class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
                 'name' => 'Search worklist future appointment within (days)',
                 'default_value' => '30',
                 'data' => ''
-            ]
-        );
+            ]);
 
         $this->insert('setting_installation', ['key' => 'worklist_past_search_days', 'value' => '30']);
         $this->insert('setting_installation', ['key' => 'worklist_future_search_days', 'value' => '30']);
@@ -45,8 +43,7 @@ class m190531_160825_change_unbooked_worklist_settings extends CDbMigration
                 'name' => 'Search worklist appointment within (days)',
                 'default_value' => '30',
                 'data' => ''
-            ]
-        );
+            ]);
 
     }
 }

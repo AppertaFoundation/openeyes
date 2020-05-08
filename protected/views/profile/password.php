@@ -36,20 +36,32 @@
   <tbody>
   <tr>
     <td>
-        <?php echo $form->passwordChangeField($user, 'Current Password', 'User[password_old]',
-            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+        <?php echo $form->passwordChangeField(
+            $user,
+            'Current Password',
+            'User[password_old]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
+        ) ?>
     </td>
   </tr>
   <tr>
     <td>
-        <?php echo $form->passwordChangeField($user, 'New Password', 'User[password_new]',
-            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+        <?php echo $form->passwordChangeField(
+            $user,
+            'New Password',
+            'User[password_new]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
+        ) ?>
     </td>
   </tr>
   <tr>
     <td>
-        <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_confirm]',
-            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+        <?php echo $form->passwordChangeField(
+            $user,
+            'Confirm',
+            'User[password_confirm]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])
+        ) ?>
     </td>
   </tr>
   </tbody>

@@ -124,8 +124,10 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
     public function updateDrugs($drug_ids)
     {
         $curr_by_id = array();
-        foreach (OphTrOperationnote_OperationDrug::model()->findAll('ophtroperationnote_postop_drugs_id = :drugsId',
-            array(':drugsId' => $this->id)) as $od) {
+        foreach (OphTrOperationnote_OperationDrug::model()->findAll(
+            'ophtroperationnote_postop_drugs_id = :drugsId',
+            array(':drugsId' => $this->id)
+        ) as $od) {
             $curr_by_id[$od->drug_id] = $od;
         }
 

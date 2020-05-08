@@ -63,7 +63,8 @@ $this->pageTitle = 'Case Search';
                                 'Add Parameter: ',
                                 null,
                                 $paramList,
-                                array('empty' => '- Add a parameter -', 'id' => 'js-add-param'));
+                                array('empty' => '- Add a parameter -', 'id' => 'js-add-param')
+                            );
 ?>
                         </div>
                     </div>
@@ -72,8 +73,10 @@ $this->pageTitle = 'Case Search';
                             <?php echo CHtml::submitButton('Search', array('class' => 'js-search-btn')); ?>
                         </div>
                         <div class="column end" style="padding-left: 5px">
-                            <?php echo CHtml::button('Clear',
-                                array('id' => 'clear-search', 'class' => 'button event-action cancel')) ?>
+                            <?php echo CHtml::button(
+                                'Clear',
+                                array('id' => 'clear-search', 'class' => 'button event-action cancel')
+                            ) ?>
                         </div>
                     </div>
                 </div>
@@ -96,7 +99,8 @@ $this->pageTitle = 'Case Search';
                                 )
                             )
                         );
-                    $pager = $this->createWidget('LinkPager',
+                    $pager = $this->createWidget(
+                        'LinkPager',
                         array(
                             'pages' => $patients->getPagination(),
                             'maxButtonCount' => 15,

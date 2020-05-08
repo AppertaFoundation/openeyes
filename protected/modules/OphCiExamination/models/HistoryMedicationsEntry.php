@@ -311,7 +311,8 @@ class HistoryMedicationsEntry extends \BaseElement
             return count(OphCiExaminationRisk::findForTagIds(array_map(
                 function ($t) {
                     return $t->id;
-                }, $med->tags
+                },
+                $med->tags
             ))) > 0;
         } else {
             return false;
@@ -442,7 +443,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $result[] = $this->frequency;
         }
 
-        return implode(' , ', $result    );
+        return implode(' , ', $result);
     }
 
     /**

@@ -84,11 +84,18 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
 
               <div class="row divider">
                 <ul class="vc-steps">
-                    <?php
-                    foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) { ?>
-                      <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
-                          <?= $step ?>. <?= $queue->name ?>
-                      </li>
+                    <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
+                        $is_completed = $queue->id <= $ticket->current_queue->id;
+                        $is_current = $queue->id === $ticket->current_queue->id; ?>
+                        <?php if ($is_completed) {
+                            $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
+                            <li class="completed">
+                                <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
+                            </li>
+                        <?php } ?>
+                        <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
+                            <?= $step . '. ' . $queue->name; ?>
+                        </li>
                     <?php } ?>
                 </ul>
               </div>
@@ -110,8 +117,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
                     if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
                         $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
                               'ticket' => $ticket,
-                          )
-                        );
+                          ));
                     }
                     ?>
               </div>

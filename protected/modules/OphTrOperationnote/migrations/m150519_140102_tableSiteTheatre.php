@@ -11,19 +11,36 @@ class m150519_140102_tableSiteTheatre extends OEMigration
             'theatre_id' => 'int(10) unsigned NULL default NULL',
         ), true);
 
-        $this->addForeignKey('et_ophtroperationnote_site_theatre_ev_fk',
-            'et_ophtroperationnote_site_theatre', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophtroperationnote_site_theatre_ev_fk',
+            'et_ophtroperationnote_site_theatre',
+            'event_id',
+            'event',
+            'id'
+        );
 
-        $this->addForeignKey('et_ophtroperationnote_site_theatre_site_fk',
-            'et_ophtroperationnote_site_theatre', 'site_id', 'site', 'id');
+        $this->addForeignKey(
+            'et_ophtroperationnote_site_theatre_site_fk',
+            'et_ophtroperationnote_site_theatre',
+            'site_id',
+            'site',
+            'id'
+        );
 
         if (in_array('ophtroperationbooking_operation_theatre', $this->dbConnection->getSchema()->getTableNames())) {
-            $this->addForeignKey('et_ophtroperationnote_site_theatre_theatre_fk',
-                'et_ophtroperationnote_site_theatre', 'theatre_id', 'ophtroperationbooking_operation_theatre', 'id');
+            $this->addForeignKey(
+                'et_ophtroperationnote_site_theatre_theatre_fk',
+                'et_ophtroperationnote_site_theatre',
+                'theatre_id',
+                'ophtroperationbooking_operation_theatre',
+                'id'
+            );
         }
 
-        $eventTypeId = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name',
-            array(':class_name' => 'OphTrOperationnote'))->queryScalar();
+        $eventTypeId = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name = :class_name',
+            array(':class_name' => 'OphTrOperationnote')
+        )->queryScalar();
 
         $this->insert('element_type', array(
             'event_type_id' => $eventTypeId,

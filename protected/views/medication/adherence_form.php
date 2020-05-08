@@ -47,7 +47,8 @@ if ($adherence === null) {
         <div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
         <div class="<?= $form->columns('field') ?>"><?=
             CHtml::activeDropDownList(
-                $adherence, 'level',
+                $adherence,
+                'level',
                 CHtml::listData(MedicationAdherenceLevel::model()->
                     findAll(array('order' => 'display_order')), 'id', 'name')
             )

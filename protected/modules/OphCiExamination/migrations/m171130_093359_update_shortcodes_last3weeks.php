@@ -4,7 +4,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
 {
     public function up()
     {
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingBothLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -13,7 +14,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ipb')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingLeftLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -22,7 +24,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ipl')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingPrincipalLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -31,7 +34,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ipp')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingRightLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -40,7 +44,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ipr')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingAbbrLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -49,7 +54,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ipa')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingRightNoUnitsLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -58,7 +64,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'ior')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingLeftNoUnitsLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -67,7 +74,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             $params = array(':code' => 'iol')
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                     'method' => 'getLetterIOPReadingBothFirstLast3weeks',
                     'description' => new CDbExpression('CONCAT(description, " (Latest recorded within the last 3 weeks)")')
@@ -80,7 +88,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
 
     public function down()
     {
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingBoth',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -89,7 +98,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ipb")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingLeft',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -98,7 +108,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ipl")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingPrincipal',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -107,7 +118,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ipp")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingRight',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -116,7 +128,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ipr")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingAbbr',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -125,7 +138,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ipa")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getIOPReadingRightNoUnits',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -134,7 +148,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "ior")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getIOPReadingLeftNoUnits',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')
@@ -143,7 +158,8 @@ class m171130_093359_update_shortcodes_last3weeks extends CDbMigration
             array(":code" => "iol")
         );
 
-        $this->update('patient_shortcode',
+        $this->update(
+            'patient_shortcode',
             $set = array(
                 'method' => 'getLetterIOPReadingBothFirst',
                 'description' => new CDbExpression('REPLACE(description, " (Latest recorded within the last 3 weeks)", "")')

@@ -60,12 +60,18 @@ $creating = isset($creating) ? $creating : false;
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
               </td>
               <td>
-                  <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                  <?php echo $form->radioButtons(
+                      $element,
+                      'is_signed_off',
+                      array(
                       1 => 'Yes',
                       0 => 'No',
-                  ),
+                      ),
                       $element->is_signed_off,
-                      false, false, false, false,
+                      false,
+                      false,
+                      false,
+                      false,
                       array('nowrapper' => true)
                   ); ?>
               </td>
@@ -91,8 +97,12 @@ $creating = isset($creating) ? $creating : false;
                 Site
               </td>
               <td>
-                    <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'site_id',
+                        Site::model()->getLongListForCurrentInstitution(),
+                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
+                    ) ?>
               </td>
             </tr>
             <tr>
@@ -100,8 +110,12 @@ $creating = isset($creating) ? $creating : false;
                 Date
               </td>
               <td>
-                    <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'),
-                      array('nowrapper' => true, 'class' => 'cols-7')) ?>
+                    <?php echo $form->datePicker(
+                        $element,
+                        'date',
+                        array('maxDate' => 'today'),
+                        array('nowrapper' => true, 'class' => 'cols-7')
+                    ) ?>
               </td>
             </tr>
             <tr>
@@ -109,9 +123,12 @@ $creating = isset($creating) ? $creating : false;
                 Letter type
               </td>
               <td>
-                    <?php echo $form->dropDownList($element, 'letter_type_id',
-                      CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'letter_type_id',
+                        CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
+                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')
+                    ) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
@@ -120,8 +137,12 @@ $creating = isset($creating) ? $creating : false;
                 Clinic Date
               </td>
               <td>
-                    <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'),
-                      array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')) ?>
+                    <?php echo $form->datePicker(
+                        $element,
+                        'clinic_date',
+                        array('maxDate' => 'today'),
+                        array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')
+                    ) ?>
               </td>
             </tr>
             <!--                    Direct Line-->
@@ -130,8 +151,13 @@ $creating = isset($creating) ? $creating : false;
                 Direct Line
               </td>
               <td>
-                    <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true, 'class' => 'cols-full'), array(),
-                      array_merge($layoutColumns, array('field' => 2))) ?>
+                    <?php echo $form->textField(
+                        $element,
+                        'direct_line',
+                        array('nowrapper' => true, 'class' => 'cols-full'),
+                        array(),
+                        array_merge($layoutColumns, array('field' => 2))
+                    ) ?>
               </td>
             </tr>
             <!--                    Fax-->
@@ -140,8 +166,13 @@ $creating = isset($creating) ? $creating : false;
                 Fax
               </td>
               <td>
-                    <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
-                      array_merge($layoutColumns, array('field' => 2))) ?>
+                    <?php echo $form->textField(
+                        $element,
+                        'fax',
+                        array('nowrapper' => true, 'class' => 'cols-full'),
+                        array(),
+                        array_merge($layoutColumns, array('field' => 2))
+                    ) ?>
               </td>
             </tr>
             </tbody>
@@ -275,8 +306,12 @@ $creating = isset($creating) ? $creating : false;
                 </tr>
                 <tr>
                     <td>
-                        <?= \CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
+                        <?= \CHtml::dropDownList(
+                            'macro_id',
+                            $macro_id,
+                            $element->letter_macros,
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')
+                        ); ?>
                     </td>
                 </tr>
                 <tr>
@@ -356,8 +391,13 @@ $creating = isset($creating) ? $creating : false;
             <tr>
                 <!--                        Introduction/ Salutation-->
                 <td>
-                    <?php echo $form->textArea($element, 'introduction',
-                        array('rows' => 1, 'label' => false, 'nowrapper' => true), false, array('class' => 'address correspondence-letter-text')) ?>
+                    <?php echo $form->textArea(
+                        $element,
+                        'introduction',
+                        array('rows' => 1, 'label' => false, 'nowrapper' => true),
+                        false,
+                        array('class' => 'address correspondence-letter-text')
+                    ) ?>
                 </td>
                 <!--Nickname-->
                 <td>
@@ -378,9 +418,13 @@ $creating = isset($creating) ? $creating : false;
             </tr>
             <tr>
                 <td colspan="2">
-                    <?php echo $form->textArea($element, 'body',
+                    <?php echo $form->textArea(
+                        $element,
+                        'body',
                         array('rows' => 20, 'label' => false, 'nowrapper' => true),
-                        false, array('class' => 'address')) ?>
+                        false,
+                        array('class' => 'address')
+                    ) ?>
                 </td>
             </tr>
         </table>
@@ -409,8 +453,11 @@ $creating = isset($creating) ? $creating : false;
                         <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                             <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
                                 <div class="data-group collapse in enclosureItem flex-layout">
-                                    <?= \CHtml::textField("EnclosureItems[$key]", $value,
-                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')) ?>
+                                    <?= \CHtml::textField(
+                                        "EnclosureItems[$key]",
+                                        $value,
+                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
+                                    ) ?>
                                     <i class="oe-i trash removeEnclosure"></i>
                                 </div>
 
@@ -418,8 +465,11 @@ $creating = isset($creating) ? $creating : false;
                         <?php } else { ?>
                             <?php foreach ($element->enclosures as $i => $item) { ?>
                                 <div class="data-group collapse in enclosureItem flex-layout">
-                                    <?= \CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
-                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')) ?>
+                                    <?= \CHtml::textField(
+                                        "EnclosureItems[enclosure$i]",
+                                        $item->content,
+                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
+                                    ) ?>
                                     <i class="oe-i trash removeEnclosure"></i>
                                 </div>
                             <?php } ?>
@@ -448,8 +498,10 @@ $creating = isset($creating) ? $creating : false;
 
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         if ($associated_content == null) {
-            $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro_id),
-                array('order' => 'display_order asc'));
+            $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(
+                array('macro_id' => $macro_id),
+                array('order' => 'display_order asc')
+            );
         }
 
         $this->renderPartial('event_associated_content', array(

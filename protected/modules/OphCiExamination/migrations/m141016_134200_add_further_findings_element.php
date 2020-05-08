@@ -11,14 +11,19 @@ class m141016_134200_add_further_findings_element extends OEMigration
         );
         $this->insertOEElementType($element_types, $event_type_id);
 
-        $this->createOETable('ophciexamination_further_findings',
+        $this->createOETable(
+            'ophciexamination_further_findings',
             array('id' => 'pk', 'name' => 'varchar(255)', 'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
                 'active' => 'tinyint(1) unsigned not null DEFAULT 1',
-            ), true);
+            ),
+            true
+        );
 
         $this->createIndex(
-            'ophciexamination_further_findings_unique_name', 'ophciexamination_further_findings',
-            'name', true
+            'ophciexamination_further_findings_unique_name',
+            'ophciexamination_further_findings',
+            'name',
+            true
         );
 
         $this->createOETable('et_ophciexamination_further_findings', array(
@@ -28,18 +33,24 @@ class m141016_134200_add_further_findings_element extends OEMigration
             'CONSTRAINT `et_ophciexamination_further_findings_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
         ), true);
 
-        $this->createOETable('ophciexamination_further_findings_assignment',
+        $this->createOETable(
+            'ophciexamination_further_findings_assignment',
             array('id' => 'pk', 'element_id' => 'int(11) NOT NULL',
                 'further_finding_id' => 'int(11) NOT NULL',
                 'CONSTRAINT `ophciexamination_further_findings_assign_e_id_fk` FOREIGN KEY (`element_id`) REFERENCES `et_ophciexamination_further_findings` (`id`)',
                 'CONSTRAINT `ophciexamination_further_findings_assign_f_id_fk` FOREIGN KEY (`further_finding_id`) REFERENCES `ophciexamination_further_findings` (`id`)',
-            ), true);
+            ),
+            true
+        );
 
-        $this->createOETable('ophciexamination_further_findings_subspec_assignment',
+        $this->createOETable(
+            'ophciexamination_further_findings_subspec_assignment',
             array('id' => 'pk', 'further_finding_id' => 'int(11) NOT NULL', 'subspecialty_id' => 'int(10) unsigned NOT NULL',
                 'CONSTRAINT `ophciexamination_further_findings_subspec_f_id_fk` FOREIGN KEY (`further_finding_id`) REFERENCES `ophciexamination_further_findings` (`id`)',
                 'CONSTRAINT `ophciexamination_further_findings_subspec_s_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)',
-            ), true);
+            ),
+            true
+        );
 
         $migrations_path = dirname(__FILE__);
         $this->initialiseData($migrations_path);
@@ -58,7 +69,10 @@ class m141016_134200_add_further_findings_element extends OEMigration
             $this->dropTable($table.'_version');
         }
 
-        $this->delete('element_type', 'class_name = :class',
-            array(':class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings'));
+        $this->delete(
+            'element_type',
+            'class_name = :class',
+            array(':class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings')
+        );
     }
 }

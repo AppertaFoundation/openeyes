@@ -187,8 +187,10 @@ class LegacyFieldsCommandTest extends CDbTestCase
      */
     private function getPatientFieldMeasurements($patient_id)
     {
-        $patient = Patient::model()->find('hos_num=:hos_num',
-                array(':hos_num' => $patient_id));
+        $patient = Patient::model()->find(
+            'hos_num=:hos_num',
+            array(':hos_num' => $patient_id)
+        );
         if ($patient) {
             $criteria = new CDbCriteria();
             $criteria->join = 'join patient_measurement on patient_measurement.id=patient_measurement_id';
@@ -207,10 +209,14 @@ class LegacyFieldsCommandTest extends CDbTestCase
      */
     private function getPatientMeasurements($patient_id)
     {
-        $patient = Patient::model()->find('hos_num=:hos_num',
-                array(':hos_num' => $patient_id));
+        $patient = Patient::model()->find(
+            'hos_num=:hos_num',
+            array(':hos_num' => $patient_id)
+        );
 
-        return PatientMeasurement::model()->findAll('patient_id=:patient_id',
-                array(':patient_id' => $patient->id));
+        return PatientMeasurement::model()->findAll(
+            'patient_id=:patient_id',
+            array(':patient_id' => $patient->id)
+        );
     }
 }

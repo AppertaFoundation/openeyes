@@ -308,7 +308,6 @@ class DefaultController extends \BaseEventTypeController
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
                 models\Element_OphCiExamination_Management::class,
-                models\Element_OphCiExamination_ClinicOutcome::class,
                 models\OCT::class,
             ), true);
         });
@@ -1387,9 +1386,9 @@ class DefaultController extends \BaseEventTypeController
 
         foreach ($entries as $entry) {
             if (array_search($entry['status_id'], $patient_ticket_ids) !== false) {
-                if (isset($data['patientticket_queue'])) {
-                    $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                    $queue_data = $api->extractQueueData($queue, $data);
+                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                $queue_data = array_merge($data, $api->extractQueueData($queue, $data));
+                if (!$api->getTicketForEvent($this->event)) {
                     $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
                 } else {
                     $api->updateTicketForEvent($this->event);

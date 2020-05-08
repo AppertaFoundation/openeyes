@@ -31,8 +31,12 @@ if ($this->checkClinicalEditAccess()) { ?>
                   <?php echo $element->getAttributeLabel('examination_date')?>
               </td>
               <td>
-                  <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'),
-                      array('style' => 'width: 110px;', 'nowrapper'=> true)) ?>
+                  <?php echo $form->datePicker(
+                      $element,
+                      'examination_date',
+                      array('maxDate' => 'today'),
+                      array('style' => 'width: 110px;', 'nowrapper'=> true)
+                  ) ?>
               </td>
             </tr>
           </tbody>
@@ -51,12 +55,18 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <label><?= $element->getAttributeLabel('is_considered_blind');?></label>
               </td>
               <td>
-                  <?php echo $form->radioButtons($element, 'is_considered_blind', array(
+                  <?php echo $form->radioButtons(
+                      $element,
+                      'is_considered_blind',
+                      array(
                       0 => $element::$NOT_BLIND_STATUS,
                       1 => $element::$BLIND_STATUS,
-                  ),
+                      ),
                       $element->is_considered_blind,
-                      false, false, false, false,
+                      false,
+                      false,
+                      false,
+                      false,
                       array('nowrapper' => true)
                   ); ?>
               </td>
@@ -84,9 +94,18 @@ if ($this->checkClinicalEditAccess()) { ?>
                   <label><?= $element->getAttributeLabel('low_vision_status_id');?></label>
                 </td>
                 <td>
-                    <?php echo $form->dropDownList($element, 'low_vision_status_id',
-                        CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
-                            'id', 'name'), array('empty' => 'Select','nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'low_vision_status_id',
+                        CHtml::listData(
+                            OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
+                            'id',
+                            'name'
+                        ),
+                        array('empty' => 'Select','nowrapper' => true , 'class' => 'cols-full'),
+                        false,
+                        array('label' => 4, 'field' => 6)
+                    ) ?>
                 </td>
               </tr>
             <tr>
@@ -94,9 +113,18 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <label><?= $element->getAttributeLabel('field_of_vision_id');?></label>
               </td>
               <td>
-                  <?php echo $form->dropDownList($element, 'field_of_vision_id',
-                      CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
-                          'id', 'name'), array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
+                  <?php echo $form->dropDownList(
+                      $element,
+                      'field_of_vision_id',
+                      CHtml::listData(
+                          OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
+                          'id',
+                          'name'
+                      ),
+                      array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'),
+                      false,
+                      array('label' => 4, 'field' => 6)
+                  ) ?>
               </td>
             </tr>
             </tbody>
@@ -124,8 +152,11 @@ if ($this->checkClinicalEditAccess()) { ?>
                       <?php echo $element->getAttributeLabel('unaided_'.$eye_side.'_va'); ?>
                   </td>
                   <td>
-                      <?php echo $form->textField($element, 'unaided_'.$eye_side.'_va',
-                          array('size' => 5, 'nowrapper' => true)); ?>
+                      <?php echo $form->textField(
+                          $element,
+                          'unaided_'.$eye_side.'_va',
+                          array('size' => 5, 'nowrapper' => true)
+                      ); ?>
                   </td>
                 </tr>
                 <tr>
@@ -133,8 +164,11 @@ if ($this->checkClinicalEditAccess()) { ?>
                       <?php $this->widget('EyeLateralityWidget', array('laterality' => $eye_side)) ?>
                   </td>
                   <td><?php echo $element->getAttributeLabel('best_corrected_'.$eye_side.'_va'); ?></td>
-                  <td><?php echo $form->textField($element, 'best_corrected_'.$eye_side.'_va',
-                          array('size' => 5, 'nowrapper' => true)); ?>
+                  <td><?php echo $form->textField(
+                      $element,
+                      'best_corrected_'.$eye_side.'_va',
+                      array('size' => 5, 'nowrapper' => true)
+                  ); ?>
                   </td>
                 </tr>
                 <?php if ($eye_side=='right') { ?>
@@ -149,7 +183,8 @@ if ($this->checkClinicalEditAccess()) { ?>
                           'best_corrected_binocular_va',
                           array('size' => '10', 'nowrapper' => true),
                           null,
-                          array()) ?>
+                          array()
+                      ) ?>
                   </td>
                 </tr>
                 <?php } ?>

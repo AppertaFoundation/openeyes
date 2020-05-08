@@ -328,11 +328,11 @@ class AdminController extends BaseAdminController
     public function actionUserFind()
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -409,7 +409,7 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if (!$user->save()) {
+                if (!$user->save(false)) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 

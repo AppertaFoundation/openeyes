@@ -12,41 +12,53 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
             'GP to supply'=>array('N/A'),
             'Patient self-supply'=>array('Patient Own Drugs','Home','Already On')
             );
-        $this->createOETable('ophdrprescription_dispense_condition',
-                                array(
+        $this->createOETable(
+            'ophdrprescription_dispense_condition',
+            array(
                                     'id' => 'pk',
                                     'name' => 'varchar(255) not null',
                                     'display_order' => 'integer not null',
                                     'active' => 'boolean not null default true'
                                 ),
-                                true);
+            true
+        );
 
-        $this->createOETable('ophdrprescription_dispense_location',
-                                array(
+        $this->createOETable(
+            'ophdrprescription_dispense_location',
+            array(
                                     'id' => 'pk',
                                     'name' => 'varchar(255) not null',
                                     'display_order' => 'integer not null',
                                     'active' => 'boolean not null default true'
-                                ), true);
+            ),
+            true
+        );
 
-        $this->createOETable('ophdrprescription_dispense_condition_assignment',
-                            array(
+        $this->createOETable(
+            'ophdrprescription_dispense_condition_assignment',
+            array(
                                 'id' => 'pk',
                                 'dispense_condition_id' => 'int(11)',
                                 'dispense_location_id' => 'int(11)'
-                                ), true);
+            ),
+            true
+        );
 
-        $this->addForeignKey(   'fk_ophdrprescription_dispense_condition_assignment_condition_id',
-                                'ophdrprescription_dispense_condition_assignment',
-                                'dispense_condition_id',
-                                'ophdrprescription_dispense_condition',
-                                'id');
+        $this->addForeignKey(
+            'fk_ophdrprescription_dispense_condition_assignment_condition_id',
+            'ophdrprescription_dispense_condition_assignment',
+            'dispense_condition_id',
+            'ophdrprescription_dispense_condition',
+            'id'
+        );
 
-        $this->addForeignKey(   'fk_ophdrprescription_dispense_condition_assignment_location_id',
-                                'ophdrprescription_dispense_condition_assignment',
-                                'dispense_location_id',
-                                'ophdrprescription_dispense_location',
-                                'id');
+        $this->addForeignKey(
+            'fk_ophdrprescription_dispense_condition_assignment_location_id',
+            'ophdrprescription_dispense_condition_assignment',
+            'dispense_location_id',
+            'ophdrprescription_dispense_location',
+            'id'
+        );
 
         $do_cond = 1;
         foreach ($conditions as $condition) {
@@ -72,7 +84,8 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
                         ->from('ophdrprescription_dispense_location')
                         ->where("name='".$l."'")->queryScalar();
                     if ($location_id) {
-                        $this->insert('ophdrprescription_dispense_condition_assignment',
+                        $this->insert(
+                            'ophdrprescription_dispense_condition_assignment',
                             array(
                                 'dispense_condition_id' => $condition_id,
                                 'dispense_location_id' => $location_id
@@ -88,17 +101,21 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
         $this->addColumn('ophdrprescription_item', 'dispense_location_id', 'int(11)');
         $this->addColumn('ophdrprescription_item_version', 'dispense_location_id', 'int(11)');
 
-        $this->addForeignKey(   'fk_ophdrprescription_item_dispense_condition_id',
-                                'ophdrprescription_item',
-                                'dispense_condition_id',
-                                'ophdrprescription_dispense_condition',
-                                'id');
+        $this->addForeignKey(
+            'fk_ophdrprescription_item_dispense_condition_id',
+            'ophdrprescription_item',
+            'dispense_condition_id',
+            'ophdrprescription_dispense_condition',
+            'id'
+        );
 
-        $this->addForeignKey(   'fk_ophdrprescription_item_dispense_location_id',
-                                'ophdrprescription_item',
-                                'dispense_location_id',
-                                'ophdrprescription_dispense_location',
-                                'id');
+        $this->addForeignKey(
+            'fk_ophdrprescription_item_dispense_location_id',
+            'ophdrprescription_item',
+            'dispense_location_id',
+            'ophdrprescription_dispense_location',
+            'id'
+        );
 
         echo "Migrating existing Prescription events\n";
         /*
@@ -121,13 +138,17 @@ class m170819_201700_add_dispense_condition_and_location extends OEMigration
             ->from('ophdrprescription_dispense_location')
             ->where("name='N/A'")->queryScalar();
 
-        $this->update(  'ophdrprescription_item',
-                        array('dispense_condition_id'=>$continue_gp_id, 'dispense_location_id'=>$location_id),
-                        'continue_by_gp = 1');
+        $this->update(
+            'ophdrprescription_item',
+            array('dispense_condition_id'=>$continue_gp_id, 'dispense_location_id'=>$location_id),
+            'continue_by_gp = 1'
+        );
 
-        $this->update(  'ophdrprescription_item',
-                        array('dispense_condition_id'=>$hospital_supply_id, 'dispense_location_id'=>$location_id),
-                        'continue_by_gp = 0');
+        $this->update(
+            'ophdrprescription_item',
+            array('dispense_condition_id'=>$hospital_supply_id, 'dispense_location_id'=>$location_id),
+            'continue_by_gp = 0'
+        );
 
         $this->dropColumn('ophdrprescription_item', 'continue_by_gp');
         $this->dropColumn('ophdrprescription_item_version', 'continue_by_gp');

@@ -10,8 +10,13 @@ class m190325_111457_add_ophtr_operationnote_generic_procedure_comments_default_
             'default_text' => 'varchar(4096)  NULL',
         ]);
 
-        $this->addForeignKey('generic_procedure_default_text_fk_proc_id', 'ophtroperationnote_generic_procedure_data',
-            'proc_id', 'proc', 'id');
+        $this->addForeignKey(
+            'generic_procedure_default_text_fk_proc_id',
+            'ophtroperationnote_generic_procedure_data',
+            'proc_id',
+            'proc',
+            'id'
+        );
 
         $this->execute("INSERT INTO ophtroperationnote_generic_procedure_data (proc_id)
                              SELECT prc.id 

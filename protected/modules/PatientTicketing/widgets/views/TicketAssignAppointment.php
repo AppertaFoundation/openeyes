@@ -49,8 +49,11 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
                 )); ?>
           </td>
           <td>
-              <?=\CHtml::textField($this->form_name . '[appointment_time]',
-                  @$this->form_data[$this->form_name]['appointment_time'], ['class'=>'cols-11']) ?>
+              <?=\CHtml::textField(
+                  $this->form_name . '[appointment_time]',
+                  @$this->form_data[$this->form_name]['appointment_time'],
+                  ['class'=>'cols-11']
+              ) ?>
           </td>
         </tr>
         </tbody>

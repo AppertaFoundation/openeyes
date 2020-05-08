@@ -26,11 +26,13 @@
         <?php endif; ?>
 >
     <?php if ($this->action->Id === 'view') {
-            $form=$this->beginWidget('CActiveForm',
+            $form=$this->beginWidget(
+                'CActiveForm',
                 array(
                     "action"=>"/OphInDnaextraction/default/updateDnaTests/".$element->event_id,
                     'htmlOptions' => ['class' => 'frmDnaTests']
-                ));
+                )
+            );
     } ?>
 
 

@@ -44,11 +44,13 @@ class m190509_164708_assessment_element extends OEMigration
         $this->addForeignKey('et_ophgeneric_assessment_ev_fk', 'et_ophgeneric_assessment', 'event_id', 'event', 'id');
         $this->addForeignKey('generic_assessment_entry_eye_fk', 'ophgeneric_assessment_entry', 'eye_id', 'eye', 'id');
         $this->addForeignKey('generic_assessment_eye_fk', 'et_ophgeneric_assessment', 'eye_id', 'eye', 'id');
-        $this->addForeignKey('generic_assessment_entry_element_fk',
+        $this->addForeignKey(
+            'generic_assessment_entry_element_fk',
             'ophgeneric_assessment_entry',
             'element_id',
             'et_ophgeneric_assessment',
-            'id');
+            'id'
+        );
     }
 
     public function safeDown()

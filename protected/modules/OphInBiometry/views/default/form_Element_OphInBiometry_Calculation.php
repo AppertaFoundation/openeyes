@@ -33,8 +33,10 @@
                                  } ?>"
            data-side="<?php echo $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-            <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+            <?php $this->renderPartial(
+                'form_Element_OphInBiometry_Calculation_fields',
+                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)
+            ); ?>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <div class="add-side">
@@ -61,9 +63,13 @@
         </div>
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <div class="element-fields">
-              <?php echo $form->textArea($element, 'comments_' . $eye_side,
-                  array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-                  array('class' => 'comments_' . $eye_side)) ?>
+              <?php echo $form->textArea(
+                  $element,
+                  'comments_' . $eye_side,
+                  array('rows' => 3, 'label' => false, 'nowrapper' => true),
+                  false,
+                  array('class' => 'comments_' . $eye_side)
+              ) ?>
           </div>
         </div>
       </div>

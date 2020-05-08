@@ -18,20 +18,20 @@
 ?>
 <div class="element-fields full-width flex-layout">
         <?php echo $form->multiSelectList(
-          $element,
-          'Drug',
-          'drugs',
-          'id',
-          $this->getPostOpDrugList($element),
-          null,
-          array('empty' => '- Drugs -', 'label' => 'Drugs'),
-          false,
-          false,
-          null,
-          false,
-          false,
-          array('field' => 10)
-      ) ?>
+            $element,
+            'Drug',
+            'drugs',
+            'id',
+            $this->getPostOpDrugList($element),
+            null,
+            array('empty' => '- Drugs -', 'label' => 'Drugs'),
+            false,
+            false,
+            null,
+            false,
+            false,
+            array('field' => 10)
+        ) ?>
 
   <div class="add-data-actions flex-item-bottom " id="add-surgeon-popup">
     <button class="button hint green js-add-select-search" id="add-postop-drugs-btn" type="button">
@@ -52,9 +52,12 @@
       openButton: $('#add-postop-drugs-btn'),
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($key, $item) {
+            array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key];
-          }, array_keys($drugs), $drugs))?>,
+            },
+            array_keys($drugs),
+            $drugs)
+        )?>,
           {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {

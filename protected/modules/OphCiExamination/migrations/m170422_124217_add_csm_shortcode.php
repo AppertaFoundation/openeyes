@@ -24,9 +24,11 @@ class m170422_124217_add_csm_shortcode extends CDbMigration
     public function down()
     {
         $event_type = $this->_getEventType();
-        $this->execute('DELETE FROM patient_shortcode
+        $this->execute(
+            'DELETE FROM patient_shortcode
                         WHERE code = :code
                         AND event_type_id = :event_type_id',
-                        array(':code'=>'csm', ':event_type_id'=>$event_type['id']));
+            array(':code'=>'csm', ':event_type_id'=>$event_type['id'])
+        );
     }
 }

@@ -183,12 +183,15 @@ class AdminController extends \ModuleAdminController
             if (!$queueset->validate()) {
                 $resp = array(
                     'success' => false,
-                    'form' => $this->renderPartial('form_queue', array(
+                    'form' => $this->renderPartial(
+                        'form_queue',
+                        array(
                             'queueset' => $queueset,
                             'queue' => null,
                             'errors' => $queueset->getErrors(),
                         ),
-                        true),
+                        true
+                    ),
                 );
                 echo \CJSON::encode($resp);
             } else {
@@ -233,12 +236,14 @@ class AdminController extends \ModuleAdminController
         if (Yii::app()->request->isPostRequest) {
             $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
             $ids = array();
-            foreach ($_POST['user_ids'] as $id) {
+            $user_ids = Yii::app()->request->getPost('user_ids', []);
+            $user_role = Yii::app()->request->getPost('user_role');
+            foreach ($user_ids as $id) {
                 $ids[] = (int) $id;
             }
             $resp = array();
 
-            $qs_svc->setPermisssionedUsers($queueset->id, $ids, @$_POST['user_role']);
+            $qs_svc->setPermisssionedUsers($queueset->id, $ids, $user_role);
             $resp['success'] = true;
             $resp['message'] = 'Queue set permissions updated';
 

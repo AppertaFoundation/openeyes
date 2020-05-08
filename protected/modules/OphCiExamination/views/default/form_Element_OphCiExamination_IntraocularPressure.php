@@ -29,8 +29,8 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
             <i class="oe-i remove-circle small"></i>
           </a>
             <?php $this->renderPartial(
-                    $element->form_view . '_side',
-                    array('side' => $eye_side, 'element' => $element, 'form' => $form)
+                $element->form_view . '_side',
+                array('side' => $eye_side, 'element' => $element, 'form' => $form)
             )?>
         </div>
         <div class="inactive-form" style="<?=$element->hasEye($eye_side) ? "display: none;":""?>">

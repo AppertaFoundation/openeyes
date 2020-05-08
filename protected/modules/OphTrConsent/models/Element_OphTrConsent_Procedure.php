@@ -212,10 +212,11 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
         if (!is_array($code)) {
             $code = array($code);
         }
-        return count(array_filter($this->anaesthetic_type,
-                    function ($a_type) use ($code) {
-                        return in_array((string)$a_type, $code);
-                    })
-            ) > 0;
+        return count(array_filter(
+            $this->anaesthetic_type,
+            function ($a_type) use ($code) {
+                return in_array((string)$a_type, $code);
+            }
+        )) > 0;
     }
 }
