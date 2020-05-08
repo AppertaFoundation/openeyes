@@ -301,11 +301,10 @@ class User extends BaseActiveRecordVersioned
         }
         if ($this->hashPassword($password, $this->salt) === $this->password) {
             // Regenerate the hash using the new method.
-            $this->password = $password;
-            $this->password_repeat = $password;
-            $this->password_hashed = false;
-            if (!$this->save()) {
-                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}");
+            $this->salt = null;
+            $this->password = $this->hashPassword($password, null);
+            if (!$this->saveAttributes(array('password','salt'))) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}, with error :". var_export($this->getErrors(), true));
                 return false;
             }
             $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
