@@ -54,10 +54,13 @@ class m160318_132703_new_doctor_grades extends CDbMigration
                     $this->update('doctor_grade', array('grade' => $doctor_grade), 'id='.$id);
                 } else {
                     $this->insert(
-                        'doctor_grade', array('id' => $id,
+                        'doctor_grade',
+                        array('id' => $id,
                         'grade' => $doctor_grade,
                         'display_order' => $id,
-                        'has_pcr_risk' => ($id >= 20) ? false : true, ));
+                        'has_pcr_risk' => ($id >= 20) ? false : true,
+                        )
+                    );
                 }
             }
 

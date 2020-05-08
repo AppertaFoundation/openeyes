@@ -53,7 +53,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
 
             $this->assertEquals($test_result, $resource->getModel());
         } else {
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
 
             $resource->getModel();
         }

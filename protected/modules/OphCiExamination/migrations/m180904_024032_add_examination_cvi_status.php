@@ -28,10 +28,20 @@ class m180904_024032_add_examination_cvi_status extends OEMigration
             'last_modified_user_id' => 'int(10) unsigned',
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_cvi_status_event_id_fk', 'et_ophciexamination_cvi_status',
-            'event_id', 'event', 'id');
-        $this->addForeignKey('et_ophciexamination_cvi_status_cvi_id_fk', 'et_ophciexamination_cvi_status',
-            'cvi_status_id', 'patient_oph_info_cvi_status', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_cvi_status_event_id_fk',
+            'et_ophciexamination_cvi_status',
+            'event_id',
+            'event',
+            'id'
+        );
+        $this->addForeignKey(
+            'et_ophciexamination_cvi_status_cvi_id_fk',
+            'et_ophciexamination_cvi_status',
+            'cvi_status_id',
+            'patient_oph_info_cvi_status',
+            'id'
+        );
 
 
     }

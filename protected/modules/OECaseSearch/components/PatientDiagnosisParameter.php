@@ -55,8 +55,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         return array_merge(parent::rules(), array(
                 array('term', 'required'),
                 array('term, firm_id, only_latest_event', 'safe'),
-            )
-        );
+            ));
     }
 
     public function renderParameter($id)
@@ -103,10 +102,10 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
             </div>
             <div class="flex-right cols-6">
                 <?php echo CHtml::activeDropDownList(
-                        $this,
-                        "[$id]firm_id",
-                        $firms,
-                        array('empty' => 'Any ' . Firm::contextLabel(), 'style'=>'width: 100%;')
+                    $this,
+                    "[$id]firm_id",
+                    $firms,
+                    array('empty' => 'Any ' . Firm::contextLabel(), 'style'=>'width: 100%;')
                 ); ?>
             </div>
           </div>

@@ -181,7 +181,7 @@ class DefaultController extends BaseEventTypeController
             $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);
 
             $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'], $boxRanges['maxnumber']);
-            $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
+            $usedBoxRows = $storage->getAllLetterNumberToBox($_POST['box_id']);
 
 
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {

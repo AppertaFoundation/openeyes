@@ -540,7 +540,7 @@ class DefaultController extends BaseEventTypeController
 
         $eventid = 3686356;
         $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $api->printEvent( $eventid );
+        $api->printEvent($eventid);
     }
 
 
@@ -752,8 +752,10 @@ class DefaultController extends BaseEventTypeController
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {
-                    $lat_id = MedicationLaterality::model()->find('name = :eye_name',
-                        array(':eye_name' => $principal_eye->name));
+                    $lat_id = MedicationLaterality::model()->find(
+                        'name = :eye_name',
+                        array(':eye_name' => $principal_eye->name)
+                    );
                     $item->laterality = ($lat_id) ? $lat_id : null;
                 }
                 //check operation note eye and use instead of original diagnosis
@@ -766,11 +768,16 @@ class DefaultController extends BaseEventTypeController
         }
         $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         if (isset($this->patient)) {
-            $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
+            $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
+            );
         } else {
-            $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options), true);
+            $output = $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options),
+                true
+            );
 
             return $output;
         }

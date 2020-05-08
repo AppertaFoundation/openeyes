@@ -401,11 +401,13 @@ class NodAuditReport extends Report implements ReportInterface
                 count($dataset['E/I']['eligible'])/$dataset['total'],
             );
             if (isset(Yii::app()->modules['OphOuCatprom5'])) {
-                array_push($incomplete_y,
+                array_push(
+                    $incomplete_y,
                     count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
                     count($dataset['CATPROM5']['post-incomplete'])/$dataset['total']
                 );
-                array_push($complete_y,
+                array_push(
+                    $complete_y,
                     count($dataset['CATPROM5']['pre-complete'])/$dataset['total'],
                     count($dataset['CATPROM5']['post-complete'])/$dataset['total']
                 );
@@ -443,11 +445,13 @@ class NodAuditReport extends Report implements ReportInterface
         );
 
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
-            array_push($trace2['x'],
+            array_push(
+                $trace2['x'],
                 'CatProm5 Pre-op',
                 'CatProm5 Post-op'
             );
-            array_push($trace2['customdata'],
+            array_push(
+                $trace2['customdata'],
                 $dataset['CATPROM5']['pre-incomplete'],
                 $dataset['CATPROM5']['post-incomplete']
             );
@@ -483,11 +487,13 @@ class NodAuditReport extends Report implements ReportInterface
             'hovertemplate' => $hovertemplate,
         );
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
-            array_push($trace1['x'],
+            array_push(
+                $trace1['x'],
                 'CatProm5 Pre-op',
                 'CatProm5 Post-op'
             );
-            array_push($trace1['customdata'],
+            array_push(
+                $trace1['customdata'],
                 $dataset['CATPROM5']['pre-complete'],
                 $dataset['CATPROM5']['post-complete']
             );

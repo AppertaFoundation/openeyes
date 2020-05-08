@@ -50,11 +50,13 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 
     if ($current_episode) {
         if ($this->editing) {
-            $this->renderPartial('/clinical/updateEpisode',
+            $this->renderPartial(
+                '/clinical/updateEpisode',
                 array('episode' => $current_episode, 'error' => $error)
             );
         } else {
-            $this->renderPartial('/clinical/episodeSummary',
+            $this->renderPartial(
+                '/clinical/episodeSummary',
                 array('episode' => $current_episode)
             );
         }

@@ -177,7 +177,8 @@ class HistoryMedications extends BaseMedicationWidget
             // tracking prescription items.
             $this->element->entries = array_merge(
                 $entries,
-                $untracked);
+                $untracked
+            );
         }
     }
 
@@ -325,8 +326,11 @@ class HistoryMedications extends BaseMedicationWidget
      */
     protected function validateMode($mode)
     {
-        return in_array($mode,
-                array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
+        return in_array(
+            $mode,
+            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW),
+            true
+        ) || parent::validateMode($mode);
     }
 
     /**

@@ -45,19 +45,20 @@
             <tr>
                 <td><?= $model->getAttributeLabel("default_routine_name"); ?></td>
                 <td><?= \CHtml::activeDropDownList(
-                        $model,
-                        'default_routine_name',
-                        \CHtml::listData(RoutineLibrary::model()->findAll(), 'routine_name', 'routine_name'),
-                        ['empty' => "-- select --"]); ?></td>
+                    $model,
+                    'default_routine_name',
+                    \CHtml::listData(RoutineLibrary::model()->findAll(), 'routine_name', 'routine_name'),
+                    ['empty' => "-- select --"]
+                ); ?></td>
             </tr>
             <tr>
                 <td><?= $model->getAttributeLabel("default_request_queue"); ?></td>
                 <td><?= \CHtml::activeDropDownList(
-                        $model,
-                        'default_request_queue',
-                        \CHtml::listData(RequestQueue::model()->findAll(), 'request_queue', 'request_queue'),
-                        ['empty' => "-- select --"]
-                    ); ?></td>
+                    $model,
+                    'default_request_queue',
+                    \CHtml::listData(RequestQueue::model()->findAll(), 'request_queue', 'request_queue'),
+                    ['empty' => "-- select --"]
+                ); ?></td>
             </tr>
             </tbody>
             <tfoot>

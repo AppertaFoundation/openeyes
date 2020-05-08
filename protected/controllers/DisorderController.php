@@ -237,7 +237,7 @@ class DisorderController extends BaseController
                 $return[] = $this->disorderStructure($disorder);
             };
         } else {
-            $return = $this->actionGetCommonOphthalmicDisorders( Yii::app()->session['selected_firm_id'] );
+            $return = $this->actionGetCommonOphthalmicDisorders(Yii::app()->session['selected_firm_id']);
         }
 
         $this->renderJSON($return);

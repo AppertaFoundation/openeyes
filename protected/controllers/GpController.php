@@ -216,8 +216,10 @@ class GpController extends BaseController
             ->from('gp g')
             ->join('contact c', 'c.id = g.contact_id')
             ->join('contact_label cl', 'cl.id = c.contact_label_id')
-            ->where('(LOWER(c.first_name) LIKE LOWER(:first_name)) OR (LOWER(c.last_name) LIKE LOWER(:last_name))',
-                array(':first_name' => "%{$term}%", ':last_name' => "%{$term}%"))
+            ->where(
+                '(LOWER(c.first_name) LIKE LOWER(:first_name)) OR (LOWER(c.last_name) LIKE LOWER(:last_name))',
+                array(':first_name' => "%{$term}%", ':last_name' => "%{$term}%")
+            )
             ->queryAll();
 
         $output = array();

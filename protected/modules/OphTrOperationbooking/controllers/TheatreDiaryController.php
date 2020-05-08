@@ -369,8 +369,10 @@ class TheatreDiaryController extends BaseModuleController
         if (!empty($_POST['subspecialty_id'])) {
             $subspecialty_id = $_POST['subspecialty_id'];
         } elseif (!empty($_POST['service_id'])) {
-            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find('service_id=?',
-                array($_POST['service_id']))->subspecialty_id;
+            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find(
+                'service_id=?',
+                array($_POST['service_id'])
+            )->subspecialty_id;
         }
 
         if (isset($subspecialty_id)) {

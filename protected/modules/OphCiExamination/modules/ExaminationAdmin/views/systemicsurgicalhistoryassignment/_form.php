@@ -70,9 +70,12 @@
                 'value' => function ($data, $row) use ($common_operations_options) {
                     return
                         '<div>' .
-                        CHtml::dropDownList(null, '',
+                        CHtml::dropDownList(
+                            null,
+                            '',
                             $common_operations_options,
-                            ['empty' => '- Select -', 'class' => 'common_prev_op_select']) . '<br />' .
+                            ['empty' => '- Select -', 'class' => 'common_prev_op_select']
+                        ) . '<br />' .
                         CHtml::textField("OEModule_OphCiExamination_models_SystemicSurgerySetEntry[$row][operation]", $data->operation, [
                             'placeholder' => 'Select from above or type',
                             'autocomplete' => Yii::app()->params['html_autocomplete'],

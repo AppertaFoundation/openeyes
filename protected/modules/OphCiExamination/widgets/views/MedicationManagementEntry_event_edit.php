@@ -197,7 +197,10 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                 . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                                 . ") or id='" . $entry->dispense_condition_id . "'",
                             'order' => 'display_order',
-                        )), 'id', 'name'),
+                        )),
+                        'id',
+                        'name'
+                    ),
                     array('class' => 'js-dispense-condition cols-5','style' => $prescribe_hide_style, 'empty' => 'Select', 'options' => $dispense_condition_options)
                 ); ?>
 

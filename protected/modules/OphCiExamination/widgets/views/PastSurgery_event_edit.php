@@ -80,8 +80,8 @@ $model_name = CHtml::modelName($element);
 
             foreach ($api->getOperationsSummaryData($this->patient) as $operation) {
                 $this->render(
-                        'PastSurgery_OperationNote_event_edit',
-                        array(
+                    'PastSurgery_OperationNote_event_edit',
+                    array(
                                 'op' => $operation['operation'],
                                 'side' => $operation['side'],
                                 'date' => $operation['date'],

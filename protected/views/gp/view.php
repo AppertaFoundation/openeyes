@@ -73,8 +73,10 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <div class="box generic">
                     <div class="row">
                         <div class="large-12 column end">
-                            <p><?php echo CHtml::link('Update Practitioner Details',
-                                    $this->createUrl('/gp/update', array('id' => $model->id))); ?></p>
+                            <p><?php echo CHtml::link(
+                                'Update Practitioner Details',
+                                $this->createUrl('/gp/update', array('id' => $model->id))
+                            ); ?></p>
                         </div>
                     </div>
                 </div>

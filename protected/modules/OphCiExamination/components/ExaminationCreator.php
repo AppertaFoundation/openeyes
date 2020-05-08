@@ -371,10 +371,14 @@ class ExaminationCreator
         $iopValue = new \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value();
         $iopValue->element_id = $iop->id;
         $iopValue->eye_id = $eyeIds[$eyeLabel];
-        $iopReadingValue = \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading::model()->find('value = ?',
-            array($iopReading['mm_hg']));
-        $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find('LOWER(name) = ?',
-            array(strtolower($iopReading['instrument'])));
+        $iopReadingValue = \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading::model()->find(
+            'value = ?',
+            array($iopReading['mm_hg'])
+        );
+        $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find(
+            'LOWER(name) = ?',
+            array(strtolower($iopReading['instrument']))
+        );
         if ($instrument['scale_id']) {
             $iopValue->qualitative_reading_id = $instrument['scale_id'];
         }

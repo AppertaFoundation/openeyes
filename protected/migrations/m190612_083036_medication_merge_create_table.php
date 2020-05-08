@@ -15,8 +15,7 @@ class m190612_083036_medication_merge_create_table extends OEMigration
             'target_code' => 'varchar(255)',
             'target_name' => 'varchar(255)',
             'status' => 'int(1) default 1',
-            'merge_date' => 'TIMESTAMP' )
-        );
+            'merge_date' => 'TIMESTAMP' ));
     }
 
     public function down()

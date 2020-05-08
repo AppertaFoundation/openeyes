@@ -61,8 +61,7 @@ class PrescriptionDrugSetsAdminController extends RefSetAdminController
                         'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
                         'medicationSetRules.usageCode.usage_code' => 'PRESCRIPTION_SET'
                     ),
-                )
-            );
+                ));
         }
 
         $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usageCode.usage_code = "PRESCRIPTION_SET"');

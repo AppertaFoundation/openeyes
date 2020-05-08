@@ -118,8 +118,11 @@
                       <?= CHtml::activeLabel($newPermission, 'role'); ?>
                   </td>
                   <td>
-                      <?= CHtml::activeTextField($newPermission, 'role',
-                          array('maxlength' => 255, 'name' => 'user_role')); ?>
+                      <?= CHtml::activeTextField(
+                          $newPermission,
+                          'role',
+                          array('maxlength' => 255, 'name' => 'user_role')
+                      ); ?>
 
                   </td>
                 </tr>
@@ -128,9 +131,12 @@
                       <?= CHtml::activeLabel($newPermission, 'permission'); ?>
                   </td>
                   <td>
-                      <?= CHtml::dropDownList('permission', 'Select One...',
+                      <?= CHtml::dropDownList(
+                          'permission',
+                          'Select One...',
                           CHtml::listData(TrialPermission::model()->findAll(), 'id', 'name'),
-                          array('id' => 'permission')) ?>
+                          array('id' => 'permission')
+                      ) ?>
 
                   </td>
                 </tr>
@@ -146,8 +152,11 @@
                 &nbsp;
                 <a href="javascript:void(0)" class="button event-action cancel small"
                    onclick="removeSelectedUser()">Clear</a>
-                  <?= CHtml::hiddenField('user_id', $newPermission->user_id,
-                      array('class' => 'hidden_id')); ?>
+                  <?= CHtml::hiddenField(
+                      'user_id',
+                      $newPermission->user_id,
+                      array('class' => 'hidden_id')
+                  ); ?>
               </div>
 
               <div class="alert-box info with-icon" id="no-user-result" style="display: none;">

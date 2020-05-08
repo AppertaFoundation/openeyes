@@ -31,9 +31,12 @@ foreach ($element->getFrequencyOptions() as $k => $v) {
         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Frequency-', 'class' => 'js-frequency cols-8')) ?>
     </td>
     <td>
-        <?=\CHtml::dropDownList($field_prefix.'[duration_id]', $entry->duration_id,
+        <?=\CHtml::dropDownList(
+            $field_prefix.'[duration_id]',
+            $entry->duration_id,
             CHtml::listData(MedicationDuration::model()->activeOrPk([$entry->duration_id])->findAll(array('order' => 'display_order')), 'id', 'name'),
-            array('empty' => '- Select -', 'class' => 'cols-full js-duration')) ?>
+            array('empty' => '- Select -', 'class' => 'cols-full js-duration')
+        ) ?>
     </td>
     <td></td>
     <td>

@@ -277,13 +277,15 @@ eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
 if [ $nofiles = "0" ]; then
-  echo Deleting protected files
-  # remove protected/files
-  sudo rm -rf $WROOT/protected/files/*
-  # remove any docman process files
-  sudo rm -rf /tmp/docman
-  # remove hscic import history (otherwise hscic import requires --force to run after reset)
-  sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
+	echo Deleting protected files
+	# remove protected/files
+	sudo rm -rf $WROOT/protected/files/*
+	# remove any docman process files
+	sudo rm -rf /tmp/docman
+	# remove hscic import history (otherwise hscic import requires --force to run after reset)
+	if [ -d $WROOT/protected/data/hscic ]; then
+		sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
+	fi
 fi
 
 if [ $cleanbase = "0" ]; then

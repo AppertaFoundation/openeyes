@@ -17,8 +17,13 @@ class m170719_102032_object_persistence_core extends OEMigration
             'container_element_type_id' => 'int(10) unsigned NOT NULL'
         ));
         $this->addPrimaryKey('eyedraw_canvas_pk', 'eyedraw_canvas', 'canvas_mnemonic');
-        $this->addForeignKey('eyedraw_canvas_elid_fk', 'eyedraw_canvas', 'container_element_type_id',
-            'element_type', 'id');
+        $this->addForeignKey(
+            'eyedraw_canvas_elid_fk',
+            'eyedraw_canvas',
+            'container_element_type_id',
+            'element_type',
+            'id'
+        );
 
         $this->createTable('eyedraw_canvas_doodle', array(
             'eyedraw_class_mnemonic' => 'varchar(80) NOT NULL',
@@ -32,10 +37,20 @@ class m170719_102032_object_persistence_core extends OEMigration
         $this->addPrimaryKey('eyedraw_canvas_doodle_pk', 'eyedraw_canvas_doodle', 'eyedraw_class_mnemonic, canvas_mnemonic');
         $this->createIndex('eyedraw_canvas_doodle_edclmn_idx', 'eyedraw_canvas_doodle', 'eyedraw_class_mnemonic');
         $this->createIndex('eyedraw_canvas_doodle_cvmn_idx', 'eyedraw_canvas_doodle', 'canvas_mnemonic');
-        $this->addForeignKey('eyedraw_canvas_doodle_cvmn_fk', 'eyedraw_canvas_doodle', 'canvas_mnemonic',
-            'eyedraw_canvas', 'canvas_mnemonic');
-        $this->addForeignKey('eyedraw_canvas_doodle_edclmn_fk', 'eyedraw_canvas_doodle', 'eyedraw_class_mnemonic',
-            'eyedraw_doodle', 'eyedraw_class_mnemonic');
+        $this->addForeignKey(
+            'eyedraw_canvas_doodle_cvmn_fk',
+            'eyedraw_canvas_doodle',
+            'canvas_mnemonic',
+            'eyedraw_canvas',
+            'canvas_mnemonic'
+        );
+        $this->addForeignKey(
+            'eyedraw_canvas_doodle_edclmn_fk',
+            'eyedraw_canvas_doodle',
+            'eyedraw_class_mnemonic',
+            'eyedraw_doodle',
+            'eyedraw_class_mnemonic'
+        );
 
         $this->createTable('mview_datapoint_node', array(
             'id' => 'pk',
@@ -47,10 +62,20 @@ class m170719_102032_object_persistence_core extends OEMigration
             'laterality' => 'varchar(1) NOT NULL',
             'content_json' => 'varchar(4000) NOT NULL'
         ));
-        $this->addForeignKey('mview_datapoint_node_evid_fk', 'mview_datapoint_node', 'event_id',
-            'event', 'id');
-        $this->addForeignKey('mview_datapoint_node_ecmn_fk', 'mview_datapoint_node', 'eyedraw_class_mnemonic, canvas_mnemonic',
-            'eyedraw_canvas_doodle', 'eyedraw_class_mnemonic, canvas_mnemonic');
+        $this->addForeignKey(
+            'mview_datapoint_node_evid_fk',
+            'mview_datapoint_node',
+            'event_id',
+            'event',
+            'id'
+        );
+        $this->addForeignKey(
+            'mview_datapoint_node_ecmn_fk',
+            'mview_datapoint_node',
+            'eyedraw_class_mnemonic, canvas_mnemonic',
+            'eyedraw_canvas_doodle',
+            'eyedraw_class_mnemonic, canvas_mnemonic'
+        );
     }
 
     public function down()

@@ -309,8 +309,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
                 'external_link' => $this->generateUrlForEvent($event),
                 'event' => $event,
                 'is_new_referral' => \Yii::app()->user->getState("new_referral", false),
-            )
-        );
+            ));
     }
 
     /**

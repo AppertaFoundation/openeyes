@@ -43,19 +43,28 @@
       </td>
       <td>
             <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) : ?>
-                <?=\CHtml::dropDownList('given_by_id', '',
-                  CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id',
-                      'fullName'), array('empty' => 'Select')) ?>
+                <?=\CHtml::dropDownList(
+                    'given_by_id',
+                    '',
+                    CHtml::listData(
+                        User::model()->findAll(array('order' => 'first_name asc,last_name asc')),
+                        'id',
+                        'fullName'
+                    ),
+                    array('empty' => 'Select')
+                ) ?>
             <?php else : ?>
                 <?php
                 $user = User::model()->findByPk(Yii::app()->user->id);
-                echo CHtml::dropDownList(null, '',
-                  array(Yii::app()->user->id => $user->fullName),
-                  array(
+                echo CHtml::dropDownList(
+                    null,
+                    '',
+                    array(Yii::app()->user->id => $user->fullName),
+                    array(
                       'disabled' => 'disabled',
                       'readonly' => 'readonly',
                       'style' => 'background-color:#D3D3D3;',
-                  ) //for some reason the chrome doesn't gray out
+                    ) //for some reason the chrome doesn't gray out
                 );
                 echo CHtml::hiddenField('given_by_id', Yii::app()->user->id);
                 ?>
@@ -66,12 +75,17 @@
       </td>
       <td>
             <?=\CHtml::dropDownList(
-              'drug_id',
-              '',
-              CHtml::listData(
-                  OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(
-                      array('order' => 'name asc')), 'id', 'name'),
-              array('empty' => 'Select')) ?>
+                'drug_id',
+                '',
+                CHtml::listData(
+                    OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(
+                        array('order' => 'name asc')
+                    ),
+                    'id',
+                    'name'
+                ),
+                array('empty' => 'Select')
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -80,13 +94,17 @@
       </td>
       <td>
             <?=\CHtml::dropDownList(
-              'pre_antisept_drug_id',
-              '',
-              CHtml::listData(
-                  OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(
-                      array('order' => 'name asc')),
-                  'id', 'name'),
-              array('empty' => 'Select')) ?>
+                'pre_antisept_drug_id',
+                '',
+                CHtml::listData(
+                    OphTrIntravitrealinjection_AntiSepticDrug::model()->findAll(
+                        array('order' => 'name asc')
+                    ),
+                    'id',
+                    'name'
+                ),
+                array('empty' => 'Select')
+            ) ?>
       </td>
       <td>
         <input type="hidden" name="summary" value="0"/>

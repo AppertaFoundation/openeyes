@@ -443,7 +443,10 @@
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($key, $item) {
                             return ['label' => $item, 'id' => $key];
-                        }, array_keys($subsections), $subsections))?>, {'id': 'subsections'}),
+                        },
+                        array_keys($subsections),
+                        $subsections)
+                    )?>, {'id': 'subsections'}),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($key, $item) {
                             return ['label' => $item, 'id' => $key];

@@ -83,12 +83,12 @@ if (isset($errors)) {
                     <?php
                     if (count($model_list) > 1) {
                         echo \CHtml::button(
-                        'Save',
-                        [
+                            'Save',
+                            [
                             'class' => 'button large',
                             'type' => 'submit',
                             'name' => 'save',
-                        ]
+                            ]
                         );
                     } ?>
                     <?= \CHtml::button(

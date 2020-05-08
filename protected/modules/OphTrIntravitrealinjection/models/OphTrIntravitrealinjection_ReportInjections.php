@@ -109,12 +109,22 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         }
 
         if ($this->summary) {
-            $this->injections = $this->getSummaryInjections($this->date_from, $this->date_to, @$user, @$drug,
-                @$pre_antisept_drug);
+            $this->injections = $this->getSummaryInjections(
+                $this->date_from,
+                $this->date_to,
+                @$user,
+                @$drug,
+                @$pre_antisept_drug
+            );
             $this->view = '_summary_injections';
         } else {
-            $this->injections = $this->getInjections($this->date_from, $this->date_to, @$user, @$drug,
-                @$pre_antisept_drug);
+            $this->injections = $this->getInjections(
+                $this->date_from,
+                $this->date_to,
+                @$user,
+                @$drug,
+                @$pre_antisept_drug
+            );
             $this->view = '_injections';
         }
     }
@@ -316,8 +326,10 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $description .= ' given by ' . User::model()->findByPk($this->given_by_id)->fullName;
         }
 
-        $description .= ' between ' . date('j M Y', strtotime($this->date_from)) . ' and ' . date('j M Y',
-                strtotime($this->date_to));
+        $description .= ' between ' . date('j M Y', strtotime($this->date_from)) . ' and ' . date(
+            'j M Y',
+            strtotime($this->date_to)
+        );
 
         if ($this->pre_va && $this->post_va) {
             $description .= ' with pre-injection and post-injection VA';
@@ -372,7 +384,8 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             )
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
-            ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id and e.event_date<= :close_date',
+            ->where(
+                'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id and e.event_date<= :close_date',
                 array(':patient_id' => $patient_id, ':etype_id' => $event_type_id, ':close_date' => $close_to_date)
             )->order('event_date desc')->limit(1);
 
@@ -420,13 +433,20 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         // check for examination data
         // search for the closest examination event first
 
-        $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date,
+        $diagnosisData = $this->getDiagnosisDataFromEvent(
+            $patient_id,
+            $close_to_date,
             $this->getExaminationEventTypeId(),
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex'
+        );
 
         if (!$diagnosisData['left_diagnosis_id'] || !$diagnosisData['right_diagnosis_id']) {
-            $diagnosisData = $this->getDiagnosisDataFromEvent($patient_id, $close_to_date,
-                $this->getApplicationEventTypeID(), 'Element_OphCoTherapyapplication_Therapydiagnosis');
+            $diagnosisData = $this->getDiagnosisDataFromEvent(
+                $patient_id,
+                $close_to_date,
+                $this->getApplicationEventTypeID(),
+                'Element_OphCoTherapyapplication_Therapydiagnosis'
+            );
         }
 
         return $diagnosisData;
@@ -574,7 +594,8 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                 ->select('e.id')
                 ->from('event e')
                 ->join('episode ep', 'e.episode_id = ep.id')
-                ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id',
+                ->where(
+                    'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and e.event_type_id = :etype_id',
                     array(':patient_id' => $patient_id, ':etype_id' => $this->getExaminationEventTypeId())
                 );
             $event_ids = array();

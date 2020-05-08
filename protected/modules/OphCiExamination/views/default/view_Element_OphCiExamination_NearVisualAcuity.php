@@ -26,8 +26,10 @@
               <span class="priority-text">
                     <?php echo $element->getCombined($eye_side) ?>
               </span>
-                    <?php echo $this->renderPartial('_visual_acuity_tooltip',
-                      array('element' => $element, 'side' => $eye_side, 'is_near' => true)); ?>
+                    <?php echo $this->renderPartial(
+                        '_visual_acuity_tooltip',
+                        array('element' => $element, 'side' => $eye_side, 'is_near' => true)
+                    ); ?>
                 <?php else : ?>
                   Not recorded
                     <?php if ($element->{$eye_side . '_unable_to_assess'}) : ?>

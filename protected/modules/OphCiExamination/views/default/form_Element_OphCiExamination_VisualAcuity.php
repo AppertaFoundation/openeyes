@@ -23,8 +23,11 @@ $values = array_reverse($values, true);
 $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'Snellen Metre'))->id;
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
-$methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-    'id', 'name');
+$methods = CHtml::listData(
+    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
+    'id',
+    'name'
+);
 $key = 0;
 
 if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
@@ -48,10 +51,17 @@ if (isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_por
   <div>
         <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-            <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
-                    'id', 'name'), array('class' => 'inline'));
+            <?=\CHtml::dropDownList(
+                'visualacuity_unit_change',
+                @$element->unit_id,
+                CHtml::listData(
+                    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                    'id',
+                    'name'
+                ),
+                array('class' => 'inline')
+            );
             if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
@@ -111,21 +121,30 @@ if ($cvi_api) {
             </table>
             <div class="data-group noReadings">
               <div class="cols-8 column end">
-                  <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
-                      array('text-align' => 'right', 'nowrapper' => true)) ?>
-                  <?php echo $form->checkBox($element, $eye_side . '_eye_missing',
-                      array('text-align' => 'right', 'nowrapper' => true)) ?>
+                  <?php echo $form->checkBox(
+                      $element,
+                      $eye_side . '_unable_to_assess',
+                      array('text-align' => 'right', 'nowrapper' => true)
+                  ) ?>
+                  <?php echo $form->checkBox(
+                      $element,
+                      $eye_side . '_eye_missing',
+                      array('text-align' => 'right', 'nowrapper' => true)
+                  ) ?>
               </div>
             </div>
               <div id="visualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
                    style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#visualacuity-<?= $eye_side ?>-comment-button">
-                  <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                  <?=\CHtml::activeTextArea(
+                      $element,
+                      $eye_side . '_notes',
                       array(
                           'rows' => 1,
                           'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
                           'class' => 'cols-full js-comment-field',
                           'style' => 'overflow-wrap: break-word; height: 24px;',
-                      )) ?>
+                      )
+                  ) ?>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
               </div>
           </div>
@@ -160,11 +179,17 @@ if ($cvi_api) {
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) use ($default_display_value) {
                 return $key==$default_display_value? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];
-            }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
+            },
+            array_keys($values),
+            $values)
+        ) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                   return ['label' => $method, 'id' => $key];
-              }, array_keys($methods), $methods)) ?>, {'header':'Method', 'id':'method'})
+              },
+              array_keys($methods),
+              $methods)
+          ) ?>, {'header':'Method', 'id':'method'})
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');

@@ -28,49 +28,69 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     <label for="<?php echo $side . '_gonioscopy_mode'; ?>">
       Mode:
     </label>
-        <?=\CHtml::dropDownList($side . '_gonioscopy_mode', '',
-          array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
+        <?=\CHtml::dropDownList(
+            $side . '_gonioscopy_mode',
+            '',
+            array('Basic' => 'Basic', 'Expert' => 'Expert'),
+            array(
               'class' => 'gonioscopy-mode',
               'options' => array(
                   'Basic' => array('data-value' => 'Basic'),
                   'Expert' => array('data-value' => 'Expert'),
               ),
-          )) ?>
+            )
+        ) ?>
   </div>
   <div style="display: none;" class="shaffer-grade expert-mode">
     <div class="field-label">Shaffer grade:</div>
     <div class="gonio-cross">
       <div class="gonio-sup">
-            <?=\CHtml::activeDropDownList($element, $side . '_gonio_sup_id', $element->getGonioscopyOptions(),
-              array(
+            <?=\CHtml::activeDropDownList(
+                $element,
+                $side . '_gonio_sup_id',
+                $element->getGonioscopyOptions(),
+                array(
                   'class' => 'inline gonioGrade gonioExpert',
                   'data-position' => 'sup',
                   'options' => $html_options,
-              )) ?>
+                )
+            ) ?>
       </div>
       <div class="gonio-tem">
-            <?=\CHtml::activeDropDownList($element, $side . '_gonio_tem_id', $element->getGonioscopyOptions(),
-              array(
+            <?=\CHtml::activeDropDownList(
+                $element,
+                $side . '_gonio_tem_id',
+                $element->getGonioscopyOptions(),
+                array(
                   'class' => 'inline gonioGrade gonioExpert',
                   'data-position' => 'tem',
                   'options' => $html_options,
-              )) ?>
+                )
+            ) ?>
       </div>
       <div class="gonio-nas">
-            <?=\CHtml::activeDropDownList($element, $side . '_gonio_nas_id', $element->getGonioscopyOptions(),
-              array(
+            <?=\CHtml::activeDropDownList(
+                $element,
+                $side . '_gonio_nas_id',
+                $element->getGonioscopyOptions(),
+                array(
                   'class' => 'inline gonioGrade gonioExpert',
                   'data-position' => 'nas',
                   'options' => $html_options,
-              )) ?>
+                )
+            ) ?>
       </div>
       <div class="gonio-inf">
-            <?=\CHtml::activeDropDownList($element, $side . '_gonio_inf_id', $element->getGonioscopyOptions(),
-              array(
+            <?=\CHtml::activeDropDownList(
+                $element,
+                $side . '_gonio_inf_id',
+                $element->getGonioscopyOptions(),
+                array(
                   'class' => 'inline gonioGrade gonioExpert',
                   'data-position' => 'inf',
                   'options' => $html_options,
-              )) ?>
+                )
+            ) ?>
       </div>
     </div>
   </div>
@@ -83,24 +103,36 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
         ?>
     <div class="gonio-cross">
         <div class="gonio-sup">
-            <?=\CHtml::dropDownList($side . '_gonio_sup_basic',
-                ($element->{$side . '_gonio_sup_id'} <= 4) ? 1 : 0, $basic_options,
-                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'sup', 'options' => $html_options)) ?>
+            <?=\CHtml::dropDownList(
+                $side . '_gonio_sup_basic',
+                ($element->{$side . '_gonio_sup_id'} <= 4) ? 1 : 0,
+                $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'sup', 'options' => $html_options)
+            ) ?>
         </div>
         <div class="gonio-tem">
-            <?=\CHtml::dropDownList($side . '_gonio_tem_basic',
-                ($element->{$side . '_gonio_tem_id'} <= 4) ? 1 : 0, $basic_options,
-                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'tem', 'options' => $html_options)) ?>
+            <?=\CHtml::dropDownList(
+                $side . '_gonio_tem_basic',
+                ($element->{$side . '_gonio_tem_id'} <= 4) ? 1 : 0,
+                $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'tem', 'options' => $html_options)
+            ) ?>
         </div>
         <div class="gonio-nas">
-            <?=\CHtml::dropDownList($side . '_gonio_nas_basic',
-                ($element->{$side . '_gonio_nas_id'} <= 4) ? 1 : 0, $basic_options,
-                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'nas', 'options' => $html_options)) ?>
+            <?=\CHtml::dropDownList(
+                $side . '_gonio_nas_basic',
+                ($element->{$side . '_gonio_nas_id'} <= 4) ? 1 : 0,
+                $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'nas', 'options' => $html_options)
+            ) ?>
         </div>
         <div class="gonio-inf">
-            <?=\CHtml::dropDownList($side . '_gonio_inf_basic',
-                ($element->{$side . '_gonio_inf_id'} <= 4) ? 1 : 0, $basic_options,
-                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'inf', 'options' => $html_options)) ?>
+            <?=\CHtml::dropDownList(
+                $side . '_gonio_inf_basic',
+                ($element->{$side . '_gonio_inf_id'} <= 4) ? 1 : 0,
+                $basic_options,
+                array('class' => 'inline gonioGrade gonioBasic', 'data-position' => 'inf', 'options' => $html_options)
+            ) ?>
         </div>
     </div>
   </div>
@@ -120,20 +152,26 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     <label for="<?= CHtml::modelName($element) . '_' . $side . '_iris_id'; ?>">
         <?= $element->getAttributeLabel($side . '_iris_id') ?>:
     </label>
-    <?=\CHtml::activeDropDownList($element, $side . '_iris_id',
-            \CHtml::listData($element->getIrisOptions(), 'id', 'name'),
-            [
+    <?=\CHtml::activeDropDownList(
+        $element,
+        $side . '_iris_id',
+        \CHtml::listData($element->getIrisOptions(), 'id', 'name'),
+        [
               'empty' => 'Not recorded',
               'class' => 'iris',
               'options' => $html_options,
-            ]) ?>
+        ]
+    ) ?>
   </div>
 
   <div class="data-group">
     <label for="<?= CHtml::modelName($element) . '_' . $side . '_description'; ?>">
         <?= $element->getAttributeLabel($side . '_description'); ?>:
     </label>
-        <?= CHtml::activeTextArea($element, $side . '_description',
-          array('rows' => '2', 'class' => 'autosize clearWithEyedraw')) ?>
+        <?= CHtml::activeTextArea(
+            $element,
+            $side . '_description',
+            array('rows' => '2', 'class' => 'autosize clearWithEyedraw')
+        ) ?>
   </div>
 </div>

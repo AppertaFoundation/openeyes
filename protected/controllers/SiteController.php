@@ -169,7 +169,8 @@ class SiteController extends BaseController
         $criteria->order = 'short_name asc';
 
         // display the login form
-        $this->render('login',
+        $this->render(
+            'login',
             array(
                 'model' => $model,
             )

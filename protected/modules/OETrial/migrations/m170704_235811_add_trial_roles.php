@@ -17,14 +17,20 @@ class m170704_235811_add_trial_roles extends OEMigration
         $this->insert('authitem', array('name' => self::CREATE_TRIALS_TASK, 'type' => 1));
         $this->insert('authitem', array('name' => self::VIEW_TRIALS_TASK, 'type' => 1));
 
-        $this->insert('authitemchild',
-            array('parent' => self::CREATE_TRIALS_ROLE, 'child' => self::CREATE_TRIALS_TASK));
+        $this->insert(
+            'authitemchild',
+            array('parent' => self::CREATE_TRIALS_ROLE, 'child' => self::CREATE_TRIALS_TASK)
+        );
 
-        $this->insert('authitemchild',
-            array('parent' => self::VIEW_TRIALS_ROLE, 'child' => self::VIEW_TRIALS_TASK));
+        $this->insert(
+            'authitemchild',
+            array('parent' => self::VIEW_TRIALS_ROLE, 'child' => self::VIEW_TRIALS_TASK)
+        );
 
-        $this->insert('authitemchild',
-            array('parent' => self::CREATE_TRIALS_ROLE, 'child' => self::VIEW_TRIALS_TASK));
+        $this->insert(
+            'authitemchild',
+            array('parent' => self::CREATE_TRIALS_ROLE, 'child' => self::VIEW_TRIALS_TASK)
+        );
     }
 
     public function safeDown()

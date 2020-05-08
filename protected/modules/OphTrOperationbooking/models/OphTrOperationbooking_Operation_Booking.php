@@ -206,12 +206,13 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
         $subspecialty_id = ($this->session->firm) ? $this->session->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
         if ($rule = OphTrOperationbooking_Admission_Letter_Warning_Rule::getRule(
-                $type,
-                $this->session->theatre->site_id,
-                $this->operation->event->episode->patient->isChild($this->session->date),
-                $this->session->theatre_id,
-                $subspecialty_id,
-                $this->session->firm_id)
+            $type,
+            $this->session->theatre->site_id,
+            $this->operation->event->episode->patient->isChild($this->session->date),
+            $this->session->theatre_id,
+            $subspecialty_id,
+            $this->session->firm_id
+        )
             ) {
             return $rule->show_warning;
         }
@@ -226,13 +227,13 @@ class OphTrOperationbooking_Operation_Booking extends BaseActiveRecordVersioned
         $subspecialty_id = ($this->session->firm) ? $this->session->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
         if ($rule = OphTrOperationbooking_Admission_Letter_Warning_Rule::getRule(
-                $type,
-                $this->session->theatre->site_id,
-                $this->operation->event->episode->patient->isChild($this->session->date),
-                $this->session->theatre_id,
-                $subspecialty_id,
-                $this->session->firm_id
-            )) {
+            $type,
+            $this->session->theatre->site_id,
+            $this->operation->event->episode->patient->isChild($this->session->date),
+            $this->session->theatre_id,
+            $subspecialty_id,
+            $this->session->firm_id
+        )) {
             if ($rule->strong) {
                 $return .= '<strong>';
             }

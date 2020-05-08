@@ -10,8 +10,7 @@ class m180924_020617_add_county_label_setting extends OEMigration
                 'key' => 'county_label',
                 'name' => 'County label',
                 'default_value' => 'County'
-            )
-        );
+            ));
 
         $this->insert('setting_installation', array('key' => 'county_label', 'value' => 'County'));
     }

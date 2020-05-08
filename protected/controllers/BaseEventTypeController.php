@@ -243,8 +243,10 @@ class BaseEventTypeController extends BaseModuleController
     {
         $action_type = $this->getActionType($action);
 
-        return in_array($action_type,
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+        return in_array(
+            $action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM)
+        )
             ? BaseEventElementWidget::$EVENT_EDIT_MODE
             : ($action_type === static::ACTION_TYPE_PRINT
                 ? BaseEventElementWidget::$EVENT_PRINT_MODE
@@ -937,14 +939,16 @@ class BaseEventTypeController extends BaseModuleController
 
         if ($this->checkDeleteAccess()) {
             $this->event_actions = array(
-                EventAction::link('Delete',
+                EventAction::link(
+                    'Delete',
                     Yii::app()->createUrl($this->event->eventType->class_name . '/default/delete/' . $this->event->id),
                     array('level' => 'delete')
                 ),
             );
         } elseif ($this->checkRequestDeleteAccess()) {
             $this->event_actions = array(
-                EventAction::link('Delete',
+                EventAction::link(
+                    'Delete',
                     Yii::app()->createUrl($this->event->eventType->class_name . '/default/requestDeletion/' . $this->event->id),
                     array('level' => 'delete')
                 ),
@@ -999,8 +1003,10 @@ class BaseEventTypeController extends BaseModuleController
                         $this->event->user = Yii::app()->user->id;
 
                         if (!$this->event->save()) {
-                            throw new SystemException('Unable to update event: ' . print_r($this->event->getErrors(),
-                                    true));
+                            throw new SystemException('Unable to update event: ' . print_r(
+                                $this->event->getErrors(),
+                                true
+                            ));
                         }
 
                         OELog::log("Updated event {$this->event->id}");
@@ -1046,7 +1052,8 @@ class BaseEventTypeController extends BaseModuleController
         );
 
         $this->event_actions = array(
-            EventAction::link('Cancel',
+            EventAction::link(
+                'Cancel',
                 Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
                 array('level' => 'cancel')
             ),
@@ -1142,9 +1149,12 @@ class BaseEventTypeController extends BaseModuleController
         Yii::app()->assetManager->reset();
 
         $this->renderPartial(
-            '_previous', array(
+            '_previous',
+            array(
             'elements' => $this->getPrevious($element_type),
-        ), false, true // Process output to deal with script requirements
+            ),
+            false,
+            true // Process output to deal with script requirements
         );
     }
 
@@ -1495,8 +1505,11 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
-                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+        if ($this->show_element_sidebar && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
             $event_type_id = $this->event->attributes["event_type_id"];
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = preg_replace('/\s+/', '_', $event_type->name);
@@ -1509,8 +1522,11 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderIndexSearch()
     {
-        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
-                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+        if ($this->show_index_search && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
             $event_type_id = ($this->event->attributes["event_type_id"]);
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = $event_type->name;
@@ -1889,8 +1905,15 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'],
-            $inject_autoprint_js, $print_footer);
+        $wk->generatePDF(
+            $this->event->imageDirectory,
+            'event',
+            $this->pdf_print_suffix,
+            $html,
+            (boolean)@$_GET['html'],
+            $inject_autoprint_js,
+            $print_footer
+        );
 
         return $this->pdf_print_suffix;
     }
@@ -2055,8 +2078,10 @@ class BaseEventTypeController extends BaseModuleController
                     if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                         $this->event->episode->deleted = 1;
                         if (!$this->event->episode->save()) {
-                            throw new Exception('Unable to save episode: ' . print_r($this->event->episode->getErrors(),
-                                    true));
+                            throw new Exception('Unable to save episode: ' . print_r(
+                                $this->event->episode->getErrors(),
+                                true
+                            ));
                         }
 
                         $this->event->episode->audit('episode', 'delete', false);
@@ -2070,8 +2095,10 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     }
 
-                    Yii::app()->user->setFlash('success',
-                        'An event was deleted, please ensure the episode status is still correct.');
+                    Yii::app()->user->setFlash(
+                        'success',
+                        'An event was deleted, please ensure the episode status is still correct.'
+                    );
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
@@ -2222,9 +2249,12 @@ class BaseEventTypeController extends BaseModuleController
                 $this->event->requestDeletion($_POST['delete_reason']);
 
                 if (Yii::app()->params['admin_email']) {
-                    mail(Yii::app()->params['admin_email'], 'Request to delete an event',
+                    mail(
+                        Yii::app()->params['admin_email'],
+                        'Request to delete an event',
                         'A request to delete an event has been submitted.  Please log in to the admin system to review the request.',
-                        'From: OpenEyes');
+                        'From: OpenEyes'
+                    );
                 }
 
                 Yii::app()->user->setFlash('success', 'Your request to delete this event has been submitted.');
@@ -2304,9 +2334,9 @@ class BaseEventTypeController extends BaseModuleController
                 $full_path = $this->event->imageDirectory . "/$drawingName.png";
                 if (!file_exists($full_path)) {
                     if (false === file_put_contents(
-                            $full_path,
-                            base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
-                        )
+                        $full_path,
+                        base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
+                    )
                     ) {
                         throw new Exception("Failed to write to $full_path.");
                     }
@@ -2413,7 +2443,8 @@ class BaseEventTypeController extends BaseModuleController
         $hotlistItem = UserHotlistItem::model()->find(
             'created_user_id = :user_id AND patient_id = :patient_id 
                        AND (DATE(last_modified_date) = :current_date OR is_open = 1)',
-            array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d')));
+            array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d'))
+        );
 
         if (!$hotlistItem) {
             $hotlistItem = new UserHotlistItem();
@@ -2447,9 +2478,14 @@ class BaseEventTypeController extends BaseModuleController
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
-            $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
+            $image->generateImage(
+                $this->event->getImageDirectory(),
+                'preview',
+                '',
+                $content,
                 ['width' => Yii::app()->params['lightning_viewer']['image_width'],
-                    'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]);
+                'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]
+            );
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');

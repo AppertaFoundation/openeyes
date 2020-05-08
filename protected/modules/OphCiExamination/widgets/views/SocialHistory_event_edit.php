@@ -40,27 +40,27 @@ $nothing_selected_text = "Nothing selected.";
               <?= isset($element->occupation) ?  $element->occupation->name :  $nothing_selected_text; ?>
           </div>
             <?= $form->dropDownList(
-              $element,
-              'occupation_id',
-              CHtml::listData($element->occupation_options, 'id', 'name'),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
-              false,
-              array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
-          );
+                $element,
+                'occupation_id',
+                CHtml::listData($element->occupation_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
+                false,
+                array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
+            );
 ?>
             <?= $form->textField(
-              $element,
-              'type_of_job',
-              array(
+                $element,
+                'type_of_job',
+                array(
                   'hide' => ($element->occupation_id !== 7),//Hide if the type is not other
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'style' => 'width: 100%',
                   'nowrapper' => true,
                   'hidden' => true
-              ),
-              null,
-              array('label' => 4, 'field' => 5)
-          );
+                ),
+                null,
+                array('label' => 4, 'field' => 5)
+            );
 ?>
       </td>
       <td>
@@ -90,11 +90,11 @@ $nothing_selected_text = "Nothing selected.";
               <?= isset($element->smoking_status) ?  $element->smoking_status->name :  $nothing_selected_text; ?>
           </div>
             <?= $form->dropDownList(
-              $element,
-              'smoking_status_id',
-              CHtml::listData($element->smoking_status_options, 'id', 'name'),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-          );
+                $element,
+                'smoking_status_id',
+                CHtml::listData($element->smoking_status_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            );
 ?>
       </td>
       <td>
@@ -105,11 +105,11 @@ $nothing_selected_text = "Nothing selected.";
               <?= isset($element->accommodation) ?  $element->accommodation->name :  $nothing_selected_text; ?>
           </div>
             <?= $form->dropDownList(
-              $element,
-              'accommodation_id',
-              CHtml::listData($element->accommodation_options, 'id', 'name'),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-          ); ?>
+                $element,
+                'accommodation_id',
+                CHtml::listData($element->accommodation_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            ); ?>
       </td>
     </tr>
     <tr>
@@ -121,16 +121,16 @@ $nothing_selected_text = "Nothing selected.";
                 <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
             <?= $form->textField(
-              $element,
-              'alcohol_intake',
-              array(
+                $element,
+                'alcohol_intake',
+                array(
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
                   'append-text' => (isset($element->alcohol_intake) ? 'units/week' : $nothing_selected_text),
                   'hidden' => true
-              )
-          );
+                )
+            );
 ?>
       </td>
       <td>
@@ -141,11 +141,11 @@ $nothing_selected_text = "Nothing selected.";
               <?= isset($element->carer) ?  $element->carer->name :  $nothing_selected_text; ?>
           </div>
             <?= $form->dropDownList(
-              $element,
-              'carer_id',
-              CHtml::listData($element->carer_options, 'id', 'name'),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-          );
+                $element,
+                'carer_id',
+                CHtml::listData($element->carer_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            );
 ?>
       </td>
     </tr>
@@ -237,8 +237,7 @@ $nothing_selected_text = "Nothing selected.";
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
-            }, $element->occupation_options, [])
-            ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
+            }, $element->occupation_options, [])) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?php
@@ -252,8 +251,7 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => in_array($item->id, $selected_driving_statuses),
                     ];
-            }, $element->driving_statuses_options, [])
-            ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
+            }, $element->driving_statuses_options, [])) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -262,8 +260,7 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->smoking_status_id === $item->id,
                     ];
-            }, $element->smoking_status_options, [])
-            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
+            }, $element->smoking_status_options, [])) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -272,14 +269,12 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->accommodation_id === $item->id,
                     ];
-            }, $element->accommodation_options, [])
-            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
+            }, $element->accommodation_options, [])) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                     return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
-            }, $element->carer_options, [])
-            ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
+            }, $element->carer_options, [])) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -288,8 +283,7 @@ $nothing_selected_text = "Nothing selected.";
                         'id' => $item->id,
                         'selected' => $element->substance_misuse_id === $item->id,
                     ];
-            }, $element->substance_misuse_options, [])
-            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
+            }, $element->substance_misuse_options, [])) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {

@@ -16,8 +16,7 @@ class m131108_161050_initial_migration extends OEMigration
                 'KEY `pedigree_inheritance_created_user_id_fk` (`created_user_id`)',
                 'CONSTRAINT `pedigree_inheritance_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `pedigree_inheritance_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
-        );
+            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
         $this->createTable('pedigree_gene', array(
                 'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -36,8 +35,7 @@ class m131108_161050_initial_migration extends OEMigration
                 'KEY `pedigree_gene_created_user_id_fk` (`created_user_id`)',
                 'CONSTRAINT `pedigree_gene_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `pedigree_gene_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
-        );
+            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
         $this->createTable('pedigree', array(
                 'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -63,8 +61,7 @@ class m131108_161050_initial_migration extends OEMigration
                 'CONSTRAINT `pedigree_inheritance_id_fk` FOREIGN KEY (`inheritance_id`) REFERENCES `pedigree_inheritance` (`id`)',
                 'CONSTRAINT `pedigree_gene_id_fk` FOREIGN KEY (`gene_id`) REFERENCES `pedigree_gene` (`id`)',
                 'CONSTRAINT `pedigree_disorder_id_fk` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`)',
-            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
-        );
+            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
         $this->createTable('patient_pedigree', array(
                 'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -83,8 +80,7 @@ class m131108_161050_initial_migration extends OEMigration
                 'CONSTRAINT `patient_pedigree_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `patient_pedigree_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`)',
                 'CONSTRAINT `patient_pedigree_pedigree_id_fk` FOREIGN KEY (`pedigree_id`) REFERENCES `pedigree` (`id`)',
-            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
-        );
+            ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
         $this->initialiseData(dirname(__FILE__));
     }

@@ -30,16 +30,23 @@ class m170706_132937_patient_level_risks extends OEMigration
             'event_id' => 'int(10) unsigned NOT NULL',
             'no_risks_date' => 'datetime'
         ), true);
-        $this->addForeignKey('et_ophciexamination_hrisks_ev_fk',
-            'et_ophciexamination_history_risks', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_hrisks_ev_fk',
+            'et_ophciexamination_history_risks',
+            'event_id',
+            'event',
+            'id'
+        );
 
 
-        $this->duplicateTable('risk',
+        $this->duplicateTable(
+            'risk',
             'ophciexamination_risk',
             array(
                 'name' => 'varchar(255)',
                 'active' => 'boolean default true'
-            ));
+            )
+        );
 
         $this->createOETable('ophciexamination_history_risks_entry', array(
             'id' => 'pk',
@@ -50,10 +57,20 @@ class m170706_132937_patient_level_risks extends OEMigration
             'comments' => 'text'
         ), true);
 
-        $this->addForeignKey('ophciexamination_history_risks_entry_el_fk',
-            'ophciexamination_history_risks_entry', 'element_id', 'et_ophciexamination_history_risks', 'id');
-        $this->addForeignKey('ophciexamination_history_risks_entry_r_fk',
-            'ophciexamination_history_risks_entry', 'risk_id', 'ophciexamination_risk', 'id');
+        $this->addForeignKey(
+            'ophciexamination_history_risks_entry_el_fk',
+            'ophciexamination_history_risks_entry',
+            'element_id',
+            'et_ophciexamination_history_risks',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_history_risks_entry_r_fk',
+            'ophciexamination_history_risks_entry',
+            'risk_id',
+            'ophciexamination_risk',
+            'id'
+        );
 
         foreach (static::$archive_tables as $table) {
             $this->renameTable($table, static::$archive_prefix . $table);

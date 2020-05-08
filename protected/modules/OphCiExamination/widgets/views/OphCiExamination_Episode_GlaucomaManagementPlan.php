@@ -61,14 +61,18 @@
   <div class="flex-layout">
     <div class="cols-6 data-group column">
         <?php if ($plan->hasRight()) {
-            $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
-                array('plan' => $plan, 'side' => 'right'));
+            $this->render(
+                'OphCiExamination_Episode_GlaucomaManagementPlan_side',
+                array('plan' => $plan, 'side' => 'right')
+            );
         } ?>
     </div>
     <div class="cols-6 data-group column">
         <?php if ($plan->hasLeft()) {
-            $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
-                array('plan' => $plan, 'side' => 'left'));
+            $this->render(
+                'OphCiExamination_Episode_GlaucomaManagementPlan_side',
+                array('plan' => $plan, 'side' => 'left')
+            );
         } ?>
     </div>
   </div>

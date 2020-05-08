@@ -46,8 +46,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 'relative',
                 'side',
                 'condition',
-            )
-        );
+            ));
     }
 
     /**
@@ -59,8 +58,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(parent::rules(), array(
                 array('condition', 'required'),
                 array('relative, side, condition', 'safe'),
-            )
-        );
+            ));
     }
 
     public function renderParameter($id)
@@ -70,11 +68,17 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
             '!=' => 'does not have',
         );
 
-        $relatives = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll(), 'id',
-            'name');
+        $relatives = CHtml::listData(
+            OEModule\OphCiExamination\models\FamilyHistoryRelative::model()->findAll(),
+            'id',
+            'name'
+        );
         $sides = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistorySide::model()->findAll(), 'id', 'name');
-        $conditions = CHtml::listData(OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll(), 'id',
-            'name');
+        $conditions = CHtml::listData(
+            OEModule\OphCiExamination\models\FamilyHistoryCondition::model()->findAll(),
+            'id',
+            'name'
+        );
 
         ?>
       <div class="flex-layout flex-left js-case-search-param">
@@ -85,16 +89,24 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
                 <?php echo CHtml::activeDropDownList($this, "[$id]side", $sides, array('empty' => 'Any side')); ?>
             </span>
             <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]relative", $relatives,
-                    array('empty' => 'Any relative')); ?>
+                <?php echo CHtml::activeDropDownList(
+                    $this,
+                    "[$id]relative",
+                    $relatives,
+                    array('empty' => 'Any relative')
+                ); ?>
             </span>
             <span class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>
             </span>
             <span class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]condition", $conditions,
-                    array('prompt' => 'Select One...')); ?>
+                <?php echo CHtml::activeDropDownList(
+                    $this,
+                    "[$id]condition",
+                    $conditions,
+                    array('prompt' => 'Select One...')
+                ); ?>
                 <?php echo CHtml::error($this, "[$id]condition"); ?>
             </span>
         </div>

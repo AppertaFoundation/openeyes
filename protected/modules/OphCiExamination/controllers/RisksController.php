@@ -100,7 +100,8 @@ class RisksController extends \BaseController
         return array_map(
             function ($tag) {
                 return $tag->id;
-            }, $obj->tags
+            },
+            $obj->tags
         );
     }
 
