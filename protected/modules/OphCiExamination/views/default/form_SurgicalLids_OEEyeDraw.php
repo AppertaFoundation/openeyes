@@ -31,7 +31,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'model' => $element,
     'attribute' => $side.'_eyedraw',
     'template' => 'OEEyeDrawWidget_InlineToolbar',
-    'maxToolbarButtons' => 7,
+    'maxToolbarButtons' => 13,
     'autoReport' => CHtml::modelName($element) . '_'.$side.'_ed_report',
     //'autoReportEditable' => false,
     'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
