@@ -66,7 +66,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'height' => 300,
     'model' => $element,
     'attribute' => $side.'_eyedraw',
-    'maxToolbarButtons' => 13,
+    'maxToolbarButtons' => 12,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
     'popupDisplaySide' => 'right',

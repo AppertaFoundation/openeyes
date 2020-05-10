@@ -34,7 +34,7 @@
         'model' => $element,
         'attribute' => $side.'_eyedraw',
         'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'maxToolbarButtons' => 13,
+        'maxToolbarButtons' => 12,
         'autoReport' => CHtml::modelName($element) . '_'.$side.'_ed_report',// 'OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_'.$side.'_ed_report',
         'autoReportEditable' => false,
         'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
