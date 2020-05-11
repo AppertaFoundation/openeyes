@@ -1,20 +1,21 @@
 <?php
+
 /**
-* OpenEyes.
-*
-* (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
-* (C) OpenEyes Foundation, 2011-2013
-* This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-*
-* @link http://www.openeyes.org.uk
-*
-* @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-*/
+ * OpenEyes.
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
@@ -26,8 +27,8 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
         'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
         'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
-        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes' ),
-        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes' ),
+        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes'),
+        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes'),
     );
 }
 
@@ -170,18 +171,18 @@ $config = array(
                 'signatures' => '/signatures/searches'
             ),
             'credentials' => array(
-                'username' =>  getenv('OE_PORTAL_USERNAME') ?: ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com' ),
-                'password' => getenv('OE_PORTAL_PASSWORD') ?: ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass' ),
+                'username' =>  getenv('OE_PORTAL_USERNAME') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com'),
+                'password' => getenv('OE_PORTAL_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass'),
                 'grant_type' => 'password',
-                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: '' ),
-                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: ( rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: '' ),
+                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
+                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
             ),
         ),
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
         'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => getenv('OE_DOCMAN_USER') ?: ( rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user' ),
-        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: ( rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!' ),
+        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
+        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
         // possible values:
         // none => XML output is suppressed
@@ -192,10 +193,10 @@ $config = array(
         // set this to false if you want to suppress XML output
         'docman_generate_xml' => false,
         'contact_labels' => array(
-                        'Staff',
-                        'Consultant Ophthalmologist',
-                        'Other specialist',
-                ),
+            'Staff',
+            'Consultant Ophthalmologist',
+            'Other specialist',
+        )
     ),
 );
 
