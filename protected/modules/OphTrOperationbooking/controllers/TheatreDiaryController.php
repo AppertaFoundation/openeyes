@@ -133,6 +133,7 @@ class TheatreDiaryController extends BaseModuleController
     public function actionSearch()
     {
         Audit::add('diary', 'search');
+        Yii::app()->session['theatre_searchoptions'] = $_POST;
         $list = $this->renderPartial('_list', array(
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
@@ -205,23 +206,23 @@ class TheatreDiaryController extends BaseModuleController
         } else {
             $criteria->addCondition('firm.id is not null');
 
-            if (@$data['site-id']) {
+            if (isset($data['site-id']) && $data['site-id'] != 'All') {
                 $criteria->addCondition('`t`.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if (@$_POST['theatre-id']) {
+            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All')  {
                 $criteria->addCondition('`t`.id = :theatreId');
                 $criteria->params[':theatreId'] = $_POST['theatre-id'];
             }
-            if (@$data['subspecialty-id']) {
+            if (isset($data['subspecialty-id']) && $data['subspecialty-id'] != 'All') {
                 $criteria->addCondition('subspecialty_id = :subspecialtyId');
                 $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
             }
-            if (@$data['firm-id']) {
+            if (isset($data['firm-id']) && $data['firm-id'] != 'All') {
                 $criteria->addCondition('firm.id = :firmId');
                 $criteria->params[':firmId'] = $data['firm-id'];
             }
-            if (@$_POST['ward-id']) {
+            if (isset($data['ward-id']) && $data['ward-id'] != 'All') {
                 $criteria->addCondition('activeBookings.ward_id = :wardId');
                 $criteria->params[':wardId'] = $_POST['ward-id'];
             }
@@ -361,9 +362,9 @@ class TheatreDiaryController extends BaseModuleController
     public function actionFilterFirms()
     {
         if (@$_POST['empty']) {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('- ' . Firm::contextLabel() . ' -'), true);
+            echo CHtml::tag('option', array('value' => 'All'), CHtml::encode('- ' . Firm::contextLabel() . ' -'), true);
         } else {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('All ' . Firm::contextLabel() . 's'), true);
+            echo CHtml::tag('option', array('value' => 'All'), CHtml::encode('All ' . Firm::contextLabel() . 's'), true);
         }
 
         if (!empty($_POST['subspecialty_id'])) {
