@@ -199,7 +199,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         /** @var \EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
             if ($entry->usage_type == 'OphCiExamination') {
-                if (!is_null($entry->end_date) && $entry->end_date < date("Y-m-d")) {
+                if (!is_null($entry->end_date) && $entry->end_date <= date("Y-m-d")) {
                     $closed[] = $entry;
                 } else {
                     $current[] = $entry;

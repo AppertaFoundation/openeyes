@@ -3561,7 +3561,7 @@ class OphCiExamination_API extends \BaseAPI
 
         $route_filter = function ($entry) {
             /** @var \EventMedicationUse $entry */
-            return $entry->route->isEyeRoute();
+            return $entry->route_id && $entry->route->isEyeRoute();
         };
 
         $current_eye_meds = array_filter($entries['current'], $route_filter);
@@ -3661,7 +3661,7 @@ class OphCiExamination_API extends \BaseAPI
         $route_filter = function ($entry) {
             // route should be different than eye
             /** @var \EventMedicationUse $entry */
-            return !$entry->route->isEyeRoute();
+            return  !$entry->route_id || !$entry->route->isEyeRoute();
         };
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
