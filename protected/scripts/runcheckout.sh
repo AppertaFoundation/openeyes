@@ -316,9 +316,14 @@ for module in ${modules[@]}; do
     # Determine if module already exists (ignoring openeyes). If not, clone it
     if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
         
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
-        
-        git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m\n"
+
+		# If doing a shallow clone, then make sure to add the branch name
+		if [[ "$cloneparams" == *"depth"* ]]; then
+			cloneparams+=" --branch $branch"
+		fi
+
+		git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
     fi
     
     processgit=1
