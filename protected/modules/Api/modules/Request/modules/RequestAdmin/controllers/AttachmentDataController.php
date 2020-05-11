@@ -21,11 +21,14 @@ class AttachmentDataController extends \AdminController
     public function accessRules()
     {
         // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(
+        return array_merge(
             array(
-                'allow',
-                'roles' => array('OprnEditRequestData'),
-            )
+                array(
+                    'allow',
+                    'roles' => array('OprnEditRequestData'),
+                )
+            ),
+            parent::accessRules()
         );
     }
 

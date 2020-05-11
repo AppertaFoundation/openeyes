@@ -394,14 +394,14 @@ class AdminController extends BaseAdminController
         ));*/
     }
 
-    public function actionUserFind()
+    public function actionUserFind($term)
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -411,7 +411,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -477,7 +478,7 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if (!$user->save()) {
+                if (!$user->save(false)) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
@@ -776,7 +777,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)

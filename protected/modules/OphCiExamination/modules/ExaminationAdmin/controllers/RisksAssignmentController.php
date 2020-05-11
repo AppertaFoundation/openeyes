@@ -26,13 +26,6 @@ class RisksAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry';
     public $set_model_name = 'OEModule_OphCiExamination_models_OphCiExaminationRiskSet';
 
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
-
     /**
      * Lists all models.
      */
