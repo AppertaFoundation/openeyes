@@ -164,8 +164,7 @@ class PatientIdentifier extends BaseActiveRecordVersioned
                     'condition' => 'code = :code',
                     'order' => 'CONVERT(value, INTEGER) DESC',
                     'params' => array(':code' => $this->code),
-                )
-            );
+                ));
 
             if ($last_identifier) {
                 $this->value = $last_identifier->value + 1;
@@ -178,7 +177,8 @@ class PatientIdentifier extends BaseActiveRecordVersioned
 
         if ($this->hasValue()
             && $this->mustBeUnique()
-            && self::model()->exists('code = :code AND value = :value AND id != :id',
+            && self::model()->exists(
+                'code = :code AND value = :value AND id != :id',
                 array(':code' => $this->code, ':value' => $this->value, ':id' => $this->id ?: -1)
             )) {
             $this->addError('value', $this->getConflictMessage());

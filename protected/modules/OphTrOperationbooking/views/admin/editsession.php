@@ -19,7 +19,8 @@
 <div class="box admin cols-5">
     <h2><?php echo $session->id ? 'Edit' : 'Add'?> session</h2>
     <?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm',
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
         [
             'id' => 'adminform',
             'enableAjaxValidation' => false,

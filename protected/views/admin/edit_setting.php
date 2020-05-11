@@ -58,16 +58,14 @@
                         'class' => 'button large',
                         'name' => 'save',
                         'id' => 'et_save'
-                    ]
-                );
+                    ]);
 ?>
 
                 <?= CHtml::submitButton('Cancel', [
                         'class' => 'button large',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
-                    ]
-                );
+                    ]);
 ?>
             </td>
         </tr>

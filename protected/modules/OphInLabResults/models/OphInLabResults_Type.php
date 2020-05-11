@@ -87,13 +87,15 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         if (isset($this->$attribute)) {
             if ($this->normal_max && $this->$attribute > $this->normal_max) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be lower than the normal max value'
+                    $attribute,
+                    $attribute . ' has to be lower than the normal max value'
                 );
             }
 
             if ($this->min_range && $this->$attribute < $this->min_range) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be higher than the range min'
+                    $attribute,
+                    $attribute . ' has to be higher than the range min'
                 );
             }
         }
@@ -104,12 +106,14 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         if (isset($this->$attribute)) {
             if ($this->normal_min && $this->$attribute < $this->normal_min) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be higher than the normal min value'
+                    $attribute,
+                    $attribute . ' has to be higher than the normal min value'
                 );
             }
             if ($this->max_range && $this->$attribute > $this->max_range) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be lower than the range max'
+                    $attribute,
+                    $attribute . ' has to be lower than the range max'
                 );
             }
         }
@@ -120,7 +124,8 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         if (isset($this->$attribute) && $this->max_range) {
             if ($this->$attribute > $this->max_range) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be lower than max range'
+                    $attribute,
+                    $attribute . ' has to be lower than max range'
                 );
             }
         }
@@ -131,7 +136,8 @@ class OphInLabResults_Type extends BaseActiveRecordVersioned
         if (isset($this->$attribute)&& $this->min_range) {
             if ($this->$attribute < $this->min_range) {
                 $this->addError(
-                    $attribute, $attribute . ' has to be higher than min range'
+                    $attribute,
+                    $attribute . ' has to be higher than min range'
                 );
             }
         }

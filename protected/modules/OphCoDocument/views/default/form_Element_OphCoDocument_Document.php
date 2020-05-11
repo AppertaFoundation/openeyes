@@ -24,14 +24,17 @@
             <tr>
                 <td>Event Sub Type</td>
                 <td>
-                    <?php echo $form->dropDownList($element, 'event_sub_type',
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'event_sub_type',
                         CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
                         array('nowrapper' => true),
                         array(),
                         array(
                             'label' => 0,
                             'field' => 2,
-                        )); ?>
+                        )
+                    ); ?>
                 </td>
             </tr>
             <tr>
@@ -62,11 +65,13 @@
                             } ?>">
                     <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                         <?php
-                        echo $form->textArea($element,
+                        echo $form->textArea(
+                            $element,
                             'comment',
                             array('rows' => '1','nowrapper' => true),
                             false,
-                            ['placeholder' => 'Comments' , 'class' => 'autosize ']);
+                            ['placeholder' => 'Comments' , 'class' => 'autosize ']
+                        );
                         ?>
                         <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
                     </div>

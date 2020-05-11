@@ -247,15 +247,16 @@ class DocmanController extends BaseController
                 'macro_id' => $macro_id,
                 'element' => $element,
                 'can_send_electronically' => true,
-            )
-        );
+            ));
     }
 
     public function actionCreateNewCorrespondence($macroId)
     {
         if ($api = Yii::app()->moduleAPI->get('OphCoCorrespondence')) {
-            $api->createCorrespondenceContent($api->createNewCorrespondenceEvent($this->episode->id),
-                $macroId);
+            $api->createCorrespondenceContent(
+                $api->createNewCorrespondenceEvent($this->episode->id),
+                $macroId
+            );
         }
     }
 

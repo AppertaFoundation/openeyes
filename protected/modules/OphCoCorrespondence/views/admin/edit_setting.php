@@ -49,7 +49,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <td>
                 <?php $this->renderPartial(
                     '//admin/_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                    array('metadata' => $metadata)
+                    array('metadata' => $metadata, 'allowed_classes'=>null)
                 ) ?>
             </td>
         </tr>

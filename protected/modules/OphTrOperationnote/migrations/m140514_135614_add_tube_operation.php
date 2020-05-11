@@ -45,14 +45,27 @@ class m140514_135614_add_tube_operation extends OEMigration
                         'description' => 'text NOT NULL',
                 ), true);
 
-        $this->addForeignKey('et_ophtroperationnote_glautub_ev_fk',
-            'et_ophtroperationnote_glaucomatube', 'event_id', 'event', 'id');
-        $this->addForeignKey('et_ophtroperationnote_glaucomatube_ppos_fk',
-                'et_ophtroperationnote_glaucomatube',
-                'plate_position_id', 'ophtroperationnote_gt_plateposition', 'id');
-        $this->addForeignKey('et_ophtroperationnote_glaucomatube_tpos_fk',
-                'et_ophtroperationnote_glaucomatube',
-                'tube_position_id', 'ophtroperationnote_gt_tubeposition', 'id');
+        $this->addForeignKey(
+            'et_ophtroperationnote_glautub_ev_fk',
+            'et_ophtroperationnote_glaucomatube',
+            'event_id',
+            'event',
+            'id'
+        );
+        $this->addForeignKey(
+            'et_ophtroperationnote_glaucomatube_ppos_fk',
+            'et_ophtroperationnote_glaucomatube',
+            'plate_position_id',
+            'ophtroperationnote_gt_plateposition',
+            'id'
+        );
+        $this->addForeignKey(
+            'et_ophtroperationnote_glaucomatube_tpos_fk',
+            'et_ophtroperationnote_glaucomatube',
+            'tube_position_id',
+            'ophtroperationnote_gt_tubeposition',
+            'id'
+        );
 
         $procs = $this->dbConnection->createCommand()->select('id')->from('proc')->where(array('in', 'snomed_code', array(265291005, 440587008)))->queryAll();
 

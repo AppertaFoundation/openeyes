@@ -205,8 +205,8 @@ class PatientMergeTest extends CDbTestCase
         $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
         $episode7->refresh();
-        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode7->start_date );
-        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-10 days')), $episode7->end_date );
+        $this->assertEquals(date('Y-m-d 00:00:00', strtotime('-30 days')), $episode7->start_date);
+        $this->assertEquals(date('Y-m-d 00:00:00', strtotime('-10 days')), $episode7->end_date);
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -276,8 +276,8 @@ class PatientMergeTest extends CDbTestCase
         $result = $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
         $episode9->refresh();
-        $this->assertEquals( date('Y-m-d 00:00:00', strtotime('-30 days')), $episode9->start_date );
-        $this->assertEquals( null, $episode9->end_date );
+        $this->assertEquals(date('Y-m-d 00:00:00', strtotime('-30 days')), $episode9->start_date);
+        $this->assertEquals(null, $episode9->end_date);
 
         $this->assertTrue($result, 'Merge result FALSE.');
 
@@ -468,15 +468,15 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(8, $secondary_diagnoses8->patient_id);
         
         $secondary_patient->refresh();
-        $this->assertTrue(is_array($secondary_patient->ophthalmicDiagnoses) );
-        $this->assertEquals(1, count($secondary_patient->ophthalmicDiagnoses) );
+        $this->assertTrue(is_array($secondary_patient->ophthalmicDiagnoses));
+        $this->assertEquals(1, count($secondary_patient->ophthalmicDiagnoses));
         
         $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->ophthalmicDiagnoses);
         
         $secondary_diagnoses8->refresh();
         $secondary_patient->refresh();
         
-        $this->assertEquals(0, count($secondary_patient->ophthalmicDiagnoses) );
+        $this->assertEquals(0, count($secondary_patient->ophthalmicDiagnoses));
         
         $this->assertEquals(7, $secondary_diagnoses8->patient_id);
     }
@@ -501,8 +501,8 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(5, $secondary_diagnoses8->disorder_id);
         
         $secondary_patient->refresh();
-        $this->assertTrue(is_array($secondary_patient->systemicDiagnoses) );
-        $this->assertEquals(1, count($secondary_patient->systemicDiagnoses) );
+        $this->assertTrue(is_array($secondary_patient->systemicDiagnoses));
+        $this->assertEquals(1, count($secondary_patient->systemicDiagnoses));
         
         $merge_handler->updateOphthalmicDiagnoses($primary_patient, $secondary_patient->systemicDiagnoses);
         
@@ -510,8 +510,8 @@ class PatientMergeTest extends CDbTestCase
         
         $this->assertEquals(7, $secondary_diagnoses8->patient_id);
         
-        $this->assertEquals(0, count($secondary_patient->systemicDiagnoses) );
-        $this->assertEquals(1, count($primary_patient->systemicDiagnoses) );
+        $this->assertEquals(0, count($secondary_patient->systemicDiagnoses));
+        $this->assertEquals(1, count($primary_patient->systemicDiagnoses));
     }
 
     public function testUpdateGenetics_Primary_not_genetics()

@@ -28,13 +28,17 @@ if (!$warnings && !$this->event->isLocked()) {
         $nonCompliant = $service->isEventNonCompliant();
         if ($nonCompliant) {
             $preview_button = EventAction::link(
-                'Preview Application', $this->createUrl('previewApplication', array('event_id' => $this->event->id)),
-                null, array('id' => 'application-preview', 'class' => 'button small')
+                'Preview Application',
+                $this->createUrl('previewApplication', array('event_id' => $this->event->id)),
+                null,
+                array('id' => 'application-preview', 'class' => 'button small')
             );
             $submit_button_text = 'Submit Application';
         } else {
             $preview_button = EventAction::button(
-                'Preview Application', null, array('disabled' => true),
+                'Preview Application',
+                null,
+                array('disabled' => true),
                 array('title' => 'Preview unavailable for NICE compliant applications', 'class' => 'button small')
             );
             $submit_button_text = 'Submit Notification';
@@ -55,7 +59,10 @@ if (!$warnings && !$this->event->isLocked()) {
             }
 
             $this->event_actions[] = EventAction::link(
-                $submit_button_text, $url, null, $submitButtonStyles
+                $submit_button_text,
+                $url,
+                null,
+                $submitButtonStyles
             );
         }
     }

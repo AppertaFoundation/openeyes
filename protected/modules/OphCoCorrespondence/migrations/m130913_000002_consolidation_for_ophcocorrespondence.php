@@ -41,7 +41,8 @@ class m130913_000002_consolidation_for_ophcocorrespondence extends OEMigration
                 'm130423_135641_print_all_flag',
                 'm130531_134251_mark_as_support_service_event_type',
                 'm130603_103105_dr_function_setup',
-            ))
+            )
+        )
         ) {
             $this->createTables();
         }

@@ -21,9 +21,9 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 <?php
 $episodes = $this->episode->patient->episodes
 ;?>
-<div class="element-data">
+<div class="element-data full-width">
         <?php if (!$element->id) { ?>
-        <div class="data-value not-recorded">No diagnoses recorded during this encounter</div>
+        <div class="data-value not-recorded">Nil recorded this examination</div>
         <?php } else { ?>
   <div class="data-value">
     <div class="tile-data-overflow">

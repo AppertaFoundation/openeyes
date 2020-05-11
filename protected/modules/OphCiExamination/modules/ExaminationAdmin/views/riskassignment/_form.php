@@ -160,8 +160,12 @@
     <tr data-row="{{row}}">
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
-                null, $examination_risk_listdata, ["empty" => '-- select --']);
+            echo CHtml::dropDownList(
+                "OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
+                null,
+                $examination_risk_listdata,
+                ["empty" => '-- select --']
+            );
             ?>
         </td>
         <td>

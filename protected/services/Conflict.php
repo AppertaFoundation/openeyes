@@ -22,7 +22,9 @@ class Conflict extends ServiceException
     public function toFhirOutcome()
     {
         return FhirOutcome::singleIssue(
-            \FhirValueSet::ISSUESEVERITY_FATAL, \FhirValueSet::ISSUETYPE_PROCESSING_CONFLICT, $this->message
+            \FhirValueSet::ISSUESEVERITY_FATAL,
+            \FhirValueSet::ISSUETYPE_PROCESSING_CONFLICT,
+            $this->message
         );
     }
 }

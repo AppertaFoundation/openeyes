@@ -30,8 +30,7 @@ class CommonSystemicDisorderController extends BaseAdminController
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
 
         $this->render('/admin/editcommonsystemicdisorder', [
-            'dataProvider' => new CActiveDataProvider('CommonSystemicDisorder', ['pagination' => false, 'criteria' => ['order' => 'display_order']]
-            )]);
+            'dataProvider' => new CActiveDataProvider('CommonSystemicDisorder', ['pagination' => false, 'criteria' => ['order' => 'display_order']])]);
     }
 
     public function actionSave()

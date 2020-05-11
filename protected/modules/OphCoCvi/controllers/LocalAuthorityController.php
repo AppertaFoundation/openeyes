@@ -115,6 +115,6 @@ class LocalAuthorityController extends \BaseModuleController
             );
         }
 
-        echo json_encode($results);
+        $this->renderJSON($results);
     }
 }

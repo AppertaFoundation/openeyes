@@ -28,10 +28,10 @@
       </td>
       <td>
             <?php echo $form->textArea(
-              $element,
-              'benefits',
-              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
-          ) ?>
+                $element,
+                'benefits',
+                array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -40,10 +40,10 @@
       </td>
       <td>
             <?php echo $form->textArea(
-              $element,
-              'risks',
-              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
-          ) ?>
+                $element,
+                'risks',
+                array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+            ) ?>
       </td>
     </tr>
     </tbody>

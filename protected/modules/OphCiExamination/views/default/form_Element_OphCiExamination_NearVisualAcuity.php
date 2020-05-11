@@ -30,12 +30,13 @@ $key = 0;
         <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?=\CHtml::dropDownList(
-              'nearvisualacuity_unit_change',
-              @$element->unit_id,
-              CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
+                'nearvisualacuity_unit_change',
+                @$element->unit_id,
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
-              array('class' => 'inline'));
+                array('class' => 'inline')
+            );
             if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
@@ -89,13 +90,16 @@ $key = 0;
           </div>
             <div id="nearvisualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
                  style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#nearvisualacuity-<?= $eye_side ?>-comment-button">
-                <?=\CHtml::activeTextArea($element, $eye_side . '_notes',
+                <?=\CHtml::activeTextArea(
+                    $element,
+                    $eye_side . '_notes',
                     array(
                         'rows' => 1,
                         'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
                         'class' => 'cols-full js-comment-field',
                         'style' => 'overflow-wrap: break-word; height: 24px;',
-                    )) ?>
+                    )
+                ) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>
         </div>
@@ -127,11 +131,17 @@ $key = 0;
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
                 return ['label' => $value, 'id' => $key];
-            }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
+            },
+            array_keys($values),
+            $values)
+        )?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
-              }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
+              },
+              array_keys($methods),
+              $methods)
+          )?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');

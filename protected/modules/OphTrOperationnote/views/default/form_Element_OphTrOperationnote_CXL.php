@@ -104,45 +104,79 @@
                     'epithelial_removal_method_id',
                     'OphTrOperationnote_CXL_Epithelial_Removal_Method',
                     $element->epithelial_removal_method_id,
-                    false, false, false, false,
+                    false,
+                    false,
+                    false,
+                    false,
                     ['class' => 'cols-full']
                 ) ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?= $form->radioButtons($element, 'mitomycin_c',
-                    'OphTrOperationnote_CXL_Mitomycin', $element->mitomycin_c,
-                    false, false, false, false,
-                    ['class' => 'cols-full']); ?>
+                <?= $form->radioButtons(
+                    $element,
+                    'mitomycin_c',
+                    'OphTrOperationnote_CXL_Mitomycin',
+                    $element->mitomycin_c,
+                    false,
+                    false,
+                    false,
+                    false,
+                    ['class' => 'cols-full']
+                ); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?= $form->radioButtons($element, 'iontophoresis_id',
-                    'OphTrOperationnote_CXL_Iontophoresis', $element->iontophoresis_id,
-                    false, false, false, false,
-                    ['class' => 'cols-full']); ?>
+                <?= $form->radioButtons(
+                    $element,
+                    'iontophoresis_id',
+                    'OphTrOperationnote_CXL_Iontophoresis',
+                    $element->iontophoresis_id,
+                    false,
+                    false,
+                    false,
+                    false,
+                    ['class' => 'cols-full']
+                ); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?= $form->textField($element, 'iontophoresis_current_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2), false, array('field' => 1)); ?>
+                <?= $form->textField(
+                    $element,
+                    'iontophoresis_current_value',
+                    array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                    false,
+                    array('field' => 1)
+                ); ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?= $form->textField($element, 'iontophoresis_duration_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2), false, array('field' => 1)) ?>
+                <?= $form->textField(
+                    $element,
+                    'iontophoresis_duration_value',
+                    array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                    false,
+                    array('field' => 1)
+                ) ?>
             </td>
         </tr>
         <tr>
             <td>
-                <?= $form->radioButtons($element, 'riboflavin_preparation_id',
-                    'OphTrOperationnote_CXL_Riboflavin_Preparation', $element->riboflavin_preparation_id,
-                    false, false, false, false,
-                    ['class' => 'cols-full']) ?>
+                <?= $form->radioButtons(
+                    $element,
+                    'riboflavin_preparation_id',
+                    'OphTrOperationnote_CXL_Riboflavin_Preparation',
+                    $element->riboflavin_preparation_id,
+                    false,
+                    false,
+                    false,
+                    false,
+                    ['class' => 'cols-full']
+                ) ?>
             </td>
         </tr>
 
@@ -161,81 +195,128 @@
             <tbody>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'device_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'device_id',
                         CHtml::listData(OphTrOperationnote_CXL_Device::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_device_id => array('selected' => true))),
-                        null, array('field' => 3, 'class' => 'cols-full')); ?>
+                        null,
+                        array('field' => 3, 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'epithelial_status_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'epithelial_status_id',
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Status::model()->findAll(), 'id', 'name'),
                         array('options' => array($epithelial_status_id => array('selected' => true))),
-                        null, array('field' => 3, 'class' => 'cols-full')); ?>
+                        null,
+                        array('field' => 3, 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'epithelial_removal_diameter_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'epithelial_removal_diameter_id',
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_epithelial_removal_diameter_id => array('selected' => true))),
-                        null, array('field' => 2, 'class' => 'cols-full'));  ?>
+                        null,
+                        array('field' => 2, 'class' => 'cols-full')
+                    );  ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'soak_duration_range_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'soak_duration_range_id',
                         CHtml::listData(OphTrOperationnote_CXL_Soak_Duration::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_soak_duration_range_id => array('selected' => true))),
-                        null, array('field' => 2, 'class' => 'cols-full')); ?>
+                        null,
+                        array('field' => 2, 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?=  $form->dropDownList($element, 'uv_pulse_duration_id',
+                    <?=  $form->dropDownList(
+                        $element,
+                        'uv_pulse_duration_id',
                         CHtml::listData(OphTrOperationnote_CXL_UV_Pulse_Duration::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_uv_pulse_duration_id => array('selected' => true))),
-                        null, array('field' => 2, 'class' => 'cols-full')); ?>
+                        null,
+                        array('field' => 2, 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'uv_irradiance_range_id',
-                        CHtml::listData(OphTrOperationnote_CXL_UV_Irradiance_Range::model()->findAll(array('order' => 'display_order')),
-                            'id', 'name'),
-                        array('options' => array($default_uv_irradiance_range_id => array('selected' => true))), null,
-                        array('field' => 1)); ?>
+                    <?= $form->dropDownList(
+                        $element,
+                        'uv_irradiance_range_id',
+                        CHtml::listData(
+                            OphTrOperationnote_CXL_UV_Irradiance_Range::model()->findAll(array('order' => 'display_order')),
+                            'id',
+                            'name'
+                        ),
+                        array('options' => array($default_uv_irradiance_range_id => array('selected' => true))),
+                        null,
+                        array('field' => 1)
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->textField($element, 'uv_total_energy_value', array('size' => 10, 'maxlength' => 10, 'field' => 2),
-                        false, array('field' => 1)) ?>
+                    <?= $form->textField(
+                        $element,
+                        'uv_total_energy_value',
+                        array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                        false,
+                        array('field' => 1)
+                    ) ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'total_exposure_time_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'total_exposure_time_id',
                         CHtml::listData(OphTrOperationnote_CXL_Total_Exposure_Time::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_total_exposure_time_id => array('selected' => true))),
-                        null, array('field' => 1)); ?>
+                        null,
+                        array('field' => 1)
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->dropDownList($element, 'interpulse_duration_id',
+                    <?= $form->dropDownList(
+                        $element,
+                        'interpulse_duration_id',
                         CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_interpulse_duration_id => array('selected' => true))),
-                        null, array('field' => 2)); ?>
+                        null,
+                        array('field' => 2)
+                    ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <?= $form->radioButtons($element, 'interval_between_drops_id',
-                        'OphTrOperationnote_CXL_Interval_Between_Drops', $default_interval_between_drops_id,
-                        false, false, false, false,
-                        ['class' => 'cols-full']) ?>
+                    <?= $form->radioButtons(
+                        $element,
+                        'interval_between_drops_id',
+                        'OphTrOperationnote_CXL_Interval_Between_Drops',
+                        $default_interval_between_drops_id,
+                        false,
+                        false,
+                        false,
+                        false,
+                        ['class' => 'cols-full']
+                    ) ?>
                 </td>
             </tr>
             </tbody>

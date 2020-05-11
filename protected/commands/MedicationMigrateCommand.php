@@ -103,7 +103,9 @@ class MedicationMigrateCommand extends PatientLevelMigration
             );
 
             if ($untracked_prescription_items = $this->prescription_api->getPrescriptionItemsForPatient(
-                $patient, $tracked_prescr_item_ids)
+                $patient,
+                $tracked_prescr_item_ids
+            )
             ) {
                 foreach ($untracked_prescription_items as $item) {
                     $entry = new static::$entry_class();

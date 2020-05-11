@@ -130,12 +130,16 @@
                         'disabled' => 'disabled',
                     )) ?>
                 <?php } else { ?>
-                    <?= \CHtml::dropDownList('firm-id', \Yii::app()->request->getParam('firm-id'),
-                        Firm::model()->getList($subspecialty_id), array(
+                    <?= \CHtml::dropDownList(
+                        'firm-id',
+                        \Yii::app()->request->getParam('firm-id'),
+                        Firm::model()->getList($subspecialty_id),
+                        array(
                             'class' => 'cols-11',
                             'empty' => 'All ' . Firm::contextLabel() . 's',
                             'disabled' => (\Yii::app()->request->getParam('emergency_list', 0) == 1 ? 'disabled' : ''),
-                        )) ?>
+                        )
+                    ) ?>
                 <?php } ?>
             </td>
             <td colspan="2">

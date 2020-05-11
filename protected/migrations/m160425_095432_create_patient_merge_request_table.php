@@ -5,8 +5,8 @@ class m160425_095432_create_patient_merge_request_table extends OEMigration
     public function up()
     {
         $this->createOETable(
-                'patient_merge_request',
-                array(
+            'patient_merge_request',
+            array(
                         'id' => 'pk',
 
                         'primary_id' => 'int(10) unsigned NOT NULL',
@@ -26,8 +26,8 @@ class m160425_095432_create_patient_merge_request_table extends OEMigration
                         'comment' => 'text',
                         'status' => 'smallint unsigned default 0',
                 ),
-                true
-            );
+            true
+        );
 
         $this->addForeignKey('patient_merge_request_fk1', 'patient_merge_request', 'primary_id', 'patient', 'id');
         $this->addForeignKey('patient_merge_request_fk2', 'patient_merge_request', 'secondary_id', 'patient', 'id');

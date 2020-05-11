@@ -49,54 +49,58 @@ $pedigree = new Pedigree();
       ));
          */?>
         <?php $form->dropDownList(
-          $element,
-          'gene_id',
-          CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'gene_id',
+            CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
         <?php $form->dropDownList(
-          $element,
-          'method_id',
-          CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'method_id',
+            CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
         <?php $form->dropDownList(
-          $element,
-          'effect_id',
-          CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'effect_id',
+            CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
 
         <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
         <?php $form->dropDownList(
-          $element,
-          'base_change_id',
-          CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'base_change_id',
+            CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
         <?php $form->textField($element, 'base_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
         <?php $form->dropDownList(
-          $element,
-          'amino_acid_change_id',
-          CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'amino_acid_change_id',
+            CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
         <?php $form->textField($element, 'amino_acid_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
         <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
         <?php $form->dropDownList(
-          $element,
-          'genome_version',
-          array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
+            $element,
+            'genome_version',
+            array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
+            array('empty' => '- Select -'),
+            false,
+            array('label' => 3, 'field' => 3)
+        ) ?>
         <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
 
         <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>

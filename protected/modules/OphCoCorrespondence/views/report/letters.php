@@ -145,15 +145,21 @@
                     <?= \CHtml::dropDownList(
                         'OphCoCorrespondence_ReportLetters[author_id]',
                         '',
-                        CHtml::listData(User::model()->findAll(
-                            array('order' => 'first_name asc,last_name asc')),
+                        CHtml::listData(
+                            User::model()->findAll(
+                                array('order' => 'first_name asc,last_name asc')
+                            ),
                             'id',
-                            'fullName'),
-                        array('empty' => 'Select')) ?>
+                            'fullName'
+                        ),
+                        array('empty' => 'Select')
+                    ) ?>
                 <?php else : ?>
                     <?php
                     $user = User::model()->findByPk(Yii::app()->user->id);
-                    echo CHtml::dropDownList(null, '',
+                    echo CHtml::dropDownList(
+                        null,
+                        '',
                         array(Yii::app()->user->id => $user->fullName),
                         array(
                             'disabled' => 'disabled',
@@ -171,7 +177,8 @@
                     'OphCoCorrespondence_ReportLetters[site_id]',
                     '',
                     Site::model()->getListForCurrentInstitution(),
-                    array('empty' => 'Select')) ?>
+                    array('empty' => 'Select')
+                ) ?>
             </td>
         </tr>
     </table>
@@ -187,9 +194,12 @@
                 $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
                 $htmlOptions['separator'] = '';
                 $htmlOptions['style'] = 'vertical-align: middle';
-                echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]', null,
+                echo CHtml::checkBoxList(
+                    'OphCoCorrespondence_ReportLetters[statuses]',
+                    null,
                     ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'],
-                    $htmlOptions); ?>
+                    $htmlOptions
+                ); ?>
             </td>
         </tr>
         </tbody>
@@ -207,14 +217,16 @@
                     'OphCoCorrespondence_ReportLetters[recipient_type]',
                     '',
                     ['To' => 'To', 'Cc' => 'Cc'],
-                    array('empty' => 'Select')) ?>
+                    array('empty' => 'Select')
+                ) ?>
             </td>
             <td>
                 <?= \CHtml::dropDownList(
                     'OphCoCorrespondence_ReportLetters[contact_type]',
                     '',
                     DocumentTarget::model()->getContactTypes(),
-                    array('empty' => 'Select')) ?>
+                    array('empty' => 'Select')
+                ) ?>
             </td>
         </tr>
         </tbody>

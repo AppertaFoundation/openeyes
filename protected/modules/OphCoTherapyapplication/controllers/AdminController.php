@@ -458,8 +458,7 @@ class AdminController extends ModuleAdminController
         Audit::add('admin', 'view', $id, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_FileCollection'));
 
         $this->render('view_'.get_class($model), array(
-                'model' => $model, )
-        );
+                'model' => $model, ));
     }
 
     /**
@@ -596,8 +595,7 @@ class AdminController extends ModuleAdminController
                 'model' => $model,
                 'title' => 'File Collection',
                 'cancel_uri' => '/OphCoTherapyapplication/admin/viewFileCollections',
-            )
-        );
+            ));
     }
 
     public function actionRemoveFileCollection_File()
@@ -605,12 +603,12 @@ class AdminController extends ModuleAdminController
         try {
             if ($collection = OphCoTherapyapplication_FileCollection::model()->findByPk(@$_GET['filecollection_id'])) {
                 if ($collection->removeFileById(@$_GET['file_id'])) {
-                    echo json_encode(array('success' => true));
+                    $this->renderJSON(array('success' => true));
                 }
             }
         } catch (Exception $e) {
             Yii::log("couldn't remove file (".@$_GET['file_id'].') from collection ('.@$_GET['filecollection_id'].')'.$e->getMessage(), 'error');
-            echo json_encode(array('success' => false));
+            $this->renderJSON(array('success' => false));
         }
     }
 

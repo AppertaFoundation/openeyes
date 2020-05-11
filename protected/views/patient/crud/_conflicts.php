@@ -16,15 +16,24 @@
         <tr>
           <?php foreach ($patients as $patient) : ?>
             <tr>
-              <td><?php echo CHtml::link($patient->hos_num,
-                  Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?></td>
+              <td><?php echo CHtml::link(
+                  $patient->hos_num,
+                  Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)),
+                  array('target' => '_blank')
+              ); ?></td>
               <td>
-                <?php echo CHtml::link($patient->getFullName(),
-                  Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
+                <?php echo CHtml::link(
+                    $patient->getFullName(),
+                    Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)),
+                    array('target' => '_blank')
+                ); ?>
               </td>
               <td>
-                  <?php echo CHtml::link(date('d/m/Y', strtotime($patient->getDOB())),
-                      Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)), array('target' => '_blank')); ?>
+                  <?php echo CHtml::link(
+                      date('d/m/Y', strtotime($patient->getDOB())),
+                      Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)),
+                      array('target' => '_blank')
+                  ); ?>
               </td>
             </tr>
             <?php endforeach; ?>

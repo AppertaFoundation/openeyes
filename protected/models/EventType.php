@@ -101,8 +101,10 @@ class EventType extends BaseActiveRecordVersioned
         $legacy_events = EventGroup::model()->find('code=?', array('Le'));
 
         $criteria = new CDbCriteria();
-        $criteria->condition = "class_name in ('" . implode("','",
-                array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
+        $criteria->condition = "class_name in ('" . implode(
+            "','",
+            array_keys(Yii::app()->getModules())
+        ) . "') and event_group_id != $legacy_events->id";
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
         $criteria->addCondition('can_be_created_manually = 1');

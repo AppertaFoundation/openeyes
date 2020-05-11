@@ -34,13 +34,21 @@
                         </label>
                     </td>
                     <td colspan="2">
-                        <?= CHtml::activeTextField($element, 'blood_pressure_systolic',
+                        <?= CHtml::activeTextField(
+                            $element,
+                            'blood_pressure_systolic',
                             ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'style' => 'display:inline-block;', 'tabindex' => '1']); ?>
+                            'style' => 'display:inline-block;',
+                            'tabindex' => '1']
+                        ); ?>
                         /
-                        <?= CHtml::activeTextField($element, 'blood_pressure_diastolic',
+                        <?= CHtml::activeTextField(
+                            $element,
+                            'blood_pressure_diastolic',
                             ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'style' => 'display:inline-block;', 'tabindex' => '2']); ?>
+                            'style' => 'display:inline-block;',
+                            'tabindex' => '2']
+                        ); ?>
                     </td>
                 </tr>
                 <tr>
@@ -50,9 +58,12 @@
                         </label>
                     </td>
                     <td colspan="2">
-                        <?= CHtml::activeTextField($element, 'blood_glucose',
+                        <?= CHtml::activeTextField(
+                            $element,
+                            'blood_glucose',
                             ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'tabindex' => '5']); ?>
+                            'tabindex' => '5']
+                        ); ?>
                     </td>
                 </tr>
                 <tr>
@@ -63,9 +74,12 @@
                     </td>
                     <td colspan="2">
                         <div class="bmi-keyup-event">
-                            <?= CHtml::activeTextField($element, 'weight',
+                            <?= CHtml::activeTextField(
+                                $element,
+                                'weight',
                                 ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'tabindex' => '7']); ?>
+                                'tabindex' => '7']
+                            ); ?>
                         </div>
                     </td>
 
@@ -109,9 +123,12 @@
                     </td>
                     <td>
                         <div class="bmi-keyup-event">
-                            <?= CHtml::activeTextField($element, 'height',
+                            <?= CHtml::activeTextField(
+                                $element,
+                                'height',
                                 ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'tabindex' => '8']); ?>
+                                'tabindex' => '8']
+                            ); ?>
                         </div>
                     </td>
                 </tr>
@@ -133,9 +150,12 @@
                         </label>
                     </td>
                     <td>
-                        <?= CHtml::activeTextField($element, 'pulse',
-                        ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                        'tabindex' => '4']); ?>
+                        <?= CHtml::activeTextField(
+                            $element,
+                            'pulse',
+                            ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'tabindex' => '4']
+                        ); ?>
                     </td>
                 </tr>
                 <tr>

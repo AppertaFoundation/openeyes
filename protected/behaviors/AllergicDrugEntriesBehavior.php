@@ -56,7 +56,9 @@ class AllergicDrugEntriesBehavior extends CBehavior
         if (isset($allergic_drugs) && sizeof($allergic_drugs) !== 0 &&
             isset($patient_allergies_from_drugs) && sizeof($allergic_drugs) != 0) {
             Audit::add(
-                $target, $action, 'Allergies: ' .
+                $target,
+                $action,
+                'Allergies: ' .
                 implode(' , ', $patient_allergies_from_drugs) . ' Drugs: ' . implode(' , ', $allergic_drugs),
                 null,
                 array('patient_id' => $patient->id)

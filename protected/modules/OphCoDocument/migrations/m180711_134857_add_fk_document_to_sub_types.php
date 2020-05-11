@@ -9,7 +9,8 @@ class m180711_134857_add_fk_document_to_sub_types extends CDbMigration
             'et_ophcodocument_document',
             'event_sub_type',
             'ophcodocument_sub_types',
-            'id');
+            'id'
+        );
     }
 
     public function down()

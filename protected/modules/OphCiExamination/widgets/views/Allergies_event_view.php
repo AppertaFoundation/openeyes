@@ -19,9 +19,9 @@
                         }));
                     }
                     $max_iter = max(
-                    count($entries[(string)AllergyEntry::$NOT_PRESENT]),
-                    count($entries[(string)AllergyEntry::$PRESENT]),
-                    count($entries[(string)AllergyEntry::$NOT_CHECKED])
+                        count($entries[(string)AllergyEntry::$NOT_PRESENT]),
+                        count($entries[(string)AllergyEntry::$PRESENT]),
+                        count($entries[(string)AllergyEntry::$NOT_CHECKED])
                     );
                     ?>
 

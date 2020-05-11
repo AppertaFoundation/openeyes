@@ -13,8 +13,7 @@ class m191128_142435_add_attachment_to_element_type_for_biometry extends CDbMigr
                 'display_order' => 1,
                 'required' => 0,
                 'group_title' => 'Attachment'
-            ]
-        );
+            ]);
     }
 
     public function down()

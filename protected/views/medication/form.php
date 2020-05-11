@@ -48,7 +48,8 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <div class="data-group">
                     <div class="label"></div>
                     <?php
-                    $this->widget('zii.widgets.jui.CJuiAutoComplete',
+                    $this->widget(
+                        'zii.widgets.jui.CJuiAutoComplete',
                         array(
                             'name' => 'drug_autocomplete',
                             'source' => new CJavaScriptExpression(
@@ -69,8 +70,10 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             </div>
         </div>
 
-        <?php $form->widget('application.widgets.TextField',
-            array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
+        <?php $form->widget(
+            'application.widgets.TextField',
+            array('element' => $medication, 'field' => 'dose', 'name' => 'dose')
+        ); ?>
 
         <?php $form->widget(
             'application.widgets.DropDownList',

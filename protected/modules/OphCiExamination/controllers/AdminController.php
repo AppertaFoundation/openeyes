@@ -535,7 +535,7 @@ class AdminController extends \ModuleAdminController
             throw new \Exception('Unable to save element set: '.print_r($set->getErrors(), true));
         }
 
-        echo json_encode(array(
+        $this->renderJSON(array(
             'id' => $set->id,
             'position' => $set->position,
             'name' => $set->name,
@@ -1050,7 +1050,8 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin(
             models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative',
+            ['div_wrapper_class' => 'cols-6']
         );
     }
 

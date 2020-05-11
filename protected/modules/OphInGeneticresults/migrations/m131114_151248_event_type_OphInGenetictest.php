@@ -21,16 +21,22 @@ class m131114_151248_event_type_OphInGenetictest extends OEMigration
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
             $this->insert('event_type', array('class_name' => 'OphInGenetictest', 'name' => 'Genetic Results', 'event_group_id' => $group['id'], 'parent_id' => $parent_id));
         }
-        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name',
-            array(':class_name' => 'OphInGenetictest'))->queryRow();
-        if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId',
-            array(':name' => 'Test', ':eventTypeId' => $event_type['id']))->queryRow()
+        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name=:class_name',
+            array(':class_name' => 'OphInGenetictest')
+        )->queryRow();
+        if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where(
+            'name=:name and event_type_id=:eventTypeId',
+            array(':name' => 'Test', ':eventTypeId' => $event_type['id'])
+        )->queryRow()
         ) {
             $this->insert('element_type', array('name' => 'Test', 'class_name' => 'Element_OphInGenetictest_Test', 'event_type_id' => $event_type['id'], 'display_order' => 1));
         }
 
-        $element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name',
-            array(':eventTypeId' => $event_type['id'], ':name' => 'Test'))->queryRow();
+        $element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where(
+            'event_type_id=:eventTypeId and name=:name',
+            array(':eventTypeId' => $event_type['id'], ':name' => 'Test')
+        )->queryRow();
 
         $this->createTable('ophingenetictest_test_method', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -104,11 +110,15 @@ class m131114_151248_event_type_OphInGenetictest extends OEMigration
         $this->dropTable('ophingenetictest_test_method');
         $this->dropTable('ophingenetictest_test_effect');
 
-        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name',
-            array(':class_name' => 'OphInGenetictest'))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'class_name=:class_name',
+            array(':class_name' => 'OphInGenetictest')
+        )->queryRow();
 
-        foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id',
-            array(':event_type_id' => $event_type['id']))->queryAll() as $row) {
+        foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where(
+            'event_type_id=:event_type_id',
+            array(':event_type_id' => $event_type['id'])
+        )->queryAll() as $row) {
             $this->delete('audit', 'event_id=' . $row['id']);
             $this->delete('event', 'id=' . $row['id']);
         }

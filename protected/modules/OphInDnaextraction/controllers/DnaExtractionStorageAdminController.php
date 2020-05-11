@@ -78,7 +78,7 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
            
             $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues(Yii::app()->request->getPost('box_id'));
             $letterArray = $storage->generateLetterArrays(Yii::app()->request->getPost('box_id'), $boxRanges['maxletter'], $boxRanges['maxnumber']);
-            $usedBoxRows = $storage->getAllLetterNumberToBox( Yii::app()->request->getPost('box_id') );
+            $usedBoxRows = $storage->getAllLetterNumberToBox(Yii::app()->request->getPost('box_id'));
         
       
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
@@ -96,8 +96,8 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
 
                 break;
             }
- 
-            echo json_encode($result);
+
+            $this->renderJSON($result);
         }
     }
 }

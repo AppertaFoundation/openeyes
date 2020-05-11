@@ -41,21 +41,27 @@ if (!isset($values)) {
             echo CHtml::hiddenField($field_prefix . '[has_abnormality]', (string)PupillaryAbnormalityEntry::$PRESENT);
         } else { ?>
             <label class="inline highlight">
-                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
-                     $posted_not_checked,
-                    array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)); ?>
+                <?= \CHtml::radioButton(
+                    $field_prefix . '[has_abnormality]',
+                    $posted_not_checked,
+                    array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)
+                ); ?>
                 Not checked
             </label>
             <label class="inline highlight">
-                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                <?= \CHtml::radioButton(
+                    $field_prefix . '[has_abnormality]',
                     $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$PRESENT,
-                    array('value' => PupillaryAbnormalityEntry::$PRESENT)); ?>
+                    array('value' => PupillaryAbnormalityEntry::$PRESENT)
+                ); ?>
                 yes
             </label>
             <label class="inline highlight">
-                <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                <?= \CHtml::radioButton(
+                    $field_prefix . '[has_abnormality]',
                     $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT,
-                    array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)); ?>
+                    array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)
+                ); ?>
                 no
             </label>
         <?php }?>

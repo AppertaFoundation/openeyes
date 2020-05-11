@@ -65,8 +65,11 @@ if (!isset($uniqueid)) {
                         if ($listItem !== 'attribute_elements_id.id') :?>
                             <th>
                                 <?php if ($admin->isSortableColumn($listItem)) : ?>
-                                <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder,
-                                    Yii::app()->request->getQueryString()) ?>">
+                                <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery(
+                                    $listItem,
+                                    $displayOrder,
+                                    Yii::app()->request->getQueryString()
+                                ) ?>">
                                 <?php endif;
                                 ?>
                                     <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>

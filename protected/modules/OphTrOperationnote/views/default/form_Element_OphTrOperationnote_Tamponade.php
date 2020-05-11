@@ -17,13 +17,37 @@
  */
 ?>
 <div class="element-fields full-width">
-    <?php echo $form->dropDownList($element, 'gas_type_id', 'OphTrOperationnote_GasType',
-        array('empty' => 'Select'), false, array('field' => 2)) ?>
-    <?php echo $form->dropDownList($element, 'gas_percentage_id',
-        CHtml::listData(OphTrOperationnote_GasPercentage::model()->findAll(array('order' => 'display_order')), 'id',
-            'value'), array('empty' => 'Select'), false, array('field' => 2)) ?>
-    <?php echo $form->dropDownList($element, 'gas_volume_id',
-        CHtml::listData(OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAll(array('order' => 'display_order')),
-            'id', 'value'), array('empty' => 'Select'), false, array('field' => 2)) ?>
+    <?php echo $form->dropDownList(
+        $element,
+        'gas_type_id',
+        'OphTrOperationnote_GasType',
+        array('empty' => 'Select'),
+        false,
+        array('field' => 2)
+    ) ?>
+    <?php echo $form->dropDownList(
+        $element,
+        'gas_percentage_id',
+        CHtml::listData(
+            OphTrOperationnote_GasPercentage::model()->findAll(array('order' => 'display_order')),
+            'id',
+            'value'
+        ),
+        array('empty' => 'Select'),
+        false,
+        array('field' => 2)
+    ) ?>
+    <?php echo $form->dropDownList(
+        $element,
+        'gas_volume_id',
+        CHtml::listData(
+            OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAll(array('order' => 'display_order')),
+            'id',
+            'value'
+        ),
+        array('empty' => 'Select'),
+        false,
+        array('field' => 2)
+    ) ?>
 </div>
 

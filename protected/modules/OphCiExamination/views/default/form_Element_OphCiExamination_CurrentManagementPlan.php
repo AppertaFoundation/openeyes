@@ -92,26 +92,50 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
           </tr>
           <tr>
             <td>
-                <?= $form->dropDownList($element, $eye.'_glaucoma_status_id', $glaucomaStatus,
-                    array('empty' => 'Select'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                <?= $form->dropDownList(
+                    $element,
+                    $eye.'_glaucoma_status_id',
+                    $glaucomaStatus,
+                    array('empty' => 'Select'),
+                    false,
+                    array('label' => 4, 'field' => 8, 'stretch' => true)
+                )?>
             </td>
           </tr>
           <tr>
             <td>
-                <?= $form->dropDownList($element, $eye.'_drop-related_prob_id',
-                    $dropRelatProblem, array(), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                <?= $form->dropDownList(
+                    $element,
+                    $eye.'_drop-related_prob_id',
+                    $dropRelatProblem,
+                    array(),
+                    false,
+                    array('label' => 4, 'field' => 8, 'stretch' => true)
+                )?>
             </td>
           </tr>
           <tr>
             <td>
-                <?= $form->dropDownList($element, $eye.'_drops_id',
-                    $dropsIds, array('empty' => 'Select'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                <?= $form->dropDownList(
+                    $element,
+                    $eye.'_drops_id',
+                    $dropsIds,
+                    array('empty' => 'Select'),
+                    false,
+                    array('label' => 4, 'field' => 8, 'stretch' => true)
+                )?>
             </td>
           </tr>
           <tr>
             <td>
-                <?= $form->dropDownList($element, $eye.'_surgery_id',
-                    $surgeryIds, array('empty' => 'N/A'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                <?= $form->dropDownList(
+                    $element,
+                    $eye.'_surgery_id',
+                    $surgeryIds,
+                    array('empty' => 'N/A'),
+                    false,
+                    array('label' => 4, 'field' => 8, 'stretch' => true)
+                )?>
             </td>
           </tr>
         </tbody>

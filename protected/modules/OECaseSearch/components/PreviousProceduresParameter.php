@@ -35,8 +35,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
     {
         return array_merge(parent::attributeNames(), array(
                 'textValue',
-            )
-        );
+            ));
     }
 
     /**
@@ -45,7 +44,8 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
      */
     public function rules()
     {
-        return array_merge(parent::rules(),
+        return array_merge(
+            parent::rules(),
             array(
                 array('textValue', 'required')
             )

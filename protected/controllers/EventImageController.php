@@ -40,8 +40,10 @@ class EventImageController extends BaseController
     public function actionGetImageUrl($event_id, $return_value = false)
     {
         $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-        $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
-            array($event_id, $created_image_status_id));
+        $event_image = EventImage::model()->find(
+            'event_id = ? AND status_id = ?',
+            array($event_id, $created_image_status_id)
+        );
         $event = Event::model()->findByPk($event_id);
         // If the event image doesn't already exist
         if (!isset($event_image) ||
@@ -52,8 +54,10 @@ class EventImageController extends BaseController
         }
 
         // Check again to see if it exists (an error might have occurred during generation)
-        if (EventImage::model()->exists('event_id = ? AND status_id = ?',
-            array($event_id, $created_image_status_id))) {
+        if (EventImage::model()->exists(
+            'event_id = ? AND status_id = ?',
+            array($event_id, $created_image_status_id)
+        )) {
             // THen return that url
             $url = $this->createUrl('view', array('id' => $event_id));
             if ($return_value) {
@@ -119,10 +123,10 @@ class EventImageController extends BaseController
             $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
             if ($page_count != 0) {
                 $image_info = ['page_count' => $page_count, 'url' => $url];
-                echo CJSON::encode($image_info);
+                $this->renderJSON($image_info);
             }
         } catch (Exception $exception) {
-            echo CJSON::encode(['error' => $exception->getMessage()]);
+            $this->renderJSON(['error' => $exception->getMessage()]);
         }
     }
 

@@ -20,9 +20,9 @@ if (!isset($side)) {
 }
 if ($side === 'left') {
     $jsPath = Yii::app()->getAssetManager()->publish(
-    Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js',
-    true,
-    -1
+        Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js',
+        true,
+        -1
     );
     ?>
   <script type="text/javascript">
@@ -95,9 +95,12 @@ if ($side === 'left') {
               <td>Glaucoma</td>
               <td>
                   <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][glaucoma]', $pcr['glaucoma'],
-                      array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
-                      array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma cols-full'));
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][glaucoma]',
+                        $pcr['glaucoma'],
+                        array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
+                        array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma cols-full')
+                    );
                     ?>
               </td>
             </tr>
@@ -105,9 +108,11 @@ if ($side === 'left') {
               <td>Diabetic</td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][diabetic]', $pcr['diabetic'],
-                      array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
-                      array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic cols-full')
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][diabetic]',
+                        $pcr['diabetic'],
+                        array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
+                        array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic cols-full')
                     );
                     ?>
               </td>
@@ -116,12 +121,15 @@ if ($side === 'left') {
               <td>Fundus Obscured</td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][no_fundal_view]', $pcr['noview'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array(
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][no_fundal_view]',
+                        $pcr['noview'],
+                        array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+                        array(
                           'id' => 'pcrrisk_' . $side . '_no_fundal_view',
                           'class' => 'pcrrisk_no_fundal_view cols-full',
-                      ));
+                        )
+                    );
                     ?>
               </td>
             </tr>
@@ -133,13 +141,15 @@ if ($side === 'left') {
               </td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][brunescent_white_cataract]',
-                      $pcr['anteriorsegment']['brunescent_white_cataract'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array(
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][brunescent_white_cataract]',
+                        $pcr['anteriorsegment']['brunescent_white_cataract'],
+                        array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+                        array(
                           'id' => 'pcrrisk_' . $side . '_brunescent_white_cataract',
                           'class' => 'pcrrisk_brunescent_white_cataract cols-full',
-                      ));
+                        )
+                    );
                     ?>
               </td>
             </tr>
@@ -157,8 +167,12 @@ if ($side === 'left') {
                         $pcr_data_attributes[$grade->id] = ['data-pcr-value' => $grade->pcr_risk_value];
                     }
 
-                      echo CHtml::dropDownList("PcrRisk[$side][pcr_doctor_grade]", $pcr['doctor_grade_id'],
-                          CHtml::listData($grades, 'id', 'grade'), ['id' => "pcrrisk_{$side}_doctor_grade_id",  'options' => $pcr_data_attributes ]);
+                      echo CHtml::dropDownList(
+                          "PcrRisk[$side][pcr_doctor_grade]",
+                          $pcr['doctor_grade_id'],
+                          CHtml::listData($grades, 'id', 'grade'),
+                          ['id' => "pcrrisk_{$side}_doctor_grade_id",  'options' => $pcr_data_attributes ]
+                      );
                     ?>
               </td>
             </tr>
@@ -176,9 +190,12 @@ if ($side === 'left') {
               </td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][pxf_phako]', $pcr['anteriorsegment']['pxf_phako'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako cols-full'));
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][pxf_phako]',
+                        $pcr['anteriorsegment']['pxf_phako'],
+                        array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+                        array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako cols-full')
+                    );
                     ?>
               </td>
             </tr>
@@ -191,9 +208,12 @@ if ($side === 'left') {
                     if (trim($pcr['anteriorsegment']['pupil_size']) == '') {
                         $pcr['anteriorsegment']['pupil_size'] = 'Medium';
                     }
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][pupil_size]', $pcr['anteriorsegment']['pupil_size'],
-                      array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-                      array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size cols-full'));
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][pupil_size]',
+                        $pcr['anteriorsegment']['pupil_size'],
+                        array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
+                        array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size cols-full')
+                    );
                     ?>
               </td>
             </tr>
@@ -205,9 +225,12 @@ if ($side === 'left') {
               </td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][axial_length]', $pcr['axial_length_group'],
-                      array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
-                      array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length cols-full'));
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][axial_length]',
+                        $pcr['axial_length_group'],
+                        array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
+                        array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length cols-full')
+                    );
                     ?>
               </td>
             </tr>
@@ -219,9 +242,11 @@ if ($side === 'left') {
               </td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][arb]', $pcr['arb'],
-                      array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb cols-full')
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][arb]',
+                        $pcr['arb'],
+                        array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+                        array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb cols-full')
                     );
                     ?>
               </td>
@@ -234,12 +259,15 @@ if ($side === 'left') {
               </td>
               <td>
                     <?php
-                    echo CHtml::dropDownList('PcrRisk[' . $side . '][abletolieflat]', $pcr['lie_flat'],
-                      array('N' => 'No', 'Y' => 'Yes'),
-                      array(
+                    echo CHtml::dropDownList(
+                        'PcrRisk[' . $side . '][abletolieflat]',
+                        $pcr['lie_flat'],
+                        array('N' => 'No', 'Y' => 'Yes'),
+                        array(
                           'id' => 'pcrrisk_' . $side . '_abletolieflat',
                           'class' => 'pcrrisk_lie_flat cols-full',
-                      ));
+                        )
+                    );
                     ?>
               </td>
             </tr>
@@ -322,7 +350,9 @@ if ($side === 'left') {
                     return ['label' =>$item->grade,
                         'risk-value'=>$item->pcr_risk_value,
                         'id' => $item->id];
-                }, $grades) ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
+                },
+                $grades) 
+            ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
           drop_item1, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}

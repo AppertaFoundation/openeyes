@@ -640,7 +640,8 @@ class PatientController extends BaseController
         $header_data = [];
         if ($subspecialty->ref_spec == 'GL') {
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $cct_element = $exam_api->getLatestElement(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $this->patient,
                 false //use context
             );
@@ -980,8 +981,12 @@ class PatientController extends BaseController
     public function actionGenerateAllergySelect()
     {
         $this->patient = $this->loadModel(Yii::app()->getRequest()->getQuery('patient_id'));
-        echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'),
-            array('empty' => '-- Select --'));
+        echo CHtml::dropDownList(
+            'allergy_id',
+            null,
+            CHtml::listData($this->allergyList(), 'id', 'name'),
+            array('empty' => '-- Select --')
+        );
     }
 
     /**
@@ -1148,7 +1153,7 @@ class PatientController extends BaseController
         $v = new OEFuzzyDateValidator();
         $v->validateAttribute($sd, 'date');
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionRemovediagnosis()
@@ -1178,7 +1183,7 @@ class PatientController extends BaseController
 
         $result = $patient->editOphInfo($cvi_status, $cvi_status_date);
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function reportDiagnoses($params)
@@ -1317,12 +1322,12 @@ class PatientController extends BaseController
         }
 
         if (!$po->save()) {
-            echo json_encode($po->getErrors());
+            $this->renderJSON($po->getErrors());
 
             return;
         }
 
-        echo json_encode(array());
+        $this->renderJSON(array());
     }
 
     public function actionEditSocialHistory()
@@ -1414,7 +1419,7 @@ class PatientController extends BaseController
 
         $date = explode('-', $po->date);
 
-        echo json_encode(array(
+        $this->renderJSON(array(
             'operation' => $po->operation,
             'side_id' => $po->side_id,
             'fuzzy_year' => $date[0],
@@ -1460,7 +1465,7 @@ class PatientController extends BaseController
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionValidateSaveContact()
@@ -1493,7 +1498,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionAddContact()
@@ -1597,7 +1602,7 @@ class PatientController extends BaseController
         $data['contact_id'] = $location->contact_id;
         $data['name'] = $location->contact->fullName;
 
-        echo json_encode($data);
+        $this->renderJSON($data);
     }
 
     public function actionValidateEditContact()
@@ -1626,7 +1631,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionEditContact()
@@ -2480,7 +2485,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2538,7 +2543,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2563,7 +2568,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }
@@ -2657,7 +2662,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($result);
+        $this->renderJSON($result);
     }
 
     protected function getEventTypeGrouping()
@@ -2722,8 +2727,10 @@ class PatientController extends BaseController
             $criteria->addCondition("is_linked=0 AND patient_id='" . $this->patient->id . "'");
             $resultSet = OphInBiometry_Imported_Events::model()->findAll($criteria);
             if ($resultSet) {
-                Yii::app()->user->setFlash('alert.unlinked_biometry_event',
-                    'A new biometry report is available for this patient - please create a biometry event to view it ');
+                Yii::app()->user->setFlash(
+                    'alert.unlinked_biometry_event',
+                    'A new biometry report is available for this patient - please create a biometry event to view it '
+                );
             }
         }
     }
@@ -2743,8 +2750,7 @@ class PatientController extends BaseController
                     join event e2 on e.id = e2.episode_id
                     join et_ophcodocument_document d on d.event_id = e2.id
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where e2.deleted = 0 and p.id = $patient->id;"
-        );
+                    where e2.deleted = 0 and p.id = $patient->id;");
         return ($command->queryScalar() == 0);
     }
 

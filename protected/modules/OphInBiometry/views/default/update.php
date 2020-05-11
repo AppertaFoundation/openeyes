@@ -34,10 +34,13 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
     array_unshift(
         $this->event_actions,
-        EventAction::link('Open In Forum',
+        EventAction::link(
+            'Open In Forum',
             ('oelauncher:forumsop/' . $sop),
-            null, array('class' => 'button small')
-        ));
+            null,
+            array('class' => 'button small')
+        )
+    );
 }
 
 

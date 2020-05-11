@@ -57,8 +57,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 'trialType',
                 'status',
                 'treatmentTypeId',
-            )
-        );
+            ));
     }
 
     /**
@@ -69,8 +68,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     {
         return array_merge(parent::rules(), array(
                 array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
-            )
-        );
+            ));
     }
 
     public function renderParameter($id)
@@ -94,8 +92,12 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 <?= $this->getDisplayTitle()?>
             </div>
             <div class="parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
-                    array('prompt' => 'Select One...')); ?>
+                <?php echo CHtml::activeDropDownList(
+                    $this,
+                    "[$id]operation",
+                    $ops,
+                    array('prompt' => 'Select One...')
+                ); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>
             </div>
             <div class="parameter-option">
@@ -103,24 +105,37 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     $this,
                     "[$id]status",
                     $statusList,
-                    array('empty' => 'Involved with'));
+                    array('empty' => 'Involved with')
+                );
                 ?>
             </div>
             <div class="js-trial-type parameter-option">
-            <?php echo CHtml::activeDropDownList($this, "[$id]trialTypeId", TrialType::getOptions(),
-                    array('empty' => 'Any Trial', 'onchange' => "getTrialList(this)")); ?>
+            <?php echo CHtml::activeDropDownList(
+                $this,
+                "[$id]trialTypeId",
+                TrialType::getOptions(),
+                array('empty' => 'Any Trial', 'onchange' => "getTrialList(this)")
+            ); ?>
             </div>
             <div class="js-trial-list parameter-option">
-                <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
-                    array('empty' => 'Any')); ?>
+                <?php echo CHtml::activeDropDownList(
+                    $this,
+                    "[$id]trial",
+                    $trials,
+                    array('empty' => 'Any')
+                ); ?>
             </div>
             <span class="js-treatment-type-container flex-layout flex-left"
                 style="<?= $this->trialType && $this->trialType->code = TrialType::NON_INTERVENTION_CODE ? 'display:none;':''?>"
             >
                 <p class="parameter-option" style="margin-bottom: 0px;">with</p>
                 <div class="parameter-option">
-                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentTypeId", TreatmentType::getOptions(),
-                        array('empty' => 'Any')); ?>
+                    <?php echo CHtml::activeDropDownList(
+                        $this,
+                        "[$id]treatmentTypeId",
+                        TreatmentType::getOptions(),
+                        array('empty' => 'Any')
+                    ); ?>
                 </div>
                 <p class="parameter-option">treatment</p>
             </span>
