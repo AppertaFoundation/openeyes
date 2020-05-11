@@ -480,11 +480,21 @@ class Patient extends BaseActiveRecordVersioned
             $nhs_num_length = $nhs_num_length_setting ? $nhs_num_length_setting->value : null;
         }
 
-        if (strlen($this->nhs_num) == $nhs_num_length) {
-            $criteria->compare('nhs_num', $this->nhs_num, false);
+        // if number search we check both nhs_num and hos_num
+        // these values are populated in PatientSearch after the search term validation
+        // so there can be cases where a term both valid for hos_num and nhs_num
+        if ($this->nhs_num && $this->hos_num) {
+            $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
+            $criteria->params[':nhs_num'] = $this->nhs_num;
+            $criteria->params[':hos_num'] = $this->hos_num;
         } else {
-            $criteria->compare('hos_num', $this->hos_num, false);
+            if (strlen($this->nhs_num) == $nhs_num_length) {
+                $criteria->compare('nhs_num', $this->nhs_num, false);
+            } else {
+                $criteria->compare('hos_num', $this->hos_num, false);
+            }
         }
+
         $criteria->compare('t.deleted', 0);
 
         $criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
