@@ -85,8 +85,8 @@
                     array('disabled' => 'disabled')) ?>
             <?php } else { ?>
                               <?=\CHtml::dropDownList('firm-id', Yii::app()->request->getPost('firm-id', 'All'),
-                  ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
-                      'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
+                                ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
+                                'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
                   )) ?>
             <?php } ?>
         </td>

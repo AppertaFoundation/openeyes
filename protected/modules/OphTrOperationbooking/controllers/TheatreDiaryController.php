@@ -210,7 +210,7 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('`t`.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All')  {
+            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All') {
                 $criteria->addCondition('`t`.id = :theatreId');
                 $criteria->params[':theatreId'] = $_POST['theatre-id'];
             }
@@ -556,9 +556,9 @@ class TheatreDiaryController extends BaseModuleController
                 }
 
                 if ($comments_is_changed) {
-                    if ( isset($booking_data) )
-
-                    Audit::add('diary', 'change-of-comment', $booking_data_id, null, array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                    if ( isset($booking_data) ) {
+                        Audit::add('diary', 'change-of-comment', $booking_data_id, null, array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                    }
                 }
             } else {
                 $transaction->rollback();
