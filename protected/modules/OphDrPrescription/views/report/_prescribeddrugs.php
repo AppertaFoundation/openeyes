@@ -26,6 +26,7 @@
             <th>Patient’s Post code</th>
             <th>Date of Prescription</th>
             <th>Drug name</th>
+            <th>Drug Dose</th>
             <th>Prescribed Clinician’s name</th>
             <th>Prescribed Clinician’s Job-role</th>
             <th>Prescription event date</th>
@@ -51,6 +52,7 @@
                     <td><?php echo $drug['postcode']?></td>
                     <td><?php echo date('j M Y', strtotime($drug['created_date']))?> <?php echo substr($drug['created_date'], 11, 5)?></td>
                     <td><?php echo $drugObj->tallmanLabel?></td>
+                    <td><?php echo $drug['dose']?></td>
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>
