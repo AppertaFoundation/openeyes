@@ -770,7 +770,7 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Edit Surgery Management Options',
             'OEModule\OphCiExamination\models\OphCiExamination_ManagementSurgery',
-            ['div_wrapper_class' => 'cols-5']
+            ['div_wrapper_class' => 'cols-5' ,'input_class' => 'cols-full']
         );
     }
 
@@ -791,7 +791,7 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Edit Reasons for Surgery',
             'OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery',
-            ['div_wrapper_class' => 'cols-3']
+            ['div_wrapper_class' => 'cols-5', 'input_class' => 'cols-full']
         );
     }
 
