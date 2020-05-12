@@ -131,7 +131,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
+                    $this->addError("taper_{$i}_{$fld}", 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
                 }
             }
         }
