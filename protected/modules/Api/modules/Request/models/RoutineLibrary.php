@@ -55,6 +55,7 @@ class RoutineLibrary extends CActiveRecord
         return [
             ['routine_name', 'required'],
             ['routine_name', 'length', 'max' => 45],
+            ['routine_name', 'filter', 'filter' => 'htmlspecialchars'],
             ['hash_code', 'length', 'max' => 100],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.

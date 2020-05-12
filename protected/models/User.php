@@ -39,6 +39,7 @@ class User extends BaseActiveRecordVersioned
      * @var string
      */
     public $password_repeat;
+    public $password_hashed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -82,60 +83,39 @@ class User extends BaseActiveRecordVersioned
                 'safe',
             ),
         );
-
         if (Yii::app()->params['auth_source'] == 'BASIC') {
             $user = Yii::app()->request->getPost('User');
+            $pw_restrictions = $this->getPasswordRestrictions();
+            $generalUserRules = array(
+                array(
+                    'username',
+                    'match',
+                    'pattern' => '/^[\w|\.\-_\+@]+$/',
+                    'message' => 'Only letters, numbers and underscores are allowed for usernames.',
+                ),
+                array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+                array('username, first_name, last_name', 'length', 'max' => 40),
+                array(
+                    'password',
+                    'length',
+                    'min' => $pw_restrictions['min_length'],
+                    'tooShort' => $pw_restrictions['min_length_message'],
+                    'max' => $pw_restrictions['max_length'],
+                    'tooLong' => $pw_restrictions['max_length_message'],
+                ),
+                array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
+                array('email', 'length', 'max' => 80),
+                array('email', 'email'),
+                array('salt', 'length', 'max' => 10),
+                // Added for password comparison functionality
+                array('password_repeat', 'safe'),
+            );
+            $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
-                return array_merge(
-                    $commonRules,
-                    array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => 5,
-                            'message' => 'Passwords must be at least 6 characters long.',
-                        ),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
+                return array_merge($commonRules, $surgeonRules, $generalUserRules);
             } else {
-                return array_merge(
-                    $commonRules,
-                    array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => 5,
-                            'message' => 'Passwords must be at least 6 characters long.',
-                        ),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
+                return array_merge($commonRules, $generalUserRules);
             }
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
             return array_merge(
@@ -197,7 +177,8 @@ class User extends BaseActiveRecordVersioned
      * @return mixed|null
      * @deprecated - since v2.2
      */
-    public function getIs_doctor(){
+    public function getIs_doctor()
+    {
         return $this->is_surgeon;
     }
 
@@ -273,41 +254,16 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * Saves or updates a db record and creates the salt for a new record of
-     *    authentication type 'basic'.
-     *
-     * @return bool
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
-    {
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
-            /*
-             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-             */
-            if ($this->getIsNewRecord() && !$this->salt) {
-                $salt = '';
-                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-                for ($i = 0; $i < 10; ++$i) {
-                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
-                }
-
-                $this->salt = $salt;
-            }
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-    }
-
-    /**
      * Hashes the user password for insertion into the db.
      */
     protected function afterValidate()
     {
         parent::afterValidate();
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
-            $this->password = $this->hashPassword($this->password, $this->salt);
+        if (!$this->password_hashed) {
+            $this->salt = null;
+            $this->password = $this->hashPassword($this->password, null);
+            $this->password_hashed = true;
         }
     }
 
@@ -321,6 +277,9 @@ class User extends BaseActiveRecordVersioned
      */
     public function hashPassword($password, $salt)
     {
+        if (!$salt) {
+            return password_hash($password, PASSWORD_BCRYPT);
+        }
         return md5($salt . $password);
     }
 
@@ -331,12 +290,27 @@ class User extends BaseActiveRecordVersioned
      * else return false.
      *
      * @param string $password
+     * @throws Exception
      *
      * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->hashPassword($password, $this->salt) === $this->password;
+        if (!$this->salt) {
+            return password_verify($password, $this->password);
+        }
+        if ($this->hashPassword($password, $this->salt) === $this->password) {
+            // Regenerate the hash using the new method.
+            $this->salt = null;
+            $this->password = $this->hashPassword($password, null);
+            if (!$this->saveAttributes(array('password','salt'))) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}, with error :". var_export($this->getErrors(), true));
+                return false;
+            }
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
+            return password_verify($password, $this->password);
+        }
+        return false;
     }
 
     /**
@@ -496,13 +470,14 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
+        
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
         }
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
             }
@@ -783,6 +758,44 @@ class User extends BaseActiveRecordVersioned
         $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => $this->id));
 
         return $userUniqueCode->unique_code_id;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPasswordRestrictions()
+    {
+        $pw_restrictions = Yii::app()->params['pw_restrictions'];
+
+        if ($pw_restrictions===null) {
+            $pw_restrictions = array(
+                'min_length' => 8,
+                'min_length_message' => 'Passwords must be at least 8 characters long',
+                'max_length' => 70,
+                'max_length_message' => 'Passwords must be at least 70 characters long',
+                'strength_regex' => '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+                'strength_message' => 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+            );
+        }
+        if (!isset($pw_restrictions['min_length'])) {
+            $pw_restrictions['min_length'] = 8;
+        }
+        if (!isset($pw_restrictions['min_length_message'])) {
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+        }
+        if (!isset($pw_restrictions['max_length'])) {
+            $pw_restrictions['max_length'] = 70;
+        }
+        if (!isset($pw_restrictions['max_length_message'])) {
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+        }
+        if (!isset($pw_restrictions['strength_regex'])) {
+            $pw_restrictions['strength_regex'] = "%.*%";
+        }
+        if (!isset($pw_restrictions['strength_message'])) {
+            $pw_restrictions['strength_message'] = "N/A";
+        }
+        return $pw_restrictions;
     }
 
     /**

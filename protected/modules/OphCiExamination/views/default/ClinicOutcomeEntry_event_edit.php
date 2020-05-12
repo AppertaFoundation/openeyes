@@ -62,6 +62,8 @@ if (!isset($values)) {
                     </div>
                     <h3>Clinic Info</h3>
                     <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->report) : '-'; ?>
+                    <input type="hidden" name="patientticket_queue" value="<?= $ticket->current_queue->id ?>"/>
+                    <input type="hidden" name="patientticketing__priority" value="<?= $ticket->priority_id ?>"/>
                 <?php } else { ?>
                     <fieldset class="flex-layout">
                         Virtual Clinic:

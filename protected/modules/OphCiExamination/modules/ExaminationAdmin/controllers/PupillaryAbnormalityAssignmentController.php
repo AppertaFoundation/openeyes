@@ -22,13 +22,6 @@ class PupillaryAbnormalityAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationPupillaryAbnormalitySetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationPupillaryAbnormalitySet';
 
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
-
     /**
      * Lists all models.
      */
