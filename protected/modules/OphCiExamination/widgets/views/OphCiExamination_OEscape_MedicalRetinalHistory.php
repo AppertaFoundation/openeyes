@@ -207,7 +207,7 @@
             }
 
             //set the flags for letters >5
-            flags_yaxis['ticktext'].push('>5 lines lost');
+            flags_yaxis['ticktext'].push('>5 letters lost');
             flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc) + 2);
             count = 1;
             for (var i in VA_lines_data[side]) {
