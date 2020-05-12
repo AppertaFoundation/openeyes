@@ -89,6 +89,7 @@ class BaseAdminController extends BaseController
             'filters_ready' => true,
             'label_extra_field' => false,
             'description' => '',
+            'input_class' => '',
             'div_wrapper_class' => 'cols-full',
             'return_url' => false,
         ), $options);
