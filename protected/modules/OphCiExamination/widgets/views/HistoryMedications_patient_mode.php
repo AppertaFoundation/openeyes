@@ -77,7 +77,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <td>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                            class="js-has-tooltip fa oe-i eye small pro-theme"
+                                            class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
                                             data-tooltip-content="View prescription"></span></a>
                                     <?php } ?>
                             </td>
@@ -133,7 +133,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <td>
                                     <?php if ($entry->prescription_item_id) { ?>
                                         <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                                class="js-has-tooltip fa oe-i eye small pro-theme"
+                                                class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
                                                 data-tooltip-content="View prescription"></span></a>
                                         <?php } ?>
                                     </td>
