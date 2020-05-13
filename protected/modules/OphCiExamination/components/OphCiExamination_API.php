@@ -2706,7 +2706,7 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
-        $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopic', 2 => 'Other'];
+        $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopia', 2 => 'Other'];
 
         if ($element) {
             $is_both_eyes = $element->eye_id === (string) \Eye::BOTH;
