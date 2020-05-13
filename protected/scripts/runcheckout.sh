@@ -323,7 +323,12 @@ for module in ${modules[@]}; do
 			cloneparams+=" --branch $branch"
 		fi
 
-		git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+		if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
+            # if no given branch name was found when doing a shallow (or branch) clone, then fall back to the default branch
+            cloneparams=${cloneparams%$branch} # Note: This removes the branch name from the end of the string
+            cloneparams+=$defaultbranch # This adds the *default* branch name to the end of the string
+            git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+        fi
     fi
     
     processgit=1
