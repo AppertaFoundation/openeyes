@@ -206,8 +206,10 @@ class Patient extends BaseActiveRecordVersioned
             $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
         if ($hos_num) {
             // Add an error if another patient with the same hos_num exists
-            $item_count = Patient::model()->count('hos_num = ? AND id != ?',
-                array($hos_num, $this->id ?: -1));
+            $item_count = Patient::model()->count(
+                'hos_num = ? AND id != ?',
+                array($hos_num, $this->id ?: -1)
+            );
             if ($item_count) {
                 $this->addError($attribute, 'A patient already exists with this number. The next available auto generated number is '.$this->autoCompleteHosNum());
             }
@@ -236,8 +238,10 @@ class Patient extends BaseActiveRecordVersioned
                     $query = Yii::app()->db->createCommand()
                         ->select('p.id')
                         ->from('patient p')
-                        ->where('LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
-                            array(':nhs_num' => $this->nhs_num, ':patient_id' => $this->id))
+                        ->where(
+                            'LOWER(p.nhs_num) = LOWER(:nhs_num) and p.id != COALESCE(:patient_id, "")',
+                            array(':nhs_num' => $this->nhs_num, ':patient_id' => $this->id)
+                        )
                         ->queryAll();
 
                     if (count($query) !== 0) {
@@ -476,11 +480,21 @@ class Patient extends BaseActiveRecordVersioned
             $nhs_num_length = $nhs_num_length_setting ? $nhs_num_length_setting->value : null;
         }
 
-        if (strlen($this->nhs_num) == $nhs_num_length) {
-            $criteria->compare('nhs_num', $this->nhs_num, false);
+        // if number search we check both nhs_num and hos_num
+        // these values are populated in PatientSearch after the search term validation
+        // so there can be cases where a term both valid for hos_num and nhs_num
+        if ($this->nhs_num && $this->hos_num) {
+            $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
+            $criteria->params[':nhs_num'] = $this->nhs_num;
+            $criteria->params[':hos_num'] = $this->hos_num;
         } else {
-            $criteria->compare('hos_num', $this->hos_num, false);
+            if (strlen($this->nhs_num) == $nhs_num_length) {
+                $criteria->compare('nhs_num', $this->nhs_num, false);
+            } else {
+                $criteria->compare('hos_num', $this->hos_num, false);
+            }
         }
+
         $criteria->compare('t.deleted', 0);
 
         $criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
@@ -2294,8 +2308,10 @@ class Patient extends BaseActiveRecordVersioned
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($examination_api) {
-            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status',
-                $this);
+            $examination_cvi = $examination_api->getLatestElement(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status',
+                $this
+            );
         }
         if ($cvi_api) {
             $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);

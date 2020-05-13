@@ -26,8 +26,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
 ]);
 
 $this->renderPartial(
-  '/oeadmin/subspecialty_subsections/_form',
-  ['form' => $form, 'model' => $model, 'subspecialty_id' => $subspecialty_id]
+    '/oeadmin/subspecialty_subsections/_form',
+    ['form' => $form, 'model' => $model, 'subspecialty_id' => $subspecialty_id]
 );
 
 $this->endWidget();

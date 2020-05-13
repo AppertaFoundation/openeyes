@@ -45,7 +45,7 @@ class OptomFeedbackController extends \BaseEventTypeController
 
         $filter = $this->getListFilter();
         $examinationLog = new \AutomaticExaminationEventLog();
-        $dp = $examinationLog->optomSearch( $filter );
+        $dp = $examinationLog->optomSearch($filter);
 
         $this->render(
             '/optom/list',

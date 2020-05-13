@@ -97,11 +97,12 @@ class AnalyticsController extends BaseController
     private function reportDataDOM()
     {
         $this->checkAuth();
+        $this->obtainFilters();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
         // different user and different subspecialty
         // should have different result
-        $follow_patient_list = $this->getFollowUps($subspecialty_id, null, null, null, $this->surgeon);
+        $follow_patient_list = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
         if (Yii::app()->request->getParam('report')) {
             $this->renderJSON(array(
                 'plot_data'=>$follow_patient_list['plot_data'],
@@ -122,7 +123,7 @@ class AnalyticsController extends BaseController
         );
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
         $side_bar_user_list = null;
@@ -247,19 +248,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . '_va_list'})),
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . '_va_list'})),
+                        array_values(${$side . '_va_list'})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . '_va_list'})),
+                            array_values(${$side . '_va_list'})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -279,19 +284,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . $second_list_name})),
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . $second_list_name})),
+                        array_values(${$side . $second_list_name})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . $second_list_name})),
+                            array_values(${$side . $second_list_name})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -433,8 +442,7 @@ class AnalyticsController extends BaseController
                         MIN(e2.event_date) as date_from
                     FROM cat_prom5_event_result cat
                     JOIN event e2 on e2.id = cat.event_id
-                ) t'
-            );
+                ) t');
         } else {
             $event_date_command = Yii::app()->db->createCommand()
             ->select('
@@ -658,8 +666,10 @@ class AnalyticsController extends BaseController
             ->select('t.patient_id as patient_id, t.event_date as event_date, t.'.$eye_side.'_value as value, t.t_name as name, r.reading as reading', 'DISTINCT')
             ->from('('.$command_va_values->union($extra_commands->getText())->getText().') as t')
             // to get best reading value, instead of getting it from model
-            ->leftJoin('(' . $bestReadingSQL->getText() . ') as r',
-            't.'.$eye_side.'_value = r.eoi_id')
+            ->leftJoin(
+                '(' . $bestReadingSQL->getText() . ') as r',
+                't.'.$eye_side.'_value = r.eoi_id'
+            )
             ->where('t.patient_id in ('.$command_filtered_patients->getText().')')
             ->andWhere('t.'.$eye_side.'_value IS NOT NULL')
             ->order('t.patient_id, t.event_date', 'ASC');
@@ -917,7 +927,7 @@ class AnalyticsController extends BaseController
 
                 /* Add patient in this->patient_list if not exist, prepare for drill down list,
                 Get each patient's left and right eye readings as well as event time */
-                if ($this->validateAgeAndDateFilters( $element['age'], $current_time) && isset($reading) && isset($current_time)) {
+                if ($this->validateAgeAndDateFilters($element['age'], $current_time) && isset($reading) && isset($current_time)) {
                     if (!isset($initial_reading[$element['patient_id']]['value']) || !isset($initial_reading[$element['patient_id']]['event_date'])) {
                         $initial_reading[$element['patient_id']]['value'] = $reading;
                         $initial_reading[$element['patient_id']]['event_date'] = $current_time;
@@ -952,7 +962,7 @@ class AnalyticsController extends BaseController
                         ${$side.'_list'}[$current_week]['count']+=1;
                         ${$side.'_list'}[$current_week]['sum']+=$reading;
                         ${$side.'_list'}[$current_week]['square_sum']+= $reading ** 2;
-                        ${$side.'_list'}[$current_week]['average'] = round( ${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
+                        ${$side.'_list'}[$current_week]['average'] = round(${$side.'_list'}[$current_week]['sum']/ ${$side.'_list'}[$current_week]['count']);
                         ${$side.'_list'}[$current_week]['SD'] = $this->calculateStandardDeviationByDataSet(${$side.'_list'}[$current_week]);
                         ${$side.'_list'}[$current_week]['patients'][] =  $element['patient_id'];
                     } else {
@@ -1034,8 +1044,7 @@ class AnalyticsController extends BaseController
                     WHERE d.term IS NOT NULL
                     GROUP BY sd.patient_id
                  ) t2
-                GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id'
-            )
+                GROUP BY t2.patient_id) patient_diagnoses', 'patient_diagnoses.patient_id = p.id')
             ->group('p.id, e.id, eye.name')
             ->order('name, e.event_date DESC');
         if (isset($params['ids'])&&count($params['ids'] > 0)) {
@@ -1394,7 +1403,7 @@ class AnalyticsController extends BaseController
         if ($dateTo) {
             $dateTo = strtotime($dateTo);
         } else {
-            $dateTo = strtotime(date("Y-m-d h:i:s"));
+            $dateTo = strtotime(date("Y-m-d H:i:s"));
         }
         if ($dateFrom) {
             $dateFrom = strtotime($dateFrom);
@@ -1472,24 +1481,28 @@ class AnalyticsController extends BaseController
                   array(
                       'x' => array_keys(${$side.'_va_list'}),
                       'y' => array_map(
-                            function ($item) {
-                                if (isset($this->filters['plot_va_change_initial_va_value'])) {
-                                    $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
-                                }
-                                return $item['average'];
-                            }, array_values(${$side.'_va_list'})),
+                          function ($item) {
+                              if (isset($this->filters['plot_va_change_initial_va_value'])) {
+                                  $item['average'] -= $this->filters['plot_va_change_initial_va_value'];
+                              }
+                              return $item['average'];
+                          },
+                          array_values(${$side.'_va_list'})
+                      ),
                       'customdata'=>array_map(
-                            function ($item) {
-                                return $item['patients'];
-                            },
-                          array_values(${$side.'_va_list'})),
+                          function ($item) {
+                              return $item['patients'];
+                          },
+                          array_values(${$side.'_va_list'})
+                      ),
                       'error_y'=> array(
                           'type'=> 'data',
                           'array' => array_map(
-                                function ($item) {
-                                    return $item['SD'];
-                                },
-                              array_values(${$side.'_va_list'})),
+                              function ($item) {
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_va_list'})
+                          ),
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
@@ -1510,21 +1523,25 @@ class AnalyticsController extends BaseController
                       'yaxis' => 'y2',
                       'x' => array_keys(${$side.'_second_list'}),
                       'y' => array_map(
-                            function ($item) {
-                                return $item['average'];
-                            }, array_values(${$side.'_second_list'})),
+                          function ($item) {
+                              return $item['average'];
+                          },
+                          array_values(${$side.'_second_list'})
+                      ),
                       'customdata'=>array_map(
-                            function ($item) {
-                                return $item['patients'];
-                            },
-                          array_values(${$side.'_second_list'})),
+                          function ($item) {
+                              return $item['patients'];
+                          },
+                          array_values(${$side.'_second_list'})
+                      ),
                       'error_y' => array(
                           'type' => 'data',
                           'array' => array_map(
-                                function ($item) {
-                                    return $item['SD'];
-                                },
-                              array_values(${$side.'_second_list'})),
+                              function ($item) {
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_second_list'})
+                          ),
                           'visible' => true,
                           'color' => '#aaa',
                           'thickness' => 1
@@ -1548,7 +1565,7 @@ class AnalyticsController extends BaseController
           'text' => $disorder_data['text'],
           'customdata' =>$disorder_data['customdata'],
         );
-        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis']);
+        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
         $this->renderJSON(array($clinical_data, $service_data, $custom_data, 'va_final_ticks'=>$va_final_ticks));
     }
 
@@ -2041,7 +2058,7 @@ class AnalyticsController extends BaseController
         $subspecialty_id = $this->getSubspecialtyID($speciality_name);
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $this->custom_csv_data = array();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
@@ -2085,19 +2102,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . '_va_list'})),
+                        },
+                        array_values(${$side . '_va_list'})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . '_va_list'})),
+                        array_values(${$side . '_va_list'})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . '_va_list'})),
+                            array_values(${$side . '_va_list'})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
@@ -2117,19 +2138,23 @@ class AnalyticsController extends BaseController
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, array_values(${$side . $second_list_name})),
+                        },
+                        array_values(${$side . $second_list_name})
+                    ),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        array_values(${$side . $second_list_name})),
+                        array_values(${$side . $second_list_name})
+                    ),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            array_values(${$side . $second_list_name})),
+                            array_values(${$side . $second_list_name})
+                        ),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1

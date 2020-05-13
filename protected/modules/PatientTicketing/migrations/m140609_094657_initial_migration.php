@@ -32,12 +32,27 @@ class m140609_094657_initial_migration extends OEMigration
                     'event_id' => 'int(10) unsigned',
                 ), true);
 
-        $this->addForeignKey('patientticketing_ticket_priid', 'patientticketing_ticket', 'priority_id',
-                'patientticketing_priority', 'id');
-        $this->addForeignKey('patientticketing_ticket_assuiid', 'patientticketing_ticket', 'assignee_user_id',
-                'user', 'id');
-        $this->addForeignKey('patientticketing_ticket_evid', 'patientticketing_ticket', 'event_id',
-                'event', 'id');
+        $this->addForeignKey(
+            'patientticketing_ticket_priid',
+            'patientticketing_ticket',
+            'priority_id',
+            'patientticketing_priority',
+            'id'
+        );
+        $this->addForeignKey(
+            'patientticketing_ticket_assuiid',
+            'patientticketing_ticket',
+            'assignee_user_id',
+            'user',
+            'id'
+        );
+        $this->addForeignKey(
+            'patientticketing_ticket_evid',
+            'patientticketing_ticket',
+            'event_id',
+            'event',
+            'id'
+        );
 
         $this->createOETable('patientticketing_queue', array(
                     'id' => 'pk',
@@ -56,11 +71,21 @@ class m140609_094657_initial_migration extends OEMigration
                     'display_order' => 'integer NOT NULL',
                 ), true);
 
-        $this->addForeignKey('patientticketing_queueoutcome_qid', 'patientticketing_queueoutcome', 'queue_id',
-                'patientticketing_queue', 'id');
+        $this->addForeignKey(
+            'patientticketing_queueoutcome_qid',
+            'patientticketing_queueoutcome',
+            'queue_id',
+            'patientticketing_queue',
+            'id'
+        );
 
-        $this->addForeignKey('patientticketing_queueoutcome_oqid', 'patientticketing_queueoutcome', 'outcome_queue_id',
-                'patientticketing_queue', 'id');
+        $this->addForeignKey(
+            'patientticketing_queueoutcome_oqid',
+            'patientticketing_queueoutcome',
+            'outcome_queue_id',
+            'patientticketing_queue',
+            'id'
+        );
 
         $this->createOETable('patientticketing_ticketqueue_assignment', array(
                     'id' => 'pk',
@@ -73,18 +98,34 @@ class m140609_094657_initial_migration extends OEMigration
                     'details' => 'text',
                 ), true);
 
-        $this->addForeignKey('patientticketing_ticketqueue_ass_qid', 'patientticketing_ticketqueue_assignment',
-                'queue_id',
-                'patientticketing_queue', 'id');
-        $this->addForeignKey('patientticketing_ticketqueue_ass_tid', 'patientticketing_ticketqueue_assignment',
-                'ticket_id',
-                'patientticketing_ticket', 'id');
-        $this->addForeignKey('patientticketing_ticketqueue_ass_auid', 'patientticketing_ticketqueue_assignment',
-                'assignment_user_id',
-                'user', 'id');
-        $this->addForeignKey('patientticketing_ticketqueue_ass_afid', 'patientticketing_ticketqueue_assignment',
-                'assignment_firm_id',
-                'firm', 'id');
+        $this->addForeignKey(
+            'patientticketing_ticketqueue_ass_qid',
+            'patientticketing_ticketqueue_assignment',
+            'queue_id',
+            'patientticketing_queue',
+            'id'
+        );
+        $this->addForeignKey(
+            'patientticketing_ticketqueue_ass_tid',
+            'patientticketing_ticketqueue_assignment',
+            'ticket_id',
+            'patientticketing_ticket',
+            'id'
+        );
+        $this->addForeignKey(
+            'patientticketing_ticketqueue_ass_auid',
+            'patientticketing_ticketqueue_assignment',
+            'assignment_user_id',
+            'user',
+            'id'
+        );
+        $this->addForeignKey(
+            'patientticketing_ticketqueue_ass_afid',
+            'patientticketing_ticketqueue_assignment',
+            'assignment_firm_id',
+            'firm',
+            'id'
+        );
 
         $migrations_path = dirname(__FILE__);
         $this->initialiseData($migrations_path);

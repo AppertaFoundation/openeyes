@@ -22,10 +22,15 @@ class m180425_133636_set_diagnoses_date extends CDbMigration
                     $episode_id = isset($event->episode) ? $event->episode->id : null;
                     $patient_id = isset($episode->patient_id) ? $episode->patient_id : null;
 
-                    \Audit::add('admin', 'update', serialize($data),
+                    \Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Set default diagnosis date',
                         array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Diagnosis', 'event_id' => $element->event_id,
-                            'episode_id' => $episode_id, 'patient_id' => $patient_id));
+                        'episode_id' => $episode_id,
+                        'patient_id' => $patient_id)
+                    );
                 }
             }
         }

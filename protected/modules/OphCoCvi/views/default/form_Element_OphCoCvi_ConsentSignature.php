@@ -31,12 +31,18 @@
           <label>Signed By:</label>
         </div>
         <div class="cols-10 column end">
-            <?php echo $form->radioButtons($element, 'is_patient', array(
+            <?php echo $form->radioButtons(
+                $element,
+                'is_patient',
+                array(
                 1 => 'Patient',
                 0 => "Patient's Representative",
-            ),
+                ),
                 $element->is_patient,
-                false, false, false, false,
+                false,
+                false,
+                false,
+                false,
                 array('nowrapper' => true)
             ); ?>
             <?php // echo $form->radioBoolean($element, 'is_patient', array('nowrapper' => true)) ?>
@@ -45,8 +51,12 @@
         <?php echo $form->textField($element, 'representative_name', array('hide' => $element->is_patient), null, array('field' => 4)) ?>
     </td>
     <td>
-        <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
-            array('style' => 'width: 110px;')) ?>
+        <?php echo $form->datePicker(
+            $element,
+            'signature_date',
+            array('maxDate' => 'today'),
+            array('style' => 'width: 110px;')
+        ) ?>
     </td>
   </tr>
   </tbody>

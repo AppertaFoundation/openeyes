@@ -52,8 +52,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         return array_merge(parent::attributeNames(), array(
                 'code',
                 'number',
-            )
-        );
+            ));
     }
     /**
      * Attribute labels for display purposes.

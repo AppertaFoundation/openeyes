@@ -18,18 +18,22 @@ class m180604_040245_change_anterior_vitrectomy_procedure extends OEMigration
         $this->init();
 
         // Change the Anterior Vitrectomy procedure to be linked to the Vitrectomy element instead of the Membrane Peel element
-        $this->update('ophtroperationnote_procedure_element',
+        $this->update(
+            'ophtroperationnote_procedure_element',
             array('element_type_id' => $this->vitrectomy_element['id']),
             'procedure_id = :proc_id AND element_type_id = :elem_id',
-            array(':proc_id' => $this->vitrectomy_proc['id'], ':elem_id' => $this->membrane_peel_element['id']));
+            array(':proc_id' => $this->vitrectomy_proc['id'], ':elem_id' => $this->membrane_peel_element['id'])
+        );
     }
 
     public function safeDown()
     {
         $this->init();
-        $this->update('ophtroperationnote_procedure_element',
+        $this->update(
+            'ophtroperationnote_procedure_element',
             array('element_type_id' => $this->membrane_peel_element['id']),
             'procedure_id = :proc_id AND element_type_id = :elem_id',
-            array(':proc_id' => $this->vitrectomy_proc['id'], ':elem_id' => $this->vitrectomy_element['id']));
+            array(':proc_id' => $this->vitrectomy_proc['id'], ':elem_id' => $this->vitrectomy_element['id'])
+        );
     }
 }

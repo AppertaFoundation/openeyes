@@ -131,8 +131,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
                 'event_date <= :since',
                 'event.deleted = 0',
                 'patient.id = :patient_id',
-            )
-        );
+            ));
 
         $criteria->params = array(
             'eye_id' => $eye_id,
@@ -308,7 +307,8 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphTrIntravitrealinjection_PostInjectionExamination',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $drops = array();
             if ($el->hasRight()) {

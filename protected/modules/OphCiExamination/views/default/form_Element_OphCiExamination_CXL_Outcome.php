@@ -24,9 +24,12 @@
     <div class="large-2 column">
         <?php
         $allDiagnoses = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome_Diagnosis::model()->findAll(array('order' => 'display_order'));
-        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_CXL_Outcome[diagnosis_id]',
+        echo CHtml::dropDownList(
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_CXL_Outcome[diagnosis_id]',
             $element->diagnosis_id,
-            CHtml::listData($allDiagnoses, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            CHtml::listData($allDiagnoses, 'id', 'name'),
+            array('class' => 'MultiSelectList')
+        ); ?>
     </div>
     <div class="large-2 column">
         <label><?php echo $element->getAttributeLabel('outcome_id')?>:</label>
@@ -34,9 +37,12 @@
     <div class="large-2 column">
         <?php
         $allOutcomes = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome::model()->findAll(array('order' => 'display_order'));
-        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_CXL_Outcome[outcome_id]',
+        echo CHtml::dropDownList(
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_CXL_Outcome[outcome_id]',
             $element->outcome_id,
-            CHtml::listData($allOutcomes, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            CHtml::listData($allOutcomes, 'id', 'name'),
+            array('class' => 'MultiSelectList')
+        ); ?>
     </div>
     <div class="large-2 column"></div>
 </div>

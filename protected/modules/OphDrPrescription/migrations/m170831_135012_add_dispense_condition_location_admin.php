@@ -9,17 +9,21 @@ class m170831_135012_add_dispense_condition_location_admin extends OEMigration
         $this->addColumn('drug_set_item', 'dispense_location_id', 'int(11)');
         $this->addColumn('drug_set_item_version', 'dispense_location_id', 'int(11)');
 
-        $this->addForeignKey(   'fk_drug_set_item_dispense_condition_id',
+        $this->addForeignKey(
+            'fk_drug_set_item_dispense_condition_id',
             'drug_set_item',
             'dispense_condition_id',
             'ophdrprescription_dispense_condition',
-            'id');
+            'id'
+        );
 
-        $this->addForeignKey(   'fk_drug_set_item_dispense_location_id',
+        $this->addForeignKey(
+            'fk_drug_set_item_dispense_location_id',
             'drug_set_item',
             'dispense_location_id',
             'ophdrprescription_dispense_location',
-            'id');
+            'id'
+        );
     }
 
     public function down()

@@ -75,8 +75,10 @@ class ProcedureSelection extends BaseFieldWidget
         $this->procedures = array();
         $this->removed_stack = array();
         if (empty($this->subsections)) {
-            foreach (Procedure::model()->getListBySubspecialty($subspecialty_id,
-                $this->restrict_common) as $proc_id => $name) {
+            foreach (Procedure::model()->getListBySubspecialty(
+                $subspecialty_id,
+                $this->restrict_common
+            ) as $proc_id => $name) {
                 if (empty($_POST)) {
                     $found = false;
                     if ($this->selected_procedures) {

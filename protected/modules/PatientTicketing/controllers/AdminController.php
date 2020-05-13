@@ -183,12 +183,15 @@ class AdminController extends \ModuleAdminController
             if (!$queueset->validate()) {
                 $resp = array(
                     'success' => false,
-                    'form' => $this->renderPartial('form_queue', array(
+                    'form' => $this->renderPartial(
+                        'form_queue',
+                        array(
                             'queueset' => $queueset,
                             'queue' => null,
                             'errors' => $queueset->getErrors(),
                         ),
-                        true),
+                        true
+                    ),
                 );
                 echo \CJSON::encode($resp);
             } else {

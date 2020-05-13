@@ -89,9 +89,11 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions[] =
-                EventAction::link('Cancel',
+                EventAction::link(
+                    'Cancel',
                     Yii::app()->createUrl($cancel_url),
-                    null, array('class' => 'button small warning')
+                    null,
+                    array('class' => 'button small warning')
                 );
 
 
@@ -241,15 +243,18 @@ class DefaultController extends BaseEventTypeController
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->selectionValues = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->calculationValues = Element_OphInBiometry_Calculation::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
         } else {
             $this->iolRefValues = array();
         }
@@ -266,11 +271,13 @@ class DefaultController extends BaseEventTypeController
             $this->iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
             $this->selectionValues = Element_OphInBiometry_Selection::Model()->findAllByAttributes(
                 array(
                     'event_id' => $this->event->id,
-                ));
+                )
+            );
         }
         $this->setFlashMessage($id);
 
@@ -355,7 +362,8 @@ class DefaultController extends BaseEventTypeController
         return Element_OphInBiometry_Measurement::Model()->findAllByAttributes(
             array(
                 'event_id' => $this->event->id,
-            ));
+            )
+        );
     }
 
     /**
@@ -364,7 +372,8 @@ class DefaultController extends BaseEventTypeController
     protected function mergedView()
     {
         Yii::app()->db->createCommand()
-            ->update('ophinbiometry_imported_events',
+            ->update(
+                'ophinbiometry_imported_events',
                 array('is_merged' => 0),
                 'event_id=:id',
                 array(':id' => $this->event->id)

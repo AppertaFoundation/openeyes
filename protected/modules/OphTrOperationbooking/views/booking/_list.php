@@ -154,7 +154,9 @@ if (!$reschedule) {
                             } else {
                                 $listIndex = 2;
                             } ?>
-                            <?=\CHtml::dropDownList('cancellation_reason', '',
+                            <?=\CHtml::dropDownList(
+                                'cancellation_reason',
+                                '',
                                 OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
                                 [
                                     'empty' => 'Select a reason',

@@ -21,36 +21,48 @@ class m131021_133201_fully_sided_laser_management extends CDbMigration
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = :eid', array(':eid' => 1))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                     'left_laser_status_id' => $lm['laser_status_id'],
                     'left_laser_deferralreason_id' => $lm['laser_deferralreason_id'],
                     'left_laser_deferralreason_other' => $lm['laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
         //RIGHT EYE MIGRATE
         foreach ($this->dbConnection->createCommand()->select('id, laser_status_id, laser_deferralreason_id, laser_deferralreason_other')
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = :eid', array(':eid' => 2))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                 'right_laser_status_id' => $lm['laser_status_id'],
                 'right_laser_deferralreason_id' => $lm['laser_deferralreason_id'],
                 'right_laser_deferralreason_other' => $lm['laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
         // BOTH EYE MIGRATE
         foreach ($this->dbConnection->createCommand()->select('id, laser_status_id, laser_deferralreason_id, laser_deferralreason_other')
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = :eid', array(':eid' => 3))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                 'left_laser_status_id' => $lm['laser_status_id'],
                 'left_laser_deferralreason_id' => $lm['laser_deferralreason_id'],
                 'left_laser_deferralreason_other' => $lm['laser_deferralreason_other'],
                 'right_laser_status_id' => $lm['laser_status_id'],
                 'right_laser_deferralreason_id' => $lm['laser_deferralreason_id'],
                 'right_laser_deferralreason_other' => $lm['laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
 
         $this->dropForeignKey('et_ophciexamination_lasermanagement_laser_fk', 'et_ophciexamination_lasermanagement');
@@ -74,11 +86,15 @@ class m131021_133201_fully_sided_laser_management extends CDbMigration
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = ?', array(3))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                 'laser_status_id' => $lm['left_laser_status_id'],
                 'laser_deferralreason_id' => $lm['left_laser_deferralreason_id'],
                 'laser_deferralreason_other' => $lm['left_laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
 
         //RIGHT EYE MIGRATE DOWN
@@ -86,22 +102,30 @@ class m131021_133201_fully_sided_laser_management extends CDbMigration
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = ?', array(2))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                 'laser_status_id' => $lm['right_laser_status_id'],
                 'laser_deferralreason_id' => $lm['right_laser_deferralreason_id'],
                 'laser_deferralreason_other' => $lm['right_laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
         // LEFT EYE MIGRATE DOWN
         foreach ($this->dbConnection->createCommand()->select('id, left_laser_status_id, left_laser_deferralreason_id, left_laser_deferralreason_other')
                      ->from('et_ophciexamination_lasermanagement')
                      ->where('eye_id = ?', array(1))
                      ->order('id desc')->queryAll() as $lm) {
-            $this->update('et_ophciexamination_lasermanagement', array(
+            $this->update(
+                'et_ophciexamination_lasermanagement',
+                array(
                 'laser_status_id' => $lm['left_laser_status_id'],
                 'laser_deferralreason_id' => $lm['left_laser_deferralreason_id'],
                 'laser_deferralreason_other' => $lm['left_laser_deferralreason_other'], ),
-                'id = :id', array(':id' => $lm['id']));
+                'id = :id',
+                array(':id' => $lm['id'])
+            );
         }
 
         $this->dropColumn('et_ophciexamination_lasermanagement', 'right_laser_deferralreason_other');

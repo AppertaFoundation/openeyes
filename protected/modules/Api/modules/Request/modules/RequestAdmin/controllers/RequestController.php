@@ -135,7 +135,7 @@ class RequestController extends \AdminController
 
                         $condition = 't.id IN (SELECT DISTINCT(request_id) FROM request_routine WHERE ';
                         if ($routine_name !== null && $routine_name !== '') {
-                            $condition .= ' routine_name = "' . $routine_name . '"';
+                            $condition .= ' routine_name = :routine_name';
                             $condition_added = true;
                         }
 
@@ -143,7 +143,7 @@ class RequestController extends \AdminController
                             if ($condition_added) {
                                 $condition .= ' AND ';
                             }
-                            $condition .= ' status = "' . $routine_status . '"';
+                            $condition .= ' status = :routine_status';
                             $condition_added = true;
                         }
 
@@ -151,6 +151,12 @@ class RequestController extends \AdminController
 
                         if ($condition_added) {
                             $criteria->addCondition($condition);
+                            if ($routine_name !== null && $routine_name !== '') {
+                                $criteria->params[':routine_name'] = $routine_name;
+                            }
+                            if ($routine_status !== null && $routine_status !== '') {
+                                $criteria->params[':routine_status'] = $routine_status;
+                            }
                         }
                     }
 
@@ -159,17 +165,23 @@ class RequestController extends \AdminController
                     if (!empty($filter)) {
                         $condition = '';
                         $first = true;
+                        $bindParams = array();
+                        $counter = 0;
                         foreach ($filter as $name => $value) {
                             if ($first) {
-                                $condition = '(SELECT request_id FROM request_details WHERE name="' . $name . '" AND value LIKE "%' . trim($value) . '%")';
+                                $condition = "(SELECT request_id FROM request_details WHERE name = :extra_filter_name_{$counter} AND value LIKE CONCAT('%', :extra_filter_value_{$counter}, '%'))";
                                 $first = false;
                             } else {
-                                $condition = '(SELECT request_id FROM request_details WHERE name="' . $name . '" AND value LIKE "%' . trim($value) . '%" AND request_id IN ' . $condition . ')';
+                                $condition = "(SELECT request_id FROM request_details WHERE name = :extra_filter_name_{$counter} AND value LIKE CONCAT('%', :extra_filter_value_{$counter}, '%') AND request_id IN " . $condition . ')';
                             }
+                            $bindParams[":extra_filter_name_$counter"] = $name;
+                            $bindParams[":extra_filter_value_$counter"] = trim($value);
+                            $counter++;
                         }
 
                         if (!empty($condition)) {
                             $criteria->addCondition('t.id IN ' . $condition);
+                            $criteria->params = array_merge($criteria->params, $bindParams);
                         }
                     }
                     break;

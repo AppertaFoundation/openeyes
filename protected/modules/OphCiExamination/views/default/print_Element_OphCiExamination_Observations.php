@@ -72,7 +72,7 @@
             </label>
         </div>
         <div class="cols-5 column" id="bmi-container">
-            <label><?= $element->bmiCalculator( $element->weight, $element->height) ?></label>
+            <label><?= $element->bmiCalculator($element->weight, $element->height) ?></label>
         </div>    
     </div>
   <div class="cols-4 column">

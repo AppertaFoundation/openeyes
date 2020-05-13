@@ -25,10 +25,14 @@
             <?php echo $element->getAttributeLabel('conjunctival_flap_type_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'conjunctival_flap_type_id',
-              'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type',
-              array('textAttribute' => 'data-value', 'nolabel' => true),
-              false, array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'conjunctival_flap_type_id',
+                'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type',
+                array('textAttribute' => 'data-value', 'nolabel' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -36,9 +40,12 @@
             <?php echo $element->getAttributeLabel('stay_suture') ?>
       </td>
       <td>
-            <?php echo $form->checkBox($element, 'stay_suture',
-              array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
-              array('field' => 4)) ?>
+            <?php echo $form->checkBox(
+                $element,
+                'stay_suture',
+                array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -46,8 +53,14 @@
             <?php echo $element->getAttributeLabel('site_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'site_id', 'OphTrOperationnote_Trabeculectomy_Site',
-              array('textAttribute' => 'data-value', 'nolabel' => true), false, array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'site_id',
+                'OphTrOperationnote_Trabeculectomy_Site',
+                array('textAttribute' => 'data-value', 'nolabel' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -55,8 +68,14 @@
             <?php echo $element->getAttributeLabel('size_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'size_id', 'OphTrOperationnote_Trabeculectomy_Size',
-              array('textAttribute' => 'data-value', 'nolabel' => true), false, array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'size_id',
+                'OphTrOperationnote_Trabeculectomy_Size',
+                array('textAttribute' => 'data-value', 'nolabel' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -64,10 +83,14 @@
             <?php echo $element->getAttributeLabel('sclerostomy_type_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'sclerostomy_type_id',
-              'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type',
-              array('textAttribute' => 'data-value', 'nolabel' => true), false,
-              array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'sclerostomy_type_id',
+                'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type',
+                array('textAttribute' => 'data-value', 'nolabel' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -75,9 +98,14 @@
             <?php echo $element->getAttributeLabel('viscoelastic_type_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'viscoelastic_type_id',
-              'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type', array('nolabel' => true), false,
-              array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'viscoelastic_type_id',
+                'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type',
+                array('nolabel' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -85,9 +113,12 @@
             <?php echo $element->getAttributeLabel('viscoelastic_removed') ?>
       </td>
       <td>
-            <?php echo $form->checkBox($element, 'viscoelastic_removed',
-              array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
-              array('field' => 4)) ?>
+            <?php echo $form->checkBox(
+                $element,
+                'viscoelastic_removed',
+                array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -95,15 +126,25 @@
             <?php echo $element->getAttributeLabel('viscoelastic_flow_id') ?>
       </td>
       <td>
-            <?php echo $form->dropDownList($element, 'viscoelastic_flow_id',
-              'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow', array('nowrapper' => true), false,
-              array('field' => 4)) ?>
+            <?php echo $form->dropDownList(
+                $element,
+                'viscoelastic_flow_id',
+                'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow',
+                array('nowrapper' => true),
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr>
         <td colspan="2">
-            <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false,
-                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report')) ?>
+            <?php echo $form->textArea(
+                $element,
+                'report',
+                array('nowrapper' => true),
+                false,
+                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report')
+            ) ?>
         </td>
     </tr>
     <tr>
@@ -113,27 +154,30 @@
       <td>
             <?php
             echo $form->multiSelectList(
-              $element,
-              'MultiSelect_Difficulties',
-              'difficulty_assignments',
-              'difficulty_id',
-              CHtml::listData(OphTrOperationnote_Trabeculectomy_Difficulty::model()->findAll(array('order' => 'display_order asc')),
-                  'id', 'name'),
-              array(),
-              array(
+                $element,
+                'MultiSelect_Difficulties',
+                'difficulty_assignments',
+                'difficulty_id',
+                CHtml::listData(
+                    OphTrOperationnote_Trabeculectomy_Difficulty::model()->findAll(array('order' => 'display_order asc')),
+                    'id',
+                    'name'
+                ),
+                array(),
+                array(
                   'empty' => '- Select -',
                   'label' => 'Operative difficulties',
                   'class' => 'linked-fields',
                   'data-linked-fields' => 'difficulty_other',
                   'data-linked-values' => 'Other',
                   'nowrapper' => true,
-              ),
-              false,
-              false,
-              null,
-              false,
-              false,
-              array('field' => 4)
+                ),
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('field' => 4)
             ) ?>
       </td>
     </tr>
@@ -152,27 +196,31 @@
       </td>
       <td>
             <?php echo $form->multiSelectList(
-              $element,
-              'MultiSelect_Complications',
-              'complication_assignments',
-              'complication_id',
-              CHtml::listData(OphTrOperationnote_Trabeculectomy_Complication::model()->findAll(array('order' => 'display_order asc')),
-                  'id', 'name'),
-              array(),
-              array(
+                $element,
+                'MultiSelect_Complications',
+                'complication_assignments',
+                'complication_id',
+                CHtml::listData(
+                    OphTrOperationnote_Trabeculectomy_Complication::model()->findAll(array('order' => 'display_order asc')),
+                    'id',
+                    'name'
+                ),
+                array(),
+                array(
                   'empty' => '- Select -',
                   'label' => 'Complications',
                   'class' => 'linked-fields',
                   'data-linked-fields' => 'complication_other',
                   'data-linked-values' => 'Other',
                   'nowrapper' => true,
-              ),
-              false,
-              false,
-              null,
-              false,
-              false,
-              array('field' => 4)) ?>
+                ),
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('field' => 4)
+            ) ?>
       </td>
     </tr>
     <tr id="<?= CHtml::modelName($element) ?>_complication_other"

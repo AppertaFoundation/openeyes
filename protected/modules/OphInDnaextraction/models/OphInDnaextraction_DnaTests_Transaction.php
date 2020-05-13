@@ -146,7 +146,7 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
 
     public function beforeSave()
     {
-        $date = new DateTime( $this->date );
+        $date = new DateTime($this->date);
         $this->date = $date->format('Y-m-d');
 
         return parent::beforeSave();
@@ -154,7 +154,7 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
 
     public function afterFind()
     {
-        $date = new DateTime( $this->date );
+        $date = new DateTime($this->date);
         $this->date = $date->format('d M Y');
 
         return parent::afterFind();

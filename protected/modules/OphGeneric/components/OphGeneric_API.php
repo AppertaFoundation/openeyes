@@ -28,9 +28,11 @@ class OphGeneric_API extends BaseAPI
         $event_attachment_groups = EventAttachmentGroup::model()->findAll('event_id = ?', [$event_id]);
         foreach ($event_attachment_groups as $event_attachment_group) {
                 $event_attachment_items = EventAttachmentItem::model()->findAll(
-                    'event_attachment_group_id = :event_attachment_group_id', [
+                    'event_attachment_group_id = :event_attachment_group_id',
+                    [
                     ':event_attachment_group_id' => $event_attachment_group->id,
-                    ]);
+                    ]
+                );
             foreach ($event_attachment_items as $event_attachment_item) {
                 $attachmentData = $event_attachment_item->attachmentData;
                 if ($attachmentData) {

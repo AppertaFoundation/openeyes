@@ -83,7 +83,7 @@
                 'type',
                 ['' => 'All types', 'biometry' => 'Biometry'],
                 ['class' => 'cols-full']
-                ); ?></td>
+            ); ?></td>
             <td>
                 <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'study_id']); ?>
             </td>

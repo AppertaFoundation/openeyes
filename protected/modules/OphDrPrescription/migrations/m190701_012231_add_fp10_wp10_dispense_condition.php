@@ -20,7 +20,8 @@ class m190701_012231_add_fp10_wp10_dispense_condition extends OEMigration
                 ->from('ophdrprescription_dispense_location')
                 ->where("name='".$this->location."'")->queryScalar();
             if ($location_id) {
-                $this->insert('ophdrprescription_dispense_condition_assignment',
+                $this->insert(
+                    'ophdrprescription_dispense_condition_assignment',
                     array(
                         'dispense_condition_id' => $condition_id,
                         'dispense_location_id' => $location_id
@@ -39,7 +40,8 @@ class m190701_012231_add_fp10_wp10_dispense_condition extends OEMigration
             ->where("name = '".$this->condition."'")->queryScalar();
 
         if ($condition_id) {
-            $this->delete('ophdrprescription_dispense_condition_assignment',
+            $this->delete(
+                'ophdrprescription_dispense_condition_assignment',
                 'dispense_condition_id=?',
                 array($condition_id)
             );

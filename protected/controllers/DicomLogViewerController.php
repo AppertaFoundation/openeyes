@@ -29,7 +29,7 @@ class DicomLogViewerController extends BaseController
     {
         return array(
             array('allow',
-                'roles' => array('OprnViewClinical'),
+                'roles' => array('admin'),
             ),
         );
     }

@@ -17,6 +17,6 @@ class m191205_093052_add_request_details_table extends OEMigration
     public function down()
     {
         $this->dropForeignKey('request_fk_request_details', 'request_details');
-        $this->dropOETable('request_details', true  );
+        $this->dropOETable('request_details', true);
     }
 }

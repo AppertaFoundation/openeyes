@@ -21,8 +21,11 @@
     <div class="cols-3 column large-centered text-right large-offset-9">
         <section class="box dashboard">
             <?php
-            echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'),
-                array('class' => 'button small'));
+            echo CHtml::link(
+                'Back to Patient Merge list',
+                array('patientMergeRequest/index'),
+                array('class' => 'button small')
+            );
             ?>
         </section>
     </div>
@@ -36,8 +39,10 @@
         <div class="cols-12 flex-layout">
             <div class="cols-5">
                 <h2 class="secondaryPatient">Secondary</h2>
-                <?php $this->renderPartial('//patientmergerequest/_patient_details',
-                    array('model' => $model, 'type' => 'secondary')) ?>
+                <?php $this->renderPartial(
+                    '//patientmergerequest/_patient_details',
+                    array('model' => $model, 'type' => 'secondary')
+                ) ?>
             </div>
 
             <div class="cols-2" style="text-align: center">
@@ -49,8 +54,10 @@
 
             <div class="cols-5">
                 <h2 class="primaryPatient">Primary</h2>
-                <?php $this->renderPartial('//patientmergerequest/_patient_details',
-                    array('model' => $model, 'type' => 'primary')) ?>
+                <?php $this->renderPartial(
+                    '//patientmergerequest/_patient_details',
+                    array('model' => $model, 'type' => 'primary')
+                ) ?>
             </div>
         </div>
         <hr>
@@ -83,8 +90,11 @@
                             <input class="warning" type="submit" value="Merge">
                         </div>
                         <div class="cols-6">
-                            <?= \CHtml::link('cancel', array('patientMergeRequest/index'),
-                                array('class' => 'button primary')); ?>
+                            <?= \CHtml::link(
+                                'cancel',
+                                array('patientMergeRequest/index'),
+                                array('class' => 'button primary')
+                            ); ?>
                         </div>
                     </div>
 

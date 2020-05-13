@@ -1528,7 +1528,8 @@ class AdminController extends ModuleAdminController
             '/admin/ward/index',
             [
                 'wards' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
-            ]);
+            ]
+        );
     }
 
     public function actionEditWard($id)

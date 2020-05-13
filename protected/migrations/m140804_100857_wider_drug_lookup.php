@@ -19,8 +19,13 @@ class m140804_100857_wider_drug_lookup extends OEMigration
         $this->alterColumn('medication_version', 'drug_id', 'int(10) unsigned');
         $this->addColumn('medication', 'medication_drug_id', 'int(11)');
         $this->addColumn('medication_version', 'medication_drug_id', 'int(11)');
-        $this->addForeignKey('medication_mdid_fk',
-                'medication', 'medication_drug_id', 'medication_drug', 'id');
+        $this->addForeignKey(
+            'medication_mdid_fk',
+            'medication',
+            'medication_drug_id',
+            'medication_drug',
+            'id'
+        );
     }
 
     public function down()

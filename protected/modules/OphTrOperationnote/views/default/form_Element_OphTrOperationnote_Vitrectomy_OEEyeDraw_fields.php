@@ -28,10 +28,14 @@
                 <?php echo $element->getAttributeLabel('gauge_id') ?>
             </td>
             <td>
-                <?php echo $form->dropDownList($element, 'gauge_id',
+                <?php echo $form->dropDownList(
+                    $element,
+                    'gauge_id',
                     CHtml::listData(OphTrOperationnote_VitrectomyGauge::model()->activeOrPk($element->gauge_id)->findAll(), 'id', 'value'),
                     array('empty' => 'Select', 'textAttribute' => 'data-value', 'nolabel' => true),
-                    false, array('field' => 3)) ?>
+                    false,
+                    array('field' => 3)
+                ) ?>
             </td>
         </tr>
         <tr>

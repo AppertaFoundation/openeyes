@@ -51,53 +51,52 @@
       <tr>
         <td>Site:</td>
         <td>
-            <?=\CHtml::dropDownList('site-id', Yii::app()->request->getPost('site-id', ''),
-                Site::model()->getListForCurrentInstitution(), array(
-                    'empty' => 'All sites',
+            <?=\CHtml::dropDownList('site-id', Yii::app()->request->getPost('site-id', 'All'),
+                ['All' => 'All sites'] + Site::model()->getListForCurrentInstitution(), array(
                     'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
-                )) ?>
+                )
+            ) ?>
         </td>
       </tr>
       <tr>
         <td>Theatre:</td>
         <td>
-            <?=\CHtml::dropDownList('theatre-id', Yii::app()->request->getPost('theatre-id', ''), $theatres, array(
-                'empty' => 'All theatres',
+            <?=\CHtml::dropDownList('theatre-id', Yii::app()->request->getPost('theatre-id', 'All'),
+                ['All' => 'All theatres'] + $theatres, array(
                 'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
             )) ?>
         </td>
       </tr>
-      <tr>
-        <td>Subspeciality:</td>
-        <td>
-            <?=\CHtml::dropDownList('subspecialty-id', Yii::app()->request->getPost('subspecialty-id', ''),
-                Subspecialty::model()->getList(), array(
-                    'empty' => 'All specialties',
-                    'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
-                )) ?>
-        </td>
-      </tr>
+            <tr>
+                <td>Subspeciality:</td>
+                <td>
+                    <?=\CHtml::dropDownList('subspecialty-id', Yii::app()->request->getPost('subspecialty-id', 'All'),
+                        ['All'=>'All specialties']+Subspecialty::model()->getList(), array(
+                            'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
+                        )) ?>
+                </td>
+
+            </tr>
       <tr>
         <td><?= Firm::contextLabel() ?>:</td>
         <td>
-            <?php $subspecialty_id = Yii::app()->request->getPost('subspecialty-id', '');
+            <?php $subspecialty_id = Yii::app()->request->getPost('subspecialty-id', 'All');
             if ($subspecialty_id === '') { ?>
-                <?=\CHtml::dropDownList('firm-id', '', array(),
-                    array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => 'disabled')) ?>
+                <?=\CHtml::dropDownList('firm-id', 'All', ['All'=>'All '.Firm::model()->contextLabel().'s'],
+                    array('disabled' => 'disabled')) ?>
             <?php } else { ?>
-                <?=\CHtml::dropDownList('firm-id', Yii::app()->request->getPost('firm-id', ''),
-                    Firm::model()->getList($subspecialty_id), array(
-                        'empty' => 'All '.Firm::model()->contextLabel().'s',
-                        'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
-                    )) ?>
-            <?php } ?>
+                              <?=\CHtml::dropDownList('firm-id', Yii::app()->request->getPost('firm-id', 'All'),
+                                ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
+                                'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
+                  )) ?>
+F            <?php } ?>
         </td>
       </tr>
       <tr>
         <td>Ward:</td>
         <td>
-            <?=\CHtml::dropDownList('ward-id', Yii::app()->request->getPost('ward-id', ''), $wards, array(
-                'empty' => 'All wards',
+            <?=\CHtml::dropDownList('ward-id', Yii::app()->request->getPost('ward-id', 'All'),
+                ['All' => 'All wards'] + $wards, array(
                 'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
             )) ?>
         </td>

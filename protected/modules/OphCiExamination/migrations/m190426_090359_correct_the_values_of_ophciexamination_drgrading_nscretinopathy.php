@@ -73,10 +73,11 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     }
 
     private function updateField($name, $field, $new_value) {
-        $this->update(self::NSCRETINOPATHY_TABLE,
-        [$field => $new_value],
-        'id = :id',
-        [':id' => $this->getIdFromName($name)]
+        $this->update(
+            self::NSCRETINOPATHY_TABLE,
+            [$field => $new_value],
+            'id = :id',
+            [':id' => $this->getIdFromName($name)]
         );
     }
 
@@ -118,8 +119,11 @@ class m190426_090359_correct_the_values_of_ophciexamination_drgrading_nscretinop
     public function safeDown()
     {
         $this->updateDescription(self::name_changes['R2'], self::R2_old_description);
-        $this->delete(self::NSCRETINOPATHY_TABLE, 'id = :id',
-        [':id' => $this->getIdFromName(self::name_of_new_option)]);
+        $this->delete(
+            self::NSCRETINOPATHY_TABLE,
+            'id = :id',
+            [':id' => $this->getIdFromName(self::name_of_new_option)]
+        );
 
         foreach (self::name_changes as $old_name => $new_name) {
             $this->updateName($new_name, $old_name);

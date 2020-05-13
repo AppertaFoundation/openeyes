@@ -30,8 +30,13 @@ class m170704_081859_patient_level_systemic_diagnoses extends OEMigration
             'event_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_sysdiag_ev_fk',
-            'et_ophciexamination_systemic_diagnoses', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_sysdiag_ev_fk',
+            'et_ophciexamination_systemic_diagnoses',
+            'event_id',
+            'event',
+            'id'
+        );
 
         $this->createOETable('ophciexamination_systemic_diagnoses_diagnosis', array(
             'id' => 'pk',
@@ -42,15 +47,36 @@ class m170704_081859_patient_level_systemic_diagnoses extends OEMigration
             'secondary_diagnosis_id' => 'int(10) unsigned'
         ), true);
 
-        $this->addForeignKey('ophciexamination_sysdiag_dia_el_fk',
-            'ophciexamination_systemic_diagnoses_diagnosis', 'element_id', 'et_ophciexamination_systemic_diagnoses', 'id');
-        $this->addForeignKey('ophciexamination_sysdiag_dia_side_fk',
-            'ophciexamination_systemic_diagnoses_diagnosis', 'side_id', 'eye', 'id');
-        $this->addForeignKey('ophciexamination_sysdiag_dia_dis_fk',
-            'ophciexamination_systemic_diagnoses_diagnosis', 'disorder_id', 'disorder', 'id');
+        $this->addForeignKey(
+            'ophciexamination_sysdiag_dia_el_fk',
+            'ophciexamination_systemic_diagnoses_diagnosis',
+            'element_id',
+            'et_ophciexamination_systemic_diagnoses',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_sysdiag_dia_side_fk',
+            'ophciexamination_systemic_diagnoses_diagnosis',
+            'side_id',
+            'eye',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_sysdiag_dia_dis_fk',
+            'ophciexamination_systemic_diagnoses_diagnosis',
+            'disorder_id',
+            'disorder',
+            'id'
+        );
         // set null on delete of SD - simple means of resolving whether still in sync or not.
-        $this->addForeignKey('ophciexamination_sysdiag_dia_sd_fk',
-            'ophciexamination_systemic_diagnoses_diagnosis', 'secondary_diagnosis_id', 'secondary_diagnosis', 'id', 'SET NULL');
+        $this->addForeignKey(
+            'ophciexamination_sysdiag_dia_sd_fk',
+            'ophciexamination_systemic_diagnoses_diagnosis',
+            'secondary_diagnosis_id',
+            'secondary_diagnosis',
+            'id',
+            'SET NULL'
+        );
 
     }
 

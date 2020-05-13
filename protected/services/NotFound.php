@@ -22,7 +22,9 @@ class NotFound extends ServiceException
     public function toFhirOutcome()
     {
         return FhirOutcome::singleIssue(
-            \FhirValueSet::ISSUESEVERITY_FATAL, \FhirValueSet::ISSUETYPE_PROCESSING_NOT_FOUND, $this->message
+            \FhirValueSet::ISSUESEVERITY_FATAL,
+            \FhirValueSet::ISSUETYPE_PROCESSING_NOT_FOUND,
+            $this->message
         );
     }
 }

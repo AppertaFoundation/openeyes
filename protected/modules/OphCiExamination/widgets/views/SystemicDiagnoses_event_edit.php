@@ -134,7 +134,9 @@ $required_diagnoses_ids = array_map(function ($r) {
                             'filter-value' => $disorder_group->id,
                             'is_filter' => true,
                         ];
-                    }, $valid_common_systemic_disorder_groups)) ?>, {
+                    },
+                    $valid_common_systemic_disorder_groups)
+                ) ?>, {
                     'header': 'Disorder Group',
                     'id': 'disorder-group-filter',
                     'deselectOnReturn': false,

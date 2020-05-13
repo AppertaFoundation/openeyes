@@ -17,14 +17,22 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
     public function up()
     {
         $this->addColumn('ophcocvi_clinicinfo_disorder', 'disorder_id', 'BIGINT unsigned');
-        $this->addForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk',
-            'ophcocvi_clinicinfo_disorder', 'disorder_id',
-            'disorder', 'id');
+        $this->addForeignKey(
+            'ophcocvi_clinicinfo_disorder_disorder_fk',
+            'ophcocvi_clinicinfo_disorder',
+            'disorder_id',
+            'disorder',
+            'id'
+        );
         $this->addColumn('ophcocvi_clinicinfo_disorder_version', 'disorder_id', 'BIGINT unsigned');
 
-        $this->addForeignKey('ophcocvi_clinicinfo_disorder_section_fk',
-            'ophcocvi_clinicinfo_disorder', 'section_id',
-            'ophcocvi_clinicinfo_disorder_section', 'id');
+        $this->addForeignKey(
+            'ophcocvi_clinicinfo_disorder_section_fk',
+            'ophcocvi_clinicinfo_disorder',
+            'section_id',
+            'ophcocvi_clinicinfo_disorder_section',
+            'id'
+        );
 
         $this->insert('ophcocvi_clinicinfo_disorder', array('name' => 'age-related macular degeneration - subretinal neovascularisation',
             'code' => 'H35.3', 'section_id' => 1, 'active' => 1,'display_order' => 1, 'disorder_id' => 267718000));
@@ -76,11 +84,15 @@ class m160816_132509_add_disorder_mapping extends CDbMigration
     {
         $this->truncateTable('ophcocvi_clinicinfo_disorder');
 
-        $this->dropForeignKey('ophcocvi_clinicinfo_disorder_section_fk',
-            'ophcocvi_clinicinfo_disorder');
+        $this->dropForeignKey(
+            'ophcocvi_clinicinfo_disorder_section_fk',
+            'ophcocvi_clinicinfo_disorder'
+        );
 
-        $this->dropForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk',
-            'ophcocvi_clinicinfo_disorder');
+        $this->dropForeignKey(
+            'ophcocvi_clinicinfo_disorder_disorder_fk',
+            'ophcocvi_clinicinfo_disorder'
+        );
         $this->dropColumn('ophcocvi_clinicinfo_disorder', 'disorder_id');
         $this->dropColumn('ophcocvi_clinicinfo_disorder_version', 'disorder_id');
     }

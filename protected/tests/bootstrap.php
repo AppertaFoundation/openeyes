@@ -1,17 +1,28 @@
 <?php
+if (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) {
+    // skip deprecation errors in PHP 7.1 and above
+    error_reporting(E_ALL & ~E_DEPRECATED);
+}
+
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
 
+defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', false);
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 1);
+
+if (version_compare(PHP_VERSION, '5.3', '>='))
+    require_once(dirname(__FILE__) . '/compatability.php');
+    
 // change the following paths if necessary
 $dirname = dirname(__FILE__);
-if (file_exists($dirname.'/../../vendor/yiisoft/yii/framework/yiit.php')) {
-    $yiit = $dirname.'/../../vendor/yiisoft/yii/framework/yiit.php';
+if (file_exists($dirname . '/../../vendor/yiisoft/yii/framework/yiit.php')) {
+    $yiit = $dirname . '/../../vendor/yiisoft/yii/framework/yiit.php';
 } else {
-    $yiit = $dirname.'/../../protected/yii/framework/yiit.php';
+    $yiit = $dirname . '/../../protected/yii/framework/yiit.php';
 }
-$config = dirname(__FILE__).'/../config/test.php';
+$config = dirname(__FILE__) . '/../config/test.php';
 
 require_once $yiit;
 

@@ -74,19 +74,23 @@ $based_on = implode(', ', $based_on);
                     if ($i == $sort_by) {
                         $new_sort_dir = 1 - $sort_dir;
                         echo CHtml::link(
-                          $field,
-                          Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
-                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                            $field,
+                            Yii::app()->createUrl(
+                                'patient/search',
+                                array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
+                            ),
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
                         );
                         ?>
                       <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
                     <?php } else {
                         echo CHtml::link(
-                          $field,
-                          Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
-                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                            $field,
+                            Yii::app()->createUrl(
+                                'patient/search',
+                                array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
+                            ),
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
                         );
                     }
                     ?>

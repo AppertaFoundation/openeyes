@@ -51,8 +51,11 @@
             <?= $form->labelEx($trial, 'external_data_link') ?>
         </td>
         <td>
-            <?= $form->urlField($trial, 'external_data_link',
-                array('size' => 50, 'onblur' => 'checkUrl(this)')); ?>
+            <?= $form->urlField(
+                $trial,
+                'external_data_link',
+                array('size' => 50, 'onblur' => 'checkUrl(this)')
+            ); ?>
         </td>
       </tr>
       <tr>
@@ -110,8 +113,11 @@
         <td>
             <?php foreach (TrialType::model()->findAll() as $trial_type) : ?>
               <label>
-                  <?php echo $form->radioButton($trial, 'trial_type_id',
-                      array('value' => $trial_type->id, 'uncheckValue' => null)); ?>
+                  <?php echo $form->radioButton(
+                      $trial,
+                      'trial_type_id',
+                      array('value' => $trial_type->id, 'uncheckValue' => null)
+                  ); ?>
                   <?= $trial_type->name ?>
               </label>
             <?php endforeach; ?>

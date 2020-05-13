@@ -25,12 +25,27 @@ class m170404_185342_add_fundus_vitreous_fields extends OEMigration
             'vitreous_id' => 'int(11) NOT NULL',
             'side_id' => 'int(10) unsigned NOT NULL'
         ));
-        $this->addForeignKey('ophciexamination_fundus_vitreous_el_fk', 'ophciexamination_fundus_vitreous',
-            'element_id', 'et_ophciexamination_fundus', 'id');
-        $this->addForeignKey('ophciexamination_fundus_vitreous_vit_fk', 'ophciexamination_fundus_vitreous',
-            'vitreous_id', 'ophciexamination_vitreous', 'id');
-        $this->addForeignKey('ophciexamination_fundus_vitreous_side_fk', 'ophciexamination_fundus_vitreous',
-            'side_id', 'eye', 'id');
+        $this->addForeignKey(
+            'ophciexamination_fundus_vitreous_el_fk',
+            'ophciexamination_fundus_vitreous',
+            'element_id',
+            'et_ophciexamination_fundus',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_fundus_vitreous_vit_fk',
+            'ophciexamination_fundus_vitreous',
+            'vitreous_id',
+            'ophciexamination_vitreous',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophciexamination_fundus_vitreous_side_fk',
+            'ophciexamination_fundus_vitreous',
+            'side_id',
+            'eye',
+            'id'
+        );
 
         $this->execute('update ophciexamination_vitreous set display_order = display_order + 1');
         $this->insert('ophciexamination_vitreous', array('name' => 'Formed, Attached', 'display_order' => 1));

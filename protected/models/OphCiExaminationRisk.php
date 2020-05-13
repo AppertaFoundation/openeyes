@@ -121,8 +121,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
             'tags' => array(
                 'select' => false,
                 'joinType' => 'INNER JOIN',
-            ))
-        )->findAll($criteria);
+            )))->findAll($criteria);
     }
 
     /**

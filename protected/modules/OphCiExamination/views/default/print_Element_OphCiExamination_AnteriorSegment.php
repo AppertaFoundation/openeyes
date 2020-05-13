@@ -20,8 +20,10 @@
       <div class="js-element-eye cols-6 <?= $eye_side ?>-eye" >
         <?php if ($element->hasEye($eye_side)) : ?>
           <div class="eyedraw anterior-segment">
-              <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
-                  array('side' => $eye_side, 'element' => $element));
+              <?php $this->renderPartial(
+                  $element->view_view . '_OEEyeDraw',
+                  array('side' => $eye_side, 'element' => $element)
+              );
                 ?>
           </div>
         <?php else : ?>

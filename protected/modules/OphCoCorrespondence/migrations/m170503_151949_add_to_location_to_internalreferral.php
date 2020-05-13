@@ -12,10 +12,13 @@ class m170503_151949_add_to_location_to_internalreferral extends OEMigration
         $this->addColumn('et_ophcocorrespondence_letter', 'to_location_id', 'INT(11) DEFAULT NULL');
         $this->addColumn('et_ophcocorrespondence_letter_version', 'to_location_id', 'INT(11) DEFAULT NULL');
 
-        $this->createOETable("ophcocorrespondence_internal_referral_to_location",
+        $this->createOETable(
+            "ophcocorrespondence_internal_referral_to_location",
             array('id' => 'pk',
                 'site_id' => 'INT(10) UNSIGNED NULL'
-            ), true);
+            ),
+            true
+        );
 
         $this->addForeignKey("et_ophcocorrespondence_letter_ibfk_to_location", 'et_ophcocorrespondence_letter', 'to_location_id', 'ophcocorrespondence_internal_referral_to_location', 'id');
         $this->addForeignKey("ophcocorrespondence_internal_referral_to_location_to_site", 'ophcocorrespondence_internal_referral_to_location', 'site_id', 'site', 'id');

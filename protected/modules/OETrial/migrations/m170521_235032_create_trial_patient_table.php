@@ -55,15 +55,24 @@ class m170521_235032_create_trial_patient_table extends OEMigration
             'patient_id' => 'int(10) unsigned NOT NULL',
             'status_id' => 'int(10) NOT NULL',
             'treatment_type_id' => 'int(10) NOT NULL',
-        ), self::VERSIONED
-        );
+        ), self::VERSIONED);
 
         $this->addForeignKey('trial_patient_trial_fk', 'trial_patient', 'trial_id', 'trial', 'id');
-        $this->addForeignKey('trial_patient_trial_patient_status_fk', 'trial_patient', 'status_id',
-            'trial_patient_status', 'id');
+        $this->addForeignKey(
+            'trial_patient_trial_patient_status_fk',
+            'trial_patient',
+            'status_id',
+            'trial_patient_status',
+            'id'
+        );
         $this->addForeignKey('trial_patient_patient_fk', 'trial_patient', 'patient_id', 'patient', 'id');
-        $this->addForeignKey('treatment_type_fk', 'trial_patient', 'treatment_type_id',
-            'treatment_type', 'id');
+        $this->addForeignKey(
+            'treatment_type_fk',
+            'trial_patient',
+            'treatment_type_id',
+            'treatment_type',
+            'id'
+        );
     }
 
     public function down()

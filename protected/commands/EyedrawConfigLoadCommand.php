@@ -101,7 +101,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
     private function refreshTuples() {
         $query_string = $this->getRefreshTuplesQuery();
         Yii::app()->db->createCommand(
-        $query_string
+            $query_string
         )->query();
     }
 

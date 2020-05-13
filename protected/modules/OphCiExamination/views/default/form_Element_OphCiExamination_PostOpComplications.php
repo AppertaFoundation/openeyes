@@ -23,19 +23,29 @@ use OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications;
 
 $model_name = CHtml::modelName($element);
 $operationNoteList = $element->getOperationNoteList();
-$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
-    (is_array($operationNoteList) ? key($operationNoteList) : null));
+$operation_note_id = \Yii::app()->request->getParam(
+    'OphCiExamination_postop_complication_operation_note_id',
+    (is_array($operationNoteList) ? key($operationNoteList) : null)
+);
 
 $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
-$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id,
-    $subspecialty_id, \Eye::RIGHT);
+$right_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
+    $element->id,
+    $operation_note_id,
+    $subspecialty_id,
+    \Eye::RIGHT
+);
 
 $right_eye_data = \CHtml::listData($right_eye, 'id', 'name');
 
-$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList($element->id, $operation_note_id,
-    $subspecialty_id, \Eye::LEFT);
+$left_eye = OphCiExamination_PostOpComplications::model()->getPostOpComplicationsList(
+    $element->id,
+    $operation_note_id,
+    $subspecialty_id,
+    \Eye::LEFT
+);
 $left_eye_data = \CHtml::listData($left_eye, 'id', 'name');
 
 $defaultURL = '/' . Yii::app()->getModule('OphCiExamination')->id . '/' . Yii::app()->getModule('OphCiExamination')->defaultController;
@@ -49,7 +59,9 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
     <div id="div_Element_OphTrOperationnote_ProcedureList_id">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <div class="cols-5 column end">
-            <?= \CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
+            <?= \CHtml::dropDownList(
+                'OphCiExamination_postop_complication_operation_note_id',
+                $operation_note_id,
                 $operationNoteList,
                 array(
                     'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
@@ -70,14 +82,15 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
             <div>
                 <?php echo $form->dropDownList(
                     OphCiExamination_PostOpComplications::model(),
-                    'name', ${$eye_side . '_eye_data'},
+                    'name',
+                    ${$eye_side . '_eye_data'},
                     array(
                         'empty' => array('-1' => 'Select Common Complication'),
                         'id' => $eye_side . '-complication-select',
                         'nolabel' => true,
                     ),
-                                   false,
-                                   array()
+                    false,
+                    array()
                 );
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
                 $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => $eye_side . '_complication_autocomplete_id']);
@@ -99,8 +112,11 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                 <tr>
                   <td class="postop-complication-name">
                       <?php echo $value['name']; ?>
-                      <?php echo \CHtml::hiddenField("complication_items[$eye_abbr][$key]", $value['id'],
-                          array('id' => "complication_items_" . $eye_abbr . "_$key")); ?>
+                      <?php echo \CHtml::hiddenField(
+                          "complication_items[$eye_abbr][$key]",
+                          $value['id'],
+                          array('id' => "complication_items_" . $eye_abbr . "_$key")
+                      ); ?>
                   </td>
                   <td class='<?= $eye_side ?>'>
                     <a class="postop-complication-remove-btn" href="javascript:void(0)">

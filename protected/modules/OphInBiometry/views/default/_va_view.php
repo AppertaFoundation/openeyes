@@ -225,8 +225,10 @@ if ($refractfound) {
                     <?php if ($refractelement->hasEye($eye_side)) {
                         ?>
                         <div class="refraction">
-                            <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_OEEyeDraw',
-                                array('side' => $eye_side, 'element' => $refractelement));
+                            <?php $this->renderPartial(
+                                'view_Element_OphInBiometry_Measurement_OEEyeDraw',
+                                array('side' => $eye_side, 'element' => $refractelement)
+                            );
                             ?>
                         </div>
                         <?php

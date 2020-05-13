@@ -21,19 +21,31 @@ class m150731_125728_move_lens_type extends CDbMigration
         $this->addColumn('et_ophinbiometry_selection_version', 'lens_id_right', 'int(10) unsigned NOT NULL DEFAULT 1');
 
         //Add new key
-        $this->addForeignKey('ophinbiometry_lenstype_lens_l_fk', 'et_ophinbiometry_selection', 'lens_id_left',
-            'ophinbiometry_lenstype_lens', 'id');
-        $this->addForeignKey('ophinbiometry_lenstype_lens_r_fk', 'et_ophinbiometry_selection', 'lens_id_right',
-            'ophinbiometry_lenstype_lens', 'id');
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_l_fk',
+            'et_ophinbiometry_selection',
+            'lens_id_left',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_r_fk',
+            'et_ophinbiometry_selection',
+            'lens_id_right',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
 
         //Rename the table last
         $this->renameTable('et_ophinbiometry_lenstype', 'et_ophinbiometry_measurement');
         $this->renameTable('et_ophinbiometry_lenstype_version', 'et_ophinbiometry_measurement_version');
 
         //Update element
-        $this->update('element_type',
+        $this->update(
+            'element_type',
             array('class_name' => 'Element_OphInBiometry_Measurement', 'name' => 'Measurements'),
-            'class_name="Element_OphInBiometry_LensType"');
+            'class_name="Element_OphInBiometry_LensType"'
+        );
 
         //Update view
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
@@ -77,14 +89,27 @@ class m150731_125728_move_lens_type extends CDbMigration
         $this->addColumn('et_ophinbiometry_lenstype_version', 'lens_id_right', 'int(10) unsigned NOT NULL DEFAULT 1');
 
         //Add new key
-        $this->addForeignKey('ophinbiometry_lenstype_lens_l_fk', 'et_ophinbiometry_lenstype', 'lens_id_left',
-            'ophinbiometry_lenstype_lens', 'id');
-        $this->addForeignKey('ophinbiometry_lenstype_lens_r_fk', 'et_ophinbiometry_lenstype', 'lens_id_right',
-            'ophinbiometry_lenstype_lens', 'id');
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_l_fk',
+            'et_ophinbiometry_lenstype',
+            'lens_id_left',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_r_fk',
+            'et_ophinbiometry_lenstype',
+            'lens_id_right',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
 
         //Update element
-        $this->update('element_type', array('class_name' => 'Element_OphInBiometry_LensType', 'name' => 'Lens Type'),
-            'class_name="Element_OphInBiometry_Measurement"');
+        $this->update(
+            'element_type',
+            array('class_name' => 'Element_OphInBiometry_LensType', 'name' => 'Lens Type'),
+            'class_name="Element_OphInBiometry_Measurement"'
+        );
 
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
 							eol.id, eol.eye_id, eol.last_modified_date, target_refraction_left, target_refraction_right,

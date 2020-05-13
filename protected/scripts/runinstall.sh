@@ -239,23 +239,29 @@ fi
 [ $nomigrate = 1 ] && fixparams="$fixparams --no-migrate --no-eyedraw" || :
 [ "$nofix" != "1" ] && { $SCRIPTDIR/oe-fix.sh $fixparams; } || :
 
+a2enmod headers
+
 # unless we are in build mode, configure apache and cron
 if [ "${OE_MODE^^}" != "BUILD" ]; then
     echo Configuring Apache
 
     echo "
     <VirtualHost *:80>
-    ServerName hostname
-    DocumentRoot $WROOT
-    <Directory $WROOT>
-    	Options FollowSymLinks
-    	AllowOverride All
-    	Order allow,deny
-    	Allow from all
-    </Directory>
-    ErrorLog /var/log/apache2/error.log
-    LogLevel warn
-    CustomLog /var/log/apache2/access.log combined
+        
+        ServerName hostname
+        DocumentRoot $WROOT
+        <Directory $WROOT>
+            Options FollowSymLinks
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+        </Directory>
+        ErrorLog /var/log/apache2/error.log
+        LogLevel warn
+        CustomLog /var/log/apache2/access.log combined
+        Header always set Strict-Transport-Security \"max-age=31536000\"
+        Header always set Referrer-Policy \"no-referrer-when-downgrade\"
+        Header always set Content-Security-Policy \"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: 'self'\"
     </VirtualHost>
     " | sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
 

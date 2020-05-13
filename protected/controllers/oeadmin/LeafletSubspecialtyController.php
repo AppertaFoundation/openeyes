@@ -49,8 +49,7 @@ class LeafletSubspecialtyController extends BaseAdminController
                     'filterid' => array(
                             'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
                         ),
-                )
-            );
+                ));
         }
 
         $admin->setAutocompleteField(
@@ -108,8 +107,10 @@ class LeafletSubspecialtyController extends BaseAdminController
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
+                $criteria->addCondition(
+                    array('LOWER(name) LIKE :term'),
+                    'OR'
+                );
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
 

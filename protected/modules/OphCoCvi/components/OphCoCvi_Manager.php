@@ -818,7 +818,8 @@ class OphCoCvi_Manager extends \CComponent
             'clinical_element.consultant',
             'clerical_element',
             'event.episode.patient.contact',
-            'event.episode.firm.serviceSubspecialtyAssignment.subspecialty');
+            'event.episode.firm.serviceSubspecialtyAssignment.subspecialty'
+        );
 
         $sort = new \CSort();
 

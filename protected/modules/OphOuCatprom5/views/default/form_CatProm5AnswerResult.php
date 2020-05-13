@@ -28,12 +28,12 @@
       <tr style='border-bottom: none;'><!--there doesn't need to be a border after here -->
         <td>
             <?php if (isset($answerResult_item)  && isset($answerResult_item->id)) { ?>
-                <?=\CHtml::hiddenField( $name_stub .'['. $index .'][id]', @$answerResult_item->id)?>
+                <?=\CHtml::hiddenField($name_stub .'['. $index .'][id]', @$answerResult_item->id)?>
             <?php } ?>
             <?php if (isset($element)  && $element->id) { ?>
-                <?=\CHtml::hiddenField( $name_stub .'['. $index .'][element_id]', @$element->id)?>
+                <?=\CHtml::hiddenField($name_stub .'['. $index .'][element_id]', @$element->id)?>
             <?php } ?>
-            <?=\CHtml::hiddenField( $name_stub .'['. $index .'][question_id]', $ques->id)?>
+            <?=\CHtml::hiddenField($name_stub .'['. $index .'][question_id]', $ques->id)?>
 
             <?php  foreach ($answers as $answer_item) {?>
               <label class="inline highlight cols-full">

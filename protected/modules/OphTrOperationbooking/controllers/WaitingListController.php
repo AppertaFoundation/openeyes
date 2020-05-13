@@ -170,13 +170,11 @@ class WaitingListController extends BaseModuleController
                     'status',
                     'date_letter_sent',
                     'procedures',
-                )
-            )->findAll(array(
+                ))->findAll(array(
                     'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL'.$where_sql,
                     'params' => $where_params,
                     'order' => 'decision_date asc',
-                )
-            );
+                ));
         Yii::app()->event->dispatch('end_batch_mode');
 
         return $operations;

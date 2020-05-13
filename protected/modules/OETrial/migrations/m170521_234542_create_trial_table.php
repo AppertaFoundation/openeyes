@@ -27,22 +27,37 @@ class m170521_234542_create_trial_table extends OEMigration
             'started_date' => 'datetime',
             'closed_date' => 'datetime',
             'external_data_link' => 'mediumtext',
-        ), self::VERSIONED
+        ), self::VERSIONED);
+
+        $this->addForeignKey(
+            'trial_type_id_fk',
+            'trial',
+            'trial_type_id',
+            'trial_type',
+            'id'
         );
 
-        $this->addForeignKey('trial_type_id_fk',
-            'trial', 'trial_type_id',
-            'trial_type', 'id');
-
-        $this->addForeignKey('trial_owner_fk',
-            'trial', 'owner_user_id',
-            'user', 'id');
-        $this->addForeignKey('trial_principle_investigator_user_id_fk',
-            'trial', 'principle_investigator_user_id',
-            'user', 'id');
-        $this->addForeignKey('trial_coordinator_user_id_fk',
-            'trial', 'coordinator_user_id',
-            'user', 'id');
+        $this->addForeignKey(
+            'trial_owner_fk',
+            'trial',
+            'owner_user_id',
+            'user',
+            'id'
+        );
+        $this->addForeignKey(
+            'trial_principle_investigator_user_id_fk',
+            'trial',
+            'principle_investigator_user_id',
+            'user',
+            'id'
+        );
+        $this->addForeignKey(
+            'trial_coordinator_user_id_fk',
+            'trial',
+            'coordinator_user_id',
+            'user',
+            'id'
+        );
 
     }
 

@@ -832,8 +832,11 @@ class OphCoCorrespondence_API extends BaseAPI
         $episode = $patient->getEpisodeForCurrentSubspecialty();
         $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
 
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
+        if ($el = $this->getMostRecentElementInEpisode(
+            $episode->id,
+            $event_type->id,
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan'
+        )
         ) {
             $result .= 'Clinic Interval: ' . $el->clinic_internal->name . "\n";
             $result .= 'Photo: ' . $el->photo->name . "\n";

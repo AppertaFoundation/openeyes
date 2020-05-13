@@ -17,19 +17,21 @@
 ?>
 <div class="sub-element-fields">
   <div class="data-group" style="position: relative; z-index: 3">
-        <?php echo $form->radioButtons($element, 'eye_id',
-          CHtml::listData(
-              \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
-              'id',
-              'name'
-          ),
-          null,
-          false,
-          false,
-          false,
-          false,
-          array('nowrapper' => true)
-      ) ?>
+        <?php echo $form->radioButtons(
+            $element,
+            'eye_id',
+            CHtml::listData(
+                \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
+                'id',
+                'name'
+            ),
+            null,
+            false,
+            false,
+            false,
+            false,
+            array('nowrapper' => true)
+        ) ?>
 
   </div>
   <div class="cols-12 data-group flex-layout flex-top">
@@ -74,11 +76,11 @@
         <td class="flex-layout">
           <div class="cols-6">
                 <?php echo $form->dropDownList(
-                  $element,
-                  'suitable_for_surgeon_id',
-                  '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
-                  array('class' => 'inline', 'empty' => 'Select', 'nowrapper' => true)
-              ) ?>
+                    $element,
+                    'suitable_for_surgeon_id',
+                    '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
+                    array('class' => 'inline', 'empty' => 'Select', 'nowrapper' => true)
+                ) ?>
           </div>
           <label class="inline cols-6" style="padding-left: 4px">
                 <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true)) ?>
@@ -110,23 +112,23 @@
     <div class="cols-6 column">
             <?php
             echo $form->multiSelectList(
-              $element,
-              'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_Archive[reasonForSurgery]',
-              'reasonForSurgery',
-              'id',
-              \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),
-              array(),
-              array(
+                $element,
+                'OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_Archive[reasonForSurgery]',
+                'reasonForSurgery',
+                'id',
+                \CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAllByAttributes(array(), 'active=1'), 'id', 'name'),
+                array(),
+                array(
                   'empty' => '',
                   'label' => 'Primary Reason For Cataract Surgery',
                   'nowrapper' => true,
-              ),
-              false,
-              true,
-              null,
-              false,
-              false,
-              array('label' => 3, 'field' => 9)
+                ),
+                false,
+                true,
+                null,
+                false,
+                false,
+                array('label' => 3, 'field' => 9)
             );
             ?>
     </div>

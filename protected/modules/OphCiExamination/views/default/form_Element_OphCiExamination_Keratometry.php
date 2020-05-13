@@ -25,9 +25,12 @@
     <label><?php echo $element->getAttributeLabel('tomographer_id') ?>:</label>
         <?php
         $allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
-        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
-          $element->tomographer_id,
-          CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+        echo CHtml::dropDownList(
+            'OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
+            $element->tomographer_id,
+            CHtml::listData($allTomographerDevice, 'id', 'name'),
+            array('class' => 'MultiSelectList')
+        ); ?>
   </div>
   <div class="large-2 column"></div>
 </div>
@@ -51,8 +54,11 @@
                 <label><?php echo $element->getAttributeLabel($eye_side . '_anterior_k1_value') ?>:</label>
               </td>
               <td>
-                  <?= $form->textField($element, $eye_side . "_anterior_k1_value",
-                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                  <?= $form->textField(
+                      $element,
+                      $eye_side . "_anterior_k1_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                  ) ?>
               </td>
             </tr>
             <tr>
@@ -60,8 +66,11 @@
                 <label><?php echo $element->getAttributeLabel($eye_side . '_anterior_k2_value') ?>:</label>
               </td>
               <td>
-                  <?= $form->textField($element, $eye_side . "_anterior_k2_value",
-                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                  <?= $form->textField(
+                      $element,
+                      $eye_side . "_anterior_k2_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                  ) ?>
               </td>
             </tr>
             <tr>
@@ -72,9 +81,11 @@
                   <div class="flex-layout">
                   <?php
                     $allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_front]',
-                      $element->{$eye_side . '_quality_front'},
-                      CHtml::listData($allQualScore, 'id', 'name')); ?>
+                    echo CHtml::dropDownList(
+                        'OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_front]',
+                        $element->{$eye_side . '_quality_front'},
+                        CHtml::listData($allQualScore, 'id', 'name')
+                    ); ?>
                   </div>
               </td>
             </tr>
@@ -83,8 +94,11 @@
                           <label><?php echo $element->getAttributeLabel($eye_side . '_kmax_value') ?>:</label>
                       </td>
                       <td>
-                          <?= $form->textField($element, $eye_side . "_kmax_value",
-                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                          <?= $form->textField(
+                              $element,
+                              $eye_side . "_kmax_value",
+                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                          ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -94,8 +108,11 @@
                           </label>
                       </td>
                       <td>
-                          <?= $form->textField($element, $eye_side . "_thinnest_point_pachymetry_value",
-                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                          <?= $form->textField(
+                              $element,
+                              $eye_side . "_thinnest_point_pachymetry_value",
+                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                          ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -103,8 +120,11 @@
                           <label><?php echo $element->getAttributeLabel($eye_side . '_ba_index_value') ?>:</label>
                       </td>
                       <td>
-                          <?= $form->textField($element, $eye_side . "_ba_index_value",
-                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                          <?= $form->textField(
+                              $element,
+                              $eye_side . "_ba_index_value",
+                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                          ) ?>
                       </td>
                   </tr>
                   </tbody>
@@ -120,8 +140,11 @@
                           <label><?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k1_value') ?>:</label>
                       </td>
                       <td>
-                          <?= $form->textField($element, $eye_side . "_axis_anterior_k1_value",
-                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                          <?= $form->textField(
+                              $element,
+                              $eye_side . "_axis_anterior_k1_value",
+                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                          ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -129,8 +152,11 @@
                           <label><?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k2_value') ?>:</label>
                       </td>
                       <td>
-                          <?= $form->textField($element, $eye_side . "_axis_anterior_k2_value",
-                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+                          <?= $form->textField(
+                              $element,
+                              $eye_side . "_axis_anterior_k2_value",
+                              array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)
+                          ) ?>
                       </td>
                   </tr>
                   <tr>
@@ -140,9 +166,11 @@
                       <td>
                           <div class="flex-layout">
                               <?php
-                                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_back]',
-                                  $element->{$eye_side . '_quality_back'},
-                                  CHtml::listData($allQualScore, 'id', 'name')); ?>
+                                echo CHtml::dropDownList(
+                                    'OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_quality_back]',
+                                    $element->{$eye_side . '_quality_back'},
+                                    CHtml::listData($allQualScore, 'id', 'name')
+                                ); ?>
                           </div>
                       </td>
                   </tr>
@@ -160,19 +188,20 @@
                             0 => 'No',
                             1 => 'Yes',
                         ),
-                         ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
-                         false,
-                         false,
-                         false,
-                         false,
-                         array(
+                        ($element->{$eye_side . '_flourescein_value'} !== null) ? $element->{$eye_side . '_flourescein_value'} : 0,
+                        false,
+                        false,
+                        false,
+                        false,
+                        array(
                             'text-align' => $eye_side,
                             'nowrapper' => true,
                         ),
-                         array(
+                        array(
                             'label' => 4,
                             'field' => 8,
-                        ));
+                        )
+                    );
                     ?>
                         <div class="flex-layout">
                 </td>
@@ -185,9 +214,11 @@
                     <div class="flex-layout">
                     <?php
                     $allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_cl_removed]',
+                    echo CHtml::dropDownList(
+                        'OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye_side . '_cl_removed]',
                         $element->{$eye_side . '_cl_removed'},
-                        CHtml::listData($allCLRemoved, 'id', 'name')); ?>
+                        CHtml::listData($allCLRemoved, 'id', 'name')
+                    ); ?>
                     </div>
                 </td>
               </tr>

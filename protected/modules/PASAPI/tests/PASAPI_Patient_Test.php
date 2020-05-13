@@ -261,7 +261,7 @@ EOF;
 
         $this->assertNull(
             Patient::model()->findByAttributes(
-            array('hos_num' => '010101010010101')
+                array('hos_num' => '010101010010101')
             )
         );
     }

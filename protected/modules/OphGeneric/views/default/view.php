@@ -26,10 +26,13 @@ $sop = isset($device_information->sop_instance_uid) ? $device_information->sop_i
 if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
     array_unshift(
         $this->event_actions,
-        EventAction::link('Open In Forum',
+        EventAction::link(
+            'Open In Forum',
             ('oelauncher:forumsop/' . $sop),
-            null, ['class' => 'button small']
-        ));
+            null,
+            ['class' => 'button small']
+        )
+    );
 }
 
 $this->beginContent('//patient/event_container');

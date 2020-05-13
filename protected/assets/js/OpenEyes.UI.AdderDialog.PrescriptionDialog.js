@@ -22,24 +22,24 @@
         $('<th id="common-drugs-label">Common Drugs</th>').appendTo($header);
 
 
-    this.popup.on('click', '.js-search-results li', function () {
-      if ($(this).data('selected') == "none"){
-        $(this).data('selected','true');
-      }else{
-        $(this).data('selected','none');
-        $(this).removeClass('selected');
-      }
-    });
+        this.popup.on('click', '.js-search-results li', function () {
+            if ($(this).data('selected') == "none") {
+                $(this).data('selected', 'true');
+            } else {
+                $(this).data('selected', 'none');
+                $(this).removeClass('selected');
+            }
+        });
 
         this.popup.on('click', '.js-drug-types li', function () {
-      if ($(this).data('selected') == "none"){
-        dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
-        dialog.popup.find('.js-drug-types li').not(this).data('selected','none');
-        $(this).data('selected','true');
-      }else{
-        $(this).data('selected','none');
-        $(this).removeClass('selected');
-      }
+            if ($(this).data('selected') == "none") {
+                dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
+                dialog.popup.find('.js-drug-types li').not(this).data('selected', 'none');
+                $(this).data('selected', 'true');
+            } else {
+                $(this).data('selected', 'none');
+                $(this).removeClass('selected');
+            }
             dialog.runItemSearch(dialog.popup.find('input.search').val());
         });
 
@@ -50,7 +50,7 @@
 
     PrescriptionDialog.prototype.getSelectedItems = function () {
         return this.popup.find('li.selected').filter(function () {
-      return $(this).closest('.js-drug-types').length === 0 && !$(this).parent().hasClass('js-no-preservative');
+            return $(this).closest('.js-drug-types').length === 0 && !$(this).parent().hasClass('js-no-preservative');
         }).map(function () {
             return $(this).data();
         }).get();
@@ -59,7 +59,7 @@
     PrescriptionDialog.prototype.generateContent = function () {
         let dialog = this;
         if (this.options.itemSets) {
-            this.selectWrapper = $('<table />', {class: 'select-options'});
+            this.selectWrapper = $('<table />', { class: 'select-options' });
             $('<thead />').appendTo(this.selectWrapper);
             this.selectWrapper.appendTo(this.popup);
             let $container = $('<tbody />');
@@ -68,10 +68,10 @@
 
             $(this.options.itemSets).each(function (index, itemSet) {
                 let $td = $('<td />').appendTo(dialog.$tr);
-                let $listContainer = $('<div />', {class: 'lists-layout'}).appendTo($td);
+                let $listContainer = $('<div />', { class: 'lists-layout' }).appendTo($td);
                 let $list = dialog.generateItemList(itemSet);
                 $list.addClass(itemSet.options.class);
-                let $listDiv = $('<div />', {class: 'list-wrap'}).appendTo($listContainer);
+                let $listDiv = $('<div />', { class: 'list-wrap' }).appendTo($listContainer);
 
                 // add the search field only to the common_drugs section
                 if (itemSet.options.class !== null && itemSet.options.class === "js-drug-list") {
@@ -94,7 +94,7 @@
 
     PrescriptionDialog.prototype.generateSearch = function () {
         let $td = $('<td />');
-        this.searchWrapper = $('<div />', {class: 'lists-layout'}).appendTo($td);
+        this.searchWrapper = $('<div />', { class: 'lists-layout' }).appendTo($td);
         $td.prependTo(this.$tr);
 
         let $filterDiv = $('<div />').appendTo(this.searchWrapper);
@@ -102,12 +102,12 @@
         this.noSearchResultsWrapper = $('<span />').text('No results found').hide();
         this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
 
-			this.searchResultList = $('<ul />', {class: 'add-options multi js-search-results', style: "display: none;", "data-multiselect":"true"});
-			this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
+        this.searchResultList = $('<ul />', { class: 'add-options multi js-search-results', style: "display: none;", "data-multiselect": "true" });
+        this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
 
-        let $drugTypes = $('<ul >', {class: 'add-options js-drug-types'});
+        let $drugTypes = $('<ul >', { class: 'add-options js-drug-types' });
         this.options.searchOptions.searchFilter.forEach(function (drugType) {
-      $drugTypes.append($('<li />', {'data-id': drugType.id, 'data-selected':'none'}).append($('<span />', {class: 'auto-width'}).text(drugType.label)));
+            $drugTypes.append($('<li />', { 'data-id': drugType.id, 'data-selected': 'none' }).append($('<span />', { class: 'auto-width' }).text(drugType.label)));
         });
 
         $drugTypes.appendTo($filterDiv);
@@ -133,7 +133,7 @@
                 code: this.options.searchOptions.code,
                 type_id: this.popup.find('.js-drug-types li.selected').data('id'),
                 preservative_free: this.popup.find('.js-no-preservative li.selected').data('id'),
-            ajax: 'ajax',
+                ajax: 'ajax',
             });
 
             dialog.popup.find('.js-drug-list li.selected').not(this).removeClass('selected');
@@ -148,8 +148,8 @@
                 $(results).each(function (index, result) {
                     let dataset = AdderDialog.prototype.constructDataset(result);
                     dataset['data-selected'] = 'none';
-          let item = $("<li />", dataset);
-                    item.append(dataset['data-prepended_markup'], $('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                    let item = $("<li />", dataset);
+                    item.append(dataset['data-prepended_markup'], $('<span />', { class: 'auto-width' }).text(dataset['data-label']));
                     dialog.searchResultList.append(item);
                 });
 

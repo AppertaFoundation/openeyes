@@ -79,7 +79,8 @@ class OphCoTherapyapplication_Processor
                     true,
                     $side,
                     $el_diag->{$side.'_diagnosis1_id'},
-                    $el_diag->{$side.'_diagnosis2_id'})) {
+                    $el_diag->{$side.'_diagnosis2_id'}
+                )) {
                     $missing_sides[] = $side;
                 }
             }

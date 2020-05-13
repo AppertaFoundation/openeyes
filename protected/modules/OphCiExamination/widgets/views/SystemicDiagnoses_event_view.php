@@ -24,7 +24,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
 <div class="element-data">
     <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
       <div class="data-value not-recorded">
-        No diagnoses recorded during this encounter
+          Nil recorded this examination
       </div>
     <?php } else { ?>
       <div class="data-value">

@@ -70,8 +70,12 @@ foreach ($skin_drugs as $drug) {
                 echo '<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip" 
           data-tooltip-content="Allergic to ' .  $antiseptic_allergy . '"></i>';
             } ?>
-            <?php echo $form->dropDownList($element, $side . '_pre_antisept_drug_id',
-              CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts); ?>
+            <?php echo $form->dropDownList(
+                $element,
+                $side . '_pre_antisept_drug_id',
+                CHtml::listData($antiseptic_drugs, 'id', 'name'),
+                $antiseptic_drugs_opts
+            ); ?>
       </td>
     </tr>
     <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id"
@@ -86,8 +90,12 @@ foreach ($skin_drugs as $drug) {
                 echo '<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip"
            data-tooltip-content="Allergic to ' .  $skin_allergy . '"></i>';
             } ?>
-            <?php echo $form->dropDownList($element, $side . '_pre_skin_drug_id',
-              CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts); ?>
+            <?php echo $form->dropDownList(
+                $element,
+                $side . '_pre_skin_drug_id',
+                CHtml::listData($skin_drugs, 'id', 'name'),
+                $skin_drugs_opts
+            ); ?>
       </td>
     </tr>
     <tr>
@@ -97,8 +105,11 @@ foreach ($skin_drugs as $drug) {
         </label>
       </td>
       <td>
-            <?php echo $form->checkbox($element, $side . '_pre_ioplowering_required',
-              array('nowrapper' => true, 'no-label' => true)); ?>
+            <?php echo $form->checkbox(
+                $element,
+                $side . '_pre_ioplowering_required',
+                array('nowrapper' => true, 'no-label' => true)
+            ); ?>
       </td>
     </tr>
     <?php
@@ -135,19 +146,19 @@ foreach ($skin_drugs as $drug) {
             }
 
             echo $form->multiSelectList(
-              $element,
-              get_class($element) . '[' . $side . '_pre_ioploweringdrugs]',
-              $side . '_pre_ioploweringdrugs',
-              'id',
-              CHtml::listData($ioplowering_drugs, 'id', 'name'),
-              array(),
-              $html_options,
-              false,
-              false,
-              null,
-              false,
-              false,
-              array()
+                $element,
+                get_class($element) . '[' . $side . '_pre_ioploweringdrugs]',
+                $side . '_pre_ioploweringdrugs',
+                'id',
+                CHtml::listData($ioplowering_drugs, 'id', 'name'),
+                array(),
+                $html_options,
+                false,
+                false,
+                null,
+                false,
+                false,
+                array()
             );
             ?>
       </td>
@@ -193,12 +204,13 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td>
             <?php echo $form->dropDownList(
-              $element,
-              $side . '_drug_id',
-              CHtml::listData($drugs, 'id', 'name'),
-              $html_options,
-              false,
-              array()); ?>
+                $element,
+                $side . '_drug_id',
+                CHtml::listData($drugs, 'id', 'name'),
+                $html_options,
+                false,
+                array()
+            ); ?>
       </td>
     </tr>
 
@@ -252,11 +264,12 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td>
             <?php echo $form->textField(
-              $element,
-              $side . '_batch_number',
-              array('nowrapper' => true),
-              array(),
-              array('field' => 6)) ?>
+                $element,
+                $side . '_batch_number',
+                array('nowrapper' => true),
+                array(),
+                array('field' => 6)
+            ) ?>
       </td>
     </tr>
     <?php
@@ -274,14 +287,15 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td>
             <?php echo $form->datePicker(
-              $element,
-              $side . '_batch_expiry_date',
-              $expiry_date_params,
-              array('nowrapper' => true),
-              array(
+                $element,
+                $side . '_batch_expiry_date',
+                $expiry_date_params,
+                array('nowrapper' => true),
+                array(
                   'label' => $form->layoutColumns['label'],
                   'field' => 3,
-              )) ?>
+                )
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -292,13 +306,17 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td>
             <?php echo $form->dropDownList(
-              $element,
-              $side . '_injection_given_by_id',
-              CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(), 'id',
-                  'ReversedFullNameAndUserName'),
-              array('empty' => 'Select', 'nowrapper' => true),
-              false,
-              array('field' => 6))
+                $element,
+                $side . '_injection_given_by_id',
+                CHtml::listData(
+                    OphTrIntravitrealinjection_InjectionUser::model()->getUsers(),
+                    'id',
+                    'ReversedFullNameAndUserName'
+                ),
+                array('empty' => 'Select', 'nowrapper' => true),
+                false,
+                array('field' => 6)
+            )
             ?>
       </td>
     </tr>
@@ -320,8 +338,11 @@ foreach ($skin_drugs as $drug) {
             if (isset($_POST[get_class($element)])) {
                 $val = $_POST[get_class($element)][$side . '_injection_time'];
             }
-            echo CHtml::textField(get_class($element) . '[' . $side . '_injection_time]', $val,
-              array('autocomplete' => Yii::app()->params['html_autocomplete']));
+            echo CHtml::textField(
+                get_class($element) . '[' . $side . '_injection_time]',
+                $val,
+                array('autocomplete' => Yii::app()->params['html_autocomplete'])
+            );
             ?>
       </td>
     </tr>
@@ -333,10 +354,10 @@ foreach ($skin_drugs as $drug) {
       </td>
       <td>
             <?php echo $form->checkbox(
-              $element,
-              $side . '_post_ioplowering_required',
-              array('nowrapper' => true, 'no-label' => true)
-          ); ?>
+                $element,
+                $side . '_post_ioplowering_required',
+                array('nowrapper' => true, 'no-label' => true)
+            ); ?>
       </td>
     </tr>
     <?php
@@ -375,19 +396,19 @@ foreach ($skin_drugs as $drug) {
                 $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
             }
             echo $form->multiSelectList(
-              $element,
-              get_class($element) . '[' . $side . '_post_ioploweringdrugs]',
-              $side . '_post_ioploweringdrugs',
-              'id',
-              CHtml::listData($ioplowering_drugs, 'id', 'name'),
-              array(),
-              $html_options,
-              false,
-              false,
-              null,
-              false,
-              false,
-              array()
+                $element,
+                get_class($element) . '[' . $side . '_post_ioploweringdrugs]',
+                $side . '_post_ioploweringdrugs',
+                'id',
+                CHtml::listData($ioplowering_drugs, 'id', 'name'),
+                array(),
+                $html_options,
+                false,
+                false,
+                null,
+                false,
+                false,
+                array()
             );
             ?>
       </td>

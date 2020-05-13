@@ -18,7 +18,8 @@
 ?>
 <?php
     $this->renderPartial(
-    'form_'.get_class($element),
-    array('element' => $element, 'data' => $data, 'form' => $form),
-    false, false
+        'form_'.get_class($element),
+        array('element' => $element, 'data' => $data, 'form' => $form),
+        false,
+        false
     )?>
