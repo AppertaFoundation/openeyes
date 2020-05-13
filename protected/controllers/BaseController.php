@@ -312,7 +312,6 @@ class BaseController extends Controller
     protected function renderJSON($data)
     {
         header('Content-type: application/json');
-        // echo CJSON::encode($data);
         echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {
@@ -411,8 +410,7 @@ class BaseController extends Controller
 
     public function sanitizeInput($input)
     {
-
-        $allowable_tags = "<b><div><strong><p><input><option><select><table><thead><tbody><tr><th><td><br>";
+        $allowable_tags = "<b><strong><p><input><option><select><table><thead><tbody><tr><th><td><i><em><span><br><ul><ol><li><div>";
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {

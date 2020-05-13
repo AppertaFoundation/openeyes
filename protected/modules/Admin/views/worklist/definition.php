@@ -18,6 +18,8 @@
 
 <div class="admin box">
     <h2>Worklist Definition</h2>
+    <?php echo EventAction::link('Definitions List', '/Admin/worklist/definitions/', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
+    <br/><br/>
     Name: <?= $definition->name ?><br />
     Frequency: <i><?= $definition->rruleHumanReadable ?></i><br />
     Time Slot: <?=$definition->start_time?> - <?=$definition->end_time?>

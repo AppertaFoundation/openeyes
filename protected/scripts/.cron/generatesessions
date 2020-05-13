@@ -1,0 +1,3 @@
+# Run daily at 00:50 to pull latest ODS / HSCIC GP and practice data
+# pulls in environment variables from /etc/profile or /env.sh
+50 00 * * * 	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; bash $WROOT/protected/scripts/generatesessions.sh > $WROOT/protected/runtime/generatesessions_`date +\%Y\%m\%d\%H\%M\%S`.log 2>&1

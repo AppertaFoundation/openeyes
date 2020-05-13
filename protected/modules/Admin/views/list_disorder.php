@@ -32,7 +32,7 @@
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('search[query]', $query, [
+                    <td><?= CHtml::textField('searchQuery', $query, [
 //                            Removed case sensitive warning after search was made case insensitive- CERA-527
                             'placeholder' => 'Search Term , Fully Specified Name , Aliases',
                             'class' => 'cols-full',
@@ -53,7 +53,7 @@
                         ) ?>
                     </td>
                     <td>
-                        <button class="blue hint" id="search-button" name="search" type="submit">Search</button>
+                        <button class="blue hint" id="search-button" type="submit">Search</button>
                     </td>
                 </tr>
             </table>

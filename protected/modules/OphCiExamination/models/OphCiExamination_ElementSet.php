@@ -54,7 +54,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+                array('id, name, display_order_edited', 'safe', 'on' => 'search'),
         );
     }
 
@@ -118,7 +118,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
     public function getSetElementOrder($element)
     {
         foreach ($this->visibleItems as $item) {
-            if ($element->getElementType() == $item->element_type && $item->display_order) {
+            if ($element->getElementType()->class_name == $item->element_type->class_name && $item->display_order) {
                 return $item->display_order;
             }
         }

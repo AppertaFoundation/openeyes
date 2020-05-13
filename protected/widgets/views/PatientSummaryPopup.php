@@ -185,8 +185,40 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!--                  Added a timestamp for create date and modified date -- CERA-490 -->
                                 <label for="patient_create_date"><?= date("d-M-Y h:i a", strtotime($this->patient->created_date))?></label>
                             </td>
-                    </tr>
-                    <tr>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                            <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                            <td>
+                                <?php
+                                // Show GP Practice address if available, otherwise fallback to GP address
+                                if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                    echo $this->patient->practice->contact->address->letterLine;
+                                } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                        echo $this->patient->gp->contact->address->letterLine;
+                                } else {
+                                    echo 'Unknown';
+                                } ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                            <td>
+                                <?php
+                                // Show Practice phone number first, if not, fall back to GP phone number
+                                if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                    echo $this->patient->practice->contact->primary_phone;
+                                } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                        echo $this->patient->gp->contact->primary_phone;
+                                } else {
+                                    echo 'Unknown';
+                                } ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
                                     Last Modified Date:
                             </td>
@@ -211,11 +243,31 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show GP Practice address if available, otherwise fallback to GP address
+                                        if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                            echo $this->patient->practice->contact->address->letterLine;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                                echo $this->patient->gp->contact->address->letterLine;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
-                                        <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+                                        <td>
+                                        <?php
+                                        // Show Practice phone number first, if not, fall back to GP phone number
+                                        if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                            echo $this->patient->practice->contact->primary_phone;
+                                        } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                                echo $this->patient->gp->contact->primary_phone;
+                                        } else {
+                                            echo 'Unknown';
+                                        } ?>
+                                        </td>
                                 </tr>
                                 <tr>
                                         <td>
@@ -243,15 +295,15 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     <?php }
                                 } ?>
 
-                                <?php $examination_accessible_info_standards = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_AccessibleInformationStandards', $patient); ?>
+                                <?php $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
-                                            <h2>Accessibility</h2>
+                                            <h2>Communication Preferences</h2>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Large print:</td>
-                                        <td><span class="large-text"><?= ($examination_accessible_info_standards && $examination_accessible_info_standards->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
+                                        <td>Large print</td>
+                                        <td><span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
                                 </tbody>
                         </table>

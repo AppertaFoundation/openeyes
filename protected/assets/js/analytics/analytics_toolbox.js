@@ -70,21 +70,16 @@ var analytics_toolbox = (function () {
 	function initDatePicker(def) {
 		var date_from = typeof (def) === 'undefined' ? false : new Date(def['date_from']);
 		var date_to = typeof (def) === 'undefined' ? false : new Date(def['date_to']);
-		if (date_from && date_to) {
-			date_from = processDate(date_from);
-
-			date_to = processDate(date_to);
-		}
 
 		pickmeup('#analytics_datepicker_from', {
-			format: 'Y-m-d',
+			format: 'd-b-Y',
 			date: date_from,
 			hide_on_select: true,
 			default_date: date_from,
 		});
 
 		pickmeup('#analytics_datepicker_to', {
-			format: 'Y-m-d',
+			format: 'd-b-Y',
 			date: date_to,
 			hide_on_select: true,
 			default_date: date_to,
@@ -266,9 +261,13 @@ var analytics_toolbox = (function () {
 						if (va_mode.html().includes('change')) {
 							chart.layout['yaxis']['tickmode'] = 'auto';
 						} else {
+                            var tick_position = $.parseJSON(data['va_final_ticks']['tick_position']);
+                            var tick_labels = $.parseJSON(data['va_final_ticks']['tick_labels']);
+                            tick_position = tick_position ? tick_position : data['va_final_ticks']['tick_position'];
+                            tick_labels = tick_labels ? tick_labels : data['va_final_ticks']['tick_labels'];
 							chart.layout['yaxis']['tickmode'] = 'array';
-							chart.layout['yaxis']['tickvals'] = JSON.parse($va_final_ticks['tick_position']);
-							chart.layout['yaxis']['ticktext'] = JSON.parse($va_final_ticks['tick_labels']);
+							chart.layout['yaxis']['tickvals'] = tick_position;
+							chart.layout['yaxis']['ticktext'] = tick_labels;
 						}
 						chart.data[0]['x'] = custom_data[i][0]['x'];
 						chart.data[0]['y'] = custom_data[i][0]['y'];

@@ -39,11 +39,6 @@
 <body>
     <nav class="analytics-header flex-layout">
         <div class="title">Analytics</div>
-
-        <!-- exit oes and go back to previous page -->
-        <div id="js-exit-analytics">
-            <i class="oe-i remove-circle"></i>
-        </div>
     </nav>
     <main class="oe-analytics flex-layout flex-top cols-full">
         <div class="cols-3" style="position:sticky;top:0;z-index:5;">
@@ -52,16 +47,16 @@
                     <h3>Select options</h3>
                     <ul class="oescape-icon-btns">
                         <li class="icon-btn">
-                            <a href="allsubspecialties" id="js-all-specialty-tab" class="active" data-specialty="All">All</a>
+                            <a href="#" data-link="allsubspecialties" id="js-all-specialty-tab" class="active" data-specialty="All">All</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="cataract" id="js-ca-specialty-tab" class="active" data-specialty="Cataract">CA</a>
+                            <a href="#" data-link="cataract" id="js-ca-specialty-tab" class="active" data-specialty="Cataract">CA</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="glaucoma" id="js-gl-specialty-tab" class="active" data-specialty="Glaucoma">GL</a>
+                            <a href="#" data-link="glaucoma" id="js-gl-specialty-tab" class="active" data-specialty="Glaucoma">GL</a>
                         </li>
                         <li class="icon-btn">
-                            <a href="medicalretina" id="js-mr-specialty-tab" class="active" data-specialty="Medical Retina">MR</a>
+                            <a href="#" data-link="medicalretina" id="js-mr-specialty-tab" class="active" data-specialty="Medical Retina">MR</a>
                         </li>
                     </ul>
                 </div>
@@ -81,11 +76,13 @@
             </div>
             <table>
                 <colgroup>
-                    <col style="width: 100px;">
-                    <col style="width: 100px">
-                    <col style="width: 200px;">
-                    <col style="width: 100px;">
-                    <col style="width: 50px;">
+                    <col style="width: 7%;">
+                    <col style="width: 7%">
+                    <col style="width: 14%;">
+                    <col style="width: 7%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 3.5%;">
+                    <col style="width: 24%;">
                 </colgroup>
                 <thead>
                 <tr>

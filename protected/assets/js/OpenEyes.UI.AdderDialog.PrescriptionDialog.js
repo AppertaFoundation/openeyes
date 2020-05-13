@@ -103,6 +103,7 @@
     this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
 
     this.searchResultList = $('<ul />', {class: 'add-options multi js-search-results', "data-multiselect":"true"});
+    this.searchResultList.hide();
     this.searchResultList.insertAfter(this.popup.find('.js-drug-list'));
 
     let $drugTypes = $('<ul >', {class: 'add-options js-drug-types'});

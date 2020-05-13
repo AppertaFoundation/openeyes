@@ -20,7 +20,7 @@ namespace OEModule\OphCiExamination\models;
 use Yii;
 
 /**
- * This is the model class for table "et_ophciexamination_accessible_information_standards".
+ * This is the model class for table "et_ophciexamination_communication_preferences".
  *
  * The followings are the available columns in table:
  *
@@ -29,10 +29,12 @@ use Yii;
  * @property int $correspondence_in_large_letters
  *
  */
-class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEventTypeElement
+class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
+
+    protected $default_from_previous = true;
 
     /**
      * Returns the static model of the specified AR class.
@@ -49,7 +51,7 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
      */
     public function tableName()
     {
-        return 'et_ophciexamination_accessible_information_standards';
+        return 'et_ophciexamination_communication_preferences';
     }
 
     /**
@@ -60,8 +62,8 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('correspondence_in_large_letters', 'safe'),
-                array('correspondence_in_large_letters', 'required'),
+            array('correspondence_in_large_letters', 'safe'),
+            array('correspondence_in_large_letters', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, correspondence_in_large_letters,anticoagulant ', 'safe', 'on' => 'search'),
@@ -76,9 +78,9 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -88,18 +90,10 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'correspondence_in_large_letters' => 'Large print for correspondence',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'correspondence_in_large_letters' => 'Large print for correspondence',
         );
-    }
-
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-        
     }
 
     /**
@@ -120,7 +114,7 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
         $criteria->compare('correspondence_in_large_letters', $this->correspondence_in_large_letters);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -133,6 +127,4 @@ class Element_OphCiExamination_AccessibleInformationStandards extends \BaseEvent
     {
         return true;
     }
-
-
 }

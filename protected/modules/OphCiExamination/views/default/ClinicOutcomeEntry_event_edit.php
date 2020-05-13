@@ -35,7 +35,7 @@ if (!isset($values)) {
 <tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
     <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
-        <?= Chtml::activeHiddenField($entry, 'id');?>
+        <?= Chtml::activeHiddenField($entry, 'id'); ?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
         <?php if (!$patient_ticket) : ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
@@ -62,6 +62,8 @@ if (!isset($values)) {
                     </div>
                     <h3>Clinic Info</h3>
                     <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->report) : '-'; ?>
+                    <input type="hidden" name="patientticket_queue" value="<?= $ticket->current_queue->id ?>"/>
+                    <input type="hidden" name="patientticketing__priority" value="<?= $ticket->priority_id ?>"/>
                 <?php } else { ?>
                     <fieldset class="flex-layout">
                         Virtual Clinic:
@@ -75,7 +77,7 @@ if (!isset($values)) {
                                 ?>
                                 <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
                             <?php } else {
-                                echo CHtml::dropDownList('patientticket_queue', $_POST['patientticket_queue'], $queues,
+                                echo CHtml::dropDownList('patientticket_queue', \Yii::app()->request->getParam('patientticket_queue', ''), $queues,
                                     array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));
                             } ?>
                         </div>

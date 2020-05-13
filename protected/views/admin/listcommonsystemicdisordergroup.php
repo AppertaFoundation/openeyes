@@ -27,7 +27,7 @@ if (isset($errors)) {
 </div>
 
 <div class="cols-5">
-    <form id="admin_commonsystemicdisordergroup" method="POST" action="/oeadmin/commonsystemicdisordergroup/save">
+    <form id="admin_commonsystemicdisordergroup" method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
         <table class="standard entry-table sortable">

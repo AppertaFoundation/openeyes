@@ -114,7 +114,7 @@ class InternalReferralSettingsController extends ModuleAdminController
             $return = array('success' => false, 'message' => $e->getMessage());
         }
 
-        echo CJSON::encode($return);
+        $this->renderJSON($return);
         Yii::app()->end();
     }
 

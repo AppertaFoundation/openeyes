@@ -534,29 +534,12 @@ class ElementLetter extends BaseEventTypeElement
         $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
         $criteria = new CDbCriteria();
-        $criteria->compare('firm_id', $firm->id);
-        $criteria->order = 'display_order asc';
-
-        foreach (LetterMacro::model()->findAll($criteria) as $macro) {
-            if (!in_array($macro->name, $macro_names)) {
-                $macros[$macro->id] = $macro_names[] = $macro->name;
-            }
-        }
-
+        $criteria->condition = 'firm_id = :firm_id OR site_id = :site_id';
+        $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria = new CDbCriteria();
-            $criteria->compare('subspecialty_id', $firm->serviceSubspecialtyAssignment->subspecialty_id);
-            $criteria->order = 'display_order asc';
-
-            foreach (LetterMacro::model()->findAll($criteria) as $macro) {
-                if (!in_array($macro->name, $macro_names)) {
-                    $macros[$macro->id] = $macro_names[] = $macro->name;
-                }
-            }
+            $criteria->condition .= ' OR subspecialty_id = :subspecialty_id';
+            $criteria->params = array_merge($criteria->params, [':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id]);
         }
-
-        $criteria = new CDbCriteria();
-        $criteria->compare('site_id', Yii::app()->session['selected_site_id']);
         $criteria->order = 'display_order asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {
@@ -793,7 +776,7 @@ class ElementLetter extends BaseEventTypeElement
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.
-        return $this->purifyContent(preg_replace("/\n(?=<p><\/p>)/", "<br/>", $this->body));
+        return $this->purifyContent(preg_replace("/<p>(<?((span style=\"\D{0,40};\")|(em)|(strong))?>){0,3}(<\/?((span)|(em)|(strong))?>){0,3}<\/p>/", "<br/>", $this->body));
     }
 
     /**

@@ -131,6 +131,26 @@ class DefaultController extends \BaseEventTypeController
         return $sortable_elements;
     }
 
+    public function getElements($action = 'edit')
+    {
+        $set = $this->set ? $this->set : $this->getSetFromEpisode($this->episode);
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                $flow_order = $set->getSetElementOrder($element);
+                if ($element->getElementType()) {
+                    if ($flow_order) {
+                        $elements[$flow_order] = $element;
+                    } else {
+                        $elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+                    }
+                }
+            }
+        }
+        ksort($elements);
+        return $elements;
+    }
+
     /**
      * Check data in child elements
      *
@@ -371,6 +391,8 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        $step_id = \Yii::app()->request->getParam('step_id');
+
         $elements = $this->getElements($action);
 
         // add OpenEyes.UI.RestrictedData js
@@ -679,9 +701,8 @@ class DefaultController extends \BaseEventTypeController
             throw new \Exception('Unable to find disorder: ' . @$_GET['disorder_id']);
         }
 
-        header('Content-type: application/json');
         // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
-        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
+        $this->renderJSON(array('id' => $disorder->id, 'name' => $disorder->term));
         Yii::app()->end();
     }
 
@@ -1194,9 +1215,9 @@ class DefaultController extends \BaseEventTypeController
 
         foreach ($entries as $entry) {
             if (array_search($entry['status_id'], $patient_ticket_ids) !== false) {
-                if (isset($data['patientticket_queue'])) {
-                    $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
-                    $queue_data = $api->extractQueueData($queue, $data);
+                $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
+                $queue_data = array_merge($data, $api->extractQueueData($queue, $data));
+                if (!$api->getTicketForEvent($this->event)) {
                     $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
                 } else {
                     $api->updateTicketForEvent($this->event);
@@ -1906,7 +1927,7 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        echo json_encode($assessments);
+        $this->renderJSON($assessments);
     }
 
     public function actionGetAttachment($assessment_ids)

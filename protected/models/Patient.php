@@ -132,7 +132,7 @@ class Patient extends BaseActiveRecordVersioned
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => Yii::app()->params['pas_in_use'] === true ? 'pas' : '' ),
             array('gender', 'required', 'on' => array('self_register')),
-            array('gp_id', 'required', 'on' => 'referral'),
+            array('practice_id', 'required', 'on' => 'referral'),
             array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
 
             array('hos_num, nhs_num', 'length', 'max' => 40),
@@ -403,15 +403,6 @@ class Patient extends BaseActiveRecordVersioned
         return $this->_pas_errors;
     }
 
-    public function getScenarioSourceCode()
-    {
-        return array(
-        'referral' => self::PATIENT_SOURCE_REFERRAL,
-        'self_register' => self::PATIENT_SOURCE_SELF_REGISTER,
-        'other_register' => self::PATIENT_SOURCE_OTHER,
-        );
-    }
-
   /**
    * @return array List of sources for display in a drop-down list.
    */
@@ -473,11 +464,21 @@ class Patient extends BaseActiveRecordVersioned
             $nhs_num_length = $nhs_num_length_setting ? $nhs_num_length_setting->value : null;
         }
 
-        if (strlen($this->nhs_num) == $nhs_num_length) {
-            $criteria->compare('nhs_num', $this->nhs_num, false);
+        // if number search we check both nhs_num and hos_num
+        // these values are populated in PatientSearch after the search term validation
+        // so there can be cases where a term both valid for hos_num and nhs_num
+        if ($this->nhs_num && $this->hos_num) {
+            $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
+            $criteria->params[':nhs_num'] = $this->nhs_num;
+            $criteria->params[':hos_num'] = $this->hos_num;
         } else {
-            $criteria->compare('hos_num', $this->hos_num, false);
+            if (strlen($this->nhs_num) == $nhs_num_length) {
+                $criteria->compare('nhs_num', $this->nhs_num, false);
+            } else {
+                $criteria->compare('hos_num', $this->hos_num, false);
+            }
         }
+
         $criteria->compare('t.deleted', 0);
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
@@ -2212,7 +2213,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         $sql = '
             SELECT p.*
-            FROM patient p 
+            FROM patient p
             JOIN patient_identifier pid
               ON p.id = pid.patient_id
             WHERE pid.value = :identifier_value

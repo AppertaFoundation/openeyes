@@ -43,7 +43,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             'biometry_report' => array(
                 self::BELONGS_TO,
                 'Element_OphCoDocument_Document',
-                'id',
+                'biometry_report_id',
             ),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
@@ -112,7 +112,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->axis = 0.0;
 
         if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
-            if (isset($biometry->attributes["lens_display_name_$eyeLabel"])) {
                 $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
                 $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
                 $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];
@@ -123,7 +122,6 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
                 $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
                 $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
-            }
         }
 
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
@@ -263,10 +261,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
-            if ($alpha && $this->getDisplayHasRisk($alpha) !== 'Not present') {
+            if ($alpha && $this->getDisplayHasRisk($alpha) === 'Present') {
                 return ($alpha['comments'] ?: '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
-            }
-            if (!$alpha) {
+            } elseif (!$alpha || $this->getDisplayHasRisk($alpha) === 'Not checked') {
                 return 'Not checked';
             }
             return 'No Alpha Blockers';
@@ -311,7 +308,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         if ($recent_document !== null && $recent_attachment_document === null) {
             return $recent_document;
-        } else if ($recent_document === null && $recent_attachment_document !== null) {
+        } elseif ($recent_document === null && $recent_attachment_document !== null) {
             return $recent_attachment_document;
         } else {
             return $recent_document->last_modified_date > $recent_attachment_document->last_modified_date ?
@@ -332,11 +329,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->inr = ($labResult) ? $labResult : 'None';
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
-            if ($anticoag && $this->getDisplayHasRisk($anticoag) !== 'Not present') {
+            if ($anticoag && $this->getDisplayHasRisk($anticoag) == 'Present') {
                 return ($anticoag['comments'] ?: '') . '(' . ($this->inr !== 'None' ? "INR {$this->inr}, " : '')
                     . Helper::convertMySQL2NHS($anticoag['date']) . ')';
-            }
-            if (!$anticoag) {
+            } elseif (!$anticoag || $this->getDisplayHasRisk($anticoag) === 'Not checked') {
                 return 'Not checked';
             }
             return 'No Anticoagulants';
@@ -353,16 +349,17 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public function getPatientRisksDisplay(&$total_risks)
     {
         /** @var Patient $patient */
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         $patient = $this->event->patient;
         $lines = array();
+        $whiteboard = $this;
 
         // Search for diabetes
-
         $diabetic_disorders = $patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
 
         if (!empty($diabetic_disorders)) {
             foreach ($diabetic_disorders as $disorder) {
-                $lines[] = $disorder;
+                $lines[] = array('Present', $disorder);
             }
         }
 
@@ -370,20 +367,31 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $risks = $patient->riskAssignments;
 
+        $anticoag = array_filter($risks, static function ($risk) {
+            return $risk->name === 'Anticoagulants';
+        });
+
         // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
 
         $risks = array_filter($risks, static function ($risk) {
-            return !in_array($risk->name, ['Anticoagulants', 'Alpha blockers']);
+            return $risk->name !== 'Anticoagulants';
         });
 
         $lines = array_merge(
             $lines,
             array_map(
-                static function ($risk) {
-                    if ($risk->comments !== '') {
-                        return '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->name . '</span>';
+                static function ($risk) use ($exam_api, $patient, $whiteboard) {
+                    $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                    $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
+
+                    if ($risk->name === 'Alpha blockers') {
+                        return array($risk_present, 'Alphablocker - ' . $whiteboard->alphaBlockerStatusAndDate($patient));
                     }
-                    return $risk->name;
+
+                    if ($risk->comments !== '') {
+                        return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                    }
+                    return array($risk_present, $exam_risk['name']);
                 },
                 array_filter(
                     $risks,
@@ -397,20 +405,32 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $display = '';
 
         foreach ($lines as $line) {
-            $total_risks++;
-            $display .= '<div class="alert-box warning">' . $line . '</div>';
+            if ($line[0] === 'Present') {
+                $total_risks++;
+                $display .= '<div class="alert-box warning">' . $line[1] . '</div>';
+            }
         }
 
-        if (!$patient->no_risks_date && !$risks) {
+        if (!$patient->no_risks_date
+            && !$risks
+            && empty($anticoag)
+            && $this->anticoagulant_name !== 'No Anticoagulants') {
             $total_risks = 0;
             $display .= '<div class="alert-box info">Status unknown</div>';
         }
 
-        // Add positive risk labels for significant risks that are not present.
+        // Add positive/unknown risk labels for significant risks that are not present or are unchecked.
         // Anticoagulants and alpha blockers are excluded from this list as they are handled independently.
         foreach ($this->booking->getAllBookingRisks() as $risk) {
-            if (!in_array($risk, $risks, true) && !in_array($risk->name, ['Anticoagulants', 'Alpha blockers'])) {
-                $display .= '<div class="alert-box success">' . "No {$risk->name}" . '</div>';
+            if ($risk->name !== 'Anticoagulants') {
+                $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                $has_risk = $this->getDisplayHasRisk($exam_risk);
+                if ($has_risk === 'Not checked') {
+                    $display .= '<div class="alert-box info">' . "Unchecked: {$risk->name}" . '</div>';
+                } elseif ($has_risk === 'Not present') {
+                    $display .= '<div class="alert-box success">' . "Absent: {$risk->name}" . '</div>';
+                }
+                // Do not display anything if the risk is present.
             }
         }
 

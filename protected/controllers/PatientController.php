@@ -1169,7 +1169,7 @@ class PatientController extends BaseController
         $v = new OEFuzzyDateValidator();
         $v->validateAttribute($sd, 'date');
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionRemovediagnosis()
@@ -1199,7 +1199,7 @@ class PatientController extends BaseController
 
         $result = $patient->editOphInfo($cvi_status, $cvi_status_date);
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function reportDiagnoses($params)
@@ -1338,12 +1338,12 @@ class PatientController extends BaseController
         }
 
         if (!$po->save()) {
-            echo json_encode($po->getErrors());
+            $this->renderJSON($po->getErrors());
 
             return;
         }
 
-        echo json_encode(array());
+        $this->renderJSON(array());
     }
 
     public function actionEditSocialHistory()
@@ -1435,7 +1435,7 @@ class PatientController extends BaseController
 
         $date = explode('-', $po->date);
 
-        echo json_encode(array(
+        $this->renderJSON(array(
             'operation' => $po->operation,
             'side_id' => $po->side_id,
             'fuzzy_year' => $date[0],
@@ -1481,7 +1481,7 @@ class PatientController extends BaseController
             throw new Exception('Institution not found: '.@$_GET['institution_id']);
         }
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionValidateSaveContact()
@@ -1514,7 +1514,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionAddContact()
@@ -1618,7 +1618,7 @@ class PatientController extends BaseController
         $data['contact_id'] = $location->contact_id;
         $data['name'] = $location->contact->fullName;
 
-        echo json_encode($data);
+        $this->renderJSON($data);
     }
 
     public function actionValidateEditContact()
@@ -1647,7 +1647,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionEditContact()
@@ -1839,7 +1839,7 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient_source = 'referral';
+        $patient_source = isset(Yii::app()->params['default_patient_source']) ? Yii::app()->params['default_patient_source'] : 'Referral';
         $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
@@ -2397,7 +2397,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2455,7 +2455,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2480,7 +2480,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }
@@ -2574,7 +2574,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($result);
+        $this->renderJSON($result);
     }
 
     /**

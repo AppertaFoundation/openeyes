@@ -22,6 +22,7 @@ namespace OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\Allergies;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -1437,15 +1438,22 @@ class OphCiExamination_API extends \BaseAPI
     {
         $follow_up_text = '';
 
-        $o = $this->getElementFromLatestVisibleEvent(
+        $element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context
         );
 
-        if ($o) {
-            if ($o->followup_quantity) {
-                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+        if ($element) {
+            $index = 0;
+            foreach ($element->entries as $entry) {
+                if ($entry->followup_quantity) {
+                    if ($index > 0) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $entry->followup_quantity . ' ' . $entry->followup_period;
+                    $index++;
+                }
             }
         }
 
@@ -1458,8 +1466,11 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                if (!isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])) {
-                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if (!isset($patient_ticket_followup['assignment_date']) || !isset($element->event->event_date) || ($element->event->event_date < $patient_ticket_followup['assignment_date'])) {
+                    if (!empty($follow_up_text)) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
         }
@@ -2440,9 +2451,23 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($element) {
-            $str = $element->status->name;
-            if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period}";
+            $str .= '<table><tbody>';
+            foreach ($element->entries as $index => $entry) {
+                if ($index > 0) {
+                    $str .= '<tr><td>AND</td>';
+                } else {
+                    $str .= '<tr><td></td>';
+                }
+                $str .= '<td>' . $entry->status->name;
+                if ($entry->status->followup) {
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
+                }
+                $str .= "</td></tr>";
+            }
+            $str .= '</table></tbody>';
+
+            if ($element->comments) {
+                $str .= "<strong>Comments:</strong> {$element->comments}";
             }
         }
         return $str;
@@ -2457,7 +2482,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string
      */
-    public function getCataractSurgicalManagement(\Patient $patient, $use_context = false)
+    public function getCataractSurgicalManagementAsText(\Patient $patient, $use_context = false)
     {
         $str = '';
         $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
@@ -2465,29 +2490,79 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
 
         if ($element) {
-            $str = "Eye: {$element->eye()->name}" . PHP_EOL;
-            $str .= "Straight Forward: " . ($element->fast_track == 1 ? 'Yes' : 'No') . PHP_EOL;
-            $str .= "Post Operative Target: {$element->target_postop_refraction}D" . PHP_EOL;
-            $str .= "Suitable for: {$element->suitable_for_surgeon->name}" . ($element->supervised == 1 ? " (supervised)" : "") . PHP_EOL;
-            $str .= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery" . PHP_EOL : "");
-            $str .= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye" . PHP_EOL : "");
-            $reasons = [];
-            foreach ($element->reasonForSurgery as $reason) {
-                $reasons[] = $reason->name;
+            if ($element->eye_id === (string) \Eye::BOTH) {
+                $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+                if ($element->right_eye_id === $first_eye_id) {
+                    $first_eye = 'right';
+                    $second_eye = 'left';
+                } else {
+                    $first_eye = 'left';
+                    $second_eye = 'right';
+                }
+
+                $str = "Listed for {$first_eye} cataract surgery followed by {$second_eye} cataract surgery.";
+            } else {
+                $str = "Listed for {$element->eye->name} cataract surgery.";
             }
 
-            if (!empty($reasons)) {
-                $str .= "Primary reason for surgery: " . implode(", ", $reasons) . PHP_EOL;
-            }
+            $str .= PHP_EOL;
         }
+
         return $str;
+    }
+
+    public function getCataractSurgicalManagementAsTable(Patient $patient, $use_context = false)
+    {
+        $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+            $patient,
+            $use_context);
+
+        $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+        $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopia', 2 => 'Other'];
+
+        if ($element) {
+            $is_both_eyes = $element->eye_id === (string) \Eye::BOTH;
+            $eye_sides = $is_both_eyes ? ($element->left_eye_id === $first_eye_id ? ['1st' => 'left', '2nd' => 'right'] : ['1st' => 'right', '2nd' => 'left']) : ($element->eye_id === (string)\Eye::RIGHT ? ['right'] : ['left']);
+            ob_start(); ?>
+            <table style="border-collapse: collapse; width: 80%;" border="1">
+                <tbody>
+                <?php foreach ($eye_sides as $key => $side) { ?>
+                    <tr>
+                        <th style="width: 10%;">
+                            <strong>
+                                <?= ucfirst($side) ?> eye <?= $is_both_eyes ? "($key)" : '' ?>
+                            </strong>
+                        </th>
+                        <th style="width: 30%;"></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Reason for surgery:</th>
+                        <th style="width: 30%;"><?= ($element->{$side . 'ReasonForSurgery'} ? $element->{$side . 'ReasonForSurgery'}->name : 'N/A') ?></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Guarded prognosis:</th>
+                        <th style="width: 30%;"><?= (string)$element->{$side . '_guarded_prognosis'} === '1' ? 'Yes' : 'No' ?></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Refractive target:</th>
+                        <?php $refractive_target = 'Not recorded';
+                        if ($element->{$side . '_target_postop_refraction'}) {
+                            $refractive_target = $element->{$side . '_target_postop_refraction'} . 'D' . " ({$refractive_categories[$element->{$side . '_refraction_category'}]})";
+                        } ?>
+                        <th style="width: 30%;"><?= $refractive_target ?></th>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php }
+        return ob_get_clean();
     }
 
     /**
      *
      * @param $patient
      * @param $risk_name
-     * @return mixed
+     * @return array|null
      */
     public function getRiskByName($patient, $risk_name)
     {
@@ -2504,10 +2579,49 @@ class OphCiExamination_API extends \BaseAPI
                 case (models\HistoryRisksEntry::$NOT_PRESENT):
                     $status = false;
                     break;
+                default:
+                    $status = null;
+                    break;
             }
 
             return array(
                 'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param $patient
+     * @param $allergy_name
+     * @return mixed
+     */
+    public function getAllergyByName($patient, $allergy_name)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\Allergies',
+            array('mode' => Allergies::$DATA_MODE, 'patient' => $patient));
+        $entry = $widget->element->getAllergyEntryByName($allergy_name);
+        if ($entry) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\AllergyEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\AllergyEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+                default:
+                    $status = null;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->allergy,
                 'status' => $status,
                 'comments' => $entry->comments,
                 'date' => $entry->element->event->event_date
