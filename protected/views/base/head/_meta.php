@@ -30,5 +30,5 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <meta name="theme-color" content="#ffffff">
 
 <script type="text/javascript">
-    var baseUrl = '<?php echo Yii::app()->baseUrl?>';
+    var baseUrl = '<?php echo rtrim(Yii::app()->createURL('site/index'), '\\/')?>';
 </script>
