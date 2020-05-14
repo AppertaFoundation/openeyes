@@ -152,14 +152,16 @@ $non_ticket_entries = [];
         </div>
         <?php } ?>
     </div>
-    <hr class="divider">
-    <table class="last-left large-text">
-        <colgroup>
-            <col class="cols-1">
-        </colgroup>
-        <tr>
-            <td>Comments</td>
-            <td><?= $element->comments ? $element->comments : '<span class="none">None</span>' ?></td>
-        </tr>
-    </table>
+    <?php if ($element->comments) { ?>
+        <hr class="divider">
+        <table class="last-left large-text">
+            <colgroup>
+                <col class="cols-1">
+            </colgroup>
+            <tr>
+                <td>Comments</td>
+                <td><?= $element->comments ?></td>
+            </tr>
+        </table>
+    <?php } ?>
 </div>
