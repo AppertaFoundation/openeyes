@@ -216,7 +216,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <?php if ($stopped_eye_meds) { ?>
                     <div class="collapse-data">
                         <div class="collapse-data-header-icon expand">
-                            Stopped
+                            Stopped Medications
                             <small>(<?= sizeof($stopped_eye_meds) ?>)</small>
                         </div>
                         <div class="collapse-data-content">
