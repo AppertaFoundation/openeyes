@@ -175,8 +175,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         return \MedicationRoute::model()->findAll([
             'condition' => 'source_type =:source_type',
             'params' => [':source_type' => 'DM+D'],
-            'order' => "term ASC"]
-        );
+            'order' => "term ASC"]);
     }
     /**
      * @return \CActiveRecord[]
