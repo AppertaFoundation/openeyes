@@ -295,7 +295,7 @@ class Medication extends BaseActiveRecordVersioned
     {
         $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term): $this->preferred_term;
 
-        if ($this->isAMP()) {
+        if ($this->isAMP() && $this->vtm_term) {
             $name.=" (".$this->vtm_term.")";
         }
 

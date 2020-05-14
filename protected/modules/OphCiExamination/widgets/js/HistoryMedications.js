@@ -689,9 +689,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let allergies = controller.getMergedAllergies();
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs",{
             set_id: set_id
-        }, function (response) {
+        }, function (medications) {
             if (typeof allergies !== undefined) {
-                let medications = JSON.parse(response);
                 let matching_allergies = controller.getMatchingAllergies(medications, allergies);
 
                 if (matching_allergies.length > 0) {
