@@ -49,69 +49,7 @@ function printIFrameUrl(url, data) {
 
 function printEvent(printOptions)
 {
-    var data = {canvas: {}};
-    var has_canvas_data = false;
-
-    $('canvas.ed-canvas-display').map(function() {
-        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
-    });
-
-	data['last_modified_date'] = OE_event_last_modified;
-
-	$.ajax({
-		'type': 'POST',
-		'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
-		'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-		'success': function(resp) {
-			switch (resp.trim()) {
-				case "ok":
-					printIFrameUrl(OE_print_url, printOptions);
-					break;
-				case "outofdate":
-					$.cookie('print',1);
-					window.location.reload();
-					break;
-				default:
-					alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
-					break;
-			}
-		}
-	});
-}
-
-function saveCanvasImagesToPdf( printOptions ){
-    if(typeof printOptions == "undefined"){
-        printOptions = null;
-    }
-    var data = {canvas: {}};
-    var has_canvas_data = false;
-
-    $('canvas.ed-canvas-display').map(function() {
-        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
-    });
-
-    if( typeof OE_event_last_modified !== "undefined" ){
-        data['last_modified_date'] = OE_event_last_modified;
-
-        $.ajax({
-            'type': 'POST',
-            'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
-            'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-            'success': function(resp) {
-                switch (resp.trim()) {
-                    case "ok":
-                        break;
-                    case "outofdate":
-                        $.cookie('print',1);
-                        window.location.reload();
-                        break;
-                    default:
-                        alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
-                        break;
-                }
-            }
-        });
-	}
+	printIFrameUrl(OE_print_url, printOptions);
 }
 
 
@@ -123,9 +61,6 @@ $(document).ready(function() {
 		setTimeout(function() { printWhenReady(); }, 500);
 	}
 
-});
-$(window).load(function() {
-    saveCanvasImagesToPdf();
 });
 
 function printWhenReady()
@@ -145,16 +80,6 @@ function printWhenReady()
 	} else {
 		setTimeout(function() { printWhenReady(); }, 500);
 	}
-}
-
-/*
- * DEPRECATED - should migrate to using printIFrameUrl
- */
-function printUrl(url, data, csspath) {
-	$.post(url, data, function(content) {
-		$('#printable').html(content);
-		printContent(csspath);
-	});
 }
 
 /**
@@ -188,22 +113,15 @@ if (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) {
 				if (timeout_id !== null) {
 					// Skip if setTimeout has already been called (prevents user
 					// from calling print multiple times)
-					console.log('Skipping print as count down already started '
-							+ (nextAvailableTime - now) / 1000
-							+ 's left until next print');
-					alert("New print request has been queued. "
-							+ Math.floor((nextAvailableTime - now) / 1000)
-							+ "secs until print.");
+					console.log('Skipping print as count down already started ' + (nextAvailableTime - now) / 1000 + 's left until next print');
+					alert("New print request has been queued. " + Math.floor((nextAvailableTime - now) / 1000) + "secs until print.");
 					return;
 				} else {
 					// print when next available
 					timeout_id = setTimeout(function() { runPrint(csspath); }, nextAvailableTime - now);
-					alert("Print request has been queued. "
-							+ Math.floor((nextAvailableTime - now) / 1000)
-							+ "secs until print.");
+					alert("Print request has been queued. " + Math.floor((nextAvailableTime - now) / 1000) + "secs until print.");
 				}
 			}
-		}
-
+		};
 	})();
 }
