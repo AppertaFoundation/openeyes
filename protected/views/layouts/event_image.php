@@ -24,7 +24,7 @@
     <?php $this->renderPartial('//patient/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body>
+<body class="open-eyes">
 <?php echo $content; ?>
 </body>
 </html>
