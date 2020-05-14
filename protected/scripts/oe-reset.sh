@@ -67,7 +67,7 @@ hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
-fallbackbranch=master
+fallbackbranch=${OE_RESET_FALLBACK_BRANCH:-master}
 
 # Pick default restore file based on what is available
 [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"

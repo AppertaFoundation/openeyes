@@ -33,7 +33,8 @@ class DefaultController extends BaseEventTypeController
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy' => self::ACTION_TYPE_PRINT,
         'getInitMethodDataById' => self::ACTION_TYPE_FORM,
-        'savePrint' => self::ACTION_TYPE_PRINT,
+        'savePrint'    => self::ACTION_TYPE_PRINT,
+        'printForRecipient' => self::ACTION_TYPE_PRINT,
     );
 
     protected $show_element_sidebar = false;
@@ -331,7 +332,7 @@ class DefaultController extends BaseEventTypeController
 
         if ($m[1] == 'Contact') {
             $contact = Person::model()->find('contact_id=?', array($m[2]));
-        } else if ($m[1] === 'GP') {
+        } elseif ($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
         } else {
             if (!$contact = $m[1]::model()->findByPk($m[2])) {
@@ -396,20 +397,19 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Renders one letter for one recipient internally... It returns the rendered HTML as a string
+     * Renders one letter for one recipient internally.
      *
-     * @param $letter
-     * @param $recipient_address
+     * @param $letter ElementLetter
+     * @param $recipient_address string
      * @param $contact_type
-     * @return string
      */
     private function renderOneRecipient($letter, $recipient_address, $contact_type)
     {
-        return $this->render('print', array(
+        $this->render('print', array(
             'element' => $letter,
             'letter_address' => $recipient_address,
             'contact_type' => $contact_type
-        ), true);
+        ));
     }
 
     /**
@@ -491,7 +491,6 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $recipients;
-
     }
 
     /**
@@ -506,12 +505,38 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @param $id
+     * @throws CHttpException
+     */
+    public function actionPrintForRecipient($id)
+    {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        $recipient_address = Yii::app()->request->getParam('recipient_address');
+        $target_id = Yii::app()->request->getParam('target_id');
+
+        $contact_type = null;
+
+        $target = DocumentTarget::model()->findByPk($target_id);
+        if ($target) {
+            $contact_type = $target->contact_type;
+        }
+
+        Yii::log('Printing recipient');
+
+        $this->printInit($id);
+        $this->layout = '//layouts/print';
+        $this->renderOneRecipient($letter, $recipient_address, $contact_type);
+    }
+
+    /**
      * The PDFPrint action is used in all cases, normal print action won't work!
      * This is required to make sure that the PDF attachments can be merged to the letter.
      * TODO: need to check audit trail!
      *
      * @param $id
      * @param boolean $returnContent
+     * @param boolean $return_recipient_html
+     * @return bool
      * @throws Exception
      */
     public function actionPDFPrint($id, $returnContent = true)
@@ -567,14 +592,9 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_output = new PDF_JavaScript();
 
         foreach ($recipients as $target_id => $recipient) {
-            $contact_type = null;
-
-            $target = DocumentTarget::model()->findByPk($target_id);
-            if ($target) {
-                $contact_type = $target->contact_type;
-            }
-
-            $html_letter =  $this->renderOneRecipient($letter, $recipient, $contact_type);
+            $recipient_query = rawurlencode($recipient);
+            // We use localhost without any port info because Puppeteer is running locally.
+            $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$id}?recipient_address={$recipient_query}&target_id={$target_id}";
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
             if (!isset($_GET['html']) || !$_GET['html']) {
                 $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
@@ -921,8 +941,7 @@ class DefaultController extends BaseEventTypeController
                     $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
                 }
             }*/
-
-        }  else {
+        } else {
             $this->pdf_output->AddPage('P');
             $this->pdf_output->SetFont('Arial', 'B', 16);
             $this->pdf_output->SetY(($this->pdf_output->GetPageHeight() / 2) - 10);
@@ -931,14 +950,18 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-        protected function verifyActionAccess(CAction $action)
-        {
-            if ($this->action->id === 'PDFprint' && Yii::app()->request->getParam('is_view') === '1') {
-                return;
-            } else {
-                parent::verifyActionAccess($action);
-            }
+    /**
+     * @param CAction $action
+     * @throws CHttpException
+     */
+    protected function verifyActionAccess(CAction $action)
+    {
+        if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
+            return;
         }
+
+        parent::verifyActionAccess($action);
+    }
 
     /**
      * After the event was soft deleted, we need to set the output_status' to DELETED
@@ -1057,7 +1080,6 @@ class DefaultController extends BaseEventTypeController
 
             $this->loadDirectLines();
         }
-
     }
 
     /**
@@ -1099,7 +1121,6 @@ class DefaultController extends BaseEventTypeController
         $criteria->order = 't.event_date desc, t.created_date desc';
 
         return Event::model()->findAll($criteria);
-
     }
 
     protected function setAndValidateElementsFromData($data)

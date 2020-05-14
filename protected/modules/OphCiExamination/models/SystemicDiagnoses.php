@@ -249,7 +249,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         foreach ($diags as $key => $entry) {
             if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
-            } else if ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
+            } elseif ($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
                 $checked_req_diag = new SystemicDiagnoses_RequiredDiagnosisCheck();
                 $checked_req_diag->setAttributes(array_diff_key($entry->getAttributes(), array('id' => null)), false);
                 $checked_req_diags[] = $checked_req_diag;
@@ -343,7 +343,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 
     /**
@@ -359,5 +359,4 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             }
         }
     }
-
 }
