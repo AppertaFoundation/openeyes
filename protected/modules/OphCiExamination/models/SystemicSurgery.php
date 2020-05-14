@@ -169,7 +169,7 @@ class SystemicSurgery extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 
     public function getDisplayOrder($action)

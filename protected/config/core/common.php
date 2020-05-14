@@ -198,6 +198,18 @@ return array(
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
         ),
+        'puppeteer' => array(
+            'class' => 'PuppeteerBrowser',
+            'readTimeout' => 65,
+            'logBrowserConsole' => false,
+            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+            'middleFooterTemplate' => 'Page {{PAGE}} of {{PAGES}}',
+            'rightFooterTemplate' => 'OpenEyes',
+            'topMargin' => '10mm',
+            'bottomMargin' => '20mm',
+            'leftMargin' => '5mm',
+            'rightMargin' => '5mm',
+        ),
         'request' => array(
             'enableCsrfValidation' => true,
             'class' => 'HttpRequest',
@@ -430,19 +442,8 @@ return array(
         'reports' => array(),
         'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
-        // html|pdf, pdf requires wkhtmltopdf with patched QT
+        // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
-        // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-        'wkhtmltoimage_path' => '/usr/local/bin/wkhtmltoimage',
-        'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
-        'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
-        'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-        'wkhtmltopdf_footer_right' => 'OpenEyes',
-        'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '20mm',
-        'wkhtmltopdf_left_margin' => '5mm',
-        'wkhtmltopdf_right_margin' => '5mm',
-        'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -563,8 +564,8 @@ return array(
          */
 
         'lightning_viewer' => array(
-            'image_width' => 800,
-            'viewport_width' => 1280,
+            'image_width' => 1720,
+            'viewport_width' => 1720,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
