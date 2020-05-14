@@ -172,7 +172,11 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getRouteOptions()
     {
-        return \MedicationRoute::model()->findAll(['condition' => 'deleted_date IS NULL', 'order' => "term ASC"]);
+        return \MedicationRoute::model()->findAll([
+            'condition' => 'source_type =:source_type',
+            'params' => [':source_type' => 'DM+D'],
+            'order' => "term ASC"]
+        );
     }
     /**
      * @return \CActiveRecord[]
