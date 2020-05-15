@@ -75,7 +75,7 @@
             <?php if (isset($entry->end_date)) { ?>
                 <span>
             <i class="oe-i stop small pad"></i>
-                <?= $entry->getEndDateDisplay() ?>
+                <?= $entry->getEndDateDisplay() . " ({$entry->stopReason})" ?>
                 </span>
             <?php } ?>
         </div>
