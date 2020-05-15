@@ -28,12 +28,22 @@
         <tr>
             <td>Id</td>
             <td class="cols-full">
-                <?= \CHtml::activeHiddenField(
-                    $model,
-                    'id',
-                    ['class' => 'cols-full']
-                ); ?>
-                <?= $model->id ?>
+                <?php if ($this->action->id == 'edit'): ?>
+                    <?= \CHtml::activeHiddenField(
+                        $model,
+                        'id',
+                        ['class' => 'cols-full']
+                    ); ?>
+                    <?= $model->id ?>
+                <?php endif ?>
+
+                <?php if ($this->action->id == 'add'): ?>
+                    <?= \CHtml::activeTextField(
+                        $model,
+                        'id',
+                        ['class' => 'cols-full']
+                    ); ?>
+                <?php endif ?>
             </td>
         </tr>
         <tr>
