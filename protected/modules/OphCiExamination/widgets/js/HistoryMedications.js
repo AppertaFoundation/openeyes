@@ -578,7 +578,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         return new OpenEyes.UI.Dialog.Confirm({
             content: "Patient is allergic to " +
-                allergic_drugs.join() +
+                allergic_drugs.join(', ') +
                 ". Are you sure you want to add them?"
         });
     };
@@ -647,10 +647,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return true;
     };
 
-    HistoryMedicationsController.prototype.addSet = function (set_id) {
+    HistoryMedicationsController.prototype.addSet = function (set_id, matching_allergies_ids = []) {
         let controller = this;
         $.getJSON(controller.options.drugSetFormSource, {
             set_id: set_id,
+            allergy_ids: JSON.stringify(matching_allergies_ids),
         }, function (response) {
             let rows = controller.createRow(response);
             response.forEach(function(medication) {
@@ -672,11 +673,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     HistoryMedicationsController.prototype.getMatchingAllergies = function(medications, allergies) {
-        let same_allergies = [];
+        let same_allergies = {};
+        let allergy_ids = Object.keys(allergies);
         medications.forEach(function (medication) {
             medication['allergies'].forEach(function (allergy) {
-                if (inArray(allergy, allergies)) {
-                    same_allergies.push(medication.label);
+                if (inArray(allergy, allergy_ids)) {
+                    same_allergies[allergy] = medication.label;
                 }
             });
         });
@@ -692,11 +694,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }, function (medications) {
             if (typeof allergies !== undefined) {
                 let matching_allergies = controller.getMatchingAllergies(medications, allergies);
+                let matching_allergies_ids = Object.keys(matching_allergies);
+                let matching_allergies_labels = Object.values(matching_allergies);
 
-                if (matching_allergies.length > 0) {
-                    let dialog = controller.createAllergiesDialog(matching_allergies);
+                if (matching_allergies_ids.length > 0) {
+                    let dialog = controller.createAllergiesDialog(matching_allergies_labels);
                     dialog.on('ok', function () {
-                        controller.addSet(set_id);
+                        controller.addSet(set_id, matching_allergies_ids);
                     }.bind(this));
                     dialog.open();
                 } else {

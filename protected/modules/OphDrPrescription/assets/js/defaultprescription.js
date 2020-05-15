@@ -191,12 +191,11 @@ function processSetEntries(set_id) {
             let allergies = [];
 
             for (let i in medications) {
-                for (let id in medications[i].allergies) {
-                    if (inArray(id, patient_allergies)) {
+                medications[i].allergies.forEach(function (allergy_id) {
+                    if (inArray(allergy_id, patient_allergies)) {
                         allergies.push(medications[i].label);
-                        break;
                     }
-                }
+                });
             }
 
             if (allergies.length !== 0) {
