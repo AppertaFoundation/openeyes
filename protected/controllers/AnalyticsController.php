@@ -97,11 +97,12 @@ class AnalyticsController extends BaseController
     private function reportDataDOM()
     {
         $this->checkAuth();
+        $this->obtainFilters();
         $specialty = Yii::app()->getRequest()->getParam("specialty");
         $subspecialty_id = $specialty === 'All' ? null : $this->getSubspecialtyID($specialty);
         // different user and different subspecialty
         // should have different result
-        $follow_patient_list = $this->getFollowUps($subspecialty_id, null, null, null, $this->surgeon);
+        $follow_patient_list = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
         if (Yii::app()->request->getParam('report')) {
             $this->renderJSON(array(
                 'plot_data'=>$follow_patient_list['plot_data'],
@@ -122,7 +123,7 @@ class AnalyticsController extends BaseController
         );
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
         $side_bar_user_list = null;
@@ -1394,7 +1395,7 @@ class AnalyticsController extends BaseController
         if ($dateTo) {
             $dateTo = strtotime($dateTo);
         } else {
-            $dateTo = strtotime(date("Y-m-d h:i:s"));
+            $dateTo = strtotime(date("Y-m-d H:i:s"));
         }
         if ($dateFrom) {
             $dateFrom = strtotime($dateFrom);
@@ -1443,6 +1444,9 @@ class AnalyticsController extends BaseController
     {
         $this->checkAuth();
         $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
+        $va_unit = VisualAcuityUnit::model()->getVAUnit(4);
+        $va_init_ticks = VisualAcuityUnit::model()->getInitVaTicks($va_unit);
+        $va_final_ticks = VisualAcuityUnit::model()->sliceVATicks($va_init_ticks, 20);
         $specialty = $this->filters['specialty'];
 
         if (!isset($this->surgeon)&&isset($surgeon_id)) {
@@ -1545,8 +1549,8 @@ class AnalyticsController extends BaseController
           'text' => $disorder_data['text'],
           'customdata' =>$disorder_data['customdata'],
         );
-        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis']);
-        $this->renderJSON(array($clinical_data, $service_data, $custom_data));
+        $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from'], $this->filters['date_to'], $this->filters['service_diagnosis'], $this->surgeon);
+        $this->renderJSON(array($clinical_data, $service_data, $custom_data, 'va_final_ticks'=>$va_final_ticks));
     }
 
     /**
@@ -1814,83 +1818,87 @@ class AnalyticsController extends BaseController
 
         foreach ($tickets as $ticket) {
             $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
-            $current_event = $ticket['event_date'];
-            $assignment_time = strtotime($ticket_followup['assignment_date']);
-            if ( ($start_date && $assignment_time < $start_date) ||
-                ($end_date && $assignment_time > $end_date)) {
-                continue;
-            }
-            if (isset($this->surgeon, $current_event)) {
-                if ($this->surgeon !== $ticket['event_owner']) {
+
+            if ($ticket_followup) {
+                $current_event = $ticket['event_date'];
+                $assignment_time = strtotime($ticket_followup['assignment_date']);
+                if (($start_date && $assignment_time < $start_date) ||
+                    ($end_date && $assignment_time > $end_date)) {
                     continue;
                 }
-            }
-            $current_patient_id = $ticket['patient_id'];
-            if ($diagnosis) {
-                $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
-                if (!in_array($diagnosis, $current_patient_diagnoses)) {
-                    continue;
-                }
-            }
-            $latest_worklist_time = strtotime($ticket['worklist_date']);
-            $latest_examination = strtotime($ticket['event_date']);
-            if (isset($latest_examination)) {
-                $latest_examination_date = strtotime($latest_examination);
-            } else {
-                $latest_examination_date = null;
-            }
 
-            $latest_time = null;
-
-            if (isset($latest_worklist_time)) {
-                if (isset($latest_examination_date)) {
-                    $latest_time = max($latest_examination_date, $latest_worklist_time);
-                } else {
-                    $latest_time = $latest_worklist_time;
-                }
-            } else {
-                if (isset($latest_examination_date)) {
-                    $latest_time = $latest_examination_date;
-                }
-            }
-
-            $quantity = $ticket_followup['followup_quantity'];
-            if ($quantity > 0) {
-                $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
-                $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
-                if ($due_time < $current_time) {
-                    if (!isset($latest_time) || $latest_time > $assignment_time) {
+                if (isset($this->surgeon, $current_event)) {
+                    if ($this->surgeon !== $ticket['event_owner']) {
                         continue;
                     }
-                    //Follow up is overdue
-                    $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                    if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        $followup_csv_data['overdue'][] =
-                            array(
-                                'patient_id'=>$current_patient_id,
-                                'weeks'=>$over_weeks,
-                            );
-                        if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
-                        } else {
-                            $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                }
+                $current_patient_id = $ticket['patient_id'];
+                if ($diagnosis) {
+                    $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
+                    if (!in_array($diagnosis, $current_patient_diagnoses)) {
+                        continue;
+                    }
+                }
+                $latest_worklist_time = strtotime($ticket['worklist_date']);
+                $latest_examination = strtotime($ticket['event_date']);
+                if (isset($latest_examination)) {
+                    $latest_examination_date = strtotime($latest_examination);
+                } else {
+                    $latest_examination_date = null;
+                }
+
+                $latest_time = null;
+
+                if (isset($latest_worklist_time)) {
+                    if (isset($latest_examination_date)) {
+                        $latest_time = max($latest_examination_date, $latest_worklist_time);
+                    } else {
+                        $latest_time = $latest_worklist_time;
+                    }
+                } else {
+                    if (isset($latest_examination_date)) {
+                        $latest_time = $latest_examination_date;
+                    }
+                }
+
+                $quantity = $ticket_followup['followup_quantity'];
+                if ($quantity > 0) {
+                    $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
+                    $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
+                    if ($due_time < $current_time) {
+                        if (!isset($latest_time) || $latest_time > $assignment_time) {
+                            continue;
                         }
-                    }
-                } else {
-                    if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time) {
-                        continue;
-                    }
-                    $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                    if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                        $followup_csv_data['coming'][] =
-                            array(
-                                'patient_id'=>$current_patient_id,
-                                'weeks'=>$coming_weeks,
-                            );
-                        if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                            $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
-                        } else {
-                            $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
+                        //Follow up is overdue
+                        $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                        if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                            $followup_csv_data['overdue'][] =
+                                array(
+                                    'patient_id' => $current_patient_id,
+                                    'weeks' => $over_weeks,
+                                );
+                            if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
+                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                            } else {
+                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
+                            }
+                        }
+                    } else {
+                        if ($latest_worklist_time > $current_time && $latest_worklist_time < $due_time) {
+                            continue;
+                        }
+                        $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                        if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
+                            $followup_csv_data['coming'][] =
+                                array(
+                                    'patient_id' => $current_patient_id,
+                                    'weeks' => $coming_weeks,
+                                );
+                            if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
+                                $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
+                            } else {
+                                $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
+                            }
                         }
                     }
                 }
@@ -2034,7 +2042,7 @@ class AnalyticsController extends BaseController
         $subspecialty_id = $this->getSubspecialtyID($speciality_name);
         $this->filters = array(
             'date_from' => 0,
-            'date_to' => strtotime(date("Y-m-d h:i:s")),
+            'date_to' => strtotime(date("Y-m-d H:i:s")),
         );
         $this->custom_csv_data = array();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);

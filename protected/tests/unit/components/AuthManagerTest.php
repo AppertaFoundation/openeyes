@@ -71,7 +71,13 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testNotEnoughArgs()
     {
-        $this->authManager->executeBizRule('rule1', array(), null);
+        if (phpversion() > '7.1') {
+            $this->authManager->executeBizRule('rule1', array(), null);
+        } else {
+            $this->markTestSkipped("Test requires PHP7.1 or higher");
+        }
+  
+        
     }
 
     public function testDataScalar()
