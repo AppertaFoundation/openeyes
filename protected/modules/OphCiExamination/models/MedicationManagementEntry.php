@@ -58,7 +58,8 @@ class MedicationManagementEntry extends \EventMedicationUse
             parent::rules(),
             array(
                 array('start_date', 'validateStartDate'),
-                array('end_date', 'validateEndDate')
+                array('end_date', 'validateEndDate'),
+                array('duration_id', 'validateDuration')
             )
         );
     }

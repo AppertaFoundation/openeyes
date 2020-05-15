@@ -145,6 +145,6 @@ $based_on = implode(', ', $based_on);
   });
 
   $('#js-clear-search-btn').click(function () {
-    window.location.assign('<?php echo Yii::app()->baseUrl . '/'; ?>');
+    window.location.assign('<?php echo Yii::app()->createURL('site/index') ; ?>');
   });
 </script>

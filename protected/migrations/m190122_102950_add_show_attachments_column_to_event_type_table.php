@@ -20,5 +20,4 @@ class m190122_102950_add_show_attachments_column_to_event_type_table extends CDb
         $this->dropColumn('event_type', 'show_attachments');
         $this->dropColumn('event_type_version', 'show_attachments');
     }
-
 }

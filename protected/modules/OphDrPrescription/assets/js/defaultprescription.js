@@ -186,10 +186,9 @@ function addRepeat() {
 function processSetEntries(set_id) {
     $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs", {
         set_id: set_id
-    }, function (data) {
+    }, function (medications) {
         if (typeof patient_allergies !== 'undefined') {
             let allergies = [];
-            let medications = JSON.parse(data);
 
             for (let i in medications) {
                 for (let id in medications[i].allergies) {
