@@ -77,7 +77,6 @@
                         $('.js-event-date').html($date_input.val());
                         $('.js-change-event-date').show();
                         $('.js-event-date').show();
-                        $(this).hide();
                       }
                     });
                 });
