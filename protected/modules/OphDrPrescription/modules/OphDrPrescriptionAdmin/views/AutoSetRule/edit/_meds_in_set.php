@@ -344,9 +344,7 @@ $dispense_condition_options = array(
                 data.id = '';
                 data.medication_id = medication_id;
                 data.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
-                if (data.vtm_term) {
-                    data.preferred_term = data.preferred_term + '(' + data.vtm_term + ')';
-                }
+                data.preferred_term += (data.amp_term && data.vtm_term) ? ' (' + data.vtm_term + ')' : '';
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);
                 $(drugSetController.options.tableSelector + ' tbody').append($tr_html);
