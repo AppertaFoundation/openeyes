@@ -320,7 +320,7 @@ for module in ${modules[@]}; do
 
 		# If doing a shallow clone, then make sure to add the branch name
 		if [[ ! -z $depth ]]; then
-			cloneparams+=" --branch $branch --depth $depth"
+			cloneparams+=" --depth $depth --branch $branch" # note that branch must be the last thing in the string
 		fi
 
 		if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
