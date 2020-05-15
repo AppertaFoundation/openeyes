@@ -25,7 +25,7 @@ $field_data = array();
 foreach ($fields as $field) {
     $field_data[$field->id] = array(
         'id' => $field->id,
-        'url' => Yii::app()->baseUrl . "/file/view/{$field->cropped_image_id}/400/img.gif",
+        'url' => Yii::app()->createURL('site/index') . "file/view/{$field->cropped_image_id}/400/img.gif",
         'date' => date(Helper::NHS_DATE_FORMAT . ' H:i:s', strtotime($field->study_datetime)),
         'strategy' => $field->strategy->name,
         'pattern' => $field->pattern->name,

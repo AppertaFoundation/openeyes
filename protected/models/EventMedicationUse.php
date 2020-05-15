@@ -176,6 +176,22 @@ class EventMedicationUse extends BaseElement
         }
     }
 
+    public function validateDuration()
+    {
+        if ($this->tapers) {
+            $on_going_duration = MedicationDuration::model()->findByAttributes(['name' => 'Ongoing']);
+            if ($this->duration_id === $on_going_duration->id) {
+                $this->addError('duration_id', 'Ongoing cannot be set to this medication when tapers are added');
+            }
+            foreach ($this->tapers as $key => $taper) {
+                $is_last_taper = ($key + 1) === count($this->tapers);
+                if ($taper->duration_id === $on_going_duration->id && !$is_last_taper) {
+                    $this->addError("taper_{$key}_duration_id", 'Ongoing can only be set for the last taper');
+                }
+            }
+        }
+    }
+
     /**
      * Dose unit is required only if the dose is set
      */

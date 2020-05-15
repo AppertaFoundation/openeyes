@@ -40,6 +40,8 @@ node_modules
 /docs/public/assets/core
 /bin/phpunit
 /bin/webunit
+/bin/semver
+/bin/update-versions
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/

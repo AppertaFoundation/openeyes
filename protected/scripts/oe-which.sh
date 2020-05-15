@@ -16,15 +16,11 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
 function gitbranch {
-    if ! branch=$(git -C $1 rev-parse --abbrev-ref HEAD 2>/dev/null); then
-        branch=""
-    else
-        if [ "$branch" = "HEAD" ]; then
-            branch=$(git -C $1 describe --all 2>/dev/null)
-        elif [ ! "$branch" = "" ]; then
-            echo $branch
-        fi
+    branch=$(git -C $1 rev-parse --abbrev-ref HEAD)
+    if [ "$branch" == "HEAD" ]; then
+       branch=$(git -C $1 describe --all 2>/dev/null)
     fi
+    echo $branch
 }
 
 # load in modules list

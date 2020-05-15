@@ -508,22 +508,21 @@ class DefaultController extends BaseEventTypeController
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
 
         if ($print_mode === 'WP10' || $print_mode === 'FP10') {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
-            Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] = true;
+            Yii::app()->puppeteer->leftMargin = '0mm';
+            Yii::app()->puppeteer->rightMargin = '0mm';
+            Yii::app()->puppeteer->topMargin = '6mm';
+            Yii::app()->puppeteer->bottomMargin = '0mm';
             $this->render('print_fpten', array(
                 'user' => $user,
                 'print_mode' => $print_mode
             ));
         } elseif ($pdf_documents === 1) {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+            Yii::app()->puppeteer->leftMargin = '8mm';
+            Yii::app()->puppeteer->rightMargin = '8mm';
             $this->render('print');
         } else {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+            Yii::app()->puppeteer->leftMargin = '8mm';
+            Yii::app()->puppeteer->rightMargin = '8mm';
             $this->render('print');
             if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
                 $this->render('print', array('copy' => 'notes'));
@@ -558,6 +557,18 @@ class DefaultController extends BaseEventTypeController
         }
 
         $this->pdf_print_documents = $document_count;
+
+        $print_mode = Yii::app()->request->getParam('print_mode');
+
+        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
+            $this->print_args = '?print_mode=' . $print_mode . '&print_footer=false';
+            Yii::app()->puppeteer->leftMargin = '0mm';
+            Yii::app()->puppeteer->rightMargin = '0mm';
+            Yii::app()->puppeteer->topMargin= '6mm';
+            Yii::app()->puppeteer->bottomMargin = '0mm';
+        } else {
+            $this->print_args = null;
+        }
 
         return parent::actionPDFPrint($id);
     }
@@ -857,7 +868,6 @@ class DefaultController extends BaseEventTypeController
 
             echo json_encode($result);
         }
-
     }
 
     /**
