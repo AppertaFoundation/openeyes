@@ -680,7 +680,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         medications.forEach(function (medication) {
             medication['allergies'].forEach(function (allergy) {
                 if (inArray(allergy, allergy_ids)) {
-                    same_allergies[allergy] = medication.label;
+                    if (same_allergies[allergy] !== undefined && same_allergies[allergy] !== medication.label) {
+                        same_allergies[allergy] += ', ' + medication.label;
+                    } else {
+                        same_allergies[allergy] = medication.label;
+                    }
                 }
             });
         });
