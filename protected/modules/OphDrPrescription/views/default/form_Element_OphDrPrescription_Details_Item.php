@@ -107,7 +107,10 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][route_id]',
             $item->route_id,
             CHtml::listData(
-                MedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
+                MedicationRoute::model()->activeOrPk([$item->route_id])->findAll([
+                    'condition' => 'source_type =:source_type',
+                    'params' => [':source_type' => 'DM+D'],
+                    'order' => "term ASC"]),
                 'id',
                 'term'
             ),

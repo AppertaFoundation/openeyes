@@ -652,21 +652,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $.getJSON(controller.options.drugSetFormSource, {
             set_id: set_id,
             allergy_ids: JSON.stringify(matching_allergies_ids),
-        }, function (response) {
-            let rows = controller.createRow(response);
-            response.forEach(function(medication) {
-                if(medication['tapers'] !== undefined) {
-                    medication['tapers'].forEach(function(taper) {
-                        response.push(taper);
+        }, function (medications) {
+            medications.forEach(function (medication) {
+                let row_data = [medication];
+                let rows = controller.createRow(row_data);
+
+                if (medication['tapers'] !== undefined) {
+                    medication['tapers'].forEach(function (taper) {
+                        row_data.push(taper);
                     });
                 }
-            });
 
-            for (let row_index in rows) {
-                let $row = $(rows[row_index]);
-                controller.addMedicationItemRow($row, response[row_index]);
-                $row.find(".js-btn-prescribe").click();
-            }
+                rows.forEach(function (row, key) {
+                    let $row = $(row);
+                    controller.addMedicationItemRow($row, row_data[key]);
+                    $row.find(".js-btn-prescribe").click();
+                });
+            });
 
             controller.displayTableHeader();
         });

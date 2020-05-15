@@ -69,10 +69,13 @@ $dispense_condition_options = array(
             </thead>
             <tbody>
             <?php
-                $route_options = \CHtml::listData(\MedicationRoute::model()->findAll(), 'id', 'term');
+                $route_options = \CHtml::listData(\MedicationRoute::model()->findAll([
+                        'condition' => 'source_type =:source_type',
+                        'params' => [':source_type' => 'DM+D'],
+                        'order' => "term ASC"]), 'id', 'term');
                 $frequency_options = \CHtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
-            ?>
+                ?>
             <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
                     <?php
                     $med_dispense_locations = isset($med->defaultDispenseCondition) ?
