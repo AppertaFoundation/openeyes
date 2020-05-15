@@ -101,7 +101,7 @@ if ($historyElement) {
                 <?php if ($stopped_eye_medications) { ?>
                     <div class="collapse-data">
                         <div class="collapse-data-header-icon expand">
-                            Stopped
+                            Previously Stopped
                             <small>(<?= sizeof($stopped_eye_medications) ?>)</small>
                         </div>
                         <div class="collapse-data-content">

@@ -427,6 +427,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
+        if ($action === 'renderEventImage') {
+            $action = 'view';
+        }
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 

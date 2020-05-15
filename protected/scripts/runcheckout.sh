@@ -42,6 +42,7 @@ usessh=""
 changesshid=0
 cloneparams=""
 fetchparams=""
+depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -134,8 +135,7 @@ do
             modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
         ;;
         --depth)
-            cloneparams="$cloneparams --depth $2"
-            fetchparams="$fetchparams --depth=$2"
+            depth="$2"
             shift
         ;;
         --single-branch) cloneparams="$cloneparams --single-branch"
@@ -316,9 +316,19 @@ for module in ${modules[@]}; do
     # Determine if module already exists (ignoring openeyes). If not, clone it
     if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
         
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m"
-        
-        git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m\n"
+
+		# If doing a shallow clone, then make sure to add the branch name
+		if [[ ! -z $depth ]]; then
+			cloneparams+=" --depth $depth --branch $branch" # note that branch must be the last thing in the string
+		fi
+
+		if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
+            # if no given branch name was found when doing a shallow (or branch) clone, then fall back to the default branch
+            cloneparams=${cloneparams%$branch} # Note: This removes the branch name from the end of the string
+            cloneparams+=$defaultbranch # This adds the *default* branch name to the end of the string
+            git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
+        fi
     fi
     
     processgit=1
@@ -331,7 +341,16 @@ for module in ${modules[@]}; do
     if [ $processgit = 1 ]; then
         printf "\e[32m$module: \e[0m"
         git -C $MODGITROOT reset --hard
-        git -C $MODGITROOT fetch --all $fetchparams
+        
+        # Add depth if specified
+        if [[ ! -z $depth ]]; then
+			fetchparams+=" --depth=$depth"
+		fi
+
+        # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
+        if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
+            git -C $MODGITROOT fetch --all $fetchparams
+        fi
         
         if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
             if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then

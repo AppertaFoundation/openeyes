@@ -85,7 +85,7 @@ if ($queue) { ?>
     <div class="vc-actions">
       <div class="row">
           <?php foreach ($queue->event_types as $et) { ?>
-            <a href="<?= Yii::app()->baseURL ?>/<?= $et->class_name ?>/default/create?patient_id=<?= $this->patient_id ?>"
+            <a href="<?= Yii::app()->createURL('site/index') ?><?= $et->class_name ?>/default/create?patient_id=<?= $this->patient_id ?>"
                class="button blue hint js-auto-save"
                data-queue="<?= $this->current_queue_id ?>"
             >
@@ -94,7 +94,7 @@ if ($queue) { ?>
             <?php } ?>
 
           <?php if ($print_letter_event) { ?>
-            <a href="<?= Yii::app()->baseURL ?>/<?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
+            <a href="<?= Yii::app()->createURL('site/index') ?><?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
                class="button blue hint js-auto-save"
                data-queue="<?= $this->current_queue_id ?>"
             >
