@@ -172,7 +172,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getRouteOptions()
     {
-        return \MedicationRoute::model()->findAll(['condition' => 'deleted_date IS NULL', 'order' => "term ASC"]);
+        return \MedicationRoute::model()->findAll([
+            'condition' => 'source_type =:source_type',
+            'params' => [':source_type' => 'DM+D'],
+            'order' => "term ASC"]);
     }
     /**
      * @return \CActiveRecord[]
@@ -199,7 +202,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         /** @var \EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
             if ($entry->usage_type == 'OphCiExamination') {
-                if (!is_null($entry->end_date) && $entry->end_date < date("Y-m-d")) {
+                if (!is_null($entry->end_date) && $entry->end_date <= date("Y-m-d")) {
                     $closed[] = $entry;
                 } else {
                     $current[] = $entry;

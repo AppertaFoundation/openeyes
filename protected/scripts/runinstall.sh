@@ -65,6 +65,8 @@ usessh=0
 sshuserstring="git"
 showhelp=0
 checkoutparams="-f --no-migrate --no-summary --no-fix --no-oe"
+# In test mode, we only need to do a shallow clone of the head
+[ ${OE_MODE^^} = "TEST" ] && checkoutparams="$checkoutparams --depth 1" || :
 accept=0
 genetics=0
 preservedb=0

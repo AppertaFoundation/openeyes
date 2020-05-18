@@ -39,7 +39,7 @@ $fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findBy
             echo CHtml::dropDownList(
                 null,
                 null,
-                CHtml::listData($drugs, 'id', 'tallmanlabel'),
+                CHtml::listData($drugs, 'id', 'preferred_term'),
                 array('empty' => '-- Select --', 'id' => 'drug_id')
             );
             ?>
