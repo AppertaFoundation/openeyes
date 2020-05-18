@@ -61,3 +61,14 @@
 ## Will turn on automatic daily import of GP/Practice/CCG data (UK Only).
 ## Options are england, scotland, ni
 # export OE_HSCIC_REGION="england"
+
+## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
+# export OE_LDAP_SERVER='ldap.example.com'
+
+## Set password format restrictions
+# export PW_RES_MIN_LEN=8
+# export PW_RES_MIN_LEN_MESS='Passwords must be at least 8 characters long'
+# export PW_RES_MAX_LEN=70
+# export PW_RES_MAX_LEN_MESS='Passwords must be at most 70 characters long'
+# export PW_RES_STRENGTH='%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%'
+# export PW_RES_STRENGTH_MESS='Passwords must include an upper case letter, a lower case letter, a number, and a special character'

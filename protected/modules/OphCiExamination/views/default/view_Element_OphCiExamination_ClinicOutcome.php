@@ -30,7 +30,7 @@ $non_ticket_entries = [];
 <div class="element-data full-width">
     <?php foreach ($element->entries as $entry) {
         if ($entry->isPatientTicket() && $ticket) {
-            $ticket_entries[] = $entry;
+            $ticket_entries[] = $ticket;
         } else {
             $non_ticket_entries[] = $entry;
         }
@@ -66,19 +66,19 @@ $non_ticket_entries = [];
                     <tbody>
                     <tr>
                         <th>Priority</th>
-                        <?php if ($ticket->priority) {?>
+                        <?php if ($entry->priority) {?>
                             <td>
-                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name ?></span>
+                                <span class="highlighter <?= $entry->priority->colour ?>"><?= $entry->priority->name ?></span>
                             </td>
                         <?php } ?>
                     </tr>
                     <tr>
                         <th>State</th>
-                        <td><?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
+                        <td><?= $entry->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
                     </tr>
                     <tr>
                         <th>Virtual Clinic</th>
-                        <td><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name?></td>
+                        <td><?= $queue_set_service->getQueueSetForQueue($entry->current_queue->id)->name?></td>
                     </tr>
                     <tr>
                         <th>Comments</th>
@@ -89,12 +89,12 @@ $non_ticket_entries = [];
                 <hr class="divider">
                 <div class="oe-vc-mode in-element row">
                     <ul class="vc-steps">
-                        <?php foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) {
-                            $is_completed = $queue->id <= $ticket->current_queue->id;
-                            $is_current = $queue->id === $ticket->current_queue->id; ?>
+                        <?php foreach ($entry->getNearestQueuesInStepOrder(2) as $step => $queue) {
+                            $is_completed = $queue->id <= $entry->current_queue->id;
+                            $is_current = $queue->id === $entry->current_queue->id; ?>
                             <?php if ($is_completed) {
                                 $complete_or_current_steps_keys[$queue->id] = $step;
-                                $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $ticket->id, 'queue_id' => $queue->id]) ?>
+                                $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $entry->id, 'queue_id' => $queue->id]) ?>
                                 <li class="completed">
                                     <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
                                 </li>
@@ -109,9 +109,9 @@ $non_ticket_entries = [];
                 </div>
             </div>
             <div class="cols-7">
-                <?php if ($ticket->hasHistory() || $ticket->hasRecordedQueueAssignments()) { ?>
-                    <?php foreach ($ticket->queue_assignments as $step => $old_assignment) {
-                        $is_current_queue = $old_assignment->queue->id === $ticket->current_queue->id;
+                <?php if ($entry->hasHistory() || $entry->hasRecordedQueueAssignments()) { ?>
+                    <?php foreach ($entry->queue_assignments as $step => $old_assignment) {
+                        $is_current_queue = $old_assignment->queue->id === $entry->current_queue->id;
                         ?>
                         <div class="collapse-data">
                             <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand'?>">
@@ -119,7 +119,7 @@ $non_ticket_entries = [];
                                 <?php if ($old_assignment->assignment_date) {
                                     echo Helper::convertDate2NHS($old_assignment->assignment_date);
                                 } ?>
-                                <?php if ($old_assignment->queue->id <= $ticket->current_queue->id) {
+                                <?php if ($old_assignment->queue->id <= $entry->current_queue->id) {
                                     echo '(' . $old_assignment->assignment_user->getFullName() . ')';
                                 }?>
                             </div>
