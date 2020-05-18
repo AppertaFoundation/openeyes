@@ -2952,7 +2952,7 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay("Ongoing"); ?></td>
                     </tr>
                     <?php
                                         $taper_date = $entry->end_date;
