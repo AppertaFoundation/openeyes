@@ -101,7 +101,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <div class="collapse-data-content">
                         <table id="<?= $model_name ?>_systemic_stopped_entry_table">
                             <colgroup>
-                                <col class="cols-8">
+                                <col class="cols-7">
                                 <col>
                             </colgroup>
                         <thead style="display:none;">
