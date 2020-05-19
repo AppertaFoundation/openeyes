@@ -35,9 +35,9 @@
                         ['class' => 'cols-full']
                     ); ?>
                     <?= $model->id ?>
-                <?php endif ?>
+              
 
-                <?php if ($this->action->id == 'add'): ?>
+                <?php else: ?>
                     <?= \CHtml::activeTextField(
                         $model,
                         'id',
