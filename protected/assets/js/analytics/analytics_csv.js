@@ -10,34 +10,39 @@ var analytics_csv_download = (function () {
 
         var file_name = current_specialty + "_clinical_diagnoses";
 
+        if (anonymise_flag) {
+            file_name += ' - Anonymised';
+            csv_file = "DOB, Age, Diagnoses";
+        }
+
         if(selected_tab && selected_tab === 'service') {
             csv_file += ', Weeks';
             file_name = current_specialty + '_service_' + additional_file_name + '_followups';
         }
 
-        if (anonymise_flag) {
-            file_name += ' - Anonymised';
-            csv_file = "DOB, Age, Diagnoses";
-        }
         csv_file += '\n';
         data.forEach(function(item){
             var patient_name = item['name'].split(' ');
-            var temp = [
-                (patient_name[0] == undefined) ? '' : patient_name[0],
-                (patient_name[1] == undefined) ? '' : patient_name[1],
-                item['hos_num'],
-                item['nhs_num'],
+            var temp = [];
+            if (!anonymise_flag) {
+                temp = temp.concat([
+                    (patient_name[0] == undefined) ? '' : patient_name[0],
+                    (patient_name[1] == undefined) ? '' : patient_name[1],
+                    item['hos_num'],
+                    item['nhs_num'],
+                ]);
+            }
+
+            temp = temp.concat([
                 item['dob'],
                 item['age'],
                 item['diagnoses'] ? item['diagnoses'].replace(/,/g, '|') : 'N/A',
-            ];
+            ]);
+
             if(selected_tab && selected_tab === 'service'){
                 temp.push(item['weeks']);
             }
             
-            if (anonymise_flag) {
-                temp = temp.slice(4);
-            }
             csv_file += temp.join(', ');
             csv_file += '\n';
         })
@@ -58,6 +63,11 @@ var analytics_csv_download = (function () {
         patient_ids = temp.map(function (item) {
             return item['patient_id']
         })
+
+        if(!patient_ids.length){
+            csv_export(file_name, csv_file);
+            return;
+        }
         $.ajax({
             url: request_url,
             type: 'POST',
@@ -161,12 +171,17 @@ var analytics_csv_download = (function () {
         // patient_ids: store patient ids data extracted from csv_data array
         // patient_weeks: store weeks data extracted from csv_data array
         var temp, patient_ids, patient_weeks;
-
+        // report_type for csv file name
+        var report_type = $('#js-charts-service ul a.selected').data('report');
         if (selected_tab === 'service') {
             // sort array to align patient_ids and patient_weeks
             temp = analytics_dataCenter.service.getServiceData()["csv_data"].slice().sort(function (a, b) {
                 return a['patient_id'] - b['patient_id']
             });
+            if(!temp.length){
+                current_none_custom_data_to_csv(anonymise_flag, selected_tab, [], report_type);
+                return;
+            }
             patient_ids = temp.map(function (item) {
                 return item['patient_id']
             })
@@ -191,8 +206,6 @@ var analytics_csv_download = (function () {
                         'specialty': analytics_toolbox.getCurrentSpecialty()
                     },
                     success: function (response) {
-                        // report_type for csv file name
-                        var report_type = $('#js-charts-service ul a.selected').data('report')
                         // patients array
                         // {age, diagnoses, dob, gender, hos_num, id, name, nhs_num, procedures}
                         var patients = JSON.parse(response);

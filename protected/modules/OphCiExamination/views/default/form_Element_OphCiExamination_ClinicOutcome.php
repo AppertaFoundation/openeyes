@@ -111,7 +111,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                         <div class="flex-layout flex-top flex-left">
                             <ul class="add-options" id="followup-outcome-options">
                                 <?php
-                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->bySubspecialty($this->firm->getSubspecialty())->findAll();
+                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->active()->bySubspecialty($this->firm->getSubspecialty())->findAll();
                                 $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
                                 foreach ($outcomes as $opt) : ?>
                                     <li data-id="<?= $opt->id ?>" data-label="<?= $opt->name ?>"
@@ -226,5 +226,9 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             $('#add-followup-btn'),
             $('#add-to-follow-up').find('.close-icon-btn')
         );
+
+        if ($('#div_OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_patientticket').length) {
+            $('#followup-outcome-options li[data-patient-ticket="1"]').hide();
+        }
     });
 </script>

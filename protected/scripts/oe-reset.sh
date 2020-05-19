@@ -59,7 +59,7 @@ branch=0
 demo=0
 nofiles=0
 showhelp=0
-checkoutparams="--sample-only --no-fix"
+checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
 cleanbase=0
 migrateparams="-q"
 nofix=0
@@ -69,6 +69,7 @@ hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
+fallbackbranch=master
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -96,6 +97,9 @@ do
     	--demo) demo=1
     		## Install demo scripts (worklists, etc)
     		;;
+		--develop|-d) fallbackbranch=develop
+			## fallback to the develop branch if the named branch does not exist
+			;;
     	--help) showhelp=1
     		;;
     	--no-files) nofiles=1
@@ -149,11 +153,10 @@ do
     shift # move to next parameter
 done
 
-# If we are checking out new branch,then pass all unprocessed commands to checkout command and set single-branch and depth for speed
+# If we are checking out new branch,then pass all unprocessed commands to checkout command
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
-		checkoutparams="$chekoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
             checkoutparams="$checkoutparams $i"
@@ -230,7 +233,7 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
-    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
+    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
 fi
 
 echo "Clearing current database..."
@@ -251,7 +254,9 @@ if [ $nofiles = "0" ]; then
 	# remove any docman process files
 	sudo rm -rf /tmp/docman
 	# remove hscic import history (otherwise hscic import requires --force to run after reset)
-	sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} +
+	if [ -d $WROOT/protected/data/hscic ]; then
+		sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
+	fi
 fi
 
 if [ $cleanbase = "0" ]; then
