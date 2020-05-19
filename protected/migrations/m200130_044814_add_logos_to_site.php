@@ -53,8 +53,7 @@ class m200130_044814_add_logos_to_site extends OEMigration
         // Adding Default logo to db
         $this->insert('site_logo', array(
             'primary_logo' => $primaryLogo,
-            'secondary_logo' => $secondaryLogo)
-        );
+            'secondary_logo' => $secondaryLogo));
     }
 
     public function safeDown()

@@ -102,7 +102,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         $institution,
                         $field,
                         [
-                            'class' => 'cols-full', 
+                            'class' => 'cols-full',
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
                         ]
                     ); ?>
@@ -131,7 +131,7 @@ $default_urls = $logo_helper->getLogoURLs();
                     'country_id',
                     CHtml::listData(Country::model()->findAll(), 'id', 'name'),
                     [
-                        'class' => 'cols-full', 
+                        'class' => 'cols-full',
                         'autocomplete' => Yii::app()->params['html_autocomplete'],
                     ]
                 ); ?>
@@ -150,17 +150,19 @@ $default_urls = $logo_helper->getLogoURLs();
                     } elseif (!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                        echo '<br>'.CHtml::button( '',
+                        echo '<br>'.CHtml::button(
+                            '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(
                                 'institution_id' => $institution->id,
                                 'deletePrimaryLogo' => true,
                             ),
-                            'csrf' => true,
-                            'class' =>'remove-logo oe-i remove-circle small',
-                            'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this institution.',
-                            'data-method'=>"POST"
-                        ));
+                             'csrf' => true,
+                             'class' =>'remove-logo oe-i remove-circle small',
+                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this institution.',
+                             'data-method'=>"POST"
+                            )
+                        );
                         echo '</div>';
                     }
                 }
@@ -195,7 +197,8 @@ $default_urls = $logo_helper->getLogoURLs();
                             'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this institution.',
                             'data-method'=>"POST"
-                        ));
+                            )
+                        );
                         echo '</div>';
                     }
                 }

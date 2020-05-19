@@ -811,13 +811,12 @@ class AdminController extends BaseAdminController
             /*
             * Set default blank contact to fulfill the current relationship with a site
             */
-           $contact->nick_name = 'NULL';
-           $contact->title = null;
-           $contact->first_name = '';
-           $contact->last_name = '';
-           $contact->qualifications = null;
-        }
-        else {
+            $contact->nick_name = 'NULL';
+            $contact->title = null;
+            $contact->first_name = '';
+            $contact->last_name = '';
+            $contact->qualifications = null;
+        } else {
             $institution = Institution::model()->findByPk(@$_GET['institution_id']);
             if (!$institution) {
                 throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);

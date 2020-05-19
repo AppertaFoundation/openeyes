@@ -175,28 +175,28 @@ $default_urls = $logo_helper->getLogoURLs();
                     if ($logo&&$logo->primary_logo&&!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                        echo '<br>'.CHtml::button( '',
+                        echo '<br>'.CHtml::button(
+                            '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(
                                 'site_id' => $site->id,
                                 'deletePrimaryLogo' => true,
                             ),
-                            'csrf' => true,
-                            'class' =>'remove-logo oe-i remove-circle small',
-                            'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
-                            'data-method'=>"POST"
-                        ));
+                             'csrf' => true,
+                             'class' =>'remove-logo oe-i remove-circle small',
+                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
+                             'data-method'=>"POST"
+                            )
+                        );
                         echo '</div>';
-                    }
-                    elseif ( $parentlogo &&  $parentlogo->primary_logo && !$new) {
+                    } elseif ( $parentlogo &&  $parentlogo->primary_logo && !$new) {
                         echo "<div class='alert-box info'>Currently using inherited logo.</div>";
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                    }
-                    elseif (!$new) {
+                    } elseif (!$new) {
                         echo "test" . var_dump($parentlogo)." test";
                         echo "<div class='alert-box info'>Currently using system default logo.</div>";
                         echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
-                    } 
+                    }
                 }
                 ?>
             </td>
@@ -226,14 +226,13 @@ $default_urls = $logo_helper->getLogoURLs();
                             'class' =>'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
                             'data-method'=>"POST"
-                        ));
+                            )
+                        );
                         echo '</div>';
-                    }
-                    elseif ( $parentlogo && $parentlogo->secondary_logo  && !$new) {
+                    } elseif ( $parentlogo && $parentlogo->secondary_logo  && !$new) {
                         echo "<div class='alert-box info'>Currently using inherited logo.</div>";
                         echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
-                    }
-                    elseif (!$new){
+                    } elseif (!$new) {
                         echo "<div class='alert-box info'>Currently using system default logo.</div>";
                         echo "<img src='". $default_urls['secondaryLogo'] . "' style='width:100%;'>";
                     }
