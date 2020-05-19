@@ -57,9 +57,9 @@ $non_ticket_entries = [];
             </div>
         <?php } ?>
     <?php } ?>
-    <?php if ($non_ticket_entries && $ticket_entries) {
-        ?><hr class="divider"><?php
-    }?>
+    <?php if ($non_ticket_entries && $ticket_entries) { ?>
+        <hr class="divider">
+    <?php } ?>
     <?php foreach ($ticket_entries as $entry) { ?>
         <div class="flex-layout flex-top col-gap">
             <div class="cols-5">
@@ -70,7 +70,7 @@ $non_ticket_entries = [];
                     <tbody>
                     <tr>
                         <th>Priority</th>
-                        <?php if ($entry->priority) {?>
+                        <?php if ($entry->priority) { ?>
                             <td>
                                 <span class="highlighter <?= $entry->priority->colour ?>"><?= $entry->priority->name ?></span>
                             </td>
@@ -82,11 +82,7 @@ $non_ticket_entries = [];
                     </tr>
                     <tr>
                         <th>Virtual Clinic</th>
-                        <td><?= $queue_set_service->getQueueSetForQueue($entry->current_queue->id)->name?></td>
-                    </tr>
-                    <tr>
-                        <th>Comments</th>
-                        <td><?= $element->comments ? $element->comments : '<span class="none">None</span>' ?></td>
+                        <td><?= $queue_set_service->getQueueSetForQueue($entry->current_queue->id)->name ?></td>
                     </tr>
                     </tbody>
                 </table>
@@ -118,16 +114,16 @@ $non_ticket_entries = [];
                         $is_current_queue = $old_assignment->queue->id === $entry->current_queue->id;
                         ?>
                         <div class="collapse-data">
-                            <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand'?>">
+                            <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand' ?>">
                                 <?php echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. ' . $old_assignment->queue->name . ' -'; ?>
                                 <?php if ($old_assignment->assignment_date) {
                                     echo Helper::convertDate2NHS($old_assignment->assignment_date);
                                 } ?>
                                 <?php if ($old_assignment->queue->id <= $entry->current_queue->id) {
                                     echo '(' . $old_assignment->assignment_user->getFullName() . ')';
-                                }?>
+                                } ?>
                             </div>
-                            <div class="collapse-data-content" style="display: <?= $is_current_queue ? 'block' : 'none'?>">
+                            <div class="collapse-data-content" style="display: <?= $is_current_queue ? 'block' : 'none' ?>">
                                 <div class="vc-data">
                                     <div class="flex-layout flex-top flex-left col-gap">
                                         <div class="cols-8">
@@ -136,28 +132,40 @@ $non_ticket_entries = [];
                                         <div class="cols-4">
                                             <span class="user-comment">
                                                 <?php if ($old_assignment->notes) { ?>
-                                                    <i class="oe-i comments small pad-right disabled"></i><br />
+                                                    <i class="oe-i comments small pad-right disabled"></i><br/>
                                                     <?= $old_assignment->notes ?>
                                                 <?php } ?>
                                             </span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php } ?>
-                <?php }  ?>
-                <?php foreach ($incomplete_steps as $step => $queue) { ?>
-                    <div class="collapse-data">
-                        <div class="collapse-data-header-icon expand">
-                            <?= $step  . '. ' . $queue->name ?> - <em class="fade">still to do</em>
-                        </div>
-                        <div class="collapse-data-content" style="display: none">
-                            <div class="alert-box info">Virtual Clinic step not started yet</div>
-                        </div>
                     </div>
                 <?php } ?>
-            </div>
-    <?php }  ?>
+            <?php } ?>
+            <?php foreach ($incomplete_steps as $step => $queue) { ?>
+                <div class="collapse-data">
+                    <div class="collapse-data-header-icon expand">
+                        <?= $step . '. ' . $queue->name ?> - <em class="fade">still to do</em>
+                    </div>
+                    <div class="collapse-data-content" style="display: none">
+                        <div class="alert-box info">Virtual Clinic step not started yet</div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        <?php } ?>
     </div>
+    <?php if ($element->comments) { ?>
+        <hr class="divider">
+        <table class="last-left large-text">
+            <colgroup>
+                <col class="cols-1">
+            </colgroup>
+            <tr>
+                <td>Comments</td>
+                <td><?= $element->comments ?></td>
+            </tr>
+        </table>
+    <?php } ?>
 </div>
