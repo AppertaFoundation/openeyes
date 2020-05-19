@@ -69,10 +69,13 @@ $dispense_condition_options = array(
             </thead>
             <tbody>
             <?php
-                $route_options = \CHtml::listData(\MedicationRoute::model()->findAll(), 'id', 'term');
+                $route_options = \CHtml::listData(\MedicationRoute::model()->findAll([
+                        'condition' => 'source_type =:source_type',
+                        'params' => [':source_type' => 'DM+D'],
+                        'order' => "term ASC"]), 'id', 'term');
                 $frequency_options = \CHtml::listData(\MedicationFrequency::model()->findAll(), 'id', 'term');
                 $duration_options = \CHtml::listData(\MedicationDuration::model()->findAll(), 'id', 'name');
-            ?>
+                ?>
             <?php foreach ($medication_set->medicationSetAutoRuleMedications as $k => $med) : ?>
                     <?php
                     $med_dispense_locations = isset($med->defaultDispenseCondition) ?
@@ -341,9 +344,7 @@ $dispense_condition_options = array(
                 data.id = '';
                 data.medication_id = medication_id;
                 data.key = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
-                if (data.vtm_term) {
-                    data.preferred_term = data.preferred_term + '(' + data.vtm_term + ')';
-                }
+                data.preferred_term += (data.amp_term && data.vtm_term) ? ' (' + data.vtm_term + ')' : '';
 
                 const $tr_html = Mustache.render($('#medication_template').html(), data);
                 $(drugSetController.options.tableSelector + ' tbody').append($tr_html);

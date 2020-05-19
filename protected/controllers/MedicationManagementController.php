@@ -30,8 +30,9 @@ class MedicationManagementController extends BaseController
         );
     }
 
-    public function actionGetDrugSetForm($set_id)
+    public function actionGetDrugSetForm($set_id, $allergy_ids)
     {
+        $allergy_ids = CJSON::decode($allergy_ids);
         $medication_set = MedicationSet::model()->findByPk($set_id);
         if ($medication_set) {
             $items = $medication_set->items;
@@ -39,7 +40,7 @@ class MedicationManagementController extends BaseController
                 $set_items = array();
                 foreach ($items as $item) {
                     if (is_a($item, 'MedicationSetItem')) {
-                        $set_items[] = $this->extractEntryFromSet($item);
+                        $set_items[] = $this->extractEntryFromSet($item, $allergy_ids);
                     }
                 }
                 echo CJSON::encode($set_items);
@@ -49,7 +50,7 @@ class MedicationManagementController extends BaseController
         }
     }
 
-    private function extractEntryFromSet($set_item)
+    private function extractEntryFromSet($set_item, $allergy_ids)
     {
         $item = array();
 
@@ -66,6 +67,11 @@ class MedicationManagementController extends BaseController
         $item['dispense_location_id'] = (int) $set_item->default_dispense_location_id;
         $item['to_be_copied'] = true;
         $item['will_copy'] = true;
+        $item['allergy_ids'] =  array_map(function ($allergy) use ($allergy_ids) {
+            if (in_array($allergy->id, $allergy_ids)) {
+                return $allergy->id;
+            }
+        }, $set_item->medication->allergies);
 
         if ($set_item->tapers) {
             $tapers = array();
@@ -82,7 +88,7 @@ class MedicationManagementController extends BaseController
         return $item;
     }
 
-    public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 50)
+    public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 100)
     {
         $ret_data = [];
         $criteria = new \CDbCriteria();

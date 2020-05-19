@@ -181,8 +181,8 @@ class ClinicOutcomeEntry extends \BaseElement
     }
 
     public function getPeriodLabel() {
-        if ($this->status->followup && $this->followup_period) {
-            return $this->followup_period->name;
+        if ($this->status->followup && $this->followupPeriod) {
+            return $this->followupPeriod->name;
         }
         return '';
     }

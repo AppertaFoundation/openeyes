@@ -42,6 +42,7 @@ usessh=""
 changesshid=0
 cloneparams=""
 fetchparams=""
+depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -134,8 +135,7 @@ do
             modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
         ;;
         --depth)
-            cloneparams="$cloneparams --depth $2"
-            fetchparams="$fetchparams --depth=$2"
+            depth="$2"
             shift
         ;;
         --single-branch) cloneparams="$cloneparams --single-branch"
@@ -319,8 +319,8 @@ for module in ${modules[@]}; do
         printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m\n"
 
 		# If doing a shallow clone, then make sure to add the branch name
-		if [[ "$cloneparams" == *"depth"* ]]; then
-			cloneparams+=" --branch $branch"
+		if [[ ! -z $depth ]]; then
+			cloneparams+=" --depth $depth --branch $branch" # note that branch must be the last thing in the string
 		fi
 
 		if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
@@ -341,18 +341,34 @@ for module in ${modules[@]}; do
     if [ $processgit = 1 ]; then
         printf "\e[32m$module: \e[0m"
         git -C $MODGITROOT reset --hard
-        git -C $MODGITROOT fetch --all $fetchparams
         
-        if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
-            if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
-                echo "no branch $branch exists, switching to $defaultbranch"
-                git -C $MODGITROOT checkout $defaultbranch 2>/dev/null
-            fi
+        # Add depth if specified
+        if [[ ! -z $depth ]]; then
+			fetchparams+=" --depth=$depth"
+		fi
+
+        # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
+        if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
+            git -C $MODGITROOT fetch --all $fetchparams
         fi
         
+        # Try to find a named tag first, then a branch, then fallback to default branch. trackbranch is used to ensure tracking is set correctly
+        trackbranch=''
+        if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
+            trackbranch=$branch
+            if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
+                trackbranch=$defaultbranch
+                echo "no branch $branch exists, switching to $defaultbranch"
+                if ! git -C $MODGITROOT checkout $defaultbranch 2>/dev/null; then trackbranch=''; fi
+            fi
+        fi
+
         ## fast forward to latest head
         if [ ! "$nopull" = "1" ]; then
             echo "Pulling latest changes: "
+            if ! [ -z $trackbranch ] && ! git config --get branch.$branch.merge >/dev/null 2>&1 ; then 
+                git branch --set-upstream-to=origin/$trackbranch
+            fi
             git -C $MODGITROOT pull
             git -C $MODGITROOT submodule update --init --force
         fi

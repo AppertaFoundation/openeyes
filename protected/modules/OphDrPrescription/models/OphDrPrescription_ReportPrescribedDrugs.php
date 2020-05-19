@@ -87,7 +87,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         }
 
         if (is_numeric($this->dispense_condition)) {
-            $command->andWhere('i.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
+            $command->andWhere('emu.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
         }
 
         $this->items = $command->queryAll();

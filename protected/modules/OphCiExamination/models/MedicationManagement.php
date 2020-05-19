@@ -93,7 +93,7 @@ class MedicationManagement extends BaseMedicationElement
                 MedicationManagementEntry::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
-                'on' => "usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
+                'on' => "usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
                 'order' => 'entries.start_date DESC, entries.end_date DESC, entries.last_modified_date'
             ),
             'visible_entries' => array(
@@ -101,7 +101,7 @@ class MedicationManagement extends BaseMedicationElement
                 MedicationManagementEntry::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
-                'on' => "hidden = 0 AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
+                'on' => "hidden = 0 AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "' ",
                 'order' => 'visible_entries.start_date DESC, visible_entries.end_date DESC, visible_entries.last_modified_date'
             ),
             'prescription' => array(self::BELONGS_TO, \Element_OphDrPrescription_Details::class, 'prescription_id'),
@@ -237,7 +237,7 @@ class MedicationManagement extends BaseMedicationElement
     protected function saveEntries()
     {
         $criteria = new \CDbCriteria();
-        $criteria->addCondition("event_id = :event_id AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."'");
+        $criteria->addCondition("event_id = :event_id AND usage_type = '" . MedicationManagementEntry::getUsageType() . "' AND usage_subtype = '" . MedicationManagementEntry::getUsageSubtype() . "'");
         $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
         $saved_ids = array();
@@ -307,12 +307,12 @@ class MedicationManagement extends BaseMedicationElement
             /* items to update or remove */
             $existing_mgment_items = array();
             foreach ($prescription->items as $prescription_Item) {
-                if ($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=".$prescription_Item->id)) {
+                if ($mgment_item = MedicationManagementEntry::model()->find("prescription_item_id=" . $prescription_Item->id)) {
                     /** @var MedicationManagementEntry $mgment_item */
                     $existing_mgment_items[] = $mgment_item->id;
 
                     if ($mgment_item->prescribe == 0) {
-                        //manaemenet item was updated as not prescribed
+                        //management item was updated as not prescribed
                         $pitem = \EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $prescription_Item->id]);
                         foreach ($pitem as $p) {
                             // we need to remove all links
@@ -322,12 +322,12 @@ class MedicationManagement extends BaseMedicationElement
                         $prescription_Item->delete();
                         $changed = true;
                     } else if (!$mgment_item->compareToPrescriptionItem()) {
-                        //manaemenet item was updated
+                        //management item was updated
                         $prescription_Item->updateFromManagementItem();
                         $changed = true;
                     }
                 } else {
-                    // management item was deleted
+                    //management item was deleted
                     $prescription_Item->delete();
                     $changed = true;
                 }
@@ -336,11 +336,11 @@ class MedicationManagement extends BaseMedicationElement
             /* items to add */
             foreach ($this->entries_to_prescribe as $entry) {
                 if (!in_array($entry->id, $existing_mgment_items)) {
-                    $prescription_Item = new \OphDrPrescription_Item();
-                    $prescription_Item->event_id =$prescription->event_id;
-                    $prescription_Item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
+                    $prescription_item = new \OphDrPrescription_Item();
+                    $prescription_item->event_id = $prescription->event_id;
+                    $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
-                    $prescription_Item->setAttributes(array(
+                    $prescription_item->setAttributes(array(
                         'usage_type' => \OphDrPrescription_Item::getUsageType(),
                         'usage_subtype' => \OphDrPrescription_Item::getUsageSubtype(),
                         'medication_id' => $entry->medication_id,
@@ -365,12 +365,13 @@ class MedicationManagement extends BaseMedicationElement
                         $new_taper->dose = $taper->dose;
                         $p_tapers[] = $new_taper;
                     }
-                    $prescription_Item->tapers = $p_tapers;
-                    if (!$prescription_Item->save()) {
-                        throw new \Exception("Error while saving prescription item: ".print_r($prescription_Item->errors, true));
+                    $prescription_item->tapers = $p_tapers;
+                    if (!$prescription_item->save()) {
+                        throw new \Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
                     }
-                    $prescription_Item->saveTapers();
-                    $entry->prescription_item_id = $prescription_Item->id;
+                    $prescription_item->saveTapers();
+                    $entry = self::$entry_class::model()->findByPk($entry->id);
+                    $entry->prescription_item_id = $prescription_item->id;
                     $entry->save();
                     $changed = true;
                 }
@@ -379,7 +380,7 @@ class MedicationManagement extends BaseMedicationElement
             if ($changed) {
                 if (empty(\OphDrPrescription_Item::model()->findAllByAttributes(['event_id' => $prescription->event_id]))) {
                     // if no more items on the prescription, delete it
-                    \Yii::app()->db->createCommand("UPDATE ".$this->tableName()." SET prescription_id=NULL WHERE id=".$this->id)->execute();
+                    \Yii::app()->db->createCommand("UPDATE " . $this->tableName() . " SET prescription_id=NULL WHERE id=" . $this->id)->execute();
                     $prescription->delete();
                     $prescription->event->softDelete("Deleted via examination clinical management");
                 } else {
@@ -407,7 +408,7 @@ class MedicationManagement extends BaseMedicationElement
         foreach ($entries as $entry) {
             $item = $this->getPrescriptionItem($entry);
             $item->original_item_id = $entry->id;
-            $item->bound_key =  substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
+            $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
 
             $prescription_creator->addItem($item);
         }
@@ -430,8 +431,8 @@ class MedicationManagement extends BaseMedicationElement
         $this->prescription_id = $prescription_creator->elements['Element_OphDrPrescription_Details']->id;
 
         // To save in afterSave when it's a new record without doing an sql query we have to set the
-                // the isNewRecord to false , before saving the attribute and setting it back to true afterwards
-                // We're also using saveAttributes to avoid any calls to beforeSave and AfterSave
+        // the isNewRecord to false, before saving the attribute and setting it back to true afterwards
+        // We're also using saveAttributes to avoid any calls to beforeSave and AfterSave
         if ($this->getIsNewRecord()) {
             $this->setIsNewRecord(false);
             $this->saveAttributes(['prescription_id']);

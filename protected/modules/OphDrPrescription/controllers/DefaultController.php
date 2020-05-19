@@ -834,22 +834,34 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFinalize()
     {
-        if ( Yii::app()->request->isPostRequest ) {
-            $eventID =  Yii::app()->request->getPost('event');
+        if (Yii::app()->request->isPostRequest) {
+            $eventID = Yii::app()->request->getPost('event');
             $elementID = Yii::app()->request->getPost('element');
 
             $model = Element_OphDrPrescription_Details::model()->findByAttributes([
-                'event_id' => $eventID , 'id' => $elementID
+                'event_id' => $eventID, 'id' => $elementID
             ]);
 
-            $prescription_item = OphDrPrescription_Item::model()->findByAttributes([
-                'event_id' => $eventID
-            ]);
-            $prescribed_medication_models = EventMedicationUse::model()->findAll(
-                ['condition' => "prescription_item_id = $prescription_item->id"]
+            $prescription_items = OphDrPrescription_Item::model()->findAll(
+                "event_id=:event_id",
+                [':event_id' => $eventID]
             );
+
+            $prescription_items_by_id = [];
+            $prescribed_medication_models = [];
+            foreach ($prescription_items as $prescription_item) {
+                $prescribed_medication_model = EventMedicationUse::model()->findByAttributes(
+                    ['prescription_item_id' => $prescription_item->id]
+                );
+
+                if ($prescribed_medication_model) {
+                    $prescription_items_by_id[$prescription_item->id] = $prescription_item;
+                    $prescribed_medication_models[] = $prescribed_medication_model;
+                }
+            }
+
             foreach ($prescribed_medication_models as $prescribed_medication) {
-                $stop_date_from_duration = $prescription_item->stopDateFromDuration();
+                $stop_date_from_duration = $prescription_items_by_id[$prescribed_medication->prescription_item_id]->stopDateFromDuration();
                 $prescribed_medication->end_date = !is_null($stop_date_from_duration) ? $stop_date_from_duration->format('Y-m-d') : null;
                 $prescribed_medication->update();
             }
