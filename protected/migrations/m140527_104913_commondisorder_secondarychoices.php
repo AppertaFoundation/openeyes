@@ -10,10 +10,20 @@ class m140527_104913_commondisorder_secondarychoices extends OEMigration
                         'parent_id' => 'int(10) unsigned NOT NULL',
                 ), true);
 
-        $this->addForeignKey('secondaryto_common_oph_disorder_did_fk',
-                'secondaryto_common_oph_disorder', 'disorder_id', 'disorder', 'id');
-        $this->addForeignKey('secondaryto_common_oph_disorder_pid_fk',
-                'secondaryto_common_oph_disorder', 'parent_id', 'common_ophthalmic_disorder', 'id');
+        $this->addForeignKey(
+            'secondaryto_common_oph_disorder_did_fk',
+            'secondaryto_common_oph_disorder',
+            'disorder_id',
+            'disorder',
+            'id'
+        );
+        $this->addForeignKey(
+            'secondaryto_common_oph_disorder_pid_fk',
+            'secondaryto_common_oph_disorder',
+            'parent_id',
+            'common_ophthalmic_disorder',
+            'id'
+        );
     }
 
     public function down()

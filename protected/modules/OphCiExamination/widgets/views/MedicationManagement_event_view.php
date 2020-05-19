@@ -66,11 +66,11 @@ $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
     <?php $stoppedEntries = $element->getStoppedEntries();
     if ($stoppedEntries) { ?>
         <div class="collapse-data">
-            <div class="collapse-data-header-icon expand">
-                Stopped Medications
+            <div class="collapse-data-header-icon collapse">
+                Discontinued Medications
                 <small>(<?= count($stoppedEntries) ?>)</small>
             </div>
-            <div class="collapse-data-content" style="display:none;">
+            <div class="collapse-data-content" style="display:block;">
 
                 <table class="medications" id="Medication_Management_medication_stopped_entries">
                     <colgroup>

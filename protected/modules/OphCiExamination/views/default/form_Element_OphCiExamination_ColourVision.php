@@ -84,7 +84,9 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                             array_map(function ($reading) {
                                 return ['label' => $reading->name, 'id' => $reading->id];
-                            }, $element->getAllReadingMethods($eye_side))) ?> , {'multiSelect': true}),
+                            },
+                            $element->getAllReadingMethods($eye_side))
+                        ) ?> , {'multiSelect': true}),
                         ],
                         onReturn: function (adderDialog, selectedItems) {
                             if (selectedItems.length) {

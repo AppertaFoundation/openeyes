@@ -23,7 +23,8 @@ class m160615_104222_OE5989_create_whiteboard extends OEMigration
                 'alpha_blockers' => 'tinyint',
                 'anticoagulants' => 'tinyint',
                 'inr' => 'varchar(255)',
-            ), true
+            ),
+            true
         );
 
         $this->addForeignKey('whiteboard_booking_event', 'ophtroperationbooking_whiteboard', 'event_id', 'event', 'id');

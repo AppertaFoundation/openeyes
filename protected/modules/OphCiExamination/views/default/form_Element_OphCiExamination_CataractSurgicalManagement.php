@@ -16,24 +16,26 @@
 
 <?php
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CataractSurgicalManagement.js", CClientScript::POS_HEAD);
-$primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAll();
+$primary_reasons = OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery::model()->findAll('active = 1');
 ?>
 <div class="element-fields element-eyes">
     <?= \CHtml::activeHiddenField($element, 'eye_id', [ 'class' => 'sideField' ]); ?>
-    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'right',
-      'primary_reasons' => $primary_reasons,
-    ]
-  ) ?>
-    <?= $this->renderPartial('form_Element_OphCiExamination_CataractSurgicalManagement_Side',
-    [
-      'element' => $element,
-      'side' => 'left',
-      'primary_reasons' => $primary_reasons,
-    ]
-  ) ?>
+    <?= $this->renderPartial(
+        'form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'right',
+        'primary_reasons' => $primary_reasons,
+        ]
+    ) ?>
+    <?= $this->renderPartial(
+        'form_Element_OphCiExamination_CataractSurgicalManagement_Side',
+        [
+        'element' => $element,
+        'side' => 'left',
+        'primary_reasons' => $primary_reasons,
+        ]
+    ) ?>
 </div>
 
 
@@ -45,14 +47,14 @@ $(document).ready(function () {
     <?php foreach (['left', 'right'] as $side) : ?>
         <?= $side ?>PrimaryReasons:
         <?=CJSON::encode(
-          array_map(function ($reason) use ($element, $side) {
+            array_map(function ($reason) use ($element, $side) {
             return [
               'label' => $reason->name,
               'id' => $reason->id,
               'type' => 'primary_reason',
               'selected' => $reason->id === $element->{$side . '_reason_for_surgery_id'} ? 'selected' : '',
             ];
-          }, $primary_reasons)
+            }, $primary_reasons)
         )?>,
 
         <?= $side ?>Discussed: [
@@ -93,7 +95,7 @@ $(document).ready(function () {
             'type': 'refractive_category',
           },
           {
-            'label': 'Myopic',
+            'label': 'Myopia',
             'id': 1,
             'conditional-id': '<?=$side?>-refractive-category-1',
             'type': 'refractive_category',
@@ -113,15 +115,15 @@ $(document).ready(function () {
             'selected': 'selected',
           },
         ],
-        <?= $side ?>RefractiveMyopic:
+        <?= $side ?>RefractiveMyopia:
         <?=CJSON::encode(
-          array_map(function ($value) {
+            array_map(function ($value) {
             return [
               'label' => $value,
               'value' => $value,
-              'type' => 'refractive_myopic',
+              'type' => 'refractive_myopia',
             ];
-          }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
+            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
         )?>,
         <?=$side?>RefractiveCategoriesOptions: {
         'id': '<?=$side?>_refractive_categories_0',
@@ -129,7 +131,7 @@ $(document).ready(function () {
         'hideByDefault': true,
         'conditionalFlowMaps': {
           '<?=$side?>-refractive-category-0': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'emmetropia' }],
-          '<?=$side?>-refractive-category-1': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'myopic' }],
+          '<?=$side?>-refractive-category-1': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'myopia' }],
           '<?=$side?>-refractive-category-2': [{'target-group': '<?=$side?>_refractive_group', 'target-id': 'other' }],
         },
       },
@@ -137,8 +139,8 @@ $(document).ready(function () {
         'id': '<?=$side?>_refractive_group_emmetropia',
         'hideByDefault': true,
       },
-        <?=$side?>RefractiveMyopicOptions: {
-        'id': '<?=$side?>_refractive_group_myopic',
+        <?=$side?>RefractiveMyopiaOptions: {
+        'id': '<?=$side?>_refractive_group_myopia',
         'hideByDefault': true,
       },
         <?=$side?>RefractiveTargetOptions: {

@@ -322,8 +322,10 @@ class Event extends BaseActiveRecordVersioned
             return false;
         }
 
-        foreach (EventIssue::model()->findAll('event_id=? and issue_id = ?',
-            array($this->id, $issue->id)) as $event_issue) {
+        foreach (EventIssue::model()->findAll(
+            'event_id=? and issue_id = ?',
+            array($this->id, $issue->id)
+        ) as $event_issue) {
             $event_issue->delete();
         }
 
@@ -608,17 +610,22 @@ class Event extends BaseActiveRecordVersioned
         $this->dbConnection->createCommand('SELECT RELEASE_LOCK(?)')->execute(array($this->lockKey));
     }
 
-    public function getBarCodeHTML()
+    public function getBarCodeSVG()
     {
         $barcode = new TCPDFBarcode("E:$this->id", 'C128');
 
-        return $barcode->getBarcodeHTML(1, 8);
+        return $barcode->getBarcodeSVGCode(1, 8);
     }
 
     public function getDocref()
     {
-        return "E:$this->id/" . strtoupper(base_convert(time() . sprintf('%04d', Yii::app()->user->getId()), 10,
-            32)) . '/{{PAGE}}';
+        return "E:$this->id/" . strtoupper(
+            base_convert(
+                time() . sprintf('%04d', Yii::app()->user->getId()),
+                10,
+                32
+            )
+        ) . '/<span class="pageNumber"></span>';
     }
 
     /**
@@ -723,5 +730,4 @@ class Event extends BaseActiveRecordVersioned
             }
         }
     }
-
 }

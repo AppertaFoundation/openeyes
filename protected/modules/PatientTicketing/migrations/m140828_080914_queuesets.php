@@ -21,8 +21,13 @@ class m140828_080914_queuesets extends OEMigration
             'summary_link' => 'boolean NOT NULL DEFAULT false',
         ), true);
 
-        $this->addForeignKey('patientticketing_queueset_catid', 'patientticketing_queueset', 'category_id',
-            'patientticketing_queuesetcategory', 'id');
+        $this->addForeignKey(
+            'patientticketing_queueset_catid',
+            'patientticketing_queueset',
+            'category_id',
+            'patientticketing_queuesetcategory',
+            'id'
+        );
 
         $this->createOETable('patientticketing_queuesetuser', array(
             'id' => 'pk',
@@ -30,11 +35,21 @@ class m140828_080914_queuesets extends OEMigration
             'queueset_id' => 'integer NOT NULL',
         ), false);
 
-        $this->addForeignKey('patientticketing_queuesetuser_uid', 'patientticketing_queuesetuser', 'user_id',
-                'user', 'id');
+        $this->addForeignKey(
+            'patientticketing_queuesetuser_uid',
+            'patientticketing_queuesetuser',
+            'user_id',
+            'user',
+            'id'
+        );
 
-        $this->addForeignKey('patientticketing_queuesetuser_qsid', 'patientticketing_queuesetuser', 'queueset_id',
-                'patientticketing_queueset', 'id');
+        $this->addForeignKey(
+            'patientticketing_queuesetuser_qsid',
+            'patientticketing_queuesetuser',
+            'queueset_id',
+            'patientticketing_queueset',
+            'id'
+        );
 
         $this->insert('patientticketing_queuesetcategory', array('name' => 'Virtual Clinic'));
         $vc_id = $this->dbConnection->getLastInsertID();

@@ -45,7 +45,8 @@
                    endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
             <?php echo $form->textArea(
-                $element, $side . '_description',
+                $element,
+                $side . '_description',
                 array('nowrapper' => true),
                 false,
                 array(

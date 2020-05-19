@@ -84,7 +84,8 @@
     </div>
   </div>
     <?php if (isset($element->{'r1_axis_' . $side}) && $element->{'r1_axis_' . $side} != 0) {
-        $this->widget('application.modules.eyedraw.OEEyeDrawWidget',
+        $this->widget(
+            'application.modules.eyedraw.OEEyeDrawWidget',
             array(
                 'onReadyCommandArray' => array(
                     array('addDoodle', array('SteepAxis', array('axis' => $element->{'r1_axis_' . $side}))),
@@ -96,6 +97,7 @@
                 'mode' => 'view',
                 'width' => $this->action->id === 'view' ? 200 : 120,
                 'height' => $this->action->id === 'view' ? 200 : 120,
-            ));
+            )
+        );
     } ?>
 </div>

@@ -9,8 +9,11 @@ $this->breadcrumbs=array(
 
 ?>
 <?php
-echo CHtml::link('Back to Disorder list', array('disorder/index'),
-        array('class' => 'button small')) . ' ';
+echo CHtml::link(
+    'Back to Disorder list',
+    array('disorder/index'),
+    array('class' => 'button small')
+) . ' ';
 ?>
 
 <h1>View Disorder #<?php echo $model->id; ?></h1>

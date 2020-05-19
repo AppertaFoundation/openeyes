@@ -49,8 +49,13 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             $model->setAttributes($request->getPost('SubspecialtySubsection'));
 
             if ($model->save()) {
-                Audit::add('admin', 'edit', serialize($model->attributes), false,
-                    ['model' => 'SubspecialtySubsection']);
+                Audit::add(
+                    'admin',
+                    'edit',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'SubspecialtySubsection']
+                );
                 Yii::app()->user->setFlash('success', 'Subsection edited');
                 $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
             }
@@ -76,8 +81,13 @@ class SubspecialtySubsectionsController extends BaseAdminController {
             $model->setAttributes($request->getPost('SubspecialtySubsection'));
 
             if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false,
-                    ['model' => 'SubspecialtySubsection']);
+                Audit::add(
+                    'admin',
+                    'create',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'SubspecialtySubsection']
+                );
                 Yii::app()->user->setFlash('success', 'Subsection created');
                 $this->redirect(['list?subspecialty_id=' . $subspecialty_id]);
             }

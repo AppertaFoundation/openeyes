@@ -53,7 +53,7 @@ class PreviousTrialParameterTest extends CDbTestCase
         }
 
         // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->setExpectedException(CHttpException::class);
+        $this->expectException(CHttpException::class);
         $this->object->operation = 'no';
         $this->object->query($this->searchProvider);
     }

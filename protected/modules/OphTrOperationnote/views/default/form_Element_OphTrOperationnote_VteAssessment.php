@@ -22,5 +22,6 @@
     <?php echo $form->radioButtons(
         $element,
         'selected_option',
-        'OphTrOperationnote_VteAssessmentOption'); ?>
+        'OphTrOperationnote_VteAssessmentOption'
+    ); ?>
 </div>

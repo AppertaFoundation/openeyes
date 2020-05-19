@@ -77,7 +77,8 @@ class HistoryRisksManager
         if ($risks) {
             $element = $this->getLatestElement($patient);
             $present_risks = $element ? $element->present : array();
-            $missing_risks = array_filter($risks,
+            $missing_risks = array_filter(
+                $risks,
                 function($r) use ($present_risks) {
                     foreach ($present_risks as $present) {
                         if ($r['risk']->id === $present->risk_id) {

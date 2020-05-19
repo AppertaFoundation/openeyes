@@ -143,7 +143,8 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
         return implode($delimiter, array_map(
             function($el) {
                 return $el->elementType->name . ': ' . $el;
-            }, $this->getSiblings())
-        );
+            },
+            $this->getSiblings()
+        ));
     }
 }

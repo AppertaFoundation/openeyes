@@ -43,10 +43,10 @@
         <?php if ($entry->dispense_condition_id) {
             if ($entry->dispense_condition->name === 'Print to {form_type}') {
                 echo str_replace(
-                        '{form_type}',
-                        $form_setting,
-                        $entry->dispense_condition->name
-                    ) . " / {$entry->dispense_location->name}";
+                    '{form_type}',
+                    $form_setting,
+                    $entry->dispense_condition->name
+                ) . " / {$entry->dispense_location->name}";
             } else {
                 echo $entry->dispense_condition->name . " / " . (isset($entry->dispense_location) ? $entry->dispense_location->name : "");
             }
@@ -75,7 +75,7 @@
             <?php if (isset($entry->end_date)) { ?>
                 <span>
             <i class="oe-i stop small pad"></i>
-                <?= $entry->getEndDateDisplay() ?>
+                <?= $entry->getEndDateDisplay() . " ({$entry->stopReason})" ?>
                 </span>
             <?php } ?>
         </div>

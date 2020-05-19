@@ -57,7 +57,7 @@ $non_ticket_entries = [];
         ?><hr class="divider"><?php
     }?>
     <?php foreach ($ticket_entries as $entry) { ?>
-        <div class="flex-layout flex-top col-gap">
+        <div class="flex-layout flex-top col-gap" id="vc-clinic-outcome">
             <div class="cols-5">
                 <table class="last-left">
                     <colgroup>

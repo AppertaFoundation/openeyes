@@ -86,8 +86,8 @@
             <?php
                 // if no To was set in the macro we just display an empty row
                 $this->renderPartial(
-                        '//docman/document_row_recipient',
-                        array(
+                    '//docman/document_row_recipient',
+                    array(
                             'contact_id' => null,
                             'address' => null,
                             'row_index' => 0,
@@ -96,7 +96,7 @@
                             'contact_nickname' => null,
                             'can_send_electronically' => $can_send_electronically,
                         )
-                    );
+                );
             ?>
         <?php endif; ?>
         <?php $row_index++; ?>

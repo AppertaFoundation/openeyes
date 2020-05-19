@@ -70,11 +70,15 @@ class OphCiExamination_EyeDrawBase extends BaseEventTypeElement
     {
         $image_string = false;
         if ($side && strtolower($side{0}) == 'l') {
-            $image_string = $this->checkItems($this->doodleInfo,
-                    $this->image_string_left);
+            $image_string = $this->checkItems(
+                $this->doodleInfo,
+                $this->image_string_left
+            );
         } elseif ($side && strtolower($side{0}) == 'r') {
-            $image_string = $this->checkItems($this->doodleInfo,
-                    $this->image_string_right);
+            $image_string = $this->checkItems(
+                $this->doodleInfo,
+                $this->image_string_right
+            );
         }
 
         return $image_string;

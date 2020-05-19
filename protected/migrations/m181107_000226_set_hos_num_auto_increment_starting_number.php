@@ -9,8 +9,7 @@ class m181107_000226_set_hos_num_auto_increment_starting_number extends CDbMigra
                 'key' => 'hos_num_start',
                 'name' => 'Auto Increment Start Number',
                 'default_value' => '1'
-            )
-        );
+            ));
     }
 
     public function safeDown()

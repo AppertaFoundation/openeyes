@@ -77,7 +77,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                             <td>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                            class="js-has-tooltip fa oe-i eye small pro-theme"
+                                            class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
                                             data-tooltip-content="View prescription"></span></a>
                                     <?php } ?>
                             </td>
@@ -101,7 +101,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <div class="collapse-data-content">
                         <table id="<?= $model_name ?>_systemic_stopped_entry_table">
                             <colgroup>
-                                <col class="cols-8">
+                                <col class="cols-7">
                                 <col>
                             </colgroup>
                         <thead style="display:none;">
@@ -133,7 +133,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                     <td>
                                     <?php if ($entry->prescription_item_id) { ?>
                                         <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                                class="js-has-tooltip fa oe-i eye small pro-theme"
+                                                class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
                                                 data-tooltip-content="View prescription"></span></a>
                                         <?php } ?>
                                     </td>
@@ -216,7 +216,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <?php if ($stopped_eye_meds) { ?>
                     <div class="collapse-data">
                         <div class="collapse-data-header-icon expand">
-                            Stopped
+                            Stopped Medications
                             <small>(<?= sizeof($stopped_eye_meds) ?>)</small>
                         </div>
                         <div class="collapse-data-content">

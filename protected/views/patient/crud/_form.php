@@ -88,9 +88,13 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->error($contact, 'first_name') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'first_name',
+            <?= $form->textField(
+                $contact,
+                'first_name',
                 array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'First name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                'placeholder' => 'First name',
+                'autocomplete' => Yii::app()->params['html_autocomplete'])
+            ) ?>
         </td>
       </tr>
       <tr>
@@ -100,9 +104,13 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->error($contact, 'last_name') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'last_name',
+            <?= $form->textField(
+                $contact,
+                'last_name',
                 array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
-                  'placeholder' => 'Last name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                'placeholder' => 'Last name',
+                'autocomplete' => Yii::app()->params['html_autocomplete'])
+            ) ?>
         </td>
       </tr>
       <tr>
@@ -112,8 +120,11 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->error($contact, 'maiden_name') ?>
         </td>
         <td>
-            <?= $form->textField($contact, 'maiden_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->textField(
+                $contact,
+                'maiden_name',
+                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name', 'autocomplete' => Yii::app()->params['html_autocomplete'])
+            ) ?>
         </td>
       </tr>
       <tr class="patient-duplicate-check">
@@ -156,11 +167,15 @@ foreach ($ethnic_list as $key => $item) {
         </td>
         <td>
           <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
-            <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
-            array(
-              'options' => array($patient->getScenario() => array('selected' => 'selected')),
-              'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
-            )); ?>
+            <?= $form->dropDownList(
+                $patient,
+                'patient_source',
+                $patient->getSourcesList(),
+                array(
+                'options' => array($patient->getScenario() => array('selected' => 'selected')),
+                'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
+                )
+            ); ?>
         </td>
       </tr>
       <tr>
@@ -180,8 +195,12 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->error($patient, 'ethnic_group_id') ?>
         </td>
         <td>
-            <?= $form->dropDownList($patient, 'ethnic_group_id', $ethnic_groups,
-                array('empty' => '-- select --')); ?>
+            <?= $form->dropDownList(
+                $patient,
+                'ethnic_group_id',
+                $ethnic_groups,
+                array('empty' => '-- select --')
+            ); ?>
         </td>
       </tr>
       <tr>
@@ -242,14 +261,17 @@ foreach ($ethnic_list as $key => $item) {
             <?= Yii::app()->params['nhs_num_label']?>
           </td>
           <td>
-                <?= $form->textField($patient, 'nhs_num',
-                  array(
+                <?= $form->textField(
+                    $patient,
+                    'nhs_num',
+                    array(
                       'size' => 40,
                       'maxlength' => 40,
                       'data-child_row' => '.nhs-num-status',
                       'placeholder' => $patient->getAttributeLabel('nhs_num'),
                       'autocomplete' => Yii::app()->params['html_autocomplete']
-                  )); ?>
+                    )
+                ); ?>
                 <?= $form->error($patient, 'nhs_num') ?>
           </td>
         </tr>
@@ -263,8 +285,12 @@ foreach ($ethnic_list as $key => $item) {
                   <?= $form->error($patient, 'nhs_num_status_id') ?>
               </td>
               <td>
-                  <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
-                      array('empty' => '-- select --')); ?>
+                  <?= $form->dropDownList(
+                      $patient,
+                      'nhs_num_status_id',
+                      $nhs_num_statuses,
+                      array('empty' => '-- select --')
+                  ); ?>
               </td>
             </tr>
             <?php
@@ -274,8 +300,7 @@ foreach ($ethnic_list as $key => $item) {
                 'form' => $form,
                 'patient_identifiers' => $patient_identifiers,
                 'patient' => $patient,
-            )
-        ) ?>
+            )) ?>
         </tbody>
       </table>
     </div>
@@ -390,8 +415,11 @@ foreach ($ethnic_list as $key => $item) {
                             <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                         </li>
                     </ul>
-                    <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                                           array('class' => 'hidden_id')); ?>
+                    <?= CHtml::hiddenField(
+                        'Patient[practice_id]',
+                        $patient->practice_id,
+                        array('class' => 'hidden_id')
+                    ); ?>
                 </div>
                 <div id="no_practice_result" style="display: none;">
                     <div>No result</div>
@@ -430,8 +458,11 @@ foreach ($ethnic_list as $key => $item) {
                 </li>
               </ul>
 
-                <?= CHtml::hiddenField('PatientUserReferral[user_id]', $patientuserreferral->user_id,
-                array('class' => 'hidden_id')); ?>
+                <?= CHtml::hiddenField(
+                    'PatientUserReferral[user_id]',
+                    $patientuserreferral->user_id,
+                    array('class' => 'hidden_id')
+                ); ?>
             </div>
             <div id="no_referred_to_result" style="display: none;">
               <div>No result</div>
@@ -507,9 +538,11 @@ foreach ($ethnic_list as $key => $item) {
       </table>
     </div>
     <div class="row flex-layout">
-        <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> baseURL . '/' : ( isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null ) ), array('class' => 'button blue hint')); ?>
-        <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint')); ?>
+        <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> createURL('site/index') : ( isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null ) ), array('class' => 'button blue hint')); ?>
+        <?= CHtml::submitButton(
+            $patient->isNewRecord ? 'Create new patient' : 'Save patient',
+            array('class' => 'button green hint')
+        ); ?>
     </div>
   </div>
 </div>

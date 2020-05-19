@@ -178,8 +178,12 @@
                 <label for="institution_id">Institution:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
-                      array('empty' => '- Select -')) ?>
+                  <?=\CHtml::dropDownList(
+                      'institution_id',
+                      '',
+                      CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
+                      array('empty' => '- Select -')
+                  ) ?>
               </div>
             </div>
 
@@ -197,8 +201,12 @@
                 <label for="label_id">Label:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::dropDownList('label_id', '', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
-                      array('empty' => '- Select -')) ?>
+                  <?=\CHtml::dropDownList(
+                      'label_id',
+                      '',
+                      CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
+                      array('empty' => '- Select -')
+                  ) ?>
               </div>
             </div>
 
@@ -306,8 +314,12 @@
                 <div class="label">Institution:</div>
               </div>
               <div class="<?= $form->columns('field'); ?>">
-                  <?=\CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
-                      array('empty' => '- Select -')) ?>
+                  <?=\CHtml::dropDownList(
+                      'institution_id',
+                      '',
+                      CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
+                      array('empty' => '- Select -')
+                  ) ?>
               </div>
             </div>
 
@@ -357,8 +369,11 @@
               <label for="newsite_from">From:</label>
             </div>
             <div class="<?= $form->columns('field'); ?>">
-                <?=\CHtml::textField('newsite_from', User::model()->findByPk(Yii::app()->user->id)->email,
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                <?=\CHtml::textField(
+                    'newsite_from',
+                    User::model()->findByPk(Yii::app()->user->id)->email,
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                ) ?>
             </div>
           </div>
           <div class="data-group">

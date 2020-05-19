@@ -63,7 +63,7 @@ class MedicationInfoBox extends \BaseCWidget
 
         foreach ($medication->medicationSets as $sets) {
             if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
-                $this->icon = 'drug-rx';
+                $this->icon = 'formulary';
                 $this->append_label[] = 'This drug is available in the hospital formulary.';
 
                 break;

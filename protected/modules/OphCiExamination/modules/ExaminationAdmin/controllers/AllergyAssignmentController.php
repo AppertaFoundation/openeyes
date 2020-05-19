@@ -26,13 +26,6 @@ class AllergyAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationAllergySet';
 
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
-
     /**
      * Lists all models.
      */

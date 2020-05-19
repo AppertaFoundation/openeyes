@@ -71,8 +71,11 @@ class TrialTest extends ActiveRecordTestCase
         $this->assertGreaterThan(0, count($providers), 'There should be at least one data provider returned');
 
         foreach (TrialPatientStatus::model()->findAll() as $id => $status) {
-            $this->assertArrayHasKey($status->code, $providers,
-                'A data provider of each patient status should be returned');
+            $this->assertArrayHasKey(
+                $status->code,
+                $providers,
+                'A data provider of each patient status should be returned'
+            );
         }
     }
 
@@ -104,8 +107,11 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertLessThan($data[1]->patient->last_name, $data[0]->patient->last_name,
-            'The list of patients should be sorted alphabetically by last name');
+        $this->assertLessThan(
+            $data[1]->patient->last_name,
+            $data[0]->patient->last_name,
+            'The list of patients should be sorted alphabetically by last name'
+        );
     }
 
     public function testDataProviderNameOrderingDesc()
@@ -116,8 +122,11 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertGreaterThan($data[1]->patient->last_name, $data[0]->patient->last_name,
-            'The list of patients should be sorted alphabetically descending by last name');
+        $this->assertGreaterThan(
+            $data[1]->patient->last_name,
+            $data[0]->patient->last_name,
+            'The list of patients should be sorted alphabetically descending by last name'
+        );
     }
 
     public function testDataProviderAgeOrdering()
@@ -128,8 +137,11 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertGreaterThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
-            'The list of patients should be sorted by age ascending');
+        $this->assertGreaterThan(
+            $data[1]->patient->getAge(),
+            $data[0]->patient->getAge(),
+            'The list of patients should be sorted by age ascending'
+        );
     }
 
     public function testDataProviderAgeOrderingDesc()
@@ -140,8 +152,11 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertLessThan($data[1]->patient->getAge(), $data[0]->patient->getAge(),
-            'The list of patients should be sorted by age descending');
+        $this->assertLessThan(
+            $data[1]->patient->getAge(),
+            $data[0]->patient->getAge(),
+            'The list of patients should be sorted by age descending'
+        );
     }
 
     public function testDataProviderExternalRefOrdering()
@@ -152,8 +167,11 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertGreaterThan($data[1]->external_trial_identifier, $data[0]->external_trial_identifier,
-            'The list of patients should be sorted by external id ascending');
+        $this->assertGreaterThan(
+            $data[1]->external_trial_identifier,
+            $data[0]->external_trial_identifier,
+            'The list of patients should be sorted by external id ascending'
+        );
     }
 
     public function testDataProviderExternalRefOrderingDesc()
@@ -164,16 +182,23 @@ class TrialTest extends ActiveRecordTestCase
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
-        $this->assertLessThan($data[1]->external_trial_identifier, $data[0]->external_trial_identifier,
-            'The list of patients should be sorted by external id descending');
+        $this->assertLessThan(
+            $data[1]->external_trial_identifier,
+            $data[0]->external_trial_identifier,
+            'The list of patients should be sorted by external id descending'
+        );
     }
 
     public function testHasShortlistedPatients()
     {
-        $this->assertTrue($this->trial('trial1')->hasShortlistedPatients(),
-            'Trial1 should have at least one shortlisted patient');
-        $this->assertFalse($this->trial('trial2')->hasShortlistedPatients(),
-            'Trial2 should have no shortlisted patients');
+        $this->assertTrue(
+            $this->trial('trial1')->hasShortlistedPatients(),
+            'Trial1 should have at least one shortlisted patient'
+        );
+        $this->assertFalse(
+            $this->trial('trial2')->hasShortlistedPatients(),
+            'Trial2 should have no shortlisted patients'
+        );
     }
 
     public function testGetTrialAccess()
@@ -202,11 +227,17 @@ class TrialTest extends ActiveRecordTestCase
         $trialPatient = $trial->addPatient($patient, $shortlisted);
 
         $this->assertNotNull($trialPatient, 'The patient should have been added to the trial');
-        $this->assertEquals($shortlisted->id, $trialPatient->status->id,
-            'The patietn status should be shortlisted');
+        $this->assertEquals(
+            $shortlisted->id,
+            $trialPatient->status->id,
+            'The patietn status should be shortlisted'
+        );
         $this->assertEquals($trial->id, $trialPatient->trial->id, 'The trial id should match the patient trial id');
-        $this->assertEquals($this->treatment_type('treatment_type_unknown')->id, $trialPatient->treatment_type_id,
-            'The patient treatment type should start at unknown');
+        $this->assertEquals(
+            $this->treatment_type('treatment_type_unknown')->id,
+            $trialPatient->treatment_type_id,
+            'The patient treatment type should start at unknown'
+        );
     }
 
     public function testRemovePatient()
@@ -218,7 +249,8 @@ class TrialTest extends ActiveRecordTestCase
         $trial = $this->trial('trial1');
         $patient = $this->patient('patient1');
 
-        $this->assertNotNull(TrialPatient::model()->find('trial_id = :trialId AND patient_id = :patientId',
+        $this->assertNotNull(TrialPatient::model()->find(
+            'trial_id = :trialId AND patient_id = :patientId',
             array(
                 ':trialId' => $trial->id,
                 ':patientId' => $patient->id,
@@ -227,7 +259,8 @@ class TrialTest extends ActiveRecordTestCase
 
         $trial->removePatient($trialPatient->patient_id);
 
-        $this->assertNull(TrialPatient::model()->find('trial_id = :trialId AND patient_id = :patientId',
+        $this->assertNull(TrialPatient::model()->find(
+            'trial_id = :trialId AND patient_id = :patientId',
             array(
                 ':trialId' => $trial->id,
                 ':patientId' => $patient->id,
@@ -243,8 +276,11 @@ class TrialTest extends ActiveRecordTestCase
         $user2 = $this->user('user2');
 
         $result = $trial2->addUserPermission($user2->id, $this->trial_permission('trial_permission_view'), null);
-        $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_OK, $result,
-            'The permission should have been added successfully');
+        $this->assertEquals(
+            Trial::RETURN_CODE_USER_PERMISSION_OK,
+            $result,
+            'The permission should have been added successfully'
+        );
     }
 
     public function testAddUserPermissionClash()
@@ -254,8 +290,11 @@ class TrialTest extends ActiveRecordTestCase
         $user1 = $this->user('user1');
 
         $result = $trial->addUserPermission($user1->id, $this->trial_permission('trial_permission_view'), null);
-        $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS, $result,
-            'The permission already exists, and a duplicate should have been prevented');
+        $this->assertEquals(
+            Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS,
+            $result,
+            'The permission already exists, and a duplicate should have been prevented'
+        );
     }
 
     public function testRemoveUserPermission()
@@ -265,8 +304,11 @@ class TrialTest extends ActiveRecordTestCase
         /* @var UserTrialAssignment $userPermission */
         $userPermission = $this->user_trial_assignment('user_trial_assignment_2');
 
-        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_SUCCESS, $trial->removeUserAssignment($userPermission->id),
-            'The permission should have been removed successfully');
+        $this->assertEquals(
+            Trial::REMOVE_PERMISSION_RESULT_SUCCESS,
+            $trial->removeUserAssignment($userPermission->id),
+            'The permission should have been removed successfully'
+        );
     }
 
     public function testRemoveOwner()
@@ -276,8 +318,11 @@ class TrialTest extends ActiveRecordTestCase
         /* @var UserTrialAssignment $userPermission */
         $userPermission = $this->user_trial_assignment('user_trial_assignment_1');
 
-        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER,
-            $trial->removeUserAssignment($userPermission->id), 'The manager should not have been removable');
+        $this->assertEquals(
+            Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER,
+            $trial->removeUserAssignment($userPermission->id),
+            'The manager should not have been removable'
+        );
     }
 
     public function testCloseTrial()
@@ -311,8 +356,11 @@ class TrialTest extends ActiveRecordTestCase
         $closed_date = $trial->closed_date;
         $this->assertNotNull($trial->closed_date, 'The trial should not initially have a closed date');
         $trial->close();
-        $this->assertStringStartsWith($trial->closed_date, $closed_date,
-            'The closed date should have remained unchanged when the trial is closed');
+        $this->assertStringStartsWith(
+            $trial->closed_date,
+            $closed_date,
+            'The closed date should have remained unchanged when the trial is closed'
+        );
     }
 
     public function testDeepDeleteTrial()
@@ -320,7 +368,9 @@ class TrialTest extends ActiveRecordTestCase
         $this->assertTrue($this->trial('trial1')->deepDelete(), 'Deleting a trial should be successful');
         $this->assertTrue($this->trial('trial2')->deepDelete(), 'Deleting a trial should be successful');
         $this->assertTrue($this->trial('trial3')->deepDelete(), 'Deleting a trial should be successful');
-        $this->assertTrue($this->trial('non_intervention_trial_1')->deepDelete(),
-            'Deleting a trial should be successful');
+        $this->assertTrue(
+            $this->trial('non_intervention_trial_1')->deepDelete(),
+            'Deleting a trial should be successful'
+        );
     }
 }

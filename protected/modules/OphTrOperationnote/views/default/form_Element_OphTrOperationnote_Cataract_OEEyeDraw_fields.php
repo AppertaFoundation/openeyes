@@ -127,20 +127,25 @@
                             $element,
                             'iol_type_id',
                             array(
-                                CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(
-                                    array(
+                                CHtml::listData(
+                                    OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(
+                                        array(
                                         'condition' => 'private=0',
                                         'order' => 'display_order asc',
-                                    )
+                                        )
+                                    ),
+                                    'id',
+                                    'name'
                                 ),
-                                    'id', 'name'),
                                 CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
                                     'condition' => 'private=1',
                                     'order' => 'display_order',
                                 )), 'id', 'name'),
                             ),
-                            array('empty' => 'Select', 'divided' => true, 'nolabel' => true), $element->iol_hidden,
-                            array('field' => 12)) ?>
+                            array('empty' => 'Select', 'divided' => true, 'nolabel' => true),
+                            $element->iol_hidden,
+                            array('field' => 12)
+                        ) ?>
                     <?php endif; ?>
                     <style>
                         #Element_OphTrOperationnote_Cataract_iol_type_id {
@@ -174,7 +179,10 @@
             </td>
             <td>
                 <div class="cols-6">
-                    <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'iol_position_id',
+                        'OphTrOperationnote_IOLPosition',
                         array(
                             'empty' => 'Select',
                             'options' => array(
@@ -182,7 +190,8 @@
                             ),
                             'nolabel' => true,
                         ),
-                        $element->iol_hidden, array('field' => 12)
+                        $element->iol_hidden,
+                        array('field' => 12)
                     ) ?>
                     <style>
                         #Element_OphTrOperationnote_Cataract_iol_position_id {
@@ -196,13 +205,21 @@
         <tr>
             <td>Agents</td>
             <td>
-                <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices',
+                <?php echo $form->multiSelectList(
+                    $element,
+                    'OphTrOperationnote_CataractOperativeDevices',
                     'operative_devices',
                     'id',
-                    $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
+                    $this->getOperativeDeviceList($element),
+                    $this->getOperativeDeviceDefaults(),
                     array('empty' => '- Agents -', 'label' => 'Agents', 'nowrapper' => true),
-                    false, false, null, false, false,
-                    array('field' => 12)) ?>
+                    false,
+                    false,
+                    null,
+                    false,
+                    false,
+                    array('field' => 12)
+                ) ?>
             </td>
         </tr>
         <tr>
@@ -218,27 +235,45 @@
         <tr>
             <td>Complications</td>
             <td>
-                <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractComplications', 'complications', 'id',
-                    CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(
-                        array('order' => 'display_order asc')),
-                        'id', 'name'),
+                <?php echo $form->multiSelectList(
+                    $element,
+                    'OphTrOperationnote_CataractComplications',
+                    'complications',
+                    'id',
+                    CHtml::listData(
+                        OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(
+                            array('order' => 'display_order asc')
+                        ),
+                        'id',
+                        'name'
+                    ),
                     null,
                     array('empty' => '- Complications -',
                         'label' => 'Complications',
                         'nowrapper' => true ,
                         'class' => $element->hasErrors('Complications') ? 'error': ''),
-                    false, false, null,
-                    false, false, array('field' => 4)) ?>
+                    false,
+                    false,
+                    null,
+                    false,
+                    false,
+                    array('field' => 4)
+                ) ?>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <?php echo $form->textArea($element, 'complication_notes', array('nowrapper' => true), false,
+                <?php echo $form->textArea(
+                    $element,
+                    'complication_notes',
+                    array('nowrapper' => true),
+                    false,
                     array(
                         'rows' => 6,
                         'cols' => 40,
                         'placeholder' => $element->getAttributeLabel('complication_notes'),
-                    )) ?>
+                    )
+                ) ?>
             </td>
         </tr>
         </tbody>

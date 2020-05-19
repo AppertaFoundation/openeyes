@@ -10,7 +10,8 @@ class m170928_080054_update_some_shortcodes extends OEMigration
                 'method' => 'getLetterLaserManagementFindings',
                 'description' => 'Laser Management Findings'),
             'method = :orig_method',
-            array(':orig_method' => 'getLetterLaserManagementPlan'));
+            array(':orig_method' => 'getLetterLaserManagementPlan')
+        );
 
         $this->update(
             'patient_shortcode',
@@ -31,7 +32,8 @@ class m170928_080054_update_some_shortcodes extends OEMigration
             array(
                 'event_type_id' => $correspondence_event_id
             ),
-            'method = ?', array('getGlaucomaManagement')
+            'method = ?',
+            array('getGlaucomaManagement')
         );
 
         $this->update(
@@ -39,7 +41,9 @@ class m170928_080054_update_some_shortcodes extends OEMigration
             array(
                 'method' => 'getLetterLaserManagementPlan',
                 'description' => 'Laser Management Plan'),
-            'method = ?', array('getLetterLaserManagementFindings'));
+            'method = ?',
+            array('getLetterLaserManagementFindings')
+        );
     }
 
     /*

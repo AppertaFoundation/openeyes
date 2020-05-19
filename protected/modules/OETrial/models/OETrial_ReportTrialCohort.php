@@ -136,12 +136,14 @@ class OETrial_ReportTrialCohort extends BaseReport
             $cols[] = implode($diagnoses, '; ');
 
             /* @var \OEModule\OphCiExamination\widgets\HistoryMedications $medicationsWidget */
-            $medicationsWidget = Yii::app()->getWidgetFactory()->createWidget($this,
+            $medicationsWidget = Yii::app()->getWidgetFactory()->createWidget(
+                $this,
                 \OEModule\OphCiExamination\widgets\HistoryMedications::class,
                 array(
                     'patient' => $trial_patient->patient,
                     'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
-                ));
+                )
+            );
 
             $medicationsWidget->init();
             $medicationData = $medicationsWidget->getViewData();

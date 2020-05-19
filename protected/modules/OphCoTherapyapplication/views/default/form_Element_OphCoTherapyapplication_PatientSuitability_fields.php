@@ -48,7 +48,8 @@ foreach ($treatments as $treatment) {
     $side . '_angiogram_baseline_date',
     array('maxDate' => 'today'),
     array(),
-    array_merge($layoutColumns, array('field' => 3))) ?>
+    array_merge($layoutColumns, array('field' => 3))
+) ?>
 
 <div id="nice_compliance_<?php echo $side ?>" class="data-group">
   <div class="cols-<?php echo $layoutColumns['label'] ?>">
@@ -64,8 +65,8 @@ foreach ($treatments as $treatment) {
                 'form' => $form,
                 'side' => $side,
             ),
-                   false,
-                   false
+            false,
+            false
         ) ?>
     </div>
   </div>

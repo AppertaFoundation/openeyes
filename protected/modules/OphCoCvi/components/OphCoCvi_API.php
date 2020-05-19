@@ -69,7 +69,12 @@ class OphCoCvi_API extends \BaseAPI
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
     {
         return parent::getLatestElement(
-            $this->namespaceElementName($element), $patient, $use_context, $before, $after);
+            $this->namespaceElementName($element),
+            $patient,
+            $use_context,
+            $before,
+            $after
+        );
     }
 
     /**

@@ -116,7 +116,7 @@ foreach ($element->entries as $entry) {
     </table>
         <div class="collapse-data js-stopped-medication-collapsed-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand ">
-                Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
+                Previously Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 

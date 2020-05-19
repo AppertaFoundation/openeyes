@@ -28,9 +28,19 @@ class m151015_123216_remove_lens_foreign_keys extends CDbMigration
         $this->update('et_ophinbiometry_selection', array('lens_id_left' => $lensType['id']), 'lens_id_left = 0');
         $this->update('et_ophinbiometry_selection', array('lens_id_right' => $lensType['id']), 'lens_id_right = 0');
 
-        $this->addForeignKey('ophinbiometry_lenstype_lens_l_fk', 'et_ophinbiometry_selection', 'lens_id_left',
-            'ophinbiometry_lenstype_lens', 'id');
-        $this->addForeignKey('ophinbiometry_lenstype_lens_r_fk', 'et_ophinbiometry_selection', 'lens_id_right',
-            'ophinbiometry_lenstype_lens', 'id');
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_l_fk',
+            'et_ophinbiometry_selection',
+            'lens_id_left',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
+        $this->addForeignKey(
+            'ophinbiometry_lenstype_lens_r_fk',
+            'et_ophinbiometry_selection',
+            'lens_id_right',
+            'ophinbiometry_lenstype_lens',
+            'id'
+        );
     }
 }

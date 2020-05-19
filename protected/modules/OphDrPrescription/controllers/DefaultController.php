@@ -508,22 +508,21 @@ class DefaultController extends BaseEventTypeController
         $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
 
         if ($print_mode === 'WP10' || $print_mode === 'FP10') {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_top_margin'] = '6mm';
-            Yii::app()->params['wkhtmltopdf_bottom_margin'] = '0mm';
-            Yii::app()->params['wkhtmltopdf_disable_smart_shrinking'] = true;
+            Yii::app()->puppeteer->leftMargin = '0mm';
+            Yii::app()->puppeteer->rightMargin = '0mm';
+            Yii::app()->puppeteer->topMargin = '6mm';
+            Yii::app()->puppeteer->bottomMargin = '0mm';
             $this->render('print_fpten', array(
                 'user' => $user,
                 'print_mode' => $print_mode
             ));
         } elseif ($pdf_documents === 1) {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+            Yii::app()->puppeteer->leftMargin = '8mm';
+            Yii::app()->puppeteer->rightMargin = '8mm';
             $this->render('print');
         } else {
-            Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
-            Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+            Yii::app()->puppeteer->leftMargin = '8mm';
+            Yii::app()->puppeteer->rightMargin = '8mm';
             $this->render('print');
             if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
                 $this->render('print', array('copy' => 'notes'));
@@ -540,7 +539,7 @@ class DefaultController extends BaseEventTypeController
 
         $eventid = 3686356;
         $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $api->printEvent( $eventid );
+        $api->printEvent($eventid);
     }
 
 
@@ -558,6 +557,18 @@ class DefaultController extends BaseEventTypeController
         }
 
         $this->pdf_print_documents = $document_count;
+
+        $print_mode = Yii::app()->request->getParam('print_mode');
+
+        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
+            $this->print_args = '?print_mode=' . $print_mode . '&print_footer=false';
+            Yii::app()->puppeteer->leftMargin = '0mm';
+            Yii::app()->puppeteer->rightMargin = '0mm';
+            Yii::app()->puppeteer->topMargin= '6mm';
+            Yii::app()->puppeteer->bottomMargin = '0mm';
+        } else {
+            $this->print_args = null;
+        }
 
         return parent::actionPDFPrint($id);
     }
@@ -752,8 +763,10 @@ class DefaultController extends BaseEventTypeController
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {
-                    $lat_id = MedicationLaterality::model()->find('name = :eye_name',
-                        array(':eye_name' => $principal_eye->name));
+                    $lat_id = MedicationLaterality::model()->find(
+                        'name = :eye_name',
+                        array(':eye_name' => $principal_eye->name)
+                    );
                     $item->laterality = ($lat_id) ? $lat_id : null;
                 }
                 //check operation note eye and use instead of original diagnosis
@@ -766,11 +779,16 @@ class DefaultController extends BaseEventTypeController
         }
         $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
         if (isset($this->patient)) {
-            $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options));
+            $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
+            );
         } else {
-            $output = $this->renderPartial('/default/form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options), true);
+            $output = $this->renderPartial(
+                '/default/form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'unit_options' => $unit_options),
+                true
+            );
 
             return $output;
         }
@@ -816,22 +834,34 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFinalize()
     {
-        if ( Yii::app()->request->isPostRequest ) {
-            $eventID =  Yii::app()->request->getPost('event');
+        if (Yii::app()->request->isPostRequest) {
+            $eventID = Yii::app()->request->getPost('event');
             $elementID = Yii::app()->request->getPost('element');
 
             $model = Element_OphDrPrescription_Details::model()->findByAttributes([
-                'event_id' => $eventID , 'id' => $elementID
+                'event_id' => $eventID, 'id' => $elementID
             ]);
 
-            $prescription_item = OphDrPrescription_Item::model()->findByAttributes([
-                'event_id' => $eventID
-            ]);
-            $prescribed_medication_models = EventMedicationUse::model()->findAll(
-                ['condition' => "prescription_item_id = $prescription_item->id"]
+            $prescription_items = OphDrPrescription_Item::model()->findAll(
+                "event_id=:event_id",
+                [':event_id' => $eventID]
             );
+
+            $prescription_items_by_id = [];
+            $prescribed_medication_models = [];
+            foreach ($prescription_items as $prescription_item) {
+                $prescribed_medication_model = EventMedicationUse::model()->findByAttributes(
+                    ['prescription_item_id' => $prescription_item->id]
+                );
+
+                if ($prescribed_medication_model) {
+                    $prescription_items_by_id[$prescription_item->id] = $prescription_item;
+                    $prescribed_medication_models[] = $prescribed_medication_model;
+                }
+            }
+
             foreach ($prescribed_medication_models as $prescribed_medication) {
-                $stop_date_from_duration = $prescription_item->stopDateFromDuration();
+                $stop_date_from_duration = $prescription_items_by_id[$prescribed_medication->prescription_item_id]->stopDateFromDuration();
                 $prescribed_medication->end_date = !is_null($stop_date_from_duration) ? $stop_date_from_duration->format('Y-m-d') : null;
                 $prescribed_medication->update();
             }
@@ -850,7 +880,6 @@ class DefaultController extends BaseEventTypeController
 
             echo json_encode($result);
         }
-
     }
 
     /**

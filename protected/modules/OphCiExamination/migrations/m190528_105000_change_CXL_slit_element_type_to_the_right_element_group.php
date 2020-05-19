@@ -13,7 +13,8 @@ class m190528_105000_change_CXL_slit_element_type_to_the_right_element_group ext
         $this->update(
             'element_type',
             ['element_group_id' => $element_group],
-            'class_name = :class_name', [':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp']
+            'class_name = :class_name',
+            [':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp']
         );
     }
 

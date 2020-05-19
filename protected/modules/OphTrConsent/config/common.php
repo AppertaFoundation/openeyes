@@ -18,7 +18,7 @@
 
 return array(
     'params' => array(
-        'wkhtmltopdf_footer_left_OphTrConsent' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}{{PROCEDURES}}',
-        'wkhtmltopdf_bottom_margin_OphTrConsent' => '26mm',
+        'puppeteer_footer_left_OphTrConsent' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}{{PROCEDURES}}',
+        'puppeteer_bottom_margin_OphTrConsent' => '26mm',
     ),
 );

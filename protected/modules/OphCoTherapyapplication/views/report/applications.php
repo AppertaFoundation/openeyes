@@ -13,7 +13,9 @@
                 $firm = Firm::model()->findByAttributes(array('consultant_id' => Yii::app()->user->id));
 
                 if ($firm) {
-                    echo CHtml::dropDownList(null, '',
+                    echo CHtml::dropDownList(
+                        null,
+                        '',
                         array($firm->id => $firm->name),
                         array(
                             'disabled' => 'disabled',
@@ -23,13 +25,17 @@
                     );
                     echo CHtml::hiddenField('consultant_id', $firm->id);
                 } else {
-                    echo CHtml::dropDownList(null, '', array(),
+                    echo CHtml::dropDownList(
+                        null,
+                        '',
+                        array(),
                         array(
                             'disabled' => 'disabled',
                             'readonly' => 'readonly',
                             'style' => 'background-color:#D3D3D3;',
                             'empty' => '- select -',
-                        )); //for some reason the chrome doesn't gray out
+                        )
+                    ); //for some reason the chrome doesn't gray out
                 }
                 ?>
             <?php endif ?>

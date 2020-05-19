@@ -25,7 +25,10 @@ class m160603_110911_anticoagulant extends OEMigration
     public function down()
     {
         $this->dropOETable('et_ophciexamination_examinationrisk', true);
-        $this->delete('element_type', 'class_name = :class',
-            array(':class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'));
+        $this->delete(
+            'element_type',
+            'class_name = :class',
+            array(':class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk')
+        );
     }
 }

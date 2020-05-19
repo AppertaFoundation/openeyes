@@ -184,11 +184,6 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
-    }
-
-    public function getViewTitle()
-    {
-        return "Follow up";
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 }

@@ -111,7 +111,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                         <div class="flex-layout flex-top flex-left">
                             <ul class="add-options" id="followup-outcome-options">
                                 <?php
-                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->bySubspecialty($this->firm->getSubspecialty())->findAll();
+                                $outcomes = OphCiExamination_ClinicOutcome_Status::model()->active()->bySubspecialty($this->firm->getSubspecialty())->findAll();
                                 $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
                                 foreach ($outcomes as $opt) : ?>
                                     <li data-id="<?= $opt->id ?>" data-label="<?= $opt->name ?>"

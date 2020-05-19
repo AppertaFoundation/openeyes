@@ -95,7 +95,7 @@ class SiteController extends BaseController
                 $error_code = (int) $error['code'];
                 /*
                 if ($error_code == 403) {
-                    $this->redirect(Yii::app()->baseUrl.'/');
+                    $this->redirect(Yii::app()->createURL('site/index'));
                     Yii::app()->exit();
                 }
                 */
@@ -169,7 +169,8 @@ class SiteController extends BaseController
         $criteria->order = 'short_name asc';
 
         // display the login form
-        $this->render('login',
+        $this->render(
+            'login',
             array(
                 'model' => $model,
             )

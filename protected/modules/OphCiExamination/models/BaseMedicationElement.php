@@ -64,7 +64,8 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array_merge(array(
+        return array_merge(
+            array(
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -171,7 +172,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getRouteOptions()
     {
-        return \MedicationRoute::model()->findAll(['condition' => 'deleted_date IS NULL', 'order' => "term ASC"]);
+        return \MedicationRoute::model()->findAll([
+            'condition' => 'source_type =:source_type',
+            'params' => [':source_type' => 'DM+D'],
+            'order' => "term ASC"]);
     }
     /**
      * @return \CActiveRecord[]
@@ -198,7 +202,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         /** @var \EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
             if ($entry->usage_type == 'OphCiExamination') {
-                if (!is_null($entry->end_date) && $entry->end_date < date("Y-m-d")) {
+                if (!is_null($entry->end_date) && $entry->end_date <= date("Y-m-d")) {
                     $closed[] = $entry;
                 } else {
                     $current[] = $entry;

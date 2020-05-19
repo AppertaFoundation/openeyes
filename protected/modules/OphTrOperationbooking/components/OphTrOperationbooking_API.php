@@ -29,7 +29,8 @@ class OphTrOperationbooking_API extends BaseAPI
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
             $completed_date = null;
@@ -44,7 +45,8 @@ class OphTrOperationbooking_API extends BaseAPI
                 'Element_OphTrOperationbooking_Diagnosis',
                 $patient,
                 $use_context,
-                $completed_date)
+                $completed_date
+            )
             ) {
                 return $diagnosis->disorder->term;
             }
@@ -84,7 +86,8 @@ class OphTrOperationbooking_API extends BaseAPI
             $patient,
             $use_context,
             null,
-            $criteria);
+            $criteria
+        );
 
         if ($operations) {
             foreach ($operations as $key => $operation) {
@@ -132,7 +135,8 @@ class OphTrOperationbooking_API extends BaseAPI
             $patient,
             $use_context,
             null,
-            $criteria);
+            $criteria
+        );
     }
 
     /**
@@ -155,7 +159,8 @@ class OphTrOperationbooking_API extends BaseAPI
             $patient,
             $use_context,
             null,
-            $criteria);
+            $criteria
+        );
     }
 
     public function getOperationProcedures($operation_id)
@@ -175,8 +180,10 @@ class OphTrOperationbooking_API extends BaseAPI
         }
 
         if ($status_name == 'Scheduled or Rescheduled') {
-            if (OphTrOperationbooking_Operation_Booking::model()->find('element_id=? and booking_cancellation_date is not null',
-                array($operation->id))
+            if (OphTrOperationbooking_Operation_Booking::model()->find(
+                'element_id=? and booking_cancellation_date is not null',
+                array($operation->id)
+            )
             ) {
                 $status_name = 'Rescheduled';
             } else {
@@ -293,7 +300,8 @@ class OphTrOperationbooking_API extends BaseAPI
         if ($operation = $this->getElementFromLatestEvent(
             'Element_OphTrOperationbooking_Operation',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             foreach ($operation->procedures as $i => $procedure) {
                 if ($i) {
@@ -318,7 +326,8 @@ class OphTrOperationbooking_API extends BaseAPI
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $result = '';
             $latest = $this->getElementFromLatestEvent('Element_OphTrOperationbooking_Operation', $patient, $use_context);
@@ -397,8 +406,14 @@ class OphTrOperationbooking_API extends BaseAPI
                     $date = date('Y-m-d', mktime(0, 0, 0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
                     $time = strtotime($date);
                 }
-                $dateList = $sequence->getWeekOccurrences($sequence->weekday, $sequence->week_selection, $time,
-                    $endDate, $date, date('Y-m-d', $endDate));
+                $dateList = $sequence->getWeekOccurrences(
+                    $sequence->weekday,
+                    $sequence->week_selection,
+                    $time,
+                    $endDate,
+                    $date,
+                    date('Y-m-d', $endDate)
+                );
             } else {
                 // WEEKLY REPEAT (every x weeks)
                 // There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
@@ -437,8 +452,10 @@ class OphTrOperationbooking_API extends BaseAPI
                 while ($time <= $endDate) {
                     $dateList[] = $date;
 
-                    $date = date('Y-m-d',
-                        mktime(0, 0, 0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
+                    $date = date(
+                        'Y-m-d',
+                        mktime(0, 0, 0, date('m', $time), date('d', $time) + $days, date('Y', $time))
+                    );
                     $time = strtotime($date);
                 }
             }
@@ -646,11 +663,12 @@ class OphTrOperationbooking_API extends BaseAPI
     {
         $criteria = new CDbCriteria();
         $criteria->compare('available', 1);
-        $criteria->addCondition("date >= '" . date("Y-m-d") . "'"  );
+        $criteria->addCondition("date >= '" . date("Y-m-d") . "'");
         $criteria->order = 'date asc';
 
-        $dataProvider = new CActiveDataProvider('OphTrOperationbooking_Operation_Session',
-                array(
+        $dataProvider = new CActiveDataProvider(
+            'OphTrOperationbooking_Operation_Session',
+            array(
                     'criteria' => $criteria
                 )
         );

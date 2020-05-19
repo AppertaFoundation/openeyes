@@ -86,7 +86,7 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
             <?php echo $form->textArea(
                 $element,
                 'comments',
-               ['nowrapper' => true],
+                ['nowrapper' => true],
                 false,
                 [
                     'class' => 'autosize js-comment-field',

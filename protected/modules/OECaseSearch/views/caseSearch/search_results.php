@@ -15,7 +15,8 @@ $data->hasAllergyStatus();
     <td>
         <?php
         /** @var $patientPanel PatientPanel */
-        $patientPanel = $this->createWidget('application.widgets.PatientPanel',
+        $patientPanel = $this->createWidget(
+            'application.widgets.PatientPanel',
             array(
                 'patient' => $data,
                 'layout' => 'list',

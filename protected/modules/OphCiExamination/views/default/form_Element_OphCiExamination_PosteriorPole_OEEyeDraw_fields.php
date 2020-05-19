@@ -28,6 +28,9 @@
       <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
     </div>
   </div>
-    <?=\CHtml::activeTextArea($element, $side . '_description',
-          array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'))) ?>
+    <?=\CHtml::activeTextArea(
+        $element,
+        $side . '_description',
+        array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'))
+    ) ?>
 </div>

@@ -263,6 +263,9 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        if ($action === 'renderEventImage') {
+            $action = 'view';
+        }
         $step_id = \Yii::app()->request->getParam('step_id');
 
         $elements = $this->getElements($action);
@@ -308,7 +311,6 @@ class DefaultController extends \BaseEventTypeController
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
                 models\Element_OphCiExamination_Management::class,
-                models\Element_OphCiExamination_ClinicOutcome::class,
                 models\OCT::class,
             ), true);
         });

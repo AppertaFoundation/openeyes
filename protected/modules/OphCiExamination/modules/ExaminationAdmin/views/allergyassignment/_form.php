@@ -183,8 +183,12 @@
     <tr data-row="{{row}}">
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][ophciexamination_allergy_id]",
-                null, $examination_allergy_listdata, ["empty" => '-- select --']);
+            echo CHtml::dropDownList(
+                "OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][ophciexamination_allergy_id]",
+                null,
+                $examination_allergy_listdata,
+                ["empty" => '-- select --']
+            );
             ?>
         </td>
         <td>

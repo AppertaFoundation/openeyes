@@ -43,10 +43,12 @@
                             Site
                         </td>
                         <td>
-                            <?= \CHtml::dropDownList('site_id',
+                            <?= \CHtml::dropDownList(
+                                'site_id',
                                 (array_key_exists('site_id', $list_filter) ? $list_filter['site_id'] : null),
                                 Site::model()->getListForCurrentInstitution(),
-                                array('class' => 'filter-field cols-full', 'empty' => 'All sites',)) ?>
+                                array('class' => 'filter-field cols-full', 'empty' => 'All sites',)
+                            ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -54,10 +56,12 @@
                             Subspecialty
                         </td>
                         <td>
-                            <?= \CHtml::dropDownList('subspecialty_id',
+                            <?= \CHtml::dropDownList(
+                                'subspecialty_id',
                                 (array_key_exists('subspecialty_id', $list_filter) ? $list_filter['subspecialty_id'] : null),
                                 Subspecialty::model()->getList(),
-                                array('class' => 'filter-field cols-full', 'empty' => 'All specialties',)) ?>
+                                array('class' => 'filter-field cols-full', 'empty' => 'All specialties',)
+                            ) ?>
                         </td>
                     </tr>
                 </table>

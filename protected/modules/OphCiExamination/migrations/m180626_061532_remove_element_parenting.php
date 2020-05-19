@@ -6,15 +6,21 @@ class m180626_061532_remove_element_parenting extends OEMigration
     {
         // Observations and Pupillary Abnormalities have the same display order, which causes some sorting issues
         // Bump up the PA display order now to prevent any issues in the rest of the patch
-        $this->update('element_type', array('display_order' => 12), 'class_name = :class_name',
-            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction'));
+        $this->update(
+            'element_type',
+            array('display_order' => 12),
+            'class_name = :class_name',
+            array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction')
+        );
 
         $event_type_ids = $this->dbConnection->createCommand()->select('id')->from('event_type')->queryColumn();
 
         foreach ($event_type_ids as $event_type_id) {
             // Order elements with the complex "by parent display orde,r then by child display order with parents at teh start of their groups"
-            $elements = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('event_type_id = :event_type_id',
-                array(':event_type_id' => $event_type_id))->order(
+            $elements = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                'event_type_id = :event_type_id',
+                array(':event_type_id' => $event_type_id)
+            )->order(
                 'COALESCE((SELECT parent.display_order FROM element_type parent WHERE parent.id = element_type.parent_element_type_id), element_type.display_order), 
                  CASE WHEN element_type.parent_element_type_id IS NULL THEN -1 ELSE element_type.display_order END'
             )->queryAll();
@@ -23,8 +29,12 @@ class m180626_061532_remove_element_parenting extends OEMigration
 
             // Then replace with simpler display_order
             foreach ($elements as $element) {
-                $this->update('element_type', array('display_order' => $display_order), 'id = :id',
-                    array(':id' => $element['id']));
+                $this->update(
+                    'element_type',
+                    array('display_order' => $display_order),
+                    'id = :id',
+                    array(':id' => $element['id'])
+                );
                 $display_order += 10;
             }
         }
@@ -41,8 +51,13 @@ class m180626_061532_remove_element_parenting extends OEMigration
         $this->addColumn('element_type', 'element_group_id', 'int(11)');
         $this->addColumn('element_type_version', 'element_group_id', 'int(11)');
 
-        $this->addForeignKey('element_type_element_group_id_fk', 'element_type', 'element_group_id', 'element_group',
-            'id');
+        $this->addForeignKey(
+            'element_type_element_group_id_fk',
+            'element_type',
+            'element_group_id',
+            'element_group',
+            'id'
+        );
 
         foreach ($event_type_ids as $event_type_id) {
             $event_name = $this->dbConnection->createCommand()
@@ -54,8 +69,10 @@ class m180626_061532_remove_element_parenting extends OEMigration
             $parent_elements = $this->dbConnection->createCommand()
                 ->select('*')
                 ->from('element_type')
-                ->where('parent_element_type_id IS NULL AND event_type_id = :event_type_id',
-                    array(':event_type_id' => $event_type_id))
+                ->where(
+                    'parent_element_type_id IS NULL AND event_type_id = :event_type_id',
+                    array(':event_type_id' => $event_type_id)
+                )
                 ->order('display_order')
                 ->queryAll();
 
@@ -71,16 +88,21 @@ class m180626_061532_remove_element_parenting extends OEMigration
                 $element_group_id = $this->dbConnection->createCommand()->select('MAX(id)')->from('element_group')->queryScalar();
                 $display_order += 10;
 
-                $this->update('element_type', array('element_group_id' => $element_group_id),
+                $this->update(
+                    'element_type',
+                    array('element_group_id' => $element_group_id),
                     'id = :id OR parent_element_type_id = :parent_element_type_id',
-                    array(':id' => $parent_element['id'], ':parent_element_type_id' => $parent_element['id']));
+                    array(':id' => $parent_element['id'], ':parent_element_type_id' => $parent_element['id'])
+                );
             }
 
             // If there exists an element in the event that doesn't have an element group
             if ($this->dbConnection->createCommand()
                 ->from('element_type')
-                ->where('element_group_id IS NULL AND event_type_id = :event_type_id',
-                    array(':event_type_id' => $event_type_id))
+                ->where(
+                    'element_group_id IS NULL AND event_type_id = :event_type_id',
+                    array(':event_type_id' => $event_type_id)
+                )
                 ->queryAll()) {
                 // Then make a new one
                 $this->insert('element_group', array(
@@ -91,9 +113,12 @@ class m180626_061532_remove_element_parenting extends OEMigration
 
                 $element_group_id = $this->dbConnection->createCommand()->select('MAX(id)')->from('element_group')->queryScalar();
 
-                $this->update('element_type', array('element_group_id' => $element_group_id),
+                $this->update(
+                    'element_type',
+                    array('element_group_id' => $element_group_id),
                     'event_type_id = :event_type_id AND element_group_id IS NULL AND parent_element_type_id IS NULL',
-                    array(':event_type_id' => $event_type_id));
+                    array(':event_type_id' => $event_type_id)
+                );
             }
         }
 

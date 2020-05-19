@@ -67,7 +67,8 @@ $api = Yii::app()->moduleAPI->get('OphGeneric');
                     'element' => null,
                     'show_titles' => true,
                     'is_examination' => true,
-                ]);
+                ]
+            );
             ?>
             <div class="js-assessment-container element-fields element-eyes">
                 <?php if (array_key_exists('left', $side_assessments) && !array_key_exists('right', $side_assessments)) { ?>
@@ -131,7 +132,7 @@ $api = Yii::app()->moduleAPI->get('OphGeneric');
 
 
 <script type="text/javascript">
-    baseUrl = "<?=\Yii::app()->getBaseUrl(true)?>";
+    baseUrl = "<?=\rtrim(Yii::app()->createAbsoluteUrl('site/index'), '\\/')?>";
 
     $('#assesment-selector').on('change', function () {
         $('.assessment').hide();
@@ -321,14 +322,14 @@ $api = Yii::app()->moduleAPI->get('OphGeneric');
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-oct-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($assessment) {
+                array_map(function ($assessment) {
                         $api = Yii::app()->moduleAPI->get('OphGeneric');
                         return [
                             'label' => "{$api->getLaterality($assessment->event->id)->getAdjective()} {$assessment->event->firstEventSubtypeItem->event_subtype} ({$assessment->event->event_date})",
                             'id' => $assessment->id
                         ];
                     }, $this->assessments)
-                ) ?>,
+            ) ?>,
                 {'multiSelect': true}
             ),
             ],
