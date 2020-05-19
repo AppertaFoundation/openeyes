@@ -318,7 +318,7 @@ class MedicationManagement extends BaseMedicationElement
                         }
                         $prescription_Item->delete();
                         $changed = true;
-                    } else if (!$mgment_item->compareToPrescriptionItem()) {
+                    } elseif (!$mgment_item->compareToPrescriptionItem()) {
                         //management item was updated
                         $prescription_Item->updateFromManagementItem();
                         $changed = true;
