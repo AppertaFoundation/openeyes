@@ -43,7 +43,7 @@ class SiteLogo extends BaseActiveRecord
                 'allowEmpty' => true,
                 'safe' => false
             ),
-            array('primary_logo, secondary_logo', 'safe'),
+            array('primary_logo, secondary_logo, parent_logo', 'safe'),
         );
     }
 
@@ -56,6 +56,8 @@ class SiteLogo extends BaseActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'site' => array(self::HAS_MANY, 'Site', 'id'),
+            'institution' => array(self::HAS_MANY, 'Institution', 'id'),
+            'parent' => array(self::HAS_ONE, 'SiteLogo' , 'id'),
         );
     }
 

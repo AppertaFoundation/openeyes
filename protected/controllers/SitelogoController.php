@@ -96,10 +96,21 @@ class SiteLogoController extends BaseController
             if (!$logo->secondary_logo) {
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id = :logo_id');
-                $criteria->params[':logo_id'] = 1;
+                $criteria->params[':logo_id'] = $logo->parent_logo;
+                $logo = SiteLogo::model()->find($criteria);
+            }
+            if (!$logo->secondary_logo) {
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('id = 1');
                 $logo = SiteLogo::model()->find($criteria);
             }
         } else {
+            if (!$logo->primary_logo) {
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('id = :logo_id');
+                $criteria->params[':logo_id'] = $logo->parent_logo;
+                $logo = SiteLogo::model()->find($criteria);
+            }
             if (!$logo->primary_logo) {
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id = 1');

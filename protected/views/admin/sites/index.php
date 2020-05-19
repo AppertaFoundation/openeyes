@@ -98,7 +98,7 @@
                         </td>
                         <td>
                             <?php
-                            if (($site->logo)&&($site->logo->primary_logo)) {
+                            if (($site->logo) && ($site->logo->primary_logo)) {
                                 echo 'Custom';
                             } else {
                                 echo 'Default';
@@ -107,7 +107,7 @@
                         </td>
                         <td>
                             <?php
-                            if (($site->logo)&&($site->logo->secondary_logo)) {
+                            if (($site->logo) && ($site->logo->secondary_logo)) {
                                 echo 'Custom';
                             } else {
                                 echo 'Default';

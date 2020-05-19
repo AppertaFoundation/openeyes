@@ -8,15 +8,23 @@ class m200130_044814_add_logos_to_site extends OEMigration
         $this->createOETable('site_logo', array(
             'id' => 'pk',
             'primary_logo' => 'mediumblob',
-            'secondary_logo' => 'mediumblob'
+            'secondary_logo' => 'mediumblob',
+            'parent_logo' => 'integer'
         ));
-
+        
         // Adding column to sites to save foreign key relationship
         $this->addColumn('site', 'logo_id', 'integer');
         $this->addColumn('site_version', 'logo_id', 'integer');
 
         // Adding foreign key to sites
         $this->addForeignKey('site_logo_id_fk', 'site', 'logo_id', 'site_logo', 'id');
+
+        // Adding column to institution to save foreign key relationship
+        $this->addColumn('institution', 'logo_id', 'integer');
+        $this->addColumn('institution_version', 'logo_id', 'integer');
+        
+        // Adding foreign key to institution
+        $this->addForeignKey('institution_logo_id_fk', 'site', 'logo_id', 'site_logo', 'id');
 
         // finding current Default logo -- currently null but this could pull the current logo
         $logos = array();
@@ -57,6 +65,13 @@ class m200130_044814_add_logos_to_site extends OEMigration
         // Dropping column from sites that save foreign key relationship
         $this->dropColumn('site', 'logo_id');
         $this->dropColumn('site_version', 'logo_id');
+
+        // Dropping foreign key from institutions
+        $this->dropForeignKey('institution_logo_id_fk', 'site');
+
+        // Dropping column from institutions that save foreign key relationship
+        $this->dropColumn('institution', 'logo_id');
+        $this->dropColumn('institution_version', 'logo_id');
         
         // Dropping Table
         $this->dropOETable('site_logo');

@@ -30,21 +30,37 @@ class LogoHelper
         );
     }
     
-    public function getLogoURLs($site_id = null, $get_base_64 = false)
+    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id=null)
     {
-        $site = Site::model()->findByPk($site_id);
         // default logo
         $default_logo_id = 1;
-        $default_logo = SiteLogo::model()->findByPk(1);
-        if(isset($site->logo_id)){
-            // get logos for site
-            $logo_id = $site->logo_id;
-            $logo = $site->logo;
-        } else{
-            // use default logo
-            $logo_id = $default_logo_id;
-            $logo = $default_logo;
+        $default_logo = SiteLogo::model()->findByPk($default_logo_id); 
+        if(!$logo_id){
+            if($site_id){
+                $site = Site::model()->findByPk($site_id);
+                $institution = $site->institution;
+
+            }
+            if(isset($site->logo_id)){
+                // get logos for site
+                $logo_id = $site->logo_id;
+                $logo = $site->logo;
+            }
+            elseif(isset($institution->logo_id)){
+                // get logos for site
+                $logo_id = $institution->logo_id;
+                $logo = $institution->logo;
+            }
+            else{
+                // use default logo
+                $logo_id = $default_logo_id;
+                $logo = $default_logo;
+            }
         }
+        else{
+            $logo= SiteLogo::model()->findByPk($logo_id);
+        }
+
         $logoOut = array();
         $url1 = 'sitelogo/primary/';
         $url2 = 'sitelogo/secondary/';
@@ -69,13 +85,13 @@ class LogoHelper
                 $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
             }
         } else{        
-            if($site_id){
+            if($logo_id){
                 $options = array('id' => $logo_id);
             }
-            if($logo->primary_logo){
+            if($logo->primary_logo || $default_logo->primary_logo){
                 $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
             }
-            if($logo->secondary_logo){
+            if($logo->secondary_logo || $default_logo->secondary_logo){
                 $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
             }
         }

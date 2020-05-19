@@ -169,13 +169,10 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
-                if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                if (empty($default_urls['primaryLogo']) && !($parentlogo->logoIsSet(true)) && !($logo->primary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded primary logo and no inherited, nor system primary logo.</div>";
                 } else {
-                    if (!($logo)||!($logo->primary_logo)) {
-                        echo "<div class='alert-box info'>Currently using system default logo</div>";
-                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
-                    } elseif (!$new) {
+                    if ($logo&&$logo->primary_logo&&!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
                         echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
                         echo '<br>'.CHtml::button( '',
@@ -191,6 +188,15 @@ $default_urls = $logo_helper->getLogoURLs();
                         ));
                         echo '</div>';
                     }
+                    elseif ( $parentlogo &&  $parentlogo->primary_logo && !$new) {
+                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
+                    }
+                    elseif (!$new) {
+                        echo "test" . var_dump($parentlogo)." test";
+                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
+                    } 
                 }
                 ?>
             </td>
@@ -200,18 +206,15 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'secondary_logo');
-                if (empty($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                if (empty($default_urls['secondaryLogo']) && !($parentlogo->secondary_logo) && !($logo->secondary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded secondary logo and nor system secondary logo.</div>";
                 } else {
-                    if (!($logo)||!($logo->secondary_logo)) {
-                        echo "<div class='alert-box info'>Currently using system default logo</div>";
-                        echo "<img src='". $default_urls['secondaryLogo']."' style='width:100%;'>";
-                    } elseif (!$new) {
+                    if ($logo && $logo->secondary_logo && !$new) {
                         echo '<div style="
                         margin-top: 5px;
                         position: relative;
                     ">';
-                        echo "<img src='". $logo->getImageUrl(true)."' style='width:100%;'>";
+                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
                         echo '<br>'.CHtml::button(
                             '',
                             array('submit' => array('admin/deletelogo/'),
@@ -225,6 +228,14 @@ $default_urls = $logo_helper->getLogoURLs();
                             'data-method'=>"POST"
                         ));
                         echo '</div>';
+                    }
+                    elseif ( $parentlogo && $parentlogo->secondary_logo  && !$new) {
+                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
+                    }
+                    elseif (!$new){
+                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                        echo "<img src='". $default_urls['secondaryLogo'] . "' style='width:100%;'>";
                     }
                 }
                 ?>

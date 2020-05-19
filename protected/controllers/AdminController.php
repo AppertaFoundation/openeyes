@@ -797,83 +797,92 @@ class AdminController extends BaseAdminController
 
     public function actionAddInstitution()
     {
-        $institution = new Institution();
-        $address = new Address();
-
-        $errors = array();
-
-        if (!empty($_POST)) {
-            $institution->attributes = $_POST['Institution'];
-
-            if (!$institution->validate()) {
-                $errors = $institution->getErrors();
-            }
-
-            $address->attributes = $_POST['Address'];
-
-            if ($address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
-
-            if (empty($errors)) {
-                if (!$institution->save()) {
-                    throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
-                }
-
-                $address->contact_id = $institution->contact_id;
-
-                if (!$address->save()) {
-                    throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
-                }
-                $institution->addAddress($address);
-
-                if (!$institution->contact->save()) {
-                    throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
-                        $institution->contact->getErrors(),
-                        true
-                    ));
-                }
-
-                Audit::add('admin-Institution', 'add', $institution->id);
-
-                $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
-            }
-        }
-
-        $this->render('/admin/institutions/add', array(
-            'institution' => $institution,
-            'address' => $address,
-            'errors' => @$errors,
-        ));
+        $this->actionEditInstitution(true);
     }
 
-    public function actionEditInstitution()
+    public function actionEditInstitution($new = false)
     {
-        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
-        if (!$institution) {
-            throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
-        }
-
-        $errors = array();
-        $address = $institution->contact->address;
-        if (!$address) {
+        if ($new) {
+            $institution = new Institution();
             $address = new Address();
+            $logo = new SiteLogo();
+            $contact = new Contact();
+            
+            /*
+            * Set default blank contact to fulfill the current relationship with a site
+            */
+           $contact->nick_name = 'NULL';
+           $contact->title = null;
+           $contact->first_name = '';
+           $contact->last_name = '';
+           $contact->qualifications = null;
         }
+        else {
+            $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+            if (!$institution) {
+                throw new CHttpException(404, 'Institution not found: ' . @$_GET['institution_id']);
+            }
+            
+            $contact = $institution->contact;
+            $address = $institution->contact->address;
+            if (!$address) {
+                $address = new Address();
+            }
+            // get logos for institution if they exist and create a new logo reference if they don't. To avoid errors I am choosing to not get logo via active record by relation to avoid errors.
+            $logo = $institution->logo;
+            if (!($logo)) {
+                $logo = new SiteLogo();
+            }
+        }
+        $errors = array();
         if (!empty($_POST)) {
             $institution->attributes = $_POST['Institution'];
 
             if (!$institution->validate()) {
                 $errors = $institution->getErrors();
             }
-
-            $address = $institution->contact->address;
+            if ($new) {
+                $contact->save();
+                
+                $institution->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+            }
 
             $address->attributes = $_POST['Address'];
 
             if (!$address->validate()) {
                 $errors = array_merge(@$errors, $address->getErrors());
             }
-
+            if (isset($_FILES['SiteLogo'])) {
+                if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
+                    $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
+                    $pl_file = file_get_contents($primary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                        $logo->primary_logo = $pl_file;
+                    }
+                }
+                if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
+                    $secondary_logo = CUploadedFile::getInstance($logo, 'secondary_logo');
+                    $sl_file=file_get_contents($secondary_logo->getTempName());
+                    // if no error uploading use uploaded image
+                    if (($_FILES['SiteLogo']['error']['secondary_logo'])==0) {
+                        $logo->secondary_logo = $sl_file;
+                    }
+                }
+            }
+            
+            if (empty($errors)) {
+                // Save the logo, and if sucsessful, add the logo ID to the institution, so that the relation is established.
+                if (!$logo->save()) {
+                    throw new CHttpException(500, 'Unable to save Logo: ' . print_r($logo->getErrors(), true));
+                }
+                $institution->logo_id = $logo->id;
+                // revalidate institution
+                if (!$institution->validate()) {
+                    $errors = $institution->getErrors();
+                }
+            }
             if (empty($errors)) {
                 if (!$institution->save()) {
                     throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
@@ -881,19 +890,32 @@ class AdminController extends BaseAdminController
                 if (!$address->save()) {
                     throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
                 }
-
-                Audit::add('admin-Institution', 'edit', $institution->id);
-
-                $this->redirect('/admin/institutions/index');
+                if ($new) {
+                    if (!$institution->contact->save()) {
+                        throw new CHttpException(500, 'Institution contact could not be saved: ' . print_r(
+                            $institution->contact->getErrors(),
+                            true
+                        ));
+                    }
+                    
+                    Audit::add('admin-Institution', 'add', $institution->id);
+                    
+                    $this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
+                } else {
+                    Audit::add('admin-Institution', 'edit', $institution->id);
+                    
+                    $this->redirect('/admin/institutions/index');
+                }
             }
         } else {
             Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
         }
-
         $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => $errors,
+            'logo' => $logo,
+            'new' => $new,
         ));
     }
 
@@ -963,6 +985,20 @@ class AdminController extends BaseAdminController
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
 
+            if (!$site->validate()) {
+                $errors = $site->getErrors();
+            }
+            if ($new) {
+                $contact->save();
+                
+                $site->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+            }
+            $address->attributes = $_POST['Address'];
+
+            if (!$address->validate()) {
+                $errors = array_merge($errors, $address->getErrors());
+            }
             if (isset($_FILES['SiteLogo'])) {
                 if (!empty($_FILES['SiteLogo']['tmp_name']['primary_logo'])) {
                     $primary_logo = CUploadedFile::getInstance($logo, 'primary_logo');
@@ -980,23 +1016,22 @@ class AdminController extends BaseAdminController
                         $logo->secondary_logo = $sl_file;
                     }
                 }
-            }
 
-            if (!$site->validate()) {
-                $errors = $site->getErrors();
-            }
-            if ($new) {
-                $contact->save();
-                
-                $site->contact_id = $contact->id;
-                $address->contact_id = $contact->id;
-            }
-            $address->attributes = $_POST['Address'];
+                 // get or generate institution logo ID
 
-            if (!$address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
+                Yii::log($site->institution->logo_id);
+                Yii::log($site->logo_id);
+               
+                if ($site->institution->logo_id) {
+                    $institution_logo = $site->institution->logo;
+                } else {
+                    $institution_logo = new SiteLogo();
+                    $institution_logo->save();
+                    $site->institution->logo_id = $institution_logo->id;
+                    $site->institution->saveAttributes(array('logo_id'));
+                }
+                $logo->parent_logo = $site->institution->logo_id;
             }
-            
             if (!$logo->validate()) {
                 $errors = array_merge($errors, $logo->getErrors());
                 if (isset($site->logo_id)) {
@@ -1036,7 +1071,8 @@ class AdminController extends BaseAdminController
             'site' => $site,
             'errors' => $errors,
             'address' => $address,
-            'logo'=> $logo,
+            'logo' => $logo,
+            'parentlogo' => $logo->parent_logo ? SiteLogo::model()->findByPk($logo->parent_logo) : null,
             'new' => $new,
         ));
     }
@@ -1086,20 +1122,25 @@ class AdminController extends BaseAdminController
     public function actionDeleteLogo()
     {
         $site_id = @$_POST['site_id'];
+        $institution_id = @$_POST['institution_id'];
+        
         $deletePrimaryLogo = @$_POST['deletePrimaryLogo'];
         $deleteSecondaryLogo = @$_POST['deleteSecondaryLogo'];
 
          // go find our logos
         $site = Site::model()->findByPk($site_id);
+        $institution = Institution::model()->findByPk($institution_id);
         if (isset($site)) {
             // get logos for site
             $logo = SiteLogo::model()->findByPk($site->logo_id);
+        } elseif (isset($institution)) {
+            $logo = SiteLogo::model()->findByPk($institution->logo_id);
         } else {
             $logo = SiteLogo::model()->findByPk(1);
         }
          //  We should now have our logos to delete from
  
-        $msg= 'Successfully deleted ';
+        $msg = 'Successfully deleted ';
       
         if ($deletePrimaryLogo) {
             $logo->primary_logo = null;
@@ -1111,10 +1152,12 @@ class AdminController extends BaseAdminController
             $msg .= "secondary logo ";
         }
 
-        if (!isset($site)) {
-            $msg .= "for System Default Logo.";
+        if (isset($site)) {
+            $msg .= "for " . $site->name . ".";
+        } elseif (isset($institution)) {
+            $msg .= "for " . $institution->name . ".";
         } else {
-            $msg .= "for ".$site->name.".";
+            $msg .= "for System Default Logo.";
         }
 
         if (!$logo->save()) {
@@ -1123,6 +1166,8 @@ class AdminController extends BaseAdminController
         Yii::app()->user->setFlash('success', $msg);
         if (isset($site)) {
             $this->redirect(array('/admin/editsite?site_id=' . $site_id));
+        } elseif (isset($institution)) {
+            $this->redirect(array('/admin/editinstitution?institution_id=' . $institution_id));
         } else {
             $this->redirect(array('/admin/logo'));
         }
