@@ -352,16 +352,23 @@ for module in ${modules[@]}; do
             git -C $MODGITROOT fetch --all $fetchparams
         fi
         
+        # Try to find a named tag first, then a branch, then fallback to default branch. trackbranch is used to ensure tracking is set correctly
+        trackbranch=''
         if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
+            trackbranch=$branch
             if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
+                trackbranch=$defaultbranch
                 echo "no branch $branch exists, switching to $defaultbranch"
-                git -C $MODGITROOT checkout $defaultbranch 2>/dev/null
+                if ! git -C $MODGITROOT checkout $defaultbranch 2>/dev/null; then trackbranch=''; fi
             fi
         fi
-        
+
         ## fast forward to latest head
         if [ ! "$nopull" = "1" ]; then
             echo "Pulling latest changes: "
+            if ! [ -z $trackbranch ] && ! git config --get branch.$branch.merge >/dev/null 2>&1 ; then 
+                git branch --set-upstream-to=origin/$trackbranch
+            fi
             git -C $MODGITROOT pull
             git -C $MODGITROOT submodule update --init --force
         fi
