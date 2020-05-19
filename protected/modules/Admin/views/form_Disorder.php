@@ -31,8 +31,7 @@
                 <?php if ($this->action->id == 'edit') { ?>
                     <?= \CHtml::activeHiddenField(
                         $model,
-                        'id',
-                        ['class' => 'cols-full']
+                        'id'
                     ); ?>
                     <?= $model->id ?>
                 <?php } else { ?>
