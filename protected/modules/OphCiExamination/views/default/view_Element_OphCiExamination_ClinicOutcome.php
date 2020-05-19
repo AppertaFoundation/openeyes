@@ -35,23 +35,27 @@ $non_ticket_entries = [];
             $non_ticket_entries[] = $entry;
         }
     } ?>
-    <?php if ($non_ticket_entries) { ?>
-        <div class="cols-10">
-            <table class="last-left large-text">
-                <colgroup>
-                    <col class="cols-1">
-                </colgroup>
-                <tbody>
-                <?php foreach ($non_ticket_entries as $entry) { ?>
-                    <tr>
-                        <td><?= $row_count ? 'AND' : ''?></td>
-                        <td><?= $entry->getInfos(); ?></td>
-                    </tr>
-                    <?php $row_count++; ?>
-                <?php } ?>
-                </tbody>
-            </table>
-        </div>
+    <?php if ($non_ticket_entries) {
+        if (count($non_ticket_entries) === 1) { ?>
+            <div class="large-text"><?= $non_ticket_entries[0]->getInfos(); ?></div>
+        <?php } else { ?>
+            <div class="cols-10">
+                <table class="last-left large-text">
+                    <colgroup>
+                        <col class="cols-1">
+                    </colgroup>
+                    <tbody>
+                    <?php foreach ($non_ticket_entries as $entry) { ?>
+                        <tr>
+                            <td><?= $row_count ? 'AND' : '' ?></td>
+                            <td><?= $entry->getInfos(); ?></td>
+                        </tr>
+                        <?php $row_count++; ?>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php } ?>
     <?php } ?>
     <?php if ($non_ticket_entries && $ticket_entries) {
         ?><hr class="divider"><?php
