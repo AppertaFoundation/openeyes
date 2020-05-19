@@ -28,7 +28,7 @@
         <tr>
             <td>Id</td>
             <td class="cols-full">
-                <?php if ($this->action->id == 'edit'): ?>
+                <?php if ($this->action->id == 'edit') : ?>
                     <?= \CHtml::activeHiddenField(
                         $model,
                         'id',
@@ -37,7 +37,7 @@
                     <?= $model->id ?>
               
 
-                <?php else: ?>
+                <?php else : ?>
                     <?= \CHtml::activeTextField(
                         $model,
                         'id',
