@@ -70,7 +70,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 'label' => 2,
                 'field' => 5,
             ),
-            'method'=> "POST",
+            'method' => "POST",
             'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]
     ) ?>
@@ -144,13 +144,13 @@ $default_urls = $logo_helper->getLogoURLs();
                 if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
-                    if (!($logo)||!($logo->primary_logo)) {
+                    if (!($logo) || !($logo->primary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
-                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
+                        echo "<img src='" . $default_urls['primaryLogo'] . "' style='width:100%;'>";
                     } elseif (!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
-                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                        echo '<br>'.CHtml::button(
+                        echo "<img src='" . $logo->getImageUrl() . "' style='width:100%;'>";
+                        echo '<br>' . CHtml::button(
                             '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(
@@ -158,9 +158,9 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deletePrimaryLogo' => true,
                             ),
                              'csrf' => true,
-                             'class' =>'remove-logo oe-i remove-circle small',
+                             'class' => 'remove-logo oe-i remove-circle small',
                              'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this institution.',
-                             'data-method'=>"POST"
+                             'data-method' => "POST"
                             )
                         );
                         echo '</div>';
@@ -177,16 +177,16 @@ $default_urls = $logo_helper->getLogoURLs();
                 if (empty($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
                     echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
                 } else {
-                    if (!($logo)||!($logo->secondary_logo)) {
+                    if (!($logo) || !($logo->secondary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
-                        echo "<img src='". $default_urls['secondaryLogo']."' style='width:100%;'>";
+                        echo "<img src='" . $default_urls['secondaryLogo'] . "' style='width:100%;'>";
                     } elseif (!$new) {
                         echo '<div style="
                         margin-top: 5px;
                         position: relative;
                     ">';
-                        echo "<img src='". $logo->getImageUrl(true)."' style='width:100%;'>";
-                        echo '<br>'.CHtml::button(
+                        echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100%;'>";
+                        echo '<br>' . CHtml::button(
                             '',
                             array('submit' => array('admin/deletelogo/'),
                             'params' => array(
@@ -194,9 +194,9 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'deleteSecondaryLogo' => true,
                             ),
                             'csrf' => true,
-                            'class' =>'remove-logo oe-i remove-circle small',
+                            'class' => 'remove-logo oe-i remove-circle small',
                             'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this institution.',
-                            'data-method'=>"POST"
+                            'data-method' => "POST"
                             )
                         );
                         echo '</div>';
