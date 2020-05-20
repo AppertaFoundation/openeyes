@@ -3,14 +3,14 @@ Then updates the table with contents from the aforementioned xml file, and the i
 -->
 <?php
 
-class m200227_045838_indexSearch_table extends CDbMigration
+class m200227_045838_indexSearch_table extends OEMigration
 {
     public function up()
     {
-        $this->createTable('index_search', [
+        $this->createOETable('index_search', array(
             'id' => 'pk',
-            'event_type' => 'varchar(64) not null',//Eg: Examination
-            'parent' => 'int(5) unsigned',//Parent row id (if this row is a child row)
+            'event_type_id' => 'int(10) unsigned',
+            'parent' => 'int(10) unsigned',//Parent row id (if this row is a child row)
             'primary_term' => 'varchar(128)',
             'secondary_term_list' => 'varchar(1024)',
             'description' => 'varchar(512)',
@@ -24,14 +24,16 @@ class m200227_045838_indexSearch_table extends CDbMigration
             'goto_doodle_class_name' => 'varchar(256)',
             'goto_property' => 'varchar(256)',
             'warning_note' => 'varchar(256)'
-        ]);
+    ));
+        $this->addForeignKey('event_type_id_indexsearch_fk', 'index_search', 'event_type_id', 'event_type', 'id');
+        $this->addForeignKey('parent_id_fk', 'index_search', 'parent', 'index_search', 'id');
 
         $table_data = array
         (
             0 => array
             (
                 'id' => 1,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Description',
                 'secondary_term_list' => 'help, info, manual',
@@ -54,7 +56,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             1 => array
             (
                 'id' => 2,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination History',
                 'secondary_term_list' => 'Presenting Compliant, Follow Up Including History',
@@ -73,7 +75,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             2 => array
             (
                 'id' => 3,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Risks',
                 'secondary_term_list' => null,
@@ -92,7 +94,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             3 => array
             (
                 'id' => 4,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Medications',
                 'secondary_term_list' => 'PMH, Medical History, Medication History',
@@ -111,7 +113,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             4 => array
             (
                 'id' => 5,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Systemic Diagnoses',
                 'secondary_term_list' => 'Diagnosis',
@@ -130,7 +132,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             5 => array
             (
                 'id' => 6,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 5,
                 'primary_term' => 'Diagnosis',
                 'secondary_term_list' => null,
@@ -149,7 +151,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             6 => array
             (
                 'id' => 7,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 5,
                 'primary_term' => 'Side',
                 'secondary_term_list' => null,
@@ -168,7 +170,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             7 => array
             (
                 'id' => 8,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 5,
                 'primary_term' => 'Date',
                 'secondary_term_list' => null,
@@ -187,7 +189,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             8 => array
             (
                 'id' => 9,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Allergies',
                 'secondary_term_list' => null,
@@ -206,7 +208,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             9 => array
             (
                 'id' => 10,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Surgical History',
                 'secondary_term_list' => 'Past Surgical History, Past Surgery, Previous Surgery, Previous Opthalmic Surgery, POH, PSH',
@@ -225,7 +227,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             10 => array
             (
                 'id' => 11,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'CVI Status',
                 'secondary_term_list' => null,
@@ -244,7 +246,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             11 => array
             (
                 'id' => 12,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Family History',
                 'secondary_term_list' => 'Relative',
@@ -263,7 +265,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             12 => array
             (
                 'id' => 13,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Social History',
                 'secondary_term_list' => null,
@@ -282,7 +284,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             13 => array
             (
                 'id' => 14,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Employment',
                 'secondary_term_list' => null,
@@ -301,7 +303,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             14 => array
             (
                 'id' => 15,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Driving Status',
                 'secondary_term_list' => null,
@@ -320,7 +322,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             15 => array
             (
                 'id' => 16,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Smoking Status',
                 'secondary_term_list' => null,
@@ -339,7 +341,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             16 => array
             (
                 'id' => 17,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Accommodation',
                 'secondary_term_list' => null,
@@ -358,7 +360,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             17 => array
             (
                 'id' => 18,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Carer',
                 'secondary_term_list' => null,
@@ -377,7 +379,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             18 => array
             (
                 'id' => 19,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Alcohol Intake',
                 'secondary_term_list' => null,
@@ -396,7 +398,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             19 => array
             (
                 'id' => 20,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 13,
                 'primary_term' => 'Substance Misuse',
                 'secondary_term_list' => null,
@@ -415,7 +417,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             20 => array
             (
                 'id' => 21,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Contacts',
                 'secondary_term_list' => null,
@@ -434,7 +436,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             21 => array
             (
                 'id' => 22,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Observations',
                 'secondary_term_list' => 'Obs',
@@ -453,7 +455,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             22 => array
             (
                 'id' => 23,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Blood Pressure',
                 'secondary_term_list' => 'BP',
@@ -472,7 +474,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             23 => array
             (
                 'id' => 24,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Blood Glucose',
                 'secondary_term_list' => null,
@@ -491,7 +493,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             24 => array
             (
                 'id' => 25,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'O2 Saturaation on air',
                 'secondary_term_list' => 'O2 Sat, O2Sat, Oxygen Saturation',
@@ -510,7 +512,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             25 => array
             (
                 'id' => 26,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'HbA1c',
                 'secondary_term_list' => null,
@@ -529,7 +531,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             26 => array
             (
                 'id' => 27,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Pulse',
                 'secondary_term_list' => null,
@@ -548,7 +550,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             27 => array
             (
                 'id' => 28,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Height',
                 'secondary_term_list' => null,
@@ -567,7 +569,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             28 => array
             (
                 'id' => 29,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Weight',
                 'secondary_term_list' => null,
@@ -586,7 +588,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             29 => array
             (
                 'id' => 30,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'Cypass',
                 'secondary_term_list' => 'Cypass Stent Insertion',
@@ -605,7 +607,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             30 => array
             (
                 'id' => 31,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 22,
                 'primary_term' => 'BMI',
                 'secondary_term_list' => 'Body Mass Index',
@@ -624,7 +626,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             31 => array
             (
                 'id' => 32,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Refraction',
                 'secondary_term_list' => null,
@@ -643,7 +645,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             32 => array
             (
                 'id' => 33,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 32,
                 'primary_term' => 'Sphere',
                 'secondary_term_list' => null,
@@ -662,7 +664,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             33 => array
             (
                 'id' => 34,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 32,
                 'primary_term' => 'Cylinder',
                 'secondary_term_list' => null,
@@ -681,7 +683,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             34 => array
             (
                 'id' => 35,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 32,
                 'primary_term' => 'Axis',
                 'secondary_term_list' => null,
@@ -700,7 +702,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             35 => array
             (
                 'id' => 36,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Adnexal',
                 'secondary_term_list' => null,
@@ -719,7 +721,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             36 => array
             (
                 'id' => 37,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Lids Surgical',
                 'secondary_term_list' => null,
@@ -738,7 +740,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             37 => array
             (
                 'id' => 38,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 37,
                 'primary_term' => 'Lids',
                 'secondary_term_list' => null,
@@ -757,7 +759,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             38 => array
             (
                 'id' => 39,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 37,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -776,7 +778,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             39 => array
             (
                 'id' => 40,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Lids Medical',
                 'secondary_term_list' => null,
@@ -795,7 +797,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             40 => array
             (
                 'id' => 41,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 40,
                 'primary_term' => 'Palpebral Conjunctivitis',
                 'secondary_term_list' => null,
@@ -814,7 +816,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             41 => array
             (
                 'id' => 42,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 41,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -833,7 +835,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             42 => array
             (
                 'id' => 43,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 41,
                 'primary_term' => 'Hyperaemia',
                 'secondary_term_list' => null,
@@ -852,7 +854,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             43 => array
             (
                 'id' => 44,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 40,
                 'primary_term' => 'STFB',
                 'secondary_term_list' => 'Sub-tarsal foreign body',
@@ -871,7 +873,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             44 => array
             (
                 'id' => 45,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 40,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -890,7 +892,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             45 => array
             (
                 'id' => 46,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 40,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -909,7 +911,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             46 => array
             (
                 'id' => 47,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Pupils',
                 'secondary_term_list' => 'Pupillary Abnormalities, RAPD, Relative Afferent Pupillary Defect',
@@ -928,7 +930,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             47 => array
             (
                 'id' => 48,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Bleb Assessment',
                 'secondary_term_list' => null,
@@ -947,7 +949,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             48 => array
             (
                 'id' => 49,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 48,
                 'primary_term' => 'Area (Central)',
                 'secondary_term_list' => null,
@@ -966,7 +968,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             49 => array
             (
                 'id' => 50,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 48,
                 'primary_term' => 'Area (Maximal)',
                 'secondary_term_list' => null,
@@ -985,7 +987,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             50 => array
             (
                 'id' => 51,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 48,
                 'primary_term' => 'Height',
                 'secondary_term_list' => null,
@@ -1004,7 +1006,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             51 => array
             (
                 'id' => 52,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 48,
                 'primary_term' => 'Vascularity',
                 'secondary_term_list' => null,
@@ -1023,7 +1025,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             52 => array
             (
                 'id' => 53,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'CCT',
                 'secondary_term_list' => 'Corneal Thickness',
@@ -1042,7 +1044,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             53 => array
             (
                 'id' => 54,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Keratoconus Monitoring',
                 'secondary_term_list' => null,
@@ -1061,7 +1063,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             54 => array
             (
                 'id' => 55,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Asthma',
                 'secondary_term_list' => null,
@@ -1080,7 +1082,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             55 => array
             (
                 'id' => 56,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Previous CXL',
                 'secondary_term_list' => 'Previous Corneal Cross-linking',
@@ -1099,7 +1101,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             56 => array
             (
                 'id' => 57,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Previous Refractive Surgery',
                 'secondary_term_list' => null,
@@ -1118,7 +1120,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             57 => array
             (
                 'id' => 58,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Intacs/Kera-ring',
                 'secondary_term_list' => null,
@@ -1137,7 +1139,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             58 => array
             (
                 'id' => 59,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Previous HSK Keratitis',
                 'secondary_term_list' => null,
@@ -1156,7 +1158,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             59 => array
             (
                 'id' => 60,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Eczema',
                 'secondary_term_list' => null,
@@ -1175,7 +1177,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             60 => array
             (
                 'id' => 61,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Eye Rubber',
                 'secondary_term_list' => null,
@@ -1194,7 +1196,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             61 => array
             (
                 'id' => 62,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 54,
                 'primary_term' => 'Hayfever',
                 'secondary_term_list' => null,
@@ -1213,7 +1215,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             62 => array
             (
                 'id' => 63,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Corneal Tomography',
                 'secondary_term_list' => null,
@@ -1232,7 +1234,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             63 => array
             (
                 'id' => 64,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Tomographer Device',
                 'secondary_term_list' => null,
@@ -1251,7 +1253,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             64 => array
             (
                 'id' => 65,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Front K1',
                 'secondary_term_list' => null,
@@ -1270,7 +1272,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             65 => array
             (
                 'id' => 66,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Front K2',
                 'secondary_term_list' => null,
@@ -1289,7 +1291,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             66 => array
             (
                 'id' => 67,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Quality Score - Front',
                 'secondary_term_list' => null,
@@ -1308,7 +1310,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             67 => array
             (
                 'id' => 68,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Back K1',
                 'secondary_term_list' => null,
@@ -1327,7 +1329,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             68 => array
             (
                 'id' => 69,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Quality Score - Back',
                 'secondary_term_list' => null,
@@ -1346,7 +1348,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             69 => array
             (
                 'id' => 70,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Kmax',
                 'secondary_term_list' => null,
@@ -1365,7 +1367,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             70 => array
             (
                 'id' => 71,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Thinnest Point Pachymetry (µm)',
                 'secondary_term_list' => null,
@@ -1384,7 +1386,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             71 => array
             (
                 'id' => 72,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'B-A Index',
                 'secondary_term_list' => null,
@@ -1403,7 +1405,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             72 => array
             (
                 'id' => 73,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'Flourescein',
                 'secondary_term_list' => null,
@@ -1422,7 +1424,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             73 => array
             (
                 'id' => 74,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 63,
                 'primary_term' => 'CL Removed?',
                 'secondary_term_list' => null,
@@ -1441,7 +1443,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             74 => array
             (
                 'id' => 75,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Specular Microscopy',
                 'secondary_term_list' => null,
@@ -1460,7 +1462,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             75 => array
             (
                 'id' => 76,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 75,
                 'primary_term' => 'Specular Microscope',
                 'secondary_term_list' => null,
@@ -1479,7 +1481,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             76 => array
             (
                 'id' => 77,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 75,
                 'primary_term' => 'Scan Quality',
                 'secondary_term_list' => null,
@@ -1498,7 +1500,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             77 => array
             (
                 'id' => 78,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 75,
                 'primary_term' => 'Endothelial Cell Density (cells/mm2)',
                 'secondary_term_list' => null,
@@ -1517,7 +1519,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             78 => array
             (
                 'id' => 79,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 75,
                 'primary_term' => 'Coefficient of Variation (CV)',
                 'secondary_term_list' => null,
@@ -1536,7 +1538,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             79 => array
             (
                 'id' => 80,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'KC/CXL-Specific Slit Lamp',
                 'secondary_term_list' => 'Keratoconus, Corneal cross-linking',
@@ -1555,7 +1557,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             80 => array
             (
                 'id' => 81,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 80,
                 'primary_term' => 'Allergic Conjunctivitis',
                 'secondary_term_list' => null,
@@ -1574,7 +1576,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             81 => array
             (
                 'id' => 82,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 80,
                 'primary_term' => 'Blepharitis',
                 'secondary_term_list' => null,
@@ -1593,7 +1595,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             82 => array
             (
                 'id' => 83,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 80,
                 'primary_term' => 'Dry Eye',
                 'secondary_term_list' => null,
@@ -1612,7 +1614,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             83 => array
             (
                 'id' => 84,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 80,
                 'primary_term' => 'Cornea',
                 'secondary_term_list' => null,
@@ -1631,7 +1633,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             84 => array
             (
                 'id' => 85,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Intraocular Pressure',
                 'secondary_term_list' => 'IOP',
@@ -1650,7 +1652,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             85 => array
             (
                 'id' => 86,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'IOP History',
                 'secondary_term_list' => null,
@@ -1669,7 +1671,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             86 => array
             (
                 'id' => 87,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Drops',
                 'secondary_term_list' => 'Dilation',
@@ -1688,7 +1690,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             87 => array
             (
                 'id' => 88,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'DR Grading',
                 'secondary_term_list' => 'Diabetic Retinopathy',
@@ -1707,7 +1709,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             88 => array
             (
                 'id' => 89,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'Diabetes type',
                 'secondary_term_list' => null,
@@ -1726,7 +1728,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             89 => array
             (
                 'id' => 90,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'Clinical Grading for retinopathy',
                 'secondary_term_list' => null,
@@ -1745,7 +1747,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             90 => array
             (
                 'id' => 91,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'NSC retinopathy',
                 'secondary_term_list' => null,
@@ -1764,7 +1766,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             91 => array
             (
                 'id' => 92,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'Retinopathy photocoagulation',
                 'secondary_term_list' => null,
@@ -1783,7 +1785,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             92 => array
             (
                 'id' => 93,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'Clinical Grading for maculopathy',
                 'secondary_term_list' => null,
@@ -1802,7 +1804,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             93 => array
             (
                 'id' => 94,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'NSC maculopathy',
                 'secondary_term_list' => null,
@@ -1821,7 +1823,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             94 => array
             (
                 'id' => 95,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 88,
                 'primary_term' => 'Maculopathy photocoagulation',
                 'secondary_term_list' => null,
@@ -1840,7 +1842,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             95 => array
             (
                 'id' => 96,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Ophthalmic Diagnoses',
                 'secondary_term_list' => 'Diagnosis',
@@ -1859,7 +1861,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             96 => array
             (
                 'id' => 97,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Further Findings',
                 'secondary_term_list' => null,
@@ -1878,7 +1880,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             97 => array
             (
                 'id' => 98,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Investigation',
                 'secondary_term_list' => null,
@@ -1897,7 +1899,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             98 => array
             (
                 'id' => 99,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'OCT',
                 'secondary_term_list' => 'Optical coherence tomography',
@@ -1916,7 +1918,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             99 => array
             (
                 'id' => 100,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Image Type',
                 'secondary_term_list' => null,
@@ -1935,7 +1937,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             100 => array
             (
                 'id' => 101,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Maximum CRT',
                 'secondary_term_list' => 'Corneal Refractive Therapy',
@@ -1954,7 +1956,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             101 => array
             (
                 'id' => 102,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Central Macular Thickness (CMT)',
                 'secondary_term_list' => 'Central Subfield Thickness, Central SFT',
@@ -1973,7 +1975,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             102 => array
             (
                 'id' => 103,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Thickness increase of 100µm',
                 'secondary_term_list' => null,
@@ -1992,7 +1994,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             103 => array
             (
                 'id' => 104,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Dry',
                 'secondary_term_list' => null,
@@ -2011,7 +2013,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             104 => array
             (
                 'id' => 105,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 99,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -2030,7 +2032,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             105 => array
             (
                 'id' => 106,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Glaucoma Risk',
                 'secondary_term_list' => null,
@@ -2049,7 +2051,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             106 => array
             (
                 'id' => 107,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'PCR Risk',
                 'secondary_term_list' => 'Posterior capsular opacification grading',
@@ -2068,7 +2070,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             107 => array
             (
                 'id' => 108,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Glaucoma',
                 'secondary_term_list' => null,
@@ -2087,7 +2089,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             108 => array
             (
                 'id' => 109,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'PXF/Phacodonesis',
                 'secondary_term_list' => null,
@@ -2106,7 +2108,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             109 => array
             (
                 'id' => 110,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Diabetic',
                 'secondary_term_list' => null,
@@ -2125,7 +2127,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             110 => array
             (
                 'id' => 111,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Pupil Size',
                 'secondary_term_list' => null,
@@ -2144,7 +2146,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             111 => array
             (
                 'id' => 112,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Fundus obscured',
                 'secondary_term_list' => null,
@@ -2163,7 +2165,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             112 => array
             (
                 'id' => 113,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Axial Length (mm)',
                 'secondary_term_list' => null,
@@ -2182,7 +2184,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             113 => array
             (
                 'id' => 114,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Brunescent/White Cataract',
                 'secondary_term_list' => null,
@@ -2201,7 +2203,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             114 => array
             (
                 'id' => 115,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Alpha receptor blocker',
                 'secondary_term_list' => null,
@@ -2220,7 +2222,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             115 => array
             (
                 'id' => 116,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Surgeon Grade',
                 'secondary_term_list' => null,
@@ -2239,7 +2241,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             116 => array
             (
                 'id' => 117,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 107,
                 'primary_term' => 'Can lie flat',
                 'secondary_term_list' => null,
@@ -2258,7 +2260,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             117 => array
             (
                 'id' => 118,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Clinical Management',
                 'secondary_term_list' => null,
@@ -2277,7 +2279,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             118 => array
             (
                 'id' => 119,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Cataract Surgical Management',
                 'secondary_term_list' => null,
@@ -2296,7 +2298,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             119 => array
             (
                 'id' => 120,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Which eye?',
                 'secondary_term_list' => 'First eye, Second eye',
@@ -2315,7 +2317,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             120 => array
             (
                 'id' => 121,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Straightforward case?',
                 'secondary_term_list' => null,
@@ -2334,7 +2336,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             121 => array
             (
                 'id' => 122,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Post operative refractive target',
                 'secondary_term_list' => null,
@@ -2353,7 +2355,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             122 => array
             (
                 'id' => 123,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Post operative refractive target',
                 'secondary_term_list' => null,
@@ -2372,7 +2374,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             123 => array
             (
                 'id' => 124,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Suitable for surgeon',
                 'secondary_term_list' => null,
@@ -2391,7 +2393,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             124 => array
             (
                 'id' => 125,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Previous refractive surgery',
                 'secondary_term_list' => null,
@@ -2410,7 +2412,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             125 => array
             (
                 'id' => 126,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Vitrectomised eye',
                 'secondary_term_list' => null,
@@ -2429,7 +2431,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             126 => array
             (
                 'id' => 127,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 119,
                 'primary_term' => 'Primary reason for cataract surgery',
                 'secondary_term_list' => null,
@@ -2448,7 +2450,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             127 => array
             (
                 'id' => 128,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Glaucoma Overall Management plan',
                 'secondary_term_list' => null,
@@ -2467,7 +2469,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             128 => array
             (
                 'id' => 129,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'Clinic interval',
                 'secondary_term_list' => null,
@@ -2486,7 +2488,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             129 => array
             (
                 'id' => 130,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'Photo',
                 'secondary_term_list' => null,
@@ -2505,7 +2507,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             130 => array
             (
                 'id' => 131,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'OCT',
                 'secondary_term_list' => 'Optical coherence tomography',
@@ -2524,7 +2526,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             131 => array
             (
                 'id' => 132,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'Visual Fields',
                 'secondary_term_list' => null,
@@ -2543,7 +2545,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             132 => array
             (
                 'id' => 133,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'Gonio',
                 'secondary_term_list' => 'Gonioscopy',
@@ -2562,7 +2564,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             133 => array
             (
                 'id' => 134,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'HRT',
                 'secondary_term_list' => 'Heidelberg Retinal Tomography',
@@ -2581,7 +2583,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             134 => array
             (
                 'id' => 135,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 128,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -2600,7 +2602,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             135 => array
             (
                 'id' => 136,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Glaucoma Current Management plan',
                 'secondary_term_list' => null,
@@ -2619,7 +2621,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             136 => array
             (
                 'id' => 137,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 136,
                 'primary_term' => 'Glaucoma status',
                 'secondary_term_list' => null,
@@ -2638,7 +2640,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             137 => array
             (
                 'id' => 138,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 136,
                 'primary_term' => 'Drop-related problems',
                 'secondary_term_list' => null,
@@ -2657,7 +2659,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             138 => array
             (
                 'id' => 139,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 136,
                 'primary_term' => 'Drops',
                 'secondary_term_list' => null,
@@ -2676,7 +2678,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             139 => array
             (
                 'id' => 140,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 136,
                 'primary_term' => 'Surgery',
                 'secondary_term_list' => null,
@@ -2695,7 +2697,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             140 => array
             (
                 'id' => 141,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Laser Management',
                 'secondary_term_list' => null,
@@ -2714,7 +2716,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             141 => array
             (
                 'id' => 142,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Injection Management',
                 'secondary_term_list' => null,
@@ -2733,7 +2735,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             142 => array
             (
                 'id' => 143,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 142,
                 'primary_term' => 'Treatment',
                 'secondary_term_list' => null,
@@ -2752,7 +2754,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             143 => array
             (
                 'id' => 144,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 142,
                 'primary_term' => 'Diagnosis',
                 'secondary_term_list' => null,
@@ -2771,7 +2773,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             144 => array
             (
                 'id' => 145,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 142,
                 'primary_term' => 'Intended Treatment',
                 'secondary_term_list' => null,
@@ -2790,7 +2792,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             145 => array
             (
                 'id' => 146,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 142,
                 'primary_term' => 'Risks',
                 'secondary_term_list' => null,
@@ -2809,7 +2811,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             146 => array
             (
                 'id' => 147,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 142,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -2828,7 +2830,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             147 => array
             (
                 'id' => 148,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Follow-up',
                 'secondary_term_list' => 'Clinic Outcome',
@@ -2847,7 +2849,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             148 => array
             (
                 'id' => 149,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Macula',
                 'secondary_term_list' => 'Posterior Pole',
@@ -2866,7 +2868,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             149 => array
             (
                 'id' => 150,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -2885,7 +2887,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             150 => array
             (
                 'id' => 151,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Drusen',
                 'secondary_term_list' => null,
@@ -2904,7 +2906,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             151 => array
             (
                 'id' => 152,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Geographic',
                 'secondary_term_list' => null,
@@ -2923,7 +2925,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             152 => array
             (
                 'id' => 153,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Choroidal new vessels',
                 'secondary_term_list' => null,
@@ -2942,7 +2944,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             153 => array
             (
                 'id' => 154,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'RPE Atrophy',
                 'secondary_term_list' => null,
@@ -2961,7 +2963,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             154 => array
             (
                 'id' => 155,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'RPE detachment',
                 'secondary_term_list' => null,
@@ -2980,7 +2982,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             155 => array
             (
                 'id' => 156,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Epiretinal membrane',
                 'secondary_term_list' => null,
@@ -2999,7 +3001,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             156 => array
             (
                 'id' => 157,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Macular hole',
                 'secondary_term_list' => null,
@@ -3018,7 +3020,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             157 => array
             (
                 'id' => 158,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Macular dystrophy',
                 'secondary_term_list' => null,
@@ -3037,7 +3039,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             158 => array
             (
                 'id' => 159,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Macroaneurysm',
                 'secondary_term_list' => null,
@@ -3056,7 +3058,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             159 => array
             (
                 'id' => 160,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Retinal vein occlusion',
                 'secondary_term_list' => 'Hemipsheric retinal vein occlusion, Central retinal vein occlusion, Branch retinal vein occlusion, CRV, BRV',
@@ -3075,7 +3077,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             160 => array
             (
                 'id' => 161,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Retinal artery occlusion',
                 'secondary_term_list' => null,
@@ -3094,7 +3096,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             161 => array
             (
                 'id' => 162,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Microaneurysm',
                 'secondary_term_list' => null,
@@ -3113,7 +3115,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             162 => array
             (
                 'id' => 163,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Blot Haemorrhage',
                 'secondary_term_list' => null,
@@ -3132,7 +3134,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             163 => array
             (
                 'id' => 164,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Hard Exudate',
                 'secondary_term_list' => null,
@@ -3151,7 +3153,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             164 => array
             (
                 'id' => 165,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'IMA',
                 'secondary_term_list' => 'Intraretinal microvascular abnormalities',
@@ -3170,7 +3172,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             165 => array
             (
                 'id' => 166,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Circinate retinopathy',
                 'secondary_term_list' => null,
@@ -3189,7 +3191,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             166 => array
             (
                 'id' => 167,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Macular thickening',
                 'secondary_term_list' => null,
@@ -3208,7 +3210,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             167 => array
             (
                 'id' => 168,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Cystoid macular oedema',
                 'secondary_term_list' => null,
@@ -3227,7 +3229,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             168 => array
             (
                 'id' => 169,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Pre-retinal haemorrhage',
                 'secondary_term_list' => null,
@@ -3246,7 +3248,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             169 => array
             (
                 'id' => 170,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Cotton wool spot',
                 'secondary_term_list' => null,
@@ -3265,7 +3267,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             170 => array
             (
                 'id' => 171,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Retinal neovascularisation',
                 'secondary_term_list' => null,
@@ -3284,7 +3286,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             171 => array
             (
                 'id' => 172,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Vitreous haemorrhage',
                 'secondary_term_list' => 'Vitreous opacity',
@@ -3303,7 +3305,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             172 => array
             (
                 'id' => 173,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Fibrous proliferation',
                 'secondary_term_list' => null,
@@ -3322,7 +3324,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             173 => array
             (
                 'id' => 174,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Traction retinal detachment',
                 'secondary_term_list' => null,
@@ -3341,7 +3343,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             174 => array
             (
                 'id' => 175,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Swollen disc',
                 'secondary_term_list' => null,
@@ -3360,7 +3362,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             175 => array
             (
                 'id' => 176,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Parafoveal telangiectasia',
                 'secondary_term_list' => null,
@@ -3379,7 +3381,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             176 => array
             (
                 'id' => 177,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Choroidal haemorrhage',
                 'secondary_term_list' => null,
@@ -3398,7 +3400,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             177 => array
             (
                 'id' => 178,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Choroidal effusion',
                 'secondary_term_list' => null,
@@ -3417,7 +3419,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             178 => array
             (
                 'id' => 179,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Choroidal naevus',
                 'secondary_term_list' => null,
@@ -3436,7 +3438,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             179 => array
             (
                 'id' => 180,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Laser spot',
                 'secondary_term_list' => null,
@@ -3455,7 +3457,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             180 => array
             (
                 'id' => 181,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Focal laser',
                 'secondary_term_list' => null,
@@ -3474,7 +3476,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             181 => array
             (
                 'id' => 182,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Macular grid laser',
                 'secondary_term_list' => null,
@@ -3493,7 +3495,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             182 => array
             (
                 'id' => 183,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Sector PRP',
                 'secondary_term_list' => null,
@@ -3512,7 +3514,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             183 => array
             (
                 'id' => 184,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Panretinal photocoagulation',
                 'secondary_term_list' => null,
@@ -3531,7 +3533,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             184 => array
             (
                 'id' => 185,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -3550,7 +3552,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             185 => array
             (
                 'id' => 186,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Watzke',
                 'secondary_term_list' => null,
@@ -3569,7 +3571,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             186 => array
             (
                 'id' => 187,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Polypoidal choroidal vasculopathy',
                 'secondary_term_list' => 'PCV',
@@ -3588,7 +3590,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             187 => array
             (
                 'id' => 188,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Vitelliform Macular Lesion',
                 'secondary_term_list' => null,
@@ -3607,7 +3609,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             188 => array
             (
                 'id' => 189,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 149,
                 'primary_term' => 'Pigment epithelium detachment',
                 'secondary_term_list' => 'PED',
@@ -3626,7 +3628,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             189 => array
             (
                 'id' => 190,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Van Herick',
                 'secondary_term_list' => null,
@@ -3645,7 +3647,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             190 => array
             (
                 'id' => 191,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Gonioscopy',
                 'secondary_term_list' => null,
@@ -3664,7 +3666,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             191 => array
             (
                 'id' => 192,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Angle Open?',
                 'secondary_term_list' => 'Angle Close?',
@@ -3683,7 +3685,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             192 => array
             (
                 'id' => 193,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -3702,7 +3704,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             193 => array
             (
                 'id' => 194,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Angle new vessels',
                 'secondary_term_list' => null,
@@ -3721,7 +3723,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             194 => array
             (
                 'id' => 195,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Anterior synechiae',
                 'secondary_term_list' => null,
@@ -3740,7 +3742,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             195 => array
             (
                 'id' => 196,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Angle recession',
                 'secondary_term_list' => null,
@@ -3759,7 +3761,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             196 => array
             (
                 'id' => 197,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 191,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -3778,7 +3780,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             197 => array
             (
                 'id' => 198,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Optic Disc',
                 'secondary_term_list' => null,
@@ -3797,7 +3799,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             198 => array
             (
                 'id' => 199,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Mode',
                 'secondary_term_list' => null,
@@ -3816,7 +3818,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             199 => array
             (
                 'id' => 200,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'C/D Ratio',
                 'secondary_term_list' => 'Cup To Disc Ratio',
@@ -3835,7 +3837,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             200 => array
             (
                 'id' => 201,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Vertical Diameter',
                 'secondary_term_list' => null,
@@ -3854,7 +3856,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             201 => array
             (
                 'id' => 202,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -3873,7 +3875,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             202 => array
             (
                 'id' => 203,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Peripapillary atrophy',
                 'secondary_term_list' => null,
@@ -3892,7 +3894,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             203 => array
             (
                 'id' => 204,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Disc pallor',
                 'secondary_term_list' => null,
@@ -3911,7 +3913,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             204 => array
             (
                 'id' => 205,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Disc haemorrhage',
                 'secondary_term_list' => null,
@@ -3930,7 +3932,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             205 => array
             (
                 'id' => 206,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Nerve fibre defect',
                 'secondary_term_list' => null,
@@ -3949,7 +3951,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             206 => array
             (
                 'id' => 207,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Optic disc pit',
                 'secondary_term_list' => null,
@@ -3968,7 +3970,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             207 => array
             (
                 'id' => 208,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Papilloedema',
                 'secondary_term_list' => null,
@@ -3987,7 +3989,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             208 => array
             (
                 'id' => 209,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 198,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -4006,7 +4008,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             209 => array
             (
                 'id' => 210,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Fundus',
                 'secondary_term_list' => null,
@@ -4025,7 +4027,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             210 => array
             (
                 'id' => 211,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Vitreous',
                 'secondary_term_list' => 'Syneresis, Formed, Attached, PVD, Pigment, Weiss Ring',
@@ -4044,7 +4046,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             211 => array
             (
                 'id' => 212,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Comments',
                 'secondary_term_list' => null,
@@ -4063,7 +4065,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             212 => array
             (
                 'id' => 213,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Rhegmatogenous retinal detachment',
                 'secondary_term_list' => null,
@@ -4082,7 +4084,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             213 => array
             (
                 'id' => 214,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Traction ‘U’ tear',
                 'secondary_term_list' => null,
@@ -4101,7 +4103,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             214 => array
             (
                 'id' => 215,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Round hole',
                 'secondary_term_list' => null,
@@ -4120,7 +4122,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             215 => array
             (
                 'id' => 216,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Dialysis',
                 'secondary_term_list' => null,
@@ -4139,7 +4141,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             216 => array
             (
                 'id' => 217,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Giant retinal tear',
                 'secondary_term_list' => null,
@@ -4158,7 +4160,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             217 => array
             (
                 'id' => 218,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Macular hole',
                 'secondary_term_list' => null,
@@ -4177,7 +4179,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             218 => array
             (
                 'id' => 219,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Star fold',
                 'secondary_term_list' => null,
@@ -4196,7 +4198,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             219 => array
             (
                 'id' => 220,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Anterior PVR',
                 'secondary_term_list' => null,
@@ -4215,7 +4217,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             220 => array
             (
                 'id' => 221,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Lattice',
                 'secondary_term_list' => null,
@@ -4234,7 +4236,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             221 => array
             (
                 'id' => 222,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Cryotherapy scar',
                 'secondary_term_list' => null,
@@ -4253,7 +4255,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             222 => array
             (
                 'id' => 223,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Circle of laser photocoagulation',
                 'secondary_term_list' => null,
@@ -4272,7 +4274,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             223 => array
             (
                 'id' => 224,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Drainage retinotomy',
                 'secondary_term_list' => null,
@@ -4291,7 +4293,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             224 => array
             (
                 'id' => 225,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Retinoschisis',
                 'secondary_term_list' => null,
@@ -4310,7 +4312,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             225 => array
             (
                 'id' => 226,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Outer leaf break',
                 'secondary_term_list' => null,
@@ -4329,7 +4331,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             226 => array
             (
                 'id' => 227,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Inner leaf break',
                 'secondary_term_list' => null,
@@ -4348,7 +4350,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             227 => array
             (
                 'id' => 228,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 210,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -4367,7 +4369,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             228 => array
             (
                 'id' => 229,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => null,
                 'primary_term' => 'Examination Anterior Segment',
                 'secondary_term_list' => null,
@@ -4386,7 +4388,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             229 => array
             (
                 'id' => 230,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Label',
                 'secondary_term_list' => null,
@@ -4405,7 +4407,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             230 => array
             (
                 'id' => 231,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Anterior chamber IOL',
                 'secondary_term_list' => 'Intraocular lens, ACIOL, AC',
@@ -4424,7 +4426,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             231 => array
             (
                 'id' => 232,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Adenoviral keratitis',
                 'secondary_term_list' => null,
@@ -4443,7 +4445,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             232 => array
             (
                 'id' => 233,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Anterior segment',
                 'secondary_term_list' => null,
@@ -4462,7 +4464,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             233 => array
             (
                 'id' => 234,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Pupil size',
                 'secondary_term_list' => null,
@@ -4481,7 +4483,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             234 => array
             (
                 'id' => 235,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Pseudoexfoliation',
                 'secondary_term_list' => 'PXF',
@@ -4500,7 +4502,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             235 => array
             (
                 'id' => 236,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Coloboma',
                 'secondary_term_list' => null,
@@ -4519,7 +4521,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             236 => array
             (
                 'id' => 237,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Colour',
                 'secondary_term_list' => null,
@@ -4538,7 +4540,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             237 => array
             (
                 'id' => 238,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Ectropion uveae',
                 'secondary_term_list' => null,
@@ -4557,7 +4559,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             238 => array
             (
                 'id' => 239,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Corneal size',
                 'secondary_term_list' => null,
@@ -4576,7 +4578,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             239 => array
             (
                 'id' => 240,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Cells',
                 'secondary_term_list' => null,
@@ -4595,7 +4597,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             240 => array
             (
                 'id' => 241,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 233,
                 'primary_term' => 'Flare',
                 'secondary_term_list' => null,
@@ -4614,7 +4616,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             241 => array
             (
                 'id' => 242,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Drainage bleb',
                 'secondary_term_list' => 'Trabeculectomy bleb',
@@ -4633,7 +4635,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             242 => array
             (
                 'id' => 243,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Conjunctival suture',
                 'secondary_term_list' => null,
@@ -4652,7 +4654,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             243 => array
             (
                 'id' => 244,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 243,
                 'primary_term' => 'Orientated',
                 'secondary_term_list' => null,
@@ -4671,7 +4673,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             244 => array
             (
                 'id' => 245,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 243,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -4690,7 +4692,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             245 => array
             (
                 'id' => 246,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 243,
                 'primary_term' => 'Material',
                 'secondary_term_list' => null,
@@ -4709,7 +4711,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             246 => array
             (
                 'id' => 247,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 243,
                 'primary_term' => 'Size',
                 'secondary_term_list' => null,
@@ -4728,7 +4730,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             247 => array
             (
                 'id' => 248,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Conjunctivitis',
                 'secondary_term_list' => null,
@@ -4747,7 +4749,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             248 => array
             (
                 'id' => 249,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 248,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -4766,7 +4768,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             249 => array
             (
                 'id' => 250,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 248,
                 'primary_term' => 'Mucopurulent',
                 'secondary_term_list' => null,
@@ -4785,7 +4787,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             250 => array
             (
                 'id' => 251,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 248,
                 'primary_term' => 'Hyperaemia',
                 'secondary_term_list' => null,
@@ -4804,7 +4806,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             251 => array
             (
                 'id' => 252,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal epithelial defect',
                 'secondary_term_list' => null,
@@ -4823,7 +4825,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             252 => array
             (
                 'id' => 253,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 252,
                 'primary_term' => 'Height',
                 'secondary_term_list' => null,
@@ -4842,7 +4844,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             253 => array
             (
                 'id' => 254,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 252,
                 'primary_term' => 'Width',
                 'secondary_term_list' => null,
@@ -4861,7 +4863,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             254 => array
             (
                 'id' => 255,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal laceration',
                 'secondary_term_list' => null,
@@ -4880,7 +4882,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             255 => array
             (
                 'id' => 256,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 255,
                 'primary_term' => 'Laceration Depth %',
                 'secondary_term_list' => null,
@@ -4899,7 +4901,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             256 => array
             (
                 'id' => 257,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 255,
                 'primary_term' => 'Iris prolapse',
                 'secondary_term_list' => null,
@@ -4918,7 +4920,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             257 => array
             (
                 'id' => 258,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal oedema',
                 'secondary_term_list' => null,
@@ -4937,7 +4939,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             258 => array
             (
                 'id' => 259,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 258,
                 'primary_term' => 'Intensity',
                 'secondary_term_list' => null,
@@ -4956,7 +4958,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             259 => array
             (
                 'id' => 260,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 258,
                 'primary_term' => 'Epithelial',
                 'secondary_term_list' => null,
@@ -4975,7 +4977,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             260 => array
             (
                 'id' => 261,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 258,
                 'primary_term' => 'Stromal',
                 'secondary_term_list' => null,
@@ -4994,7 +4996,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             261 => array
             (
                 'id' => 262,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 258,
                 'primary_term' => 'Endothelial',
                 'secondary_term_list' => null,
@@ -5013,7 +5015,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             262 => array
             (
                 'id' => 263,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal opacity',
                 'secondary_term_list' => null,
@@ -5032,7 +5034,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             263 => array
             (
                 'id' => 264,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 263,
                 'primary_term' => 'Height',
                 'secondary_term_list' => null,
@@ -5051,7 +5053,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             264 => array
             (
                 'id' => 265,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 263,
                 'primary_term' => 'Width',
                 'secondary_term_list' => null,
@@ -5070,7 +5072,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             265 => array
             (
                 'id' => 266,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 263,
                 'primary_term' => 'Depth (%)',
                 'secondary_term_list' => null,
@@ -5089,7 +5091,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             266 => array
             (
                 'id' => 267,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 263,
                 'primary_term' => 'Infiltrate width',
                 'secondary_term_list' => null,
@@ -5108,7 +5110,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             267 => array
             (
                 'id' => 268,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal pigmentation',
                 'secondary_term_list' => 'Krukenberg spindle, Endothelium, Epithelial, Subepithelial, Anterior stromal, Mid stromal, Posterior stromal, Descemets',
@@ -5127,7 +5129,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             268 => array
             (
                 'id' => 269,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 268,
                 'primary_term' => 'Level',
                 'secondary_term_list' => null,
@@ -5146,7 +5148,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             269 => array
             (
                 'id' => 270,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 268,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -5165,7 +5167,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             270 => array
             (
                 'id' => 271,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal scar',
                 'secondary_term_list' => null,
@@ -5184,7 +5186,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             271 => array
             (
                 'id' => 272,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal suture',
                 'secondary_term_list' => null,
@@ -5203,7 +5205,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             272 => array
             (
                 'id' => 273,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 272,
                 'primary_term' => 'Removed',
                 'secondary_term_list' => null,
@@ -5222,7 +5224,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             273 => array
             (
                 'id' => 274,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Dendritic ulcer',
                 'secondary_term_list' => null,
@@ -5241,7 +5243,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             274 => array
             (
                 'id' => 275,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Episcleritis',
                 'secondary_term_list' => null,
@@ -5260,7 +5262,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             275 => array
             (
                 'id' => 276,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 275,
                 'primary_term' => 'Severity',
                 'secondary_term_list' => null,
@@ -5279,7 +5281,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             276 => array
             (
                 'id' => 277,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Guttata',
                 'secondary_term_list' => 'Fuchs',
@@ -5298,7 +5300,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             277 => array
             (
                 'id' => 278,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Hyphaema',
                 'secondary_term_list' => null,
@@ -5317,7 +5319,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             278 => array
             (
                 'id' => 279,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Hypopyon',
                 'secondary_term_list' => null,
@@ -5336,7 +5338,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             279 => array
             (
                 'id' => 280,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Keratic precipitates',
                 'secondary_term_list' => null,
@@ -5355,7 +5357,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             280 => array
             (
                 'id' => 281,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'LASIK flap',
                 'secondary_term_list' => 'Laser-assisted in situ keratomileusis',
@@ -5374,7 +5376,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             281 => array
             (
                 'id' => 282,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Hinge',
                 'secondary_term_list' => null,
@@ -5393,7 +5395,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             282 => array
             (
                 'id' => 283,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Femto laser',
                 'secondary_term_list' => null,
@@ -5412,7 +5414,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             283 => array
             (
                 'id' => 284,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Diameter',
                 'secondary_term_list' => null,
@@ -5431,7 +5433,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             284 => array
             (
                 'id' => 285,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Depth',
                 'secondary_term_list' => null,
@@ -5450,7 +5452,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             285 => array
             (
                 'id' => 286,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Sidecut angle',
                 'secondary_term_list' => null,
@@ -5469,7 +5471,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             286 => array
             (
                 'id' => 287,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Spot separation',
                 'secondary_term_list' => null,
@@ -5488,7 +5490,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             287 => array
             (
                 'id' => 288,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 281,
                 'primary_term' => 'Line separation',
                 'secondary_term_list' => null,
@@ -5507,7 +5509,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             288 => array
             (
                 'id' => 289,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Lens',
                 'secondary_term_list' => null,
@@ -5526,7 +5528,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             289 => array
             (
                 'id' => 290,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Nuclear cataract',
                 'secondary_term_list' => null,
@@ -5545,7 +5547,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             290 => array
             (
                 'id' => 291,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Cortical cataract',
                 'secondary_term_list' => null,
@@ -5564,7 +5566,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             291 => array
             (
                 'id' => 292,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Posterior subcapsular cataract',
                 'secondary_term_list' => null,
@@ -5583,7 +5585,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             292 => array
             (
                 'id' => 293,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Anterior polar',
                 'secondary_term_list' => null,
@@ -5602,7 +5604,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             293 => array
             (
                 'id' => 294,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Posterior polar',
                 'secondary_term_list' => null,
@@ -5621,7 +5623,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             294 => array
             (
                 'id' => 295,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Coronary',
                 'secondary_term_list' => null,
@@ -5640,7 +5642,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             295 => array
             (
                 'id' => 296,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 289,
                 'primary_term' => 'Phacodonesis',
                 'secondary_term_list' => null,
@@ -5659,7 +5661,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             296 => array
             (
                 'id' => 297,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Marginal keratitis',
                 'secondary_term_list' => null,
@@ -5678,7 +5680,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             297 => array
             (
                 'id' => 298,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 297,
                 'primary_term' => '% Epithelial defect of corneal infiltrate',
                 'secondary_term_list' => null,
@@ -5697,7 +5699,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             298 => array
             (
                 'id' => 299,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Metallic foreign body',
                 'secondary_term_list' => null,
@@ -5716,7 +5718,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             299 => array
             (
                 'id' => 300,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 299,
                 'primary_term' => 'Metallic foreign body',
                 'secondary_term_list' => null,
@@ -5735,7 +5737,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             300 => array
             (
                 'id' => 301,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 299,
                 'primary_term' => 'Rust ring',
                 'secondary_term_list' => null,
@@ -5754,7 +5756,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             301 => array
             (
                 'id' => 302,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 299,
                 'primary_term' => 'Coats ring',
                 'secondary_term_list' => null,
@@ -5773,7 +5775,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             302 => array
             (
                 'id' => 303,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Tube patch',
                 'secondary_term_list' => null,
@@ -5792,7 +5794,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             303 => array
             (
                 'id' => 304,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 303,
                 'primary_term' => 'Material',
                 'secondary_term_list' => null,
@@ -5811,7 +5813,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             304 => array
             (
                 'id' => 305,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Posterior chamber IOL',
                 'secondary_term_list' => 'Intraocular lens',
@@ -5830,7 +5832,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             305 => array
             (
                 'id' => 306,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 305,
                 'primary_term' => 'Fixation',
                 'secondary_term_list' => null,
@@ -5849,7 +5851,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             306 => array
             (
                 'id' => 307,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Peripheral iridectomy',
                 'secondary_term_list' => null,
@@ -5868,7 +5870,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             307 => array
             (
                 'id' => 308,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 307,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -5887,7 +5889,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             308 => array
             (
                 'id' => 309,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 307,
                 'primary_term' => 'Patent',
                 'secondary_term_list' => null,
@@ -5906,7 +5908,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             309 => array
             (
                 'id' => 310,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Pingueculum',
                 'secondary_term_list' => null,
@@ -5925,7 +5927,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             310 => array
             (
                 'id' => 311,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Posterior capsule',
                 'secondary_term_list' => null,
@@ -5944,7 +5946,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             311 => array
             (
                 'id' => 312,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 311,
                 'primary_term' => 'Opacity',
                 'secondary_term_list' => null,
@@ -5963,7 +5965,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             312 => array
             (
                 'id' => 313,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 311,
                 'primary_term' => 'Capsulotomy',
                 'secondary_term_list' => null,
@@ -5982,7 +5984,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             313 => array
             (
                 'id' => 314,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Posterior synechia',
                 'secondary_term_list' => null,
@@ -6001,7 +6003,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             314 => array
             (
                 'id' => 315,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Pterygium',
                 'secondary_term_list' => null,
@@ -6020,7 +6022,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             315 => array
             (
                 'id' => 316,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 315,
                 'primary_term' => 'Injection',
                 'secondary_term_list' => null,
@@ -6039,7 +6041,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             316 => array
             (
                 'id' => 317,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 315,
                 'primary_term' => 'Stockers line',
                 'secondary_term_list' => null,
@@ -6058,7 +6060,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             317 => array
             (
                 'id' => 318,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Radial keratotomy',
                 'secondary_term_list' => null,
@@ -6077,7 +6079,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             318 => array
             (
                 'id' => 319,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 318,
                 'primary_term' => 'Number of Cuts',
                 'secondary_term_list' => null,
@@ -6096,7 +6098,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             319 => array
             (
                 'id' => 320,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Rubeosis iridis',
                 'secondary_term_list' => null,
@@ -6115,7 +6117,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             320 => array
             (
                 'id' => 321,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Sector iridectomy',
                 'secondary_term_list' => null,
@@ -6134,7 +6136,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             321 => array
             (
                 'id' => 322,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Side port',
                 'secondary_term_list' => null,
@@ -6153,7 +6155,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             322 => array
             (
                 'id' => 323,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'SPEE',
                 'secondary_term_list' => 'Superficial punctate epithelial erosions',
@@ -6172,7 +6174,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             323 => array
             (
                 'id' => 324,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Supramid suture',
                 'secondary_term_list' => null,
@@ -6191,7 +6193,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             324 => array
             (
                 'id' => 325,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 324,
                 'primary_term' => 'Percentage of tube',
                 'secondary_term_list' => null,
@@ -6210,7 +6212,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             325 => array
             (
                 'id' => 326,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Trabeculectomy flap',
                 'secondary_term_list' => null,
@@ -6229,7 +6231,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             326 => array
             (
                 'id' => 327,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Capsular Tension Ring',
                 'secondary_term_list' => null,
@@ -6248,7 +6250,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             327 => array
             (
                 'id' => 328,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Trabeculectomy suture',
                 'secondary_term_list' => null,
@@ -6267,7 +6269,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             328 => array
             (
                 'id' => 329,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 328,
                 'primary_term' => 'Shape',
                 'secondary_term_list' => null,
@@ -6286,7 +6288,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             329 => array
             (
                 'id' => 330,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 328,
                 'primary_term' => 'Material',
                 'secondary_term_list' => null,
@@ -6305,7 +6307,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             330 => array
             (
                 'id' => 331,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 328,
                 'primary_term' => 'Size',
                 'secondary_term_list' => null,
@@ -6324,7 +6326,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             331 => array
             (
                 'id' => 332,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 328,
                 'primary_term' => 'Removed',
                 'secondary_term_list' => null,
@@ -6343,7 +6345,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             332 => array
             (
                 'id' => 333,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Transillumination defect',
                 'secondary_term_list' => null,
@@ -6362,7 +6364,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             333 => array
             (
                 'id' => 334,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Drainage tube',
                 'secondary_term_list' => null,
@@ -6381,7 +6383,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             334 => array
             (
                 'id' => 335,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 334,
                 'primary_term' => 'Type',
                 'secondary_term_list' => null,
@@ -6400,7 +6402,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             335 => array
             (
                 'id' => 336,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Tube extender',
                 'secondary_term_list' => null,
@@ -6419,7 +6421,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             336 => array
             (
                 'id' => 337,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Ligation suture',
                 'secondary_term_list' => null,
@@ -6438,7 +6440,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             337 => array
             (
                 'id' => 338,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 337,
                 'primary_term' => 'Material',
                 'secondary_term_list' => null,
@@ -6457,7 +6459,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             338 => array
             (
                 'id' => 339,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal graft',
                 'secondary_term_list' => null,
@@ -6476,7 +6478,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             339 => array
             (
                 'id' => 340,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'DMEK/DSAEK',
                 'secondary_term_list' => null,
@@ -6495,7 +6497,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             340 => array
             (
                 'id' => 341,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 340,
                 'primary_term' => 'Endothelial Keratoplasty',
                 'secondary_term_list' => null,
@@ -6514,7 +6516,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             341 => array
             (
                 'id' => 342,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Continuous Corneal Suture',
                 'secondary_term_list' => null,
@@ -6533,7 +6535,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             342 => array
             (
                 'id' => 343,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Corneal Thinning',
                 'secondary_term_list' => null,
@@ -6552,7 +6554,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             343 => array
             (
                 'id' => 344,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Band Keratopathy',
                 'secondary_term_list' => null,
@@ -6571,7 +6573,7 @@ class m200227_045838_indexSearch_table extends CDbMigration
             344 => array
             (
                 'id' => 345,
-                'event_type' => 'Examination',
+                'event_type_id' => 27,
                 'parent' => 229,
                 'primary_term' => 'Peripheral Vascularisation',
                 'secondary_term_list' => null,
@@ -6595,6 +6597,8 @@ class m200227_045838_indexSearch_table extends CDbMigration
 
     public function down()
     {
+        $this->dropForeignKey('event_type_id_indexsearch_fk', 'index_search');
+        $this->dropForeignKey('parent_id_fk', 'index_search');
         $this->dropTable('index_search');
     }
 
