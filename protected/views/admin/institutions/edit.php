@@ -17,7 +17,7 @@ $logo_helper = new LogoHelper();
 $default_urls = $logo_helper->getLogoURLs();
 ?>
 <style>
-    .flash-success{
+    .flash-success {
         border:1px solid #1DDD50;
         background: #C3FFD3;
         text-align: center;
@@ -26,7 +26,7 @@ $default_urls = $logo_helper->getLogoURLs();
         margin-bottom: 20px;
     }
 
-    .error{
+    .error {
         border:1px solid #ff6666;
         background: #ffe6e6;
         text-align: center;
@@ -35,7 +35,7 @@ $default_urls = $logo_helper->getLogoURLs();
         margin-bottom: 20px;
     }
 
-    .remove-logo{
+    .remove-logo {
         display: block;
         position: absolute;
         top: 1px;
@@ -94,7 +94,7 @@ $default_urls = $logo_helper->getLogoURLs();
         </colgroup>
 
         <tbody>
-        <?php foreach (['name', 'short_name','remote_id'] as $field) : ?>
+        <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
             <tr>
                 <td><?php echo $institution->getAttributeLabel($field); ?></td>
                 <td>
