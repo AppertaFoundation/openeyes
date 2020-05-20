@@ -10,7 +10,7 @@ class m200227_045838_indexSearch_table extends OEMigration
         $this->createOETable('index_search', array(
             'id' => 'pk',
             'event_type_id' => 'int(10) unsigned',
-            'parent' => 'int(11) unsigned',//Parent row id (if this row is a child row)
+            'parent' => 'int(11)',//Parent row id (if this row is a child row)
             'primary_term' => 'varchar(128)',
             'secondary_term_list' => 'varchar(1024)',
             'description' => 'varchar(512)',
