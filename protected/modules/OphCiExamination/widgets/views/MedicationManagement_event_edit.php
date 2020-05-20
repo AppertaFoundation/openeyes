@@ -75,7 +75,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key => $entry) {
-                        if (($prescribe_access || $entry->prescribe == 0) && !$read_only) {
+                        if (!$read_only) {
                                 $this->render(
                                     'MedicationManagementEntry_event_edit',
                                     array(
@@ -92,7 +92,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                         'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                         'row_type' => /*$entry->group */ 'group',
                                         'is_last' => ($row_count == $total_count - 1),
-                                        'prescribe_access' => $prescribe_access,
                                         'patient' => $this->patient,
                                         'locked' => $entry->locked,
                                         'unit_options' => $unit_options,
@@ -121,7 +120,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                     'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                     'row_type' => /*$entry->group */ 'group',
                                     'is_last' => ($row_count == $total_count - 1),
-                                    'prescribe_access' => $prescribe_access,
                                     'patient' => $this->patient,
                                     'locked' => $entry->locked,
                                     'unit_options' => $unit_options,
@@ -193,7 +191,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                 'row_type' => 'new',
                 'is_last' => false,
                 'is_new' => true,
-                'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
                 'source_subtype' => '{{source_subtype}}',

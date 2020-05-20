@@ -53,8 +53,9 @@
         } ?>
     </td>
     <td>
-        <?php if ($entry->prescribe && $entry->prescriptionItem) : ?>
-            <i class="oe-i circle-green small js-has-tooltip" data-tooltip-content="Prescribed"></i>
+        <?php if ($entry->prescribe && $entry->prescriptionItem) :
+            $is_draft = (int) $entry->prescriptionItem->prescription->draft === 1; ?>
+            <i class="oe-i circle-<?= $is_draft ? 'orange' : 'green' ?> small js-has-tooltip" data-tooltip-content="<?= $is_draft ? 'Draft' : 'Prescribed' ?>"></i>
         <?php endif; ?>
     </td>
     <td>

@@ -89,7 +89,7 @@ class MedicationManagementController extends BaseController
         return $item;
     }
 
-    public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 50)
+    public function actionFindRefMedications($term = '', $include_branded = 1, $limit = 100)
     {
         $ret_data = [];
         $criteria = new \CDbCriteria();
