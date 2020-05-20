@@ -70,6 +70,11 @@ class MedicationInfoBox extends \BaseCWidget
             }
         }
 
+        $alt_terms = $medication->alternativeTerms($medication);
+        if ($alt_terms !== '') {
+            $this->append_label[] = '<strong>Aliases: </strong>' . $alt_terms;
+        }
+
         if ($this->type === self::TYPE_LIGHT) {
             if ($medication->isAMP()) {
                 $data['Generic'] = isset($medication->vmp_term) ? $medication->vmp_term : "N/A";
