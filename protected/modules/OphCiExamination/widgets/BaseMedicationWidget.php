@@ -30,14 +30,6 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     public $is_latest_element = null;
     public $missing_prescription_items = null;
 
-    public function getViewData()
-    {
-        return array_merge(
-            parent::getViewData(),
-            array('prescribe_access' => $this->checkAccess('OprnCreatePrescription'))
-        );
-    }
-
     /**
      * @return BaseMedicationElement
      */
