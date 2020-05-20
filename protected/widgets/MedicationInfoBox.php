@@ -61,11 +61,6 @@ class MedicationInfoBox extends \BaseCWidget
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        $alt_terms = $medication->alternativeTerms($medication);
-        if ($alt_terms !== '') {
-            $this->append_label[] = '<strong>Aliases: </strong>' . $alt_terms;
-        }
-
         foreach ($medication->medicationSets as $sets) {
             if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
                 $this->icon = 'formulary';
@@ -73,6 +68,11 @@ class MedicationInfoBox extends \BaseCWidget
 
                 break;
             }
+        }
+
+        $alt_terms = $medication->alternativeTerms($medication);
+        if ($alt_terms !== '') {
+            $this->append_label[] = '<strong>Aliases: </strong>' . $alt_terms;
         }
 
         if ($this->type === self::TYPE_LIGHT) {
