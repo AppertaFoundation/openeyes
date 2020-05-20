@@ -294,6 +294,7 @@ class MedicationManagement extends BaseMedicationElement
 
     private function createOrUpdatePrescriptionEvent()
     {
+        $prescribe_access = \Yii::app()->user->checkAccess('OprnCreatePrescription');
         if (!is_null($this->prescription_id)) {
             // prescription exists
 
@@ -384,19 +385,19 @@ class MedicationManagement extends BaseMedicationElement
                     // update prescription with message
                     $edit_reason = "Updated via examination clinical management";
                     $prescription->edit_reason_other = $edit_reason;
-                    $prescription->draft = 1;
+                    $prescription->draft = $prescribe_access ? 0 : 1;
                     $prescription->save();
                 }
             }
         } else {
             // prescription does not exist yet
             if (!empty($this->entries_to_prescribe)) {
-                $this->generatePrescriptionEvent();
+                $this->generatePrescriptionEvent($prescribe_access);
             }
         }
     }
 
-    private function generatePrescriptionEvent()
+    private function generatePrescriptionEvent($prescribe_access)
     {
         $prescription_creator = new PrescriptionCreator($this->event->episode);
         $prescription_creator->patient = $this->event->episode->patient;
@@ -410,7 +411,7 @@ class MedicationManagement extends BaseMedicationElement
             $prescription_creator->addItem($item);
         }
 
-        $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = 1;
+        $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = $prescribe_access ? 0 : 1;
 
         $prescription_creator->save();
 

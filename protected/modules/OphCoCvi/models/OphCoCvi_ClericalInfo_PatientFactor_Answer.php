@@ -93,7 +93,7 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
         $criteria->addCondition("patient_factor_id=:patient_factor_id");
         $criteria->params = array(':element_id' => $element_id, ':patient_factor_id' => $factor_id);
         $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
-        return $item['is_factor'];
+        return $item['is_factor'] ?? null;
     }
 
     /**
@@ -109,7 +109,7 @@ class OphCoCvi_ClericalInfo_PatientFactor_Answer extends \BaseEventTypeElement
         $criteria->addCondition("patient_factor_id=:patient_factor_id");
         $criteria->params = array(':element_id' => $element_id, ':patient_factor_id' => $factor_id);
         $item = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->find($criteria);
-        return $item['comments'];
+        return $item['comments'] ?? null;
 
     }
 

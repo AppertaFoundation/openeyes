@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -24,7 +25,8 @@ $form_option = OphDrPrescription_DispenseCondition::model()->findByAttributes(ar
 <?php
 // Event actions
 $elementEditable = $Element->isEditableByMedication();
-if (($Element->draft) && (!$elementEditable)) {
+$can_finalize = $this->checkAccess('OprnCreatePrescription');
+if (($Element->draft) && (!$elementEditable) && $can_finalize) {
     $this->event_actions[] = EventAction::button(
         'Save as final',
         'save',
@@ -39,15 +41,15 @@ if (($Element->draft) && (!$elementEditable)) {
 }
 
 if ($this->checkPrintAccess()) {
-        if (!$Element->draft || $this->checkEditAccess()) {
-            foreach ($Element->items as $item) {
-                // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
-                if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
-                    $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
-                    break;
-                }
+    if (!$Element->draft || $this->checkEditAccess()) {
+        foreach ($Element->items as $item) {
+            // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
+            if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
+                $this->event_actions[] = EventAction::button("Print $form_format", 'print_' . strtolower($form_format));
+                break;
             }
         }
+    }
     if (!$Element->draft || $this->checkEditAccess()) {
         $this->event_actions[] = EventAction::printButton();
     }
@@ -55,41 +57,28 @@ if ($this->checkPrintAccess()) {
 ?>
 
 <?php $this->renderPartial('//base/_messages'); ?>
-<?php if ($this->event->delete_pending) { ?>
-    <div class="alert-box alert with-icon">
-        This event is pending deletion and has been locked.
-    </div>
-<?php } elseif (($Element->draft) && (!$elementEditable)) { ?>
-    <div class="alert-box alert with-icon">
-        This prescription was created from Medication Management in an Examination event. To make changes, please edit the original Examination
-    </div>
-<?php } elseif ($Element->draft) { ?>
-    <div class="alert-box alert with-icon">
-        This prescription is a draft and can still be edited
-    </div>
-<?php } ?>
 
-    <?php $this->renderOpenElements($this->action->id, null, array('form_setting' => $form_format)); ?>
+<?php $this->renderOpenElements($this->action->id, null, array('form_setting' => $form_format)); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
 
 <?php
-if (isset(Yii::app()->session['print_prescription'])) {?>
+if (isset(Yii::app()->session['print_prescription'])) { ?>
     <?php unset(Yii::app()->session['print_prescription']); ?>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             do_print_prescription();
         });
     </script>
-        <?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
-            ?>
+<?php } elseif (isset(Yii::app()->session['print_prescription_fp10']) || isset(Yii::app()->session['print_prescription_wp10'])) {
+?>
     <script>
         $(document).ready(function() {
             do_print_fpTen('<?= isset(Yii::app()->session['print_prescription_fp10']) ? 'FP10' : 'WP10' ?>');
         });
-            <?php
-            unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']); ?>
+        <?php
+        unset(Yii::app()->session['print_prescription_fp10'], Yii::app()->session['print_prescription_wp10']); ?>
     </script>
-        <?php }?>
+<?php } ?>
 
 <?php $this->renderPartial('//default/delete'); ?>
 <?php $this->endContent(); ?>
