@@ -33,5 +33,4 @@ class m190510_151314_event_subtype_items_and_icons extends OEMigration
         $this->dropOETable('event_subtype', true);
         $this->dropOETable('event_subtype_item', true);
     }
-
 }

@@ -132,7 +132,7 @@ $api = Yii::app()->moduleAPI->get('OphGeneric');
 
 
 <script type="text/javascript">
-    baseUrl = "<?=\Yii::app()->getBaseUrl(true)?>";
+    baseUrl = "<?=\rtrim(Yii::app()->createAbsoluteUrl('site/index'), '\\/')?>";
 
     $('#assesment-selector').on('change', function () {
         $('.assessment').hide();

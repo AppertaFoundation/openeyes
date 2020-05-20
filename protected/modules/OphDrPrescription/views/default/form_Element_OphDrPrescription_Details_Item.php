@@ -40,7 +40,7 @@ $dispense_condition_options = array(
             <i class="oe-i warning small pad js-has-tooltip"
                data-tooltip-content="Allergic to <?= implode(',', $patient->getPatientDrugAllergy($item->medication_id)) ?>"></i>
         <?php endif; ?>
-        <span class='js-medication-display'><?= $item->medication->preferred_term; ?></span>
+        <span class='js-medication-display'><?= $item->getMedicationDisplay(); ?></span>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
         <?php if ($item->id) { ?>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][id]"
@@ -107,7 +107,10 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][route_id]',
             $item->route_id,
             CHtml::listData(
-                MedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
+                MedicationRoute::model()->activeOrPk([$item->route_id])->findAll([
+                    'condition' => 'source_type =:source_type',
+                    'params' => [':source_type' => 'DM+D'],
+                    'order' => "term ASC"]),
                 'id',
                 'term'
             ),

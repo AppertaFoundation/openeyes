@@ -95,7 +95,7 @@ class SiteController extends BaseController
                 $error_code = (int) $error['code'];
                 /*
                 if ($error_code == 403) {
-                    $this->redirect(Yii::app()->baseUrl.'/');
+                    $this->redirect(Yii::app()->createURL('site/index'));
                     Yii::app()->exit();
                 }
                 */

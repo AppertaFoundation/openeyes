@@ -181,7 +181,7 @@ class DefaultController extends OphTrOperationbookingEventController
      */
     public function actionCreate(){
         $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
-        $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
+        $create_examination_url = Yii::app()->createAbsoluteUrl('site/index').'OphCiExamination/Default/create?patient_id=' . $this->patient->id;
 
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;

@@ -58,7 +58,8 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id, duration_id', 'required'),
+            array('duration_id', 'validateDuration')
         ));
     }
 
@@ -131,7 +132,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
+                    $this->addError("taper_{$i}_{$fld}", 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
                 }
             }
         }
@@ -157,7 +158,10 @@ class OphDrPrescription_Item extends EventMedicationUse
                 if (in_array($taper->duration->name, array('Other', 'Ongoing'))) {
                     return null;
                 }
-                $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+
+                if ($taper->duration->name !== 'Once') {
+                    $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+                }
             }
         }
         return $end_date;

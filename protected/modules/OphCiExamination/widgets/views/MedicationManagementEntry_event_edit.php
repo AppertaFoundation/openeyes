@@ -223,18 +223,12 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <!-- </td> -->
         <td>
             <div>
-                <?php if ($prescribe_access) { ?>
-                    <label class="toggle-switch">
-                        <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
-                            echo "checked";
-                                     } ?> />
-                        <span class="toggle-btn js-btn-prescribe"></span>
-                    </label>
-                <?php } else { ?>
-                    <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                            data-tooltip-content="You do not have permissions"></i>
-                    <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
-                <?php } ?>
+                <label class="toggle-switch">
+                    <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
+                        echo "checked";
+                                 } ?> />
+                    <span class="toggle-btn js-btn-prescribe"></span>
+                </label>
             </div>
         </td>
         <td>
