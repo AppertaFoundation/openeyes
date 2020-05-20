@@ -590,5 +590,3 @@ class IndexSearch extends BaseCWidget
     }
 //End of Format library
 }
-
-

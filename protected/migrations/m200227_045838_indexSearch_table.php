@@ -24,7 +24,7 @@ class m200227_045838_indexSearch_table extends OEMigration
             'goto_doodle_class_name' => 'varchar(256)',
             'goto_property' => 'varchar(256)',
             'warning_note' => 'varchar(256)'
-    ));
+        ));
         $this->addForeignKey('event_type_id_indexsearch_fk', 'index_search', 'event_type_id', 'event_type', 'id');
         $this->addForeignKey('parent_id_fk', 'index_search', 'parent', 'index_search', 'id');
 
@@ -6601,5 +6601,4 @@ class m200227_045838_indexSearch_table extends OEMigration
         $this->dropForeignKey('parent_id_fk', 'index_search');
         $this->dropTable('index_search');
     }
-
 }
