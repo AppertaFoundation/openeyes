@@ -45,7 +45,7 @@ if (@$disabled) {
                 'i' => $i,
             ));
         } else {
-            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
+            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, array_merge($html_options, ['class' => $input_class]));
         }?>
             <?php if (isset($errors[$i])) { ?>
                 <span class="error">
