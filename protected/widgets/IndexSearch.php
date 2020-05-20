@@ -43,7 +43,7 @@ class IndexSearch extends BaseCWidget
         $cmdEventID = $this->getDb()->createCommand('SELECT id FROM event_type WHERE name=:eventname ');
         $cmdEventID->bindValue(':eventname', $event);
         $event_id = $cmdEventID->queryScalar();
-        $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search WHERE event_type=:eventtype AND parent IS NULL');
+        $cmd = $this->getDb()->createCommand('SELECT id, parent, primary_term, secondary_term_list, description, general_note, open_element_class_name, goto_id, goto_tag, goto_text, img_url, goto_subcontainer_class, goto_doodle_class_name, goto_property, warning_note FROM index_search WHERE event_type_id=:eventtype AND parent IS NULL');
         $cmd->bindValue(':eventtype', $event_id);
         $index_list = $cmd->queryAll();
         $this->searchable_terms["$event"] = [];
