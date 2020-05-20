@@ -228,6 +228,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
         let prescribed_medications = [];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
         let prescription_event_exists = false;
+        let prescription_is_final = <?= CJavaScript::encode($element->prescription && $element->prescription->draft === '0') ?>;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -241,7 +242,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             }
         });
 
-        if (prescription_event_exists) {
+        if (prescription_event_exists && prescription_is_final) {
             let $save_button = $('#et_save');
             $save_button.before("<button class='button header-tab green' id='et_save_check_prescription_reason'>Save</button>");
             $save_button.hide();
