@@ -109,8 +109,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return Disorder::model()->findAll(array(
             'condition' => 'specialty_id is null',
-            'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
-            'order' => 'term',
+            'join' => 'JOIN common_systemic_disorder csd ON csd.disorder_id = t.id',
+            'order' => 'csd.display_order',
         ));
     }
 
