@@ -15,7 +15,7 @@ class LogoHelper
      *
      * @return mixed
      */
-    public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id=null)
+    public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id = null)
     {
         if(!isset($site_id)){
             $site_id = Yii::app()->session['selected_site_id'];
@@ -30,7 +30,7 @@ class LogoHelper
         );
     }
     
-    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id=null)
+    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id = null)
     {
         // default logo
         $default_logo_id = 1;
@@ -39,7 +39,6 @@ class LogoHelper
             if($site_id){
                 $site = Site::model()->findByPk($site_id);
                 $institution = $site->institution;
-
             }
             if(isset($site->logo_id)){
                 // get logos for site
