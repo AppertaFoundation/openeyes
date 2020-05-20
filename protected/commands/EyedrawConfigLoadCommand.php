@@ -210,7 +210,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
         ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
         ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
-        ->query();
+        ->execute();
     }
 
     /**
