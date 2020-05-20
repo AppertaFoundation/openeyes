@@ -80,7 +80,7 @@ class LogoHelper
                 // Format the image SRC:  data:{mime};base64,{data};
                 $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
             }
-        } else{        
+        } else {        
             if($logo_id) {
                 $options = array('id' => $logo_id);
             }
