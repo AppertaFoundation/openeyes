@@ -339,7 +339,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
     {
         $output = $this->description() . "\n\n";
 
-        if ($this->summary) {
+        if (!$this->summary) {
             $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no';
 
             if ($this->pre_va) {
