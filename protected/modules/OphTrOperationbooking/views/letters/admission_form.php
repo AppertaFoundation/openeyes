@@ -18,11 +18,11 @@
 ?>
 <div class="booking-admission-form">
 <?php
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 
 ?>
     <div class="banner clearfix">
-        <?= $logoHelper->render() ?>
+        <?= $logo_helper->render() ?>
     
     </div>
     <h1>Admission Form</h1>

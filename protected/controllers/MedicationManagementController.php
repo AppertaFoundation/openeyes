@@ -48,7 +48,6 @@ class MedicationManagementController extends BaseController
         } else {
             throw new \CHttpException(404, 'Could not find medication set.');
         }
-
     }
 
     private function extractEntryFromSet($set_item, $allergy_ids)

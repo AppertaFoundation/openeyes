@@ -244,7 +244,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $command = null;
             $ref_medication_id = null;
         }
-        
     }
 
     public function down()
