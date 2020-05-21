@@ -226,5 +226,9 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             $('#add-followup-btn'),
             $('#add-to-follow-up').find('.close-icon-btn')
         );
+
+        if ($('#div_OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_patientticket').length) {
+            $('#followup-outcome-options li[data-patient-ticket="1"]').hide();
+        }
     });
 </script>

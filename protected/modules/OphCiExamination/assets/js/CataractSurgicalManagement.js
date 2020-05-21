@@ -71,7 +71,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             case 0:
                 return [true, {}];
             case 1:
-                if (!('refractive_myopic' in processedSelections)) {
+                if (!('refractive_myopia' in processedSelections)) {
                     return [false, {'error': 'You must select a refractive target'}];
                 }
                 return [true, {}];
@@ -110,7 +110,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     processedSelections[selectedItem['type']] = selectedItem['addition'];
                     break;
                 case 'refractive_emmetropia':
-                case 'refractive_myopic':
+                case 'refractive_myopia':
                     processedSelections[selectedItem['type']] = selectedItem['value'];
                     break;
                 case 'primary_reason':
@@ -138,7 +138,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 new OpenEyes.UI.AdderDialog.ItemSet(this.options[side + 'Discussed'], this.options[side + 'DiscussedOptions']),
                 new OpenEyes.UI.AdderDialog.ItemSet(this.options[side + 'RefractiveCategories'], this.options[side + 'RefractiveCategoriesOptions']),
                 new OpenEyes.UI.AdderDialog.ItemSet(this.options[side + 'RefractiveEmmetropia'], this.options[side + 'RefractiveEmmetropiaOptions']),
-                new OpenEyes.UI.AdderDialog.ItemSet(this.options[side + 'RefractiveMyopic'], this.options[side + 'RefractiveMyopicOptions']),
+                new OpenEyes.UI.AdderDialog.ItemSet(this.options[side + 'RefractiveMyopia'], this.options[side + 'RefractiveMyopiaOptions']),
                 new OpenEyes.UI.AdderDialog.ItemSet([], this.options[side + 'RefractiveTargetOptions']),
             ],
             onReturn: (adderDialog, selectedItems, selectedAdditions) => {
@@ -170,7 +170,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                             refractiveTarget = refractiveTargetValue + 'D';
                             break;
                         case 1:
-                            refractiveTargetValue = processedSelections['refractive_myopic'];
+                            refractiveTargetValue = processedSelections['refractive_myopia'];
                             refractiveTarget = refractiveTargetValue + 'D';
                             break;
                         case 2:
@@ -226,9 +226,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                             break;
                         case '1':
                             let value = refractiveTargetLabel.replace('D','');
-                            let $refractiveValue =  $adderObject.find("[data-type='refractive_myopic'][data-value='"+value+"']");
+                            let $refractiveValue =  $adderObject.find("[data-type='refractive_myopia'][data-value='"+value+"']");
                             if(!$refractiveValue.length) {
-                                $refractiveValue =   $adderObject.find("[data-type='refractive_myopic'][data-value='"+sign+digit1+decimal+"']");
+                                $refractiveValue =   $adderObject.find("[data-type='refractive_myopia'][data-value='"+sign+digit1+decimal+"']");
                             }
                             $refractiveValue.addClass('selected');
                             break;
