@@ -30,7 +30,7 @@
  *
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
- * @property CommonSystemicDisorder[] $commonSystemicDisorders
+ * @property CommonSystemicDisorder[] $commonSystemicDisorder
  * @property Specialty $specialty
  */
 class Disorder extends BaseActiveRecordVersioned
