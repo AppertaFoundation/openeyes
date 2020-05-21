@@ -23,7 +23,7 @@
             echo $element->status;
         } ?>
 
-            <?php if ($element->status && $element->status->followup) { ?>
+            <?php if ($element->role && $element->status && $element->status->followup) { ?>
                 <?php if ($element->status->name !== 'Follow-up') :
                     ?>in<?php
                 endif; ?>
@@ -33,6 +33,8 @@
                 <?php if ($element->role_comments) { ?>
                   (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
                 <?php } ?>
+            <?php } else if (!$element->role && $element->status && $element->status->followup) { ?>
+               (Follow up requires updating)
             <?php } ?>
             <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                 if ($element->status && $element->status->patientticket &&
