@@ -3,7 +3,9 @@
 <div class="mdl-layout__header-row">
     <span class="mdl-layout-title">
         <img src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/OpenEyes_logo_transparent.png')?>" alt="OpenEyes logo" />
-        Cataract WHO summary
+        <?php $firm = \Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty = isset($firm) ? $firm->serviceSubspecialtyAssignment->subspecialty : null; ?>
+        <?= isset($subspecialty) ? $subspecialty->short_name : "Cataract"?> WHO summary
     </span>
     <div class="mdl-layout-spacer"></div>
     <div>
