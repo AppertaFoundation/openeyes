@@ -68,10 +68,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     ClinicOutcomeController.prototype.validateInputs = function ($selected_status, $selected_period, $selected_role, selected_quantity) {
+        let alert_message = '';
+        let validation_passed = true;
+        if(!$selected_status.length) {
+            alert_message = "Please select a status";
+            validation_passed = false;
+        }
         if ($selected_status.data('followup') && (!$selected_period.length || !$selected_role.length || typeof selected_quantity === "undefined")) {
+           alert_message = "Please select a value for quantity, period and role.";
+            validation_passed = false;
+        }
+
+        if(!validation_passed) {
             $('#add-to-follow-up').show();
             new OpenEyes.UI.Dialog.Alert({
-                content: "Please select a value for quantity, period and role."
+                content: alert_message
             }).open();
             return false;
         }
