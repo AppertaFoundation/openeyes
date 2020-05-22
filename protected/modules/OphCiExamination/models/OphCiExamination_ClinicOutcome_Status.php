@@ -30,6 +30,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 {
+    private $original_followup_value;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -65,11 +67,28 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('name, display_order, episode_status_id', 'required'),
-            array('subspecialties', 'safe'),
-            array('id, name, display_order', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['name, display_order, episode_status_id', 'required'],
+            ['followup', 'lockFollowupIfInUse'],
+            ['subspecialties', 'safe'],
+            ['id, name, display_order', 'safe', 'on' => 'search'],
+        ];
+    }
+
+    public function lockFollowupIfInUse($attribute, $params)
+    {
+        if ((bool)$this->followup !== (bool)$this->original_followup_value) {
+            $noOfStatusUsecases = Element_OphCiExamination_ClinicOutcome::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
+            if ($noOfStatusUsecases > 0) {
+                $this->addError('followup', 'This Clinical Outcome Status is in use and so Follow Up Options cannot be edited');
+            }
+        }
+    }
+
+    public function afterFind()
+    {
+        $this->original_followup_value = $this->followup;
+        return parent::afterFind();
     }
 
     /**
