@@ -1973,7 +1973,7 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
 
   var label_str = selected_outcome.data('str');
 
-  if (is_follow_up && role) {
+  if (is_follow_up) {
     label_str += ' in ' + quantity;
     label_str += ' ' + selected_period.data('str');
     label_str += ' with ' + selected_role.data('str');
@@ -1981,8 +1981,6 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
     if (role_comments) {
       label_str += ' (' + role_comments + ')';
     }
-  } else if (is_follow_up && !role) {
-    label_str += ' <b>(Follow up requires updating)</b>';
   }
 
   var dummy_text = $('#follow-up-dummy-input');
