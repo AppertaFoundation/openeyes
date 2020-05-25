@@ -28,7 +28,7 @@ services:
       - "--disable-log-bin"
 
   phpunit:
-    image: appertaopeneyes/web:php7
+    image: ${OEWEB_IMAGE_NAME:-appertaopeneyes/web:php7}
     environment:
       OE_MODE: "TEST"
       TESTS_TO_RUN: "PHPUNIT"
