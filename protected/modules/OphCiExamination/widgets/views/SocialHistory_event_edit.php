@@ -68,7 +68,7 @@ $nothing_selected_text = "Nothing selected.";
       </td>
       <td>
           <div id="textField_driving_statuses" class="cols-8">
-              <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
+              <?php if (!isset($element['driving_statuses']) || count($element['driving_statuses']) <= 0) {
                     echo $nothing_selected_text;
               } else {
                   $driving_statuses = array_map(function ($driving_status) {
@@ -76,9 +76,12 @@ $nothing_selected_text = "Nothing selected.";
                   },
                       is_array($element->driving_statuses) ? $element->driving_statuses : []);
                     echo implode(', ', $driving_statuses);
+                    $driving_status_ids = (isset($_POST[$model_name]['driving_statuses']) ? $_POST[$model_name]['driving_statuses'] : ($element->driving_statuses ? array_column($element->driving_statuses, 'id') : null));
               } ?>
           </div>
-
+          <?php if (isset($driving_status_ids)) { ?>
+            <input type="hidden" class="js-driving-status-item" name="<?= $model_name ?>[driving_statuses][]" value="<?= implode(" ,", $driving_status_ids) ?>">
+          <?php } ?>
       </td>
     </tr>
     <tr>
