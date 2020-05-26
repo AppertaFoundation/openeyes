@@ -237,6 +237,8 @@ class ProfileController extends BaseController
                     throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
 
+                $user->password_hashed=true;
+
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
