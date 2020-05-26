@@ -50,7 +50,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       e.preventDefault();
       let $row = $(e.target).parents('tr');
       let disorder_id = $row.find('input[name$="[disorder_id]"]').val();
-      this.$popup.find('li[data-id=' + disorder_id + ']').removeClass('js-already-used');
+      controller.$popup.find('li[data-id=' + disorder_id + ']').removeClass('js-already-used');
       $row.remove();
       $(":input[name^='diabetic_diagnoses']").trigger('change');
     });
