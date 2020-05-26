@@ -66,12 +66,12 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
-            ->join('drug_frequency df','df.id=i.frequency_id')
-            ->join('drug_duration duration','duration.id=i.duration_id')
-            ->join('drug_route route','route.id=i.route_id')
-            ->join('ophdrprescription_dispense_condition dc','dc.id=i.dispense_condition_id')
-            ->join('ophdrprescription_dispense_location dl','dl.id=i.dispense_location_id')
-            ->join('drug_route_option option','option.id=i.route_option_id')
+            ->join('drug_frequency df', 'df.id=i.frequency_id')
+            ->join('drug_duration duration', 'duration.id=i.duration_id')
+            ->join('drug_route route', 'route.id=i.route_id')
+            ->join('ophdrprescription_dispense_condition dc', 'dc.id=i.dispense_condition_id')
+            ->join('ophdrprescription_dispense_location dl', 'dl.id=i.dispense_location_id')
+            ->join('drug_route_option option', 'option.id=i.route_option_id')
             ->where('1=1');
 
         if ($this->drugs) {
