@@ -55,7 +55,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         $command = Yii::app()->db->createCommand()
             ->select(
                 'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = '.$tag_id.'),1,0) AS preservative_free,
-                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose'
+                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose, df.long_name'
             )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
@@ -66,6 +66,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
+            ->join('drug_frequency df','df.id=i.frequency_id')
             ->where('1=1');
 
         if ($this->drugs) {
