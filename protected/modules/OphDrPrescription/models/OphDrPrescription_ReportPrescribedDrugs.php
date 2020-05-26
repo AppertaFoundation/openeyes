@@ -71,7 +71,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('drug_route route','route.id=i.route_id')
             ->join('ophdrprescription_dispense_condition dc','dc.id=i.dispense_condition_id')
             ->join('ophdrprescription_dispense_location dl','dl.id=i.dispense_location_id')
-            ->join('drug_route_option option','option.id=i.drug_route_option_id')
+            ->join('drug_route_option option','option.id=i.route_option_id')
             ->where('1=1');
 
         if ($this->drugs) {
@@ -99,13 +99,14 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
     public function toCSV()
     {
-        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
+        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
         foreach ($this->items as $item) {
             $drug = new Drug();
             $drug->attributes = $item;
             $output .= $item['hos_num'].', '.$item['last_name'].', '.$item['first_name'].', '.($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown').', '.$item['postcode'].', ';
             $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$drug->tallmanLabel.', ';
-            $output .=  $item['dose'].', '.$item['user_first_name'].' '.$item['user_last_name'].', '.$item['role'].', '.(date('j M Y', strtotime($item['event_date'])).' '.(substr($item['event_date'], 11, 5))) . ', ';
+            $output .=  $item['dose'].', '.$item['frequency'].', '.$item['duration'].' ,'.$item['route'].' ,'.$item['dispense_condition'].' ,'.$item['dispense_location'].' ,'.$item['laterality'].' ,';
+            $output .=   $item['user_first_name'].' '.$item['user_last_name'].', '.$item['role'].', '.(date('j M Y', strtotime($item['event_date'])).' '.(substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
             $output .= "\n";
         }
