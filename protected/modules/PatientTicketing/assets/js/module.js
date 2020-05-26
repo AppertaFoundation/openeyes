@@ -379,7 +379,7 @@
 
       if (subspecialty_id === '') {
         $('#firm-id').find('options').remove();
-        $('#firm-id').append($('<option>').text("All Contexts"));
+        $('#firm-id').append($('<option value="All">').text("All Contexts"));
         $('#firm-id').attr('disabled', 'disabled');
       } else {
         $.ajax({
