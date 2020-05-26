@@ -30,7 +30,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 {
-    private $original_followup_value;
+    private $original_attributes;
 
     /**
      * Returns the static model of the specified AR class.
@@ -69,26 +69,55 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     {
         return [
             ['name, display_order, episode_status_id', 'required'],
-            ['followup', 'lockFollowupIfInUse'],
+            ['followup, episode_status_id, patientticket', 'lockIfInUse'],
             ['subspecialties', 'safe'],
             ['id, name, display_order', 'safe', 'on' => 'search'],
         ];
     }
 
-    public function lockFollowupIfInUse($attribute, $params)
+    public function lockIfInUse($attribute, $params)
     {
-        if ((bool)$this->followup !== (bool)$this->original_followup_value) {
-            $noOfStatusUsecases = Element_OphCiExamination_ClinicOutcome::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
-            if ($noOfStatusUsecases > 0) {
-                $this->addError('followup', 'This Clinical Outcome Status is in use and so Follow Up Options cannot be edited');
+        if ($this->$attribute != (int)$this->original_attributes[$attribute]) {
+            if ($this->inUse()) {
+                $this->addError($attribute, "This Clinical Outcome Status is in use and so $attribute cannot be edited");
             }
         }
     }
 
+    public function lockSubspecialtiesIfLessPermissiveInUse($attribute, $params)
+    {
+        if ($this->inUse()) {
+            if (empty($this->original_attributes['subspecialties']) && !empty($this->subspecialtyIds)) {
+                $this->addError('subspecialties', "This Clinssical Outcome Status is in use and so subspecialties cannot be removed");
+                return;
+            }
+
+            if (array_diff($this->original_attributes['subspecialties'], $this->subspecialtyIds)) {
+                var_dump($this->original_attributes['subspecialties']);var_dump( $this->name); die();
+                $this->addError('subspecialties', "This Clinical Outcome Status is in use and so subspecialties cannot be removed");
+            }
+        }
+    }
+
+    public function inUse()
+    {
+        $noOfStatusUsecases = Element_OphCiExamination_ClinicOutcome::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
+        return $noOfStatusUsecases > 0;
+    }
+
     public function afterFind()
     {
-        $this->original_followup_value = $this->followup;
+        $this->original_attributes = $this->attributes;
+        $this->original_attributes['subspecialties'] = $this->subspecialtyIds;
         return parent::afterFind();
+    }
+
+    protected function getsubspecialtyIds()
+    {
+        return array_map(
+            function($subspecialty) { return $subspecialty->id; },
+            $this->subspecialties ? $this->subspecialties : []
+        );
     }
 
     /**
