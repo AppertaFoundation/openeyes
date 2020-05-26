@@ -589,10 +589,10 @@ class AnalyticsController extends BaseController
         if (isset($this->filters['age_max']) && $return_value) {
             $return_value = ((int)$age <= (int)$this->filters['age_max']);
         }
-        if ($this->filters['date_to'] && $return_value) {
+        if (isset($this->filters['date_to']) && $return_value) {
             $return_value = ($date < $this->filters['date_to']);
         }
-        if ($this->filters['date_from'] && $return_value) {
+        if (isset($this->filters['date_from']) && $return_value) {
             $return_value = ($date > $this->filters['date_from']);
         }
         return $return_value;
