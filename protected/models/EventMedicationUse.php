@@ -516,16 +516,16 @@ class EventMedicationUse extends BaseElement
             $data['Dosage'] = $this->getDoseAndFrequency();
         }
 
+        if ($this->route_id) {
+            $data['Route'] = $this->route->term;
+        }
+
         $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
         if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
         if ($this->stop_reason_id) {
             $data['Stop reason'] = $this->stopReason->name;
-        }
-
-        if ($this->route_id) {
-            $data['Route'] = $this->route->term;
         }
 
         if ($this->comments && !empty(trim($this->comments))) {
