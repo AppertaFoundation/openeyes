@@ -342,13 +342,14 @@ var docman = (function() {
                     $('#dm_table .docman_loader').show();
                 },
                 'success': function (resp) {
-
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
-										$('#Document_Target_Address_' + rowindex).trigger('autosize');
+					$('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+
+                    updateReData(resp.contact_type);
 
                     $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
