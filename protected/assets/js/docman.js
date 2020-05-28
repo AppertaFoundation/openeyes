@@ -327,9 +327,9 @@ var docman = (function() {
             return is_added;
         },
 
-        updateRow: function(rowindex, contact_id, OE_patient_id, document_set_id_param) {
+        updateRow: function (rowindex, contact_id, OE_patient_id, document_set_id_param) {
 
-            if(contact_id === undefined){
+            if (contact_id === undefined) {
                 return;
             }
 
@@ -338,29 +338,28 @@ var docman = (function() {
                 'url': '/' + moduleName + '/default/getAddress?contact=' + contact_id + '&patient_id=' + OE_patient_id + document_set_id_param,
                 context: this,
                 dataType: 'json',
-                'beforeSend': function(){
+                'beforeSend': function () {
                     $('#dm_table .docman_loader').show();
                 },
                 'success': function (resp) {
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
-					$('#Document_Target_Address_' + rowindex).trigger('autosize');
+                    $('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
-
                     updateReData(resp.contact_type);
 
                     $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
                     //check if the contact_type is disabled - if it is we have to insert a hidden field
-                    if( $('#DocumentTarget_' + rowindex + '_attributes_contact_type').is(':disabled') ){
+                    if ($('#DocumentTarget_' + rowindex + '_attributes_contact_type').is(':disabled')) {
                         $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase());
                     }
 
-                    if(rowindex === 0){
-                        $('#ElementLetter_use_nickname').prop('checked','');
-                        $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
+                    if (rowindex === 0) {
+                        $('#ElementLetter_use_nickname').prop('checked', '');
+                        $("#ElementLetter_introduction").val(resp.text_ElementLetter_introduction);
                     }
                     $('#docman_recipient_' + rowindex).val('');
                     $('#dm_table .docman_loader').hide();

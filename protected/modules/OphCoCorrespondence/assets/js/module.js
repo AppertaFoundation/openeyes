@@ -813,24 +813,24 @@ function updateReData(recipient) {
 function correspondence_load_data(data) {
 	for (var i in data) {
 		if (m = i.match(/^text_(.*)$/)) {
-			if (m[1] == 'ElementLetter_body'){
-        element_letter_controller.setContent(data[i]);
+			if (m[1] == 'ElementLetter_body') {
+				element_letter_controller.setContent(data[i]);
 			} else {
-        $('#'+m[1]).val(data[i]);
-      }
+				$('#' + m[1]).val(data[i]);
+			}
 		} else if (m = i.match(/^sel_(.*)$/)) {
 			if (m[1] == 'address_target') {
 				updateReData(data[i]);
 			}
-			$('#'+m[1]).val(data[i]);
+			$('#' + m[1]).val(data[i]);
 		} else if (m = i.match(/^check_(.*)$/)) {
-			$('input[id="'+m[1]+'"][type="checkbox"]').attr('checked',(parseInt(data[i]) == 1 ? true : false));
+			$('input[id="' + m[1] + '"][type="checkbox"]').attr('checked', (parseInt(data[i]) == 1 ? true : false));
 		} else if (m = i.match(/^textappend_(.*)$/)) {
-			$('#'+m[1]).val($('#'+m[1]).val()+data[i]);
+			$('#' + m[1]).val($('#' + m[1]).val() + data[i]);
 		} else if (m = i.match(/^hidden_(.*)$/)) {
-			$('#'+m[1]).val(data[i]);
+			$('#' + m[1]).val(data[i]);
 		} else if (m = i.match(/^elementappend_(.*)$/)) {
-			$('#'+m[1]).append(data[i]);
+			$('#' + m[1]).append(data[i]);
 		} else if (i == 'alert') {
 			new OpenEyes.UI.Dialog.Alert({
 				content: data[i]
