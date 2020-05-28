@@ -46,7 +46,7 @@
         </div>
     </td>
     <td>
-        <div class="js-idg-duration-dispense ">
+        <div>
             <?php echo $entry->duration_id ? $entry->medicationDuration->name . "<i class='oe-i d-slash small-icon no-click'></i>" : '' ?>
             <?php if ($entry->dispense_condition_id) {
                 if ($entry->dispense_condition->name === 'Print to {form_type}') {
