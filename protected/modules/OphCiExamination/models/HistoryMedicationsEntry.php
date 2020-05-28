@@ -335,14 +335,24 @@ class HistoryMedicationsEntry extends \BaseElement
     }
 
     /**
+     * @param include_route if true will include laterality and route in output (e.g., Right Eye)
      * @return string
      */
-    public function getAdministrationDisplay()
+    public function getAdministrationDisplay(bool $include_route = true)
     {
+        $parts = array('dose', 'units');
+        
+        if ($include_route) {
+            array_push($parts, 'route', 'option');
+        }
+
+        array_push($parts, 'frequency');
+
         $res = array();
-        foreach (array('dose', 'units', 'option', 'route', 'frequency') as $k) {
+
+        foreach ($parts as $k) {
             if ($this->$k) {
-                $res[] = $this->$k;
+                    $res[] = $this->$k;
             }
         }
         return implode(' ', $res);

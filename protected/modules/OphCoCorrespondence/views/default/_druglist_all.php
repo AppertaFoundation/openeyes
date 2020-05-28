@@ -25,7 +25,7 @@ $lists = array(
 ?>
 <table class="standard borders <?php echo isset($table_class) ? $table_class : ""?>">
     <colgroup>
-        <col class="cols-5">
+        <col class="cols-6">
     </colgroup>
     <thead>
     <tr>
@@ -34,13 +34,14 @@ $lists = array(
         <th>Eye</th>
         <th>Frequency</th>
         <th>Until</th>
+        <th>Comments</th>
     </tr>
     </thead>
     <?php foreach ($lists as $list => $header) : ?>
         <?php if (!empty($$list)) : ?>
         <tbody>
             <tr>
-                <th colspan="5"><?=$header?></th>
+                <th colspan="6"><b><?=$header?></b></th>
             </tr>
             <?php foreach ($$list as $entry) : ?>
                 <?php /** @var \EventMedicationUse $entry */ ?>
@@ -49,11 +50,11 @@ $lists = array(
                     <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                     <td>
                         <?php
-                        if ($laterality = $entry->getLateralityDisplay()) {
-                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        if ($laterality = $entry->getLateralityDisplay(true)) {
+                            echo $laterality;
                         }
                         else {
-                            echo "N/A";
+                            echo "n/a";
                         }
                         ?>
                     </td>
@@ -61,7 +62,24 @@ $lists = array(
                         <?=$entry->frequency ? $entry->frequency : '';?>
                     </td>
                     <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                    <td><?=!empty($entry->comments)?$entry->comments:'<em>No comments</em>'?></td>
                 </tr>
+                <?php if ($entry->taper_support) : ?>
+                    <?php foreach ($entry->tapers as $taper) : ?>
+                        <?php /** @var \OphDrPrescription_ItemTaper $taper */ ?>
+        <tr class="meds-taper col-gap">
+            <td><i class="oe-i child-arrow small no-click pad "></i><span class="fade"><em>then</em></span></td>
+            <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $entry->dose_unit_term) : $taper->dose ?>
+                </td>
+            <td class="nowrap">
+                <!-- no needed in taper -->
+            </td>
+            <td><?= $taper->frequency->term ?></td>
+            <td class="nowrap"></td>
+            <td class="nowrap"></td>
+        </tr>
+    <?php endforeach; ?>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
         <?php endif; ?>

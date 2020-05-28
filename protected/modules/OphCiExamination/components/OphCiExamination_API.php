@@ -2739,6 +2739,11 @@ class OphCiExamination_API extends \BaseAPI
                         } ?>
                         <th style="width: 30%;"><?= $refractive_target ?></th>
                     </tr>
+
+                    <tr>
+                        <th>Comments:</th>
+                        <th><?=!empty($element->{$side.'_notes'})?$element->{$side.'_notes'}:'No comments'?></th>
+                    </tr>
                 <?php } ?>
                 </tbody>
             </table>
@@ -3593,29 +3598,33 @@ class OphCiExamination_API extends \BaseAPI
                 <th>Eye</th>
                 <th>Frequency</th>
                 <th>Until</th>
+                <th>Comments</th>
             </tr>
             </thead>
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) { ?>
                     <?php
                     $tapers = [];
+                    $comments=null;
                     $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
                     if ($entry->prescription_item_id) {
                         $tapers = $entry->prescriptionItem->tapers;
                         $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
                         $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$entry->medicationDuration->name;
-                    } ?>
+                        $comments=$entry->prescriptionItem->prescription->comments;
+                    } else {
+                        $comments=$entry->comments;
+                    }
+                    ?>
                     <tr>
                     <td><?= $entry->getMedicationDisplay(true) ?></td>
                     <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '') ?></td>
                         <td>
-                            <?php
-                            $laterality = $entry->getLateralityDisplay();
-                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                            ?>
+                            <?=$entry->getLateralityDisplay(true)?>
                         </td>
                         <td><?= $entry->frequency ? $entry->frequency : ''; ?></td>
                         <td><?= $stop_display_date ?></td>
+                        <td><?= !empty($comments)?$comments:'No comments' ?></td>
                     </tr>
                     <?php if ($tapers) {
                         $taper_date = $stop_date;

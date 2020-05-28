@@ -110,7 +110,7 @@ $stop_fields_validation_error = array_intersect(
                 <div class="alternative-display inline">
                     <div class="alternative-display-element textual flex-meds-inputs" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <div class="textual-display hint">
-                            <?php $entry_text_display = $entry->getAdministrationDisplay();
+                            <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
                         <span class="tabspace"></span>

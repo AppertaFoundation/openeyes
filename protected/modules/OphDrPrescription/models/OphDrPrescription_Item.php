@@ -214,24 +214,26 @@ class OphDrPrescription_Item extends EventMedicationUse
         return $item_lines_used;
     }
 
-    public function getAdministrationDisplay()
+    public function getAdministrationDisplay(bool $include_route = false)
     {
-        $dose = (string)$this->dose;
-        $freq = (string)$this->frequency;
-        $route = (string)$this->route;
+        $parts = array('dose', 'dose_unit_term');
+        
+        if ($include_route) {
+            $parts += array('medicationLaterality', 'route');
+        }
 
-        if ($this->tapers) {
-            $last_taper = array_slice($this->tapers, -1)[0];
-            $last_dose = (string)$last_taper->dose;
-            if ($last_dose != $dose) {
-                $dose .= ' - ' . $last_dose;
-            }
-            $last_freq = (string)$last_taper->frequency;
-            if ($last_freq != $freq) {
-                $freq .= ' - ' . $last_freq;
+        $parts += array('frequency');
+
+        $res = array();
+
+        foreach ($parts as $k) {
+            if ($this->$k) {
+                if ($k !== "dose_unit_term" || $this->dose) {
+                    $res[] = $this->$k;
+                }
             }
         }
-        return $dose . ($this->laterality ? ' ' . $this->getLateralityDisplay() : '') . ' ' . $route . ' ' . $freq;
+        return implode(' ', $res);
     }
 
     /**
