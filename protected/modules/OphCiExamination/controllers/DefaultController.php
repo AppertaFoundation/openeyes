@@ -1517,6 +1517,25 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Unpacks any data that has been sent in JSON form.
+     *
+     * @param array $data
+     * @return array $data
+     */
+    protected function unpackJSONAttributes($data)
+    {
+        foreach ($data as $elementName => $elementData) {
+            if (is_array($elementData) && array_key_exists('JSON_string', $elementData)) {
+                $data[$elementName] = json_decode(
+                    str_replace("'", '"', $data[$elementName]['JSON_string']),
+                    true
+                );
+            }
+        }
+        return $data;
+    }
+
+    /**
      * custom validation for virtual clinic referral.
      *
      * this should hand off validation to a faked PatientTicket request via the API.
@@ -1527,6 +1546,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setAndValidateElementsFromData($data)
     {
+        $data = $this->unpackJSONAttributes($data);
         $errors = parent::setAndValidateElementsFromData($data);
 
         if (isset($data['OEModule_OphGeneric_models_Assessment'])) {

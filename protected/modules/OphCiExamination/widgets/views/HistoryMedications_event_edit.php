@@ -202,6 +202,7 @@ foreach ($element->entries as $entry) {
       </button>
     </div>
   </div>
+  <div id="hm-handler-1" class="js-save-handler-function" style="display:none;" /> 
     <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_entry_template' ?>">
         <?php
         $empty_entry = new EventMedicationUse();
@@ -234,6 +235,10 @@ foreach ($element->entries as $entry) {
     </script>
 </div>
 <script type="text/javascript">
+    let ElementFormJSONConverterHM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
+    $('#hm-handler-1').on('handle', function () {
+        ElementFormJSONConverterHM.convert('<?=$model_name . "_element"?>');
+    });
     let showStoppedMedications = <?= $stopped_entries_has_errors ? $stopped_entries_has_errors : 0?>;
 
     $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {
