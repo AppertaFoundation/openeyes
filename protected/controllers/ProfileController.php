@@ -282,6 +282,7 @@ class ProfileController extends BaseController
                         Yii::app()->user->id);
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
+                        $user->password_hashed=true;
                         if ($user->save()) {
                             echo true;
                         }
