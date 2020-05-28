@@ -61,6 +61,8 @@ class ProfileController extends BaseController
                         $user->{$field} = $_POST['User'][$field];
                     }
                 }
+                $user->password_hashed=true;
+
                 if (!$user->save()) {
                     $errors = $user->getErrors();
                 } else {
