@@ -74,7 +74,7 @@ class PatientTicketing_TicketService extends \services\ModelService
         if ($active) {
             $res = array();
             foreach ($tickets as $t) {
-                if(!$t->current_queue) {
+                if (!$t->current_queue) {
                     continue;
                 }
 
