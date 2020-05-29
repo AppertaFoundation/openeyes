@@ -47,20 +47,23 @@ foreach ($sections as $section => $methods) :
                     <?php if (!$header_rendered) :
                         $header_rendered = true;
                         ?>
-                            <thead>
-                                <tr>
-                                    <th>Drug</th>
-                                    <th>Dose/frequency/route</th>
-
-                                    <th>Side &emsp;&nbsp; Start / Stop dates</th>
-                                    <th>Duration/dispense/comments</th>
-                                    <th><i class="oe-i drug-rx small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Prescribe Medication"></i></th>
-                                    <th>
-                                        <!-- icons -->
-                                    </th>
-                                </tr>
-                            </thead>
+                        <thead>
+                    <?php else : ?>
+                        <thead style="display:none;" >
                     <?php endif; ?>
+                        <tr>
+                            <th>Drug</th>
+                            <th>Dose/frequency/route</th>
+
+                            <th>Side &emsp;&nbsp; Start / Stop dates</th>
+                            <th>Duration/dispense/comments</th>
+                            <th><i class="oe-i drug-rx small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Prescribe Medication"></i></th>
+                            <th>
+                                <!-- icons -->
+                            </th>
+                        </tr>
+                    </thead>
+                    
                         <tbody>
                         <?php
                         if (!empty($entries)) :

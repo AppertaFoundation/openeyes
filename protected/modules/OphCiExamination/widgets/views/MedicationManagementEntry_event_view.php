@@ -18,7 +18,7 @@
 ?>
 <?php /** @var EventMedicationUse $entry */ ?>
 
-<tr class="divider col-gap">
+<tr class="divider col-gap" data-key="<?= $row_count ?>">
     <td><?php if ($entry_icon) {
         ?><i class="oe-i <?= $entry_icon ?> small pad-right "></i><?php
         } ?><?php if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
