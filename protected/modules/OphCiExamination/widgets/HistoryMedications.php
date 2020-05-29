@@ -188,11 +188,10 @@ class HistoryMedications extends BaseMedicationWidget
 
     public function getMergedManagementEntries()
     {
-        if (empty($this->element->entries)) {
-            $this->setEntriesWithPreviousManagement();
-        }
+        $this->setElementFromDefaults();
 
         $this->element->assortEntries();
+
         return [
             'current' => array_merge($this->element->current_entries, $this->element->prescribed_entries),
             'stopped' => $this->element->closed_entries,
@@ -281,7 +280,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE))) {
+        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();

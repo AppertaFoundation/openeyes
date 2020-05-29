@@ -26,8 +26,9 @@ $systemic_filter = function ($med) {
     return $med->laterality === null;
 };
 
-$eye_filter = function ($med) {
-    return $med->laterality !== null;
+$eye_filter = function($e) {
+    /** @var EventMedicationUse $e */
+    return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
 $current_systemic_meds = array_filter($current, $systemic_filter);
