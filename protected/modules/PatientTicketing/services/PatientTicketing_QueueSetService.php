@@ -261,6 +261,10 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
         }, $q_rs);
 
         foreach ($tickets as $t) {
+            if(!isset($t->current_queue)) {
+               return false;
+            }
+
             if (in_array($t->current_queue->id, $q_ids)) {
                 return false;
             }
