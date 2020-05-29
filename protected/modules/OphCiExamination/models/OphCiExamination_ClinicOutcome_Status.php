@@ -84,21 +84,6 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         }
     }
 
-    public function lockSubspecialtiesIfLessPermissiveInUse($attribute, $params)
-    {
-        if ($this->inUse()) {
-            if (empty($this->original_attributes['subspecialties']) && !empty($this->subspecialtyIds)) {
-                $this->addError('subspecialties', "This Clinssical Outcome Status is in use and so subspecialties cannot be removed");
-                return;
-            }
-
-            if (array_diff($this->original_attributes['subspecialties'], $this->subspecialtyIds)) {
-                var_dump($this->original_attributes['subspecialties']);var_dump( $this->name); die();
-                $this->addError('subspecialties', "This Clinical Outcome Status is in use and so subspecialties cannot be removed");
-            }
-        }
-    }
-
     public function inUse()
     {
         $noOfStatusUsecases = Element_OphCiExamination_ClinicOutcome::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
@@ -108,16 +93,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
     public function afterFind()
     {
         $this->original_attributes = $this->attributes;
-        $this->original_attributes['subspecialties'] = $this->subspecialtyIds;
         return parent::afterFind();
-    }
-
-    protected function getsubspecialtyIds()
-    {
-        return array_map(
-            function($subspecialty) { return $subspecialty->id; },
-            $this->subspecialties ? $this->subspecialties : []
-        );
     }
 
     /**
