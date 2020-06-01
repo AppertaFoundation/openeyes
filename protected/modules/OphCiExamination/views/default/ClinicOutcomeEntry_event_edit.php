@@ -35,7 +35,9 @@ if (!isset($values)) {
 <tr class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
     data-status="<?= $values['status_id'] ?>">
     <td <?= $patient_ticket ? 'style="vertical-align:top"' : '' ?>>
-        <?= Chtml::activeHiddenField($entry, 'id'); ?>
+        <?php if($entry->id) { ?>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id?>" />
+        <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
         <?php if (!$patient_ticket) : ?>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
