@@ -47,7 +47,7 @@ $nothing_selected_text = "Nothing selected.";
                     false,
                     array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
                 );
-                ?>
+?>
                 <?= $form->textField(
                     $element,
                     'type_of_job',
@@ -61,7 +61,7 @@ $nothing_selected_text = "Nothing selected.";
                     null,
                     array('label' => 4, 'field' => 5)
                 );
-                ?>
+?>
             </td>
             <td>
                 <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
@@ -104,7 +104,7 @@ $nothing_selected_text = "Nothing selected.";
                     CHtml::listData($element->smoking_status_options, 'id', 'name'),
                     ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
                 );
-                ?>
+?>
             </td>
             <td>
                 <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
@@ -141,7 +141,7 @@ $nothing_selected_text = "Nothing selected.";
                         'hidden' => true
                     )
                 );
-                ?>
+?>
             </td>
             <td>
                 <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
@@ -156,7 +156,7 @@ $nothing_selected_text = "Nothing selected.";
                     CHtml::listData($element->carer_options, 'id', 'name'),
                     ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
                 );
-                ?>
+?>
             </td>
         </tr>
         <tr>
@@ -178,7 +178,7 @@ $nothing_selected_text = "Nothing selected.";
                 data-comment-button="#add-social-history-popup .js-add-comments"
                 style="display: <?php if (!$element->comments) {
                     echo 'none';
-                } ?>">
+                                } ?>">
            <textarea id="<?= $model_name ?>_comments"
                      name="<?= $model_name ?>[comments]"
                      class="js-comment-field cols-10"
@@ -196,7 +196,7 @@ $nothing_selected_text = "Nothing selected.";
                 data-comment-container="#<?= $model_name ?>_entry_table .js-comment-container"
                 style="visibility: <?php if ($element->comments) {
                     echo 'hidden';
-                } ?>">
+                                   } ?>">
             <i class="oe-i comments small-icon "></i>
         </button>
         <button class="button hint green js-add-select-search" id="add-social-history-btn" type="button">
@@ -223,7 +223,7 @@ $nothing_selected_text = "Nothing selected.";
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                             return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
-                        }, $element->occupation_options, [])
+                    }, $element->occupation_options, [])
                     ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -238,7 +238,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => in_array($item->id, $selected_driving_statuses),
                             ];
-                        }, $element->driving_statuses_options, [])
+                    }, $element->driving_statuses_options, [])
                     ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -248,7 +248,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->smoking_status_id === $item->id,
                             ];
-                        }, $element->smoking_status_options, [])
+                    }, $element->smoking_status_options, [])
                     ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -258,13 +258,13 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->accommodation_id === $item->id,
                             ];
-                        }, $element->accommodation_options, [])
+                    }, $element->accommodation_options, [])
                     ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                             return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
-                        }, $element->carer_options, [])
+                    }, $element->carer_options, [])
                     ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -274,7 +274,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->substance_misuse_id === $item->id,
                             ];
-                        }, $element->substance_misuse_options, [])
+                    }, $element->substance_misuse_options, [])
                     ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
