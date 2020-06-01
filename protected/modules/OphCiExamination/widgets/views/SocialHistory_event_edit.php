@@ -19,6 +19,14 @@
  * @var \OEModule\OphCiExamination\models\SocialHistory $element
  */
 $nothing_selected_text = "Nothing selected.";
+
+function getDrivingStatusIds($driving_statuses) {
+    $driving_statuses_ids = [];
+    foreach ($driving_statuses as $driving_status) {
+        $driving_statuses_ids[] = $driving_status->id;
+    }
+    return $driving_statuses_ids;
+}
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("SocialHistory.js") ?>"></script>
 <div class="element-fields flex-layout full-width">
@@ -76,7 +84,7 @@ $nothing_selected_text = "Nothing selected.";
                   },
                       is_array($element->driving_statuses) ? $element->driving_statuses : []);
                     echo implode(', ', $driving_statuses);
-                    $driving_status_ids = (isset($_POST[$model_name]['driving_statuses']) ? $_POST[$model_name]['driving_statuses'] : ($element->driving_statuses ? array_column($element->driving_statuses, 'id') : null));
+                    $driving_status_ids = (isset($_POST[$model_name]['driving_statuses']) ? $_POST[$model_name]['driving_statuses'] : ($element->driving_statuses ? getDrivingStatusIds($element->driving_statuses) : null));
               } ?>
           </div>
           <?php if (isset($driving_status_ids)) { ?>
