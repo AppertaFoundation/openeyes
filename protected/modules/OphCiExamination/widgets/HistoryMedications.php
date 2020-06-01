@@ -251,6 +251,11 @@ class HistoryMedications extends \BaseEventElementWidget
                         $end_date_including_tapers = $prescription_item_end_date;
                     }
                 }
+                if ($end_date_including_tapers && $end_date_including_tapers <= date("Y-m-d")) {
+                    $stopped[] = $entry;
+                } else {
+                    $current[] = $entry;
+                }
             }
             $sorter = function ($a, $b) {
                 return $a['start_date'] >= $b['start_date'] ? -1 : 1;
