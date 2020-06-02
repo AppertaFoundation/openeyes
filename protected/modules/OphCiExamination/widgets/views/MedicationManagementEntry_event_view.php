@@ -30,7 +30,7 @@
                                                                 echo ' (' . $entry->getRouteDisplay() . ')';
         } ?></td>
     <td class="nowrap">
-        <div class="flex-layout flex-left">
+        <div class="meds-side-dates">
             <?php $laterality = $entry->getLateralityDisplay(); ?>
             <span class="oe-eye-lat-icons">
                 <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?> pad"></i>
@@ -39,10 +39,14 @@
            <?= Helper::oeDateAsStr($entry->getStartDateDisplay()) ?><i class="oe-i direction-right small no-click pad"></i>
             <?php if (isset($entry->end_date)) { ?>
                 <?= Helper::oeDateAsStr($entry->getEndDateDisplay()) ?>
+                </div>
+                <div class="meds-stop-reason">
                 <br><em class="fade"><?= "({$entry->stopReason})" ?></em>
+                
             <?php } else {
                 ?><em class="fade">Ongoing</em><?php
             } ?>
+            </div>
         </div>
     </td>
     <td>
