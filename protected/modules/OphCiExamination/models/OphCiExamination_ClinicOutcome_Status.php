@@ -86,7 +86,7 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 
     public function inUse()
     {
-        $noOfStatusUsecases = Element_OphCiExamination_ClinicOutcome::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
+        $noOfStatusUsecases = ClinicOutcomeEntry::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
         return $noOfStatusUsecases > 0;
     }
 
