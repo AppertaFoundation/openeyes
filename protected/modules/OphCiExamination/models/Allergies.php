@@ -141,6 +141,35 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
+     * Gets all required missing allergies
+     * @return array
+     */
+    public function getMissingRequiredAllergies($patient)
+    {
+        $current_ids = array_map(function ($e) {
+            return $e->allergy_id;
+        },
+            $this->entries);
+
+        $missing = array();
+        foreach ($this->getRequiredAllergies($patient) as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new AllergyEntry();
+                $entry->allergy_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
+    }
+
+    public function getRequiredAllergies($patient)
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredAllergies($patient);
+    }
+
+
+    /**
      * @param \BaseEventTypeElement $element
      */
     public function loadFromExisting($element)
@@ -161,6 +190,16 @@ class Allergies extends \BaseEventTypeElement
         }
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();
+
+        if(isset($element->event)) {
+            $missing_required_allergies = $this->getMissingRequiredAllergies($element->event->patient);
+            if ($missing_required_allergies) {
+                $this->no_allergies_date = null;
+            } else {
+                $this->no_allergies_date = $element->no_allergies_date;
+            }
+        }
+        $this->is_initialized = true;
     }
 
     /**
