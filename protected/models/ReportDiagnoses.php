@@ -193,7 +193,7 @@ class ReportDiagnoses extends BaseReport
                     'type' => $type,
                     'disorder' => $item["{$field_prefix}{$i}_fully_specified_name"],
                     'date' => $item["{$field_prefix}{$i}_date"],
-                    'eye' => $eyes[$item["{$field_prefix}{$i}_eye"]],
+                    'eye' => isset($item["{$field_prefix}{$i}_eye"]) ? $eyes[$item["{$field_prefix}{$i}_eye"]] : null,
                 );
             }
         }
