@@ -191,7 +191,7 @@ class Allergies extends \BaseEventTypeElement
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();
 
-        if(isset($element->event)) {
+        if (isset($element->event)) {
             $missing_required_allergies = $this->getMissingRequiredAllergies($element->event->patient);
             if ($missing_required_allergies) {
                 $this->no_allergies_date = null;
