@@ -184,7 +184,7 @@ class BaseEventElementWidget extends CWidget
             }
         }
 
-        if ($this->element && $this->element->getIsNewRecord()) {
+        if ($this->element && $this->element->getIsNewRecord() && !$this->element->is_initialized) {
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data
