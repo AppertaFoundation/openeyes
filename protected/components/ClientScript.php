@@ -45,5 +45,15 @@ class ClientScript extends CClientScript
             $cssFile = $cacheBuster->createUrl($cssFile);
             $this->cssFiles[$cssFile] = $media;
         }
+
+        // ICONS
+        foreach ($this->linkTags as $index => $attributes) {
+            if ($attributes['rel'] === 'icon') {
+                unset($this->linkTags[$index]);
+                // Add cache buster string to url.
+                $attributes['href'] = $cacheBuster->createUrl($attributes['href']);
+                $this->linkTags[$index] = $attributes;
+            }
+        }
     }
 }
