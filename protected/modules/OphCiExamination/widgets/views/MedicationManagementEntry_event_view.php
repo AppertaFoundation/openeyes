@@ -41,8 +41,7 @@
                 <?= Helper::oeDateAsStr($entry->getEndDateDisplay()) ?>
                 </div>
                 <div class="meds-stop-reason">
-                <br><em class="fade"><?= "({$entry->stopReason})" ?></em>
-                
+                <br><em class="fade"><?= "({$entry->stopReason})" ?></em>    
             <?php } else {
                 ?><em class="fade">Ongoing</em><?php
             } ?>

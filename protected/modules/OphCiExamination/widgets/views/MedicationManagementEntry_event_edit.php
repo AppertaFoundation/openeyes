@@ -164,7 +164,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 echo 'style="display: none;"';
                                                              }?>>
                     <div class="flex-meds-inputs textual-display">
-                        <?php $entry_text_display = $entry->getAdministrationDisplay();
+                        <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                         echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         <?php if ($locked == 1) : ?>
                     </div>
