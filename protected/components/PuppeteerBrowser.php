@@ -561,4 +561,9 @@ class PuppeteerBrowser extends CApplicationComponent
     {
         return @filesize($path);
     }
+    
+    public function setCustomTag($tag_name, $value)
+    {
+        $this->custom_tags[$tag_name] = $value;
+    }
 }
