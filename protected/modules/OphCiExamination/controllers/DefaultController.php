@@ -1608,12 +1608,10 @@ class DefaultController extends \BaseEventTypeController
 
         if (count($err)) {
             $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-            if (isset($errors[$et_name])) {
-                if ($errors[$et_name]) {
-                    $errors[$et_name] = array_merge($errors[$et_name], $err);
-                } else {
-                    $errors[$et_name] = $err;
-                }
+            if (isset($errors[$et_name]) && $errors[$et_name]) {
+                $errors[$et_name] = array_merge($errors[$et_name], $err);
+            } else {
+                $errors[$et_name] = $err;
             }
         }
 
