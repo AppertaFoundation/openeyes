@@ -442,7 +442,7 @@
                 itemSets: [
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($key, $item) {
-                            return ['label' => $item, 'id' => $key];
+                            return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
                         }, array_keys($subsections), $subsections))?>, {'id': 'subsections'}),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($key, $item) {
@@ -470,6 +470,13 @@
                     }
 
                     for (let index = 0; index < selectedItems.length; index++) {
+                        if(selectedItems[index]['source'] === 'subsections'){
+                            continue;
+                        }
+                        var existingProc = document.querySelector('#procedureList_' + identifier + ' .body input[value="' + selectedItems[index]['id'] + '"]');
+                        if(existingProc){
+                            continue;
+                        }
                         // append selection into procedure list
                         $('#procedureList_' + identifier).find('.body').append("<tr class='item'><td class='procedure'><span class='field'><input class='js-procedure' type='hidden' value='" + selectedItems[index]['id'] + "' name='Procedures_<?=$identifier?>[]' id='Procedures_procs'></span><span class='value'>" + selectedItems[index]['label'] + "</span></td></tr>");
                         ProcedureSelectionSelectByName(selectedItems[index]['label'], true, '<?= $identifier ?>',selectedItems[index]['id']);
