@@ -356,7 +356,7 @@ if (!empty($assessments)) {
                         'type': 'GET',
                         'url': baseUrl + '/OphCiExamination/Default/getOctAssessment?assessment_ids=' + JSON.stringify(assessmentIds),
                         'success': function (data) {
-                            addAssessmentsToList($element, JSON.parse(data));
+                            addAssessmentsToList($element, data);
                             disableClickAssessmentList();
                         },
                         'error': function () {
