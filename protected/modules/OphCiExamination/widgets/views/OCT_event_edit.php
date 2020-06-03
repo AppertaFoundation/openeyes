@@ -28,7 +28,8 @@ $event_ids = [];
 foreach ($this->assessments as $assessment) {
     $event_ids[] = $assessment->event_id;
 }
-if (!empty($assessments)) {
+
+if (!empty($this->assessments)) {
 // reformat array of posted assessments to order them by row and then by side
     $posted_assessments = [];
     if (isset($_POST['OEModule_OphGeneric_models_Assessment']['entries'])) {
