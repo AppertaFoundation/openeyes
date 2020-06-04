@@ -81,7 +81,6 @@ class MultiSelectDropDownList extends BaseCWidget
             return array_key_exists($key,$data);
         });
 
-
         echo \CHtml::openTag('ul', [
             'class' => 'oe-multi-select inline',
             'style' => (!$items ? 'display:none' : ''),
