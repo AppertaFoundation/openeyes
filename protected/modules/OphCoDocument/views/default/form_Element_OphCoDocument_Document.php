@@ -247,17 +247,6 @@
             });
         }
 
-        // Will move this to Utils
-        function createFormData(formData, key, data) {
-            if (data === Object(data) || Array.isArray(data)) {
-                for (var i in data) {
-                    createFormData(formData, key + '[' + i + ']', data[i]);
-                }
-            } else {
-                formData.append(key, data);
-            }
-        }
-
         window.addEventListener("unload", function () {
             let documents = [];
             let controller = $('.js-document-upload-wrapper').data('controller');
@@ -292,7 +281,7 @@
 
             if (documents.length !== 0) {
                 let formData = new FormData();
-                createFormData(formData, 'doc_ids', documents);
+                OpenEyes.Util.createFormData(formData, 'doc_ids', documents);
                 formData.append('YII_CSRF_TOKEN', YII_CSRF_TOKEN);
                 navigator.sendBeacon('/OphCoDocument/Default/removeDocuments', formData);
             }
