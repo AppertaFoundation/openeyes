@@ -9,6 +9,7 @@ else {
 }
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
+Yii::app()->clientScript->registerLinkTag('icon', 'image/png', $assetManager->getPublishedUrl($newblue_path) . '/img/eyedraw-draw-icons-32x32.png');
 Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
