@@ -215,14 +215,14 @@ class ProtectedFile extends BaseActiveRecordVersioned
     {
         $this->_stored_path = $this->getPath();
 
-        if($this->getApp()->db->schema->getTable('et_ophcodocument_document')) {
+        if ($this->getApp()->db->schema->getTable('et_ophcodocument_document')) {
             $criteria = new CDbCriteria();
             $criteria->addCondition('single_document_id = :protected_file_id 
                     OR left_document_id = :protected_file_id
                     OR right_document_id = :protected_file_id');
             $criteria->params[':protected_file_id'] = $this->id;
             $document = Element_OphCoDocument_Document::model()->find($criteria);
-            if($document) {
+            if ($document) {
                 $document->setScenario("fileDeleted");
                 foreach (['single_document_id', 'left_document_id', 'right_document_id'] as $protected_file_attribute) {
                     if ($document->{$protected_file_attribute} ==  $this->id) {
