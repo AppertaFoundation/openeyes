@@ -58,7 +58,7 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
         $this->render('/systemicdiagnosesassignment/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create required risk set',
+            'title' => 'Create required systemic diagnosis set',
         ]);
     }
 
@@ -80,7 +80,7 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
         $this->render('/systemicdiagnosesassignment/edit', [
             'errors' => isset($errors) ? $errors : '',
             'model' => $model,
-            'title' => 'Edit required risk set',
+            'title' => 'Edit required systemic diagnosis set',
         ]);
     }
 
