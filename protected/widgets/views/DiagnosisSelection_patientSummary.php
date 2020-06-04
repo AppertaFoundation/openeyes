@@ -47,7 +47,6 @@
 							'data':{'term': request.term, 'code': '".$code."'},
 							'success':function(data) {
 								".($loader ? "$('#".$loader."').hide();" : '').'
-								data = $.parseJSON(data);
 								response(data);
 							}
 						});
