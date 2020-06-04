@@ -293,6 +293,21 @@ class DefaultController extends \BaseModuleController
 
                 if (empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
                     $filter_options = Yii::app()->session['patientticket_filter'];
+
+                    // Filter out queue-ids which do not belong to the queue set
+                    if(isset($filter_options['queue-ids']) && $filter_options['queue-ids']) {
+                        $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
+                        $queueset_queues = \CHtml::listData($qs_svc->getQueueSetQueues($queueset, false), 'id', 'name');
+                        $cleaned_items = array_filter($filter_options['queue-ids'], function ($key) use ($queueset_queues) {
+                            return array_key_exists($key, $queueset_queues);
+                        });
+                        if(empty($cleaned_items)) {
+                            unset($filter_options['queue-ids']);
+                        } else {
+                            $filter_options['queue-ids'] = $cleaned_items;
+                        }
+                    }
+
                     $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
                     $this->redirect($redir);
                 }
