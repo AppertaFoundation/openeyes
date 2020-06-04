@@ -77,8 +77,8 @@ class MultiSelectDropDownList extends BaseCWidget
         $items = isset($this->options['dropDown']['selectedItems']) ? $this->options['dropDown']['selectedItems'] : [];
 
         // Remove values which are not in the selection list to avoid empty/invalid options
-        $valid_items= array_filter($items, function($key)use($data){
-            return array_key_exists($key,$data);
+        $valid_items = array_filter($items, function ($key) use ($data) {
+            return array_key_exists($key, $data);
         });
 
         echo \CHtml::openTag('ul', [
