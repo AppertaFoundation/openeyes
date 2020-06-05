@@ -308,7 +308,8 @@ class DefaultController extends \BaseModuleController
                         }
                     }
 
-                    $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
+                    $redir = array_merge(['/PatientTicketing/default'], $filter_options,
+                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]);
                     $this->redirect($redir);
                 }
 
