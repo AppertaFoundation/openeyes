@@ -135,11 +135,11 @@
         ?>
 
         <?=\CHtml::button(
-            'Add Risk',
+            'Add Diagnosis',
             [
                 'class' => 'button large',
                 'type' => 'button',
-                'id' => 'add_new_risk'
+                'id' => 'add_new_diagnosis'
             ]
         ); ?>
 
@@ -219,7 +219,7 @@
             $empty_tr = $table.find('.empty').closest('tr'),
             diagnosesSearchController;
 
-        $('#add_new_risk').on('click', function (e) {
+        $('#add_new_diagnosis').on('click', function (e) {
             var data = {},
                 $row;
 

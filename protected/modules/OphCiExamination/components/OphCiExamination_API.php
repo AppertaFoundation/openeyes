@@ -1153,6 +1153,7 @@ class OphCiExamination_API extends \BaseAPI
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
                     $summary_obj->comments = $summaries->comments ?: $summaries->getSiblingString();
+                    $summary_obj->comments = preg_replace('/(\r\n\r\n|\r\r|\n\n)/', '<i class="oe-i d-slash small pad pro-theme"></i>', $summary_obj->comments);
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
@@ -3192,7 +3193,7 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay("Ongoing"); ?></td>
                     </tr>
                     <?php
                                         $taper_date = $entry->end_date;

@@ -367,6 +367,7 @@ $creating = isset($creating) ? $creating : false;
             <tr>
                 <!--                        Subject-->
                 <td>
+                    <input type="hidden" id="default_re" value="<?= $element->calculateRe($patient) ?>">
                         <?php echo $form->textArea(
                             $element,
                             're',
