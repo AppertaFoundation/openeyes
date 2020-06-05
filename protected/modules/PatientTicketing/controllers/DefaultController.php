@@ -139,7 +139,7 @@ class DefaultController extends \BaseModuleController
                 unset($filter_options['priority-ids'][$key]);
             }
 
-            if(count($filter_options['priority-ids']) != 0) {
+            if (count($filter_options['priority-ids']) != 0) {
                 $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
             }
         }
