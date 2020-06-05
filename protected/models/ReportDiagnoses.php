@@ -134,7 +134,7 @@ class ReportDiagnoses extends BaseReport
 
             if ($this->start_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field >= :start_date";
-                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00';
+                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date));
             }
             if ($this->end_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field <= :end_date";
