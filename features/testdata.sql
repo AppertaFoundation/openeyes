@@ -33769,7 +33769,7 @@ CREATE TABLE `tbl_audit_trail` (
   KEY `idx_audit_trail_field` (`field`),
   KEY `idx_audit_trail_action` (`action`),
   KEY `idx_audit_trail_stamp` (`stamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -34156,7 +34156,7 @@ CREATE TABLE `user_session` (
   `expire` int(11) DEFAULT NULL,
   `data` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
