@@ -85,6 +85,7 @@
 
             <td colspan="2">
                 <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
+                <?= \CHtml::hiddenField('priority-ids[]', 0); ?>
                 <label class="inline highlight">
                     <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
                     <i class="oe-i circle-red small pad"></i>
@@ -99,6 +100,7 @@
                 </label>
                 <small>
                     <label class="inline highlight">
+                        <?= \CHtml::hiddenField('closed-tickets', 0); ?>
                         <?= \CHtml::checkBox(
                             'closed-tickets',
                             \Yii::app()->request->getParam('closed-tickets', false),
