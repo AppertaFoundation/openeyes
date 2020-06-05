@@ -41,7 +41,7 @@ if (!@$no_header) { ?>
         $toAddress = $element->getToAddress();
 
         $this->renderPartial('letter_start', array(
-            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
+            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // default address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => strtotime($element->clinic_date),
@@ -60,16 +60,21 @@ if (!@$no_header) { ?>
     <p class="accessible">
         <?php echo $element->renderIntroduction() ?>
     </p>
-    <p class="accessible"><strong><?php if ($element->re) {
-        ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re)) ?>
-                                  <?php } else {
-                                      if (Yii::app()->params['nhs_num_private'] == true) {
-                                            ?><?php echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num ?><?php
-                                      } else {
-                                            ?><?php echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num ?>, <?php echo Yii::app()->params['nhs_num_label'] . ': ' . $element->event->episode->patient->nhsnum ?><?php
-                                      }
-                                  } ?></strong></p>
-
+    <p class="accessible">
+        <strong>
+            <?php if ($toAddressContactType !== "PATIENT" && $element->re) {
+                echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
+            } else if ($contact_type === "PATIENT") {
+                if (Yii::app()->params['nhs_num_private'] == true) {
+                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num;
+                } else {
+                    echo Yii::app()->params['hos_num_label'] . ': ' . $element->event->episode->patient->hos_num . ', ' . Yii::app()->params['nhs_num_label'] . ': ' . $element->event->episode->patient->nhsnum;
+                }
+            } else {
+                echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));
+            } ?>
+        </strong>
+    </p>
     <p class="accessible">
         <?php echo $element->renderBody() ?>
     </p>
