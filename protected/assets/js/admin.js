@@ -134,7 +134,6 @@ $(document).ready(function () {
             'url': baseUrl + '/Admin/Disorder/delete',
             'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'success': function (response) {
-                response = JSON.parse(response);
                 if (response['status'] === 1) {
                     window.location.reload();
                 } else {
