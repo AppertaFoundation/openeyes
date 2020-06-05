@@ -16,7 +16,6 @@
       'type':'GET',
       'data':{'term': request.term, 'code': "<?=$code?>"},
       'success':function(data) {
-        data = $.parseJSON(data);
         response(data);
       }
     });
