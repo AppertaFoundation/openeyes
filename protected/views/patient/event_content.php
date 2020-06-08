@@ -86,18 +86,34 @@
           <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
              data-tooltip-content="Change Event date"
              style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
-<?php } ?>
+    <?php } ?>
         </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
-
-    <?php echo $content; ?>
-
-    <?php if ($this->action->id === 'view') {
+    <?php if ($this->event->eventType->custom_hint_text
+        && $this->event->eventType->hint_position === 'TOP'
+        && in_array($this->action->id, array('create', 'update'))) { ?>
+    <div class="alert-box info">
+        <div class="user-tinymce-content">
+            <?= $this->event->eventType->custom_hint_text ?>
+        </div>
+    </div>
+    <?php }
+    echo $content; ?>
+    <?php if ($this->event->eventType->custom_hint_text
+        && $this->event->eventType->hint_position === 'BOTTOM'
+        && in_array($this->action->id, array('create', 'update'))) { ?>
+    <div class="alert-box info">
+        <div class="user-tinymce-content">
+        <?= $this->event->eventType->custom_hint_text ?>
+        </div>
+    </div>
+    <?php }
+    if ($this->action->id === 'view') {
         $this->renderEventMetadata();
-    } ?>
-    <?php
+    }
+
     $this->renderPartial('//patient/event_footer', array('form_id' => $form_id));
     ?>
 </main>

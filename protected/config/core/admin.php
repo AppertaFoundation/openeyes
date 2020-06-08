@@ -41,7 +41,9 @@ return array(
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes',
-                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list',
+                'Event Type Custom Text' => '/admin/editEventTypeCustomText',
+                'Element Type Custom Text' => '/admin/editElementTypeCustomText',
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
