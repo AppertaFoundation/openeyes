@@ -105,7 +105,13 @@ class ImportDrugsCommand extends CConsoleCommand
         $this->setParams($this->getParams($params));
 
         if (method_exists($this, $action)) {
-            $this->$action();
+            try {
+                $this->$action();
+            } catch (CDbException $e) {
+                echo PHP_EOL . "ERROR: " . $e->getMessage();
+                echo PHP_EOL ."TRACE: " . $e->getTraceAsString();
+                return 1;
+            }
         } else {
             $this->halt('Invalid action: ' . $action);
         }
@@ -571,7 +577,7 @@ EOD;
         }
 
         $scripts = [
-            'delete', 'forms_routes', 'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'search_index',
+            'delete', 'forms_routes', 'copy_vtm', 'copy_vmp', 'copy_amp', 'sets', 'ref_medication_sets', 'search_index',
             'replace_legacy_with_dmd', 'laterality_mapping', 'map_routes'
         ];
 
@@ -611,7 +617,7 @@ EOD;
         ];
 
         Yii::app()->db->createCommand("DELETE FROM medication_attribute_assignment")->execute();
-        Yii::app()->db->createCommand("DELETE FROM  medication_attribute_option")->execute();
+        Yii::app()->db->createCommand("DELETE FROM medication_attribute_option")->execute();
         Yii::app()->db->createCommand("DELETE FROM medication_attribute")->execute();
 
         $cmd = "INSERT INTO  medication_attribute (`name`) VALUES " . implode(",", array_map(function ($e) {
@@ -641,6 +647,7 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
 
         $pres_free_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$pres_free_id' AND `value` = '0001'")->queryScalar();
+
         // validity as a prescribable product
         $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_status_id' AND `value` = '0001'")->queryScalar();
 
