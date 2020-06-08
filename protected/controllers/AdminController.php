@@ -53,6 +53,67 @@ class AdminController extends BaseAdminController
         );
     }
 
+    /**
+     * @throws Exception
+     */
+    public function actionEditEventTypeCustomText()
+    {
+        $errors = array();
+        foreach (($_POST['EventType'] ?? []) as $event_type_form) {
+            $event_type = EventType::model()->findByPk($event_type_form['id']);
+            $event_type->attributes = $event_type_form;
+            $event_type->save();
+            $errors = array_merge($errors, $event_type->getErrors());
+        }
+        $events = EventType::model()->getEventTypeModules();
+        usort($events, static function ($item_a, $item_b) {
+            return strcmp($item_a->name, $item_b->name);
+        });
+
+        $this->render(
+            '/admin/custom_text',
+            array(
+                'model_list' => $events,
+                'errors' => $errors,
+            )
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionEditElementTypeCustomText()
+    {
+        $errors = array();
+        foreach (($_POST['ElementType'] ?? []) as $element_type_form) {
+            $element_type = ElementType::model()->findByPk($element_type_form['id']);
+            if ($element_type_form['custom_hint_text'] !== $element_type->custom_hint_text) {
+                $element_type->custom_hint_text = $element_type_form['custom_hint_text'];
+                $element_type->save();
+                $errors = array_merge($errors, $element_type->getErrors());
+            }
+        }
+        $exclude_list = \OEModule\OphCiExamination\components\ExaminationHelper::elementFilterList();
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('class_name', $exclude_list);
+        $elements = ElementType::model()->findAll($criteria);
+        usort($elements, static function ($item_a, $item_b) {
+            $name = strcmp($item_a->eventType->name, $item_b->eventType->name);
+            if ($name === 0) {
+                return strcmp($item_a->name, $item_b->name);
+            }
+            return $name;
+        });
+
+        $this->render(
+            '/admin/custom_text',
+            array(
+                'model_list' => $elements,
+                'errors' => $errors,
+            )
+        );
+    }
+
     public function actionEditCommonOphthalmicDisorder()
     {
         $this->group = 'Disorders';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -35,49 +36,50 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           <col class="cols-1">
         </colgroup>
         <thead>
-        <tr>
-          <th colspan="2">Drug</th>
-          <th>Dose</th>
-          <th>Route</th>
-            <?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
+          <tr>
+            <th colspan="2">Drug</th>
+            <th>Dose</th>
+            <th>Route</th>
+            <?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only
+                ?>
               <th>Options</th>
             <?php } ?>
-          <th>Frequency</th>
-          <th>Duration</th>
-          <th>Dispense Condition</th>
-          <th>Location</th>
-          <th></th>
-        </tr>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Dispense Condition</th>
+            <th>Location</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-        <?php
-        $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
-        foreach ($element->items as $key => $item) {
-            $this->renderPartial(
-                'form_Element_OphDrPrescription_Details_Item',
-                array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
-            );
-        } ?>
+          <?php
+            $unit_options = MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions;
+            foreach ($element->items as $key => $item) {
+                $this->renderPartial(
+                    'form_Element_OphDrPrescription_Details_Item',
+                    array('key' => $key, 'item' => $item, 'patient' => $this->patient, 'unit_options' => $unit_options)
+                );
+            } ?>
         </tbody>
       </table>
     </div>
 
     <div class="flex-layout">
       <div>
-        <button type="button" class="button hint blue"
-                id="clear_prescription" name="clear_prescription">
+        <button type="button" class="button hint blue" id="clear_prescription" name="clear_prescription">
           Clear all
         </button>
 
-            <?php
-          // we need to separate the public and admin view
-            if (is_a(Yii::app()->getController(), 'DefaultController') &&
-              $this->getPreviousPrescription($element->id)) : ?>
-            <button type="button" class="button hint blue"
-                    id="repeat_prescription" name="repeat_prescription">
-              Add repeat prescription
-            </button>
-            <?php endif; ?>
+        <?php
+        // we need to separate the public and admin view
+        if (
+          is_a(Yii::app()->getController(), 'DefaultController') &&
+          $this->getPreviousPrescription($element->id)
+        ) : ?>
+          <button type="button" class="button hint blue" id="repeat_prescription" name="repeat_prescription">
+            Add repeat prescription
+          </button>
+        <?php endif; ?>
       </div>
 
       <div>
@@ -98,13 +100,20 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-fields flex-layout full-width">
-        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
+      <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
     </div>
   </section>
 <?php } ?>
+<?php if ($element->elementType->custom_hint_text) { ?>
+  <div class="alert-box info <?= CHtml::modelName($element->elementType->class_name) ?>">
+    <div class="user-tinymce-content">
+      <?= $element->elementType->custom_hint_text ?>
+    </div>
+  </div>
+<?php } ?>
 
 <script type="text/javascript">
-    <?php
+  <?php
     $common_systemic = Medication::model()->listCommonSystemicMedications(true);
     foreach ($common_systemic as &$medication) {
         $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
@@ -113,7 +122,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     $firm_id = $this->getApp()->session->get('selected_firm_id');
     $site_id = $this->getApp()->session->get('selected_site_id');
     if ($firm_id) {
-        /** @var Firm $firm */
+      /** @var Firm $firm */
         $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
         $subspecialty_id = $firm->getSubspecialtyID();
         $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
@@ -124,54 +133,60 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         $common_ophthalmic = array();
     }
     ?>
-    new OpenEyes.UI.AdderDialog({
-        openButton: $('#add-prescription-btn'),
-        itemSets: [
-            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                $common_systemic
-            ) ?>, {'multiSelect': true, header: "Common Systemic"})
-            ,
-            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                $common_ophthalmic
-            ) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
-        ],
-        onReturn: function (adderDialog, selectedItems) {
-            addItems(selectedItems);
-            return true;
-        },
-        searchOptions: {
-            searchSource: '/medicationManagement/findRefMedications',
-        },
-        enableCustomSearchEntries: true,
-        searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"},
-        booleanSearchFilterEnabled: true,
-        booleanSearchFilterLabel: 'Include brand names',
-        booleanSearchFilterURLparam: 'include_branded'
-    });
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-prescription-btn'),
+    itemSets: [
+      new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_systemic
+      ) ?>, {
+        'multiSelect': true,
+        header: "Common Systemic"
+      }),
+      new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_ophthalmic
+      ) ?>, {
+        'multiSelect': true,
+        header: "Common Ophthalmic"
+      })
+    ],
+    onReturn: function(adderDialog, selectedItems) {
+      addItems(selectedItems);
+      return true;
+    },
+    searchOptions: {
+      searchSource: '/medicationManagement/findRefMedications',
+    },
+    enableCustomSearchEntries: true,
+    searchAsTypedItemProperties: {
+      id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"
+    },
+    booleanSearchFilterEnabled: true,
+    booleanSearchFilterLabel: 'Include brand names',
+    booleanSearchFilterURLparam: 'include_branded'
+  });
 
-    let prescription_drug_sets = <?= CJSON::encode(
-        array_map(function ($drugSet) {
-            return [
-                'label' => $drugSet->name,
-                'id' => $drugSet->id
-            ];
-        }, $element->drugSets())
-    ) ?>;
+  let prescription_drug_sets = <?= CJSON::encode(
+      array_map(function ($drugSet) {
+                                    return [
+                                      'label' => $drugSet->name,
+                                      'id' => $drugSet->id
+                                    ];
+      }, $element->drugSets())
+  ) ?>;
 
-    <?php if (isset($this->patient)) : ?>
+  <?php if (isset($this->patient)) : ?>
     let patient_allergies = <?= CJSON::encode($this->patient->getAllergiesId()) ?>;
-    <?php endif; ?>
+  <?php endif; ?>
 
-    // This case handles displaying the button correctly whenever changing the dispense condition.
-    $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
-        fpTenPrintOption();
-    });
+  // This case handles displaying the button correctly whenever changing the dispense condition.
+  $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
+    fpTenPrintOption();
+  });
 
-    // This case handles displaying the button correctly when first accessing the edit screen.
-    $(document).ready(function() {
-        fpTenPrintOption();
-    })
-
+  // This case handles displaying the button correctly when first accessing the edit screen.
+  $(document).ready(function() {
+    fpTenPrintOption();
+  })
 </script>
 
 <?php
