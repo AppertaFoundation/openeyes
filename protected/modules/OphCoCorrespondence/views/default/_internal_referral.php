@@ -21,8 +21,7 @@
                         ['with' => 'firms']
                     ];
                     $criteria->order = 't.name';
-                    $criteria->addCondition('firms.active = 1');
-                    ?>
+                    $criteria->addCondition('firms.active = 1'); ?>
 
                     <?= \CHtml::activeDropDownList($element, "to_subspecialty_id",
                         CHtml::listData(Subspecialty::model()->findAll($criteria), 'id', 'name'),
