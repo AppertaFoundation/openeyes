@@ -105,7 +105,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             selected_abnormalities.push(value);
         });
 
-        $(side + ' li').each(function () {
+        $(side + ' ul[data-id="pupillary_abnormalities_list"] li').each(function () {
             if (inArray(this.getAttribute('data-id'), selected_abnormalities)) {
                 $(this).hide();
             } else {
