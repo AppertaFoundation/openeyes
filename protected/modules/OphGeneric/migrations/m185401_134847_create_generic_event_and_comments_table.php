@@ -11,16 +11,14 @@ class m185401_134847_create_generic_event_and_comments_table extends \OEMigratio
             'class_name' => 'OEModule\OphGeneric\models\Comments',
             'event_type_id' => $event_type_id,
             'display_order' => 10,
-            'required' => 1,
-            'group_title' => 'Comments']);
+            'required' => 1]);
 
         $this->insert('element_type', [
                 'name' => 'Attachment',
                 'class_name' => 'OEModule\OphGeneric\models\Attachment',
                 'event_type_id' => $event_type_id,
                 'display_order' => 1,
-                'required' => 1,
-                'group_title' => 'Attachment'
+                'required' => 1
             ]
         );
 
