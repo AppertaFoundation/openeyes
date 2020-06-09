@@ -64,7 +64,7 @@
                     <?php }?>
                 </tr>
             </thead>
-            <tbody >
+            <tbody>
     <?php }
 }
 ?>
