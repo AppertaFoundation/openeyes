@@ -125,7 +125,7 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                         array_map(function ($abnormality) {
                             return ['label' => $abnormality->name, 'id' => $abnormality->id];
                         }, $element->getAbnormalityOptions())
-                    )?>, {'multiSelect': true, 'id': 'pupillary_abnormalities_list'})],
+                                                                   )?>, {'multiSelect': true, 'id': 'pupillary_abnormalities_list'})],
                     onReturn: function (adder_dialog, selected_items) {
                         let table_selector = '.<?= $eye_side ?>-eye .pa-entry-table';
                         pupillary_abnormality_controller.addEntry(table_selector, selected_items);
