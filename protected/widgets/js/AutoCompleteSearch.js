@@ -98,8 +98,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
                 if (typeof params !== "undefined") {
                     Object.keys(params).forEach(function (key) {
-                        console.log(params[key]);
-                        console.log(params[key]());
                         data[key] = params[key]();
                     });
                 }
