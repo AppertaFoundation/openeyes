@@ -23,7 +23,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.options = $.extend(true, {}, PupillaryAbnormalitiesController._defaultOptions, options);
         this.$element = this.options.element;
         this.template_text = $('#' + this.options.model_name + '_entry_template').text();
-        this.abnormality_selector = ' [name$="[abnormality_id]"]';
+        this.abnormality_selector = '[name$="[abnormality_id]"]';
         this.no_abnormalities_selector = '[name$="no_pupillaryabnormalities]"]';
         this.no_abnormalities = $(this.no_abnormalities_selector);
         this.entry_table_selector = '.pa-entry-table';
@@ -66,7 +66,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.setRadioButtonsToNo(table);
             } else {
                 $(controller.adder_btn + side).show();
-                controller.dedupeAbnormalitiesSelector('.' + side + '-eye');
+                controller.dedupeAbnormalitiesSelector(side);
                 table.find('tr:not(:first-child)').show();
                 $(this).removeAttr('checked');
                 table.find('input[type=radio]').removeAttr('checked');
@@ -77,7 +77,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             let side = $(this).closest('.side').attr('data-side');
 
             $(this).closest('tr').remove();
-            controller.dedupeAbnormalitiesSelector('.' + side + '-eye');
+            controller.dedupeAbnormalitiesSelector(side);
             controller.updateNoAbnormality(side);
             e.preventDefault();
         });
@@ -100,12 +100,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let abnormality_selector = this.abnormality_selector;
         let selected_abnormalities = [];
 
-        $(side + abnormality_selector).each(function () {
+        $('.' + side + '-eye ' + abnormality_selector).each(function () {
             let value = this.getAttribute('value');
             selected_abnormalities.push(value);
         });
 
-        $(side + ' ul[data-id="pupillary_abnormalities_list"] li').each(function () {
+        $('ul[data-id="pupillary_abnormalities_list_' + side + '"] li').each(function () {
             if (inArray(this.getAttribute('data-id'), selected_abnormalities)) {
                 $(this).hide();
             } else {
@@ -139,7 +139,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $('.flex-item-bottom').find('.selected').removeClass('selected');
 
         this.updateNoAbnormality(side);
-        this.dedupeAbnormalitiesSelector('.' + side + '-eye');
+        this.dedupeAbnormalitiesSelector(side);
     };
 
     PupillaryAbnormalitiesController.prototype.isAbnormalitiesChecked = function (value, side){

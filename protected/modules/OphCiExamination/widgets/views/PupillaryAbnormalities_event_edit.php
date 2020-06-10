@@ -121,11 +121,13 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
 
                 new OpenEyes.UI.AdderDialog({
                     openButton: $('#add-abnormality-btn-<?= $eye_side ?>'),
-                    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                        array_map(function ($abnormality) {
-                            return ['label' => $abnormality->name, 'id' => $abnormality->id];
-                        }, $element->getAbnormalityOptions())
-                                                                   )?>, {'multiSelect': true, 'id': 'pupillary_abnormalities_list'})],
+                    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(
+                        <?= CJSON::encode(
+                            array_map(function ($abnormality) {
+                                return ['label' => $abnormality->name, 'id' => $abnormality->id];
+                            }, $element->getAbnormalityOptions()))?>,
+                        {'multiSelect': true, 'id': 'pupillary_abnormalities_list_<?= $eye_side ?>'}
+                    )],
                     onReturn: function (adder_dialog, selected_items) {
                         let table_selector = '.<?= $eye_side ?>-eye .pa-entry-table';
                         pupillary_abnormality_controller.addEntry(table_selector, selected_items);
@@ -133,7 +135,7 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                     }
                 });
 
-                ['.right-eye', '.left-eye'].forEach(function (side) {
+                ['right', 'left'].forEach(function (side) {
                     pupillary_abnormality_controller.dedupeAbnormalitiesSelector(side);
                 });
             });
