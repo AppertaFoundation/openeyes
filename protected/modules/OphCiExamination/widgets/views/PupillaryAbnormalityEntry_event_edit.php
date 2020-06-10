@@ -81,15 +81,15 @@ if (!isset($values)) {
             <div class="js-comment-container flex-layout flex-left"
                  id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                  style="<?php if (!$values['comments']) :
-                     ?>display: none;<?php
-                 endif; ?>"
+                        ?>display: none;<?php
+                        endif; ?>"
                  data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                 <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
                     'class' => 'js-comment-field autosize cols-full',
                     'rows' => '1',
                     'placeholder' => 'Comments',
                     'autocomplete' => 'off',
-                ]) ?>
+                        ]) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>
             <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
@@ -99,7 +99,7 @@ if (!isset($values)) {
                     data-hide-method="display"
                     style="<?php if ($values['comments']) :
                         ?>display: none;<?php
-                    endif; ?>"
+                           endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
             </button>
