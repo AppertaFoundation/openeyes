@@ -100,7 +100,7 @@
                 </label>
                 <small>
                     <label class="inline highlight">
-                        <?= \CHtml::hiddenField('closed-tickets', 0); ?>
+                        <input type="hidden" value="0" name="closed-tickets">
                         <?= \CHtml::checkBox(
                             'closed-tickets',
                             \Yii::app()->request->getParam('closed-tickets', false),
