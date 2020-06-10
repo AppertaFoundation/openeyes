@@ -29,7 +29,8 @@ if (!isset($values)) {
 }
 ?>
 
-<tr id="<?= $model_name ?>_entries" class="row-<?= $row_count; ?><?= !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
+<tr id="<?= $model_name ?>_entries" class="row-<?= $row_count; ?><?= !$removable ? " read-only" : ''; ?>"
+    data-key="<?= $row_count; ?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <?= $values['abnormality_display']; ?>
@@ -38,11 +39,26 @@ if (!isset($values)) {
     </td>
     <td id="<?= $model_name ?>_entries_<?= $side . '_' . $row_count ?>_has_abnormality" class="nowrap">
         <?php if ($removable) {
-            echo CHtml::hiddenField($field_prefix . '[has_abnormality]', (string)PupillaryAbnormalityEntry::$PRESENT);
+            if ($values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT) { ?>
+                <label class="inline highlight">
+                    <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                        $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$PRESENT,
+                        array('value' => PupillaryAbnormalityEntry::$PRESENT)); ?>
+                    yes
+                </label>
+                <label class="inline highlight">
+                    <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
+                        $values['has_abnormality'] === (string)PupillaryAbnormalityEntry::$NOT_PRESENT,
+                        array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)); ?>
+                    no
+                </label>
+            <?php } else {
+                echo CHtml::hiddenField($field_prefix . '[has_abnormality]', (string)PupillaryAbnormalityEntry::$PRESENT);
+            }
         } else { ?>
             <label class="inline highlight">
                 <?= \CHtml::radioButton($field_prefix . '[has_abnormality]',
-                     $posted_not_checked,
+                    $posted_not_checked,
                     array('value' => PupillaryAbnormalityEntry::$NOT_CHECKED)); ?>
                 Not checked
             </label>
@@ -58,15 +74,15 @@ if (!isset($values)) {
                     array('value' => PupillaryAbnormalityEntry::$NOT_PRESENT)); ?>
                 no
             </label>
-        <?php }?>
+        <?php } ?>
     </td>
     <td>
         <div class="cols-full">
             <div class="js-comment-container flex-layout flex-left"
                  id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                  style="<?php if (!$values['comments']) :
-                        ?>display: none;<?php
-                        endif; ?>"
+                     ?>display: none;<?php
+                 endif; ?>"
                  data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                 <?= CHtml::textArea($field_prefix . '[comments]', $values['comments'], [
                     'class' => 'js-comment-field autosize cols-full',
@@ -83,7 +99,7 @@ if (!isset($values)) {
                     data-hide-method="display"
                     style="<?php if ($values['comments']) :
                         ?>display: none;<?php
-                           endif; ?>"
+                    endif; ?>"
             >
                 <i class="oe-i comments small-icon"></i>
             </button>
