@@ -140,10 +140,20 @@
               <div class="data-value">
                     <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
                         <?php echo $line ?>
-                    <?php }
-                    echo '<br>'. CHtml::encode($element->comments); ?>
+                    <?php } ?>
               </div>
             </td>
+          </tr>
+
+          <tr>
+              <td>
+                  <div class="data-label">Comments</div>
+              </td>
+              <td>
+                  <div class="data-value">
+                      <?= CHtml::encode($element->comments); ?>
+                  </div>
+              </td>
           </tr>
 
           <tr>
