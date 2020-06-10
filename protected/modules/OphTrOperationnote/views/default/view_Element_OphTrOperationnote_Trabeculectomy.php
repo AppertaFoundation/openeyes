@@ -140,7 +140,8 @@
               <div class="data-value">
                     <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
                         <?php echo $line ?>
-                    <?php } ?>
+                    <?php }
+                    echo '<br>'. CHtml::encode($element->comments); ?>
               </div>
             </td>
           </tr>
