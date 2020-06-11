@@ -71,8 +71,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('drug_route route', 'route.id=i.route_id')
             ->join('ophdrprescription_dispense_condition dc', 'dc.id=i.dispense_condition_id')
             ->join('ophdrprescription_dispense_location dl', 'dl.id=i.dispense_location_id')
-            ->join('drug_route_option option', 'option.id=i.route_option_id')
-            ->where('1=1');
+            ->leftJoin('drug_route_option option', 'option.id=i.route_option_id');
 
         if ($this->drugs) {
             $command->andWhere(array('in', 'drug.id', $this->drugs));
@@ -101,6 +100,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     {
         $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
         foreach ($this->items as $item) {
+            $item['laterality']=$item['laterality']?:'No laterality specified';
             $drug = new Drug();
             $drug->attributes = $item;
             $output .= $item['hos_num'].', '.$item['last_name'].', '.$item['first_name'].', '.($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown').', '.$item['postcode'].', ';
