@@ -3604,20 +3604,21 @@ class OphCiExamination_API extends \BaseAPI
             <tbody>
                 <?php foreach ($current_eye_meds as $entry) { ?>
                     <?php
-                    $tapers = [];
-                    $comments=null;
-                    $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
+                        $tapers = [];
+                        $comments = null;
+                        $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
                     if ($entry->prescription_item_id) {
                         $tapers = $entry->prescriptionItem->tapers;
                         $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
                         $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$entry->medicationDuration->name;
-                        $comments=$entry->prescriptionItem->prescription->comments;
-                    } else {
-                        $comments=$entry->comments;
+                        $comments = !empty($entry->prescriptionItem->prescription->comments) ? $entry->prescriptionItem->prescription->comments : null;
                     }
                     ?>
                     <tr>
-                    <td><?= $entry->getMedicationDisplay(true) ?></td>
+                    <td>
+                        <?= $entry->getMedicationDisplay(true) ?>
+                        <?= $comments ? ('<br /><br /><i>Comment: </i>' . $comments) : '' ?>
+                    </td>
                     <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '') ?></td>
                         <td>
                             <?=$entry->getLateralityDisplay(true)?>

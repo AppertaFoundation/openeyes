@@ -28,14 +28,16 @@
         <th >Eye</th>
         <th>Frequency</th>
         <th>Until</th>
-        <th>Comments</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($entries as $entry) : ?>
         <?php /** @var \EventMedicationUse $entry */ ?>
         <tr>
-            <td><?= $entry->getMedicationDisplay(true) ?></td>
+            <td>
+                <?= $entry->getMedicationDisplay(true) ?>
+                <?= !empty($entry->comments) ? ('<br /><br /><i>Comment: </i>' . $entry->comments) : ''?>
+            </td>
             <td><?= $entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '') ?></td>
             <td>
                 <?php
@@ -50,7 +52,6 @@
                 <?= $entry->frequency ? $entry->frequency : ''; ?>
             </td>
             <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
-            <td><?=!empty($entry->comments)?$entry->comments:'No comments'?></td>
         </tr>
         <?php if ($entry->taper_support) : ?>
                     <?php foreach ($entry->tapers as $taper) : ?>
@@ -63,7 +64,6 @@
                 <!-- no needed in taper -->
             </td>
             <td><?= $taper->frequency->term ?></td>
-            <td class="nowrap"></td>
             <td class="nowrap"></td>
         </tr>
     <?php endforeach; ?>

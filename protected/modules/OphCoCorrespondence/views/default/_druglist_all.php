@@ -34,19 +34,21 @@ $lists = array(
         <th>Eye</th>
         <th>Frequency</th>
         <th>Until</th>
-        <th>Comments</th>
     </tr>
     </thead>
     <?php foreach ($lists as $list => $header) : ?>
         <?php if (!empty($$list)) : ?>
         <tbody>
             <tr>
-                <th colspan="6"><b><?=$header?></b></th>
+                <th colspan="5"><b><?=$header?></b></th>
             </tr>
             <?php foreach ($$list as $entry) : ?>
                 <?php /** @var \EventMedicationUse $entry */ ?>
                 <tr>
-                    <td><?=$entry->getMedicationDisplay(true) ?></td>
+                    <td>
+                        <?=$entry->getMedicationDisplay(true) ?>
+                        <?=!empty($entry->comments) ? ('<br /><br /><i>Comment: </i>' . $entry->comments) : ''?>
+                    </td>
                     <td><?=$entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '')?></td>
                     <td>
                         <?php
@@ -62,7 +64,6 @@ $lists = array(
                         <?=$entry->frequency ? $entry->frequency : '';?>
                     </td>
                     <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
-                    <td><?=!empty($entry->comments)?$entry->comments:'<em>No comments</em>'?></td>
                 </tr>
                 <?php if ($entry->taper_support) : ?>
                     <?php foreach ($entry->tapers as $taper) : ?>
@@ -75,7 +76,6 @@ $lists = array(
                 <!-- no needed in taper -->
             </td>
             <td><?= $taper->frequency->term ?></td>
-            <td class="nowrap"></td>
             <td class="nowrap"></td>
         </tr>
     <?php endforeach; ?>

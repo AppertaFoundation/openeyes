@@ -82,6 +82,7 @@
                             <td><?php echo $taper->frequency->term ?></td>
                             <td><?php echo $taper->duration->name ?></td>
                             <td></td>
+                            <td></td>
                         </tr>
                     <?php }
                 } ?>
