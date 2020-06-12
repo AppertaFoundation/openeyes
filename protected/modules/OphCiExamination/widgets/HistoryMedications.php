@@ -157,28 +157,28 @@ class HistoryMedications extends BaseMedicationWidget
             if (!$this->setEntriesWithPreviousManagement()) {
                 parent::setElementFromDefaults();
             }
-        }
 
-        // because the entries cloned into the new element may contain stale data for related
-        // prescription data (or that prescription item might have been deleted)
-        // we need to update appropriately.
-        $entries = array();
-        foreach ($this->element->entries as $entry) {
-            if ($entry->prescription_item_id) {
-                if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
-                    continue;
+            // because the entries cloned into the new element may contain stale data for related
+            // prescription data (or that prescription item might have been deleted)
+            // we need to update appropriately.
+            $entries = array();
+            foreach ($this->element->entries as $entry) {
+                if ($entry->prescription_item_id) {
+                    if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
+                        continue;
+                    }
+                    $entry->loadFromPrescriptionItem($entry->prescriptionItem);
                 }
-                $entry->loadFromPrescriptionItem($entry->prescriptionItem);
+                $entries[] = $entry;
             }
-            $entries[] = $entry;
-        }
             $untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
-        if ($untracked) {
-            // tracking prescription items.
-            $this->element->entries = array_merge(
-                $entries,
-                $untracked
-            );
+            if ($untracked) {
+                // tracking prescription items.
+                $this->element->entries = array_merge(
+                    $entries,
+                    $untracked
+                );
+            }
         }
     }
 
