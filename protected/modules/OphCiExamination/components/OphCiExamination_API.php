@@ -2465,7 +2465,7 @@ class OphCiExamination_API extends \BaseAPI
                 }
                 $str .= "</td></tr>";
             }
-            $str .= '</table></tbody>';
+            $str .= '</tbody></table>';
 
             if ($element->comments) {
                 $str .= "<strong>Comments:</strong> {$element->comments}";
