@@ -19,7 +19,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Consultant</td>
+                <td><?= Firm::contextLabel() ?></td>
                 <td>
                     <?=\CHtml::activeDropDownList($element, "to_firm_id", Firm::model()->getListWithSpecialties(),
                         array('empty' => '- None -', 'class' => 'cols-full')) ?>
