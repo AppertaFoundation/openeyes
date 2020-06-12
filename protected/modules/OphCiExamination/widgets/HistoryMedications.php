@@ -304,7 +304,7 @@ class HistoryMedications extends BaseMedicationWidget
             }
         }
 
-        if (($this->element && $this->element->getIsNewRecord()) || ($this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE)) {
+        if ( $this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE) {
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data

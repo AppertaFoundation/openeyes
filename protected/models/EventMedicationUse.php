@@ -251,7 +251,6 @@ class EventMedicationUse extends BaseElement
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
         );
     }
-
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -733,28 +732,6 @@ class EventMedicationUse extends BaseElement
                 $this->end_date = $end_date;
             }
         }
-    }
-
-    /**
-     * Check element attributes to determine if anything has been set that would allow it to be recorded
-     * Can be used to remove entries from the containing element.
-     *
-     * @return bool
-     */
-    public function hasRecordableData()
-    {
-        foreach ([
-                'medication_id', 'route_id', 'option_id', 'dose',
-                'units', 'frequency_id', 'end_date', 'stop_reason_id'
-            ] as $attr) {
-            if ($this->$attr) {
-                return true;
-            }
-        }
-        if ($this->start_date && \Helper::formatFuzzyDate($this->start_date) != date('Y')) {
-            return true;
-        }
-        return false;
     }
 
     protected function beforeSave()

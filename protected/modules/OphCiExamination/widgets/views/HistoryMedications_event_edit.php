@@ -31,7 +31,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 $current_entries = [];
 $stopped_entries = [];
 foreach ($element->entries as $entry) {
-    if ($entry->originallyStopped) {
+    // if the request is POST, it means we are on the validation error screen
+    // therefore we show entries just like the user set up originally
+    if ($entry->originallyStopped && !\Yii::app()->request->isPostRequest) {
         $stopped_entries[] = $entry;
     } else {
         $current_entries[] = $entry;

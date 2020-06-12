@@ -255,27 +255,7 @@ class HistoryMedicationsEntry extends \BaseElement
     {
         return '/OphCiExamination/Default/view/' . $this->element->event_id;
     }
-
-    /**
-     * Check element attributes to determine if anything has been set that would allow it to be recorded
-     * Can be used to remove entries from the containing element.
-     *
-     * @return bool
-     */
-    public function hasRecordableData()
-    {
-        foreach (array('medication_drug_id', 'drug_id', 'medication_name', 'route_id', 'option_id', 'dose', 'units',
-            'frequency_id', 'end_date', 'stop_reason_id') as $attr) {
-            if ($this->$attr) {
-                return true;
-            }
-        }
-        if ($this->start_date && \Helper::formatFuzzyDate($this->start_date) != date('Y')) {
-            return true;
-        }
-        return false;
-    }
-
+    
     public function beforeValidate()
     {
         if (strpos($this->drug_id, '@@M') !== false) {
