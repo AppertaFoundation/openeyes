@@ -105,6 +105,7 @@ class WKHtmlToPDF extends WKHtmlToX
         $footer = str_replace('{{BARCODE}}', '<span class="barcode"></span>', $footer);
         $footer = str_replace('{{DOCREF}}', '<span class="docref"></span>', $footer);
         $this->docrefs = str_replace('{{PAGE}}', '<span class="page"></span>', $this->docrefs);
+        $footer = str_replace('{{PAGE}}', '<span class="page"></span>', $footer  );
         $footer = str_replace('{{DOCREFS}}', CJavaScript::encode($this->docrefs), $footer);
         $footer = str_replace('{{DOCUMENTS}}', $this->documents, $footer);
         $footer = str_replace('{{PAGES}}', '<span class="topage"></span>', $footer);
