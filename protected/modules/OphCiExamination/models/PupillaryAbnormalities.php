@@ -188,6 +188,7 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
             $this->{'entries_' . $side} = $entries;
         }
         $this->originalAttributes = $this->getAttributes();
+        $this->is_initialized = true;
     }
 
     public function getSortedEntries($eye_side)
