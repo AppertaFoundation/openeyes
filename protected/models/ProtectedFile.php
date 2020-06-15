@@ -229,6 +229,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
                         $document->{$protected_file_attribute} = null;
                     }
                 }
+                $document->save();
             }
         }
 
