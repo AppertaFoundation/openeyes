@@ -17,7 +17,6 @@ $(document).ready(function() {
 		});
 	}
 
-
 	$('.addUser').click(function(e) {
 		e.preventDefault();
 

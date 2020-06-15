@@ -231,7 +231,6 @@ $(document).ready(function() {
 			}
 		}).disableSelection();
 	}
-
 });
 
 function OphTrOperationbooking_showMatchingRule() {
