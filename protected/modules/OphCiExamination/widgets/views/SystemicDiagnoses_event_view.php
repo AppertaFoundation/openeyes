@@ -63,7 +63,6 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                                 <?php $this->widget('EyeLateralityWidget', array('eye' => $diag->side)) ?>
                             </td>
                             <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
-
                         </tr>
                     <?php } ?>
                     <?php foreach ($missingRequiredSystemicDiagnoses as $diag) { ?>
@@ -76,7 +75,6 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                                 <?php $this->widget('EyeLateralityWidget', array('eye' => $diag->side)) ?>
                             </td>
                             <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
-
                         </tr>
                     <?php } ?>
                     </tbody>
