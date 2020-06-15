@@ -82,8 +82,7 @@ class Allergies extends \BaseEventElementWidget
      */
     public function getRequiredAllergies()
     {
-        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-        return $exam_api->getRequiredAllergies($this->patient);
+        return $this->element->getRequiredAllergies($this->patient);
     }
 
     /**
@@ -92,20 +91,7 @@ class Allergies extends \BaseEventElementWidget
      */
     public function getMissingRequiredAllergies()
     {
-        $current_ids = array_map(function ($e) {
-            return $e->allergy_id;
-        },
-        $this->element->entries);
-
-        $missing = array();
-        foreach ($this->getRequiredAllergies() as $required) {
-            if (!in_array($required->id, $current_ids)) {
-                $entry = new AllergyEntry();
-                $entry->allergy_id = $required->id;
-                $missing[] = $entry;
-            }
-        }
-        return $missing;
+        return $this->element->getMissingRequiredAllergies($this->patient);
     }
 
     public function isAllergiesSetYes($element)
