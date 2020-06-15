@@ -24,7 +24,9 @@ $widget = $this;
             <?php } else { ?>
             <table>
                 <colgroup>
-                    <col class="cols-7">
+                    <col>
+                    <col class="cols-fifth">
+                    <col class="cols-2">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
@@ -46,6 +48,9 @@ $widget = $this;
                                 <?= array_key_exists('object', $operation) ?
                                     $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
                             </span>
+                        </td>
+                        <td>
+                            <strong><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayHasOperation() : ''; ?></strong>
                         </td>
                     </tr>
                         <?php }
