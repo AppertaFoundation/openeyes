@@ -593,8 +593,12 @@ class EventMedicationUse extends BaseElement
 
     public function getEndDateDisplay($default = "")
     {
+
         if ($this->end_date) {
             return \Helper::formatFuzzyDate($this->end_date);
+        } elseif ($this->prescription_item_id) {
+            $stop_date = $this->prescriptionItem->stopDateFromDuration(false);
+            return $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$this->medicationDuration->name;
         } else {
             return $default;
         }
