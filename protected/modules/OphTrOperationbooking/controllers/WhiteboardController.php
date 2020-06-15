@@ -290,4 +290,9 @@ class WhiteboardController extends BaseDashboardController
             $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
         }
     }
+
+    public function getWhiteboardImages($event_id){
+        Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' .$event_id );
+        return EventImage::model()->findAll('event_id = ? AND document_number IS NOT NULL', [$event_id]);
+    }
 }

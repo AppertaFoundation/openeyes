@@ -11,9 +11,9 @@ class m191128_142435_add_attachment_to_element_type_for_biometry extends CDbMigr
                 'class_name' => 'OEModule\OphGeneric\models\Attachment',
                 'event_type_id' => $event_type_id,
                 'display_order' => 1,
-                'required' => 0,
-                'group_title' => 'Attachment'
-            ]);
+                'required' => 0
+            ]
+        );
     }
 
     public function down()

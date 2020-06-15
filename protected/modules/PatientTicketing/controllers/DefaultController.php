@@ -135,7 +135,14 @@ class DefaultController extends \BaseModuleController
             $criteria->addColumnCondition(array('assignee_user_id' => Yii::app()->user->id));
         }
         if (@$filter_options['priority-ids']) {
-            $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
+            $key = array_search("0", $filter_options['priority-ids']);
+            if ($key !== false) {
+                unset($filter_options['priority-ids'][$key]);
+            }
+
+            if (count($filter_options['priority-ids']) != 0) {
+                $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
+            }
         }
         if (count($queue_ids)) {
             $criteria->addInCondition('cqa.queue_id', $queue_ids);
@@ -294,7 +301,22 @@ class DefaultController extends \BaseModuleController
 
                 if (empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
                     $filter_options = Yii::app()->session['patientticket_filter'];
-                    $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
+                    // Filter out queue-ids which do not belong to the queue set
+                    if (isset($filter_options['queue-ids']) && $filter_options['queue-ids']) {
+                        $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
+                        $queueset_queues = \CHtml::listData($qs_svc->getQueueSetQueues($queueset, false), 'id', 'name');
+                        $cleaned_items = array_filter($filter_options['queue-ids'], function ($key) use ($queueset_queues) {
+                            return array_key_exists($key, $queueset_queues);
+                        });
+                        if (empty($cleaned_items)) {
+                            unset($filter_options['queue-ids']);
+                        } else {
+                            $filter_options['queue-ids'] = $cleaned_items;
+                        }
+                    }
+
+                    $redir = array_merge(['/PatientTicketing/default'], $filter_options,
+                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]);
                     $this->redirect($redir);
                 }
 

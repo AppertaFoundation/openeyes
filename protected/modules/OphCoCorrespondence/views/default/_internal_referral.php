@@ -22,7 +22,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Consultant</td>
+                <td><?= Firm::contextLabel() ?></td>
                 <td>
                     <?=\CHtml::activeDropDownList(
                         $element,

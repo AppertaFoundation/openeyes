@@ -85,6 +85,7 @@
 
             <td colspan="2">
                 <?php $priorities = \Yii::app()->request->getParam('priority-ids', []); ?>
+                <?= \CHtml::hiddenField('priority-ids[]', 0); ?>
                 <label class="inline highlight">
                     <?= \CHtml::checkBox('priority-ids[]', in_array(1, $priorities), ['value' => 1]); ?>
                     <i class="oe-i circle-red small pad"></i>
@@ -99,6 +100,7 @@
                 </label>
                 <small>
                     <label class="inline highlight">
+                        <input type="hidden" value="0" name="closed-tickets">
                         <?= \CHtml::checkBox(
                             'closed-tickets',
                             \Yii::app()->request->getParam('closed-tickets', false),
@@ -160,10 +162,11 @@
             <td style="padding-top:0px" id="patient-result-wrapper">
                 <ul id="patient-result-list" class="oe-multi-select inline">
                     <?php foreach ($patients as $patient) : ?>
-                        <li data-patient_id="<?=$patient->id?>">
-                            <?="{$patient->first_name} {$patient->last_name} ({$patient->hos_num})"?>
+                        <li data-patient_id="<?= $patient->id ?>">
+                            <?= "{$patient->first_name} {$patient->last_name} ({$patient->hos_num})" ?>
                             <i class="oe-i remove-circle small-icon pad-left"></i>
-                            <input name="patient-ids[]" type="hidden" id="<?="{$patient->id}";?>" value="<?="{$patient->id}";?>">
+                            <input name="patient-ids[]" type="hidden" id="<?= "{$patient->id}"; ?>"
+                                   value="<?= "{$patient->id}"; ?>">
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -178,15 +181,25 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+        if (OpenEyes.UI.AutoCompleteSearch !== undefined) {
             OpenEyes.UI.AutoCompleteSearch.init({
                 input: $('#oe-autocompletesearch'),
                 url: '/PatientTicketing/default/patientSearch',
-                onSelect: function(){
+                params: {
+                    closedTickets: function () {
+                        return +$('#closed-tickets').is(':checked')
+                    }
+                },
+                onSelect: function () {
                     let autoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                     let $list = $('#patient-result-list');
                     let $item = $('<li>', {'data-patient-id': autoCompleteResponse.id}).html(autoCompleteResponse.label + '<i class="oe-i remove-circle small-icon pad-left"></i>');
-                    let $hidden = $('<input>', {type: 'hidden', id: autoCompleteResponse.id, value: autoCompleteResponse.id, name: 'patient-ids[]'});
+                    let $hidden = $('<input>', {
+                        type: 'hidden',
+                        id: autoCompleteResponse.id,
+                        value: autoCompleteResponse.id,
+                        name: 'patient-ids[]'
+                    });
                     $list.html('');
                     $list.append($item.append($hidden));
                     // clear input field
@@ -195,7 +208,6 @@
                 }
             });
         }
-
 
 
         $('#patient-result-wrapper').on('click', '.remove-circle', function () {

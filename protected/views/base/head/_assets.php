@@ -9,6 +9,7 @@ else {
 }
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
 $basic_assets_path = Yii::getPathOfAlias('application.assets');
+Yii::app()->clientScript->registerLinkTag('icon', 'image/png', $assetManager->getPublishedUrl($newblue_path, true) . '/img/eyedraw-draw-icons-32x32.png');
 Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path, true) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
@@ -67,7 +68,6 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
-<?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('../../node_modules/sortablejs/Sortable.min.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/pickmeup/js/pickmeup.js', 'application.assets.newblue');?>

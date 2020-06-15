@@ -1345,22 +1345,20 @@ class DefaultController extends \BaseEventTypeController
 
     protected function setElementDefaultOptions_Element_OphCiExamination_OverallManagementPlan(models\Element_OphCiExamination_OverallManagementPlan $element, $action)
     {
-        if ($action == 'create') {
-            if ($previous_om = models\Element_OphCiExamination_OverallManagementPlan::model()->with(array(
+        if ($previous_om = models\Element_OphCiExamination_OverallManagementPlan::model()->with(array(
                 'event' => array(
                     'condition' => 'event.deleted = 0',
                     'with' => array(
                         'episode' => array(
-                            'condition' => 'episode.deleted = 0 and episode.id = ' . $this->episode->id,
+                            'condition' => 'episode.deleted = 0 and episode.id = '.$this->episode->id,
                         ),
                     ),
-                    'order' => 'event.event_date desc, event.created_date desc',
+                  'order' => 'event.event_date desc, event.created_date desc',
                 ),
             ))->find()) {
-                foreach ($previous_om->attributes as $key => $value) {
-                    if (!in_array($key, array('id', 'created_date', 'created_user_id', 'last_modified_date', 'last_modified_user_id'))) {
-                        $element->$key = $value;
-                    }
+            foreach ($previous_om->attributes as $key => $value) {
+                if (!in_array($key, array('id', 'created_date', 'created_user_id', 'last_modified_date', 'last_modified_user_id'))) {
+                    $element->$key = $value;
                 }
             }
         }
@@ -1745,9 +1743,7 @@ class DefaultController extends \BaseEventTypeController
             if (!$queue) {
                 $err['patientticket_queue'] = 'Virtual Clinic not found';
             } else {
-                if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                    $err['patientticket_queue'] = 'Cannot add Patient to Queue';
-                } else {
+                if ($api->canAddPatientToQueue($this->patient, $queue)) {
                     list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
                     $err = array_merge($err, $fld_errs);
                 }
@@ -1756,12 +1752,10 @@ class DefaultController extends \BaseEventTypeController
 
         if (count($err)) {
             $et_name = models\Element_OphCiExamination_ClinicOutcome::model()->getElementTypeName();
-            if (isset($errors[$et_name])) {
-                if ($errors[$et_name]) {
-                    $errors[$et_name] = array_merge($errors[$et_name], $err);
-                } else {
-                    $errors[$et_name] = $err;
-                }
+            if (isset($errors[$et_name]) && $errors[$et_name]) {
+                $errors[$et_name] = array_merge($errors[$et_name], $err);
+            } else {
+                $errors[$et_name] = $err;
             }
         }
 

@@ -28,7 +28,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                 }
                 ?>
                 <?php
-                if ($episode->getSubspecialtyText() == "Cataract" And Yii::app()->params['opbooking_disable_both_eyes'] == true) {
+                if (Yii::app()->params['opbooking_disable_both_eyes']) {
                     ?>
                     <?php echo $form->radioButtons(
                         $element,
