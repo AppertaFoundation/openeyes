@@ -74,6 +74,16 @@
 
         return year + '-' + displayMonth + '-' + displayDay;
     }
+
+	Util.createFormData = function(formData, key, data) {
+		if (data === Object(data) || Array.isArray(data)) {
+			for (var index in data) {
+				Util.createFormData(formData, key + '[' + index + ']', data[index]);
+			}
+		} else {
+			formData.append(key, data);
+		}
+	}
 	exports.Util = Util;
 
 }(this.OpenEyes));
