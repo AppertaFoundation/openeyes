@@ -279,16 +279,12 @@
                 }
             }
 
-            documents = removed_docs.data('documents');
-
             if (documents.length !== 0) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/OphCoDocument/Default/removeDocuments',
-                    data: {doc_ids: documents,
-                        YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-                    async: false
-                });
+                let formData = new FormData();
+                OpenEyes.Util.createFormData(formData, 'doc_ids', documents);
+                formData.append('YII_CSRF_TOKEN', YII_CSRF_TOKEN);
+                navigator.sendBeacon('/OphCoDocument/Default/removeDocuments', formData);
             }
         });
+
     </script>

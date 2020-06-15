@@ -163,7 +163,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
     public function getDisplayHasOperation()
     {
         if ($this->had_operation === (string) static::$PRESENT) {
-            return 'Present';
+            return null; // Dosn't require positive confirmation, as the items presence is enough to indicate it is 'present'
         } elseif ($this->had_operation === (string) static::$NOT_PRESENT) {
             return 'Not present';
         }
