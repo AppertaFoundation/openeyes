@@ -2459,13 +2459,13 @@ class OphCiExamination_API extends \BaseAPI
                 } else {
                     $str .= '<tr><td></td>';
                 }
-                $str .= '<td>' . $entry->status->name;
+                $str .= '<td style="text-align:left">' . $entry->status->name;
                 if ($entry->status->followup) {
                     $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
                 }
                 $str .= "</td></tr>";
             }
-            $str .= '</table></tbody>';
+            $str .= '</tbody></table>';
 
             if ($element->comments) {
                 $str .= "<strong>Comments:</strong> {$element->comments}";
