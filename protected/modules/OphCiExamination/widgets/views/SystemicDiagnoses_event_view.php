@@ -31,9 +31,8 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
             <div class="tile-data-overflow">
                 <table>
                     <colgroup>
+                        <col class="cols-8">
                         <col>
-                        <col width="55px">
-                        <col width="85px">
                     </colgroup>
                     <tbody>
                     <?php foreach ($element->orderedDiagnoses as $diag) { ?>
