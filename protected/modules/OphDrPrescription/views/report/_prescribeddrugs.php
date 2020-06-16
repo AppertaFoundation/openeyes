@@ -64,7 +64,7 @@
                     <td><?php echo $drug['route']?></td>
                     <td><?php echo $drug['dispense_condition']?></td>
                     <td><?php echo $drug['dispense_location']?></td>
-                    <td><?php echo $drug['laterality']?:'No laterality specified'?></td>
+                    <td><?php echo $drug['laterality'] ?: 'N/A' ?></td>
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>
