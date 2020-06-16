@@ -68,7 +68,8 @@ if (!empty($this->assessments)) {
                         'element' => null,
                         'show_titles' => true,
                         'is_examination' => true,
-                    ]);
+                    ]
+                );
                 ?>
                 <div class="js-assessment-container element-fields element-eyes">
                     <?php if (array_key_exists('left', $side_assessments) && !array_key_exists('right', $side_assessments)) { ?>
@@ -329,14 +330,14 @@ if (!empty($this->assessments)) {
             new OpenEyes.UI.AdderDialog({
                 openButton: $('#add-oct-btn'),
                 itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                        array_map(function ($assessment) {
+                    array_map(function ($assessment) {
                             $api = Yii::app()->moduleAPI->get('OphGeneric');
                             return [
                                 'label' => "{$api->getLaterality($assessment->event->id)->getAdjective()} {$assessment->event->firstEventSubtypeItem->event_subtype} ({$assessment->event->event_date})",
                                 'id' => $assessment->id
                             ];
-                        }, $this->assessments)
-                                                               ) ?>,
+                    }, $this->assessments)
+                ) ?>,
                     {'multiSelect': true}
                 ),
                 ],
