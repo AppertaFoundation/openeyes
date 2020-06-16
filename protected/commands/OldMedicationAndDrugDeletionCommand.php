@@ -38,7 +38,6 @@ USAGE
   php yiic oldmedicationanddrugdeletion
          
 EOH;
-
     }
 
     public function actionIndex()
