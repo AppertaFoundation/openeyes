@@ -15,68 +15,82 @@ class LogoHelper
      *
      * @return mixed
      */
-    public function render($template = '//base/_logo', $size = 100)
+    public function render($template = '//base/_logo', $size = 100, $site_id = null, $get_base_64 = false, $logo_id = null)
     {
+        if(!isset($site_id)) {
+            $site_id = Yii::app()->session['selected_site_id'];
+        }
         return Yii::app()->controller->renderPartial(
             $template,
             array(
-                'logo' => $this->getLogo(),
+                'logo' => $this->getLogoURLs($site_id, $get_base_64, $logo_id),
                 'size' => $size
             ),
             true
         );
     }
-
-    /**
-     * Gets the logo from where it might be, either uploaded or locally versioned.
-     *
-     * @return array
-     */
-    protected function getLogo()
+    
+    public function getLogoURLs($site_id = null, $get_base_64 = false, $logo_id = null)
     {
-        if (isset(Yii::app()->params['letter_logo_upload']) && Yii::app()->params['letter_logo_upload']){
-            return $this->getUploadedLogo();
+        // default logo
+        $default_logo_id = 1;
+        $default_logo = SiteLogo::model()->findByPk($default_logo_id); 
+        if(!$logo_id) {
+            if($site_id) {
+                $site = Site::model()->findByPk($site_id);
+                $institution = $site->institution;
+            }
+            if (isset($site->logo_id)) {
+                // get logos for site
+                $logo_id = $site->logo_id;
+                $logo = $site->logo;
+            } elseif(isset($institution->logo_id)) {
+                // get logos for site
+                $logo_id = $institution->logo_id;
+                $logo = $institution->logo;
+            } else {
+                // use default logo
+                $logo_id = $default_logo_id;
+                $logo = $default_logo;
+            }
         } else {
-            return $this->getVersionedLogo();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getUploadedLogo()
-    {
-        $logo = array();
-
-        $directory = \Yii::getPathOfAlias('application.runtime');
-        $images = glob("$directory/*.{png,jpg,gif}", GLOB_BRACE);
-
-        foreach($images as $image_path) {
-            if (strpos($image_path, 'header') !== false) {
-                Yii::app()->assetManager->publish($image_path, true);
-                $logo['headerLogo'] = $image_path;
-            }
-            if (strpos($image_path, 'secondary') !== false) {
-                Yii::app()->assetManager->publish($image_path, true);
-                $logo['secondaryLogo'] = $image_path;
-            }
+            $logo= SiteLogo::model()->findByPk($logo_id);
         }
 
-        return $logo;
-    }
-
-    /**
-     * Get the logo from the repo
-     *
-     * @return mixed
-     */
-    protected function getVersionedLogo()
-    {
-        $path = Yii::app()->basePath . '/assets/img/_print/';
-        $url = Yii::app()->assetManager->publish($path, true);
-        $logo['headerLogo'] = $url . '/letterhead_Moorfields_NHS.jpg';
-        $logo['secondaryLogo'] = $url . '/letterhead_seal.jpg';
-
-        return $logo;
+        $logoOut = array();
+        $url1 = 'sitelogo/primary/';
+        $url2 = 'sitelogo/secondary/';
+        $options = array();
+        if($get_base_64) {
+            if($logo->primary_logo) {
+                $imageData = base64_encode($logo->primary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['primaryLogo'] = 'data:;base64,'.$imageData;
+            } elseif($default_logo->primary_logo) {
+                $imageData = base64_encode($default_logo->primary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['primaryLogo'] = 'data:;base64,'.$imageData;
+            }
+            if($logo->secondary_logo) {
+                $imageData = base64_encode($logo->secondary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
+            } elseif($default_logo->secondary_logo) {
+                $imageData = base64_encode($default_logo->secondary_logo);
+                // Format the image SRC:  data:{mime};base64,{data};
+                $logoOut['secondaryLogo'] = 'data:;base64,'.$imageData;
+            }
+        } else {        
+            if($logo_id) {
+                $options = array('id' => $logo_id);
+            }
+            if($logo->primary_logo || $default_logo->primary_logo) {
+                $logoOut['primaryLogo'] = Yii::app()->createAbsoluteUrl($url1, $options);
+            }
+            if($logo->secondary_logo || $default_logo->secondary_logo) {
+                $logoOut['secondaryLogo'] = Yii::app()->createAbsoluteUrl($url2, $options);
+            }
+        }
+        return $logoOut;
     }
 }

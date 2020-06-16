@@ -32,9 +32,6 @@ $systemic_filter = function ($entry) use ($eye_filter){
     return !$eye_filter($entry);
 };
 
-$current = $element->current_entries;
-$stopped = $element->closed_entries;
-
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
@@ -44,10 +41,18 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
     <div class="nil-recorded">Nil recorded.</div>
 <?php } else { ?>
     <?php if ($current_eye_meds) { ?>
-        <table id="<?= $model_name ?>_entry_table">
+        <table id="<?= $model_name ?>_current_entry_table">
             <colgroup>
                 <col class="cols-7">
             </colgroup>
+            <thead style="display: none;">
+                <tr>
+                    <th>Drug</th>
+                    <th></th>
+                    <th>Eye &nbsp;&emsp;Start date</th>
+                    <th></th>
+                </tr>
+            </thead>
             <tbody>
             <?php foreach ($current_eye_meds as $entry) { ?>
                 <tr>
@@ -99,7 +104,15 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <div class="collapse-data-content">
                 <div class="restrict-data-shown">
                     <div class="restrict-data-content rows-10">
-                        <table>
+                        <table id="<?= $model_name ?>_stopped_entry_table">
+                            <thead style="display: none;">
+                                <tr>
+                                    <th>Drug</th>
+                                    <th></th>
+                                    <th>Eye &nbsp;&emsp;Start date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
                             <colgroup>
                                 <col class="cols-8">
                                 <col>

@@ -30,6 +30,9 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 MODULEROOT=$WROOT/protected/modules
 
+# Stop on error
+set -e
+
 # Process commandline parameters
 
 setsimportfile="$WROOT/protected/data/dmd_data/Drug-Type-Mappings.xlsx"

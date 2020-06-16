@@ -19,6 +19,7 @@
 return array(
     'params' => array(
         'admin_menu' => array(
+            'Manage Laser Procedures' => '/OphTrLaser/admin/managelaserprocedures',
             'Manage Lasers' => '/OphTrLaser/admin/manageLasers',
             'Laser operators' => '/OphTrLaser/admin/viewLaserOperators',
         ),

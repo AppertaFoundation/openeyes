@@ -286,11 +286,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       let controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
-          let bound_entry_key = $bound_entry.data('key');
-					let $full_bound_entry;
-					if (typeof $bound_entry !== 'undefined') {
-						$full_bound_entry = $bound_entry.parent().find("tr[data-key=" + bound_entry_key + "]");
-					}
+          let $full_bound_entry;
+          if (typeof $bound_entry !== 'undefined') {
+              $full_bound_entry = $bound_entry.parent().find("tr[data-key=" + $bound_entry.data('key') + "]");
+          }
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
               controller.updateBoundEntry($full_row);

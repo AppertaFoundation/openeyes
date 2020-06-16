@@ -63,6 +63,8 @@ class ProfileController extends BaseController
                         $user->{$field} = $_POST['User'][$field];
                     }
                 }
+                $user->password_hashed=true;
+
                 if (!$user->save()) {
                     $errors = $user->getErrors();
                 } else {
@@ -239,6 +241,8 @@ class ProfileController extends BaseController
                     throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
 
+                $user->password_hashed = true;
+
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -269,7 +273,6 @@ class ProfileController extends BaseController
             // from the portal we receive binary data:
 
             $user = User::model()->findByPk(Yii::app()->user->id);
-
             $portal_conn = new OptomPortalConnection();
             if ($portal_conn) {
                 $signature_data = $portal_conn->signatureSearch(
@@ -284,6 +287,7 @@ class ProfileController extends BaseController
                     );
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
+                        $user->password_hashed = true;
                         if ($user->save()) {
                             echo true;
                         }
@@ -292,7 +296,6 @@ class ProfileController extends BaseController
             }
         }
         echo false;
-
     }
 
     public function actionShowSignature()

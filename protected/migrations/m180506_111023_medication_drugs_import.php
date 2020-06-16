@@ -165,7 +165,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $command = $this->dbConnection;
                 $command->createCommand("
                           INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id, default_form_id, default_route_id, default_dose_unit_term) 
-                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
+                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, :source_old_id, :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
                 ->bindValue(':source_old_id', $drug['original_id'])
@@ -244,7 +244,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $command = null;
             $ref_medication_id = null;
         }
-        
     }
 
     public function down()

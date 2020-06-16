@@ -4,10 +4,10 @@
             <img src="<?php echo $logo['secondaryLogo'];?>" alt="letterhead_seal" width="80" />
         </div>
     <?php }
-    if (isset($logo['headerLogo'])) {
+    if (isset($logo['primaryLogo'])) {
         ?>
         <div class="ophdrprescription-letter-logo">
-            <img src="<?php  echo $logo['headerLogo']; ?>" alt="letterhead_NHS" width="350" />
+            <img src="<?php  echo $logo['primaryLogo']; ?>" alt="letterhead_NHS" width="350" />
         </div>
     <?php } ?>
 </div>

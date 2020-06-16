@@ -173,7 +173,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'type' => 'raw',
             'value' => function ($data) {
                 if (!$data->secondary_to) {
-                    return '<a href="javascript:void(0)" class="delete">delete</a>';
+                    return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
                 } else {
                     return '<span data-tooltip-content="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small js-has-tooltip"></span>';
                 }
@@ -406,7 +406,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                    id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
         </td>
         <td>
-            <a href="javascript:void(0)" class="delete">delete</a>
+            <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>
         </td>
     </tr>
 </script>

@@ -253,7 +253,7 @@ if ($historyElement) {
                     <?php if ($stopped_systemic_medications) { ?>
             <div class="collapse-data">
                     <div class="collapse-data-header-icon expand" data-blujay="0">
-                    Stopped
+                    Previoulsy Stopped
                     <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
                 </div>
                 <div class="collapse-data-content">

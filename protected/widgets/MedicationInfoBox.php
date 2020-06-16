@@ -61,13 +61,9 @@ class MedicationInfoBox extends \BaseCWidget
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        foreach ($medication->medicationSets as $sets) {
-            if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
-                $this->icon = 'formulary';
-                $this->append_label[] = 'This drug is available in the hospital formulary.';
-
-                break;
-            }
+        $alt_terms = $medication->alternativeTerms($medication);
+        if ($alt_terms !== '') {
+            $data['Aliases'] = $alt_terms;
         }
 
         if ($this->type === self::TYPE_LIGHT) {
@@ -84,39 +80,50 @@ class MedicationInfoBox extends \BaseCWidget
 
             // VTMs : No tool-tip needed, these are self explanatory
             // for local no tooltip is needed
-            return $data;
         }
 
-        // if $this->type === self::TYPE_ADVANCED
-        if (!$medication = Medication::model()->findByPk($medication_id)) {
-            $data = [];
-            $this->error = true;
-        } else {
-            $data = [
-                'label' => $medication->getLabel()
-            ];
+        if ($this->type === self::TYPE_ADVANCED) {
+            if (!$medication = Medication::model()->findByPk($medication_id)) {
+                $data = [];
+                $this->error = true;
+            } else {
+                $data = [
+                    'label' => $medication->getLabel()
+                ];
 
-            if ($medication->isAMP()) {
-                $data['Type'] = "Branded Product (AMP)";
-                $data['Generic'] = $medication->vmp_term;
-                $data['Moiety'] = $medication->vtm_term;
-            } elseif ($medication->isVMP()) {
-                $data['Type'] = "Generic Product (VMP)";
-                $data['Moiety'] = $medication->vtm_term;
-            } elseif ($medication->isVTM()) {
-                $data['Type'] = "Virtual Therapeutic Moiety (VTM)";
-            } elseif ($medication->source_type == Medication::SOURCE_TYPE_LOCAL) {
-                $data['Type'] = "Local";
+                if ($medication->isAMP()) {
+                    $data['Type'] = "Branded Product (AMP)";
+                    $data['Generic'] = $medication->vmp_term;
+                    $data['Moiety'] = $medication->vtm_term;
+                } elseif ($medication->isVMP()) {
+                    $data['Type'] = "Generic Product (VMP)";
+                    $data['Moiety'] = $medication->vtm_term;
+                } elseif ($medication->isVTM()) {
+                    $data['Type'] = "Virtual Therapeutic Moiety (VTM)";
+                } elseif ($medication->source_type == Medication::SOURCE_TYPE_LOCAL) {
+                    $data['Type'] = "Local";
+                }
+
+                $data["Code"] = $medication->preferred_code ? $medication->preferred_code : "N/A";
+
+                $data['Sets'] = implode(', ', array_map(function ($e) {
+                    return $e->name;
+                }, $medication->getMedicationSetsForCurrentSubspecialty()));
+
+                if ($data['Sets'] == "") {
+                    unset($data['Sets']);
+                }
             }
+        }
 
-            $data["Code"] = $medication->preferred_code ? $medication->preferred_code : "N/A";
+        foreach ($medication->medicationSets as $sets) {
+            if ($sets->hasUsageCode('Formulary', $site_id, $subspecialty_id)) {
+                $this->icon = 'formulary';
+                
+                //if  ( count($data) > 0 ) {$this->append_label[] ="<br/>";}
+                $this->append_label[] = "<i class='oe-i formulary pad small'></i><em>In hospital formulary.</em>";
 
-            $data['Sets'] = implode(', ', array_map(function ($e) {
-                return $e->name;
-            }, $medication->getMedicationSetsForCurrentSubspecialty()));
-
-            if ($data['Sets'] == "") {
-                unset($data['Sets']);
+                break;
             }
         }
 
@@ -145,7 +152,11 @@ class MedicationInfoBox extends \BaseCWidget
                 $lines[] = "<b>$key:</b> " . htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
             }
 
-            $lines[] = $this->getAppendLabel();
+            $append_l[] = $this->getAppendLabel();
+
+            // add a blank line between the data and the append label (only when there is data)
+            if (!empty($lines)){$lines[] = "";}
+            $lines = array_merge($lines, $append_l);
 
             if ($lines) {
                 return implode("<br/>", $lines);

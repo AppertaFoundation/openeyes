@@ -540,7 +540,7 @@ class ReportDiagnosesTest extends CDbTestCase
                 ':sdis0' => 1,
                 ':sdis1' => 2,
                 ':sdis2' => 3,
-                ':start_date' => '2002-05-10 00:00:00',
+                ':start_date' => '2002-05-10',
             ), $whereParams);
 
         $this->assertEquals(array(), $or_conditions);
@@ -631,7 +631,7 @@ class ReportDiagnosesTest extends CDbTestCase
                 ':sdis0' => 1,
                 ':sdis1' => 2,
                 ':sdis2' => 3,
-                ':start_date' => '2002-05-10 00:00:00',
+                ':start_date' => '2002-05-10',
                 ':end_date' => '2002-05-19 23:59:59',
             ), $whereParams);
 

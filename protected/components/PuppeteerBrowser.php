@@ -392,7 +392,7 @@ class PuppeteerBrowser extends CApplicationComponent
         if ($use_cookies) {
             $page->setCookie(
                 array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
-                array('name' => 'PHPSESSID', 'value' => $_COOKIE['PHPSESSID'], 'url' => $url)
+                array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
         $page->goto($url);
@@ -469,7 +469,7 @@ class PuppeteerBrowser extends CApplicationComponent
         if ($use_cookies) {
             $page->setCookie(
                 array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
-                array('name' => 'PHPSESSID', 'value' => $_COOKIE['PHPSESSID'], 'url' => $url)
+                array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
         $page->goto($url, array(
@@ -560,5 +560,10 @@ class PuppeteerBrowser extends CApplicationComponent
     public function fileSize($path)
     {
         return @filesize($path);
+    }
+    
+    public function setCustomTag($tag_name, $value)
+    {
+        $this->custom_tags[$tag_name] = $value;
     }
 }
