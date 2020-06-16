@@ -1595,9 +1595,7 @@ class DefaultController extends \BaseEventTypeController
             if (!$queue) {
                 $err['patientticket_queue'] = 'Virtual Clinic not found';
             } else {
-                if (!$api->canAddPatientToQueue($this->patient, $queue)) {
-                    $err['patientticket_queue'] = 'Cannot add Patient to Queue';
-                } else {
+                if ($api->canAddPatientToQueue($this->patient, $queue)) {
                     list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
                     $err = array_merge($err, $fld_errs);
                 }

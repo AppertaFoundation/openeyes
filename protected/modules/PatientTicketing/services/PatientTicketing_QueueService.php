@@ -89,6 +89,9 @@ class PatientTicketing_QueueService extends \services\ModelService
             return false;
         }
         $queue = $this->readModel($queue_id);
+        if ($queue && $queue->is_initial) {
+            return false;
+        }
         foreach ($queue->getDependentQueueIds() as $dep_id) {
             if ($this->getCurrentTicketCount($dep_id)) {
                 return false;
