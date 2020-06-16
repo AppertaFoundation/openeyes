@@ -34,7 +34,6 @@ if (empty($data['items'])) {?>
         <th>Target type</th>
         <th>Event type</th>
         <th>Patient</th>
-        <th>Episode</th>
     </tr>
     </thead>
     <tbody id="auditListData">

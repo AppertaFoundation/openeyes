@@ -71,7 +71,7 @@ if (isset($errors)) {
             'header' => 'Actions',
             'type' => 'raw',
             'value' => function ($data) {
-                return "<a href='javascript:void(0)' class='delete'>delete</a>";
+                return "<button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>";
             }
         ],
     ];
@@ -178,7 +178,7 @@ if (isset($errors)) {
             </select>
         </td>
         <td>
-            <a href="javascript:void(0)" class="delete">delete</a>
+            <button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>
         </td>
     </tr>
 </script>
