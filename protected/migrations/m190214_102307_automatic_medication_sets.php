@@ -64,7 +64,6 @@ class m190214_102307_automatic_medication_sets extends OEMigration
         $this->addForeignKey('fk_msarm_med_id', 'medication_set_auto_rule_medication_taper', 'medication_set_auto_rule_id', 'medication_set_auto_rule_medication', 'id');
         $this->addForeignKey('fk_msarm_freq_id', 'medication_set_auto_rule_medication_taper', 'frequency_id', 'medication_frequency', 'id');
         $this->addForeignKey('fk_msarm_duration_id', 'medication_set_auto_rule_medication_taper', 'duration_id', 'medication_duration', 'id');
-
     }
 
     public function down()

@@ -311,7 +311,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function validateRelations()
     {
-        $validation_processor = function($model, $prepend = null) {
+        $validation_processor = function ($model, $prepend = null) {
             $has_error = false;
             foreach ($model->getErrors() as $attribute => $errors) {
                 foreach ($errors as $k => $error) {
@@ -391,7 +391,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($e) {
             return $e->id;
-
         }, MedicationSetAutoRuleAttribute::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = array();
         foreach ($this->medicationAutoRuleAttributes as $attr) {
@@ -493,7 +492,6 @@ class MedicationSet extends BaseActiveRecordVersioned
     {
         $existing_ids = array_map(function ($rule) {
             return $rule->id;
-
         }, MedicationSetRule::model()->findAllByAttributes(['medication_set_id' => $this->id]));
         $updated_ids = [];
 
@@ -537,7 +535,6 @@ class MedicationSet extends BaseActiveRecordVersioned
         $cmd->select('id', 'DISTINCT')->from('medication');
         $attribute_option_ids = array_map(function ($e) {
             return $e->id;
-
         }, $this->autoRuleAttributes);
 
         $auto_set_ids = array_map(function ($e) {
