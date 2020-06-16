@@ -15,11 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 ?>
 <header class="print-header">
     <div class="logo">
-        <?= $logoHelper->render('//base/_logo', 70) ?>
+        <?= $logo_helper->render('//base/_logo', 70, $element->site->id, true); ?>
     </div>
 </header>
 

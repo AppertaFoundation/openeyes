@@ -164,6 +164,14 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     protected function isPostedEntries()
     {
         $class_name_underscores = str_replace("\\", "_", static::$elementClass);
-        return isset($_POST[$class_name_underscores]['entries']);
+
+        if (isset($_POST[$class_name_underscores]['JSON_string'])) {
+            $decoded_json = json_decode(
+                str_replace("'", '"', $_POST[$class_name_underscores]['JSON_string']),
+                true
+            );
+        }
+
+        return isset($_POST[$class_name_underscores]['entries']) || isset($decoded_json['entries']);
     }
 }

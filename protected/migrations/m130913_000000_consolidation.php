@@ -3115,7 +3115,7 @@ class m130913_000000_consolidation extends OEMigration
 							 KEY `idx_audit_trail_action` (`action`),
 							 KEY `idx_audit_trail_stamp` (`stamp`)
 							)
-							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
 
         $this->execute(
@@ -3253,7 +3253,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `data` text,
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
         );
 
         $this->execute(

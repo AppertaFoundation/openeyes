@@ -95,6 +95,7 @@ class Institution extends BaseActiveRecordVersioned
                 'condition' => 'sites.active = 1',
                 'order' => 'name asc',
             ),
+            'logo' => array(self::BELONGS_TO, 'SiteLogo', 'logo_id'),
         );
     }
 

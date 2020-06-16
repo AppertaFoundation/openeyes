@@ -79,6 +79,20 @@ function enableButtons(selector) {
 	$('.spinner').hide();
 }
 
+function enableButtonsWithin(selector) {
+	let $selector = $(selector);
+
+    $selector.find('button, .button').each(function(i, button){
+    	$(button).not('.cancel')
+            .removeClass('inactive')
+            .removeAttr('disabled')
+			.prop('disabled', false)
+            .off('click.disable');
+	});
+
+	$('.spinner').hide();
+}
+
 function updateActiveIcon($form){
   $form
     .find('table.standard tbody input[type="checkbox"]:checked')

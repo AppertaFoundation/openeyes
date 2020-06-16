@@ -55,7 +55,7 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     }
 
     public function documentRequired($attribute, $params) {
-        if (!$this->single_document && (!$this->left_document && !$this->right_document)) {
+        if ($this->getScenario() != "fileDeleted" && !$this->single_document && (!$this->left_document && !$this->right_document)) {
             $this->addError($attribute, 'at least one document is required.');
         }
     }

@@ -5,7 +5,7 @@
 -- 	     * Only "Unique" / Distinct drug names are imported (after supplier has been stripped) - DA descision
 --       * The extra ordered sub-query before the GROUP BY helps give a consistent result when running multiple times
 
-INSERT INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code, default_form_id)
+INSERT IGNORE INTO medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code, default_form_id)
 SELECT * FROM 
 	(SELECT
 		'DM+D' AS source_type,
@@ -34,6 +34,11 @@ SELECT * FROM
 	    LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
 	    LEFT JOIN medication_form mf ON mf.term COLLATE utf8_general_ci = fhit.desc AND mf.source_type = 'DM+D'
 	WHERE short_term.desc != vmp.nm
+		AND amp.invalid != '1'
 	) AS x
 GROUP BY x.preferred_term
 ;
+
+-- NOTE: The form and route should not be added here. It creates duplicates. I've put in a temporary hack by adding a unique index and using INSERT IGNORE to ignore the duplicates
+-- But this could lead to some odd selections when multiple forms/routes exist (only the first option will be inserted)
+-- TODO: remove joins for route and form here (instert to medication without default form/route), then add the form and route later in the process from the 'attributes', giving priority to 'Eye' route.

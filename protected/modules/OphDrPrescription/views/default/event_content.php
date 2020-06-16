@@ -75,9 +75,21 @@
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 
-    <?php echo $content; ?>
+    <?php if ($this->event->eventType->custom_hint_text && $this->event->eventType->hint_position === 'TOP') { ?>
+    <div class="alert-box info">
+        <div class="user-tinymce-content">
+            <?= $this->event->eventType->custom_hint_text ?>
+        </div>
+    </div>
+    <?php }
+    echo $content; ?>
+    <?php if ($this->event->eventType->custom_hint_text && $this->event->eventType->hint_position === 'BOTTOM') { ?>
+    <div class="alert-box info">
+        <?= $this->event->eventType->custom_hint_text ?>
+    </div>
+    <?php }
 
-    <?php if ($this->action->id === 'view') {
+    if ($this->action->id === 'view') {
         $this->renderEventMetadata();
     } ?>
     <?php

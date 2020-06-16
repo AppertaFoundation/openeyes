@@ -74,8 +74,6 @@ if (!$nowrapper) {?>
                   'type':'GET',
                   'data':{'term': request.term, 'code': '$code'},
                   'success':function(data) {
-                    data = $.parseJSON(data);
-    
                     var result = [];
     
                     for (var i = 0; i < data.length; i++) {

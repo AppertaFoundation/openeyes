@@ -91,7 +91,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202004201050',
+            'time' => '202006151040',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -656,7 +656,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
             //            'Worklist',
         ),
-        'oe_version' => 'Q3 2020 nightly',
+        'oe_version' => 'Q3 \'20 nightly',
         // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
         'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -670,7 +670,7 @@ return array(
             'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MIN_LEN_MESS')) : 'Passwords must be at least 8 characters long',
             'max_length' => getenv('PW_RES_MAX_LEN') ?: 70,
             'max_length_message' => getenv('PW_RES_MAX_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MAX_LEN_MESS')) : 'Passwords must be at most 70 characters long',
-            'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+            'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
         ),
     ),

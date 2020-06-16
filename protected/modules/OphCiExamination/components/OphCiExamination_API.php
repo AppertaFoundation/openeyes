@@ -1327,6 +1327,7 @@ class OphCiExamination_API extends \BaseAPI
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
                     $summary_obj->comments = $summaries->comments ?: $summaries->getSiblingString();
+                    $summary_obj->comments = preg_replace('/(\r\n\r\n|\r\r|\n\n)/', '<i class="oe-i d-slash small pad pro-theme"></i>', $summary_obj->comments);
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
@@ -2642,13 +2643,13 @@ class OphCiExamination_API extends \BaseAPI
                 } else {
                     $str .= '<tr><td></td>';
                 }
-                $str .= '<td>' . $entry->status->name;
+                $str .= '<td style="text-align:left">' . $entry->status->name;
                 if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
                 }
                 $str .= "</td></tr>";
             }
-            $str .= '</table></tbody>';
+            $str .= '</tbody></table>';
 
             if ($element->comments) {
                 $str .= "<strong>Comments:</strong> {$element->comments}";
@@ -2738,6 +2739,11 @@ class OphCiExamination_API extends \BaseAPI
                             $refractive_target = $element->{$side . '_target_postop_refraction'} . 'D' . " ({$refractive_categories[$element->{$side . '_refraction_category'}]})";
                         } ?>
                         <th style="width: 30%;"><?= $refractive_target ?></th>
+                    </tr>
+
+                    <tr>
+                        <th>Comments:</th>
+                        <th><?=!empty($element->{$side.'_notes'})?$element->{$side.'_notes'}:'No comments'?></th>
                     </tr>
                 <?php } ?>
                 </tbody>
@@ -3348,7 +3354,9 @@ class OphCiExamination_API extends \BaseAPI
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if (!is_null($element)) {
             /** @var models\MedicationManagement $element */
+
             $entries = $element->getEntriesStartedToday();
+
             if ($entries) {
                 $viewparams = array(
                     'entries' => $entries,
@@ -3596,53 +3604,48 @@ class OphCiExamination_API extends \BaseAPI
             </tr>
             </thead>
             <tbody>
-                <?php foreach ($current_eye_meds as $entry) : ?>
-                    <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
-                    <tr>
-                    <td><?= $entry->getMedicationDisplay(true) ?></td>
-                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '') ?></td>
-                        <td>
-                            <?php
-                            $laterality = $entry->getLateralityDisplay();
-                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
-                            ?>
-                        </td>
-                        <td>
-                            <?= $entry->frequency ? $entry->frequency : ''; ?>
-                        </td>
-                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
-                    </tr>
+                <?php foreach ($current_eye_meds as $entry) { ?>
                     <?php
-                                        $taper_date = $entry->end_date;
-                    foreach ($tapers as $taper) :
-                        if ($taper->duration) {
-                            if (in_array($taper->duration->name, array('Ongoing', 'Once', 'Other'))) {
-                                $taper_display_date = $taper->duration->name;
-                            } elseif ($taper_date) {
-                                $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
-                                $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
-                            } else {
-                                $taper_display_date = 'Ongoing';
-                            }
-                        }
-                        ?>
-                        <tr>
-                            <td>
-                                <div class="oe-i child-arrow small no-click"></div>
-                                <i> then</i>
-                            </td>
-                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
-                            <td>
-                            </td>
-                            <td>
-                                <?= $taper->frequency ? $taper->frequency->term : '' ?>
-                            </td>
-                            <td>
-                                <?= $taper_display_date ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endforeach; ?>
+                        $tapers = [];
+                        $comments = $entry->comments ?: null;
+                        $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
+                    if ($entry->prescription_item_id) {
+                        $tapers = $entry->prescriptionItem->tapers;
+                        $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
+                        $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) : $entry->medicationDuration->name;
+                        $comments = $entry->prescriptionItem->comments ?: ($entry->comments ?: null);
+                    }
+                    ?>
+                    <tr>
+                    <td>
+                        <?= $entry->getMedicationDisplay(true) ?>
+                        <?= $comments ? ('<br /><br /><i>Comment: </i>' . $comments) : '' ?>
+                    </td>
+                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '') ?></td>
+                        <td>
+                            <?=$entry->getLateralityDisplay(true)?>
+                        </td>
+                        <td><?= $entry->frequency ? $entry->frequency : ''; ?></td>
+                        <td><?= $stop_display_date ?: 'Ongoing' ?></td>                        
+                    </tr>
+                    <?php if ($tapers) {
+                        $taper_date = $stop_date;
+                        foreach ($tapers as $taper) {
+                            $taper_display_date = $taper->stopDateFromDuration($taper_date); ?>
+                            <tr>
+                                <td>
+                                    <div class="oe-i child-arrow small no-click"></div>
+                                    <i> then</i>
+                                </td>
+                                <td><?=$taper->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '')?></td>
+                                <td></td>
+                                <td><?= $taper->frequency ? $taper->frequency->term : '' ?></td>
+                                <td><?= $taper_display_date ? \Helper::convertDate2NHS($taper_display_date->format('Y-m-d')) : $taper->duration->name; ?></td>
+                            </tr>
+                            <?php $taper_date = $taper_display_date ?? $taper_date; ?>
+                        <?php } ?>
+                    <?php } ?>
+                <?php } ?>
             </tbody>
         </table>
 
@@ -3694,45 +3697,41 @@ class OphCiExamination_API extends \BaseAPI
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($current_systemic_meds as $entry) : ?>
-                            <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers : []; ?>
+            <?php foreach ($current_systemic_meds as $entry) { ?>
+                <?php
+                $tapers = [];
+                $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
+                $comments = $entry->comments ?: null;
+                if ($entry->prescription_item_id) {
+                    $tapers = $entry->prescriptionItem->tapers;
+                    $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
+                    $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$entry->medicationDuration->name;
+                    $comments = $entry->prescriptionItem->comments ?: ($entry->comments ?: null);
+                } ?>
                 <tr>
-                    <td><?= $entry->getMedicationDisplay(true) ?></td>
-                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' ' . $entry->dose_unit_term) : '') ?></td>
-                    <td>
-                        <?= $entry->frequency ? $entry->frequency : ''; ?>
-                    </td>
-                    <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
+                    <td><?= $entry->getMedicationDisplay(true) ?>
+                    <?= $comments ? ('<br /><br /><i>Comment: </i>' . $comments) : '' ?></td>
+                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term . ')') : '') ?></td>
+                    <td><?= $entry->frequency ? $entry->frequency : ''; ?></td>
+                    <td><?= $stop_display_date ?></td>
                 </tr>
-                            <?php
-                            $taper_date = $entry->end_date;
-                            foreach ($tapers as $taper) :
-                                if ($taper->duration) {
-                                    if (in_array($taper->duration->name, array('Ongoing', 'Once', 'Other'))) {
-                                                    $taper_display_date = $taper->duration->name;
-                                    } elseif ($taper_date) {
-                                                    $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
-                                                    $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
-                                    } else {
-                                                    $taper_display_date = 'Ongoing';
-                                    }
-                                }
-                                ?>
-                                    <tr>
-                                            <td>
-                                                    <div class="oe-i child-arrow small no-click"></div>
-                                                    <i> then</i>
-                                            </td>
-                                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
-                                            <td>
-                                                    <?= $taper->frequency ? $taper->frequency->term : '' ?>
-                                            </td>
-                                            <td>
-                                                    <?= $taper_display_date ?>
-                                            </td>
-                                    </tr>
-                            <?php endforeach; ?>
-            <?php endforeach; ?>
+                <?php if ($tapers) {
+                    $taper_date = $stop_date;
+                    foreach ($tapers as $taper) {
+                        $taper_display_date = $taper->stopDateFromDuration($taper_date); ?>
+                    <tr>
+                        <td>
+                            <div class="oe-i child-arrow small no-click"></div>
+                            <i> then</i>
+                        </td>
+                        <td><?=$taper->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term . ')') : '')?></td>
+                        <td><?= $taper->frequency ? $taper->frequency->term : '' ?></td>
+                        <td><?= $taper_display_date ? \Helper::convertDate2NHS($taper_display_date->format('Y-m-d')) : $taper->duration->name;?></td>
+                    </tr>
+                        <?php $taper_date = $taper_display_date ?? $taper_date; ?>
+                    <?php } ?>
+                <?php } ?>
+            <?php } ?>
             </tbody>
         </table>
 

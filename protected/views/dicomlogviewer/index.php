@@ -66,7 +66,7 @@
 <script type="text/javascript">
     function searchDicomLog(){
         $.ajax({
-            'url': '<?php echo Yii::app()->createUrl('//DicomLogViewer/search'); ?>',
+            'url': '<?php echo Yii::app()->createUrl('DicomLogViewer/search'); ?>',
             'type': 'POST',
             'data': $('#auditList-filter').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
             'beforeSend':function (){

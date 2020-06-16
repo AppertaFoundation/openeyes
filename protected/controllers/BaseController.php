@@ -414,14 +414,15 @@ class BaseController extends Controller
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = "<b><strong><p><input><option><select><table><thead><tbody><tr><th><td><i><em><span><br><ul><ol><li><div>";
+        $allowable_tags = ["b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div"];
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {
                     $input[$key] = $this->sanitizeInput($value);
                     continue;
                 }
-                $value = strip_tags($value, $allowable_tags);
+                $pattern = '/<(?:(?!\b' . implode('\b|\b', $allowable_tags) . '\b).)*?>/';
+                $value = preg_replace($pattern, '', $value);
                 $input[$key] = $value;
             }
         }

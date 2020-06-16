@@ -22,5 +22,4 @@ class m200504_083443_edit_csm_shortcode_for_cataract_surgical_management extends
     {
         $this->delete('patient_shortcode', 'code = :sc', array(':sc' => 'cst'));
     }
-
 }

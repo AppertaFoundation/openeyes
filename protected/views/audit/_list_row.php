@@ -50,13 +50,6 @@ $core_api = new CoreAPI();
             -
         <?php }?>
     </td>
-    <td>
-        <?php if ($log->episode) {?>
-            <?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
-        <?php } else {?>
-            -
-        <?php }?>
-    </td>
 </tr>
 <tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd'; echo ' '.strtolower($log->colour);?> auditextra<?php echo $log->id?>" style="display: none;">
     <td colspan="9">
