@@ -71,9 +71,13 @@
                     if (isset($_POST['attachments_event_id'])) { ?>
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]"
                                value="<?= $_POST['attachments_event_id'][$row_index] ?>"/>
+                        <input type="hidden" name="file_id[<?= $row_index ?>]"
+                               value="<?= $_POST['file_id'][$row_index] ?>"/>
                     <?php } else if (isset($value->associated_protected_file_id)) { ?>
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]"
                                value="<?= $event_id ?>"/>
+                        <input type="hidden" name="file_id[<?= $row_index ?>]"
+                               value="<?= $value->associated_protected_file_id ?>"/>
                     <?php }
 
                     if (isset($_POST['attachments_display_title'])) {
