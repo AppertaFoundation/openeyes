@@ -21,7 +21,7 @@
 $based_on = array();
 $search_term = "";
 if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME ' ;
+    $based_on[] = 'LAST NAME';
     $search_term = $search_terms['last_name'];
 }
 if ($search_terms['first_name']) {
