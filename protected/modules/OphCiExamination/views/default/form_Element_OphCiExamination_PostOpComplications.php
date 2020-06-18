@@ -43,6 +43,17 @@ $defaultURL = '/' . Yii::app()->getModule('OphCiExamination')->id . '/' . Yii::a
 $left_values = $element->getRecordedComplications(\Eye::LEFT, $operation_note_id);
 $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_id);
 
+$left_other_values = array_filter($left_values, function ($val) {
+    return $val['name'] == 'other';
+});
+
+$right_other_values = array_filter($right_values, function ($val) {
+    return $val['name'] == 'other';
+});
+
+$left_other = !empty($left_other_values) ? array_values($left_other_values)[0]['other'] : '';
+
+$right_other = !empty($right_other_values) ? array_values($right_other_values)[0]['other'] : '';
 ?>
 
 <?php if ($operationNoteList) : ?>
@@ -97,8 +108,9 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
               <tbody>
               <?php foreach (${$eye_side . '_values'} as $key => $value) : ?>
                 <tr>
-                  <td class="postop-complication-name">
-                      <?php echo $value['name']; ?>
+                  <td class="postop-complication-name"  data-complication-name="<?=$value['name']?>">
+                      <?=  $value['name'] == 'other' ? $value['name'] . ' : ' . $value['other'] : $value['name']; ?>
+                      <?= CHtml::hiddenField("complication_other[$eye_abbr]", ${$eye_side . '_other'}); ?>
                   </td>
                   <td class='<?= $eye_side ?>'>
                     <a class="postop-complication-remove-btn" href="javascript:void(0)">
@@ -140,7 +152,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
           url: 'getPostOpComplicationAutocopleteList',
           onSelect: function(){
               let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-              addPostOpComplicationTr(AutoCompleteResponse.label,'right-complication-list', AutoCompleteResponse.value, 0  );
+              addPostOpComplicationTr(AutoCompleteResponse.label,'right-complication-list', AutoCompleteResponse.value, 0 );
               setPostOpComplicationTableText();
           }
       });
@@ -150,7 +162,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
           url: 'getPostOpComplicationAutocopleteList',
           onSelect: function(){
               let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-              addPostOpComplicationTr(AutoCompleteResponse.label,'left-complication-list', AutoCompleteResponse.value, 0  );
+              addPostOpComplicationTr(AutoCompleteResponse.label,'left-complication-list', AutoCompleteResponse.value, 0 );
               setPostOpComplicationTableText();
           }
       });
