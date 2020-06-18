@@ -63,7 +63,7 @@ if (@$disabled) {
         <?php if (isset($row->active)) {
             echo CHtml::checkBox('active['.$i.']', $row->active);
         } elseif (!$this->cannot_delete) {?>
-            <a href="#" class="deleteRow">delete</a>
+            <button type='button'><a href="#" class="deleteRow">delete</a></button>
         <?php }?>
     </td>
     <?php if ($model::model()->hasAttribute('default')) {?>
