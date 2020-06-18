@@ -989,7 +989,7 @@ $(document).ready(function() {
             var select_value = $(this).val();
 
             if(select_value >= 0){
-                addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
+                addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order'));
                 if(selected_text !== "other") {
                     $(this).find('option:selected').hide();
                 }
@@ -1003,7 +1003,7 @@ $(document).ready(function() {
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){
 
             var value = $(this).parent().find('input[type=hidden]').val();
-            var text = $(this).closest('tr').find('.postop-complication-name').text().trim();
+            var text = $(this).parent().closest('tr').find('.postop-complication-name').data('complication-name');
 
             var select_id = $(this).closest('table').attr('id').replace('list', 'select');
 
@@ -1055,8 +1055,14 @@ $(document).ready(function() {
     {
 
         var $table = $('#' + table_id);
+        var eye_abbreviation = $table.data('sideletter');
         var $tr = $('<tr>');
-        var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
+        var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text).data('complication-name',selected_text);
+        var $other_text = '';
+        if(selected_text == "other") {
+            $td_name = $td_name.text($td_name.text() + ' : ');
+            $other_text = $('<input type="text" value="" name="complication_other['+ eye_abbreviation+ ']" id="complication_other_' + eye_abbreviation + '">')
+        }
 
         var $hidden_input = $("<input>", {
             type:"hidden",
@@ -1068,6 +1074,7 @@ $(document).ready(function() {
 
         var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>" );
         $td_action.append($hidden_input);
+        $td_name.append($other_text);
 
         $tr.append($td_name);
         $tr.append($td_action);
