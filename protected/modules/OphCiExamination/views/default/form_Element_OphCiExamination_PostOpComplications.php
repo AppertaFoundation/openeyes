@@ -99,13 +99,13 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                 <tr>
                   <td class="postop-complication-name">
                       <?php echo $value['name']; ?>
-                      <?php echo \CHtml::hiddenField("complication_items[$eye_abbr][$key]", $value['id'],
-                          array('id' => "complication_items_" . $eye_abbr . "_$key")); ?>
                   </td>
                   <td class='<?= $eye_side ?>'>
                     <a class="postop-complication-remove-btn" href="javascript:void(0)">
                       <i class="oe-i trash"></i>
                     </a>
+                      <?php echo \CHtml::hiddenField("complication_items[$eye_abbr][$key]", $value['id'],
+                          array('id' => "complication_items_" . $eye_abbr . "_$key")); ?>
                   </td>
                 </tr>
               <?php endforeach; ?>
