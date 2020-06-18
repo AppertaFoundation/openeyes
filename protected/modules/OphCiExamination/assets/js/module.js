@@ -990,16 +990,20 @@ $(document).ready(function() {
 
             if(select_value >= 0){
                 addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
-                $(this).find('option:selected').remove();
+                if(selected_text !== "other") {
+                    $(this).find('option:selected').hide();
+                }
                 setPostOpComplicationTableText();
             }
+
+            $(this).val('');
 
         });
 
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){
 
             var value = $(this).parent().find('input[type=hidden]').val();
-            var text = $(this).closest('tr').find('.postop-complication-name').text();
+            var text = $(this).closest('tr').find('.postop-complication-name').text().trim();
 
             var select_id = $(this).closest('table').attr('id').replace('list', 'select');
 
