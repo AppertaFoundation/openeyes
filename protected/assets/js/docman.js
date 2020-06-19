@@ -286,6 +286,7 @@ var docman = (function() {
         }
 
             if(contact_id != 'OTHER' ){
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').attr('disabled', 'true');
             	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
