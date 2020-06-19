@@ -138,13 +138,13 @@
     </tr>
     <tr>
         <td colspan="2">
-            <?php echo $form->textArea(
-                $element,
-                'report',
-                array('nowrapper' => true),
-                false,
-                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report')
-            ) ?>
+            <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false,
+                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report', 'readonly' => true)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
         </td>
     </tr>
     <tr>
