@@ -146,6 +146,17 @@
           </tr>
 
           <tr>
+              <td>
+                  <div class="data-label">Comments</div>
+              </td>
+              <td>
+                  <div class="data-value">
+                      <?= CHtml::encode($element->comments); ?>
+                  </div>
+              </td>
+          </tr>
+
+          <tr>
             <td>
               <div class="data-label">Difficulties</div>
             </td>
