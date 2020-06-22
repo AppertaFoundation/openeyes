@@ -130,72 +130,45 @@ $config = array(
         'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => '',
         'ldap_dn' => 'CN=Users,dc=example,dc=com',
-        'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
-        'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
-        'specialty_codes' => array(130),
         //'default_site_code' => '',
-        'specialty_sort' => array(130, 'SUP'),
         'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
-        // flag to turn on drag and drop sorting for dashboards
+        //// flag to turn on drag and drop sorting for dashboards
         // 'dashboard_sortable' => true
-        'event_print_method' => 'pdf',
-        // default start time used for automatic worklist definitions
+        //// default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
-        // default end time used for automatic worklist definitions
+        //// default end time used for automatic worklist definitions
         //'worklist_default_end_time' => 'H:i',
-        // number of patients to show on each worklist dashboard render
+        //// number of patients to show on each worklist dashboard render
         //'worklist_default_pagination_size' => int,
-        // number of days in the future to retrieve worklists for the automatic dashboard render
+        //// number of days in the future to retrieve worklists for the automatic dashboard render
         //'worklist_dashboard_future_days' => int,
-        // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
-        'worklist_dashboard_skip_days' => array('NONE'),
-        //how far in advance worklists should be generated for matching
-        //'worklist_default_generation_limit' => interval string (e.g. 3 months)
-        // override edit checks on definitions so they can always be edited (use at own peril)
+        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        // 'worklist_dashboard_skip_days' => array('NONE'),
+        //// how far in advance worklists should be generated for matching
+        // 'worklist_default_generation_limit' => interval string (e.g. 3 months)
+        //// override edit checks on definitions so they can always be edited (use at own peril)
         //'worklist_always_allow_definition_edit' => bool
-        // whether we should render empty worklists in the dashboard or not
-        //'worklist_show_empty' => bool
-        // allow duplicate entries on an automatic worklist for a patient
-        //'worklist_allow_duplicate_patients' => bool
-        // any appointments sent in before this date will not trigger errors when sent in
-        //'worklist_ignore_date => 'Y-m-d',
-        'portal' => array(
-            'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
-            'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
-            'endpoints' => array(
-                'auth' => '/oauth/access',
-                'examinations' => '/examinations/searches',
-                'signatures' => '/signatures/searches'
-            ),
-            'credentials' => array(
-                'username' =>  getenv('OE_PORTAL_USERNAME') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com'),
-                'password' => getenv('OE_PORTAL_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass'),
-                'grant_type' => 'password',
-                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
-                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
-            ),
-        ),
-        'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
-        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
-        'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
-        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
-        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
-        // possible values:
-        // none => XML output is suppressed
-        // format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
-        // format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
-        // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
+        //// whether we should render empty worklists in the dashboard or not
+        // 'worklist_show_empty' => bool
+        //// allow duplicate entries on an automatic worklist for a patient
+        // 'worklist_allow_duplicate_patients' => bool
+        //// any appointments sent in before this date will not trigger errors when sent in
+        // 'worklist_ignore_date => 'Y-m-d',
+        
+        /**
+        * Filename format for the PDF and XML files output by the docman export
+        * possible values:
+        *
+        * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
+        * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
+        * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
+        * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
+        */
         'docman_filename_format' => 'format1',
         // set this to false if you want to suppress XML output
-        'docman_generate_xml' => false,
-        'contact_labels' => array(
-            'Staff',
-            'Consultant Ophthalmologist',
-            'Other specialist',
-        )
+        'docman_generate_xml' => true,
     ),
 );
 

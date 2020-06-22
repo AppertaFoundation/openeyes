@@ -209,26 +209,28 @@ $(document).ready(function() {
 		return $helper;
 	};
 
-	$('.sortable').sortable({
-		helper: fixHelperModified,
-		update: function (event, ui) {
-			var ids = [];
-			$('tbody.sortable').children('tr').map(function () {
-				ids.push($(this).attr('data-attr-id'));
-			});
-			$.ajax({
-				'type': 'POST',
-				'url': $('tbody.sortable').data('sort-uri'),
-				'data': {order: ids, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-				'success': function (data) {
-					new OpenEyes.UI.Dialog.Alert({
-						content: 'Re-ordered'
-					}).open();
-				}
-			});
+	if ($('tbody.sortable').data('sort-uri')) {
+		$('.sortable').sortable({
+			helper: fixHelperModified,
+			update: function (event, ui) {
+				var ids = [];
+				$('tbody.sortable').children('tr').map(function () {
+					ids.push($(this).attr('data-attr-id'));
+				});
+				$.ajax({
+					'type': 'POST',
+					'url': $('tbody.sortable').data('sort-uri'),
+					'data': {order: ids, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+					'success': function (data) {
+						new OpenEyes.UI.Dialog.Alert({
+							content: 'Re-ordered'
+						}).open();
+					}
+				});
 
-		}
-	}).disableSelection();
+			}
+		}).disableSelection();
+	}
 });
 
 function OphTrOperationbooking_showMatchingRule() {

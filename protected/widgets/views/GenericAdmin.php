@@ -38,7 +38,8 @@
     <?php }
     if ($filters_ready) { ?>
         <?= CHtml::beginForm() ?>
-        <table class="standard generic-admin">
+
+        <table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?> ">
             <thead>
                 <tr>
                     <?php if ($display_order) { ?>
@@ -64,7 +65,7 @@
                     <?php }?>
                 </tr>
             </thead>
-            <tbody class="<?= ($display_order) ? 'sortable' : ''?>">
+            <tbody>
     <?php }
 }
 ?>
