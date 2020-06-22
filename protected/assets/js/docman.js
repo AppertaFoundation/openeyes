@@ -348,7 +348,8 @@ var docman = (function() {
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
-                    updateReData(resp.contact_type);
+                    let is_Cc = $('#DocumentTarget_' + rowindex + '_attributes_ToCc').val() === "Cc";
+                    updateReData(resp.contact_type, is_Cc);
 
                     $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
