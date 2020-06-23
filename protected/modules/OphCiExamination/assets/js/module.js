@@ -990,9 +990,7 @@ $(document).ready(function() {
 
             if(select_value >= 0){
                 addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order'));
-                if(selected_text !== "other") {
-                    $(this).find('option:selected').hide();
-                }
+                $(this).find('option:selected').remove();
                 setPostOpComplicationTableText();
             }
 
@@ -1060,7 +1058,7 @@ $(document).ready(function() {
         var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text).data('complication-name',selected_text);
         var $other_text = '';
         if(selected_text == "other") {
-            $td_name = $td_name.text($td_name.text() + ' : ');
+            $td_name = $td_name.text($td_name.text() + ' ');
             $other_text = $('<input type="text" value="" name="complication_other['+ eye_abbreviation+ ']" id="complication_other_' + eye_abbreviation + '">')
         }
 
