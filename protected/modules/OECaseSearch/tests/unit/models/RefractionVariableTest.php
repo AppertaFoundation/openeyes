@@ -44,23 +44,23 @@ class RefractionVariableTest extends CDbTestCase
             'Standard' => array(
                 'csv_mode' => null,
                 'query_template' => '
-        SELECT 10 * FLOOR(value/10) r, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        SELECT FLOOR(value) refraction, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_refraction
         WHERE patient_id IN (1, 2, 3)
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)
+        GROUP BY FLOOR(value)
         ORDER BY 1'
             ),
             'Basic CSV' => array(
                 'csv_mode' => 'BASIC',
                 'query_template' => '
-        SELECT 10 * FLOOR(value/10) r, COUNT(*) frequency
+        SELECT FLOOR(value) refraction, COUNT(*) frequency
         FROM v_patient_refraction
         WHERE patient_id IN (1, 2, 3)
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)
+        GROUP BY FLOOR(value)
         ORDER BY 1'
             ),
             'Advanced CSV' => array(

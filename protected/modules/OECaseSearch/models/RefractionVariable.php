@@ -15,12 +15,12 @@ class RefractionVariable extends CaseSearchVariable implements DBProviderInterfa
         switch ($this->csv_mode) {
             case 'BASIC':
                 return '
-        SELECT 10 * FLOOR(value/10) r, COUNT(*) frequency
+        SELECT FLOOR(value) refraction, COUNT(*) frequency
         FROM v_patient_refraction
         WHERE patient_id IN (' . implode(', ', $this->id_list) . ')
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)
+        GROUP BY FLOOR(value)
         ORDER BY 1';
                 break;
             case 'ADVANCED':
@@ -35,12 +35,12 @@ class RefractionVariable extends CaseSearchVariable implements DBProviderInterfa
                 break;
             default:
                 return '
-        SELECT 10 * FLOOR(value/10) r, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        SELECT FLOOR(value) refraction, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_refraction
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)
-        GROUP BY FLOOR(value/10)
+        GROUP BY FLOOR(value)
         ORDER BY 1';
                 break;
         }
