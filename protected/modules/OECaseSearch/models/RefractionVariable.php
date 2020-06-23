@@ -36,7 +36,7 @@ class RefractionVariable extends CaseSearchVariable implements DBProviderInterfa
             default:
                 return '
         SELECT 10 * FLOOR(value/10) r, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
-        FROM v_patient_refraction r
+        FROM v_patient_refraction
         WHERE patient_id IN (' . implode(', ', $this->id_list) .')
         AND (:start_date IS NULL OR event_date > :start_date)
         AND (:end_date IS NULL OR event_date < :end_date)

@@ -90,9 +90,9 @@ class RefractionVariableTest extends CDbTestCase
 
     public function testGetVariableData()
     {
-        $this->assertEquals('Refraction', $this->variable->field_name);
+        $this->assertEquals('refraction', $this->variable->field_name);
         $this->assertEquals('Refraction', $this->variable->label);
-        $this->assertEquals('Refraction (microns)', $this->variable->x_label);
+        $this->assertEquals('Refraction (mean sph)', $this->variable->x_label);
         $this->assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
 
