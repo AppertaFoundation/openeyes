@@ -43,46 +43,34 @@ class ImportDrugsCommand extends CConsoleCommand
         'SUPPCD' => 'SUPPLIER.CD',
         'UNIT_DOSE_UOMCD' => 'UNIT_DOSE_UNIT_OF_MEASURE.CD'
     ];
-    private $route_mapping = [
-        '1_drug_route' => '54485002',
-        '2_drug_route' => '78421000',
-        '3_drug_route' => '18679011000001101',
-        '4_drug_route' => '418821007',
-        '5_drug_route' => '372464004',
-        '6_drug_route' => '418401004',
-        '7_drug_route' => '47625008',
-        '8_drug_route' => '46713006',
-        '9_drug_route' => '78421000',
-        '10_drug_route' => '26643006',
-        '11_drug_route' => '37161004',
-        '12_drug_route' => '16857009',
-        '13_drug_route' => '372476004',
-        '14_drug_route' => '37839007',
-        '15_drug_route' => '34206005',
-        '16_drug_route' => '46713006',
-        '17_drug_route' => '45890007'
-    ];
+    
     private $uom_to_forms_mapping = [
-        'drop' => ['Drops', 'Modified-release drops', 'Homeopathic drops',
-                    'Eye drops', 'Ear drops', 'Nasal drops', 'Oral drops',
-                    'Ear/eye drops solution', 'Ear/eye/nose drops solution'],
-        
-        'tablet' => ['Tablets','Buccal tablet','Chewable tablet',
-                     'Dispersible tablet','Effervescent tablet',
-                     'Effervescent vaginal tablet','Gastro-resistant tablet',
-                     'Modified-release tablet','Muco-adhesive buccal tablet',
-                     'Orodispersible tablet','Soluble tablet','Sublingual tablet',
-                     'Homeopathic tablet','Modified-release muco-adhesive buccal tablet',
-                     'Tablet for cutaneous solution'],
+        'drop' => [
+            'Drops', 'Modified-release drops', 'Homeopathic drops',
+            'Eye drops', 'Ear drops', 'Nasal drops', 'Oral drops',
+            'Ear/eye drops solution', 'Ear/eye/nose drops solution'
+        ],
 
-        'capsule' => ['Capsule', 'Gastro-resistant capsule', 'Modified-release capsule',
-                      'Chewable capsule'],
+        'tablet' => [
+            'Tablets', 'Buccal tablet', 'Chewable tablet',
+            'Dispersible tablet', 'Effervescent tablet',
+            'Effervescent vaginal tablet', 'Gastro-resistant tablet',
+            'Modified-release tablet', 'Muco-adhesive buccal tablet',
+            'Orodispersible tablet', 'Soluble tablet', 'Sublingual tablet',
+            'Homeopathic tablet', 'Modified-release muco-adhesive buccal tablet',
+            'Tablet for cutaneous solution'
+        ],
+
+        'capsule' => [
+            'Capsule', 'Gastro-resistant capsule', 'Modified-release capsule',
+            'Chewable capsule'
+        ],
 
         'sachet' => ['Sachet'],
         'lozenge' => ['Lozenge'],
         'pastille' => ['Pastille'],
         'pessary' => ['Pessary'],
-     ];
+    ];
     private $skip_XML_files_containing = [
         'f_ampp2',
         'f_vmpp2'
@@ -117,7 +105,13 @@ class ImportDrugsCommand extends CConsoleCommand
         $this->setParams($this->getParams($params));
 
         if (method_exists($this, $action)) {
-            $this->$action();
+            try {
+                $this->$action();
+            } catch (CDbException $e) {
+                echo PHP_EOL . "ERROR: " . $e->getMessage();
+                echo PHP_EOL ."TRACE: " . $e->getTraceAsString();
+                return 1;
+            }
         } else {
             $this->halt('Invalid action: ' . $action);
         }
@@ -518,12 +512,12 @@ EOD;
                     $multipleValues = empty($multipleValues) ? $values : $multipleValues . "," . $values;
                     $multipleValuesCurrentCount++;
                     if ($rowIndex === ($rowCount - 1) || $multipleValuesCurrentCount === $multipleValuesMaxCount) {
-                            $insertMultipleCommand = sprintf(
-                                $this->insertMultipleTemplate,
-                                $fullTableName,
-                                $fields,
-                                $multipleValues
-                            );
+                        $insertMultipleCommand = sprintf(
+                            $this->insertMultipleTemplate,
+                            $fullTableName,
+                            $fields,
+                            $multipleValues
+                        );
                         $sqlCommands[] = $insertMultipleCommand;
                         $multipleValues = '';
                         $multipleValuesCurrentCount = 0;
@@ -583,8 +577,8 @@ EOD;
         }
 
         $scripts = [
-            'delete', 'forms_routes', 'copy_amp', 'copy_vmp', 'copy_vtm', 'sets', 'ref_medication_sets', 'search_index',
-            'replace_legacy_with_dmd', 'laterality_mapping'
+            'delete', 'forms_routes', 'copy_vtm', 'copy_vmp', 'copy_amp', 'sets', 'ref_medication_sets', 'search_index',
+            'replace_legacy_with_dmd', 'laterality_mapping', 'map_routes'
         ];
 
         foreach ($scripts as $script) {
@@ -623,11 +617,11 @@ EOD;
         ];
 
         Yii::app()->db->createCommand("DELETE FROM medication_attribute_assignment")->execute();
-        Yii::app()->db->createCommand("DELETE FROM  medication_attribute_option")->execute();
+        Yii::app()->db->createCommand("DELETE FROM medication_attribute_option")->execute();
         Yii::app()->db->createCommand("DELETE FROM medication_attribute")->execute();
 
         $cmd = "INSERT INTO  medication_attribute (`name`) VALUES " . implode(",", array_map(function ($e) {
-                return "('$e')";
+            return "('$e')";
         }, $lookup_tables));
         Yii::app()->db->createCommand($cmd)->execute();
         foreach ($lookup_tables as $table) {
@@ -653,6 +647,7 @@ EOD;
         Yii::app()->db->createCommand($cmd)->execute();
 
         $pres_free_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$pres_free_id' AND `value` = '0001'")->queryScalar();
+
         // validity as a prescribable product
         $validity_opt_id = Yii::app()->db->createCommand("SELECT id FROM medication_attribute_option WHERE `medication_attribute_id` = '$virtual_product_pres_status_id' AND `value` = '0001'")->queryScalar();
 
@@ -769,12 +764,12 @@ EOD;
 
         foreach ($tables as $table => $table_properties) {
             $this->printMsg("Importing attributes for $table .." . str_repeat(" ", 14), false);
-            
+
             foreach ($this->attribs as $attr_key => $attrib) {
                 $attr_name_parts = explode(".", $attrib);
                 $attr_name = $attr_name_parts[0];
                 $attr_key = strtolower($attr_key);
-                
+
                 $attribute_in_table = Yii::app()->db->createCommand("SELECT COUNT(TABLE_NAME)
                                                                     FROM INFORMATION_SCHEMA.COLUMNS
                                                                     WHERE COLUMN_NAME = '" . $attr_key . "'
@@ -787,10 +782,10 @@ EOD;
                                 FROM medication_attribute_option mao 
                                 INNER JOIN medication_attribute ma 
                                     ON ma.id = mao.medication_attribute_id
-                                WHERE mao.`value` = f.". $attr_key . " AND LOWER(ma.`name`) = LOWER('" . $attr_name . "')
+                                WHERE mao.`value` = f." . $attr_key . " AND LOWER(ma.`name`) = LOWER('" . $attr_name . "')
                                 ) AS option_id
                         FROM " . $table . " f INNER JOIN medication m ON m." . $table_properties['medication_FK_column'] . " = f." . $table_properties['id_column'] . "
-                        WHERE f.". $attr_key . " IS NOT NULL AND f.". $attr_key . " != ''
+                        WHERE f." . $attr_key . " IS NOT NULL AND f." . $attr_key . " != ''
                         ";
                     $this->printMsg(".");
                     Yii::app()->db->createCommand($cmd)->execute();
@@ -802,7 +797,7 @@ EOD;
 
         $this->printMsg("Importing Controlled Drug status...  ", false);
 
-        $cmd="INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id )
+        $cmd = "INSERT IGNORE INTO medication_attribute_assignment (medication_id, medication_attribute_option_id )
         SELECT m.id, o.id
         FROM {$this->tablePrefix}vmp_control_drug_info c INNER JOIN medication_attribute_option o
             ON c.catcd = o.`value`
@@ -863,37 +858,6 @@ EOD;
 
         $this->printMsg(Yii::app()->db->createCommand($cmd)->execute());
         echo " OK" . PHP_EOL;
-
-        // Route mapping
-
-        $this->printMsg("Mapping old to new routes", true);
-        $cmd = [];
-        $cmd[] = "UPDATE event_medication_use SET route_id = :new_route_id WHERE route_id = :old_route_id";
-        $cmd[] = "UPDATE medication SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
-        $cmd[] = "UPDATE medication_set_item SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
-        $cmd[] = "UPDATE medication_set_auto_rule_medication SET default_route_id = :new_route_id WHERE default_route_id = :old_route_id";
-        foreach ($this->route_mapping as $old_code => $new_code) {
-            $old_route = MedicationRoute::model()->findByAttributes(['code' => $old_code]);
-            $new_route = MedicationRoute::model()->findByAttributes(['code' => $new_code]);
-            $old_route_id = $old_route->getAttribute('id');
-            $new_route_id = $new_route->getAttribute('id');
-            $this->printMsg($old_route->term . " to " . $new_route->term . ".. ", false);
-            foreach ($cmd as $c) {
-                Yii::app()->db->createCommand($c)
-                    ->bindParam(':old_route_id', $old_route_id)
-                    ->bindParam(':new_route_id', $new_route_id)
-                    ->execute();
-            }
-            echo " OK" . PHP_EOL;
-        }
-
-        $codes = [];
-        foreach (array_keys($this->route_mapping) as $old_code) {
-            $codes[] = "'" . $old_code . "'";
-        }
-
-        $cmd = "UPDATE medication_route SET deleted_date = CURRENT_TIMESTAMP() WHERE `code` IN (" . implode(",", $codes) . ")";
-        Yii::app()->db->createCommand($cmd)->execute();
 
         @unlink('/tmp/ref_medication_set.csv');
 

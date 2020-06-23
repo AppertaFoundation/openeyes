@@ -28,22 +28,30 @@
     </td>
     <td colspan="2"></td>
     <td class="js-input-wrapper">
-        <?= \CHtml::activeDropDownList($taper, 'frequency_id',
-            $frequency_options, [
+        <?= \CHtml::activeDropDownList(
+            $taper,
+            'frequency_id',
+            $frequency_options,
+            [
                 'class' => 'js-input cols-full',
                 'empty' => '-- select --',
                 'id' => null,
                 'name' => "MedicationSetAutoRuleMedicationTaper[$data_parent_key][$taper_count][frequency_id]",
-            ]); ?>
+            ]
+        ); ?>
     </td>
     <td class="js-input-wrapper">
-        <?= \CHtml::activeDropDownList($taper, 'duration_id',
-            $duration_options, [
+        <?= \CHtml::activeDropDownList(
+            $taper,
+            'duration_id',
+            $duration_options,
+            [
                 'class' => 'js-input cols-full',
                 'empty' => '-- select --',
                 'id' => null,
                 'name' => "MedicationSetAutoRuleMedicationTaper[$data_parent_key][$taper_count][duration_id]"
-            ]); ?>
+            ]
+        ); ?>
     </td>
 
     <?php if ($is_prescription_set) : ?>

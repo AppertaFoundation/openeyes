@@ -96,7 +96,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'finding_id' => isset($data->finding) ? $data->finding->id : null,
                 );
 
-                $remove_a = CHtml::tag('a', array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
+                $remove_a = CHtml::tag(
+                    'a',
+                    array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
                     Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                 );
 
@@ -131,7 +133,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'alternate_disorder_id' => isset($data->alternate_disorder) ? $data->alternate_disorder->id : null,
                 );
 
-                $remove_a = CHtml::tag('a', array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
+                $remove_a = CHtml::tag(
+                    'a',
+                    array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
                     Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
                 );
 
@@ -169,7 +173,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'type' => 'raw',
             'value' => function ($data) {
                 if (!$data->secondary_to) {
-                    return '<a href="javascript:void(0)" class="delete">delete</a>';
+                    return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
                 } else {
                     return '<span data-tooltip-content="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small js-has-tooltip"></span>';
                 }
@@ -402,7 +406,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                    id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
         </td>
         <td>
-            <a href="javascript:void(0)" class="delete">delete</a>
+            <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>
         </td>
     </tr>
 </script>

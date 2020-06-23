@@ -62,15 +62,19 @@ class PatientSearch
         );
 
         // NHS number
-        if ($nhs = $this->getNHSnumber($term)) {
+        $nhs = $this->getNHSnumber($term);
+        if ($nhs) {
             $search_terms['nhs_num'] = $nhs;
+        }
 
-        // Hospital number (assume a < 10 digit number is a hosnum)
-        } elseif ($hos_num = $this->getHospitalNumber($term)) {
+       $hos_num = $this->getHospitalNumber($term);
+       if ($hos_num) {
             $search_terms['hos_num'] = $hos_num;
+       }
 
         // Patient name
-        } elseif ($name = $this->getPatientName($term)) {
+        $name = $this->getPatientName($term);
+        if (!$nhs && !$hos_num && $name) {
             $search_terms['first_name'] = trim($name['first_name']);
             $search_terms['last_name'] = trim($name['last_name']);
         }

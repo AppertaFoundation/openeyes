@@ -222,7 +222,7 @@ class DisorderController extends BaseController
             foreach ($disorders as $disorder) {
                 $return[] = $this->disorderStructure($disorder);
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 
@@ -237,10 +237,10 @@ class DisorderController extends BaseController
                 $return[] = $this->disorderStructure($disorder);
             };
         } else {
-            $return = $this->actionGetCommonOphthalmicDisorders( Yii::app()->session['selected_firm_id'] );
+            $return = $this->actionGetCommonOphthalmicDisorders(Yii::app()->session['selected_firm_id']);
         }
 
-        echo CJSON::encode($return);
+        $this->renderJSON($return);
         Yii::app()->end();
 
     }

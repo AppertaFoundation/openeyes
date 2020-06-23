@@ -41,7 +41,7 @@
                                    data-tooltip-content="Allergic to <?= implode(',', $this->patient->getPatientDrugAllergy($item->medication_id)) ?>">
                                 </i>
                             <?php endif; ?>
-                            <?php echo $item->medication->preferred_term; ?>
+                            <?php echo $item->getMedicationDisplay(); ?>
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
                         </td>
                             
@@ -81,6 +81,7 @@
                             <td></td>
                             <td><?php echo $taper->frequency->term ?></td>
                             <td><?php echo $taper->duration->name ?></td>
+                            <td></td>
                             <td></td>
                         </tr>
                     <?php }

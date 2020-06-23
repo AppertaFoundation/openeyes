@@ -19,7 +19,7 @@ class m190402_121449_add_new_columns_to_contact_table extends CDbMigration
         $this->dropColumn('contact', 'active');
         $this->dropColumn('patient_contact_assignment', 'comment');
         $this->dropColumn('contact', 'national_code');
-        $this->dropColumn('contact', 'fax' );
+        $this->dropColumn('contact', 'fax');
         $this->dropColumn('contact_version', 'active');
         $this->dropColumn('contact_version', 'comment');
         $this->dropColumn('patient_contact_assignment_version', 'national_code');

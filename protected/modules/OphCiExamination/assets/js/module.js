@@ -1588,7 +1588,7 @@ function OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side) {
         let l2_selected_val = l2_el.val();
 
         l2_el.find('option').remove();
-        l2_el.append( $('<option>').text("Select") );
+        l2_el.append( $('<option>').val(null).text("Select") );
 
         if (l2_data) {
             for (let i in l2_data) {

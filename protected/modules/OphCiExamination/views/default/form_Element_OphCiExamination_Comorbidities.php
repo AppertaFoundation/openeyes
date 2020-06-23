@@ -26,27 +26,28 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
     <?=\CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
   <div class="comorbidities-multi-select">
         <?php echo $form->multiSelectList(
-          $element,
-          CHtml::modelName($element) . '[items]',
-          'items',
-          'id',
-          CHtml::encodeArray(
-              CHtml::listData(
-                  OEModule\OphCiExamination\models\OphCiExamination_Comorbidities_Item::model()
+            $element,
+            CHtml::modelName($element) . '[items]',
+            'items',
+            'id',
+            CHtml::encodeArray(
+                CHtml::listData(
+                    OEModule\OphCiExamination\models\OphCiExamination_Comorbidities_Item::model()
                       ->activeOrPk($element->comorbidityItemValues)
                       ->bySubspecialty($this->firm->getSubspecialty())
                       ->findAll(),
-                  'id',
-                  'name')
-          ),
-          array(),
-          array('empty' => 'Add', 'label' => 'Comorbidities', 'nowrapper' => true),
-          false,
-          true,
-          'No comorbidities',
-          true,
-          true
-      ) ?>
+                    'id',
+                    'name'
+                )
+            ),
+            array(),
+            array('empty' => 'Add', 'label' => 'Comorbidities', 'nowrapper' => true),
+            false,
+            true,
+            'No comorbidities',
+            true,
+            true
+        ) ?>
 
         <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array(
           'class' => 'js-comment-field js-comment-container',

@@ -123,8 +123,9 @@ class DefaultController extends \BaseModuleController
         } else {
             if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
                 foreach ($qs_svc->getQueueSetQueues(
-                            $queueset,
-                            @$filter_options['closed-tickets'] ? true : false) as $queue) {
+                    $queueset,
+                    @$filter_options['closed-tickets'] ? true : false
+                ) as $queue) {
                             $queue_ids[] = $queue->id;
                 }
             }
@@ -134,7 +135,14 @@ class DefaultController extends \BaseModuleController
             $criteria->addColumnCondition(array('assignee_user_id' => Yii::app()->user->id));
         }
         if (@$filter_options['priority-ids']) {
-            $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
+            $key = array_search("0", $filter_options['priority-ids']);
+            if ($key !== false) {
+                unset($filter_options['priority-ids'][$key]);
+            }
+
+            if (count($filter_options['priority-ids']) != 0) {
+                $criteria->addInCondition('priority_id', $filter_options['priority-ids']);
+            }
         }
         if (count($queue_ids)) {
             $criteria->addInCondition('cqa.queue_id', $queue_ids);
@@ -231,15 +239,15 @@ class DefaultController extends \BaseModuleController
         unset(Yii::app()->session['patientticket_ticket_in_review']);
         AutoSaveTicket::clear();
 
-        $cat_id = Yii::app()->request->getParam('cat_id');
-        $qs_id = Yii::app()->request->getParam('queueset_id');
-        $reset_filters = Yii::app()->request->getParam('reset_filters', false);
+        $cat_id = htmlspecialchars(Yii::app()->request->getParam('cat_id'));
+        $qs_id = htmlspecialchars(Yii::app()->request->getParam('queueset_id'));
+        $reset_filters = htmlspecialchars(Yii::app()->request->getParam('reset_filters', false));
         if ($reset_filters) {
             Yii::app()->session['patientticket_filter'] = [];
             unset($_GET['reset_filters']);
         }
 
-        $unset_patientticketing = Yii::app()->request->getParam('unset_patientticketing');
+        $unset_patientticketing = htmlspecialchars(Yii::app()->request->getParam('unset_patientticketing'));
         $patient_ids = Yii::app()->request->getParam('patient-ids', []);
 
         if ($unset_patientticketing === "true") {
@@ -293,7 +301,22 @@ class DefaultController extends \BaseModuleController
 
                 if (empty($filter_options) && !empty(Yii::app()->session['patientticket_filter']) && !$reset_filters) {
                     $filter_options = Yii::app()->session['patientticket_filter'];
-                    $redir = array_merge(['/PatientTicketing/default'], $filter_options, ['cat_id' => $category->getID()]);
+                    // Filter out queue-ids which do not belong to the queue set
+                    if (isset($filter_options['queue-ids']) && $filter_options['queue-ids']) {
+                        $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
+                        $queueset_queues = \CHtml::listData($qs_svc->getQueueSetQueues($queueset, false), 'id', 'name');
+                        $cleaned_items = array_filter($filter_options['queue-ids'], function ($key) use ($queueset_queues) {
+                            return array_key_exists($key, $queueset_queues);
+                        });
+                        if (empty($cleaned_items)) {
+                            unset($filter_options['queue-ids']);
+                        } else {
+                            $filter_options['queue-ids'] = $cleaned_items;
+                        }
+                    }
+
+                    $redir = array_merge(['/PatientTicketing/default'], $filter_options,
+                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]);
                     $this->redirect($redir);
                 }
 
@@ -404,7 +427,7 @@ class DefaultController extends \BaseModuleController
         list($data, $errs) = $api->extractQueueData($to_queue, $_POST, true);
 
         if (count($errs)) {
-            echo json_encode(array('errors' => array_values($errs)));
+            $this->renderJSON(array('errors' => array_values($errs)));
             Yii::app()->end();
         }
 
@@ -442,7 +465,7 @@ class DefaultController extends \BaseModuleController
         $queueset_id = $queueset->getId();
         $queueset_model = models\QueueSet::model()->findByPk($queueset_id);
         $queueset_category_id = $queueset_model->category_id;
-        echo json_encode(array('redirectURL' => "/PatientTicketing/default/?queueset_id=$queueset_id&cat_id=$queueset_category_id"));
+        $this->renderJSON(array('redirectURL' => "/PatientTicketing/default/?queueset_id=$queueset_id&cat_id=$queueset_category_id"));
     }
 
     /**
@@ -756,8 +779,12 @@ class DefaultController extends \BaseModuleController
             throw new Exception('Subspecialty not found: ' . @$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+        echo \CHtml::dropDownList(
+            'firm-id',
+            '',
+            \Firm::model()->getList($subspecialty->id),
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']
+        );
     }
 
     public function actionUndoLastStep($id)

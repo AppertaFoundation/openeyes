@@ -54,7 +54,7 @@ class RestTestCase extends PHPUnit_Framework_TestCase
     protected function setExpectedHttpError($code)
     {
         if (!$this->capture_error_responses) {
-            $this->setExpectedException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
+            $this->expectException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
         }
         $this->expected_error_code = $code;
     }

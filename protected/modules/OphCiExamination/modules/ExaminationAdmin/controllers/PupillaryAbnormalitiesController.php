@@ -90,8 +90,13 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
             $model->active = $values['active'] === '1' ? 1 : 0;
             $model->display_order = $model::model()->find(['order'=>'display_order DESC'])->display_order + 1;
             if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false,
-                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']);
+                Audit::add(
+                    'admin',
+                    'create',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']
+                );
                 Yii::app()->user->setFlash('success', 'Pupillary Abnormality created');
                 $this->redirect(['index']);
             } else {
@@ -140,6 +145,6 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
             $transaction->rollback();
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 }

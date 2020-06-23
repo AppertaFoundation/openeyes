@@ -33,7 +33,7 @@
  */
 class Logo extends CFormModel
 {
-    public $header_logo;
+    public $primary_logo;
     public $secondary_logo;
 
     /**
@@ -54,7 +54,7 @@ class Logo extends CFormModel
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('header_logo', 'file', 'types' => 'jpg, gif, png', 'allowEmpty' => true),
+            array('primary_logo', 'file', 'types' => 'jpg, gif, png', 'allowEmpty' => true),
             array('secondary_logo', 'file', 'types' => 'jpg, gif, png', 'allowEmpty' => true),
         );
     }
@@ -65,7 +65,7 @@ class Logo extends CFormModel
     public function attributeLabels()
     {
         return array(
-            'header_logo' => 'Header Logo',
+            'primary_logo' => 'Header Logo',
             'secondary_logo' => 'Secondary Logo',
         );
     }

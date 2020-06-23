@@ -293,41 +293,10 @@ class PatientController extends BaseController
 
         $patientSearch = new PatientSearch();
         $dataProvider = $patientSearch->search($term);
-        $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
+        $itemCount = $dataProvider->getTotalItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
         $search_terms = $patientSearch->getSearchTerms();
 
-        if ($itemCount == 0) {
-            Audit::add('search', 'search-results', implode(',', $search_terms) . ' : No results');
-
-            $message = 'Sorry, no results ';
-            if ($search_terms['hos_num']) {
-                $message .= 'for '.Yii::app()->params['hos_num_label'].' <strong>"'.$search_terms['hos_num'].'"</strong>';
-
-                // check if the record was merged into another record
-                $criteria = new CDbCriteria();
-                $criteria->compare('secondary_hos_num', $search_terms['hos_num']);
-                $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
-
-                $patientMergeRequest = PatientMergeRequest::model()->find($criteria);
-
-                if ($patientMergeRequest) {
-                    $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
-                }
-            } elseif ($search_terms['nhs_num']) {
-                $message .= 'for '. Yii::app()->params['nhs_num_label'].' <strong>"'.$search_terms['nhs_num'].'"</strong>';
-            } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
-                $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
-            } else {
-                $message .= 'found for your search.';
-            }
-            Yii::app()->user->setFlash('warning.no-results', $message);
-
-
-            Yii::app()->session['search_term'] = $term;
-            Yii::app()->session->close();
-
-            $this->redirect(Yii::app()->homeUrl);
-        } elseif ($itemCount == 1) {
+        if ($itemCount === '1') {
             $patient = $dataProvider->getData()[0];
             $api = new CoreAPI();
 
@@ -338,6 +307,33 @@ class PatientController extends BaseController
 
             $this->redirect(array($api->generatePatientLandingPageLink($patient)));
         } else {
+            if ($itemCount === '0') {
+                Audit::add('search', 'search-results', implode(',', $search_terms) . ' : No results');
+
+                $message = 'Sorry, no results ';
+                if ($search_terms['hos_num']) {
+                    $message .= 'for ' . Yii::app()->params['hos_num_label'] . ' <strong>"' . $search_terms['hos_num'] . '"</strong>';
+
+                    // check if the record was merged into another record
+                    $criteria = new CDbCriteria();
+                    $criteria->compare('secondary_hos_num', $search_terms['hos_num']);
+                    $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
+
+                    $patientMergeRequest = PatientMergeRequest::model()->find($criteria);
+
+                    if ($patientMergeRequest) {
+                        $message = 'Hospital Number <strong>' . $search_terms['hos_num'] . '</strong> was merged into <strong>' . $patientMergeRequest->primary_hos_num . '</strong>';
+                    }
+                } elseif ($search_terms['nhs_num']) {
+                    $message .= 'for ' . Yii::app()->params['nhs_num_label'] . ' <strong>"' . $search_terms['nhs_num'] . '"</strong>';
+                } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
+                    $message .= 'for Patient Name <strong>"' . $search_terms['first_name'] . ' ' . $search_terms['last_name'] . '"</strong>';
+                } else {
+                    $message .= 'found for your search.';
+                }
+                Yii::app()->user->setFlash('warning.no-results', $message);
+            }
+
             $this->renderPatientPanel = false;
             $this->pageTitle = $term . ' - Search';
             $this->fixedHotlist = false;
@@ -640,7 +636,8 @@ class PatientController extends BaseController
         $header_data = [];
         if ($subspecialty->ref_spec == 'GL') {
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-            $cct_element = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $cct_element = $exam_api->getLatestElement(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $this->patient,
                 false //use context
             );
@@ -980,8 +977,12 @@ class PatientController extends BaseController
     public function actionGenerateAllergySelect()
     {
         $this->patient = $this->loadModel(Yii::app()->getRequest()->getQuery('patient_id'));
-        echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'),
-            array('empty' => '-- Select --'));
+        echo CHtml::dropDownList(
+            'allergy_id',
+            null,
+            CHtml::listData($this->allergyList(), 'id', 'name'),
+            array('empty' => '-- Select --')
+        );
     }
 
     /**
@@ -1148,7 +1149,7 @@ class PatientController extends BaseController
         $v = new OEFuzzyDateValidator();
         $v->validateAttribute($sd, 'date');
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionRemovediagnosis()
@@ -1178,7 +1179,7 @@ class PatientController extends BaseController
 
         $result = $patient->editOphInfo($cvi_status, $cvi_status_date);
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function reportDiagnoses($params)
@@ -1317,12 +1318,12 @@ class PatientController extends BaseController
         }
 
         if (!$po->save()) {
-            echo json_encode($po->getErrors());
+            $this->renderJSON($po->getErrors());
 
             return;
         }
 
-        echo json_encode(array());
+        $this->renderJSON(array());
     }
 
     public function actionEditSocialHistory()
@@ -1414,7 +1415,7 @@ class PatientController extends BaseController
 
         $date = explode('-', $po->date);
 
-        echo json_encode(array(
+        $this->renderJSON(array(
             'operation' => $po->operation,
             'side_id' => $po->side_id,
             'fuzzy_year' => $date[0],
@@ -1460,7 +1461,7 @@ class PatientController extends BaseController
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionValidateSaveContact()
@@ -1493,7 +1494,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionAddContact()
@@ -1597,7 +1598,7 @@ class PatientController extends BaseController
         $data['contact_id'] = $location->contact_id;
         $data['name'] = $location->contact->fullName;
 
-        echo json_encode($data);
+        $this->renderJSON($data);
     }
 
     public function actionValidateEditContact()
@@ -1626,7 +1627,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo json_encode($errors);
+        $this->renderJSON($errors);
     }
 
     public function actionEditContact()
@@ -1833,7 +1834,7 @@ class PatientController extends BaseController
                     if (isset($_POST['ExtraContact']['practice_id'])) {
                                     $practice_ids = $_POST['ExtraContact']['practice_id'];
                                     $pca_models = array();
-                        for ($i =0;$i<sizeof($gp_ids);$i++) {
+                        for ($i =0; $i<sizeof($gp_ids); $i++) {
                             $pca_model = new PatientContactAssociate();
                             $pca_model->gp_id = $gp_ids[$i];
                             $pca_model->practice_id = $practice_ids[$i];
@@ -1974,9 +1975,10 @@ class PatientController extends BaseController
         Address $address,
         PatientReferral $referral,
         PatientUserReferral $patient_user_referral,
-        $patient_identifiers, $prevUrl)
+        $patient_identifiers,
+        $prevUrl
+    ) {
 
-    {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
@@ -1995,7 +1997,7 @@ class PatientController extends BaseController
                     && $patient->isNewRecord
                 ) {
                     $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
-                } else if ($prevUrl !== '') {
+                } elseif ($prevUrl !== '') {
                     $redirect = array($prevUrl);
                 } else {
                     $redirect = array('/patient/summary/' . $patient->id);
@@ -2044,9 +2046,10 @@ class PatientController extends BaseController
         Address &$address,
         PatientReferral &$referral,
         PatientUserReferral &$patient_user_referral,
-        &$patient_identifiers)
+        &$patient_identifiers
+    ) {
 
-    {if (!$this->checkForReferralFiles($referral, $patient)) {
+        if (!$this->checkForReferralFiles($referral, $patient)) {
             return false;
         }
         if (!$contact->save()) {
@@ -2092,7 +2095,8 @@ class PatientController extends BaseController
         return true;
     }
 
-    private function performPatientContactAssociatesSave($patient){
+    private function performPatientContactAssociatesSave($patient)
+    {
         // Check if any contact selected for this patient.
         if (isset($_POST['ExtraContact'])) {
             // If a single contact exists for a patient,  delete all the records from the patient_contact_associate table before populating.
@@ -2142,8 +2146,9 @@ class PatientController extends BaseController
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
 
-            if (empty($post_info->code))
+            if (empty($post_info->code)) {
                 continue;
+            }
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
@@ -2480,7 +2485,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2538,7 +2543,7 @@ class PatientController extends BaseController
             }
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
         Yii::app()->end();
     }
 
@@ -2563,7 +2568,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }
@@ -2602,7 +2607,8 @@ class PatientController extends BaseController
         }
     }
 
-    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check){
+    public function actionFindDuplicatesByIdentifier($identifier_code, $identifier_value, $id = null, $null_check)
+    {
 
         $patients = Patient::findDuplicatesByIdentifier($identifier_code, $identifier_value, $id);
 
@@ -2657,7 +2663,7 @@ class PatientController extends BaseController
             );
         }
 
-        echo CJSON::encode($result);
+        $this->renderJSON($result);
     }
 
     protected function getEventTypeGrouping()
@@ -2670,7 +2676,8 @@ class PatientController extends BaseController
         );
     }
 
-    public function checkForReferralFiles($referral, $patient){
+    public function checkForReferralFiles($referral, $patient)
+    {
 
         // To get allowed file types from the model
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
@@ -2695,14 +2702,14 @@ class PatientController extends BaseController
                 }
 
                 // Check for compatible file types
-                else if (!in_array($type, $allowed_file_types)) {
+                elseif (!in_array($type, $allowed_file_types)) {
                     $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
                     $referral->addError('uploadedFile', $message);
                     return false;
                 }
             }
             // The file field is empty. It should throw error for referral scenario
-            else if ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+            elseif ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
                 $referral->addError('uploadedFile', 'Referral requires a letter file');
                 return false;
             }
@@ -2722,8 +2729,10 @@ class PatientController extends BaseController
             $criteria->addCondition("is_linked=0 AND patient_id='" . $this->patient->id . "'");
             $resultSet = OphInBiometry_Imported_Events::model()->findAll($criteria);
             if ($resultSet) {
-                Yii::app()->user->setFlash('alert.unlinked_biometry_event',
-                    'A new biometry report is available for this patient - please create a biometry event to view it ');
+                Yii::app()->user->setFlash(
+                    'alert.unlinked_biometry_event',
+                    'A new biometry report is available for this patient - please create a biometry event to view it '
+                );
             }
         }
     }
@@ -2732,7 +2741,8 @@ class PatientController extends BaseController
      * @param $patient
      * @return bool any existing referral letter for this patient will return false
      */
-    protected function checkExistingReferralLetter($patient){
+    protected function checkExistingReferralLetter($patient)
+    {
         if (!isset($patient->id)) {
             return true;
         }
@@ -2743,10 +2753,7 @@ class PatientController extends BaseController
                     join event e2 on e.id = e2.episode_id
                     join et_ophcodocument_document d on d.event_id = e2.id
                       and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
-                    where e2.deleted = 0 and p.id = $patient->id;"
-        );
-        return ($command->queryScalar() == 0);
+                    where e2.deleted = 0 and p.id = $patient->id;");
+        return ($command->queryScalar() === 0);
     }
-
-
 }

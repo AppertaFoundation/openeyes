@@ -20,8 +20,10 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye) :?>
     <div class="js-element-eye <?=$eye?>-eye column cols-full">
         <?php if ($element->{'has'.ucfirst($eye)}()) :
-            $this->renderPartial($element->view_view.'_fields',
-                array('eye' => $eye, 'element' => $element));
+            $this->renderPartial(
+                $element->view_view.'_fields',
+                array('eye' => $eye, 'element' => $element)
+            );
         else :?>
       <div class="data-value not-recorded">Not recorded</div>
         <?php endif;?>

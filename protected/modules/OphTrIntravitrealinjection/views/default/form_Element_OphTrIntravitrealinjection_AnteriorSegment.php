@@ -21,8 +21,10 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
-          <?php $this->renderPartial($element->form_view . '_OEEyeDraw',
-                array('side' => $eye_side, 'element' => $element, 'form' => $form));
+          <?php $this->renderPartial(
+              $element->form_view . '_OEEyeDraw',
+              array('side' => $eye_side, 'element' => $element, 'form' => $form)
+          );
             ?>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">

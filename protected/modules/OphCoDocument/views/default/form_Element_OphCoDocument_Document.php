@@ -24,14 +24,17 @@
             <tr>
                 <td>Event Sub Type</td>
                 <td>
-                    <?php echo $form->dropDownList($element, 'event_sub_type',
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'event_sub_type',
                         CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
                         array('nowrapper' => true),
                         array(),
                         array(
                             'label' => 0,
                             'field' => 2,
-                        )); ?>
+                        )
+                    ); ?>
                 </td>
             </tr>
             <tr>
@@ -62,11 +65,13 @@
                             } ?>">
                     <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                         <?php
-                        echo $form->textArea($element,
+                        echo $form->textArea(
+                            $element,
                             'comment',
                             array('rows' => '1','nowrapper' => true),
                             false,
-                            ['placeholder' => 'Comments' , 'class' => 'autosize ']);
+                            ['placeholder' => 'Comments' , 'class' => 'autosize ']
+                        );
                         ?>
                         <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
                     </div>
@@ -92,7 +97,11 @@
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
             ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : ''); ?>>
-            <div id="single-rotate-actions" <?= (!$element->single_document_id ? 'style="display:none"' : ''); ?>>
+            <div id="single-rotate-actions"
+                <?= (!$element->single_document_id ||
+                $element->single_document->mimetype == "application/pdf" ?
+                    'style="display:none"' :
+                    ''); ?>>
                 <label>Rotate Single Image:</label>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, 'single');"></i>
                 <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, 'single');" style="transform: scale(-1, 1);"></i>
@@ -162,7 +171,11 @@
                         $document_id = $side.'_document_id';
                         ?>
                     <td>
-                        <div id="<?=$side?>-rotate-actions" <?= (!$element->{$side . '_document_id'} ? 'style="display:none"' : ''); ?>>
+                        <div id="<?=$side?>-rotate-actions"
+                            <?= (!$element->{$side . '_document_id'} ||
+                            $element->{$side."_document"}->mimetype == "application/pdf" ?
+                                'style="display:none"'
+                                : ''); ?>>
                             <label>Rotate <?=$side?> Image:</label>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(90, '<?=$side?>');"></i>
                             <i class="oe-i history large pad-left js-change-rotate" onClick="rotateImage(-90, '<?=$side?>');" style="transform: scale(-1, 1);"></i>
@@ -279,16 +292,12 @@
                 }
             }
 
-            documents = removed_docs.data('documents');
-
             if (documents.length !== 0) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/OphCoDocument/Default/removeDocuments',
-                    data: {doc_ids: documents,
-                        YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-                    async: false
-                });
+                let formData = new FormData();
+                OpenEyes.Util.createFormData(formData, 'doc_ids', documents);
+                formData.append('YII_CSRF_TOKEN', YII_CSRF_TOKEN);
+                navigator.sendBeacon('/OphCoDocument/Default/removeDocuments', formData);
             }
         });
+
     </script>

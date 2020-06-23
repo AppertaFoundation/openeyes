@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -50,7 +51,7 @@ return array(
         'application.modules.Api.controllers.*',
         'application.modules.Api.modules.Request.components.*',
         'application.modules.Api.modules.Request.widgets.*',
-              'application.modules.OECaseSearch.components.*',
+        'application.modules.OECaseSearch.components.*',
     ),
 
     'aliases' => array(
@@ -90,7 +91,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202004201050',
+            'time' => '202006180850',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -197,6 +198,18 @@ return array(
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
         ),
+        'puppeteer' => array(
+            'class' => 'PuppeteerBrowser',
+            'readTimeout' => 65,
+            'logBrowserConsole' => false,
+            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+            'middleFooterTemplate' => 'Page {{PAGE}} of {{PAGES}}',
+            'rightFooterTemplate' => 'OpenEyes',
+            'topMargin' => '10mm',
+            'bottomMargin' => '20mm',
+            'leftMargin' => '5mm',
+            'rightMargin' => '5mm',
+        ),
         'request' => array(
             'enableCsrfValidation' => true,
             'class' => 'HttpRequest',
@@ -225,6 +238,7 @@ return array(
             'connectionID' => 'db',
             'sessionTableName' => 'user_session',
             'autoCreateSessionTable' => false,
+            //'timeout' => getenv('OE_SESSION_TIMEOUT') ?: '21600',
             /*'cookieParams' => array(
                 'lifetime' => 300,
             ),*/
@@ -279,8 +293,8 @@ return array(
         'ab_testing' => false,
         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
         // This is used in contact page
-        'ldap_server' => '',
-        'ldap_port' => '',
+        'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
+        'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
         'ldap_admin_dn' => '',
         'ldap_password' => '',
         'ldap_dn' => '',
@@ -294,19 +308,19 @@ return array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => false,
         'ldap_update_email' => true,
-        'environment' => 'dev',
+        'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
         'log_events' => true,
         'default_site_code' => '',
-        'institution_code' => '',
+        'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
-        'specialty_codes' => array(),
+        'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
-        'specialty_sort' => array(),
+        'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => '/^([0-9]{1,9})$/',
         'pad_hos_num' => '%07s',
         'profile_user_can_edit' => true,
@@ -330,80 +344,80 @@ return array(
             'pagebreak_separator' => '<div class="pageBreak" />',
         ),
         'menu_bar_items' => array(
-                'admin' => array(
-                    'title' => 'Admin',
-                    'uri' => 'admin',
-                    'position' => 1,
-                    'restricted' => array('admin'),
-                ),
-                'audit' => array(
-                    'title' => 'Audit',
-                    'uri' => 'audit',
-                    'position' => 2,
-                    'restricted' => array('TaskViewAudit'),
-                ),
-                'reports' => array(
-                    'title' => 'Reports',
-                    'uri' => 'report',
-                    'position' => 3,
-                    'restricted' => array('Report'),
-                ),
-                'nodexport' => array(
-                    'title' => 'NOD Export',
-                    'uri' => 'NodExport',
-                    'position' => 5,
-                    'restricted' => array('NOD Export'),
-                ),
-                'cxldataset' => array(
-                    'title' => 'CXL Dataset',
-                    'uri' => 'CxlDataset',
-                    'position' => 6,
-                    'restricted' => array('CXL Dataset'),
-                ),
-
-                'patientmergerequest' => array(
-                    'title' => 'Patient Merge',
-                    'uri' => 'patientMergeRequest/index',
-                    'position' => 17,
-                    'restricted' => array('Patient Merge', 'Patient Merge Request'),
-                ),
-                'patient' => array(
-                    'title' => 'Add Patient',
-                    'uri' => 'patient/create',
-                    'position' => 46,
-                    'restricted' => array('TaskAddPatient'),
-                ),
-                'practices' => array(
-                    'title' => 'Practices',
-                    'uri' => 'practice/index',
-                    'position' => 11,
-                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
-                ),
-                'forum' => array(
-                    'title' => 'Track patients in FORUM',
-                    'alt_title' => 'Stop tracking in FORUM',
-                    'uri' => "forum/toggleForumTracking",
-                    'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
-                    'position' => 90,
-                ),
-                'disorder' => array(
-                    'title' => 'Manage Disorders',
-                    'uri' => "/disorder/index",
-                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
-                    'position' => 91,
+            'admin' => array(
+                'title' => 'Admin',
+                'uri' => 'admin',
+                'position' => 1,
+                'restricted' => array('admin'),
             ),
-                'gps' => array(
-                    'title' => 'Practitioners',
-                    'uri' => 'gp/index',
-                    'position' => 10,
-                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-                ),
-                'analytics' => array(
-                  'title' => 'Analytics',
-                  'uri' => '/Analytics/analyticsReports',
-                  'position' => 11,
-                ),
-                /*
+            'audit' => array(
+                'title' => 'Audit',
+                'uri' => 'audit',
+                'position' => 2,
+                'restricted' => array('TaskViewAudit'),
+            ),
+            'reports' => array(
+                'title' => 'Reports',
+                'uri' => 'report',
+                'position' => 3,
+                'restricted' => array('Report'),
+            ),
+            'nodexport' => array(
+                'title' => 'NOD Export',
+                'uri' => 'NodExport',
+                'position' => 5,
+                'restricted' => array('NOD Export'),
+            ),
+            'cxldataset' => array(
+                'title' => 'CXL Dataset',
+                'uri' => 'CxlDataset',
+                'position' => 6,
+                'restricted' => array('CXL Dataset'),
+            ),
+
+            'patientmergerequest' => array(
+                'title' => 'Patient Merge',
+                'uri' => 'patientMergeRequest/index',
+                'position' => 17,
+                'restricted' => array('Patient Merge', 'Patient Merge Request'),
+            ),
+            'patient' => array(
+                'title' => 'Add Patient',
+                'uri' => 'patient/create',
+                'position' => 46,
+                'restricted' => array('TaskAddPatient'),
+            ),
+            'practices' => array(
+                'title' => 'Practices',
+                'uri' => 'practice/index',
+                'position' => 11,
+                'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
+            ),
+            'forum' => array(
+                'title' => 'Track patients in FORUM',
+                'alt_title' => 'Stop tracking in FORUM',
+                'uri' => "forum/toggleForumTracking",
+                'requires_setting' => array('setting_key' => 'enable_forum_integration', 'required_value' => 'on'),
+                'position' => 90,
+            ),
+            'disorder' => array(
+                'title' => 'Manage Disorders',
+                'uri' => "/disorder/index",
+                'requires_setting' => array('setting_key' => 'user_add_disorder', 'required_value' => 'on'),
+                'position' => 91,
+            ),
+            'gps' => array(
+                'title' => 'Practitioners',
+                'uri' => 'gp/index',
+                'position' => 10,
+                'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+            ),
+            'analytics' => array(
+                'title' => 'Analytics',
+                'uri' => '/Analytics/analyticsReports',
+                'position' => 11,
+            ),
+            /*
                  //TODO: not yet implemented
                  'worklist' => array(
                   'title' => 'Worklists',
@@ -411,56 +425,43 @@ return array(
                   'position' => 3,
                 ),
                 */
-                'imagenet' => array(
-                    'title' => 'ImageNET',
-                    'uri' => '',
-                    'requires_setting' => array('setting_key'=>'imagenet_url', 'required_value'=>'not-empty'),
-                    'position' => 92,
-                    'options' => ['target' => '_blank'],
-                ),
+            'imagenet' => array(
+                'title' => 'ImageNET',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'imagenet_url', 'required_value' => 'not-empty'),
+                'position' => 92,
+                'options' => ['target' => '_blank'],
+            ),
         ),
-        'admin_menu' => array(
-        ),
-        'dashboard_items' => array(
-        ),
+        'admin_menu' => array(),
+        'dashboard_items' => array(),
         'admin_email' => '',
         'enable_transactions' => true,
         'event_lock_days' => 0,
         'event_lock_disable' => false,
-        'reports' => array(
-        ),
+        'reports' => array(),
         'opbooking_disable_both_eyes' => true,
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
-        // html|pdf, pdf requires wkhtmltopdf with patched QT
+        // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
-        // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-        'wkhtmltoimage_path' => '/usr/local/bin/wkhtmltoimage',
-        'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
-        'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
-        'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-        'wkhtmltopdf_footer_right' => 'OpenEyes',
-        'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '20mm',
-        'wkhtmltopdf_left_margin' => '5mm',
-        'wkhtmltopdf_right_margin' => '5mm',
-        'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
                 // to store processed zip files
-                'path' => realpath(dirname(__FILE__).'/../..').'/data/hscic',
+                'path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic',
 
                 // to store downloaded zip files which will be processed if they are different from the already processed ones
                 // otherwise ignored and will be overwritten on then next download
-                'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
+                'temp_path' => realpath(dirname(__FILE__) . '/../..') . '/data/hscic/temp',
             ),
         ),
 
-        //'docman_export_dir' => '/tmp/docman_delievery',
-        //'docman_login_url' => 'http://{youropeneyeshost}/site/login',
-        //'docman_user' => '',
-        //'docman_password' => '',
-        //'docman_print_url' => 'http://{youropeneyeshost}/OphCoCorrespondence/default/PDFprint/',
+        'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
+        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
+        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
 
         /* injecting autoprint JS into generated PDF */
         //'docman_inject_autoprint_js' => false,
@@ -506,13 +507,13 @@ return array(
          * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
-                'OphCoCorrespondence_event_actions' => array(
-                    'create' => array(
-                        'savedraft' => 'Save draft',
-                        'save' => null,
-                        'saveprint' => 'Save and print'
-                    )
-                ),
+        'OphCoCorrespondence_event_actions' => array(
+            'create' => array(
+                'savedraft' => 'Save draft',
+                'save' => null,
+                'saveprint' => 'Save and print'
+            )
+        ),
 
         /**
          * Enable or disable the draft printouts DRAFT background
@@ -564,8 +565,8 @@ return array(
          */
 
         'lightning_viewer' => array(
-            'image_width' => 800,
-            'viewport_width' => 1280,
+            'image_width' => 1720,
+            'viewport_width' => 1720,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
@@ -577,9 +578,9 @@ return array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
-                            'Biometry' => array(
-                                'image_width' => 1200
-                            ),
+                'Biometry' => array(
+                    'image_width' => 1200
+                ),
             ),
         ),
 
@@ -614,13 +615,14 @@ return array(
             ),
         ),*/
         'ethnic_group_filters' => array(
-        'Indigenous Australian',
-        'Greek',
-        'Italian'
+            'Indigenous Australian',
+            'Greek',
+            'Italian'
         ),
         'gender_short' => 'Gen',
-//        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
-        'add_patient_fields' => [ 'title' => '',
+        //        Set the field names with their values, 'mandatory' if a a field needs to be mandatory, 'hidden' if a field needs to be hidden, or '' if neither
+        'add_patient_fields' => [
+            'title' => '',
             'first_name' => 'mandatory',
             'last_name' => 'mandatory',
             'dob' => 'mandatory',
@@ -628,11 +630,11 @@ return array(
             'hos_num' => 'mandatory',
             'nhs_num_status' => 'hidden'
         ],
-//        Set the parameter below to true if you want to use practitioner praactice associations feature
+        //        Set the parameter below to true if you want to use practitioner praactice associations feature
         'use_contact_practice_associate_model' => false,
         //        Set the parameter below to indicate whether PAS is being used or not
         'pas_in_use' => true,
-//        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
+        //        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
         'demographics_content' => [
             'mobile' => true,
             'next_of_kin' => true,
@@ -651,18 +653,44 @@ return array(
         'default_country' => 'United Kingdom',
         'default_patient_import_context' => 'Historic Data Entry',
         'default_patient_import_subspecialty' => 'GL',
-//        Add elements that need to be excluded from the admin sidebar in settings
+        //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => array(
-//            'Worklist',
+            //            'Worklist',
         ),
-      'oe_version' => '4.0-a',
-      // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
-      'gp_label' => 'GP',
-      // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
-      'worklist_dashboard_future_days' => 0,
-      // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-      'worklist_default_pagination_size' => 1000,
-      'tech_support_provider' => !empty(trim(getenv('OE_TECH_SUPPORT_PROVIDER'))) ? getenv('OE_TECH_SUPPORT_PROVIDER') :  '',
-      'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  ''
+        'oe_version' => 'Q3 \'20 nightly',
+        // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
+        'gp_label' => 'GP',
+        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
+        'worklist_dashboard_future_days' => 0,
+        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+        'worklist_default_pagination_size' => 1000,
+        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        'worklist_dashboard_skip_days' => array('NONE'),
+        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
+        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org',
+        'pw_restrictions' => array(
+            'min_length' => getenv('PW_RES_MIN_LEN') ?: 8,
+            'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MIN_LEN_MESS')) : 'Passwords must be at least 8 characters long',
+            'max_length' => getenv('PW_RES_MAX_LEN') ?: 70,
+            'max_length_message' => getenv('PW_RES_MAX_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MAX_LEN_MESS')) : 'Passwords must be at most 70 characters long',
+            'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
+            'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+        ),
+        'portal' => array(
+            'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
+            'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
+            'endpoints' => array(
+                'auth' => '/oauth/access',
+                'examinations' => '/examinations/searches',
+                'signatures' => '/signatures/searches'
+            ),
+            'credentials' => array(
+                'username' =>  getenv('OE_PORTAL_USERNAME') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com'),
+                'password' => getenv('OE_PORTAL_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass'),
+                'grant_type' => 'password',
+                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
+                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
+            ),
+        ),
     ),
 );

@@ -10,8 +10,7 @@ class m180925_015427_add_gp_label_setting extends OEMigration
                 'name' => 'GP label',
                 'default_value' => 'GP',
                 'data' => ''
-            )
-        );
+            ));
         $this->insert('setting_installation', array('key' => 'gp_label', 'value' => 'GP'));
     }
 

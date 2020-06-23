@@ -21,11 +21,14 @@ class AttachmentDataController extends \AdminController
     public function accessRules()
     {
         // Allow logged in users - the main authorisation check happens later in verifyActionAccess
-        return array(
+        return array_merge(
             array(
-                'allow',
-                'roles' => array('OprnEditRequestData'),
-            )
+                array(
+                    'allow',
+                    'roles' => array('OprnEditRequestData'),
+                )
+            ),
+            parent::accessRules()
         );
     }
 
@@ -60,7 +63,5 @@ class AttachmentDataController extends \AdminController
             'cancel_uri' => '/Api/Request/admin/request/index',
             'text_data' => $json_pretty_text_data
         ));
-
     }
-
 }

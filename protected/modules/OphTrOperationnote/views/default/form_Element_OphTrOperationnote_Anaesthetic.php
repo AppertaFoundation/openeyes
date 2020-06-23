@@ -54,10 +54,18 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         <tr>
           <td>Type</td>
           <td>
-                <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
-                  false, false, false, false,
-                  array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
-                  array('field' => 12)); ?>
+                <?php echo $form->checkBoxes(
+                    $element,
+                    'AnaestheticType',
+                    'anaesthetic_type',
+                    null,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
+                    array('field' => 12)
+                ); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
@@ -66,9 +74,17 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
                    endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
-                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
-                    false, false, false, false,
-                    array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')); ?>
+                <?php echo $form->checkBoxes(
+                    $element,
+                    'AnaestheticDelivery',
+                    'anaesthetic_delivery',
+                    null,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')
+                ); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
@@ -81,9 +97,17 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
           </td>
           <td>
             <fieldset id="<?=\CHtml::modelName($element) . '_anaesthetist_id' ?>">
-                <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
-                    false, false, false, false,
-                    array('nowrapper' => true , 'label-class' => $element->getError('Anaesthetist') ? 'error' : '')); ?>
+                <?php echo $form->radioButtons(
+                    $element,
+                    'anaesthetist_id',
+                    'Anaesthetist',
+                    $element->anaesthetist_id,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('nowrapper' => true , 'label-class' => $element->getError('Anaesthetist') ? 'error' : '')
+                ); ?>
             </fieldset>
           </td>
         </tr>
@@ -93,10 +117,14 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
                 <?php echo $element->getAttributeLabel('anaesthetic_witness_id') ?>
             </td>
             <td>
-                <?php echo $form->dropDownList($element, 'anaesthetic_witness_id',
+                <?php echo $form->dropDownList(
+                    $element,
+                    'anaesthetic_witness_id',
                     CHtml::listData($element->surgeons, 'id', 'FullName'),
                     array('empty' => 'Select', 'nowrapper' => true),
-                    $element->witness_hidden, array('field' => 3)); ?>
+                    $element->witness_hidden,
+                    array('field' => 3)
+                ); ?>
 
             </td>
           </tr>
@@ -115,41 +143,44 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
           <td>Agents</td>
           <td class="cols-8">
                 <?php echo $form->multiSelectList(
-                  $element,
-                  'AnaestheticAgent',
-                  'anaesthetic_agents',
-                  'id',
-                  $this->getAnaesthetic_agent_list($element),
-                  null,
-                  array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
-                  false,
-                  false,
-                  null,
-                  false,
-                  false,
-                  array('field' => 3)
-              ) ?>
+                    $element,
+                    'AnaestheticAgent',
+                    'anaesthetic_agents',
+                    'id',
+                    $this->getAnaesthetic_agent_list($element),
+                    null,
+                    array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
+                    false,
+                    false,
+                    null,
+                    false,
+                    false,
+                    array('field' => 3)
+                ) ?>
           </td>
         </tr>
         <tr>
           <td>Complications</td>
           <td>
                 <?php echo $form->multiSelectList(
-                  $element,
-                  'OphTrOperationnote_AnaestheticComplications',
-                  'anaesthetic_complications',
-                  'id',
-                  CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(),
-                      'id', 'name'),
-                  array(),
-                  array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
-                  false,
-                  false,
-                  null,
-                  false,
-                  false,
-                  array('field' => 12)
-              ) ?>
+                    $element,
+                    'OphTrOperationnote_AnaestheticComplications',
+                    'anaesthetic_complications',
+                    'id',
+                    CHtml::listData(
+                        OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(),
+                        'id',
+                        'name'
+                    ),
+                    array(),
+                    array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
+                    false,
+                    false,
+                    null,
+                    false,
+                    false,
+                    array('field' => 12)
+                ) ?>
           </td>
           <style>
             #OphTrOperationnote_Anaesthetic .multi-select-list {
@@ -172,13 +203,17 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
             Comments
           </td>
           <td>
-                <?php echo $form->textArea($element, 'anaesthetic_comment',
-                  array('nowrapper' => true), false,
-                  array(
+                <?php echo $form->textArea(
+                    $element,
+                    'anaesthetic_comment',
+                    array('nowrapper' => true),
+                    false,
+                    array(
                       'rows' => 4,
                       'cols' => 40,
                       'class' => 'js-comment-field autosize',
-                  )) ?>
+                    )
+                ) ?>
           </td>
         </tr>
         </tbody>
@@ -215,12 +250,17 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
                 return ['label' => $value, 'id' => $key];
-            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'id':'AnaestheticAgent', 'multiSelect': true}),
+            },
+            array_keys($agents),
+            $agents)
+        ) ?>, {'header':'Agents', 'id':'AnaestheticAgent', 'multiSelect': true}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['label' => $item->name,
                     'id' => $item->id];
-            }, $complications) ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
+            },
+            $complications) 
+        ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {

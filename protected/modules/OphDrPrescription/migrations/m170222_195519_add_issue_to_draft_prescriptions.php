@@ -9,7 +9,7 @@ class m170222_195519_add_issue_to_draft_prescriptions extends CDbMigration
 
         //no Draft in the issue table, we have to add it
         if (!$draft_id) {
-            $this->insert('issue', array('name' => 'Draft') );
+            $this->insert('issue', array('name' => 'Draft'));
         }
 
         $this->execute("INSERT INTO event_issue (event_id, issue_id, last_modified_date, created_date, created_user_id)

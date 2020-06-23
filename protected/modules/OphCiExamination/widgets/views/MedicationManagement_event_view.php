@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -20,90 +21,70 @@
 $form_format = SettingMetadata::model()->getSetting('prescription_form_format');
 ?>
 <div class="element-data full-width">
-    <table class="medications" id="Medication_Management_medication_current_entries">
-        <colgroup>
-            <col class="cols-3">
-            <col class="cols-5">
-            <col class="cols-3">
-            <col class="cols-icon" span="2">
-            <!-- actions auto-->
-        </colgroup>
-        <thead>
-        <tr>
-            <th>Drug</th>
-            <th>Dose/frequency/route/start/stop</th>
-            <th>Duration/dispense/comments</th>
-            <th><i class="oe-i drug-rx small no-click"></i></th>
-            <th></th><!-- actions -->
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach (array(
-                           "start" => ["getContinuedEntries", "getEntriesStartingInFuture"],
-                           "direction-right " => ["getEntriesStartedToday"],
-                       ) as $entry_icon => $methods) :
+    <?php $sections = array(
+        'New' => ["getEntriesStartedToday", "getEntriesStartingInFuture"],
+        'Continued' => ["getContinuedEntries"],
+        'Discontinued' => ["getStoppedEntries"]
+    );
+
+   $header_rendered = false; // we only render the header in the first section
+
+foreach ($sections as $section => $methods) :
+    $entries = array();
     foreach ($methods as $method) {
-        $entries = $element->$method();
-        if (!empty($entries)) : ?>
-                    <?php foreach ($entries as $key => $entry) : ?>
-                        <?php echo $this->render(
-                            'MedicationManagementEntry_event_view',
-                            [
-                                'entry' => $entry,
-                                'patient' => $this->patient,
-                                'entry_icon' => $entry_icon,
-                                'row_count' => $key,
-                                'form_setting' => $form_format
-                            ]
-                        ); ?>
-                    <?php endforeach; ?>
+        $entries += $element->$method();
+    }
 
-        <?php endif; ?>
-    <?php } ?>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php $stoppedEntries = $element->getStoppedEntries();
-    if ($stoppedEntries) { ?>
-        <div class="collapse-data">
-            <div class="collapse-data-header-icon expand">
-                Stopped Medications
-                <small>(<?= count($stoppedEntries) ?>)</small>
-            </div>
-            <div class="collapse-data-content" style="display:none;">
-
-                <table class="medications" id="Medication_Management_medication_stopped_entries">
-                    <colgroup>
-                        <col class="cols-3">
-                        <col class="cols-5">
-                        <col class="cols-3">
-                        <col class="cols-icon" span="2">
-                    </colgroup>
-                    <thead style="display:none;">
+    if ($entries) {
+        ?>
+            <div class="collapse-data">
+                <div class="collapse-data-header-icon collapse">
+                    <i class="oe-i-e i-DrPrescription pad-right"></i><?= $section ?> Medications
+                    <small>(<?= count($entries) ?>)</small>
+                </div>
+                <div class="collapse-data-content" style="display:block;">
+                    <table class="medications" id="Medication_Management_medication_<?= $section ?>_entries">
+                    <?php if (!$header_rendered) :
+                        $header_rendered = true;
+                        ?>
+                        <thead>
+                    <?php else : ?>
+                        <thead style="display:none;" >
+                    <?php endif; ?>
                         <tr>
                             <th>Drug</th>
-                            <th>Dose/frequency/route/start/stop</th>
-                            <th>Comments</th>
-                            <th><i class="oe-i drug-rx small no-click"></i></th>
-                            <th></th><!-- actions -->
+                            <th>Dose/frequency/route</th>
+
+                            <th>Side &emsp;&nbsp; Start / Stop dates</th>
+                            <th>Duration/dispense/comments</th>
+                            <th><i class="oe-i drug-rx small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Prescribe Medication"></i></th>
+                            <th>
+                                <!-- icons -->
+                            </th>
                         </tr>
                     </thead>
-                    <tbody>
-                    <?php foreach ($stoppedEntries as $key => $entry) : ?>
-                        <?php echo $this->render(
-                            'MedicationManagementEntry_event_view',
-                            [
-                                'entry' => $entry,
-                                'patient' => $this->patient,
-                                'entry_icon' => 'stop',
-                                'row_count' => $key,
-                                'stopped' => true
-                            ]
-                        ); ?>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    
+                        <tbody>
+                        <?php
+                        if (!empty($entries)) :
+                            foreach ($entries as $key => $entry) : ?>
+                                    <?php echo $this->render(
+                                        'MedicationManagementEntry_event_view',
+                                        [
+                                        'entry' => $entry,
+                                        'patient' => $this->patient,
+                                        'entry_icon' => null,
+                                        'row_count' => $key,
+                                        'form_setting' => $form_format
+                                        ]
+                                    ); ?>
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
     <?php } ?>
+<?php endforeach; ?>
 </div>

@@ -234,7 +234,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             pickmeup(datepicker_name, {
                 format: 'Y-m-d',
                 hide_on_select: true,
-                default_date: false
+                default_date: new Date()
             });
         }
     };

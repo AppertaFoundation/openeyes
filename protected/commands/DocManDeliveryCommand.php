@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-require_once '../vendor/setasign/fpdi/pdf_parser.php';
+require_once '../vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path
@@ -149,7 +149,7 @@ EOH;
 
             if ($xml_generated) {
                 $internal_referral_command = new InternalReferralDeliveryCommand();
-                $internal_referral_command->setFileRandomNumber( $file_info['rand'] );
+                $internal_referral_command->setFileRandomNumber($file_info['rand']);
 
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
@@ -321,8 +321,10 @@ EOH;
 
         switch ($format) {
             case 'format2':
-                $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date(
+                    'YmdHi',
+                    strtotime($this->event->last_modified_date)
+                ) . '_' . $this->event->id;
                 break;
             case 'format3':
                 $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .

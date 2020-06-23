@@ -30,24 +30,30 @@
                 <?php if ($this->is_auto) { ?>
                     <label class="inline highlight"
                            for="<?= Chtml::modelName($element) . '_manually_overriden_' . $eye_side ?>">
-                        <?= \CHtml::activeCheckBox($element, 'manually_overriden_' . $eye_side,
-                            array('class' => 'js-manually-override-lens-selection ' . Chtml::modelName($element) . '_manually_overriden_' . $eye_side)); ?>
+                        <?= \CHtml::activeCheckBox(
+                            $element,
+                            'manually_overriden_' . $eye_side,
+                            array('class' => 'js-manually-override-lens-selection ' . Chtml::modelName($element) . '_manually_overriden_' . $eye_side)
+                        ); ?>
                         Manually override lens choice
                     </label>
                 <?php } ?>
                 <?php $manually_overriden = $element->{'manually_overriden_' . $eye_side}; ?>
 
-                <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
+                <?php $this->renderPartial(
+                    'form_Element_OphInBiometry_Selection_fields',
                     array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
                         'manual_override' => false,
                         'disable' => $manually_overriden
-                    )); ?>
+                    )
+                ); ?>
                 <?php if ($this->is_auto) {
-                    $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
-
+                    $this->renderPartial(
+                        'form_Element_OphInBiometry_Selection_fields',
                         array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
                             'manual_override' => true,
-                            'disable' => !$manually_overriden));
+                        'disable' => !$manually_overriden)
+                    );
                 } ?>
             </div>
             <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">

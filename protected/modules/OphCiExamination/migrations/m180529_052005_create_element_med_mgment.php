@@ -17,8 +17,13 @@ class m180529_052005_create_element_med_mgment extends OEMigration
             'event_id' => 'int(10) unsigned'
         ), true);
 
-        $this->addForeignKey('et_ophciexamination_medmgmt_ev_fk',
-            'et_ophciexamination_medicationmanagement', 'event_id', 'event', 'id');
+        $this->addForeignKey(
+            'et_ophciexamination_medmgmt_ev_fk',
+            'et_ophciexamination_medicationmanagement',
+            'event_id',
+            'event',
+            'id'
+        );
     }
 
     public function down()

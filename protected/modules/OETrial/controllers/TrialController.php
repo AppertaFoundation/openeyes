@@ -283,8 +283,10 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_GET['patient_id']);
-        $trial->addPatient($patient,
-            TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE)));
+        $trial->addPatient(
+            $patient,
+            TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE))
+        );
     }
 
     /**
@@ -382,7 +384,6 @@ class TrialController extends BaseModuleController
      *
      * @param int $id The trial ID
      * @param string $term The term to search for
-     * @return string A JSON encoded array of users with id, label, username and value
      * @throws CHttpException Thrown if an error occurs when loading the model
      */
     public function actionUserAutoComplete($id, $term)
@@ -429,7 +430,7 @@ class TrialController extends BaseModuleController
             );
         }
 
-        echo CJSON::encode($res);
+        $this->renderJSON($res);
     }
 
     /**
@@ -450,7 +451,7 @@ class TrialController extends BaseModuleController
             $res = array(
             'Error' => 'At least one principal investigator should be selected.'
             );
-            echo CJSON::encode($res);
+            $this->renderJSON($res);
             Yii::app()->end();
         }
         $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));

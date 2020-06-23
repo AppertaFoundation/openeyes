@@ -59,11 +59,15 @@
                 <?php echo $element->getAttributeLabel('date_of_birth')?>
           </td>
           <td>
-                <?php echo $form->datePicker($element, 'date_of_birth', array(),
-                  array(
+                <?php echo $form->datePicker(
+                    $element,
+                    'date_of_birth',
+                    array(),
+                    array(
                       'nowrapper'=>true,
                       'class'=>'cols-full'),
-                  array()) ?>
+                    array()
+                ) ?>
           </td>
         </tr>
         <tr>
@@ -72,19 +76,20 @@
           </td>
           <td>
                 <?php echo $form->dropDownList(
-                  $element,
-                  'gender_id',
-                  CHtml::listData(
-                      Gender::model()->findAll(),
-                      'id',
-                      'name'
-                  ),
-                  array(
+                    $element,
+                    'gender_id',
+                    CHtml::listData(
+                        Gender::model()->findAll(),
+                        'id',
+                        'name'
+                    ),
+                    array(
                       'empty' => 'Select',
                       'nowrapper'=>true,
                       'class'=>'cols-full'),
-                  false,
-                  array()) ?>
+                    false,
+                    array()
+                ) ?>
           </td>
         </tr>
         <tr>
@@ -93,19 +98,20 @@
           </td>
           <td>
                 <?php echo $form->dropDownList(
-                  $element,
-                  'ethnic_group_id',
-                  CHtml::listData(
-                      EthnicGroup::model()->findAll(),
-                      'id',
-                      'name'
-                  ),
-                  array(
+                    $element,
+                    'ethnic_group_id',
+                    CHtml::listData(
+                        EthnicGroup::model()->findAll(),
+                        'id',
+                        'name'
+                    ),
+                    array(
                       'empty' => 'Select',
                       'nowrapper'=>true,
                       'class'=>'cols-full'),
-                  false,
-                  array('label' => 4, 'field' => 8)) ?>
+                    false,
+                    array('label' => 4, 'field' => 8)
+                ) ?>
           </td>
         </tr>
         </tbody>

@@ -28,8 +28,13 @@ class AdminController extends ModuleAdminController
     public function actionViewPostOpDrugs()
     {
         $this->group = "Drugs";
-        Audit::add('admin', 'list', null, null,
-            array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug'));
+        Audit::add(
+            'admin',
+            'list',
+            null,
+            null,
+            array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug')
+        );
 
         $this->render('postopdrugs');
     }
@@ -93,8 +98,13 @@ class AdminController extends ModuleAdminController
                 if (!$incisionLength->delete()) {
                     $result = 0;
                 } else {
-                    Audit::add('admin', 'delete', $incisionLength->id, null,
-                        array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_IncisionLengthDefault'));
+                    Audit::add(
+                        'admin',
+                        'delete',
+                        $incisionLength->id,
+                        null,
+                        array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_IncisionLengthDefault')
+                    );
                 }
             }
         }
@@ -180,8 +190,13 @@ class AdminController extends ModuleAdminController
             if (!$drug->save()) {
                 $result = 0;
             } else {
-                Audit::add('admin', 'delete', $drug->id, null,
-                    array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug'));
+                Audit::add(
+                    'admin',
+                    'delete',
+                    $drug->id,
+                    null,
+                    array('module' => 'OphTrOperationnote', 'model' => 'OphTrOperationnote_PostopDrug')
+                );
             }
         }
         echo $result;
@@ -221,13 +236,13 @@ class AdminController extends ModuleAdminController
                 $instruction->site_id = $_POST['site_id'];
                 $instruction->subspecialty_id = $_POST['subspecialty_id'];
 
-                echo json_encode(array(
+                $this->renderJSON(array(
                     'success' => (int)$instruction->save()
                 ));
             } elseif (isset($_POST['action']) && $_POST['action'] == 'delete') {
                 $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
 
-                echo json_encode(array(
+                $this->renderJSON(array(
                     'success' => (int)$instruction->delete()
                 ));
             }

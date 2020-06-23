@@ -14,8 +14,11 @@ class m180416_031716_add_element_group_title_column extends OEMigration
         }
         if (isset($this->dbConnection->schema->getTable('element_type')->columns['group_title'])) {
             // Set the group title to default to the element name
-            $this->update('element_type', array('group_title' => new CDbExpression('name')),
-                array('parent_element_type_id IS NOT NULL'));
+            $this->update(
+                'element_type',
+                array('group_title' => new CDbExpression('name')),
+                array('parent_element_type_id IS NOT NULL')
+            );
         }
 
     }

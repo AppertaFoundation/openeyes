@@ -63,19 +63,17 @@ if (!$nowrapper) {?>
         <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
             <?php
             $this->widget(
-            'zii.widgets.jui.CJuiAutoComplete',
-            array(
-              'name' => "{$class}[$field]",
-              'id' => "{$class_field}_0",
-              'value' => '',
-              'source' => "js:function(request, response) {
+                'zii.widgets.jui.CJuiAutoComplete',
+                array(
+                'name' => "{$class}[$field]",
+                'id' => "{$class_field}_0",
+                'value' => '',
+                'source' => "js:function(request, response) {
                 $.ajax({
                   'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
                   'type':'GET',
                   'data':{'term': request.term, 'code': '$code'},
                   'success':function(data) {
-                    data = $.parseJSON(data);
-    
                     var result = [];
     
                     for (var i = 0; i < data.length; i++) {
@@ -94,7 +92,7 @@ if (!$nowrapper) {?>
                   }
                 });
               }",
-              'options' => array(
+                'options' => array(
                   'minLength' => '3',
                   'select' => 'js:function(event, ui) {
                     currFirst = getSelectedObj(firstSelection);
@@ -108,11 +106,11 @@ if (!$nowrapper) {?>
                     });
                     return false;
                   }",
-              ),
-              'htmlOptions' => array(
+                ),
+                'htmlOptions' => array(
                   'placeholder' => $placeholder,
-              ),
-            )
+                ),
+                )
             );
             ?>
         </div>

@@ -270,7 +270,8 @@ class OphTrOperationnote_API extends BaseAPI
         if ($latestCataract = $this->getElementFromLatestEvent(
             'Element_OphTrOperationnote_Cataract',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $result .= 'Cataract complications: '.$latestCataract->getComplicationsString();
             $result .="\n";
@@ -279,7 +280,8 @@ class OphTrOperationnote_API extends BaseAPI
         if ($latestTrabeculectomy = $this->getElementFromLatestEvent(
             'Element_OphTrOperationnote_Trabeculectomy',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $result .= 'Trabeculectomy complications: '.$latestTrabeculectomy->getComplicationsString();
             $result .="\n";
@@ -288,7 +290,8 @@ class OphTrOperationnote_API extends BaseAPI
         if ($latestTrabectome = $this->getElementFromLatestEvent(
             'Element_OphTrOperationnote_Trabectome',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             $result .= 'Trabectome complications: '.$latestTrabectome->getComplicationsString();
             $result .="\n";
@@ -309,7 +312,8 @@ class OphTrOperationnote_API extends BaseAPI
         if ($comments = $this->getElementFromLatestEvent(
             'Element_OphTrOperationnote_Comments',
             $patient,
-            $use_context)
+            $use_context
+        )
         ) {
             return $comments->comments;
         }
@@ -342,7 +346,8 @@ class OphTrOperationnote_API extends BaseAPI
             $operations[] = array(
                 'date' => $element->event->event_date,
                 'side' => $element->eye->adjective,
-                'operation' => implode(', ',
+                'operation' => implode(
+                    ', ',
                     array_map(
                         function($proc) {
                             // if there is no short_format for this procedure, fallback to the long term

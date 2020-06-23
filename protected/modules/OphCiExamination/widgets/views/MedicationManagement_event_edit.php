@@ -75,7 +75,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key => $entry) {
-                        if (($prescribe_access || $entry->prescribe == 0) && !$read_only) {
+                        if (!$read_only) {
                                 $this->render(
                                     'MedicationManagementEntry_event_edit',
                                     array(
@@ -92,7 +92,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                         'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                         'row_type' => /*$entry->group */ 'group',
                                         'is_last' => ($row_count == $total_count - 1),
-                                        'prescribe_access' => $prescribe_access,
                                         'patient' => $this->patient,
                                         'locked' => $entry->locked,
                                         'unit_options' => $unit_options,
@@ -121,7 +120,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                                     'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                     'row_type' => /*$entry->group */ 'group',
                                     'is_last' => ($row_count == $total_count - 1),
-                                    'prescribe_access' => $prescribe_access,
                                     'patient' => $this->patient,
                                     'locked' => $entry->locked,
                                     'unit_options' => $unit_options,
@@ -172,6 +170,8 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             </div>
         </div>
     </div>
+    <div id="mm-handler-1" class="js-save-handler-function" style="display:none;"></div> 
+    <div id="mm-handler-2" class="js-save-handler-function" style="display:none;"></div> 
     <script type="text/template" class="entry-template hidden">
         <?php
         $empty_entry = new \OEModule\OphCiExamination\models\MedicationManagementEntry();
@@ -193,7 +193,6 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                 'row_type' => 'new',
                 'is_last' => false,
                 'is_new' => true,
-                'prescribe_access' => $prescribe_access,
                 'patient' => $this->patient,
                 'locked' => '{{locked}}{{^locked}}0{{/locked}}',
                 'source_subtype' => '{{source_subtype}}',
@@ -227,10 +226,12 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
     </script>
 </div>
 <script type="text/javascript">
+    let ElementFormJSONConverterMM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
     $(document).ready(function () {
         let prescribed_medications = [];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
         let prescription_event_exists = false;
+        let prescription_is_final = <?= CJavaScript::encode($element->prescription && $element->prescription->draft === '0') ?>;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
@@ -244,14 +245,10 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             }
         });
 
-        if (prescription_event_exists) {
-            let $save_button = $('#et_save');
-            $save_button.before("<button class='button header-tab green' id='et_save_check_prescription_reason'>Save</button>");
-            $save_button.hide();
-        }
-
-
-        $('#et_save_check_prescription_reason').on('click', function () {
+        $('#mm-handler-1').on('handle', function () {
+            if (!prescription_is_final) {
+                return;
+            }
             let prescription_modified = false;
 
             //check if old prescribed medications have been modified
@@ -303,10 +300,13 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 
             if (prescription_modified) {
                 $('#js-save-mm-event').show();
-            } else {
-                $('#et_save').trigger('click');
+                setTimeout(() => enableButtonsWithin('#js-save-mm-event'), 100);
+                $(this).attr('status', 'stop');
             }
+        });
 
+        $('#mm-handler-2').on('handle', function () {
+            ElementFormJSONConverterMM.convert('<?=$model_name . "_element"?>');
         });
 
         $('#submit_reason').on('click', function () {

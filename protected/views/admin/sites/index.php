@@ -13,8 +13,38 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<style>
+    .flash-success{
+        border:1px solid #1DDD50;
+        background: #C3FFD3;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+    .error{
+        border:1px solid #ff6666;
+        background: #ffe6e6;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+</style>
+<?php if (Yii::app()->user->hasFlash('success')) : ?>
+    <div class="flash-success">
+        <?= Yii::app()->user->getFlash('success'); ?>
+    </div>
 
-<div class="cols-7">
+<?php endif; ?>
+<?php if (Yii::app()->user->hasFlash('error')) : ?>
+    <div class="error">
+        <?= Yii::app()->user->getFlash('error'); ?>
+    </div>
+
+<?php endif; ?>
+
+<div class="cols-6">
 
     <?php if (!$sites) :?>
     <div class="row divider">
@@ -25,7 +55,7 @@
     <div class="row divider">
         <?php
         $form = $this->beginWidget(
-            'BaseEventTypeCActiveForm',
+            'CActiveForm',
             [
                 'id' => 'searchform',
                 'enableAjaxValidation' => false,
@@ -35,9 +65,9 @@
         )?>
 
         <input type="text"
-           autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+           autocomplete="<?= Yii::app()->params['html_autocomplete']?>"
            name="search" id="search" placeholder="Enter search query..."
-           value="<?php echo strip_tags(Yii::app()->request->getParam('search', ''))?>" />
+           value="<?= strip_tags(Yii::app()->request->getParam('search', ''))?>" />
         <?php $this->endWidget()?>
     </div>
 
@@ -49,27 +79,47 @@
                     <th>Remote ID</th>
                     <th>Name</th>
                     <th>Address</th>
+                    <th>Primary Logo</th>
+                    <th>Secondary Logo</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($sites as $i => $site) {?>
                     <tr class="clickable"
-                        data-id="<?php echo $site->id?>"
-                        data-uri="admin/editsite?site_id=<?php echo $site->id?>">
-                        <td><?php echo $site->id?></td>
-                        <td><?php echo $site->remote_id?></td>
-                        <td><?php echo $site->name?></td>
+                        data-id="<?= $site->id?>"
+                        data-uri="admin/editsite?site_id=<?= $site->id?>">
+                        <td><?= $site->id?></td>
+                        <td><?= $site->remote_id?></td>
+                        <td><?= $site->name?></td>
                         <td>
-                            <?php echo $site->getLetterAddress(
+                            <?= $site->getLetterAddress(
                                 ['delimiter' => ', ']
                             )?>
+                        </td>
+                        <td>
+                            <?php
+                            if (($site->logo) && ($site->logo->primary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            if (($site->logo) && ($site->logo->secondary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
+                            ?>
                         </td>
                     </tr>
                 <?php }?>
             </tbody>
             <tfoot class="pagination-container">
                 <tr>
-                    <td colspan="2">
+                    <td colspan="3">
                         <?=\CHtml::button(
                             'Add Site',
                             [
@@ -78,7 +128,7 @@
                             ]
                         ); ?>
                     </td>
-                    <td colspan="2">
+                    <td colspan="3">
                         <?php $this->widget(
                             'LinkPager',
                             ['pages' => $pagination]

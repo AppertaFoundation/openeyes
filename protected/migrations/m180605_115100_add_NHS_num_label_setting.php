@@ -9,8 +9,7 @@ class m180605_115100_add_NHS_num_label_setting extends OEMigration
             'key' => 'nhs_num_label',
             'name' => 'NHS Number label',
             'default_value' => 'NHS'
-            )
-        );
+            ));
 
         $this->insert('setting_installation', array('key' => 'nhs_num_label', 'value' => 'NHS'));
     }

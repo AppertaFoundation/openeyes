@@ -76,8 +76,12 @@ class m190214_111213_fixing_issue_where_insert_and_update_queries_are_done_befor
                 ->where('name = "' . $moved_element['new_parent'] . '"')
                 ->queryScalar();
 
-            $this->update('element_type', array('element_group_id' => $new_parent_id ?: null),
-                'id = :id', array(':id' => $this->getElementId($moved_element['class_name'])));
+            $this->update(
+                'element_type',
+                array('element_group_id' => $new_parent_id ?: null),
+                'id = :id',
+                array(':id' => $this->getElementId($moved_element['class_name']))
+            );
         }
 
         $this->delete('element_group', 'id NOT IN (SELECT element_group_id FROM element_type)');
@@ -104,8 +108,12 @@ class m190214_111213_fixing_issue_where_insert_and_update_queries_are_done_befor
                 ->from('element_group')
                 ->where('name = "' . $moved_element['old_parent'] . '"')
                 ->queryScalar();
-            $this->update('element_type', array('element_group_id' => $old_parent_id),
-                'id = :id', array(':id' => $this->getElementId($moved_element['class_name'])));
+            $this->update(
+                'element_type',
+                array('element_group_id' => $old_parent_id),
+                'id = :id',
+                array(':id' => $this->getElementId($moved_element['class_name']))
+            );
         }
 
         $this->update('element_type', array('element_group_id' => null), 'id = :id', array(':id' => $this->getElementId('Element_OphCiExamination_Refraction')));

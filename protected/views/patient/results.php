@@ -17,31 +17,59 @@
  */
 ?>
 <?php
+
 $based_on = array();
+$search_term = "";
 if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME: <p>"' . $search_terms['last_name'] . '"</p>';
+    $based_on[] = 'LAST NAME';
+    $search_term = $search_terms['last_name'];
 }
 if ($search_terms['first_name']) {
-    $based_on[] = 'FIRST NAME: <p>"' . $search_terms['first_name'] . '"</p>';
+    $based_on[] = 'FIRST NAME';
+    $search_term = $search_terms['first_name'];
 }
 if ($search_terms['hos_num']) {
-    $based_on[] = 'HOSPITAL NUMBER: <p>' . $search_terms['hos_num'] . '</p>';
+    $based_on[] = 'HOSPITAL NUMBER';
+    $search_term = $search_terms['hos_num'];
 }
 $core_api = new CoreAPI();
 
 $based_on = implode(', ', $based_on);
 ?>
+<div class="oe-full-header flex-layout">
+    <div class="title wordcaps">Patient search</div>
+</div>
 
-<?php $this->renderPartial('//base/_search_bar', array(
-    'callback' => Yii::app()->createUrl('site/search'),
-)); ?>
-<div class="patient-search-results subgrid">
-  <div class="search-details">
-    <div class="title">Results</div>
-    <div class="found"><?php echo $total_items ?> patients found</div>
-    <div class="search-critera">based on <?php echo $based_on ?></div>
-    <button id="js-clear-search-btn" class="blue hint cols-full clear-search">Clear search results</button>
-  </div>
+<div class="oe-full-content subgrid oe-patient-search">
+  <nav class="oe-full-side-panel">
+    <h3>Results</h3>
+      <table class="standard">
+          <tbody>
+          <tr>
+              <th>Search</th>
+              <td>"<?php echo $search_term ?>"</td>
+          </tr>
+          <tr>
+              <th>Found</th>
+              <td><?php echo $total_items ?> patients</td>
+          </tr>
+          <tr>
+              <th>Based on</th>
+              <td><?php echo $based_on ?></td>
+          </tr>
+
+          </tbody>
+      </table>
+      <hr class="divider">
+      <h3>Search</h3>
+      <?php $this->renderPartial('//base/_search_bar', array(
+          'callback' => Yii::app()->createUrl('site/search'),
+          'context' => 'sidebar',
+      )); ?>
+      <hr class="divider">
+      <h4>Use the <a href="<?= Yii::app()->createUrl('/OECaseSearch/caseSearch/index'); ?>" class="hint">advanced search</a></h4>
+
+  </nav>
   <div class="results-all">
         <?php $this->renderPartial('//base/_messages');
         $dataProvided = $data_provider->getData();
@@ -74,19 +102,22 @@ $based_on = implode(', ', $based_on);
                     if ($i == $sort_by) {
                         $new_sort_dir = 1 - $sort_dir;
                         echo CHtml::link(
-                          $field,
-                          Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
-                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                            $field,
+                            Yii::app()->createUrl(
+                                'patient/search',
+                                array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
+                            ),
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? (($sort_dir == 0) ? 'sortable column-sort ascend ' : 'sortable column-sort descend '. 'active') : '')
                         );
                         ?>
-                      <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
                     <?php } else {
                         echo CHtml::link(
-                          $field,
-                          Yii::app()->createUrl('patient/search',
-                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)),
-                           array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                            $field,
+                            Yii::app()->createUrl(
+                                'patient/search',
+                                array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
+                            ),
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
                         );
                     }
                     ?>
@@ -141,6 +172,6 @@ $based_on = implode(', ', $based_on);
   });
 
   $('#js-clear-search-btn').click(function () {
-    window.location.assign('<?php echo Yii::app()->baseUrl . '/'; ?>');
+    window.location.assign('<?php echo Yii::app()->createURL('site/index') ; ?>');
   });
 </script>

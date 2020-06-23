@@ -58,7 +58,8 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id', 'required'),
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id, duration_id', 'required'),
+            array('duration_id', 'validateDuration')
         ));
     }
 
@@ -131,7 +132,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         foreach ($this->tapers as $i => $taper) {
             if (!$taper->validate()) {
                 foreach ($taper->getErrors() as $fld => $err) {
-                    $this->addError('tapers', 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
+                    $this->addError("taper_{$i}_{$fld}", 'Taper (' . ($i + 1) . '): ' . implode(', ', $err));
                 }
             }
         }
@@ -143,7 +144,7 @@ class OphDrPrescription_Item extends EventMedicationUse
      */
     public function stopDateFromDuration($include_tapers = true)
     {
-        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing'))) {
+        if (in_array($this->medicationDuration->name, array('Other', 'Ongoing')) || is_null($this->prescription->event)) {
             return null;
         }
 
@@ -157,7 +158,10 @@ class OphDrPrescription_Item extends EventMedicationUse
                 if (in_array($taper->duration->name, array('Other', 'Ongoing'))) {
                     return null;
                 }
-                $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+
+                if ($taper->duration->name !== 'Once') {
+                    $end_date = $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+                }
             }
         }
         return $end_date;
@@ -210,24 +214,26 @@ class OphDrPrescription_Item extends EventMedicationUse
         return $item_lines_used;
     }
 
-    public function getAdministrationDisplay()
+    public function getAdministrationDisplay(bool $include_route = false)
     {
-        $dose = (string)$this->dose;
-        $freq = (string)$this->frequency;
-        $route = (string)$this->route;
+        $parts = array('dose', 'dose_unit_term');
+        
+        if ($include_route) {
+            $parts += array('medicationLaterality', 'route');
+        }
 
-        if ($this->tapers) {
-            $last_taper = array_slice($this->tapers, -1)[0];
-            $last_dose = (string)$last_taper->dose;
-            if ($last_dose != $dose) {
-                $dose .= ' - ' . $last_dose;
-            }
-            $last_freq = (string)$last_taper->frequency;
-            if ($last_freq != $freq) {
-                $freq .= ' - ' . $last_freq;
+        $parts += array('frequency');
+
+        $res = array();
+
+        foreach ($parts as $k) {
+            if ($this->$k) {
+                if ($k !== "dose_unit_term" || $this->dose) {
+                    $res[] = $this->$k;
+                }
             }
         }
-        return $dose . ($this->laterality ? ' ' . $this->getLateralityDisplay() : '') . ' ' . $route . ' ' . $freq;
+        return implode(' ', $res);
     }
 
     /**

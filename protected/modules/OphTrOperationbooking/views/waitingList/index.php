@@ -35,9 +35,11 @@
             id="waitingList-filter">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <h4>Subspecialty</h4>
-            <?= CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'],
-              Subspecialty::model()->getList(),
-              array(
+            <?= CHtml::dropDownList(
+                'subspecialty-id',
+                @$_POST['subspecialty-id'],
+                Subspecialty::model()->getList(),
+                array(
                   'class' => 'cols-full',
                   'empty' => 'All specialties',
                   'ajax' => array(
@@ -49,7 +51,8 @@
                       'url' => Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
                       'success' => "js:function(data) { $('#firm-id').html(data); }",
                   ),
-              )) ?>
+                )
+            ) ?>
 
         <h4><?= ucfirst(Yii::app()->params['service_firm_label']); ?></h4>
 
@@ -66,24 +69,34 @@
 
 
         <h4>Next letter due</h4>
-            <?=\CHtml::dropDownList('status', @$_POST['status'],
-              Element_OphTrOperationbooking_Operation::getLetterOptions(), array(
+            <?=\CHtml::dropDownList(
+                'status',
+                @$_POST['status'],
+                Element_OphTrOperationbooking_Operation::getLetterOptions(),
+                array(
                   'class' => 'cols-full',
-              )) ?>
+                )
+            ) ?>
 
         <h4>Site</h4>
-            <?=\CHtml::dropDownList('site_id', @$_POST['site_id'],
-              CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
-              array('empty' => 'All sites', 'class' => 'cols-full')); ?>
+            <?=\CHtml::dropDownList(
+                'site_id',
+                @$_POST['site_id'],
+                CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
+                array('empty' => 'All sites', 'class' => 'cols-full')
+            ); ?>
 
         <h4>Hospital Number</h4>
-            <?=\CHtml::textField('hos_num', @$_POST['hos_num'],
-              array(
+            <?=\CHtml::textField(
+                'hos_num',
+                @$_POST['hos_num'],
+                array(
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'size' => 12,
                   'class' => 'search cols-full',
                   'placeholder' => 'Enter Hospital Number',
-              )) ?>
+                )
+            ) ?>
 
         <div id="hos_num_error"
              class="alert-box warning"
@@ -94,14 +107,17 @@
         </div>
 
           <h4>Status</h4>
-                <?=\CHtml::dropDownList('booking_status',
+                <?=\CHtml::dropDownList(
+                    'booking_status',
                     \Yii::app()->request->getParam('booking_status', ''),
                     \CHtml::listData(OphTrOperationbooking_Operation_Status::model()->findAllByAttributes(
-                        [ 'name' => [ 'On-Hold', 'Requires scheduling', 'Requires rescheduling', ], ]), 'id', 'name'),
+                        [ 'name' => [ 'On-Hold', 'Requires scheduling', 'Requires rescheduling', ], ]
+                    ), 'id', 'name'),
                     array(
                         'empty' => 'All',
                         'class' => 'cols-full',
-                    )) ?>
+                    )
+                ) ?>
         <div class="row">
           <button class="green hint cols-full" type="submit">Search Waiting List</button>
         </div>

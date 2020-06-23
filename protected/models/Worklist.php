@@ -184,9 +184,8 @@ class Worklist extends BaseActiveRecordVersioned
      */
     public function getDisplayShortDate()
     {
-        $start = $this->shortDate('start');
         // Short date only uses start date (as it is for situations where string length is an issue)
-        return $start;
+        return $this->NHSDate('start');
     }
 
     /**

@@ -286,10 +286,14 @@ class Element_OphCoCvi_ClericalInfo extends \BaseEventTypeElement
             $factors[$key]['name'] = $factor->name;
             $factors[$key]['is_comments'] = $factor->require_comments;
             $factors[$key]['label'] = $factor->comments_label;
-            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer($factor->id,
-                $element_id);
-            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments($factor->id,
-                $element_id);
+            $factors[$key]['is_factor'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getFactorAnswer(
+                $factor->id,
+                $element_id
+            );
+            $factors[$key]['comments'] = OphCoCvi_ClericalInfo_PatientFactor_Answer::model()->getComments(
+                $factor->id,
+                $element_id
+            );
         }
         return $factors;
     }

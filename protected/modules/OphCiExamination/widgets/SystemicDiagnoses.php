@@ -172,7 +172,9 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".entries.$row.has_disorder", $_POST)
+            \CHtml::modelName($this->element) . ".entries.$row.has_disorder",
+            $_POST
+        )
             == SystemicDiagnosesModel::$NOT_CHECKED;
     }
 

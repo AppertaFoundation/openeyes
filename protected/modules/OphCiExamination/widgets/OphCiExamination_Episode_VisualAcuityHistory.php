@@ -42,11 +42,11 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     public function run_oescape($widgets_no = 1){
         $va_unit_id = @$_GET[$this->va_unit_input] ?:
           SettingMetadata::model()->getSetting(
-            'unit_id',
-            ElementType::model()->find(
-              'class_name=?',
-              array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
-            )
+              'unit_id',
+              ElementType::model()->find(
+                  'class_name=?',
+                  array('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity')
+              )
           );
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
@@ -147,9 +147,9 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $va_data_list = array('right'=>array(), 'left'=>array());
         $va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
         foreach ($this->event_type->api->getElements(
-        'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-        $this->patient,
-        false
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+            $this->patient,
+            false
         ) as $va) {
             foreach (['left', 'right'] as $side) {
                 $reading = $va->getBestReading($side);

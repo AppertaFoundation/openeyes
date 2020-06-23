@@ -71,7 +71,6 @@ class BaseEventTypeController extends BaseModuleController
         'viewPreviousElements' => self::ACTION_TYPE_FORM,
         'print' => self::ACTION_TYPE_PRINT,
         'PDFprint' => self::ACTION_TYPE_PRINT,
-        'saveCanvasImages' => self::ACTION_TYPE_PRINT,
         'update' => self::ACTION_TYPE_EDIT,
         'delete' => self::ACTION_TYPE_DELETE,
         'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
@@ -79,6 +78,7 @@ class BaseEventTypeController extends BaseModuleController
         'printCopy' => self::ACTION_TYPE_PRINT,
         'savePDFprint' => self::ACTION_TYPE_PRINT,
         'createImage' => self::ACTION_TYPE_VIEW,
+        'renderEventImage' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -118,6 +118,7 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
     public $attachment_print_title = null;
+    public $print_args = null;
 
     /**
      * Values to change per event
@@ -243,8 +244,10 @@ class BaseEventTypeController extends BaseModuleController
     {
         $action_type = $this->getActionType($action);
 
-        return in_array($action_type,
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+        return in_array(
+            $action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM)
+        )
             ? BaseEventElementWidget::$EVENT_EDIT_MODE
             : ($action_type === static::ACTION_TYPE_PRINT
                 ? BaseEventElementWidget::$EVENT_PRINT_MODE
@@ -937,14 +940,16 @@ class BaseEventTypeController extends BaseModuleController
 
         if ($this->checkDeleteAccess()) {
             $this->event_actions = array(
-                EventAction::link('Delete',
+                EventAction::link(
+                    'Delete',
                     Yii::app()->createUrl($this->event->eventType->class_name . '/default/delete/' . $this->event->id),
                     array('level' => 'delete')
                 ),
             );
         } elseif ($this->checkRequestDeleteAccess()) {
             $this->event_actions = array(
-                EventAction::link('Delete',
+                EventAction::link(
+                    'Delete',
                     Yii::app()->createUrl($this->event->eventType->class_name . '/default/requestDeletion/' . $this->event->id),
                     array('level' => 'delete')
                 ),
@@ -999,8 +1004,10 @@ class BaseEventTypeController extends BaseModuleController
                         $this->event->user = Yii::app()->user->id;
 
                         if (!$this->event->save()) {
-                            throw new SystemException('Unable to update event: ' . print_r($this->event->getErrors(),
-                                    true));
+                            throw new SystemException('Unable to update event: ' . print_r(
+                                $this->event->getErrors(),
+                                true
+                            ));
                         }
 
                         OELog::log("Updated event {$this->event->id}");
@@ -1046,7 +1053,8 @@ class BaseEventTypeController extends BaseModuleController
         );
 
         $this->event_actions = array(
-            EventAction::link('Cancel',
+            EventAction::link(
+                'Cancel',
                 Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
                 array('level' => 'cancel')
             ),
@@ -1142,9 +1150,12 @@ class BaseEventTypeController extends BaseModuleController
         Yii::app()->assetManager->reset();
 
         $this->renderPartial(
-            '_previous', array(
+            '_previous',
+            array(
             'elements' => $this->getPrevious($element_type),
-        ), false, true // Process output to deal with script requirements
+            ),
+            false,
+            true // Process output to deal with script requirements
         );
     }
 
@@ -1155,7 +1166,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setValidationScenarioForElement($element)
     {
-
     }
 
     /**
@@ -1495,8 +1505,11 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
-                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+        if ($this->show_element_sidebar && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
             $event_type_id = $this->event->attributes["event_type_id"];
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = preg_replace('/\s+/', '_', $event_type->name);
@@ -1504,18 +1517,19 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             parent::renderSidebar($default_view);
         }
-
     }
 
     public function renderIndexSearch()
     {
-        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
-                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+        if ($this->show_index_search && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
             $event_type_id = ($this->event->attributes["event_type_id"]);
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = $event_type->name;
         }
-
     }
 
 
@@ -1569,14 +1583,14 @@ class BaseEventTypeController extends BaseModuleController
         $processOutput = false
     ) {
         if (is_string($action)) {
-            if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
+            if (strcasecmp($action, 'PDFPrint') == 0) {
                 $action = 'print';
             }
             if ($action == 'savePDFprint') {
                 $action = 'print';
             }
 
-            if ($action === 'createImage') {
+            if ($action === 'createImage' || $action === 'renderEventImage') {
                 $action = 'view';
             }
 
@@ -1630,6 +1644,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
+        if ($action === 'renderEventImage') {
+            $action = 'view';
+        }
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
@@ -1683,7 +1700,6 @@ class BaseEventTypeController extends BaseModuleController
                 $this->renderElements($row, $action, $form, $data);
             }
         }
-
     }
 
     /**
@@ -1835,13 +1851,9 @@ class BaseEventTypeController extends BaseModuleController
         $this->getPDFPrintSuffix();
 
         if (!$this->event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
-            if (!$this->pdf_print_html) {
-                ob_start();
-                $this->actionPrint($this->event->id);
-                $this->pdf_print_html = ob_get_contents();
-                ob_end_clean();
-            }
-            $this->renderAndSavePDFFromHtml($this->pdf_print_html, $inject_autoprint_js, $print_footer);
+            // We use localhost without any port info because Puppeteer is running locally.
+            $url = "http://localhost/{$this->module->name}/{$this->id}/print/{$this->event->id}{$this->print_args}";
+            $this->renderAndSavePDFFromHtml($url, $inject_autoprint_js, $print_footer);
         }
 
         $this->event->unlock();
@@ -1861,36 +1873,39 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->getPDFPrintSuffix();
 
-        $wk = new WKHtmlToPDF();
-
-        $wk->setCanvasImagePath($this->event->imageDirectory);
-        $wk->setDocuments($this->pdf_print_documents);
-        $wk->setDocref($this->event->docref);
-        $wk->setPatient($this->event->episode->patient);
-        $wk->setBarcode($this->event->barcodeHTML);
+        Yii::app()->puppeteer->setDocuments($this->pdf_print_documents);
+        Yii::app()->puppeteer->setDocref($this->event->docref);
+        Yii::app()->puppeteer->setPatient($this->event->episode->patient);
+        Yii::app()->puppeteer->setBarcode($this->event->barcodeSVG);
 
         foreach (array('left', 'middle', 'right') as $section) {
-            if (isset(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name])) {
-                $setMethod = 'set' . ucfirst($section);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name])) {
+                $setMethod = $section . 'FooterTemplate';
+                Yii::app()->puppeteer->$setMethod = Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name];
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-            if (isset(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name])) {
-                $setMethod = 'setMargin' . ucfirst($margin);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['puppeteer_' . $margin . '_margin_' . $this->event_type->class_name])) {
+                $setMethod = $margin . 'Margin';
+                Yii::app()->puppeteer->$setMethod = Yii::app()->params['puppeteer_' . $margin . '_margin_' . $this->event_type->class_name];
             }
         }
 
         foreach (PDFFooterTag::model()->findAll('event_type_id = ?', array($this->event_type->id)) as $pdf_footer_tag) {
             if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
-                $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($this->event->id));
+                Yii::app()->puppeteer->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($this->event->id));
             }
         }
 
-        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'],
-            $inject_autoprint_js, $print_footer);
+        Yii::app()->puppeteer->savePageToPDF(
+            $this->event->imageDirectory,
+            'event',
+            $this->pdf_print_suffix,
+            $html,
+            $inject_autoprint_js,
+            $print_footer
+        );
 
         return $this->pdf_print_suffix;
     }
@@ -2055,8 +2070,10 @@ class BaseEventTypeController extends BaseModuleController
                     if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                         $this->event->episode->deleted = 1;
                         if (!$this->event->episode->save()) {
-                            throw new Exception('Unable to save episode: ' . print_r($this->event->episode->getErrors(),
-                                    true));
+                            throw new Exception('Unable to save episode: ' . print_r(
+                                $this->event->episode->getErrors(),
+                                true
+                            ));
                         }
 
                         $this->event->episode->audit('episode', 'delete', false);
@@ -2070,8 +2087,10 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     }
 
-                    Yii::app()->user->setFlash('success',
-                        'An event was deleted, please ensure the episode status is still correct.');
+                    Yii::app()->user->setFlash(
+                        'success',
+                        'An event was deleted, please ensure the episode status is still correct.'
+                    );
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
@@ -2222,9 +2241,12 @@ class BaseEventTypeController extends BaseModuleController
                 $this->event->requestDeletion($_POST['delete_reason']);
 
                 if (Yii::app()->params['admin_email']) {
-                    mail(Yii::app()->params['admin_email'], 'Request to delete an event',
+                    mail(
+                        Yii::app()->params['admin_email'],
+                        'Request to delete an event',
                         'A request to delete an event has been submitted.  Please log in to the admin system to review the request.',
-                        'From: OpenEyes');
+                        'From: OpenEyes'
+                    );
                 }
 
                 Yii::app()->user->setFlash('success', 'Your request to delete this event has been submitted.');
@@ -2276,70 +2298,6 @@ class BaseEventTypeController extends BaseModuleController
     public function setOpenElements($open_elements)
     {
         $this->open_elements = $open_elements;
-    }
-
-    public function actionSaveCanvasImages($id)
-    {
-        $this->event = Event::model()->findByPk($id);
-        if (!$this->event) {
-            throw new Exception("Event not found: $id");
-        }
-
-        if (strtotime($this->event->last_modified_date) != @$_POST['last_modified_date']) {
-            echo 'outofdate';
-
-            return;
-        }
-
-        $this->event->lock();
-
-        if (!file_exists($this->event->imageDirectory)) {
-            if (!@mkdir($this->event->imageDirectory, 0755, true)) {
-                throw new Exception("Unable to create directory: $event->imageDirectory");
-            }
-        }
-
-        if (!empty($_POST['canvas'])) {
-            foreach ($_POST['canvas'] as $drawingName => $blob) {
-                $full_path = $this->event->imageDirectory . "/$drawingName.png";
-                if (!file_exists($full_path)) {
-                    if (false === file_put_contents(
-                            $full_path,
-                            base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
-                        )
-                    ) {
-                        throw new Exception("Failed to write to $full_path.");
-                    }
-                }
-            }
-        }
-
-        // Regenerate the EventImage in the background
-        EventImageManager::actionGenerateImage($this->event->id);
-
-        /*
-         * TODO: need to check with all events why this was here!!!
-        ob_start();
-        $this->actionPrint($id, false);
-        $html = ob_get_contents();
-        ob_end_clean();
-
-        $event->unlock();
-
-        $this->printLog($id, false);
-
-        // Verify we have all the images by detecting eyedraw canvas elements in the page.
-        // If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the
-        // server as PNGs.
-
-        if (preg_match('/<canvas.*?class="ed-canvas-display"/is', $html)) {
-            echo 'outofdate';
-
-            return;
-        }
-        */
-
-        echo 'ok';
     }
 
     public function readInEventImageSettings()
@@ -2413,7 +2371,8 @@ class BaseEventTypeController extends BaseModuleController
         $hotlistItem = UserHotlistItem::model()->find(
             'created_user_id = :user_id AND patient_id = :patient_id 
                        AND (DATE(last_modified_date) = :current_date OR is_open = 1)',
-            array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d')));
+            array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d'))
+        );
 
         if (!$hotlistItem) {
             $hotlistItem = new UserHotlistItem();
@@ -2445,11 +2404,16 @@ class BaseEventTypeController extends BaseModuleController
             $content = $this->getEventAsHtml();
             Yii::app()->params['image_generation'] = false;     // Chane the theme back to normal
 
-            $image = new WKHtmlToImage();
-            $image->setCanvasImagePath($this->event->getImageDirectory());
-            $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
+            $image = Yii::app()->puppeteer;
+            $image->savePageToImage(
+                $this->event->getImageDirectory(),
+                'preview',
+                '',
+                $content,
                 ['width' => Yii::app()->params['lightning_viewer']['image_width'],
-                    'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]);
+                 'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']
+                ]
+            );
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
@@ -2507,13 +2471,20 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
-     * Renders the event and returns the resullting HTML
-     *
-     * @return string The output HTML
+     * @param $id
+     * @throws CHttpException
      */
-    protected function getEventAsHtml()
+    public function actionRenderEventImage($id)
     {
-        ob_start();
+        if (!$this->event) {
+            $this->event = Event::model()->findByPk($id);
+        }
+        if (!$this->patient) {
+            $this->setPatient($this->event->episode->patient_id);
+        }
+        if (!$this->episode) {
+            $this->episode = $this->event->episode;
+        }
 
         $this->setOpenElementsFromCurrentEvent('view');
 
@@ -2522,11 +2493,20 @@ class BaseEventTypeController extends BaseModuleController
             'eventId' => $this->event->id,
         ), $this->extraViewProperties);
 
+        $this->moduleStateCssClass = 'view';
+
         $this->layout = '//layouts/event_image';
         $this->render('image', $viewData);
+    }
 
-        $content = ob_get_contents();
-        ob_end_clean();
+    /**
+     * Renders the event and returns the resullting HTML
+     *
+     * @return string The output HTML
+     */
+    protected function getEventAsHtml()
+    {
+        $content = Yii::app()->createAbsoluteUrl("{$this->getModule()->name}/{$this->id}/renderEventImage/{$this->event->id}");
 
         return $content;
     }

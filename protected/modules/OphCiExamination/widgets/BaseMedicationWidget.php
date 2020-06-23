@@ -30,14 +30,6 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     public $is_latest_element = null;
     public $missing_prescription_items = null;
 
-    public function getViewData()
-    {
-        return array_merge(
-            parent::getViewData(),
-            array('prescribe_access' => $this->checkAccess('OprnCreatePrescription'))
-        );
-    }
-
     /**
      * @return BaseMedicationElement
      */
@@ -90,8 +82,9 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                 /** @var \EventMedicationUse $entry */
 
                 foreach (array_merge(
-                             $entry->attributeNames(),
-                             ['is_copied_from_previous_event', 'group'])
+                    $entry->attributeNames(),
+                    ['is_copied_from_previous_event', 'group']
+                )
                          as $k) {
                     if (array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
                         if (in_array($k, ['prescribe', 'stop'])) {
@@ -171,6 +164,14 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     protected function isPostedEntries()
     {
         $class_name_underscores = str_replace("\\", "_", static::$elementClass);
-        return isset($_POST[$class_name_underscores]['entries']);
+
+        if (isset($_POST[$class_name_underscores]['JSON_string'])) {
+            $decoded_json = json_decode(
+                str_replace("'", '"', $_POST[$class_name_underscores]['JSON_string']),
+                true
+            );
+        }
+
+        return isset($_POST[$class_name_underscores]['entries']) || isset($decoded_json['entries']);
     }
 }

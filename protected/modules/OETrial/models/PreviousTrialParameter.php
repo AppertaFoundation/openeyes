@@ -167,8 +167,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             parent::rules(),
             array(
                 array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
-            )
-        );
+            ));
     }
 
     public function getValueForAttribute($attribute)

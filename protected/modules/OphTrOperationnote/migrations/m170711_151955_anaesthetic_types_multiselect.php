@@ -11,11 +11,21 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type', 'anaesthetic_type_id',
-            'anaesthetic_type', 'id');
+        $this->addForeignKey(
+            'ophtroperationnote_anaesthetic_type_to_anaest_type',
+            'ophtroperationnote_anaesthetic_anaesthetic_type',
+            'anaesthetic_type_id',
+            'anaesthetic_type',
+            'id'
+        );
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type', 'et_ophtroperationnote_anaesthetic_id',
-            'et_ophtroperationnote_anaesthetic', 'id');
+        $this->addForeignKey(
+            'ophtroperationnote_anaesthetic_type_to_el',
+            'ophtroperationnote_anaesthetic_anaesthetic_type',
+            'et_ophtroperationnote_anaesthetic_id',
+            'et_ophtroperationnote_anaesthetic',
+            'id'
+        );
 
         $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery', array(
             'id' => 'pk',
@@ -23,11 +33,21 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             'anaesthetic_delivery_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_anae_delivery', 'ophtroperationnote_anaesthetic_anaesthetic_delivery',
-            'anaesthetic_delivery_id', 'anaesthetic_delivery', 'id');
+        $this->addForeignKey(
+            'ophtroperationnote_anaesthetic_delivery_to_anae_delivery',
+            'ophtroperationnote_anaesthetic_anaesthetic_delivery',
+            'anaesthetic_delivery_id',
+            'anaesthetic_delivery',
+            'id'
+        );
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_delivery',
-            'et_ophtroperationnote_anaesthetic_id', 'et_ophtroperationnote_anaesthetic', 'id');
+        $this->addForeignKey(
+            'ophtroperationnote_anaesthetic_delivery_to_el',
+            'ophtroperationnote_anaesthetic_anaesthetic_delivery',
+            'et_ophtroperationnote_anaesthetic_id',
+            'et_ophtroperationnote_anaesthetic',
+            'id'
+        );
 
         $this->alterColumn('et_ophtroperationnote_anaesthetic', 'anaesthetist_id', 'int(10) unsigned DEFAULT NULL');
 
@@ -131,10 +151,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         );
                     }
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        'episode_id' => $event->episode_id,
+                        'patient_id' => $episode->patient_id)
+                    );
 
                        //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
                 } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
@@ -180,7 +205,10 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                             ", Anaesthetist became 'Anaesthetist' from {$original_anaesthetist_name}",
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
                             'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id)
@@ -236,10 +264,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_delivery_id' => $element->anaesthetic_delivery_id,
                     );
 
-                    Audit::add('admin', 'update', serialize($data),
+                    Audit::add(
+                        'admin',
+                        'update',
+                        serialize($data),
                         'Remove redundant Anaesthetic options',
                         array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
-                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+                        'episode_id' => $event->episode_id,
+                        'patient_id' => $episode->patient_id)
+                    );
                 }
             }
 
@@ -281,7 +314,10 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                 $data['new_attributes'] = $element->attributes;
 
-                Audit::add('admin', 'update', serialize($data),
+                Audit::add(
+                    'admin',
+                    'update',
+                    serialize($data),
                     'Remove redundant Anaesthetic options',
                     array('module' => 'OphTrIntravitrealinjection', 'model' => 'Element_OphTrIntravitrealinjection_Anaesthetic', 'event_id' => $element->event_id,
                         'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id)

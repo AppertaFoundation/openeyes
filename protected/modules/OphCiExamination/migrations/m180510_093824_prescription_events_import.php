@@ -37,7 +37,7 @@ class m180510_093824_prescription_events_import extends OEMigration
                 ALTER TABLE `ophdrprescription_item_taper` DROP FOREIGN KEY `ophdrprescription_item_taper_item_id_fk`;
                 ALTER TABLE `ophdrprescription_item_taper` DROP INDEX `ophdrprescription_item_taper_item_id_fk` ;
             END IF;");
-        $this->alterOEColumn('ophdrprescription_item_taper', 'item_id', 'INT(11) NOT NULL', true);
+        $this->alterOEColumn('ophdrprescription_item_taper', 'item_id', 'INT NOT NULL', true);
         return $this;
     }
 

@@ -27,13 +27,20 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
         <tr>
             <td>
                 <span class="oe-eye-lat-icons">
-                    <?php echo $form->radioButtons($element, 'eye_id',
+                    <?php echo $form->radioButtons(
+                        $element,
+                        'eye_id',
                         CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-                        null, false, false, false, '',
+                        null,
+                        false,
+                        false,
+                        false,
+                        '',
                         array(
                             'nowrapper' => true,
                             'label-class' => $event_errors ? 'error' : ''
-                        )) ?>
+                        )
+                    ) ?>
                 </span>
             </td>
             <td></td>

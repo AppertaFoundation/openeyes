@@ -54,6 +54,8 @@
                 <th>Name</th>
                 <th>Remote ID</th>
                 <th>Short name</th>
+                <th>Primary Logo</th>
+                <th>Secondary Logo</th>
             </tr>
             </thead>
 
@@ -66,13 +68,31 @@
                     <td><?php echo $institution->name ?></td>
                     <td><?php echo $institution->remote_id ?></td>
                     <td><?php echo $institution->short_name ?></td>
+                    <td>
+                            <?php
+                            if (($institution->logo) && ($institution->logo->primary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            if (($institution->logo) && ($institution->logo->secondary_logo)) {
+                                echo 'Custom';
+                            } else {
+                                echo 'Default';
+                            }
+                            ?>
+                        </td>
                 </tr>
             <?php } ?>
             </tbody>
 
             <tfoot class="pagination-container">
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <?= \CHtml::button(
                         'Add',
                         [
@@ -82,7 +102,7 @@
                         ]
                     ); ?>
                 </td>
-                <td colspan="2">
+                <td colspan="3">
                     <?php $this->widget('LinkPager', ['pages' => $pagination]); ?>
                 </td>
             </tr>

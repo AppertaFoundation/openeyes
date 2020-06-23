@@ -21,31 +21,35 @@
         <?php
         $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
         echo $form->multiSelectListFreeText(
-          $element,
-          CHtml::modelName($element) . '[further_findings_assignment]',
-          'further_findings_assignment',
-          'finding_id',
-          CHtml::encodeArray(
-              CHtml::listData(
-                  Finding::model()->activeOrPk(
-                      $element->furtherFindingsAssigned)->bySubspecialty(
-                      $firm->getSubspecialty())->findAll(),
-                  'id',
-                  'name')
-          ),
-          array(),
-          array(
+            $element,
+            CHtml::modelName($element) . '[further_findings_assignment]',
+            'further_findings_assignment',
+            'finding_id',
+            CHtml::encodeArray(
+                CHtml::listData(
+                    Finding::model()->activeOrPk(
+                        $element->furtherFindingsAssigned
+                    )->bySubspecialty(
+                        $firm->getSubspecialty()
+                    )->findAll(),
+                    'id',
+                    'name'
+                )
+            ),
+            array(),
+            array(
               'empty' => '-- Add --',
               'label' => 'Findings',
               'nowrapper' => true,
               'requires_description_field' => 'requires_description',
-          ),
-          false,
-          true,
-          'No further findings',
-          true,
-          true,
-          array(),
-          'Finding') ?>
+            ),
+            false,
+            true,
+            'No further findings',
+            true,
+            true,
+            array(),
+            'Finding'
+        ) ?>
   </div>
 </div>

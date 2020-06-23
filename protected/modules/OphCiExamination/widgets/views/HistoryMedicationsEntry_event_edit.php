@@ -110,7 +110,7 @@ $stop_fields_validation_error = array_intersect(
                 <div class="alternative-display inline">
                     <div class="alternative-display-element textual flex-meds-inputs" <?= $direct_edit || !empty($entry->errors) ? 'style="display: none;"' : '' ?>>
                         <div class="textual-display hint">
-                            <?php $entry_text_display = $entry->getAdministrationDisplay();
+                            <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                             echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         </div>
                         <span class="tabspace"></span>
@@ -196,21 +196,26 @@ $stop_fields_validation_error = array_intersect(
 <tr data-key="<?= $row_count ?>" class="no-line col-gap js-second-row <?= $stopped ? 'fade' : ''?>">
     <td class="nowrap">
         <div class="flex-meds-inputs">
-                <span id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>" >
-                    <i class="oe-i start small pad-right"></i>
-                        <?php if ($is_new) : ?>
-                                                    <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
-                                                                 name="<?= $field_prefix ?>[start_date]"
-                                                                 value="<?= $start_date_display ?>"
-                                                                 style="width:80px" placeholder="yyyy-mm-dd" class="js-start-date"
-                                                                 autocomplete="off">
-
-                        <?php else : ?>
-                                                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
-                                                                 value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
-                                                    <?= $entry->getStartDateDisplay() ?>
-                        <?php endif; ?>
-                </span>
+            <span class="start-date-column" id="<?= $model_name . "_entries_" . $row_count . "_start_date_error" ?>">
+                <div class="alternative-display inline">
+                    <?php if (!$is_new && empty($entry->errors)) { ?>
+                    <div class="alternative-display-element textual">
+                        <a class="js-start-date-display" href="javascript:void(0);">
+                             <i class="oe-i start small pad-right"></i>
+                            <?= $entry->getStartDateDisplay() ?>
+                        </a>
+                    </div>
+                   <?php } ?>
+                    <fieldset style="display: <?= $is_new || !empty($entry->errors) ? 'block' : 'none' ?> " class="js-datepicker-wrapper js-start-date-wrapper">
+                        <i class="oe-i start small pad-right"></i>
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_start_date"
+                               name="<?= $field_prefix ?>[start_date]"
+                               value="<?= $start_date_display ?>"
+                               style="width:80px;" placeholder="yyyy-mm-dd" class="js-start-date"
+                               autocomplete="off">
+                    </fieldset>
+                </div>
+            </span>
             <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
                     <div class="alternative-display inline">
@@ -224,7 +229,7 @@ $stop_fields_validation_error = array_intersect(
                                             <?php /* echo !is_null($entry->stop_reason_id) ?
                             ' ('.$entry->stopReason->name.')' : ''; */ ?>
                     <?php else : ?>
-                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                                            <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped?</button></span>
                     <?php endif; ?>
                 </a>
             </div>

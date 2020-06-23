@@ -7,18 +7,21 @@ $historyElement = $this->event->getElementByClass(models\Element_OphCiExaminatio
 
 // Find the elements for each tile, or create dummy elements so they will still render, but without any data
 $pastSurgeryElement = $this->event->getElementByClass(models\PastSurgery::class) ?: new models\PastSurgery();
+$systemicSurgeryElement = $this->event->getElementByClass(models\SystemicSurgery::class) ?: new models\SystemicSurgery();
 $systemicDiagnosesElement = $this->event->getElementByClass(models\SystemicDiagnoses::class) ?: new models\SystemicDiagnoses();
 $diagnosesElement = $this->event->getElementByClass(models\Element_OphCiExamination_Diagnoses::class) ?: new models\Element_OphCiExamination_Diagnoses();
 $medicationsElement = $this->event->getElementByClass(models\HistoryMedications::class) ?: new models\HistoryMedications();
 $familyHistoryElement = $this->event->getElementByClass(models\FamilyHistory::class) ?: new models\FamilyHistory();
 $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::class) ?: new models\SocialHistory();
+$managementElement = $this->event->getElementByClass(models\Element_OphCiExamination_Management::class) ?: new models\Element_OphCiExamination_Management();
+$followupElement = $this->event->getElementByClass(models\Element_OphCiExamination_ClinicOutcome::class) ?: new models\Element_OphCiExamination_ClinicOutcome();
 
 if ($historyElement) {
     $this->renderElement($historyElement, $action, $form, $data);
 }
 ?>
 
-<div class="element-tile-group" data-collapse="expanded">
+<div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
     <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
 
@@ -40,7 +43,7 @@ if ($historyElement) {
             ?>
             <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
                 <div class="data-value not-recorded">
-                    No medications recorded during this encounter
+                    Nil recorded this examination
                 </div>
             <?php } else { ?>
                 <?php if ($current_eye_medications) { ?>
@@ -98,7 +101,7 @@ if ($historyElement) {
                 <?php if ($stopped_eye_medications) { ?>
                     <div class="collapse-data">
                         <div class="collapse-data-header-icon expand">
-                            Stopped
+                            Previously Stopped
                             <small>(<?= sizeof($stopped_eye_medications) ?>)</small>
                         </div>
                         <div class="collapse-data-content">
@@ -159,37 +162,11 @@ if ($historyElement) {
     </div>
 </div>
 
-<div class="element-tile-group" data-collapse="expanded">
+<div class="element-tile-group" id="tile-group-exam-systemic" data-collapse="expanded">
 
     <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
 
-    <section class="element tile view-family-social-history">
-        <header class="element-header">
-            <h3 class="element-title">Family-Social</h3>
-        </header>
-        <div class="element-data">
-            <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
-            if (!$entries) { ?>
-                <div class="data-value not-recorded">
-                    No family or social history recorded during this encounter
-                </div>
-            <?php } else { ?>
-                <div class="data-value">
-                    <div class="tile-data-overflow">
-                        <table class="last-left">
-                            <tbody>
-                            <?php foreach ($entries as $entry) { ?>
-                                <tr>
-                                    <td><?= $entry ?></td>
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            <?php } ?>
-        </div>
-    </section>
+    <?php $this->renderElement($systemicSurgeryElement, $action, $form, $data) ?>
 
     <section class="element view-Systemic-Medications tile"
              data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
@@ -214,7 +191,7 @@ if ($historyElement) {
                 ?>
                 <?php if (!$current_systemic_medications && !$stopped_systemic_medications) { ?>
                     <div class="data-value not-recorded">
-                        No medications recorded during this encounter
+                        Nil recorded this examination
                     </div>
                 <?php } else { ?>
                     <?php if ($current_systemic_medications) { ?>
@@ -276,7 +253,7 @@ if ($historyElement) {
                     <?php if ($stopped_systemic_medications) { ?>
             <div class="collapse-data">
                     <div class="collapse-data-header-icon expand" data-blujay="0">
-                    Stopped
+                    Previoulsy Stopped
                     <small>(<?= sizeof($stopped_systemic_medications) ?>)</small>
                 </div>
                 <div class="collapse-data-content">
@@ -331,6 +308,116 @@ if ($historyElement) {
                     <?php } ?>
                 <?php } ?>
             </div>
+        </div>
+    </section>
+
+    <div class="collapse-tile-group">
+        <i class="oe-i medium reduce-height js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
+    </div>
+</div>
+
+<div class="element-tile-group" id="tile-group-exam-patient" data-collapse="expanded">
+    <section class="element tile">
+        <header class="element-header">
+            <h3 class="element-title">Family Social</h3>
+        </header>
+        <div class="element-data full-width">
+            <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
+            if (!$entries) { ?>
+                <div class="data-value not-recorded">
+                    Nil recorded this examination
+                </div>
+            <?php } else { ?>
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table class="last-left">
+                            <tbody>
+                            <?php foreach ($entries as $entry) { ?>
+                                <tr>
+                                    <td><?= $entry ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </section>
+
+    <section class="element tile">
+        <header class="element-header">
+            <h3 class="element-title">Management</h3>
+        </header>
+        <div class="element-data full-width">
+            <?php if (!$managementElement->comments) { ?>
+            <div class="data-value not-recorded">
+                Nil recorded this examination
+            </div>
+            <?php } else { ?>
+                <div class="data-value">
+                    <?= $managementElement->comments ?>
+                </div>
+            <?php } ?>
+        </div>
+    </section>
+
+    <section class="element tile">
+        <header class="element-header">
+            <h3 class="element-title">Follow-up</h3>
+        </header>
+        <div class="element-data full-width">
+            <?php if (!$followupElement->entries) { ?>
+                <div class="data-value not-recorded">
+                    Nil recorded this examination
+                </div>
+            <?php } else { ?>
+                <div class="data-value restrict-data-shown">
+                    <div class="tile-data-overflow restrict-data-content">
+                        <table class="last-left">
+                            <colgroup>
+                                <col class="cols-2">
+                            </colgroup>
+                            <tbody>
+                            <?php $row_count = 0;
+                            $api = Yii::app()->moduleAPI->get('PatientTicketing');
+                            $ticket = $api->getTicketForEvent($this->event);
+                            $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
+                            $ticket_entries = [];
+                            $non_ticket_entries = [];
+                            foreach ($followupElement->entries as $entry) {
+                                if ($entry->isPatientTicket() && $ticket) {
+                                    $ticket_entries[] = $entry;
+                                } else {
+                                    $non_ticket_entries[] = $entry;
+                                }
+                            }
+                            foreach ($non_ticket_entries as $entry) { ?>
+                                <tr>
+                                    <td><?= $row_count === 0 ? '' : 'AND' ?></td>
+                                    <td><?= $entry->getInfos(); ?></td>
+                                </tr>
+                                <?php $row_count++; ?>
+                            <?php }
+                            foreach ($ticket_entries as $entry) { ?>
+                                <tr>
+                                    <td>VC</td>
+                                    <td>
+                                        <a href="#vc-clinic-outcome">
+                                            <i class="oe-i direction-down-circle small pad-right"></i>
+                                            <span class="oe-vc-mode in-element"><?= $queue_set_service->getQueueSetForQueue($ticket->current_queue->id)->name ?></span>
+                                            <?php if ($ticket->priority) { ?>
+                                                <span class="highlighter <?= $ticket->priority->colour ?>"><?= $ticket->priority->name[0] //gets first letter of word ?></span>
+                                            <?php } ?>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
     </section>
 

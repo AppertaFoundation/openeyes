@@ -16,9 +16,11 @@ class OphCiExamination_Episode_Refraction extends \EpisodeSummaryWidget
 {
     public function run()
     {
-        if ($element = $this->event_type->api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction',
+        if ($element = $this->event_type->api->getLatestElement(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction',
             $this->episode->patient,
-            false)
+            false
+        )
         ) {
             $this->render('OphCiExamination_Episode_Refraction', array('element' => $element));
         }

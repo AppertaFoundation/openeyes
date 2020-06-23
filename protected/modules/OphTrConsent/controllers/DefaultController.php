@@ -36,7 +36,9 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
         Yii::app()->clientScript->registerScript(
             'AnaestheticController',
-            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});', CClientScript::POS_END);
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',
+            CClientScript::POS_END
+        );
 
         return parent::beforeAction($action);
     }
@@ -215,9 +217,10 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                    EventAction::link('Cancel',
-                            Yii::app()->createUrl($cancel_url),
-                            array('id' => 'et_cancel', 'class' => 'button small warning')
+                    EventAction::link(
+                        'Cancel',
+                        Yii::app()->createUrl($cancel_url),
+                        array('id' => 'et_cancel', 'class' => 'button small warning')
                     ),
             );
             $this->processJsVars();
@@ -318,7 +321,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
     }
 
     public function actionDoPrint($id)

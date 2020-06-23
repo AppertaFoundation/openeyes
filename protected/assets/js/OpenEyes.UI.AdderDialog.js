@@ -261,7 +261,7 @@
             });
         }
 
-        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('No results found');
+        this.noSearchResultsWrapper = $('<span />', {style: 'display: inherit'}).text('');
         this.noSearchResultsWrapper.appendTo($filterDiv);
 
         if(dialog.options.booleanSearchFilterEnabled) {
@@ -649,7 +649,7 @@
         // reset results lists if there is no text searched
         if (!text.length && !filterValue) {
             dialog.searchResultList.empty();
-            dialog.noSearchResultsWrapper.text('No results found');
+            dialog.noSearchResultsWrapper.text('');
             dialog.noSearchResultsWrapper.toggle(true);
             return;
         }

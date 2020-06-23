@@ -186,18 +186,16 @@ function addRepeat() {
 function processSetEntries(set_id) {
     $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs", {
         set_id: set_id
-    }, function (data) {
+    }, function (medications) {
         if (typeof patient_allergies !== 'undefined') {
             let allergies = [];
-            let medications = JSON.parse(data);
 
             for (let i in medications) {
-                for (let id in medications[i].allergies) {
-                    if (inArray(id, patient_allergies)) {
+                medications[i].allergies.forEach(function (allergy_id) {
+                    if (inArray(allergy_id, patient_allergies)) {
                         allergies.push(medications[i].label);
-                        break;
                     }
-                }
+                });
             }
 
             if (allergies.length !== 0) {
@@ -230,16 +228,6 @@ function addSet(set_id) {
     }, function (data) {
       $('#prescription_items').find('tbody').append(data);
         fpTenPrintOption();
-    });
-  } else {
-    $.getJSON(baseUrl + "/OphDrPrescription/PrescriptionCommon/SetFormAdmin", {
-      key: getNextKey(),
-      set_id: set_id
-    }, function (data) {
-      $('#set_name').val(data.drugsetName);
-      $('#subspecialty_id').val(data.drugsetSubspecialtyId);
-      clear_prescription();
-      $('#prescription_items').find('tbody').append(data.tableRows);
     });
   }
 }

@@ -20,17 +20,21 @@ $widget = $this;
     <div class="data-value">
         <div class="tile-data-overflow">
             <?php if (!$operations || count($operations) === 0) { ?>
-                <div class="data-value not-recorded">No procedures recorded during this encounter</div>
+                <div class="data-value not-recorded">Nil recorded this examination</div>
             <?php } else { ?>
             <table>
                 <colgroup>
-                    <col class="cols-7">
+                    <col>
+                    <col class="cols-fifth">
+                    <col class="cols-2">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
                         <td>
-                            <?= array_key_exists('object',
-                                $operation) ? $operation['object']->operation : $operation['operation']; ?>
+                            <?= array_key_exists(
+                                'object',
+                                $operation
+                            ) ? $operation['object']->operation : $operation['operation']; ?>
                         </td>
                         <td>
                             <?php if (array_key_exists('link', $operation)) { ?>
@@ -46,6 +50,9 @@ $widget = $this;
                                 <?= array_key_exists('object', $operation) ?
                                     $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
                             </span>
+                        </td>
+                        <td>
+                            <strong><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayHasOperation() : ''; ?></strong>
                         </td>
                     </tr>
                         <?php }

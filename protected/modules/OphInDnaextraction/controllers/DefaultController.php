@@ -181,7 +181,7 @@ class DefaultController extends BaseEventTypeController
             $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);
 
             $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'], $boxRanges['maxnumber']);
-            $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
+            $usedBoxRows = $storage->getAllLetterNumberToBox($_POST['box_id']);
 
 
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
@@ -200,8 +200,8 @@ class DefaultController extends BaseEventTypeController
                 break;
             }
         }
- 
-        echo json_encode($result);
+
+        $this->renderJSON($result);
     }
 
     public function actionSaveNewStorage()
@@ -229,7 +229,7 @@ class DefaultController extends BaseEventTypeController
             );
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
     
     public function actionRefreshStorageSelect()
@@ -279,14 +279,14 @@ class DefaultController extends BaseEventTypeController
         $transaction->setAttributes($element_array);
 
         if ($transaction->save()) {
-            echo CJSON::encode(['success'=>true]);
+            $this->renderJSON(['success'=>true]);
         } else {
             $error_message = '';
             foreach ($transaction->getErrors() as $attr => $error) {
                 $error_message .= "$attr: " . ( implode(',', $error) ) . PHP_EOL;
             }
 
-            echo CJSON::encode(['success'=>false, 'message' => $error_message]);
+            $this->renderJSON(['success'=>false, 'message' => $error_message]);
         }
 
         Yii::app()->end();

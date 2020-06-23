@@ -31,9 +31,6 @@
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
     public $check_for_duplicate_entries = false;
-    protected $errorExceptions = array(
-        'Element_OphDrPrescription_Details_items' => 'prescription_items',
-    );
 
     /**
      * Returns the static model of the specified AR class.
@@ -138,14 +135,36 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         $return = '';
         foreach ($this->items as $item) {
-            if ($return) {
-                $return .= "<br>";
-            }
-            $return .= $item->getDescription();
+            $tapers = [];
+            $stop_display_date = $item->end_date ? \Helper::convertDate2NHS($item->end_date): 'Ongoing';
+            $tapers = $item->tapers;
+            $stop_date = $item->stopDateFromDuration(false);
+            $stop_display_date = $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$item->medicationDuration->name;
+                    
 
-            if ($item->tapers) {
-                foreach ($item->tapers as $taper) {
-                    $return .= "<br>  ".$taper->getDescription();
+            $return .= "<tr>
+                    <td>" . $item->getDescription() . "</td>
+                    <td>" . ($item->dose . ($item->dose_unit_term ? (' ' . $item->dose_unit_term) : "")) . "</td>
+                    <td>" . $item->getLateralityDisplay(true) . "</td>
+                    <td>" . htmlspecialchars($item->frequency) . "</td>
+                    <td>" . $stop_display_date . "</td>
+                </tr>";
+
+            if ($tapers) {
+                $taper_date = $stop_date;
+                foreach ($tapers as $taper) {
+                    $taper_display_date = $taper->stopDateFromDuration($taper_date);
+                    $return .= "<tr>
+                            <td>
+                                <div class='oe-i child-arrow small no-click'></div>
+                                <i> then</i>
+                            </td>
+                            <td ><i>" . ($taper->dose . ($item->dose_unit_term ? (' (' . $item->dose_unit_term. ')') : '')) . "</i></td>
+                            <td></td>
+                            <td><i>" . ($taper->frequency ? $taper->frequency->term : '' ) . "</i></td>
+                            <td><i>" . ($taper_display_date ? \Helper::convertDate2NHS($taper_display_date->format('Y-m-d')) : $taper->duration->name) . "</i></td>
+                        </tr>";
+                    $taper_date = $taper_display_date ?? $taper_date;
                 }
             }
         }
@@ -266,7 +285,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         foreach ($this->items as $i => $item) {
             if (!$item->validate()) {
                 foreach ($item->getErrors() as $fld => $err) {
-                    $this->addError('items', 'Item ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError("items_{$i}_{$fld}", 'Item ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }
@@ -278,7 +297,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         if (($this->draft == 0) && ($this->printed == 0)) {
             $this->event->deleteIssue('Draft');
-        } else if ($this->draft == 1) {
+        } elseif ($this->draft == 1) {
             $this->event->addIssue('Draft');
         } else {
             $this->event->deleteIssue('Draft');
@@ -369,7 +388,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         if (($this->draft == 0) && ($this->printed == 0)) {
             return 'Saved';
-        } else if (!$this->printed) {
+        } elseif (!$this->printed) {
             return 'Draft';
         } else {
             return 'Printed';

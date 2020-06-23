@@ -295,7 +295,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     <?php }
                                 } ?>
 
-                                <?php $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
+                                <?php $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
                                             <h2>Communication Preferences</h2>
@@ -483,7 +483,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
           <div class="group">
-              <div class="label">Surgical History</div>
+              <div class="label">Eye Procedures</div>
               <div class="data">
                     <?php $this->widget(
                         \OEModule\OphCiExamination\widgets\PastSurgery::class,
@@ -493,6 +493,19 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             'pro_theme' => 'pro-theme',
                         ]
                     ); ?>
+              </div>
+          </div>
+
+          <div class="group">
+              <div class="label">Systemic Procedures</div>
+              <div class="data">
+                  <?php $this->widget(
+                      \OEModule\OphCiExamination\widgets\SystemicSurgery::class,
+                      [
+                          'patient' => $this->patient,
+                          'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                      ]
+                  ); ?>
               </div>
           </div>
 

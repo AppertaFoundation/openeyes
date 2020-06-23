@@ -40,7 +40,7 @@ $dispense_condition_options = array(
             <i class="oe-i warning small pad js-has-tooltip"
                data-tooltip-content="Allergic to <?= implode(',', $patient->getPatientDrugAllergy($item->medication_id)) ?>"></i>
         <?php endif; ?>
-        <span class='js-medication-display'><?= $item->medication->preferred_term; ?></span>
+        <span class='js-medication-display'><?= $item->getMedicationDisplay(); ?></span>
         <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
         <?php if ($item->id) { ?>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][id]"
@@ -80,34 +80,54 @@ $dispense_condition_options = array(
         }
         ?>
 
-        <?= \CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][dose]', $item->dose,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class))
+        <?= \CHtml::textField(
+            'Element_OphDrPrescription_Details[items][' . $key . '][dose]',
+            $item->dose,
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+        )
 ?>
         <?php if ($item->dose_unit_term) { ?>
             <span><?= $item->dose_unit_term ?></span>
             <input type="hidden" name="Element_OphDrPrescription_Details[items][<?= $key ?>][dose_unit_term]"
                    value="<?= $item->dose_unit_term ?>"/>
         <?php } else {
-            echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dose_unit_term]', null,
+            echo CHtml::dropDownList(
+                'Element_OphDrPrescription_Details[items][' . $key . '][dose_unit_term]',
+                null,
                 \CHtml::listData($unit_options, 'description', 'description'),
                 [
                     'empty' => '-Unit-',
                     'class' => 'cols-7',
-                ]);
+                ]
+            );
         } ?>
     </td>
     <td>
-        <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][route_id]', $item->route_id,
-            CHtml::listData(MedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
-                'id', 'term'), array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')); ?>
+        <?= \CHtml::dropDownList(
+            'Element_OphDrPrescription_Details[items][' . $key . '][route_id]',
+            $item->route_id,
+            CHtml::listData(
+                MedicationRoute::model()->activeOrPk([$item->route_id])->findAll([
+                    'condition' => 'source_type =:source_type',
+                    'params' => [':source_type' => 'DM+D'],
+                    'order' => "term ASC"]),
+                'id',
+                'term'
+            ),
+            array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')
+        ); ?>
     </td>
 
     <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
         <td class='route_option_cell'>
 
             <?php if ($item->route && $item->route->has_laterality && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
-                echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][laterality]', $item->laterality,
-                    CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+                echo CHtml::dropDownList(
+                    'Element_OphDrPrescription_Details[items][' . $key . '][laterality]',
+                    $item->laterality,
+                    CHtml::listData($options, 'id', 'name'),
+                    array('empty' => '-- Select --')
+                );
             } else {
                 echo '-';
             } ?>
@@ -115,31 +135,49 @@ $dispense_condition_options = array(
     <?php } ?>
 
     <td class="prescriptionItemFrequencyId">
-        <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][frequency_id]', $item->frequency_id,
+        <?= \CHtml::dropDownList(
+            'Element_OphDrPrescription_Details[items][' . $key . '][frequency_id]',
+            $item->frequency_id,
             CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
-            array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
+            array('empty' => '-- Select --', 'class' => 'cols-11')
+        ); ?>
     </td>
     <td class="prescriptionItemDurationId">
-        <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][duration_id]', $item->duration_id,
+        <?= \CHtml::dropDownList(
+            'Element_OphDrPrescription_Details[items][' . $key . '][duration_id]',
+            $item->duration_id,
             CHtml::listData(MedicationDuration::model()->activeOrPk([$item->duration_id])->findAll(array('order' => 'display_order')), 'id', 'name'),
-            array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
+            array('empty' => '-- Select --', 'class' => 'cols-11')
+        ) ?>
     </td>
     <td>
-        <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dispense_condition_id]',
-            $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
-              'condition' => '(active'
+        <?= \CHtml::dropDownList(
+            'Element_OphDrPrescription_Details[items][' . $key . '][dispense_condition_id]',
+            $item->dispense_condition_id,
+            CHtml::listData(
+                OphDrPrescription_DispenseCondition::model()->findAll(array(
+                'condition' => '(active'
                   . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                   . ") or id='" . $item->dispense_condition_id . "'",
                 'order' => 'display_order',
-            )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)) ?>
+                )),
+                'id',
+                'name'
+            ),
+            array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)
+        ) ?>
 
     </td>
     <td>
         <?php
         $locations = $item->dispense_condition ? $item->dispense_condition->locations : array('');
         $style = $item->dispense_condition ? '' : 'display: none;';
-        echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][dispense_location_id]', $item->dispense_location_id,
-            CHtml::listData($locations, 'id', 'name'), array('class' => 'dispenseLocation cols-11', 'style' => $style));
+        echo CHtml::dropDownList(
+            'Element_OphDrPrescription_Details[items][' . $key . '][dispense_location_id]',
+            $item->dispense_location_id,
+            CHtml::listData($locations, 'id', 'name'),
+            array('class' => 'dispenseLocation cols-11', 'style' => $style)
+        );
         ?>
     </td>
     <td>
@@ -171,24 +209,39 @@ $dispense_condition_options = array(
                 }
             }
 
-            echo \CHtml::textField('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][dose]', $taper->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
+            echo \CHtml::textField(
+                'Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][dose]',
+                $taper->dose,
+                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+            ) ?>
         </td>
         <td></td>
         <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
             <td></td>
         <?php } ?>
         <td>
-            <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][frequency_id]',
+            <?= \CHtml::dropDownList(
+                'Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][frequency_id]',
                 $taper->frequency_id,
-                CHtml::listData(MedicationFrequency::model()->activeOrPk([$taper->frequency_id])->findAll(array()),
-                    'id', 'term'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
+                CHtml::listData(
+                    MedicationFrequency::model()->activeOrPk([$taper->frequency_id])->findAll(array()),
+                    'id',
+                    'term'
+                ),
+                array('empty' => '-- Select --', 'class' => 'cols-11')
+            ); ?>
         </td>
         <td>
-            <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][duration_id]',
+            <?= \CHtml::dropDownList(
+                'Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][duration_id]',
                 $taper->duration_id,
-                CHtml::listData(MedicationDuration::model()->activeOrPk([$taper->duration_id])->findAll(array('order' => 'display_order asc')),
-                    'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
+                CHtml::listData(
+                    MedicationDuration::model()->activeOrPk([$taper->duration_id])->findAll(array('order' => 'display_order asc')),
+                    'id',
+                    'name'
+                ),
+                array('empty' => '-- Select --', 'class' => 'cols-11')
+            ); ?>
         </td>
         <td></td>
         <td></td>

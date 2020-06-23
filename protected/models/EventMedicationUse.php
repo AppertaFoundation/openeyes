@@ -148,7 +148,8 @@ class EventMedicationUse extends BaseElement
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
-            array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
+            array(
+                'id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
                     last_modified_date, created_user_id, created_date, bound_key', 'safe', 'on' => 'search'
@@ -173,6 +174,22 @@ class EventMedicationUse extends BaseElement
     {
         if (!$this->laterality && $this->route_id && $this->route->has_laterality === "1") {
             $this->addError('laterality', "You must specify laterality for route '{$this->route->term}'");
+        }
+    }
+
+    public function validateDuration()
+    {
+        if ($this->tapers) {
+            $on_going_duration = MedicationDuration::model()->findByAttributes(['name' => 'Ongoing']);
+            if ($this->duration_id === $on_going_duration->id) {
+                $this->addError('duration_id', 'Ongoing cannot be set to this medication when tapers are added');
+            }
+            foreach ($this->tapers as $key => $taper) {
+                $is_last_taper = ($key + 1) === count($this->tapers);
+                if ($taper->duration_id === $on_going_duration->id && !$is_last_taper) {
+                    $this->addError("taper_{$key}_duration_id", 'Ongoing can only be set for the last taper');
+                }
+            }
         }
     }
 
@@ -203,9 +220,11 @@ class EventMedicationUse extends BaseElement
 
     public function copiedFields()
     {
-        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
-                'form_id', 'laterality', 'route_id', 'frequency_id', 'duration_id', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
-                'dose', 'copied_from_med_use_id', 'dose_unit_term', 'bound_key', 'comments'];
+        return [
+            'usage_type', 'usage_subtype', 'medication_id', 'start_date', 'end_date', 'first_prescribed_med_use_id',
+            'form_id', 'laterality', 'route_id', 'frequency_id', 'duration_id', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
+            'dose', 'copied_from_med_use_id', 'dose_unit_term', 'bound_key', 'comments'
+        ];
     }
 
     /**
@@ -232,7 +251,6 @@ class EventMedicationUse extends BaseElement
             'dispenseCondition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
         );
     }
-
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -319,7 +337,7 @@ class EventMedicationUse extends BaseElement
         }
 
         $this->updateStateProperties();
-        if ($this->copied_from_med_use_id && $this->copied_from_med_use_id !== '0') {
+        if ($this->copied_from_med_use_id && $this->copied_from_med_use_id !== '0' && !$this->prescription_item_id) {
             $this->is_copied_from_previous_event = true;
             $previous_event_date = Event::model()->findByPk($this->copied_from_med_use_id)->event_date;
             $this->previous_event_date = date('Y-m-d', strtotime($previous_event_date));
@@ -383,19 +401,31 @@ class EventMedicationUse extends BaseElement
         return (!is_null($this->route) && $this->route->has_laterality == 1) ? MedicationLaterality::model()->findAll("deleted_date IS NULL") : array();
     }
 
-    public function getLateralityDisplay()
+    /**
+     * @param long returns full Left/Right/Both when true, else L/R/B
+     * @return string
+     */
+    public function getLateralityDisplay(bool $long = false)
     {
         $lname = $this->medicationLaterality ? $this->medicationLaterality->name : '';
-        switch (strtolower($lname)) {
-            case 'left':
-                return 'L';
-            case 'right':
-                return 'R';
-            case 'both':
-                return 'B';
-            default:
-                return '';
+
+        if (!$long) {
+            switch (strtolower($lname)) {
+                case 'left':
+                    $lname = 'L';
+                    break;
+                case 'right':
+                    $lname = 'R';
+                    break;
+                case 'both':
+                    $lname = 'B';
+                    break;
+                default:
+                    $lname = '';
+            }
         }
+
+        return $lname;
     }
 
     public function getDatesDisplay()
@@ -416,17 +446,35 @@ class EventMedicationUse extends BaseElement
         return implode(' ', $res);
     }
 
-    public function getAdministrationDisplay()
+    /**
+     * @param include_route if true will include laterality and route in output (e.g., Right Eye)
+     * @return string
+     */
+    public function getAdministrationDisplay(bool $include_route = false)
     {
+        $parts = array('dose', 'dose_unit_term');
+        
+        if ($include_route) {
+            array_push($parts, 'medicationLaterality', 'route');
+        }
+
+        array_push($parts, 'frequency');
+
         $res = array();
-        foreach (array('dose', 'dose_unit_term', 'medicationLaterality', 'route', 'frequency') as $k) {
+
+        foreach ($parts as $k) {
             if ($this->$k) {
                 if ($k !== "dose_unit_term" || $this->dose) {
-                                $res[] = $this->$k;
+                    $res[] = $this->$k;
                 }
             }
         }
         return implode(' ', $res);
+    }
+
+    public function getRouteDisplay()
+    {
+        return $this->route ?? '';
     }
 
     /**
@@ -467,16 +515,16 @@ class EventMedicationUse extends BaseElement
             $data['Dosage'] = $this->getDoseAndFrequency();
         }
 
+        if ($this->route_id) {
+            $data['Route'] = $this->route->term;
+        }
+
         $data['Start date'] = Helper::formatFuzzyDate($this->start_date);
         if ($this->end_date) {
             $data['Stop date'] = Helper::formatFuzzyDate($this->end_date);
         }
         if ($this->stop_reason_id) {
             $data['Stop reason'] = $this->stopReason->name;
-        }
-
-        if ($this->route_id) {
-            $data['Route'] = $this->route->term;
         }
 
         if ($this->comments && !empty(trim($this->comments))) {
@@ -545,8 +593,12 @@ class EventMedicationUse extends BaseElement
 
     public function getEndDateDisplay($default = "")
     {
+
         if ($this->end_date) {
             return \Helper::formatFuzzyDate($this->end_date);
+        } elseif ($this->prescription_item_id) {
+            $stop_date = $this->prescriptionItem->stopDateFromDuration(false);
+            return $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$this->medicationDuration->name;
         } else {
             return $default;
         }
@@ -586,8 +638,10 @@ class EventMedicationUse extends BaseElement
     {
         parent::loadFromExisting($element);
         $this->updateStateProperties();
-        $this->is_copied_from_previous_event = true;
-        $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id :  $element->event->id;
+        if (!$this->prescription_item_id) {
+            $this->is_copied_from_previous_event = true;
+            $this->copied_from_med_use_id = $element->copied_from_med_use_id ? $element->copied_from_med_use_id : $element->event->id;
+        }
     }
 
     /**
@@ -659,8 +713,10 @@ class EventMedicationUse extends BaseElement
 
     private function clonefromPrescriptionItem($item)
     {
-        $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
-                  'dose','dose_unit_term', 'frequency_id', 'frequency', 'comments'];
+        $attrs = [
+            'medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
+            'dose', 'dose_unit_term', 'frequency_id', 'frequency', 'comments'
+        ];
 
         if ($this->start_date === null) { //this affects both OE-9616 && OE-9475
             $attrs[] = 'start_date';
@@ -680,30 +736,6 @@ class EventMedicationUse extends BaseElement
                 $this->end_date = $end_date;
             }
         }
-    }
-
-    /**
-     * Check element attributes to determine if anything has been set that would allow it to be recorded
-     * Can be used to remove entries from the containing element.
-     *
-     * @return bool
-     */
-    public function hasRecordableData()
-    {
-        foreach (
-            [
-            'medication_id', 'route_id', 'option_id', 'dose',
-            'units', 'frequency_id', 'end_date', 'stop_reason_id'
-            ] as $attr
-        ) {
-            if ($this->$attr) {
-                return true;
-            }
-        }
-        if ($this->start_date && \Helper::formatFuzzyDate($this->start_date) != date('Y')) {
-            return true;
-        }
-        return false;
     }
 
     protected function beforeSave()

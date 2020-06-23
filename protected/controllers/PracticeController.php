@@ -122,16 +122,25 @@ class PracticeController extends BaseController
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
+                    ->where(
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
                         array(':first_name'=> $contact->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
-                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
+                        ':city'=>$address->city,
+                        ':postcode'=>$address->postcode,
+                        ':country_id'=>$address->country_id)
+                    )
                     ->queryAll();
 
                 $isDuplicate = count($duplicateCheckOutput);
 
                 if ($isDuplicate === 0 && !$isDuplicateProviderNo) {
-                    list($contact, $practice, $address) = $this->performPracticeSave($contact, $practice, $address, $gpIdProviderNoList,
-                    false);
+                    list($contact, $practice, $address) = $this->performPracticeSave(
+                        $contact,
+                        $practice,
+                        $address,
+                        $gpIdProviderNoList,
+                        false
+                    );
                 }
             } else {
                 $contact->validate(array('first_name'));
@@ -170,8 +179,11 @@ class PracticeController extends BaseController
                     if (isset($address)) {
                         if ($address->save()) {
                             $transaction->commit();
-                            Audit::add('Practice', $action . '-practice',
-                                "Practice manually [id: $practice->id] {$action}ed.");
+                            Audit::add(
+                                'Practice',
+                                $action . '-practice',
+                                "Practice manually [id: $practice->id] {$action}ed."
+                            );
                             if (!$isAjax) {
                                 if (count($gpIdProviderNoList) === 0) {
                                     $this->redirect(array('view', 'id' => $practice->id));
@@ -201,8 +213,11 @@ class PracticeController extends BaseController
                         }
                     } else {
                         $transaction->commit();
-                        Audit::add('Practice', $action . '-practice',
-                            "Practice manually [id: $practice->id] {$action}ed.");
+                        Audit::add(
+                            'Practice',
+                            $action . '-practice',
+                            "Practice manually [id: $practice->id] {$action}ed."
+                        );
                         if (!$isAjax) {
                             $this->redirect(array('view', 'id' => $practice->id));
                         }
@@ -211,7 +226,7 @@ class PracticeController extends BaseController
                     $address->validate();
                     $address->clearErrors('contact_id');
                     if ($isAjax) {
-                        throw new CHttpException(400, CHtml::errorSummary(array($practice,$address)) );
+                        throw new CHttpException(400, CHtml::errorSummary(array($practice,$address)));
                     }
                     $transaction->rollback();
                 }
@@ -311,9 +326,14 @@ class PracticeController extends BaseController
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
+                    ->where(
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
                         array(':first_name'=> $contact->first_name, ':phone'=> $model->phone, ':address1'=>$address->address1,
-                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id, ':id'=>$id))
+                        ':city'=>$address->city,
+                        ':postcode'=>$address->postcode,
+                        ':country_id'=>$address->country_id,
+                        ':id'=>$id)
+                    )
                     ->queryAll();
 
                 $isDuplicate = count($duplicateCheckOutput);
@@ -323,8 +343,13 @@ class PracticeController extends BaseController
                     // delete all the records from the contact_practice_associate table before populating.
                     ContactPracticeAssociate::model()->deleteAllByAttributes(array('practice_id'=>$id));
 
-                    list($contact, $model, $address) = $this->performPracticeSave($contact, $model, $address, $gpIdProviderNoList,
-                        false);
+                    list($contact, $model, $address) = $this->performPracticeSave(
+                        $contact,
+                        $model,
+                        $address,
+                        $gpIdProviderNoList,
+                        false
+                    );
                 }
             } else {
                 $contact->validate(array('first_name'));

@@ -118,6 +118,6 @@ class Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments extends \BaseEvent
         $criteria->addCondition("ophcocvi_clinicinfo_disorder_section_id=:disorder_section_id");
         $criteria->params = array(':element_id'=>$element_id,':disorder_section_id'=>$disorder_section_id);
         $item = Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()->find($criteria);
-        return $item['comments'] ? $item['comments'] : '';
+        return $item && $item['comments'] ? $item['comments'] : '';
     }
 }

@@ -251,6 +251,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.showStopControls($full_row);
       });
 
+      $second_part_of_row.on("click", ".js-start-date-display", function(){
+          $(this).hide();
+          $full_row.find(".js-start-date-wrapper").show();
+      });
+
 		$full_row.on("click", ".js-btn-prescribe", function () {
             let $input = $(this).closest(".toggle-switch").find("input");
             let checked = !$input.prop("checked");
@@ -281,11 +286,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       let controls_onchange = function (e) {
           let $bound_entry = $row.data('bound_entry');
-          let bound_entry_key = $bound_entry.data('key');
-					let $full_bound_entry;
-					if (typeof $bound_entry !== 'undefined') {
-						$full_bound_entry = $bound_entry.parent().find("tr[data-key=" + bound_entry_key + "]");
-					}
+          let $full_bound_entry;
+          if (typeof $bound_entry !== 'undefined') {
+              $full_bound_entry = $bound_entry.parent().find("tr[data-key=" + $bound_entry.data('key') + "]");
+          }
 
           if (controller.options['modelName'] === "OEModule_OphCiExamination_models_HistoryMedications") {
               controller.updateBoundEntry($full_row);
@@ -573,7 +577,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         return new OpenEyes.UI.Dialog.Confirm({
             content: "Patient is allergic to " +
-                allergic_drugs.join() +
+                allergic_drugs.join(', ') +
                 ". Are you sure you want to add them?"
         });
     };
@@ -642,36 +646,44 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return true;
     };
 
-    HistoryMedicationsController.prototype.addSet = function (set_id) {
+    HistoryMedicationsController.prototype.addSet = function (set_id, matching_allergies_ids = []) {
         let controller = this;
         $.getJSON(controller.options.drugSetFormSource, {
             set_id: set_id,
-        }, function (response) {
-            let rows = controller.createRow(response);
-            response.forEach(function(medication) {
-                if(medication['tapers'] !== undefined) {
-                    medication['tapers'].forEach(function(taper) {
-                        response.push(taper);
+            allergy_ids: JSON.stringify(matching_allergies_ids),
+        }, function (medications) {
+            medications.forEach(function (medication) {
+                let row_data = [medication];
+                let rows = controller.createRow(row_data);
+
+                if (medication['tapers'] !== undefined) {
+                    medication['tapers'].forEach(function (taper) {
+                        row_data.push(taper);
                     });
                 }
-            });
 
-            for (let row_index in rows) {
-                let $row = $(rows[row_index]);
-                controller.addMedicationItemRow($row, response[row_index]);
-                $row.find(".js-btn-prescribe").click();
-            }
+                rows.forEach(function (row, key) {
+                    let $row = $(row);
+                    controller.addMedicationItemRow($row, row_data[key]);
+                    $row.find(".js-btn-prescribe").click();
+                });
+            });
 
             controller.displayTableHeader();
         });
     };
 
     HistoryMedicationsController.prototype.getMatchingAllergies = function(medications, allergies) {
-        let same_allergies = [];
+        let same_allergies = {};
+        let allergy_ids = Object.keys(allergies);
         medications.forEach(function (medication) {
             medication['allergies'].forEach(function (allergy) {
-                if (inArray(allergy, allergies)) {
-                    same_allergies.push(medication.label);
+                if (inArray(allergy, allergy_ids)) {
+                    if (same_allergies[allergy] !== undefined && same_allergies[allergy] !== medication.label) {
+                        same_allergies[allergy] += ', ' + medication.label;
+                    } else {
+                        same_allergies[allergy] = medication.label;
+                    }
                 }
             });
         });
@@ -684,15 +696,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let allergies = controller.getMergedAllergies();
         $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs",{
             set_id: set_id
-        }, function (response) {
+        }, function (medications) {
             if (typeof allergies !== undefined) {
-                let medications = JSON.parse(response);
                 let matching_allergies = controller.getMatchingAllergies(medications, allergies);
+                let matching_allergies_ids = Object.keys(matching_allergies);
+                let matching_allergies_labels = Object.values(matching_allergies);
 
-                if (matching_allergies.length > 0) {
-                    let dialog = controller.createAllergiesDialog(matching_allergies);
+                if (matching_allergies_ids.length > 0) {
+                    let dialog = controller.createAllergiesDialog(matching_allergies_labels);
                     dialog.on('ok', function () {
-                        controller.addSet(set_id);
+                        controller.addSet(set_id, matching_allergies_ids);
                     }.bind(this));
                     dialog.open();
                 } else {

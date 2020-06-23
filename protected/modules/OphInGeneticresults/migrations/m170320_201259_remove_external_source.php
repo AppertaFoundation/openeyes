@@ -16,11 +16,13 @@ class m170320_201259_remove_external_source extends CDbMigration
 
     public function down()
     {
-        $this->createOETable('ophingenetictest_external_source',
+        $this->createOETable(
+            'ophingenetictest_external_source',
             array(
                 'id' => 'pk',
                 'name' => 'varchar(255)',
-            ));
+            )
+        );
         
         $this->addColumn('et_ophingeneticresults_test', 'external_source_id', 'int(11)');
         $this->addColumn('et_ophingeneticresults_test', 'external_source_identifier', 'varchar(128)');

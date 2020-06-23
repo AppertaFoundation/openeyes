@@ -28,24 +28,38 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                 }
                 ?>
                 <?php
-                if ($episode->getSubspecialtyText() == "Cataract" And Yii::app()->params['opbooking_disable_both_eyes'] == true) {
+                if (Yii::app()->params['opbooking_disable_both_eyes']) {
                     ?>
-                    <?php echo $form->radioButtons($element, 'eye_id',
+                    <?php echo $form->radioButtons(
+                        $element,
+                        'eye_id',
                         CHtml::listData(Eye::model()->findAll(array(
                         'condition' => 'name != "Both"',
                         'order' => 'display_order asc',
                         )), 'id', 'name'),
-                        $element->eye_id, '', '', '', '',
+                        $element->eye_id,
+                        '',
+                        '',
+                        '',
+                        '',
                         array(
                             'nowrapper' => true,
-                            'label-class' => $event_errors ? 'error' : '')) ?>
+                        'label-class' => $event_errors ? 'error' : '')
+                    ) ?>
                     <?php
                 } else {
                     ?>
-                    <?php echo $form->radioButtons($element, 'eye_id',
+                    <?php echo $form->radioButtons(
+                        $element,
+                        'eye_id',
                         CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-                        null, '', '', '', '',
-                        array('label-class' => $event_errors ? 'error' : '')) ?>
+                        null,
+                        '',
+                        '',
+                        '',
+                        '',
+                        array('label-class' => $event_errors ? 'error' : '')
+                    ) ?>
                     <?php
                 }
                 ?>
@@ -72,14 +86,19 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                             Complexity:
                         </td>
                         <td>
-                            <?php echo $form->radioButtons($element, 'complexity', Element_OphTrOperationbooking_Operation::$complexity_captions,
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'complexity',
+                                Element_OphTrOperationbooking_Operation::$complexity_captions,
                                 null,
-                                false, false,
+                                false,
+                                false,
                                 false,
                                 false,
                                 array(
                                     'nowrapper' => true,
-                                )) ?>
+                                )
+                            ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -98,7 +117,13 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                         'condition' => 'is_consultant = 1 and is_surgeon=1',
                                         'order' => 'last_name, first_name',
                                     )),
-                                    'id', 'reversedFullName'), array('empty' => 'Select'), false, array('field' => 5)); ?>
+                                    'id',
+                                    'reversedFullName'
+                                ),
+                                array('empty' => 'Select'),
+                                false,
+                                array('field' => 5)
+                            ); ?>
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +141,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
                                 array('empty' => '- None -', 'options' => $options, 'nowrapper' => true),
                                 false,
-                                array('field' => 2));
+                                array('field' => 2)
+                            );
                             ?>
                         </td>
                     </tr>
@@ -125,11 +151,21 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                             Priority
                         </td>
                         <td>
-                            <?php echo $form->radioButtons($element, 'priority_id',
-                                CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')),
-                                    'id', 'name'), null,
-                                false, false, false, false,
-                                array('nowrapper' => true)) ?>
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'priority_id',
+                                CHtml::listData(
+                                    OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')),
+                                    'id',
+                                    'name'
+                                ),
+                                null,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
+                            ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -137,8 +173,13 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                             Decision date
                         </td>
                         <td>
-                            <?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array('nowrapper' => true),
-                                array_merge($form->layoutColumns, array('field' => 2))) ?>
+                            <?php echo $form->datePicker(
+                                $element,
+                                'decision_date',
+                                array('maxDate' => 'today'),
+                                array('nowrapper' => true),
+                                array_merge($form->layoutColumns, array('field' => 2))
+                            ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -147,8 +188,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'special_equipment', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'special_equipment_details', array('rows' => 1), true, array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
+                            <?php $form->textArea(
+                                $element,
+                                'special_equipment_details',
+                                array('rows' => 1),
+                                true,
+                                array(),
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                            ) ?>
                         </td>
                     </tr>
                     <?php
@@ -178,9 +225,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                                 }
                                             }
                                         }
-                                        echo $form->dropDownList($element, 'referral_id',
-                                            CHtml::listData($this->getReferralChoices(), 'id', 'description'), $html_options, false,
-                                            array('field' => 2));
+                                        echo $form->dropDownList(
+                                            $element,
+                                            'referral_id',
+                                            CHtml::listData($this->getReferralChoices(), 'id', 'description'),
+                                            $html_options,
+                                            false,
+                                            array('field' => 2)
+                                        );
                                         ?>
                                     </td>
                                     <td>
@@ -212,9 +264,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         </td>
                         <td>
                             <?php echo $form->checkBoxes(
-                                $element, 'AnaestheticType', 'anaesthetic_type',
-                                null, false, false,
-                                false, false,
+                                $element,
+                                'AnaestheticType',
+                                'anaesthetic_type',
+                                null,
+                                false,
+                                false,
+                                false,
+                                false,
                                 array(
                                     'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                                     'field'=>'AnaestheticType',
@@ -227,8 +284,17 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                             Anaesthetic choice is
                         </td>
                         <td>
-                            <?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice', null,
-                                false, false, false, false, array('nowrapper' => true)) ?>
+                            <?php $form->radioButtons(
+                                $element,
+                                'anaesthetic_choice_id',
+                                'OphTrOperationbooking_Anaesthetic_Choice',
+                                null,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
+                            ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -237,9 +303,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true,
+                            <?php $form->textArea(
+                                $element,
+                                'stop_medication_details',
+                                array('rows' => 1),
+                                true,
                                 array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                            ) ?>
                         </td>
                     </tr>
                     <tr id='tr_stop_medication_details' style="display:none">
@@ -277,7 +348,11 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 'overnight_stay_required_id',
                                 'OphTrOperationbooking_Overnight_Stay_Required',
                                 null,
-                                false, false, false, false, array('nowrapper' => true)
+                                false,
+                                false,
+                                false,
+                                false,
+                                array('nowrapper' => true)
                             );
 ?>
                         </td>
@@ -313,8 +388,14 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                     Add RTT comments:
                 </td>
                 <td>
-                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array('class' => 'autosize'),
-                        array_merge($form->layoutColumns, array('field' => 4))) ?>
+                    <?php echo $form->textArea(
+                        $element,
+                        'comments_rtt',
+                        array('rows' => 1, 'nowrapper' => true),
+                        '',
+                        array('class' => 'autosize'),
+                        array_merge($form->layoutColumns, array('field' => 4))
+                    ) ?>
                 </td>
             </tr>
             <tr>

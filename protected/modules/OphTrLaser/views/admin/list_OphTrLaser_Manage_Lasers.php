@@ -43,9 +43,9 @@
                     <td><i class="oe-i <?=($model->active ? 'tick' : 'remove');?> small"></i></td>
                     <td>
                             <?=\CHtml::link(
-                            'Edit',
-                            '/OphTrLaser/admin/editLaser/' . $model->id,
-                            ['class' => 'small event-action']
+                                'Edit',
+                                '/OphTrLaser/admin/editLaser/' . $model->id,
+                                ['class' => 'small event-action']
                             ) ?>
                     </td>
                 </tr>

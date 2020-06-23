@@ -22,8 +22,11 @@
         'MultiSelect_assessment',
         'assessment',
         'ophinvisualfields_result_assessment_id',
-        CHtml::listData(OphInVisualfields_Result_Assessment::model()->findAll(array('order' => 'display_order asc')),
-            'id', 'name'),
+        CHtml::listData(
+            OphInVisualfields_Result_Assessment::model()->findAll(array('order' => 'display_order asc')),
+            'id',
+            'name'
+        ),
         $element->ophinvisualfields_result_assessment_defaults,
         array(
             'empty' => 'Select',
@@ -33,6 +36,11 @@
             'nowrapper' => true,
         )
     ) ?>
-    <?= $form->textArea($element, 'other', array('rows' => 4, 'no_label' => true),
-        !$element->hasMultiSelectValue('assessment', 'Other'), array('placeholder' => 'Other - please specify')) ?>
+    <?= $form->textArea(
+        $element,
+        'other',
+        array('rows' => 4, 'no_label' => true),
+        !$element->hasMultiSelectValue('assessment', 'Other'),
+        array('placeholder' => 'Other - please specify')
+    ) ?>
 </div>

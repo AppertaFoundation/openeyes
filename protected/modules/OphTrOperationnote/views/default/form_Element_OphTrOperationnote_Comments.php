@@ -31,13 +31,13 @@
     </div>
       <div>
             <?php echo $form->textArea(
-              $element,
-              'postop_instructions',
-              array(),
-              false,
-              ['cols' => 30, 'class' => 'autosize'],
-              array('label' => 2, 'field' => 10)
-          ) ?>
+                $element,
+                'postop_instructions',
+                array(),
+                false,
+                ['cols' => 30, 'class' => 'autosize'],
+                array('label' => 2, 'field' => 10)
+            ) ?>
       </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
@@ -106,7 +106,10 @@
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
               return ['label' => $item, 'id' => $key,];
-          }, array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
+          },
+          array_keys($instru_list),
+          $instru_list)
+      ) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));

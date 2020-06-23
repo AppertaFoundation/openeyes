@@ -36,8 +36,13 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $last_item = $model::model()->find(['order'=>'display_order DESC']);
             $model->display_order = $last_item ? $last_item->display_order + 1 : '1';
             if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false,
-                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']);
+                Audit::add(
+                    'admin',
+                    'create',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']
+                );
                 Yii::app()->user->setFlash('success', 'Common Systemic Disorder Group created');
                 $this->redirect(['list']);
             } else {
@@ -109,7 +114,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $transaction->rollback();
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 
     public function actionSave()

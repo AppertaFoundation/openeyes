@@ -66,14 +66,18 @@
                 <h3>Invoice Status:</h3>
                 <?php
                 echo
-                CHtml::dropDownList('status_id', (array_key_exists('status_id', $list_filter) ? $list_filter['status_id'] : null),
+                CHtml::dropDownList(
+                    'status_id',
+                    (array_key_exists('status_id', $list_filter) ? $list_filter['status_id'] : null),
                     CHtml::listData(\OEModule\OphCiExamination\models\InvoiceStatus::model()->findAll(array('condition' => 'active = :active', 'params' => array(':active' => 1))), 'id', 'name'),
                     array('class' => 'filter-field cols-full', 'empty' => 'All')
                 );
                 ?>
                 <h3>Optometrist Name:</h3>
                 <?php
-                echo CHtml::textField('optometrist', (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
+                echo CHtml::textField(
+                    'optometrist',
+                    (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
                     array(
                         'id' => 'optometrist',
                         'name' => 'optometrist',
@@ -82,17 +86,22 @@
                 );
                 ?>
                 <h3>Patient number:</h3>
-                <?php echo CHtml::textField('patient_number', (array_key_exists('patient_number', $list_filter) ? $list_filter['patient_number'] : null),
+                <?php echo CHtml::textField(
+                    'patient_number',
+                    (array_key_exists('patient_number', $list_filter) ? $list_filter['patient_number'] : null),
                     array(
                         'id' => 'patient_number',
                         'name' => 'patient_number',
                         'class' => 'cols-full',
-                    ));
+                    )
+                );
 ?>
 
                 <h3>Optometrist GOC code:
                     <h3>
-                        <?php echo CHtml::textField('goc_number', (array_key_exists('goc_number', $list_filter) ? $list_filter['goc_number'] : null),
+                        <?php echo CHtml::textField(
+                            'goc_number',
+                            (array_key_exists('goc_number', $list_filter) ? $list_filter['goc_number'] : null),
                             array(
                                 'id' => 'goc_number',
                                 'name' => 'goc_number',

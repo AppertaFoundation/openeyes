@@ -51,8 +51,10 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
-        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
-            array('user_id' => $user->id));
+        $display_theme_setting = SettingUser::model()->find(
+            'user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user->id)
+        );
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
@@ -61,6 +63,8 @@ class ProfileController extends BaseController
                         $user->{$field} = $_POST['User'][$field];
                     }
                 }
+                $user->password_hashed=true;
+
                 if (!$user->save()) {
                     $errors = $user->getErrors();
                 } else {
@@ -89,7 +93,7 @@ class ProfileController extends BaseController
             if (Yii::app()->params['profile_user_can_change_password']) {
                 if (empty($_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Please enter your current password');
-                } elseif ($user->password !== md5($user->salt . $_POST['User']['password_old'])) {
+                } elseif (!$user->validatePassword($_POST['User']['password_old'])) {
                     $errors['Current password'] = array('Password is incorrect');
                 }
 
@@ -237,6 +241,8 @@ class ProfileController extends BaseController
                     throw new Exception('Unable to save UserFirm: ' . print_r($us->getErrors(), true));
                 }
 
+                $user->password_hashed = true;
+
                 $user->has_selected_firms = 1;
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -267,17 +273,21 @@ class ProfileController extends BaseController
             // from the portal we receive binary data:
 
             $user = User::model()->findByPk(Yii::app()->user->id);
-
             $portal_conn = new OptomPortalConnection();
             if ($portal_conn) {
-                $signature_data = $portal_conn->signatureSearch(null,
-                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser()));
+                $signature_data = $portal_conn->signatureSearch(
+                    null,
+                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser())
+                );
 
                 if (is_array($signature_data) && isset($signature_data["image"])) {
-                    $signature_file = $portal_conn->createNewSignatureImage($signature_data["image"],
-                        Yii::app()->user->id);
+                    $signature_file = $portal_conn->createNewSignatureImage(
+                        $signature_data["image"],
+                        Yii::app()->user->id
+                    );
                     if ($signature_file) {
                         $user->signature_file_id = $signature_file->id;
+                        $user->password_hashed = true;
                         if ($user->save()) {
                             echo true;
                         }
@@ -286,7 +296,6 @@ class ProfileController extends BaseController
             }
         }
         echo false;
-
     }
 
     public function actionShowSignature()
@@ -316,8 +325,10 @@ class ProfileController extends BaseController
             }
             $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
 
-            $QRimage = $QRSignature->createQRCode("@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
-                250);
+            $QRimage = $QRSignature->createQRCode(
+                "@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
+                250
+            );
 
             // Output and free from memory
             header('Content-Type: image/jpeg');
@@ -346,8 +357,10 @@ class ProfileController extends BaseController
      */
     public static function changeDisplayTheme($user_id, $display_theme)
     {
-        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
-            array('user_id' => $user_id));
+        $display_theme_setting = SettingUser::model()->find(
+            'user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user_id)
+        );
 
         if ($display_theme) {
             if ($display_theme_setting === null) {

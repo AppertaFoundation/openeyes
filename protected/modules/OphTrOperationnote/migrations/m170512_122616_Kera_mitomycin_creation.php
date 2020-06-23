@@ -11,10 +11,14 @@ class m170512_122616_Kera_mitomycin_creation extends OEMigration
             'display_order' => 'integer NOT NULL',
         ), true);
 
-        $this->insert('ophtroperationnote_cxl_mitomycin',
-            array('name' => 'Yes', 'display_order' => 1));
-        $this->insert('ophtroperationnote_cxl_mitomycin',
-            array('name' => 'No', 'display_order' => 2));
+        $this->insert(
+            'ophtroperationnote_cxl_mitomycin',
+            array('name' => 'Yes', 'display_order' => 1)
+        );
+        $this->insert(
+            'ophtroperationnote_cxl_mitomycin',
+            array('name' => 'No', 'display_order' => 2)
+        );
 
     }
 
