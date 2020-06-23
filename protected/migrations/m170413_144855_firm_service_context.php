@@ -45,12 +45,16 @@ class m170413_144855_firm_service_context extends OEMigration
         $this->dropColumn('firm', 'runtime_selectable');
         $this->dropColumn('firm', 'can_own_an_episode');
 
-        $this->delete('setting_metadata',
+        $this->delete(
+            'setting_metadata',
             'key = :key',
-            array(':key' => 'service_firm_label'));
-        $this->delete('setting_metadata',
+            array(':key' => 'service_firm_label')
+        );
+        $this->delete(
+            'setting_metadata',
             'key = :key',
-            array(':key' => 'context_firm_label'));
+            array(':key' => 'context_firm_label')
+        );
     }
 
 }

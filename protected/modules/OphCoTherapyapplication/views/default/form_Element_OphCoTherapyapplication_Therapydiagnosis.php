@@ -42,15 +42,17 @@ foreach ($l1_disorders as $disorder) {
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <?php $this->renderPartial($element->form_view.'_fields',
-                array(
+          <?php $this->renderPartial(
+              $element->form_view.'_fields',
+              array(
                     'side' =>  $eye_side,
                     'element' => $element,
                     'form' => $form,
                     'l1_disorders' => $l1_disorders,
                     'l1_opts' => $l1_options,
                     'l2_disorders' => $l2_disorders,
-                    'data' => $data)); ?>
+              'data' => $data)
+          ); ?>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <div class="add-side">

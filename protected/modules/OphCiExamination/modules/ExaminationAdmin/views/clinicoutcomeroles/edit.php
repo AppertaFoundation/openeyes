@@ -26,8 +26,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
 ]);
 
 $this->renderPartial(
-  '/clinicoutcomeroles/_form',
-  ['form' => $form, 'model' => $model]
+    '/clinicoutcomeroles/_form',
+    ['form' => $form, 'model' => $model]
 );
 
 $this->endWidget();

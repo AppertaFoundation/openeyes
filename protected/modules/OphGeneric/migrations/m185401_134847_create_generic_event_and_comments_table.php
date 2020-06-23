@@ -11,16 +11,14 @@ class m185401_134847_create_generic_event_and_comments_table extends \OEMigratio
             'class_name' => 'OEModule\OphGeneric\models\Comments',
             'event_type_id' => $event_type_id,
             'display_order' => 10,
-            'required' => 1,
-            'group_title' => 'Comments']);
+            'required' => 1]);
 
         $this->insert('element_type', [
                 'name' => 'Attachment',
                 'class_name' => 'OEModule\OphGeneric\models\Attachment',
                 'event_type_id' => $event_type_id,
                 'display_order' => 1,
-                'required' => 1,
-                'group_title' => 'Attachment'
+                'required' => 1
             ]
         );
 
@@ -28,8 +26,11 @@ class m185401_134847_create_generic_event_and_comments_table extends \OEMigratio
             'id' => 'pk',
             'event_id' => 'INT(10) UNSIGNED NOT NULL DEFAULT 0',
         ], true);
-        $this->createOETable('et_ophgeneric_comments',
-            ['id' => 'pk', 'comment' => 'text', 'event_id' => 'int(10) unsigned NOT NULL'], true);
+        $this->createOETable(
+            'et_ophgeneric_comments',
+            ['id' => 'pk', 'comment' => 'text', 'event_id' => 'int(10) unsigned NOT NULL'],
+            true
+        );
         $this->addForeignKey('fk_documentophgeneric_event_id', 'et_ophgeneric_comments', 'event_id', 'event', 'id');
         $this->addForeignKey('et_ophgeneric_attach_ev_fk', 'et_ophgeneric_attachment', 'event_id', 'event', 'id');
     }

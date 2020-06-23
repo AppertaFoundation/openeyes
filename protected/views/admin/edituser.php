@@ -80,13 +80,13 @@
         <tr>
             <td>Registration Code</td>
             <td><?= \CHtml::activeTextField(
-                    $user,
-                    'registration_code',
-                    [
+                $user,
+                'registration_code',
+                [
                         'class' => 'cols-full',
                         'autocomplete' => Yii::app()->params['html_autocomplete']
                     ]
-                ); ?>
+            ); ?>
             <td>
         </tr>
         <tr>
@@ -97,7 +97,8 @@
                     $user,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']);
+                    ['separator' => ' ']
+                );
                 ?>
             </td>
         </tr>
@@ -140,20 +141,20 @@
         <tr>
             <td>Consultant</td>
             <td><?= \CHtml::activeRadioButtonList(
-                    $user,
-                    'is_consultant',
-                    [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?></td>
+                $user,
+                'is_consultant',
+                [1 => 'Yes', 0 => 'No'],
+                ['separator' => ' ']
+            ); ?></td>
         </tr>
         <tr>
             <td>Surgeon</td>
             <td><?= \CHtml::activeRadioButtonList(
-                    $user,
-                    'is_surgeon',
-                    [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?></td>
+                $user,
+                'is_surgeon',
+                [1 => 'Yes', 0 => 'No'],
+                ['separator' => ' ']
+            ); ?></td>
         </tr>
         <tr>
             <td>Password</td>

@@ -22,98 +22,109 @@
 ?>
 
 <script type="text/html" id="change-subspecialty-template">
-  <li class="oe-specialty-service {{classes}}"
-      data-id="{{id}}"
-      data-subspecialty-id="{{subspecialtyId}}"
-      data-service-id="{{serviceId}}"
-  >{{name}}
-    <div class="tag">{{shortName}}</div>
-    <span class="service">{{serviceName}}</span>
-    {{^id}}
-    <div class="change-new-specialty"></div>
-    {{/id}}
-  </li>
+    <li class="oe-specialty-service {{classes}}"
+        data-id="{{id}}"
+        data-subspecialty-id="{{subspecialtyId}}"
+        data-service-id="{{serviceId}}">
+        {{name}}
+        <div class="tag">{{shortName}}</div>
+            <span class="service">{{serviceName}}</span>
+            {{#multiple_services}}
+            <select class="change-service pro-theme cols-full" style="display: none;">
+                <option value="{{serviceId}}">{{serviceName}}</option>
+                {{#services_available}}
+                <option value="{{id}}">{{name}} ({{shortName}})</option>
+                {{/services_available}}
+            </select>
+            {{/multiple_services}}
+            {{^id}}
+            <div class="change-new-specialty"></div>
+            {{/id}}
+    </li>
 </script>
 <script type="text/html" id="new-change-subspecialty-template">
-  <div class="oe-specialty-service new-added-subspecialty-service selected {{classes}}"
-       data-subspecialty-id="{{subspecialtyId}}"
-       data-service-id="{{serviceId}}"
-  >{{name}}
-    <span class="tag">{{shortName}}</span>
-    <span class="service">{{serviceName}}</span>
-    <div class="change-new-specialty"></div>
-  </div>
+    <div class="oe-specialty-service new-added-subspecialty-service selected {{classes}}"
+         data-subspecialty-id="{{subspecialtyId}}"
+         data-service-id="{{serviceId}}">
+        {{name}}
+        <span class="tag">{{shortName}}</span>
+        <span class="service">{{serviceName}}</span>
+        <div class="change-new-specialty"></div>
+    </div>
 </script>
 <script type="text/html" id="change-context-template">
-  <table class="oe-create-event-step-through">
-    <tbody>
-    <tr>
-      <td class="step-subspecialties">
-        <h3>Subspecialties</h3>
-        <ul class="subspecialties-list" id="js-subspecialties-list">
-          {{#currentSubspecialties}}
-          {{>subspecialty}}
-          {{/currentSubspecialties}}
-        </ul>
-        <div class="change-subspecialty">
-          <h6>Add New Subspecialty</h6>
-          <select class="new-subspecialty">
-            <option value="">Select</option>
-            {{#selectableSubspecialties}}
-            <option value="{{id}}">{{name}} ({{shortName}})</option>
-            {{/selectableSubspecialties}}
-          </select>
+    <table class="oe-create-event-step-through">
+        <tbody>
+        <tr>
+            <td class="step-subspecialties">
+                <h3>Subspecialties</h3>
+                <ul class="subspecialties-list" id="js-subspecialties-list">
+                    {{#currentSubspecialties}}
+                    {{>subspecialty}}
+                    {{/currentSubspecialties}}
+                </ul>
+                <div class="change-subspecialty">
+                    <h6>Add New Subspecialty</h6>
+                    <select class="new-subspecialty">
+                        <option value="">Select</option>
+                        {{#selectableSubspecialties}}
+                        <option value="{{id}}">{{name}} ({{shortName}})</option>
+                        {{/selectableSubspecialties}}
+                    </select>
 
-          <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
-          <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
-          <div class="fixed-service" style="display: none;"></div>
-          <select class="select-service" style="display: none;">
-          </select>
+                    <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
+                    <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
+                    <div class="fixed-service" style="display: none;"></div>
+                    <select class="select-service" style="display: none;">
+                    </select>
 
-          <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
-        </div>
-      </td>
-      <td class="step-context oe-create-event-step-through " style="visibility: hidden;">
-        <h3><?= Firm::contextLabel() ?></h3>
-        <ul class="context-list">
-        </ul>
-      </td>
-      <td class="step-event-types" style="visibility: hidden;">
-        <h3>Change last workflow step</h3>
-        <button class="button green js-confirm-context-change" type="button" style="display: none;">Confirm change</button>
-        <ul id="event-type-list" class="event-type-list">
-        </ul>
+                    <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn">
+                        <i class="oe-i plus"></i>
+                    </button>
+                </div>
+            </td>
+            <td class="step-context oe-create-event-step-through " style="visibility: hidden;">
+                <h3><?= Firm::contextLabel() ?></h3>
+                <ul class="context-list"></ul>
+            </td>
+            <td class="step-event-types" style="visibility: hidden;">
+                <h3>Change last workflow step</h3>
+                <button class="button green js-confirm-context-change" type="button" style="display: none;">Confirm
+                    change
+                </button>
+                <ul id="event-type-list" class="event-type-list">
+                </ul>
 
-        <div class="back-date-event" style="display: none;">
-          <!-- TODO: implement back dated event changes -->
-          <label><input id="back-date-event" type="checkbox"> Back Date Event</label>
-          <div class="back-date-options">
-            <div style="margin-bottom:10px">
-              <input class="event-date" type="date" placeholder="DD/MM/YYYY">
-            </div>
-            <div>
-              <label>
-                <select style="width:40px;">
-                  <option>01</option>
-                  <option>02</option>
-                  <option>03</option>
-                  <option>..</option>
-                </select>
-                <select style="width:40px;">
-                  <option>01</option>
-                  <option>02</option>
-                  <option>03</option>
-                  <option>..</option>
-                </select>
-                HH:MM</label>
-            </div>
-          </div>
-        </div>
-      </td>
-
-    </tr>
-    </tbody>
-  </table>
+                <div class="back-date-event" style="display: none;">
+                    <!-- TODO: implement back dated event changes -->
+                    <label><input id="back-date-event" type="checkbox"> Back Date Event</label>
+                    <div class="back-date-options">
+                        <div style="margin-bottom:10px">
+                            <input class="event-date" type="date" placeholder="DD/MM/YYYY">
+                        </div>
+                        <div>
+                            <label>
+                                <select style="width:40px;">
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>..</option>
+                                </select>
+                                <select style="width:40px;">
+                                    <option>01</option>
+                                    <option>02</option>
+                                    <option>03</option>
+                                    <option>..</option>
+                                </select>
+                                HH:MM
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </script>
 <script type="text/javascript">
     $(document).ready(function () {

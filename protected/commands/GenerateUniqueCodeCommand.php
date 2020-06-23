@@ -39,7 +39,7 @@ class GenerateUniqueCodeCommand extends CConsoleCommand
     public function run($args)
     {
         $this->setAlphabet(
-                implode(range('A', 'Z'))
+            implode(range('A', 'Z'))
                 .implode(range(2, 9))
         );
         if (!empty($args[0])) {

@@ -22,7 +22,9 @@ class ProcessingNotSupported extends ServiceException
     public function toFhirOutcome()
     {
         return FhirOutcome::singleIssue(
-            \FhirValueSet::ISSUESEVERITY_FATAL, \FhirValueSet::ISSUETYPE_PROCESSING_NOT_SUPPORTED, $this->message
+            \FhirValueSet::ISSUESEVERITY_FATAL,
+            \FhirValueSet::ISSUETYPE_PROCESSING_NOT_SUPPORTED,
+            $this->message
         );
     }
 }

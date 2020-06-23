@@ -32,14 +32,36 @@ class OphDrPrescription_API extends BaseAPI
             $result = '';
             $latest = $this->getElementFromLatestEvent('Element_OphDrPrescription_Details', $patient, $use_context);
 
-            foreach ($details as $detail) {
-                $detailDate = substr($detail->event->event_date, 0, 10);
-                $latestDate = substr($latest->event->event_date, 0, 10);
-                if (strtotime($detailDate) === strtotime($latestDate)) {
-                    $result .= $detail->getLetterText()."<br>";
-                }
-            }
-            return $result;
+            ob_start();
+            ?>
+                        <table class="standard borders current-ophtalmic-drugs">
+                            <colgroup>
+                                <col class="cols-5">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="empty"></th>
+                                    <th>Dose (unit)</th>
+                                    <th>Eye</th>
+                                    <th>Frequency</th>
+                                    <th>Until</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    <?php
+
+                    foreach ($details as $detail) {
+                        $detailDate = substr($detail->event->event_date, 0, 10);
+                        $latestDate = substr($latest->event->event_date, 0, 10);
+                        if (strtotime($detailDate) === strtotime($latestDate)) {
+                            echo $detail->getLetterText();
+                        }
+                    }
+                    ?>
+            </tbody>
+        </table>
+
+            <?php  return ob_get_clean();
         }
     }
 
@@ -106,5 +128,4 @@ class OphDrPrescription_API extends BaseAPI
         }
         return false;
     }
-
 }

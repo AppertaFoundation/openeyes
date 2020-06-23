@@ -58,8 +58,13 @@ class DrugController extends \ModuleAdminController
             $model->setAttributes($new_attributes);
 
             if ($model->save()) {
-                Audit::add('admin', 'edit', serialize($model->attributes), false,
-                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+                Audit::add(
+                    'admin',
+                    'edit',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']
+                );
                 Yii::app()->user->setFlash('success', 'Drop edited');
                 $this->redirect(['dilationDrugs']);
             }
@@ -118,8 +123,13 @@ class DrugController extends \ModuleAdminController
             $model->setAttributes($new_attributes);
 
             if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false,
-                ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']);
+                Audit::add(
+                    'admin',
+                    'create',
+                    serialize($model->attributes),
+                    false,
+                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_Dilation_Drugs']
+                );
                 Yii::app()->user->setFlash('success', 'Drop created');
                 $this->redirect(['dilationDrugs']);
             }

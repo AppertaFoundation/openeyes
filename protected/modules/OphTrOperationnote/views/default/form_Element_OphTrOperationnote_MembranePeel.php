@@ -57,8 +57,12 @@
                 <?php echo $element->getAttributeLabel('other_dye'); ?>
           </td>
           <td>
-                <?php echo $form->textField($element, 'other_dye',
-                  array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;'), array()) ?>
+                <?php echo $form->textField(
+                    $element,
+                    'other_dye',
+                    array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;'),
+                    array()
+                ) ?>
           </td>
         </tr>
         <tr>
@@ -66,8 +70,13 @@
                 <?php echo $element->getAttributeLabel('comments'); ?>
           </td>
           <td>
-                <?php echo $form->textArea($element, 'comments', array('nowrapper' => true, 'class' => 'cols-11'), false,
-                  array('placeholder' => 'Comments')) ?>
+                <?php echo $form->textArea(
+                    $element,
+                    'comments',
+                    array('nowrapper' => true, 'class' => 'cols-11'),
+                    false,
+                    array('placeholder' => 'Comments')
+                ) ?>
           </td>
         </tr>
         </tbody>

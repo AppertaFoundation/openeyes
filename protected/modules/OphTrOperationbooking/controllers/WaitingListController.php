@@ -170,13 +170,11 @@ class WaitingListController extends BaseModuleController
                     'status',
                     'date_letter_sent',
                     'procedures',
-                )
-            )->findAll(array(
+                ))->findAll(array(
                     'condition' => 'event.id IS NOT NULL AND episode.end_date IS NULL'.$where_sql,
                     'params' => $where_params,
                     'order' => 'decision_date asc',
-                )
-            );
+                ));
         Yii::app()->event->dispatch('end_batch_mode');
 
         return $operations;
@@ -314,7 +312,7 @@ class WaitingListController extends BaseModuleController
             $html .= $this->printLetter($operation, $auto_confirm);
 
             $docrefs[] = "E:{$operation->event->id}/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
-            $barcodes[] = $operation->event->barcodeHTML;
+            $barcodes[] = $operation->event->barcodeSVG;
             $patients[] = $operation->event->episode->patient;
 
             ++$documents;
@@ -322,7 +320,7 @@ class WaitingListController extends BaseModuleController
             if ($letter_status == Element_OphTrOperationbooking_Operation::LETTER_GP) {
                 // Patient letter is another document
                 $docrefs[] = "E:{$operation->event->id}/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
-                $barcodes[] = $operation->event->barcodeHTML;
+                $barcodes[] = $operation->event->barcodeSVG;
                 $patients[] = $operation->event->episode->patient;
 
                 ++$documents;
@@ -333,12 +331,12 @@ class WaitingListController extends BaseModuleController
 
         $pdf_suffix = 'waitingList_'.Yii::app()->user->id.'_'.rand();
 
-        $wk = new WKHtmlToPDF();
+        $wk = Yii::app()->puppeteer;
         $wk->setDocuments($documents);
         $wk->setDocrefs($docrefs);
         $wk->setBarcodes($barcodes);
         $wk->setPatients($patients);
-        $wk->generatePDF($directory, $pdf_suffix, '', $html);
+        $wk->savePageToPDF($directory, $pdf_suffix, '', $html);
 
         $pdf = $directory."/$pdf_suffix.pdf";
 
@@ -540,11 +538,10 @@ class WaitingListController extends BaseModuleController
 
     public function actionSetBooked($event_id)
     {
-        header('Content-type: application/json');
         $success = true;
 
         if (!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id))) {
-            echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
+            $this->renderJSON(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
@@ -576,7 +573,7 @@ class WaitingListController extends BaseModuleController
             $success = false;
         }
 
-        echo CJSON::encode(array('success' => $success, 'message' => $message));
+        $this->renderJSON(array('success' => $success, 'message' => $message));
         exit;
     }
 }

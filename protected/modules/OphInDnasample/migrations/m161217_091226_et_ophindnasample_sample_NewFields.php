@@ -32,23 +32,37 @@ class m161217_091226_et_ophindnasample_sample_NewFields extends CDbMigration
             'genetics_study_id'=>'integer'
         ), '');
 
-        $this->createIndex('idx_et_ophindnasample_sample_id',
+        $this->createIndex(
+            'idx_et_ophindnasample_sample_id',
             'et_ophindnasample_sample_genetics_studies',
-            'et_ophindnasample_sample_id');
+            'et_ophindnasample_sample_id'
+        );
 
-        $this->createIndex('idx_genetics_study_id',
+        $this->createIndex(
+            'idx_genetics_study_id',
             'et_ophindnasample_sample_genetics_studies',
-            'genetics_study_id');
+            'genetics_study_id'
+        );
 
-        $this->addForeignKey(   'fk_et_ophindnasample_sample_id',
+        $this->addForeignKey(
+            'fk_et_ophindnasample_sample_id',
             'et_ophindnasample_sample_genetics_studies',
             'et_ophindnasample_sample_id',
-            'et_ophindnasample_sample', 'id', 'CASCADE', 'CASCADE');
+            'et_ophindnasample_sample',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
 
-        $this->addForeignKey(   'fk_genetics_study_id',
+        $this->addForeignKey(
+            'fk_genetics_study_id',
             'et_ophindnasample_sample_genetics_studies',
             'genetics_study_id',
-            'genetics_study', 'id', 'CASCADE', 'CASCADE');
+            'genetics_study',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
     }
 
     public function safeDown()

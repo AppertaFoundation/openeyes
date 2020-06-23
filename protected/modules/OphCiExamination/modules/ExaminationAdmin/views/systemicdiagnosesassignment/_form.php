@@ -72,7 +72,9 @@
                 'name' => 'Diagnosis',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($disorder) {
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]", null,
+                    return CHtml::textField(
+                        "OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",
+                        null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -81,7 +83,8 @@
                                 'disorder_id' => $data->disorder->id,
 
                             ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
-                        ]);
+                        ]
+                    );
                 }
             ],
             [
@@ -135,11 +138,11 @@
         ?>
 
         <?=\CHtml::button(
-            'Add Risk',
+            'Add Diagnosis',
             [
                 'class' => 'button large',
                 'type' => 'button',
-                'id' => 'add_new_risk'
+                'id' => 'add_new_diagnosis'
             ]
         ); ?>
 
@@ -219,7 +222,7 @@
             $empty_tr = $table.find('.empty').closest('tr'),
             diagnosesSearchController;
 
-        $('#add_new_risk').on('click', function (e) {
+        $('#add_new_diagnosis').on('click', function (e) {
             var data = {},
                 $row;
 

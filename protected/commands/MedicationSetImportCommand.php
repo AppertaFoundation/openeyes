@@ -9,6 +9,23 @@ class MedicationSetImportCommand extends CConsoleCommand
 {
     private $spreadsheet;
     private $validTypes = array("VTM", "VMP", "SET", "ROUTE");
+    private $hiddenSets = array(
+        "medication_management",
+        "Allergy_Acetazolamide",
+        "Allergy_Atropine",
+        "Allergy_Brimonidine",
+        "Allergy_Carbamezapine",
+        "Allergy_Cephalosporins",
+        "Allergy_Fluorescein",
+        "Allergy_Iodine",
+        "Allergy_NSAIDs",
+        "Allergy_Opiates",
+        "Allergy_Penicillin",
+        "Allergy_Phenytoin",
+        "Allergy_Sulphonamides",
+        "Allergy_Suxamethonium",
+        "Allergy_Tetracycline"
+    );
 
     /**
      * @return string
@@ -44,7 +61,7 @@ EOH;
     public function actionIndex($filename)
     {
         $t = microtime(true);
-        echo "\n[" . (date("Y-m-d H:i:s")) ."] MedicationSetImport started ... \n";
+        echo "\n[" . (date("Y-m-d H:i:s")) . "] MedicationSetImport started ... \n";
         $this->spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
         $this->addMedicationAttributeToMedicationSet('Preservative free', 'PRESERVATIVE_FREE', '0001');
 
@@ -52,7 +69,7 @@ EOH;
             $worksheet = $this->spreadsheet->getSheet($i);
             $this->createAutomaticSet($worksheet->getTitle(), $this->processSheetCells($worksheet));
         }
-        echo "\n[" . (date("Y-m-d H:i:s")) ."] MedicationSetImport finished ... OK - took: " . (microtime(true) - $t) . "s\n";
+        echo "\n[" . (date("Y-m-d H:i:s")) . "] MedicationSetImport finished ... OK - took: " . (microtime(true) - $t) . "s\n";
     }
 
     /**
@@ -116,7 +133,9 @@ EOH;
             }
         }
         $new_set->automatic = 1;
-        $new_set->hidden = 1;
+
+        // Determine if the set should be hidden or visible
+        (in_array($new_set->name, $this->hiddenSets)) ? $new_set->hidden = 1 : $new_set->hidden = 0;
 
         $trans = Yii::app()->db->beginTransaction();
 
@@ -132,8 +151,8 @@ EOH;
                     \MedicationSetRule::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
                     OphCiExaminationAllergy::model()->updateAll(['medication_set_id' => $new_set->id], 'medication_set_id = :set_id', [':set_id' => $current_set->id]);
 
-                    
-                    
+
+
                     foreach ($risk_tags as $risk_tag) {
                         $risk_tag->medication_set_id = $new_set->id;
                         $risk_tag->update(['medication_set_id']);

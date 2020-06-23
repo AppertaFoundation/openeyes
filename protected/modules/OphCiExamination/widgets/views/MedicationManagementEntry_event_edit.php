@@ -164,7 +164,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 echo 'style="display: none;"';
                                                              }?>>
                     <div class="flex-meds-inputs textual-display">
-                        <?php $entry_text_display = $entry->getAdministrationDisplay();
+                        <?php $entry_text_display = $entry->getAdministrationDisplay(true);
                         echo $entry_text_display != "" ? $entry_text_display : "Add dose/frequency/route"; ?>
                         <?php if ($locked == 1) : ?>
                     </div>
@@ -197,7 +197,10 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                 . ($overprint_setting === 'off' ? " and id != '" . $fpten_dispense_condition->id . "'" : null)
                                 . ") or id='" . $entry->dispense_condition_id . "'",
                             'order' => 'display_order',
-                        )), 'id', 'name'),
+                        )),
+                        'id',
+                        'name'
+                    ),
                     array('class' => 'js-dispense-condition cols-5','style' => $prescribe_hide_style, 'empty' => 'Select', 'options' => $dispense_condition_options)
                 ); ?>
 
@@ -220,18 +223,12 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 <!-- </td> -->
         <td>
             <div>
-                <?php if ($prescribe_access) { ?>
-                    <label class="toggle-switch">
-                        <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
-                            echo "checked";
-                                     } ?> />
-                        <span class="toggle-btn js-btn-prescribe"></span>
-                    </label>
-                <?php } else { ?>
-                    <i class="oe-i no-permissions medium-icon js-has-tooltip"
-                            data-tooltip-content="You do not have permissions"></i>
-                    <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>"/>
-                <?php } ?>
+                <label class="toggle-switch">
+                    <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
+                        echo "checked";
+                                 } ?> />
+                    <span class="toggle-btn js-btn-prescribe"></span>
+                </label>
             </div>
         </td>
         <td>

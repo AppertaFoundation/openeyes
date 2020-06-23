@@ -132,10 +132,10 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
                  style="<?php echo $this->operation === 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>"
             >
                 <?php echo CHtml::activeDropDownList(
-                        $this,
-                        "[$id]minValue",
-                        $va_values,
-                        array( 'class' => 'js-vision-min')
+                    $this,
+                    "[$id]minValue",
+                    $va_values,
+                    array( 'class' => 'js-vision-min')
                 ); ?>
                 <?php echo CHtml::error($this, "[$id]minValue"); ?>
                 <?php echo CHtml::activeDropDownList(
@@ -162,8 +162,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
             </div>
             <div class="parameter-option">
                 <?php echo CHtml::activeCheckBox(
-                  $this,
-                  "[$id]bothEyesIndicator",
+                    $this,
+                    "[$id]bothEyesIndicator",
                     array()
                 );
                 ?>

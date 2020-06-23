@@ -57,8 +57,10 @@ EOH;
                     ->select('count(*) as ct')
                     ->from('ophinvisualfields_field_measurement')
                     ->join('patient_measurement', 'patient_measurement.id = ophinvisualfields_field_measurement.patient_measurement_id')
-                    ->where('patient_measurement.patient_id = :patient_id AND ophinvisualfields_field_measurement.study_datetime = :dt',
-                        array(':patient_id' => $patient->id, ':dt' => $hfa['Test_Date'].' '.$hfa['TestTime']));
+                    ->where(
+                        'patient_measurement.patient_id = :patient_id AND ophinvisualfields_field_measurement.study_datetime = :dt',
+                        array(':patient_id' => $patient->id, ':dt' => $hfa['Test_Date'].' '.$hfa['TestTime'])
+                    );
                 $vf_ct = $vf_cmd->queryRow();
                 if ($vf_ct['ct'] == 0) {
                     $error = 'Missing VF';

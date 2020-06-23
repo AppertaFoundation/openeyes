@@ -62,8 +62,11 @@ class EpisodeTest extends ActiveRecordTestCase
         $events = $this->episode('episode2')->events;
         $events[0]->save();//only when saving the event date is set to created_date when null
         $this->assertNotNull($events[0]->event_date);
-        $this->assertLessThanOrEqual($events[1]->event_date, $events[0]->event_date,
-            'EventDate 0 : '.$events[0]->event_date.' > EventDate 1 :'.$events[1]->event_date);
+        $this->assertLessThanOrEqual(
+            $events[1]->event_date,
+            $events[0]->event_date,
+            'EventDate 0 : '.$events[0]->event_date.' > EventDate 1 :'.$events[1]->event_date
+        );
     }
 
     /**

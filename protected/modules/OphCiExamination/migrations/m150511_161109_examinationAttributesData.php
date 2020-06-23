@@ -204,14 +204,20 @@ class m150511_161109_examinationAttributesData extends CDbMigration
             unset($attributeData);
             unset($elementData);
             // searching for attribute id data
-            $attributeData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute')->where('name = :name and label = :label',
-                        array(':name' => $this->ophciexaminationAttributeData[$ophciexaminationAttributeElement['attribute_id']]['name'],
-                                ':label' => $this->ophciexaminationAttributeData[$ophciexaminationAttributeElement['attribute_id']]['label'], ))->queryRow();
+            $attributeData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute')->where(
+                'name = :name and label = :label',
+                array(':name' => $this->ophciexaminationAttributeData[$ophciexaminationAttributeElement['attribute_id']]['name'],
+                ':label' => $this->ophciexaminationAttributeData[$ophciexaminationAttributeElement['attribute_id']]['label'],
+                )
+            )->queryRow();
             if ($attributeData) {
                 // searching for element type id data
-                $elementData = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('name = :name and class_name = :class_name',
+                $elementData = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                    'name = :name and class_name = :class_name',
                     array(':name' => $this->elementTypeData[$ophciexaminationAttributeElement['element_type_id']]['name'],
-                            ':class_name' => $this->elementTypeData[$ophciexaminationAttributeElement['element_type_id']]['class_name'], ))->queryRow();
+                    ':class_name' => $this->elementTypeData[$ophciexaminationAttributeElement['element_type_id']]['class_name'],
+                    )
+                )->queryRow();
                 if (!$elementData) {
                     // TODO: ask - we need to insert the element?? (I think that it's not a good idea)
                     echo 'Missing element type: '.$this->elementTypeData[$ophciexaminationAttributeElement['element_type_id']]['class_name']."\n";
@@ -219,9 +225,12 @@ class m150511_161109_examinationAttributesData extends CDbMigration
                     // we can check if the attribute element already exists
                     $currentAttributeElement = $this->dbConnection->createCommand()->select('*')
                                                             ->from('ophciexamination_attribute_element')
-                                                            ->where('attribute_id = :attribute_id and element_type_id = :element_type_id',
+                                                            ->where(
+                                                                'attribute_id = :attribute_id and element_type_id = :element_type_id',
                                                                 array(':attribute_id' => $attributeData['id'],
-                                                                        ':element_type_id' => $elementData['id'], ))->queryRow();
+                                                                ':element_type_id' => $elementData['id'],
+                                                                )
+                                                            )->queryRow();
                     if (!$currentAttributeElement) {
                         $this->insert('ophciexamination_attribute_element', array('attribute_id' => $attributeData['id'], 'element_type_id' => $elementData['id']));
                     }
@@ -236,43 +245,58 @@ class m150511_161109_examinationAttributesData extends CDbMigration
             unset($subspecialtyData);
             unset($attributeElementData);
             // searching for attribute id data
-            $attributeData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute')->where('name = :name and label = :label',
+            $attributeData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute')->where(
+                'name = :name and label = :label',
                 array(':name' => $this->ophciexaminationAttributeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['attribute_id']]['name'],
-                    ':label' => $this->ophciexaminationAttributeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['attribute_id']]['label'], ))->queryRow();
+                ':label' => $this->ophciexaminationAttributeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['attribute_id']]['label'],
+                )
+            )->queryRow();
             if ($attributeData) {
                 // searching for element id data
-                $elementData = $this->dbConnection->createCommand()->select('*')->from('element_type')->where('name = :name and class_name = :class_name',
+                $elementData = $this->dbConnection->createCommand()->select('*')->from('element_type')->where(
+                    'name = :name and class_name = :class_name',
                     array(':name' => $this->elementTypeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['element_type_id']]['name'],
-                        ':class_name' => $this->elementTypeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['element_type_id']]['class_name'], ))->queryRow();
+                    ':class_name' => $this->elementTypeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['element_type_id']]['class_name'],
+                    )
+                )->queryRow();
                 if (!$elementData) {
                     echo 'Missing element type: '.$this->elementTypeData[$this->ophciexaminationAttributeElementData[$ophciexaminationAttributeOption['attribute_element_id']]['element_type_id']]['class_name']."\n";
                 } else {
                     // searching for attribute element id data
-                    $attributeElementData = $subspecialtyData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute_element')->where('attribute_id = :attribute_id and element_type_id = :element_type_id',
+                    $attributeElementData = $subspecialtyData = $this->dbConnection->createCommand()->select('*')->from('ophciexamination_attribute_element')->where(
+                        'attribute_id = :attribute_id and element_type_id = :element_type_id',
                         array(':attribute_id' => $attributeData['id'],
-                                ':element_type_id' => $elementData['id'], ))->queryRow();
+                        ':element_type_id' => $elementData['id'],
+                        )
+                    )->queryRow();
 
                     if ($ophciexaminationAttributeOption['subspecialty_id'] > 0) {
-                        $subspecialtyData = $this->dbConnection->createCommand()->select('*')->from('subspecialty')->where('name = :name',
-                            array(':name' => $this->subspecialtyData[$ophciexaminationAttributeOption['subspecialty_id']]['name']))->queryRow();
+                        $subspecialtyData = $this->dbConnection->createCommand()->select('*')->from('subspecialty')->where(
+                            'name = :name',
+                            array(':name' => $this->subspecialtyData[$ophciexaminationAttributeOption['subspecialty_id']]['name'])
+                        )->queryRow();
 
                         $currentAttributeOption = $this->dbConnection->createCommand()->select('*')
                             ->from('ophciexamination_attribute_option')
-                            ->where('value = :value and subspecialty_id = :subspecialty_id and attribute_element_id = :attribute_element_id',
+                            ->where(
+                                'value = :value and subspecialty_id = :subspecialty_id and attribute_element_id = :attribute_element_id',
                                 array(
                                     ':value' => $ophciexaminationAttributeOption['value'],
                                     ':subspecialty_id' => $subspecialtyData['id'],
                                     ':attribute_element_id' => $attributeElementData['id'],
-                                ))->queryRow();
+                                )
+                            )->queryRow();
                     } else {
                         $subspecialtyData['id'] = null;
                         $currentAttributeOption = $this->dbConnection->createCommand()->select('*')
                             ->from('ophciexamination_attribute_option')
-                            ->where('value = :value and attribute_element_id = :attribute_element_id',
+                            ->where(
+                                'value = :value and attribute_element_id = :attribute_element_id',
                                 array(
                                     ':value' => $ophciexaminationAttributeOption['value'],
                                     ':attribute_element_id' => $attributeElementData['id'],
-                                ))->queryRow();
+                                )
+                            )->queryRow();
                     }
 
                     if (!$currentAttributeOption) {

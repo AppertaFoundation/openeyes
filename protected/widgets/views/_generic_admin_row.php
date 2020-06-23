@@ -45,7 +45,7 @@ if (@$disabled) {
                 'i' => $i,
             ));
         } else {
-            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
+            echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, array_merge($html_options, ['class' => $input_class]));
         }?>
             <?php if (isset($errors[$i])) { ?>
                 <span class="error">
@@ -63,7 +63,7 @@ if (@$disabled) {
         <?php if (isset($row->active)) {
             echo CHtml::checkBox('active['.$i.']', $row->active);
         } elseif (!$this->cannot_delete) {?>
-            <a href="#" class="deleteRow">delete</a>
+            <button type='button'><a href="#" class="deleteRow">delete</a></button>
         <?php }?>
     </td>
     <?php if ($model::model()->hasAttribute('default')) {?>

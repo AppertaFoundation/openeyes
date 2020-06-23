@@ -30,7 +30,7 @@
  *
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
- * @property CommonSystemicDisorder[] $commonSystemicDisorders
+ * @property CommonSystemicDisorder[] $commonSystemicDisorder
  * @property Specialty $specialty
  */
 class Disorder extends BaseActiveRecordVersioned
@@ -106,7 +106,7 @@ class Disorder extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
-            'commonSystemicDisorder' => array(self::HAS_ONE, 'CommonSystemicDisorder', 'disorder_id'),
+            'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
             //'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
             'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
         );
@@ -210,7 +210,7 @@ class Disorder extends BaseActiveRecordVersioned
         $command->prepare();
         $result = $command->queryColumn();
         if (sizeof($result) > 0 && $this->isNewRecord === true) {
-            $this->addError( $attribute, 'ID '.$this->id.' already exists. Please choose a unique ID.');
+            $this->addError($attribute, 'ID '.$this->id.' already exists. Please choose a unique ID.');
             return true;
         }
             return false;

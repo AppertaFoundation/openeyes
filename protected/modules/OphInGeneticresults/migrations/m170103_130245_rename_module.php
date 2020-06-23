@@ -7,10 +7,15 @@ class m170103_130245_rename_module extends OEMigration
 
         if ($this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInGenetictest'))->queryRow()) {
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
-            $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name',
-                array(':class_name' => 'OphInGenetictest'))->queryRow();
-            $this->update('event_type', array('class_name' => 'OphInGeneticresults', 'name' => 'Genetic Results'),
-                'id = ' . $rowID['id'] . ' AND event_group_id = ' . $group['id']);
+            $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+                'class_name=:class_name',
+                array(':class_name' => 'OphInGenetictest')
+            )->queryRow();
+            $this->update(
+                'event_type',
+                array('class_name' => 'OphInGeneticresults', 'name' => 'Genetic Results'),
+                'id = ' . $rowID['id'] . ' AND event_group_id = ' . $group['id']
+            );
         }
 
         $this->update("element_type", array("class_name" => "Element_OphInGeneticresults_Test"), "class_name = 'Element_OphInGenetictest_Test'");
@@ -34,8 +39,10 @@ class m170103_130245_rename_module extends OEMigration
 
         if ($this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name' => 'OphInGeneticresults'))->queryRow()) {
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name' => 'Investigation events'))->queryRow();
-            $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name',
-                array(':class_name' => 'OphInGeneticresults'))->queryRow();
+            $rowID = $this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+                'class_name=:class_name',
+                array(':class_name' => 'OphInGeneticresults')
+            )->queryRow();
             $this->update('event_type', array('class_name' => 'OphInGenetictest', 'name' => 'Genetic Results'), 'id = ' . $rowID['id'] . ' AND event_group_id = ' . $group['id']);
         }
 

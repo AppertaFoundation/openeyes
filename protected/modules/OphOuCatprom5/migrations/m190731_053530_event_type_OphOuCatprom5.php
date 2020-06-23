@@ -4,8 +4,10 @@ class m190731_053530_event_type_OphOuCatprom5 extends OEMigration
     public function safeUp()
     {
         if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->
-        where('class_name=:class_name',
-        array(':class_name'=>'OphOuCatprom5'))->queryRow()) {
+        where(
+            'class_name=:class_name',
+            array(':class_name'=>'OphOuCatprom5')
+        )->queryRow()) {
             $group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name', array(':name'=>'Outcomes'))->queryRow();
             $this->insert('event_type', array('class_name' => 'OphOuCatprom5', 'name' => 'CatProm5','event_group_id' => $group['id']));
         }

@@ -37,5 +37,5 @@ closedir($dh);
     </div>
 <?php $this->endWidget(); ?>
 <script type="text/javascript">
-    var baseUrl = '<?php echo Yii::app()->baseUrl?>';
+    var baseUrl = '<?php echo rtrim(Yii::app()->createURL('site/index'), '\\/')?>';
 </script>

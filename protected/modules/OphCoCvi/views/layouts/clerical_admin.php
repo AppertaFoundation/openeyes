@@ -25,7 +25,7 @@
 </head>
 <body class="open-eyes">
 
-<?php $this->renderPartial('//base/_debug'); ?>
+<?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
 <div class="container main" role="main">
 

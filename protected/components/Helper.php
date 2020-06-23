@@ -274,6 +274,40 @@ class Helper
     }
 
     /**
+     * Formats a fuzzy day MONTH year format string to styled HTML
+     * 
+     * @param string $dateStr the date to format (e.g. 01 Apr 1979)
+     * 
+     * @param $echo if true (default) will echo back the HTML string. Else will return the HTML to the calling function
+     */
+    public static function oeDateAsStr($dateStr){
+        if ($dateStr === "" || $dateStr === "Undated") return $dateStr;
+
+        $arr = explode(' ',$dateStr);
+        $day = '';
+        $mth = '';
+        $yr = '';
+        switch (sizeof($arr)) {
+            case 1:
+                $yr = $arr[0];
+                break;
+            case 2:
+                $mth = $arr[0];
+                $yr = $arr[1];
+                break;
+            case 3:
+                $day = $arr[0];
+                $mth = $arr[1];
+                $yr = $arr[2];
+                break;
+        }
+        
+        $domStr = '<span class="oe-date"><span class="day">'.$day.'</span><span class="mth">'.$mth.'</span><span class="yr">'.$yr.'</span></span>';
+        
+        return $domStr;
+    }
+
+    /**
      * generate string representation of timestamp for the database.
      *
      * @param int $timestamp
@@ -533,8 +567,9 @@ class Helper
      * @return int|string
      */
     public static function return_bytes($val) {
-        $val = (int)trim($val);
+        $val = trim($val);
         $last = strtolower($val[strlen($val)-1]);
+        $val = (int) $val;
         switch($last) {
             case 'g':
                 $val *= (1024 * 1024 * 1024); //1073741824

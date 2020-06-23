@@ -41,8 +41,13 @@ class SubspecialtySubsectionAssignmentController extends BaseAdminController {
         $model->setAttributes($attributes);
 
         if ($model->save()) {
-            Audit::add('admin', 'add', serialize($model->attributes), false,
-                ['model' => 'ProcedureSubspecialtySubsectionAssignment']);
+            Audit::add(
+                'admin',
+                'add',
+                serialize($model->attributes),
+                false,
+                ['model' => 'ProcedureSubspecialtySubsectionAssignment']
+            );
             Yii::app()->user->setFlash('success', 'Assignment added');
             $this->redirect(['list?subspecialty_id=' . $subspecialty_id .
                 '&subsection_id=' . $attributes['subspecialty_subsection_id']]);

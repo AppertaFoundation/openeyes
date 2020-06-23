@@ -19,14 +19,24 @@ namespace OEModule\OphCiExamination\models;
 use Period;
 
 /**
- * Class ClinicOutcomeEntry
+ * This is the model class for table "ophciexamination_clinicoutcome_entry".
+ * The followings are the available columns in table:
  *
  * @property int $id
+ * @property int $element_id
+ * @property int $status_id
+ * @property int $followup_quantity
+ * @property int $followup_period_id
+ * @property string $followup_comments
+ * @property int $role_id
+ * @property string $last_modified_user_id
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $created_date
+ *
  * @property Element_OphCiExamination_ClinicOutcome $element
  * @property OphCiExamination_ClinicOutcome_Status $status
- * @property int $followup_quantity
- * @property Period $followup_period
- * @property string $followup_comments
+ * @property Period $followupPeriod
  * @property OphCiExamination_ClinicOutcome_Role $role
  */
 class ClinicOutcomeEntry extends \BaseElement
@@ -56,10 +66,11 @@ class ClinicOutcomeEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe'),
+            array('id, element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe'),
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
+            array('followup_quantity', 'default', 'setOnEmpty' => true, 'value' => null),
             array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MIN, 'max' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MAX),
             array('element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
         );
@@ -74,10 +85,10 @@ class ClinicOutcomeEntry extends \BaseElement
         // class name for the relations automatically generated below.
         return array(
             'element' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome', 'element_id'],
-            'user' => [self::BELONGS_TO, 'User', 'created_user_id'],
-            'usermodified' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
+            'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
+            'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
-            'followup_period' => [self::BELONGS_TO, 'Period', 'followup_period_id'],
+            'followupPeriod' => [self::BELONGS_TO, 'Period', 'followup_period_id'],
             'role' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', 'role_id'],
         );
     }
@@ -163,15 +174,15 @@ class ClinicOutcomeEntry extends \BaseElement
     }
 
     public function getRoleLabel() {
-        if ($this->status->followup) {
+        if ($this->status->followup && $this->role) {
             return ' with ' . $this->role->name;
         }
         return '';
     }
 
     public function getPeriodLabel() {
-        if ($this->status->followup) {
-            return $this->followup_period->name;
+        if ($this->status->followup && $this->followupPeriod) {
+            return $this->followupPeriod->name;
         }
         return '';
     }

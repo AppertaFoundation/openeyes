@@ -29,17 +29,20 @@ $sop=isset($biometry_imported_events->sop_uid) ? $biometry_imported_events->sop_
 if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
     array_unshift(
         $this->event_actions,
-        EventAction::link('Open In Forum',
+        EventAction::link(
+            'Open In Forum',
             ('oelauncher:forumsop/' . $sop),
-            null, array('class' => 'button small')
-        ));
+            null,
+            array('class' => 'button small')
+        )
+    );
 }
 
 if ($this->checkEditAccess()) {
     array_unshift(
-    $this->event_actions,
-        EventAction::link('Choose Lens', Yii::app()->createUrl($this->module->id.'/default/update/'.$this->event->id), null, array('class' => 'button small')
-    ));
+        $this->event_actions,
+        EventAction::link('Choose Lens', Yii::app()->createUrl($this->module->id.'/default/update/'.$this->event->id), null, array('class' => 'button small'))
+    );
 }
 
 $this->beginContent('//patient/event_container', array('no_face'=>false));

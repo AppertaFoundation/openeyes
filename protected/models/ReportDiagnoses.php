@@ -134,7 +134,7 @@ class ReportDiagnoses extends BaseReport
 
             if ($this->start_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field >= :start_date";
-                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00';
+                $whereParams[':start_date'] = date('Y-m-d', strtotime($this->start_date));
             }
             if ($this->end_date) {
                 $join_condition .= " and {$join_table[1]}$i.$date_field <= :end_date";
@@ -193,7 +193,7 @@ class ReportDiagnoses extends BaseReport
                     'type' => $type,
                     'disorder' => $item["{$field_prefix}{$i}_fully_specified_name"],
                     'date' => $item["{$field_prefix}{$i}_date"],
-                    'eye' => $eyes[$item["{$field_prefix}{$i}_eye"]],
+                    'eye' => isset($item["{$field_prefix}{$i}_eye"]) ? $eyes[$item["{$field_prefix}{$i}_eye"]] : null,
                 );
             }
         }

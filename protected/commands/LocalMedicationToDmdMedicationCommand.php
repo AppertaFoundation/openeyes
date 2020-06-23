@@ -1,4 +1,6 @@
-<?php /**
+<?php
+
+/**
  * OpenEyes
  *
  * (C) OpenEyes Foundation, 2019
@@ -48,73 +50,82 @@ EOH;
         $t = microtime(true);
         echo "[" . (date("Y-m-d H:i:s")) . "] Local medication to DMD set (localmedicationtodmdmedication) ... ";
         $drugs = Drug::model()->findAll();
-        foreach ($drugs as $drug) {
-            // check for medication ID
-            $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug' AND deleted_date is NULL", [":old_id" => $drug->id]);
-            $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D' AND deleted_date is NULL", [":national_code" => $drug->national_code]);
-            // Link drugs that do not have a national code set
-            if (!$target_medication) {
-                $target_medication = medication::model()->find("preferred_term = :local_name and source_type='dm+d' and deleted_date is null", [":local_name" => $drug->name]);
-            }
 
-            if ($current_medication && $target_medication) {
-                // Only drug medication has source_old_id if target medication has one it means one drug with
-                // this national code was already merged in with dmd data
-                if ($target_medication->source_old_id) {
-                    if (!$this->activeMedicationMergeExists($current_medication, $target_medication)) {
-                        $transaction = Yii::app()->db->beginTransaction();
-                        $medication_merge = $this->createMedicationMerge($current_medication, $target_medication, $drug);
+        try {
+            foreach ($drugs as $drug) {
+                // check for medication ID
+                $current_medication = Medication::model()->find("source_old_id = :old_id AND source_type='LOCAL' AND source_subtype='drug' AND deleted_date is NULL", [":old_id" => $drug->id]);
+                $target_medication = Medication::model()->find("preferred_code = :national_code AND source_type='DM+D' AND deleted_date is NULL", [":national_code" => $drug->national_code]);
+                // Link drugs that do not have a national code set
+                if (!$target_medication) {
+                    $target_medication = medication::model()->find("preferred_term = :local_name and source_type='dm+d' and deleted_date is null", [":local_name" => $drug->name]);
+                }
 
-                        if (!$medication_merge->save()) {
-                            $transaction->rollback();
-                            Yii::log("ERROR: unable to save merge of drug " . $drug->name . "!\n");
-                        } else {
-                            $transaction->commit();
+                if ($current_medication && $target_medication) {
+                    // Only drug medication has source_old_id if target medication has one it means one drug with
+                    // this national code was already merged in with dmd data
+                    if ($target_medication->source_old_id) {
+                        if (!$this->activeMedicationMergeExists($current_medication, $target_medication)) {
+                            $transaction = Yii::app()->db->beginTransaction();
+                            $medication_merge = $this->createMedicationMerge($current_medication, $target_medication, $drug);
+
+                            if (!$medication_merge->save()) {
+                                $transaction->rollback();
+                                Yii::log("ERROR: unable to save merge of drug " . $drug->name . "!\n");
+                            } else {
+                                $transaction->commit();
+                            }
                         }
-                    }
-                } else {
-                    $transaction = Yii::app()->db->beginTransaction();
-                    $this->updateLocalMedicationWithDmdMedicationAttributes($current_medication, $target_medication);
-                     $target_medication_set_items =  MedicationSetItem::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
-
-                    foreach ($target_medication_set_items as $set_item) {
-                        $current_medication_set_item = MedicationSetItem::model()->findByAttributes([
-                            'medication_id' => $current_medication->id,
-                            'medication_set_id' => $set_item->medication_set_id
-                        ]);
-                        if (isset($current_medication_set_item)) {
-                            $set_item->delete();
-                        } else {
-                            $set_item->medication_id = $current_medication->id;
-                            $set_item->save();
-                        }
-                    }
-
-                    /* Auto set */
-                    foreach (['event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
-                              'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'] as $table_with_medication_id) {
-                        try {
-                            Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
-                                         SET medication_id = {$current_medication->id} 
-                                         WHERE medication_id = {$target_medication->id}")->execute();
-                        } catch (Exception $exception) {
-                            Yii::log($exception->getMessage());
-                        }
-                    }
-
-                    if ($current_medication->save() && $target_medication->save()) {
-                        $transaction->commit();
                     } else {
-                        $transaction->rollback();
-                        Yii::log('Unable to update Medication with id :' . $current_medication->id .
-                            " with Medication id: " . $target_medication->id . " attributes (MedicationSetAutoRuleMedication)");
+                        $transaction = Yii::app()->db->beginTransaction();
+                        $this->updateLocalMedicationWithDmdMedicationAttributes($current_medication, $target_medication);
+                        $target_medication_set_items =  MedicationSetItem::model()->findAllByAttributes(['medication_id' => $target_medication->id]);
+
+                        foreach ($target_medication_set_items as $set_item) {
+                            $current_medication_set_item = MedicationSetItem::model()->findByAttributes([
+                                'medication_id' => $current_medication->id,
+                                'medication_set_id' => $set_item->medication_set_id
+                            ]);
+                            if (isset($current_medication_set_item)) {
+                                $set_item->delete();
+                            } else {
+                                $set_item->medication_id = $current_medication->id;
+                                $set_item->save();
+                            }
+                        }
+
+                        /* Auto set */
+                        foreach ([
+                            'event_medication_use', 'medication_allergy_assignment', 'medication_attribute_assignment', 'medication_common',
+                            'medication_search_index', 'medication_set_auto_rule_medication', 'medication_set_item'
+                        ] as $table_with_medication_id) {
+                            try {
+                                Yii::app()->db->createCommand("UPDATE {$table_with_medication_id} 
+                                            SET medication_id = {$current_medication->id} 
+                                            WHERE medication_id = {$target_medication->id}")->execute();
+                            } catch (Exception $exception) {
+                                Yii::log($exception->getMessage());
+                            }
+                        }
+
+                        if ($target_medication->delete() && $current_medication->save()) {
+                            $transaction->commit();
+                        } else {
+                            $transaction->rollback();
+                            Yii::log('Unable to update Medication with id :' . $current_medication->id .
+                                " with Medication id: " . $target_medication->id . " attributes (MedicationSetAutoRuleMedication)");
+                        }
                     }
                 }
             }
-        }
 
-        MedicationMerge::model()->mergeAll();
-        EventMedicationUse::$local_to_dmd_conversion = false;
+            MedicationMerge::model()->mergeAll();
+            EventMedicationUse::$local_to_dmd_conversion = false;
+        } catch (CDbException $e) {
+            echo PHP_EOL . "ERROR: " . $e->getMessage();
+            echo PHP_EOL . "TRACE: " . $e->getTraceAsString();
+            return 1;
+        }
         echo "OK - took: " . (microtime(true) - $t) . "s\n";
     }
 
@@ -176,6 +187,9 @@ EOH;
         $current_medication->attributes = $target_medication->attributes;
         $current_medication->source_old_id = $source_old_id;
         $current_medication->id = $old_id;
+        // Mark the old medication as merged
         $target_medication->deleted_date = date("Y-m-d H:i:s");
+        $target_medication->source_subtype = $target_medication->source_type;
+        $target_medication->source_type = 'MERGED';
     }
 }

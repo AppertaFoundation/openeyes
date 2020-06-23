@@ -30,8 +30,13 @@ class m151123_173403_create_dicom_file_watcher_tables extends CDbMigration
         $this->insert('dicom_process_status', array('name' => 'failed'));
         $this->insert('dicom_process_status', array('name' => 'success'));
 
-        $this->addForeignKey('dicom_process_status_id_fk', 'dicom_file_queue', 'status_id',
-            'dicom_process_status', 'id');
+        $this->addForeignKey(
+            'dicom_process_status_id_fk',
+            'dicom_file_queue',
+            'status_id',
+            'dicom_process_status',
+            'id'
+        );
     }
 
     public function down()

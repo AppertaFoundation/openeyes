@@ -81,9 +81,11 @@ class DefaultController extends BaseEventTypeController
             );
             $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
             $this->event_actions = array(
-                EventAction::link('Cancel',
+                EventAction::link(
+                    'Cancel',
                     Yii::app()->createUrl($cancel_url),
-                    null, array('class' => 'button small warning')
+                    null,
+                    array('class' => 'button small warning')
                 ),
             );
 
@@ -212,7 +214,8 @@ class DefaultController extends BaseEventTypeController
 
         $cancel_url = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
         $this->event_actions = array(
-            EventAction::link('Cancel',
+            EventAction::link(
+                'Cancel',
                 Yii::app()->createUrl($cancel_url),
                 array('level' => 'cancel')
             ),
@@ -424,6 +427,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
+        if ($action === 'renderEventImage') {
+            $action = 'view';
+        }
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
@@ -1286,10 +1292,10 @@ class DefaultController extends BaseEventTypeController
 
         if ($macro) {
             $name = addcslashes($this->event->episode->status->name, '%_'); // escape LIKE's special characters
-            $criteria = new CDbCriteria( array(
+            $criteria = new CDbCriteria(array(
                 'condition' => "name LIKE :name",
                 'params'    => array(':name' => "$name%")
-            ) );
+            ));
 
             $letter_type = \LetterType::model()->find($criteria);
             $letter_type_id = $letter_type ? $letter_type->id : null;

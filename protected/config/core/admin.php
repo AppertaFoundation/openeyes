@@ -21,7 +21,7 @@ return array(
         'admin_structure' => array(
             'System' => array(
                 'Settings' => '/admin/settings',
-                'Logo' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
+                'System default logos' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
                 'DICOM Log Viewer' => '/DicomLogViewer/list',
             ),
             'Core' => array(
@@ -41,7 +41,9 @@ return array(
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes',
-                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list'
+                'Subspecialty Subsections' => '/oeadmin/subspecialtySubsections/list',
+                'Event Type Custom Text' => '/admin/editEventTypeCustomText',
+                'Element Type Custom Text' => '/admin/editElementTypeCustomText',
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',

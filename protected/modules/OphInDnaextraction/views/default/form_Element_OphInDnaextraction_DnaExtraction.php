@@ -24,20 +24,21 @@
     <fieldset class="element-fields">
         <?php
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
-        echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
+        echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList($element->storage_id), 'id', 'value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
         
         <div class="data-group">
             <div class="cols-3 column">
                 <label></label>
             </div>
             <div class="cols-2 column end">
-                    <?=\CHtml::button('Add new storage',
-                    array(
+                    <?=\CHtml::button(
+                        'Add new storage',
+                        array(
                         'id'        => 'addNewStoragePopup',
                         'class'     => 'button small secondary',
                         'type'      => 'button',
-                    )
-                ); ?>
+                        )
+                    ); ?>
             </div>
         </div>
         
@@ -52,11 +53,13 @@
         <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
         if ($this->action->id == 'update') {
-            $form->widget('Caption',
+            $form->widget(
+                'Caption',
                 array(
                     'label' => 'Volume Remaining',
                     'value' => $this->volumeRemaining($element->event_id),
-                ));
+                )
+            );
         }
         ?>
         <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>

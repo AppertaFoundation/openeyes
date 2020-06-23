@@ -8,8 +8,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
          * table fixes
          */
         $this->execute("ALTER TABLE medication MODIFY source_subtype VARCHAR(45) NULL");
-        $this->execute("ALTER TABLE medication_frequency ADD COLUMN original_id INT(11) NULL AFTER `code`");
-        $this->execute("ALTER TABLE medication_frequency_version ADD COLUMN original_id INT(11) NULL AFTER `code`");
+        $this->execute("ALTER TABLE medication_frequency ADD COLUMN original_id INT NULL AFTER `code`");
+        $this->execute("ALTER TABLE medication_frequency_version ADD COLUMN original_id INT NULL AFTER `code`");
         
         $this->createIndex('fk_ref_medication_frequency_oidx', 'medication_frequency', 'original_id');
         
@@ -165,7 +165,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $command = $this->dbConnection;
                 $command->createCommand("
                           INSERT INTO medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id, default_form_id, default_route_id, default_dose_unit_term) 
-                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
+                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, :source_old_id, :source_old_id, :default_form_id, :default_route_id, :default_dose_unit_term)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
                 ->bindValue(':source_old_id', $drug['original_id'])
@@ -244,7 +244,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $command = null;
             $ref_medication_id = null;
         }
-        
     }
 
     public function down()

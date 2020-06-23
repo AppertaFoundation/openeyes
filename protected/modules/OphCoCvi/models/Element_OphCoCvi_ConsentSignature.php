@@ -166,7 +166,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
     public function getDecryptedSignature()
     {
         if ($this->signature_file) {
-            return base64_decode($this->decryptSignature(file_get_contents ($this->signature_file->getPath()), md5($this->getEncryptionKey().\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event))));
+            return base64_decode($this->decryptSignature(file_get_contents($this->signature_file->getPath()), md5($this->getEncryptionKey().\Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event))));
         }
     }
 
@@ -188,8 +188,10 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
             $portalConnection = new OptomPortalConnection();
 
             if ($portalConnection) {
-                $signatureData = $portalConnection->signatureSearch(null,
-                    \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event));
+                $signatureData = $portalConnection->signatureSearch(
+                    null,
+                    \Yii::app()->moduleAPI->get('OphCoCvi')->getUniqueCodeForCviEvent($this->event)
+                );
             }
         } catch (Exception $e) {
             //pass

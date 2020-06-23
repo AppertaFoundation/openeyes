@@ -157,27 +157,28 @@ class HistoryMedications extends BaseMedicationWidget
             if (!$this->setEntriesWithPreviousManagement()) {
                 parent::setElementFromDefaults();
             }
-        }
 
-        // because the entries cloned into the new element may contain stale data for related
-        // prescription data (or that prescription item might have been deleted)
-        // we need to update appropriately.
-        $entries = array();
-        foreach ($this->element->entries as $entry) {
-            if ($entry->prescription_item_id) {
-                if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
-                    continue;
+            // because the entries cloned into the new element may contain stale data for related
+            // prescription data (or that prescription item might have been deleted)
+            // we need to update appropriately.
+            $entries = array();
+            foreach ($this->element->entries as $entry) {
+                if ($entry->prescription_item_id) {
+                    if ($entry->prescription_event_deleted || !$entry->prescriptionItem) {
+                        continue;
+                    }
+                    $entry->loadFromPrescriptionItem($entry->prescriptionItem);
                 }
-                $entry->loadFromPrescriptionItem($entry->prescriptionItem);
+                $entries[] = $entry;
             }
-            $entries[] = $entry;
-        }
             $untracked = $this->element->getEntriesForUntrackedPrescriptionItems($this->patient);
-        if ($untracked) {
-            // tracking prescription items.
-            $this->element->entries = array_merge(
-                $entries,
-                $untracked);
+            if ($untracked) {
+                // tracking prescription items.
+                $this->element->entries = array_merge(
+                    $entries,
+                    $untracked
+                );
+            }
         }
     }
 
@@ -187,11 +188,10 @@ class HistoryMedications extends BaseMedicationWidget
 
     public function getMergedManagementEntries()
     {
-        if (empty($this->element->entries)) {
-            $this->setEntriesWithPreviousManagement();
-        }
+        $this->setElementFromDefaults();
 
         $this->element->assortEntries();
+
         return [
             'current' => array_merge($this->element->current_entries, $this->element->prescribed_entries),
             'stopped' => $this->element->closed_entries,
@@ -280,7 +280,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE))) {
+        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
@@ -304,7 +304,7 @@ class HistoryMedications extends BaseMedicationWidget
             }
         }
 
-        if (($this->element && $this->element->getIsNewRecord()) || ($this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE)) {
+        if ( $this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE) {
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data
@@ -325,8 +325,11 @@ class HistoryMedications extends BaseMedicationWidget
      */
     protected function validateMode($mode)
     {
-        return in_array($mode,
-                array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
+        return in_array(
+            $mode,
+            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW),
+            true
+        ) || parent::validateMode($mode);
     }
 
     /**

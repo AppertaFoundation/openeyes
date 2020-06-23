@@ -43,8 +43,10 @@
         <div class="cols-12 flex-layout">
             <div class="cols-5">
                 <h2 class="secondaryPatient event-title" style="text-align:center">Secondary</h2>
-                <?php $this->renderPartial('//patientmergerequest/_patient_details',
-                    array('model' => $model, 'type' => 'secondary')) ?>
+                <?php $this->renderPartial(
+                    '//patientmergerequest/_patient_details',
+                    array('model' => $model, 'type' => 'secondary')
+                ) ?>
             </div>
 
             <div class="cols-2 text-center" style="text-align: center">

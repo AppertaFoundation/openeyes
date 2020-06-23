@@ -30,7 +30,11 @@
                 $element,
                 'images_id',
                 'OphTrConsent_Permissions_Images',
-                null, false, false, false, false,
+                null,
+                false,
+                false,
+                false,
+                false,
                 array('nowrapper' => true),
                 null
             ) ?>

@@ -37,12 +37,15 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         // Event actions
 if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
     $this->event_actions = array(
-        EventAction::link('Cancel',
+        EventAction::link(
+            'Cancel',
             Yii::app()->createUrl('/OphTrOperationbooking/waitingList/index'),
             array('level' => 'cancel')
         ),
     );
-    $this->event_actions[] = EventAction::button('Confirm', 'confirm',
+    $this->event_actions[] = EventAction::button(
+        'Confirm',
+        'confirm',
         array(
             'id' => 'et_confirm',
             'level' => 'confirm',
@@ -52,7 +55,9 @@ if (isset($_GET["waiting-list"]) && $_GET["waiting-list"]) {
         )
     );
 } else {
-    $this->event_actions[] = EventAction::button('Save', 'save',
+    $this->event_actions[] = EventAction::button(
+        'Save',
+        'save',
         array(
             'id' => 'et_save',
             'level' => 'save',

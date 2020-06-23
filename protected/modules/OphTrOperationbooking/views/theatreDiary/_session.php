@@ -352,10 +352,12 @@
                   <label <?php if ($session->available) {
                         ?>style="display: none; color:#000;"<?php
                          } ?>>
-                      <?=\CHtml::dropDownList('unavailablereason_id_' . $session->id,
+                      <?=\CHtml::dropDownList(
+                          'unavailablereason_id_' . $session->id,
                           $session->unavailablereason_id,
                           CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'),
-                          array('empty' => 'Select', 'class' => 'unavailable-reasons')) ?>
+                          array('empty' => 'Select', 'class' => 'unavailable-reasons')
+                      ) ?>
                   </label>
                   <input style="display: inline-block;" type="text"
                          autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"

@@ -27,6 +27,7 @@ class OEPDFOptions
 
     public function parse()
     {
+        $current_object = null;
         foreach (explode(chr(10), trim($this->raw)) as $line) {
             if (preg_match('/^%PDF-(.*?)$/', $line, $m)) {
                 $this->version = $m[1];
@@ -45,6 +46,9 @@ class OEPDFOptions
                 $current_object = null;
             } elseif ($line == 'xref') {
                 break;
+            } elseif (!$current_object) {
+                // Throw away the header bits.
+                $current_object = null;
             } else {
                 if (!$this->version) {
                     throw new Exception('Invalid file or not a PDF.');

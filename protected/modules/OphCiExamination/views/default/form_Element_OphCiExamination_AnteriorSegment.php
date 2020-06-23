@@ -32,15 +32,13 @@
         } ?>" data-side="<?= $eye_side ?>">
 
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <br/>
-          <div class="eyedraw-row flex-layout flex-top anterior-segment">
+            <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
               <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
                   'form' => $form,
                   'side' => $eye_side,
                   'element' => $element,
               )) ?>
-          </div>
+
           <div class="eyedraw-data stack">
               <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
                   'form' => $form,
@@ -60,7 +58,9 @@
       </div>
     <?php endforeach; ?>
 </div>
-<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AnteriorSegment.js",
-    CClientScript::POS_HEAD); ?>
+<?php Yii::app()->clientScript->registerScriptFile(
+    "{$this->assetPath}/js/AnteriorSegment.js",
+    CClientScript::POS_HEAD
+); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
 

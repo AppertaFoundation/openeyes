@@ -176,8 +176,10 @@ class PostOpDrugMappingsController extends BaseAdminController
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
+                $criteria->addCondition(
+                    array('LOWER(name) LIKE :term'),
+                    'OR'
+                );
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
 
@@ -195,7 +197,7 @@ class PostOpDrugMappingsController extends BaseAdminController
                     'id' => $resultRow->id,
                 );
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 }

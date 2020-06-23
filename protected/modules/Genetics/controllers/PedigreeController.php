@@ -145,7 +145,7 @@ class PedigreeController extends BaseModuleController
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
 
-                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -248,7 +248,7 @@ class PedigreeController extends BaseModuleController
             );
         }
 
-        echo CJSON::encode($output);
+        $this->renderJSON($output);
 
         Yii::app()->end();
     }

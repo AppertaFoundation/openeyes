@@ -96,7 +96,8 @@ class PastSurgery extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id', 'order' => 'operations.date desc, operations.last_modified_date'),
+            'operations' => [self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation',
+                'element_id', 'order' => 'operations.date desc, operations.last_modified_date'],
         );
     }
 
@@ -165,6 +166,11 @@ class PastSurgery extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' || $action === 'createImage' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
+    }
+
+    public function getViewTitle()
+    {
+        return "Eye Procedures";
     }
 }

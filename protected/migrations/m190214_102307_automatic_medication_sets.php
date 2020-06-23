@@ -9,8 +9,8 @@ class m190214_102307_automatic_medication_sets extends OEMigration
 
         $this->createOETable('medication_set_auto_rule_attribute', array(
             'id' => 'pk',
-            'medication_set_id' => 'INT(11) NOT NULL',
-            'medication_attribute_option_id' => 'INT(11) NOT NULL'
+            'medication_set_id' => 'INT NOT NULL',
+            'medication_attribute_option_id' => 'INT NOT NULL'
         ), true);
 
         $this->addForeignKey('fk_msara_msid', 'medication_set_auto_rule_attribute', 'medication_set_id', 'medication_set', 'id');
@@ -18,8 +18,8 @@ class m190214_102307_automatic_medication_sets extends OEMigration
 
         $this->createOETable('medication_set_auto_rule_set_membership', array(
             'id' => 'pk',
-            'target_medication_set_id' => 'INT(11) NOT NULL',
-            'source_medication_set_id' => 'INT(11) NOT NULL'
+            'target_medication_set_id' => 'INT NOT NULL',
+            'source_medication_set_id' => 'INT NOT NULL'
         ), true);
 
         $this->addForeignKey('fk_msarsm_tmsid', 'medication_set_auto_rule_set_membership', 'target_medication_set_id', 'medication_set', 'id');
@@ -27,8 +27,8 @@ class m190214_102307_automatic_medication_sets extends OEMigration
 
         $this->createOETable('medication_set_auto_rule_medication', array(
             'id' => 'pk',
-            'medication_set_id' => 'INT(11) NOT NULL',
-            'medication_id' => 'INT(11) NOT NULL',
+            'medication_set_id' => 'INT NOT NULL',
+            'medication_id' => 'INT NOT NULL',
             'include_parent' => 'TINYINT DEFAULT 0 NOT NULL',
             'include_children' => 'TINYINT DEFAULT 0 NOT NULL',
 
@@ -55,16 +55,15 @@ class m190214_102307_automatic_medication_sets extends OEMigration
 
         $this->createOETable('medication_set_auto_rule_medication_taper', array(
             'id' => 'pk',
-            'medication_set_auto_rule_id' => 'int(11) NOT NULL',
+            'medication_set_auto_rule_id' => 'int NOT NULL',
             'dose' => 'FLOAT',
-            'frequency_id' => 'INT(11) NOT NULL',
-            'duration_id' => 'INT(11) NOT NULL'
+            'frequency_id' => 'INT NOT NULL',
+            'duration_id' => 'INT NOT NULL'
                 ), true);
 
         $this->addForeignKey('fk_msarm_med_id', 'medication_set_auto_rule_medication_taper', 'medication_set_auto_rule_id', 'medication_set_auto_rule_medication', 'id');
         $this->addForeignKey('fk_msarm_freq_id', 'medication_set_auto_rule_medication_taper', 'frequency_id', 'medication_frequency', 'id');
         $this->addForeignKey('fk_msarm_duration_id', 'medication_set_auto_rule_medication_taper', 'duration_id', 'medication_duration', 'id');
-
     }
 
     public function down()

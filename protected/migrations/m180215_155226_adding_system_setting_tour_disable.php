@@ -12,8 +12,7 @@ class m180215_155226_adding_system_setting_tour_disable extends CDbMigration
             'name' => 'Disable Automatic Feature Tours',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             'default_value' => 'off',
-            'last_modified_user_id' => 1)
-        );
+            'last_modified_user_id' => 1));
     }
 
     public function down()

@@ -100,28 +100,9 @@ class RisksController extends \BaseController
         return array_map(
             function ($tag) {
                 return $tag->id;
-            }, $obj->tags
+            },
+            $obj->tags
         );
-    }
-
-    /**
-     * @param $ids
-     *
-     * @deprecated
-     */
-
-    public function actionForDrugIds($ids)
-    {
-        $drugs = \Drug::model()->with('tags')->findAllByPk(explode(",", $ids));
-
-        $result = array();
-        foreach ($drugs as $drug) {
-            $result[$drug->id] = $this->riskIdsForTagIds(
-                $this->tagIdsForTagged($drug)
-            );
-        }
-
-        echo \CJSON::encode($result);
     }
 
     /**

@@ -59,6 +59,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
             array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
             array('firm_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'firm'),
+            array('episode_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
         );
     }
 

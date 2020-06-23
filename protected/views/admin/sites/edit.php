@@ -12,15 +12,66 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$logo_helper = new LogoHelper();
+$default_urls = $logo_helper->getLogoURLs();
 ?>
+<style>
+    .flash-success{
+        border:1px solid #1DDD50;
+        background: #C3FFD3;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .error{
+        border:1px solid #ff6666;
+        background: #ffe6e6;
+        text-align: center;
+        padding: 7px 15px ;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .remove-logo{
+        display: block;
+        position: absolute;
+        top: 1px;
+        right: 2px;
+        padding: 11px 11px;
+        background-color: rgba(255,255,255,.5);
+    }
+</style>
+<?php if (Yii::app()->user->hasFlash('success')) : ?>
+    <div class="flash-success">
+        <?= Yii::app()->user->getFlash('success'); ?>
+    </div>
+
+<?php endif; ?>
+<?php if (Yii::app()->user->hasFlash('error')) : ?>
+    <div class="error">
+        <?= Yii::app()->user->getFlash('error'); ?>
+    </div>
+
+<?php endif; ?>
 
 <div class="cols-5">
 
     <div class="row divider">
-        <h2>Edit site</h2>
+        <h2>
+            <?php
+            if ($site->id) {
+                echo "Edit site: ".$site->name;
+            } else {
+                echo "Add Site";
+            }
+            ?>
+        </h2>
     </div>
 
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
@@ -32,6 +83,8 @@
                 'label' => 2,
                 'field' => 5,
             ),
+            'method'=> "POST",
+            'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]
     ) ?>
 
@@ -55,7 +108,7 @@
         </tr>
         <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
             <tr>
-                <td><?php echo $site->getAttributeLabel($field); ?></td>
+                <td><?= $site->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $site,
@@ -72,7 +125,7 @@
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
             <tr>
-                <td><?php echo $address->getAttributeLabel($field); ?></td>
+                <td><?= $address->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $address,
@@ -87,7 +140,7 @@
         <?php endforeach; ?>
         <?php foreach (['telephone', 'fax'] as $field) : ?>
             <tr>
-                <td><?php echo $site->getAttributeLabel($field); ?></td>
+                <td><?= $site->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $site,
@@ -111,30 +164,90 @@
                 ); ?>
             </td>
         </tr>
+        <tr>
+            <td>Primary logo</td>
+            <td>
+                <?php
+                echo $form->fileField($logo, 'primary_logo');
+                if (empty($default_urls['primaryLogo']) && !($parentlogo && $parentlogo->logoIsSet(true)) && !($logo->primary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded primary logo and no inherited, nor system primary logo.</div>";
+                } else {
+                    if ($logo&&$logo->primary_logo&&!$new) {
+                        echo '<div style=" margin-top: 5px; position: relative; ">';
+                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
+                        echo '<br>'.CHtml::button(
+                            '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'site_id' => $site->id,
+                                'deletePrimaryLogo' => true,
+                            ),
+                             'csrf' => true,
+                             'class' =>'remove-logo oe-i remove-circle small',
+                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
+                             'data-method'=>"POST"
+                            )
+                        );
+                        echo '</div>';
+                    } elseif ( $parentlogo &&  $parentlogo->primary_logo && !$new) {
+                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
+                    } elseif (!$new) {
+                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
+                    }
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Secondary logo</td>
+            <td>
+                <?php
+                echo $form->fileField($logo, 'secondary_logo');
+                if (empty($default_urls['secondaryLogo']) && !($parentlogo && $parentlogo->secondary_logo) && !($logo->secondary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded secondary logo and nor system secondary logo.</div>";
+                } else {
+                    if ($logo && $logo->secondary_logo && !$new) {
+                        echo '<div style="
+                        margin-top: 5px;
+                        position: relative;
+                    ">';
+                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
+                        echo '<br>'.CHtml::button(
+                            '',
+                            array('submit' => array('admin/deletelogo/'),
+                            'params' => array(
+                                'site_id' => $site->id,
+                                'deleteSecondaryLogo' => true,
+                            ),
+                            'csrf' => true,
+                            'class' =>'remove-logo oe-i remove-circle small',
+                            'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
+                            'data-method'=>"POST"
+                            )
+                        );
+                        echo '</div>';
+                    } elseif ( $parentlogo && $parentlogo->secondary_logo  && !$new) {
+                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
+                    } elseif (!$new) {
+                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                        echo "<img src='". $default_urls['secondaryLogo'] . "' style='width:100%;'>";
+                    }
+                }
+                ?>
+            </td>
+        </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="2">
-                <?= \CHtml::submitButton(
-                    'Save',
-                    [
-                        'class' => 'button large',
-                        'name' => 'save',
-                        'id' => 'et_save'
-                    ]
-                ); ?>
-                <?= \CHtml::submitButton(
-                    'Cancel',
-                    [
-                        'class' => 'button large',
-                        'data-uri' => '/admin/sites',
-                        'name' => 'cancel',
-                        'id' => 'et_cancel'
-                    ]
-                ); ?>
+            <?= $form->formActions(array('cancel'=>'Back to Sites','cancel-uri' => '/admin/sites'));?>
             </td>
         </tr>
+        
         </tfoot>
     </table>
 

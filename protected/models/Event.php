@@ -124,7 +124,6 @@ class Event extends BaseActiveRecordVersioned
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
             'previewImages' => array(self::HAS_MANY, 'EventImage', 'event_id'),
-            'previewWhiteboardImages' => [self::HAS_MANY, 'EventImage', 'event_id', 'condition' => 'document_number IS NOT NULL'],
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
@@ -322,8 +321,10 @@ class Event extends BaseActiveRecordVersioned
             return false;
         }
 
-        foreach (EventIssue::model()->findAll('event_id=? and issue_id = ?',
-            array($this->id, $issue->id)) as $event_issue) {
+        foreach (EventIssue::model()->findAll(
+            'event_id=? and issue_id = ?',
+            array($this->id, $issue->id)
+        ) as $event_issue) {
             $event_issue->delete();
         }
 
@@ -608,17 +609,22 @@ class Event extends BaseActiveRecordVersioned
         $this->dbConnection->createCommand('SELECT RELEASE_LOCK(?)')->execute(array($this->lockKey));
     }
 
-    public function getBarCodeHTML()
+    public function getBarCodeSVG()
     {
         $barcode = new TCPDFBarcode("E:$this->id", 'C128');
 
-        return $barcode->getBarcodeHTML(1, 8);
+        return $barcode->getBarcodeSVGCode(1, 8);
     }
 
     public function getDocref()
     {
-        return "E:$this->id/" . strtoupper(base_convert(time() . sprintf('%04d', Yii::app()->user->getId()), 10,
-            32)) . '/{{PAGE}}';
+        return "E:$this->id/" . strtoupper(
+            base_convert(
+                time() . sprintf('%04d', Yii::app()->user->getId()),
+                10,
+                32
+            )
+        ) . '/<span class="pageNumber"></span>';
     }
 
     /**
@@ -723,5 +729,4 @@ class Event extends BaseActiveRecordVersioned
             }
         }
     }
-
 }

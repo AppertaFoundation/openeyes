@@ -49,7 +49,7 @@
 
     <?php
     $examination_abnormality_listdata = CHtml::listData(
-        OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findAll(),
+        OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findAll('active = 1'),
         'id',
         'name'
     );
@@ -177,8 +177,12 @@
     <tr data-row="{{row}}">
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationPupillaryAbnormalitySetEntry[{{row}}][ophciexamination_abnormality_id]",
-                null, $examination_abnormality_listdata, ["empty" => '-- select --']);
+            echo CHtml::dropDownList(
+                "OEModule_OphCiExamination_models_OphCiExaminationPupillaryAbnormalitySetEntry[{{row}}][ophciexamination_abnormality_id]",
+                null,
+                $examination_abnormality_listdata,
+                ["empty" => '-- select --']
+            );
             ?>
         </td>
         <td>

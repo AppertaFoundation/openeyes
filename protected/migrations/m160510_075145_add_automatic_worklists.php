@@ -4,7 +4,8 @@ class m160510_075145_add_automatic_worklists extends OEMigration
 {
     public function up()
     {
-        $this->createOETable('worklist_definition',
+        $this->createOETable(
+            'worklist_definition',
             array(
                 'id' => 'pk',
                 'name' => 'varchar(255) NOT NULL',
@@ -21,35 +22,53 @@ class m160510_075145_add_automatic_worklists extends OEMigration
             true
         );
 
-        $this->createOETable('worklist_definition_mapping',
+        $this->createOETable(
+            'worklist_definition_mapping',
             array(
                 'id' => 'pk',
                 'worklist_definition_id' => 'int(11) NOT NULL',
                 'key' => 'string NOT NULL',
                 'display_order' => 'int(2)',
-            ));
+            )
+        );
 
-        $this->addForeignKey('worklist_definition_mapping_wl_fk', 'worklist_definition_mapping',
-            'worklist_definition_id', 'worklist_definition', 'id', 'CASCADE');
+        $this->addForeignKey(
+            'worklist_definition_mapping_wl_fk',
+            'worklist_definition_mapping',
+            'worklist_definition_id',
+            'worklist_definition',
+            'id',
+            'CASCADE'
+        );
 
-        $this->createOETable('worklist_definition_mapping_value',
+        $this->createOETable(
+            'worklist_definition_mapping_value',
             array(
                 'id' => 'pk',
                 'worklist_definition_mapping_id' => 'int(11) NOT NULL',
                 'mapping_value' => 'varchar(1024) NOT NULL',
-            ));
+            )
+        );
 
-        $this->addForeignKey('worklist_definition_mapping_value_wldm_fk', 'worklist_definition_mapping_value',
-            'worklist_definition_mapping_id', 'worklist_definition_mapping', 'id', 'CASCADE');
+        $this->addForeignKey(
+            'worklist_definition_mapping_value_wldm_fk',
+            'worklist_definition_mapping_value',
+            'worklist_definition_mapping_id',
+            'worklist_definition_mapping',
+            'id',
+            'CASCADE'
+        );
 
-        $this->createOETable('worklist_definition_display_context',
-        array(
+        $this->createOETable(
+            'worklist_definition_display_context',
+            array(
             'id' => 'pk',
             'worklist_definition_id' => 'int(11) NOT NULL',
             'firm_id' => 'int(10) unsigned',
             'subspecialty_id' => 'int(10) unsigned',
             'site_id' => 'int(10) unsigned',
-        ));
+            )
+        );
 
         $this->addForeignKey('worklist_definition_dispctxt_wl_fk', 'worklist_definition_display_context', 'worklist_definition_id', 'worklist_definition', 'id', 'CASCADE');
         $this->addForeignKey('worklist_definition_dispctxt_firm_fk', 'worklist_definition_display_context', 'firm_id', 'firm', 'id', 'CASCADE');

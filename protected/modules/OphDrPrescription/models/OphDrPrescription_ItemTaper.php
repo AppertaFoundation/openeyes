@@ -146,4 +146,21 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         return 'DOSE: ' . (is_numeric($this->dose) ? strtoupper($this->dose) . ' ' . strtoupper($this->item->dose_unit) : strtoupper($this->dose))
             . ', ' . strtoupper($this->item->route->term) . ($this->item->medicationLaterality ? ' (' . strtoupper($this->item->medicationLaterality->name) . ')' : null);
     }
+
+    /**
+     * @param $current_date
+     * @return DateTime|null
+     */
+    public function stopDateFromDuration($current_date)
+    {
+        if (in_array($this->duration->name, array('Other', 'Ongoing')) || is_null($this->item->prescription->event)) {
+            return null;
+        }
+
+        if ($this->duration->name === 'Once') {
+            return $current_date;
+        }
+
+        return $current_date->add(DateInterval::createFromDateString($this->duration->name));
+    }
 }

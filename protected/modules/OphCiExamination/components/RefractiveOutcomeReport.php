@@ -130,7 +130,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             ->join('et_ophtroperationnote_procedurelist op_procedure', 'op_procedure.event_id = note_event.id #And the operation notes procedures')
             ->join('episode', 'note_event.episode_id = episode.id')
             ->join('patient', 'episode.patient_id = patient.id')
-            ->join('event post_examination', 'post_examination.episode_id = note_event.episode_id
+            ->join(
+                'event post_examination',
+                'post_examination.episode_id = note_event.episode_id
                AND post_examination.event_type_id = :examination
                AND post_examination.event_date >= note_event.event_date
                AND post_examination.created_date > note_event.created_date',
@@ -158,11 +160,13 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         }
 
         if ($months) {
-            $this->command->andWhere('post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
+            $this->command->andWhere(
+                'post_examination.event_date BETWEEN DATE_ADD(note_event.event_date, INTERVAL :monthsBefore MONTH) AND DATE_ADD(note_event.event_date, INTERVAL :monthsAfter MONTH)',
                 array(
                     'monthsBefore' => ($months - 1),
                     'monthsAfter' => ($months + 1),
-                ));
+                )
+            );
         }
 
         if ($procedures) {

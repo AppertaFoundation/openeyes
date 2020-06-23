@@ -29,7 +29,7 @@ class DicomLogViewerController extends BaseController
     {
         return array(
             array('allow',
-                'roles' => array('OprnViewClinical'),
+                'roles' => array('admin'),
             ),
         );
     }
@@ -79,7 +79,7 @@ class DicomLogViewerController extends BaseController
             $result['data'] = $data['items'];
         }
 
-        echo CJSON::encode($result);
+        $this->renderJSON($result);
         Yii::app()->end();
 
         Yii::app()->assetManager->registerScriptFile('js/audit.js');

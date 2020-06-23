@@ -31,7 +31,9 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 $current_entries = [];
 $stopped_entries = [];
 foreach ($element->entries as $entry) {
-    if ($entry->originallyStopped) {
+    // if the request is POST, it means we are on the validation error screen
+    // therefore we show entries just like the user set up originally
+    if ($entry->originallyStopped && !\Yii::app()->request->isPostRequest) {
         $stopped_entries[] = $entry;
     } else {
         $current_entries[] = $entry;
@@ -116,7 +118,7 @@ foreach ($element->entries as $entry) {
     </table>
         <div class="collapse-data js-stopped-medication-collapsed-data" style="<?php echo !sizeof($stopped_entries)?  'display:none': ''; ?>">
             <div class="collapse-data-header-icon expand ">
-                Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
+                Previously Stopped Medications <small class="js-stopped-medications-count">(<?=count($stopped_entries);?>)</small>
             </div>
             <div class="collapse-data-content" style="display: none;">
 
@@ -202,6 +204,7 @@ foreach ($element->entries as $entry) {
       </button>
     </div>
   </div>
+  <div id="hm-handler-1" class="js-save-handler-function" style="display:none;" /> 
     <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_entry_template' ?>">
         <?php
         $empty_entry = new EventMedicationUse();
@@ -234,6 +237,10 @@ foreach ($element->entries as $entry) {
     </script>
 </div>
 <script type="text/javascript">
+    let ElementFormJSONConverterHM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
+    $('#hm-handler-1').on('handle', function () {
+        ElementFormJSONConverterHM.convert('<?=$model_name . "_element"?>');
+    });
     let showStoppedMedications = <?= $stopped_entries_has_errors ? $stopped_entries_has_errors : 0?>;
 
     $('#<?= $model_name ?>_element').closest('section').on('element_removed', function() {

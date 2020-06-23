@@ -15,13 +15,13 @@
 * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 
 ?>
 
 <div class="therapy-application-wrapper">
     <div class="banner clearfix">
-        <?= $logoHelper->render('letter_head') ?>
+        <?= $logo_helper->render('letter_head') ?>
     </div>
     <body>
     <?php

@@ -24,6 +24,7 @@
  * @property int $id
  * @property string $name
  * @property string $class_name
+ * @property string $custom_hint_text
  *
  * The followings are the available model relations:
  * @property ElementGroup[] $elementGroups
@@ -61,7 +62,7 @@ class ElementType extends BaseActiveRecordVersioned
             array('name, class_name', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, class_name', 'safe', 'on' => 'search'),
+            array('id, name, class_name, custom_hint_text', 'safe', 'on' => 'search'),
         );
     }
 

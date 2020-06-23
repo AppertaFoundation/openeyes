@@ -256,8 +256,12 @@
                 ?>
                 <?php
                 $eye_status_data = Eye_Status::model()->findAll();
-                echo CHtml::dropDownList('Element_OphInBiometry_Measurement[eye_status_' . $side . ']', 'Element_OphInBiometry_Measurement[eye_status_' . $side . ']', CHtml::listData($eye_status_data, 'id', 'name'),
-                    array('options' => array($element->{"eye_status_$side"} => array('selected' => true))));
+                echo CHtml::dropDownList(
+                    'Element_OphInBiometry_Measurement[eye_status_' . $side . ']',
+                    'Element_OphInBiometry_Measurement[eye_status_' . $side . ']',
+                    CHtml::listData($eye_status_data, 'id', 'name'),
+                    array('options' => array($element->{"eye_status_$side"} => array('selected' => true)))
+                );
                 ?>
                 <?php
             }

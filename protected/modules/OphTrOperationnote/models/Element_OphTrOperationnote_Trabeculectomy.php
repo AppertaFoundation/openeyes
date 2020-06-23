@@ -22,7 +22,7 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
     public function rules()
     {
         return array(
-            array('eyedraw, conjunctival_flap_type_id, stay_suture, site_id, size_id, sclerostomy_type_id, viscoelastic_type_id, viscoelastic_removed, viscoelastic_flow_id, report, difficulty_other, complication_other', 'safe'),
+            array('eyedraw, conjunctival_flap_type_id, stay_suture, site_id, size_id, sclerostomy_type_id, viscoelastic_type_id, viscoelastic_removed, viscoelastic_flow_id, report, difficulty_other, complication_other, comments', 'safe'),
         );
     }
 
@@ -41,7 +41,8 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
             'difficulty_other' => 'Other difficulty',
             'report' => 'Description',
             'MultiSelect_Complications' => 'Complications',
-            'MultiSelect_Difficulties' => 'Operative Difficulties'
+            'MultiSelect_Difficulties' => 'Operative Difficulties',
+            'comments' => 'Comments'
         );
     }
 

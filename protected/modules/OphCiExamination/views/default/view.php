@@ -23,8 +23,12 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
 }
 if ($this->editable && $next_step = $this->getNextStep()) {
-    $this->event_actions[] = EventAction::link($next_step->name,
-        Yii::app()->createUrl($this->event->eventType->class_name.'/default/step/'.$this->event->id.'?patient_id='.$this->episode->patient->id), null, array('class' => 'button small'));
+    $this->event_actions[] = EventAction::link(
+        $next_step->name,
+        Yii::app()->createUrl($this->event->eventType->class_name.'/default/step/'.$this->event->id.'?patient_id='.$this->episode->patient->id),
+        null,
+        array('class' => 'button small')
+    );
 }
 ?>
 

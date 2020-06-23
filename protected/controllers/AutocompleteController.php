@@ -77,6 +77,6 @@ class AutocompleteController extends BaseController
             }
             $return[] = $return_row;
         }
-        echo CJSON::encode($return);
+        $this->renderJSON($return);
     }
 }

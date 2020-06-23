@@ -26,10 +26,11 @@
                     <div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
                     <div class="cols-5 column end"><?=
                         CHtml::dropDownList(
-                            $filter_field['field'], $filter_field['value'],
+                            $filter_field['field'],
+                            $filter_field['value'],
                             SelectionHelper::listData($filter_field['model']),
                             array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-                                                   );
+                        );
                                                     ?></div>
                 </div>
             <?php } ?>
@@ -37,7 +38,8 @@
     <?php }
     if ($filters_ready) { ?>
         <?= CHtml::beginForm() ?>
-        <table class="standard generic-admin">
+
+        <table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?> ">
             <thead>
                 <tr>
                     <?php if ($display_order) { ?>
@@ -63,19 +65,19 @@
                     <?php }?>
                 </tr>
             </thead>
-            <tbody class="<?= ($display_order) ? 'sortable' : ''?>">
+            <tbody>
     <?php }
 }
 ?>
 
 <?php foreach ($items as $i => $row) {
-    $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field));
+    $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field, 'input_class' => $input_class));
 }
 
 if (!$get_row && $filters_ready) {
     if (!$this->new_row_url) {
         $this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
-                            'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
+                            'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'input_class' => $input_class));
     } ?>
             </tbody>
             <?php if ($model::model()->hasAttribute('default')) {?>

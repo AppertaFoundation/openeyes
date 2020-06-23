@@ -26,21 +26,24 @@
       <td>Ability</td>
       <td >
             <?= $form->multiSelectList(
-              $element,
-              'MultiSelect_ability',
-              'abilitys',
-              'ophinvisualfields_condition_ability_id',
-              CHtml::listData(OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')),
-                  'id', 'name'),
-              $element->ophinvisualfields_condition_ability_defaults,
-              array(
+                $element,
+                'MultiSelect_ability',
+                'abilitys',
+                'ophinvisualfields_condition_ability_id',
+                CHtml::listData(
+                    OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')),
+                    'id',
+                    'name'
+                ),
+                $element->ophinvisualfields_condition_ability_defaults,
+                array(
                   'empty' => 'Select',
                   'class' => 'linked-fields',
                   'data-linked-fields' => 'other',
                   'data-linked-values' => 'Other',
                   'nowrapper' => true,
-              )
-          ) ?>
+                )
+            ) ?>
       </td>
     </tr>
     <tr style="<?= $element->hasMultiSelectValue('abilitys', 'Other') ? '' : 'display: none;' ?> ">

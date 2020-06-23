@@ -129,9 +129,18 @@ if (@$_POST[get_class($element)]) {
           </label>
       </td>
       <td class="intervention flex-layout" id="<?php echo get_class($element) . '_' . $side; ?>_intervention">
-        <?php echo $form->radioButtons($element, $side . '_intervention_id',
+        <?php echo $form->radioButtons(
+            $element,
+            $side . '_intervention_id',
             CHtml::listData($interventions, 'id', 'name'),
-            $element->{$side . '_intervention_id'}, 1, false, false, false, $opts, $layoutColumns) ?>
+            $element->{$side . '_intervention_id'},
+            1,
+            false,
+            false,
+            false,
+            $opts,
+            $layoutColumns
+        ) ?>
       </td>
   </tr>
   <tr style="<?php if (!$intervention_id) {
@@ -175,22 +184,22 @@ if (@$_POST[get_class($element)]) {
             );
 
             echo $form->multiSelectList(
-              $element,
-              get_class($element) . '[' . $side . '_deviationreasons]',
-              $side . '_deviationreasons',
-              'id',
-              CHtml::listData($element->getDeviationReasonsForSide($side), 'id', 'name'),
-              array(),
-              $html_options,
-              false,
-              false,
-              false,
-              false,
-              false,
-              array(
+                $element,
+                get_class($element) . '[' . $side . '_deviationreasons]',
+                $side . '_deviationreasons',
+                'id',
+                CHtml::listData($element->getDeviationReasonsForSide($side), 'id', 'name'),
+                array(),
+                $html_options,
+                false,
+                false,
+                false,
+                false,
+                false,
+                array(
                   'label' => 4,
                   'field' => 6,
-              )
+                )
             );
             ?>
       </div>
@@ -294,15 +303,27 @@ if (@$_POST[get_class($element)]) {
             echo 'style="display: none;"';
         } ?>>
     <td>
-        <?php echo $form->textArea($element, $side . '_patient_factor_details', array(), false, array(),
-            $layoutColumns) ?>
+        <?php echo $form->textArea(
+            $element,
+            $side . '_patient_factor_details',
+            array(),
+            false,
+            array(),
+            $layoutColumns
+        ) ?>
     </td>
     <td></td>
   </tr>
   <tr>
     <td id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_expectations">
-        <?php echo $form->textArea($element, $side . '_patient_expectations', array(), false, array(),
-            $layoutColumns) ?>
+        <?php echo $form->textArea(
+            $element,
+            $side . '_patient_expectations',
+            array(),
+            false,
+            array(),
+            $layoutColumns
+        ) ?>
     </td>
     <td></td>
   </tr>
@@ -376,19 +397,19 @@ if (@$_POST[get_class($element)]) {
           }
           */
             $form->multiSelectList(
-              $element,
-              get_class($element) . '[' . $side . '_filecollections]',
-              $side . '_filecollections',
-              'id',
-              CHtml::listData($collections, 'id', 'name'),
-              array(),
-              $html_options,
-              false,
-              false,
-              null,
-              false,
-              false,
-              array('label' => 4, 'field' => 6)
+                $element,
+                get_class($element) . '[' . $side . '_filecollections]',
+                $side . '_filecollections',
+                'id',
+                CHtml::listData($collections, 'id', 'name'),
+                array(),
+                $html_options,
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('label' => 4, 'field' => 6)
             );
             ?>
       </div>

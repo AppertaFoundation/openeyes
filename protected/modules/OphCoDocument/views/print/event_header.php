@@ -19,12 +19,12 @@
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
-$logoHelper = new LogoHelper();
+$logo_helper = new LogoHelper();
 
 ?>
 <header class="header">
     <div class="title">
-    <?php echo $logoHelper->render('//base/_logo_seal'); ?>
+    <?php echo $logo_helper->render('//base/_logo_seal'); ?>
     <h1><?php if ($this->attachment_print_title != null ) {
         echo $this->attachment_print_title;
         } else {
