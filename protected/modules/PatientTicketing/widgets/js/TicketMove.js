@@ -349,5 +349,11 @@
     $(this).on('click', ticketMoveController.options.scratchpadButtonSelector, function () {
       ticketMoveController.toggleScratchpad(!$(ticketMoveController.options.scratchpadPopupSelector).is(':visible'));
     });
+
+    $('select[name="to_queue_id"]').on('change', function () {
+      ticketMoveController.getQueueAssForm($(this).val(), function (response) {
+        $('#PatientTicketing-queue-assignment').html(response);
+      });
+    });
   });
 })();
