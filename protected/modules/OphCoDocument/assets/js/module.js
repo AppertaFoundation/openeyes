@@ -130,7 +130,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
            controller.options.action = 'cancel';
         });
 
-        $("#et_save").on('click', function () {
+        $("#et_save,#et_save_footer").on('click', function () {
            controller.options.action = 'save';
         });
     };
