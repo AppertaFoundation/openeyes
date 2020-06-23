@@ -54,6 +54,8 @@ return array(
                     ),
                     'va' => 'VAVariable',
                     'cct' => 'CCTVariable',
+                    'crt' => 'CRTVariable',
+                    'refraction' => 'RefractionVariable'
                 ),
             ),
             'providers' => array(
