@@ -382,7 +382,8 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             ->select('e.id')
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
-            ->where('e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and 
+            ->where(
+                'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and 
                 e.event_type_id = :etype_id and e.event_date <= :close_date',
                 array(':patient_id' => $patient_id, ':etype_id' => $event_type_id, ':close_date' => $close_to_date)
             )->order('event_date desc')->limit(1);
