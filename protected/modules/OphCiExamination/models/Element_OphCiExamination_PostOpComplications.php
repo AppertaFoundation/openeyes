@@ -170,7 +170,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          * @return array
          */
     public function getRecordedComplications($eye_id, $operation_note_id = null)
-        {
+    {
         $recordedComplications = array();
 
         $model = new OphCiExamination_Et_PostOpComplications();
@@ -304,7 +304,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          * @return array list of op notes
          */
     public function getOperationNoteList()
-        {
+    {
         $patient_id = \Yii::app()->request->getParam('patient_id');
 
         if (!$patient_id && isset($this->event->episode->patient->id) ) {
@@ -401,13 +401,14 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
         return parent::beforeValidate();
     }
 
-    private function validateComplicationItems($complication_items, $eye_id, $complication_other){
+    private function validateComplicationItems($complication_items, $eye_id, $complication_other)
+    {
         $other_complication_id = OphCiExamination_PostOpComplications::model()->find('name = ?', ['other'])->id;
 
         $eye_abbr = $eye_id === Eye::RIGHT ? 'R' : 'L';
         foreach ($complication_items as $cKey => $complication_id) {
-            if($other_complication_id == $complication_id && ($complication_other == "" || is_null($complication_other))) {
-                $this->addError('complication_other[' . $eye_abbr . ']','Other cannot be empty');
+            if ($other_complication_id == $complication_id && ($complication_other == "" || is_null($complication_other))) {
+                $this->addError('complication_other[' . $eye_abbr . ']', 'Other cannot be empty');
             }
         }
     }

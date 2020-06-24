@@ -109,8 +109,8 @@ $right_other = !empty($right_other_values) ? array_values($right_other_values)[0
               <?php foreach (${$eye_side . '_values'} as $key => $value) : ?>
                 <tr>
                   <td class="postop-complication-name"  data-complication-name="<?=$value['name']?>">
-                      <?php if($value['name'] == 'other') {
-                            if($element->hasErrors("complication_other[$eye_abbr]")) {
+                      <?php if ($value['name'] == 'other') {
+                            if ($element->hasErrors("complication_other[$eye_abbr]")) {
                                 echo $value['name'] . ' ';
                                 echo Chtml::textField("complication_other[$eye_abbr]", ${$eye_side . '_other'}, ['class' => 'error']);
                             } else {
