@@ -193,6 +193,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             $postOpComplications = \Yii::app()->request->getParam('complication_items', null);
 
             $eyeLetter = $eye_id == \Eye::RIGHT ? 'R' : 'L';
+            $complication_other = \Yii::app()->request->getParam('complication_other');
 
             if (isset($postOpComplications[$eyeLetter])) {
                 $criteria = new \CDbCriteria();
