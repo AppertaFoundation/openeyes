@@ -230,7 +230,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
     {
         $complication_items = \Yii::app()->request->getParam('complication_items', false);
         $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', null);
-        $complication_other = \Yii::app()->request->getParam('complication_other');
+        $complication_other_sided = \Yii::app()->request->getParam('complication_other');
         $elementData = \Yii::app()->request->getParam('OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications', null);
         $eye_id = isset($elementData['eye_id']) ? $elementData['eye_id'] : null;
 
@@ -247,8 +247,11 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 $complication_items_index = ucfirst($eye_side[0]);
                 if ($this->hasEye($eye_side) ) {
                     if (isset($complication_items[$complication_items_index])) {
+                        $complication_other = isset($complication_other_sided[$complication_items_index]) ?
+                            $complication_other_sided[$complication_items_index] : null;
+
                         $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id,
-                            $operation_note_id, $complication_other[$complication_items_index]);
+                            $operation_note_id, $complication_other);
                     }
                 } else {
                     $this->deleteClosedEyeElements($eye_id);
@@ -384,16 +387,21 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
     public function beforeValidate()
     {
         $complication_items = \Yii::app()->request->getParam('complication_items', false);
-        $complication_other = \Yii::app()->request->getParam('complication_other');
+        $complication_other_sided = \Yii::app()->request->getParam('complication_other');
 
         if ($complication_items) {
             foreach (['left' => \Eye::LEFT, 'right' => \Eye::RIGHT] as $eye_side => $eye_id) {
                 // L or R is used as an index to sided items
                 $complication_items_index = ucfirst($eye_side[0]);
-                if ($this->hasEye($eye_side) ) {
+                if ($this->hasEye($eye_side)) {
+
+
                     if (isset($complication_items[$complication_items_index])) {
+                        $complication_other = isset($complication_other_sided[$complication_items_index]) ?
+                            $complication_other_sided[$complication_items_index] : null;
+
                         $this->validateComplicationItems($complication_items[$complication_items_index], $eye_id,
-                             $complication_other[$complication_items_index]);
+                            $complication_other);
                     }
                 }
             }
