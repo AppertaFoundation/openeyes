@@ -394,8 +394,6 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 // L or R is used as an index to sided items
                 $complication_items_index = ucfirst($eye_side[0]);
                 if ($this->hasEye($eye_side)) {
-
-
                     if (isset($complication_items[$complication_items_index])) {
                         $complication_other = isset($complication_other_sided[$complication_items_index]) ?
                             $complication_other_sided[$complication_items_index] : null;
