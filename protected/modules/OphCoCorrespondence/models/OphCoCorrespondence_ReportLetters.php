@@ -160,11 +160,23 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $this->executeQuery($data);
     }
 
+    private function mapOutputType($type)
+    {
+        $output_type_map = [
+            'Print' => 'Print',
+            'Docman' => 'Docman',
+            'Internalreferral' => 'Internal Referral',
+        ];
+        return array_key_exists($type, $output_type_map)
+            ? $output_type_map[$type]
+            : 'No output';
+    }
+
     public function executeQuery($data)
     {
         foreach ($data->queryAll() as $i => $row) {
             if (@$row['lid']) {
-                $row['type'] = "Correspondence ({$row['output_type']})";
+                $row['type'] = "Correspondence ({$this->mapOutputType($row['output_type'])})";
                 $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphCoCorrespondence/default/view/' . $row['event_id'];
             } else {
                 $row['type'] = 'Legacy letter';
