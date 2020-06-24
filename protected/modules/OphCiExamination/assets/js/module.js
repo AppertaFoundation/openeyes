@@ -1057,26 +1057,30 @@ $(document).ready(function() {
         var $tr = $('<tr>');
         var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text).data('complication-name',selected_text);
         var $other_text = '';
-        if(selected_text == "other") {
-            $td_name = $td_name.text($td_name.text() + ' ');
-            $other_text = $('<input type="text" value="" name="complication_other['+ eye_abbreviation+ ']" id="complication_other_' + eye_abbreviation + '">')
+        let existing_value = $table.find('input[value="' + select_value + '"]');
+
+        if(!existing_value.length) {
+            if (selected_text == "other") {
+                $td_name = $td_name.text($td_name.text() + ' ');
+                $other_text = $('<input type="text" value="" name="complication_other[' + eye_abbreviation + ']" id="complication_other_' + eye_abbreviation + '">')
+            }
+
+            var $hidden_input = $("<input>", {
+                type: "hidden",
+                id: 'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
+                name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length + ']',
+                value: select_value,
+            });
+            $hidden_input.data('display_order', display_order);
+
+            var $td_action = $('<td>', {class: 'right'}).html("<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>");
+            $td_action.append($hidden_input);
+            $td_name.append($other_text);
+
+            $tr.append($td_name);
+            $tr.append($td_action);
+            $table.append($tr);
         }
-
-        var $hidden_input = $("<input>", {
-            type:"hidden",
-            id:'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
-            name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length +']',
-            value: select_value,
-        });
-        $hidden_input.data('display_order', display_order);
-
-        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>" );
-        $td_action.append($hidden_input);
-        $td_name.append($other_text);
-
-        $tr.append($td_name);
-        $tr.append($td_action);
-        $table.append( $tr );
     }
     /** End of Post Operative Complication function **/
 function updateTextMacros() {
