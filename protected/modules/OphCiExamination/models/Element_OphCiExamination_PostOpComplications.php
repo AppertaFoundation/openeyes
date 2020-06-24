@@ -37,6 +37,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use Eye;
+
 class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
@@ -377,5 +379,36 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             ->queryAll();
 
         return $list;
+    }
+
+    public function beforeValidate()
+    {
+        $complication_items = \Yii::app()->request->getParam('complication_items', false);
+        $complication_other = \Yii::app()->request->getParam('complication_other');
+
+        if ($complication_items) {
+            foreach (['left' => \Eye::LEFT, 'right' => \Eye::RIGHT] as $eye_side => $eye_id) {
+                // L or R is used as an index to sided items
+                $complication_items_index = ucfirst($eye_side[0]);
+                if ($this->hasEye($eye_side) ) {
+                    if (isset($complication_items[$complication_items_index])) {
+                        $this->validateComplicationItems($complication_items[$complication_items_index], $eye_id,
+                             $complication_other[$complication_items_index]);
+                    }
+                }
+            }
+        }
+        return parent::beforeValidate();
+    }
+
+    private function validateComplicationItems($complication_items, $eye_id, $complication_other){
+        $other_complication_id = OphCiExamination_PostOpComplications::model()->find('name = ?', ['other'])->id;
+
+        $eye_abbr = $eye_id === Eye::RIGHT ? 'R' : 'L';
+        foreach ($complication_items as $cKey => $complication_id) {
+            if($other_complication_id == $complication_id && ($complication_other == "" || is_null($complication_other))) {
+                $this->addError('complication_other[' . $eye_abbr . ']','Other cannot be empty');
+            }
+        }
     }
 }
