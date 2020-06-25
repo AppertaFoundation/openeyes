@@ -302,13 +302,13 @@ return array(
         'local_users' => array(),
         'log_events' => true,
         'default_site_code' => '',
-        'institution_code' => '',
+        'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
-        'specialty_codes' => array(),
+        'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
-        'specialty_sort' => array(),
+        'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => '/^([0-9]{1,9})$/',
         'pad_hos_num' => '%07s',
         'profile_user_can_edit' => true,
@@ -442,7 +442,7 @@ return array(
         'wkhtmltopdf_bottom_margin' => '20mm',
         'wkhtmltopdf_left_margin' => '5mm',
         'wkhtmltopdf_right_margin' => '5mm',
-        'wkhtmltopdf_nice_level' => false,
+        'wkhtmltopdf_nice_level' => 19,
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -455,11 +455,12 @@ return array(
             ),
         ),
 
-        //'docman_export_dir' => '/tmp/docman_delievery',
-        //'docman_login_url' => 'http://{youropeneyeshost}/site/login',
-        //'docman_user' => '',
-        //'docman_password' => '',
-        //'docman_print_url' => 'http://{youropeneyeshost}/OphCoCorrespondence/default/PDFprint/',
+        'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
+        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
+        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
 
         /* injecting autoprint JS into generated PDF */
         //'docman_inject_autoprint_js' => false,
@@ -662,6 +663,8 @@ return array(
         'worklist_dashboard_future_days' => 0,
         // page size of worklists - recommended to be very large by default, as paging is not generally needed here
         'worklist_default_pagination_size' => 1000,
+        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        'worklist_dashboard_skip_days' => array('NONE'),
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org',
         'pw_restrictions' => array(
@@ -671,6 +674,22 @@ return array(
             'max_length_message' => getenv('PW_RES_MAX_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MAX_LEN_MESS')) : 'Passwords must be at most 70 characters long',
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+        ),
+        'portal' => array(
+            'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
+            'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
+            'endpoints' => array(
+                'auth' => '/oauth/access',
+                'examinations' => '/examinations/searches',
+                'signatures' => '/signatures/searches'
+            ),
+            'credentials' => array(
+                'username' =>  getenv('OE_PORTAL_USERNAME') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com'),
+                'password' => getenv('OE_PORTAL_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass'),
+                'grant_type' => 'password',
+                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
+                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
+            ),
         ),
     ),
 );
