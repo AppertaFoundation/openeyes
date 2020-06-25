@@ -26,7 +26,7 @@
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 
-<?php $training_mode = strtolower(SettingMetadata::model()->findByAttributes(array('key' => 'training_mode_enabled'))->getSettingName()) === 'on'
+<?php $training_mode = SettingMetadata::checkSetting('training_mode_enabled', 'on')
   ? 'training-mode' : '';
 ?>
 <body class="open-eyes oe-grid <?=$training_mode?>">

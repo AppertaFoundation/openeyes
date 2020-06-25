@@ -110,6 +110,16 @@ class SettingMetadata extends BaseActiveRecordVersioned
         ));
     }
 
+    
+    public static function checkSetting($key, $value)
+    {
+        $setting_value = Self::model()->findByAttributes(['key' => $key])->getSettingName();
+        if (is_string($setting_value)) {
+            $setting_value = strtolower($setting_value);
+        }
+        return $setting_value === $value;
+    }
+
     protected function getSettingValue($model, $key, $condition_field, $condition_value, $element_type)
     {
         $criteria = new CDbcriteria();
