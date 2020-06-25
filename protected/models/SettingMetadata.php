@@ -110,7 +110,6 @@ class SettingMetadata extends BaseActiveRecordVersioned
         ));
     }
 
-    
     public static function checkSetting($key, $value)
     {
         $setting_value = Self::model()->findByAttributes(['key' => $key])->getSettingName();
