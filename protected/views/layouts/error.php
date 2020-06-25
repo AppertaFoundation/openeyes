@@ -22,7 +22,10 @@
     <?php $this->renderPartial('//base/head/_meta'); ?>
     <?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
-<body class="open-eyes oe-grid">
+<?php $training_mode = strtolower(SettingMetadata::model()->findByAttributes(array('key' => 'training_mode_enabled'))->getSettingName()) === 'on'
+  ? 'training-mode' : '';
+?>
+<body class="open-eyes oe-grid <?=$training_mode?>">
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
 <div class="openeyes-brand">
