@@ -324,6 +324,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             },
             response: function (event, ui) {
                 $inputField.removeClass('inset-loader');
+            },
+            open: function () {
+                $(this).autocomplete('widget').zIndex(100);
             }
         });
     }
