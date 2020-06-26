@@ -103,7 +103,8 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $select = array(
             'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name',
             'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id',
-            'IF(output_status IS NULL,IF(l.draft=0," - ","Draft"), LOWER(output_status)) as status');
+            'IF(output_status IS NULL,IF(l.draft=0," - ","Draft"), LOWER(output_status)) as status',
+            'document_output.output_type as output_type');
 
         $data = $this->getDbCommand();
 
@@ -159,11 +160,23 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $this->executeQuery($data);
     }
 
+    private function mapOutputType($type)
+    {
+        $output_type_map = [
+            'Print' => 'Print',
+            'Docman' => 'Docman',
+            'Internalreferral' => 'Internal Referral',
+        ];
+        return array_key_exists($type, $output_type_map)
+            ? $output_type_map[$type]
+            : 'No output';
+    }
+
     public function executeQuery($data)
     {
         foreach ($data->queryAll() as $i => $row) {
             if (@$row['lid']) {
-                $row['type'] = 'Correspondence';
+                $row['type'] = "Correspondence ({$this->mapOutputType($row['output_type'])})";
                 $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphCoCorrespondence/default/view/' . $row['event_id'];
             } else {
                 $row['type'] = 'Legacy letter';
