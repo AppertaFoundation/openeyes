@@ -110,15 +110,19 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
                 $definition_mappings = $definition->mappings;
                 $worklist_mappings = $worklist->mapping_attributes;
                 $missing_mappings = array_diff(
-                    array_map(function ($mapping) { return $mapping->key; }, $definition_mappings),
-                    array_map(function ($mapping) { return $mapping->name; }, $worklist_mappings)
+                    array_map(function ($mapping) {
+                        return $mapping->key;
+                    }, $definition_mappings),
+                    array_map(function ($mapping) {
+                        return $mapping->name;
+                    }, $worklist_mappings)
                 );
                 foreach ($missing_mappings as $mapping_name) {
                     $new_mapping = new WorklistAttribute();
                     $new_mapping->name = $mapping_name;
                     $new_mapping->worklist_id = $worklist->id;
                     $new_mapping->save();
-                    if(!$new_mapping->save()) {
+                    if (!$new_mapping->save()) {
                         $this->transaction->rollback();
                         $this->printError("There was an error saving the mappings");
                     }
@@ -137,7 +141,7 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
             $worklist_definition_ids = [ 'all' ];
         } else if (count($args) > 2) {
             echo "Update Worklist Instances does not accept more than 2 arguments\nrefer to the command help\n";
-            return false;   
+            return false;
         } else {
             $worklist_attributes = $this->validateAttributes($args[0]);
             $worklist_definition_ids = isset($args[1])
@@ -161,7 +165,7 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
                         $worklist->$attribute = $worklist_definition->$attribute;
                     }
                 }
-                if(!$worklist->save()) {
+                if (!$worklist->save()) {
                     $this->transaction->rollback();
                     $this->printError("There was an error saving the worklists");
                 }
