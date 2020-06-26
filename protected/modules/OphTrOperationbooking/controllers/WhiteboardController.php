@@ -19,6 +19,8 @@
 class WhiteboardController extends BaseDashboardController
 {
     protected $headerTemplate = 'header';
+    public $layout = '//layouts/whiteboard';
+    public $pageTitle = 'Whiteboard';
 
     protected $whiteboard;
 
@@ -47,7 +49,7 @@ class WhiteboardController extends BaseDashboardController
     {
         return array(
             array('allow',
-                'actions' => array('view', 'reload', 'confirm', 'saveComment'),
+                'actions' => array('view', 'reload', 'confirm', 'saveComment', 'biometryReport'),
                 'roles' => array('OprnViewClinical'),
             ),
         );
@@ -85,6 +87,7 @@ class WhiteboardController extends BaseDashboardController
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
+        Yii::app()->clientScript->registerCssFile($assetPath.'/newblue/css/style_oe3_light.min.css');
 
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/eventemitter2/lib/eventemitter2.js');
@@ -93,23 +96,30 @@ class WhiteboardController extends BaseDashboardController
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/OpenEyes.Dialog.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/whiteboard.js');
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
-
         return $before;
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function isRefreshable()
     {
         $whiteboard = $this->getWhiteboard();
 
-        if ( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
-            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
-        ) {
-            return true;
+        if (!$whiteboard) {
+            return false;
         }
+
+        return ( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
+            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
+        );
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function extendedEditablePeriod()
     {
         $whiteboard = $this->getWhiteboard();
@@ -140,7 +150,7 @@ class WhiteboardController extends BaseDashboardController
      *
      * View the whiteboard data, if there is no data for this event we will collate and persist it in the model.
      *
-     * @param $id
+     * @param $id int Booking event ID
      *
      * @throws CException
      * @throws CHttpException
@@ -154,11 +164,48 @@ class WhiteboardController extends BaseDashboardController
         }
         $this->setWhiteboard($whiteboard);
 
-        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) {
+        if (!$whiteboard->is_confirmed && is_object($whiteboard->booking) && $whiteboard->booking->isEditable()) {
             $whiteboard->loadData($id);
         }
 
-        $this->render('view', array('data' => $whiteboard), false, true);
+        $this->pageTitle = $whiteboard->patient_name;
+
+        $criteria = new CDbCriteria();
+        $criteria->compare('class_name', Element_OphTrOperationnote_Cataract::class);
+
+        $cataract_op_note = ElementType::model()->find($criteria);
+
+        $this->render('view', array(
+            'data' => $whiteboard,
+            'booking_id' => $id,
+            'cataract_opnote' => $cataract_op_note,
+        ));
+    }
+
+    /**
+     * @param $id int Booking event ID
+     * @throws CHttpException
+     */
+    public function actionBiometryReport($id)
+    {
+        $whiteboard = $this->getWhiteboard();
+        if (!$whiteboard) {
+            $whiteboard = new OphTrOperationbooking_Whiteboard();
+            $whiteboard->loadData($id);
+        }
+        $this->setWhiteboard($whiteboard);
+
+        if (!$whiteboard->is_confirmed && is_object($whiteboard->booking) && $whiteboard->booking->isEditable()) {
+            $whiteboard->loadData($id);
+        }
+
+        $this->pageTitle = $whiteboard->patient_name;
+
+        $this->render('biometry', array(
+            'data' => $whiteboard,
+            'booking_id' => $id,
+            'document' => $whiteboard->biometry_report,
+        ));
     }
 
     /**
@@ -166,7 +213,7 @@ class WhiteboardController extends BaseDashboardController
      *
      * If the data is wrong we can reload it and update the database.
      *
-     * @param $id
+     * @param $id int Booking event ID
      *
      * @throws CException
      * @throws CHttpException
@@ -230,7 +277,7 @@ class WhiteboardController extends BaseDashboardController
 
         $savable = array('comments', 'predicted_additional_equipment');
         foreach ($savable as $toSave) {
-            if ( isset($_POST[$toSave])) {
+            if (isset($_POST[$toSave])) {
                 $whiteboard->$toSave = $_POST[$toSave];
             }
         }
@@ -242,5 +289,10 @@ class WhiteboardController extends BaseDashboardController
         } else {
             $this->redirect('/OphTrOperationbooking/whiteboard/view/'.$id);
         }
+    }
+
+    public function getWhiteboardImages($event_id){
+        Yii::app()->runController('/eventImage/getImageUrl/return_value/1/event_id/' .$event_id );
+        return EventImage::model()->findAll('event_id = ? AND document_number IS NOT NULL', [$event_id]);
     }
 }

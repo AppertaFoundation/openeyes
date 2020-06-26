@@ -47,6 +47,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 {
+    use traits\CustomOrdering;
     protected $auto_update_relations = true;
     protected $relation_defaults = array(
             'left_fluidtypes' => array(
@@ -88,12 +89,12 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 					right_dry, right_fluidstatus_id, right_comments', 'safe'),
                 array('left_method_id, left_sft, left_dry', 'requiredIfSide', 'side' => 'left'),
                 array('right_method_id, right_sft, right_dry', 'requiredIfSide', 'side' => 'right'),
-                array('left_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 600, 'min' => 250,
-                        'tooBig' => 'Left {attribute} must be between 250 and 600',
-                        'tooSmall' => 'Left {attribute} must be between 250 and 600', ),
-                array('right_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 600, 'min' => 250,
-                        'tooBig' => 'Right {attribute} must be between 250 and 600',
-                        'tooSmall' => 'Right {attribute} must be between 250 and 600', ),
+                array('left_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 850, 'min' => 250,
+                        'tooBig' => 'Left {attribute} must be between 250 and 850',
+                        'tooSmall' => 'Left {attribute} must be between 250 and 850', ),
+                array('right_crt', 'numerical', 'allowEmpty' => true, 'integerOnly' => true, 'max' => 850, 'min' => 250,
+                        'tooBig' => 'Right {attribute} must be between 250 and 850',
+                        'tooSmall' => 'Right {attribute} must be between 250 and 850', ),
                 array('left_crt, left_thickness_increase, left_comments, right_crt, right_thickness_increase,
 					right_comments', 'default', 'setOnEmpty' => true, 'value' => null),
                 array('left_sft', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 50,
@@ -389,5 +390,15 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
         }
 
         parent::afterSave();
+    }
+
+    public function getViewTitle()
+    {
+        return 'OCT (manual)';
+    }
+
+    public function getFormTitle()
+    {
+        return 'OCT (manual)';
     }
 }

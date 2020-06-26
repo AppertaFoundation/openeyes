@@ -84,7 +84,7 @@
                 <?= \CHtml::activeDropDownList(
                     $model,
                     'default_duration_id',
-                    CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
+                    CHtml::listData(DrugDuration::model()->findAll(), 'id', 'name'),
                     [
                         'empty' => 'Select',
                         'class' => 'cols-full'

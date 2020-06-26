@@ -27,6 +27,9 @@ $(document).ready(function () {
   if ($patientTicketingPopup.length > 0) {
     // ... then set it up to use the hotlist nav button
     var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
+    let $icon_href = $hotlistNavButton.find('use').attr('xlink:href');
+    $icon_href = $icon_href.replace('#hotlist-icon', '#hotlist-vc-icon');
+    $hotlistNavButton.find('use').attr('xlink:href', $icon_href);
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
     $('#js-hotlist-panel').hide();
   } else if ($('#js-hotlist-panel').length > 0) {
@@ -307,10 +310,16 @@ $(document).ready(function () {
 			toolCSS = "oe-tooltip";
 		}
 
+		// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
+		let z_index;
+		if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
+			z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
+		}
+
 		// add, calculate height then show (remove 'hidden')
 		var tip = $( "<div></div>", {
 			"class": toolCSS,
-			"style":"left:"+leftPos+"px; top:0;"
+			"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
 		});
 		// add the tip (HTML as <br> could be in the string)
 		tip.html(text);
@@ -325,6 +334,25 @@ $(document).ready(function () {
 
 	});
 
+	let $header_print_dropdown = $('#js-header-print-dropdown');
+	let $header_print_dropdown_button = $('#js-header-print-dropdown-btn');
+	let $header_print_subnav = $('#js-header-print-subnav');
+
+	$header_print_dropdown.on({
+		mouseover: function() {
+			$header_print_dropdown_button.addClass('active');
+			$header_print_subnav.show();
+			},
+		mouseout: function() {
+			$header_print_dropdown_button.removeClass('active');
+			$header_print_subnav.hide();
+		}
+	});
+
+	$header_print_subnav.on({
+		mouseover: function() { $(this).show(); },
+		mouseout: function() { $(this).hide();}
+	});
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');

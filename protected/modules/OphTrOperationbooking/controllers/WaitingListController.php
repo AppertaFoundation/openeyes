@@ -456,7 +456,7 @@ class WaitingListController extends BaseModuleController
 
         return $this->render('../letters/reminder_letter', array(
                 'to' => $patient->salutationname,
-                'consultantName' => $operation->event->episode->firm->consultant->fullName,
+                'consultantName' => isset($operation->event->episode->firm->consultant) ? $operation->event->episode->firm->consultant->fullName : "the eye service",
                 'overnightStay' => $operation->overnight_stay,
                 'patient' => $patient,
                 'changeContact' => $operation->waitingListContact,
@@ -523,7 +523,7 @@ class WaitingListController extends BaseModuleController
 
         foreach ($_POST['operations'] as $operation_id) {
             if ($operation = Element_OphTrOperationbooking_Operation::Model()->findByPk($operation_id)) {
-                if (Yii::app()->user->checkAccess('admin') and (isset($_POST['adminconfirmto'])) and ($_POST['adminconfirmto'] != 'OFF') and ($_POST['adminconfirmto'] != '')) {
+                if (Yii::app()->user->checkAccess('OprnConfirmBookingLetterPrinted') && (isset($_POST['adminconfirmto'])) && ($_POST['adminconfirmto'] != 'OFF') && ($_POST['adminconfirmto'] != '')) {
                     $operation->confirmLetterPrinted($_POST['adminconfirmto'], $_POST['adminconfirmdate']);
                 } else {
                     $operation->confirmLetterPrinted();
@@ -540,11 +540,10 @@ class WaitingListController extends BaseModuleController
 
     public function actionSetBooked($event_id)
     {
-        header('Content-type: application/json');
         $success = true;
 
         if (!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id))) {
-            echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
+            $this->renderJSON(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
@@ -576,7 +575,7 @@ class WaitingListController extends BaseModuleController
             $success = false;
         }
 
-        echo CJSON::encode(array('success' => $success, 'message' => $message));
+        $this->renderJSON(array('success' => $success, 'message' => $message));
         exit;
     }
 }

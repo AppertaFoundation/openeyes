@@ -30,6 +30,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 {
+    private $original_attributes;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -65,11 +67,33 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('name, display_order, episode_status_id', 'required'),
-            array('subspecialties', 'safe'),
-            array('id, name, display_order', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['name, display_order, episode_status_id', 'required'],
+            ['followup, episode_status_id, patientticket', 'lockIfInUse'],
+            ['subspecialties', 'safe'],
+            ['id, name, display_order', 'safe', 'on' => 'search'],
+        ];
+    }
+
+    public function lockIfInUse($attribute, $params)
+    {
+        if ($this->$attribute != (int)$this->original_attributes[$attribute]) {
+            if ($this->inUse()) {
+                $this->addError($attribute, "This Clinical Outcome Status is in use and so $attribute cannot be edited");
+            }
+        }
+    }
+
+    public function inUse()
+    {
+        $noOfStatusUsecases = ClinicOutcomeEntry::model()->count('status_id=:status_id', [ 'status_id' => $this->id ]);
+        return $noOfStatusUsecases > 0;
+    }
+
+    public function afterFind()
+    {
+        $this->original_attributes = $this->attributes;
+        return parent::afterFind();
     }
 
     /**
@@ -132,5 +156,16 @@ class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
         $this->getDbCriteria()->mergeWith($criteria);
 
         return $this;
+    }
+
+    public function getPatientTicketIds() {
+        $element_ids = [];
+        $elements = $this->findAll('patientticket=:patientticket', [':patientticket' => 1]);
+
+        foreach ($elements as $element) {
+            $element_ids[] = $element->id;
+        }
+
+        return $element_ids;
     }
 }

@@ -22,6 +22,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public $end_date;
     public $items;
     public $user_id;
+    public $dispense_condition;
 
     public function attributeLabels()
     {
@@ -35,15 +36,15 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public function rules()
     {
         return array(
-            array('start_date, end_date, drugs, user_id', 'safe'),
+            array('start_date, end_date, drugs, user_id, dispense_condition', 'safe'),
             array('drugs', 'requiredIfNoUser'),
         );
     }
 
     public function requiredIfNoUser($attributes, $params)
     {
-        if (!$this->user_id && !$this->drugs) {
-            $this->addError('drugs', 'Either user or drugs must be selected.');
+        if (!$this->user_id && !$this->drugs && !$this->dispense_condition) {
+            $this->addError('drugs', 'Either user, drugs or dispense condition must be selected.');
         }
     }
 
@@ -53,8 +54,8 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = '.$tag_id.'),1,0) AS preservative_free,
-                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date'
+                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag_id . '),1,0) AS preservative_free,
+                user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date,i.dose, df.long_name  as frequency, duration.name as duration, route.name as route, dc.name as dispense_condition, dl.name as dispense_location, option.name as laterality'
             )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
@@ -65,17 +66,22 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
-            ->where('1=1');
+            ->join('drug_frequency df', 'df.id = i.frequency_id')
+            ->join('drug_duration duration', 'duration.id = i.duration_id')
+            ->join('drug_route route', 'route.id = i.route_id')
+            ->join('ophdrprescription_dispense_condition dc', 'dc.id = i.dispense_condition_id')
+            ->join('ophdrprescription_dispense_location dl', 'dl.id = i.dispense_location_id')
+            ->leftJoin('drug_route_option option', 'option.id = i.route_option_id');
 
         if ($this->drugs) {
             $command->andWhere(array('in', 'drug.id', $this->drugs));
         }
 
-        $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)).' 00:00:00'))
-            ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)).' 23:59:59'))
+        $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00'))
+            ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59'))
             ->andWhere('episode.deleted = 0');
 
-        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
+        if (!Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) {
             $this->user_id = Yii::app()->user->id;
         }
 
@@ -83,18 +89,24 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             $command->andWhere('d.created_user_id = :user_id', array(':user_id' => $this->user_id));
         }
 
+        if (is_numeric($this->dispense_condition)) {
+            $command->andWhere('i.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
+        }
+
         $this->items = $command->queryAll();
     }
 
     public function toCSV()
     {
-        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
+        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
         foreach ($this->items as $item) {
+            $item['laterality'] = $item['laterality'] ?: 'N/A';
             $drug = new Drug();
             $drug->attributes = $item;
-            $output .= $item['hos_num'].', '.$item['last_name'].', '.$item['first_name'].', '.($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown').', '.$item['postcode'].', ';
-            $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$drug->tallmanLabel.', ';
-            $output .= $item['user_first_name'].' '.$item['user_last_name'].', '.$item['role'].', '.(date('j M Y', strtotime($item['event_date'])).' '.(substr($item['event_date'], 11, 5))) . ', ';
+            $output .= $item['hos_num'] . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
+            $output .= (date('j M Y', strtotime($item['created_date'])) . ' ' . (substr($item['created_date'], 11, 5))) . ', ' . $drug->tallmanLabel . ', ';
+            $output .= $item['dose'] . ', ' . $item['frequency'] . ', ' . $item['duration'] . ' ,' . $item['route'] . ' ,' . $item['dispense_condition'] . ' ,' . $item['dispense_location'] . ' ,' . $item['laterality'] . ' ,';
+            $output .= $item['user_first_name'] . ' ' . $item['user_last_name'] . ', ' . $item['role'] . ', ' . (date('j M Y', strtotime($item['event_date'])) . ' ' . (substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
             $output .= "\n";
         }

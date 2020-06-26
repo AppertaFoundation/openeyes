@@ -22,6 +22,7 @@ namespace OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\Allergies;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -348,26 +349,94 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getBaseIOPValues(Patient $patient)
+    {
+        //init output array
+        $base_values = [
+            'right' => null,
+            'left' => null,
+            'date' => null,
+        ];
+        //init our date temporary value
+        $first_date = null;
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $elements = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
+                
+                //for each element that we care about
+                foreach ($elements as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        //if the date is null then this is the min value, otherwise check if this is the min value and not null
+                        if ( $base_values['date'] ==null||($first_date > $iop->event->event_date) && $iop->event->event_date != null) {
+                            //set the date to this date
+                            $first_date = $iop->event->event_date;
+                            $base_values['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
+                            //for each side set the reading value average for this element
+                            $sum_values = [
+                                'right' => null,
+                                'left' => null,
+                            ];
+                            foreach (['left', 'right'] as $side) {
+                                $readings = $iop->getReadings($side);
+                                if (count($readings) > 0) {
+                                    //Get the average for all the values
+                                    foreach ($readings as $reading) {
+                                            $sum_values[$side] += (float)$reading;
+                                    }
+                                    $base_values[$side] = ($sum_values[$side])/count($readings);
+                                } else {
+                                    $base_values[$side] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //return the base values
+        return $base_values;
+    }
+
     public function getMaxIOPValues(Patient $patient)
     {
+        //init output array
         $max_values = [
             'right' => null,
             'left' => null,
         ];
+        //get all of the events for our patient
+        $events = $patient->getEvents();
+        //for each of the events that we care about
+        foreach ($events as $event) {
+            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+                //get the elements (phasing still works here)
+                $iops = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
-        $iops = $this->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
-        foreach ($iops as $iop) {
-            $iop_right = $iop->getReading('right');
-            if ($iop_right > $max_values['right']) {
-                $max_values['right'] = $iop_right;
-            }
-
-            $iop_left = $iop->getReading('left');
-            if ($iop_left > $max_values['left']) {
-                $max_values['left'] = $iop_left;
+                //for each element that we care about
+                foreach ($iops as $iop) {
+                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                        foreach (['left', 'right'] as $side) {
+                            //get all readings for each side separately
+                            $readings = $iop->getReadings($side);
+                            //if we have readings to check
+                            if (count($readings) > 0) {
+                                foreach ($readings as $reading) {
+                                    //if the readinf is larger than our Max value, save that value
+                                    if ((float)$reading > $max_values[$side]) {
+                                        $max_values[$side] = (float)$reading;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-
+        //return the max values
         return $max_values;
     }
 
@@ -659,7 +728,7 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getMethodIdRight($vaid, $episode)
+    public function getMethodIdRight($vaid)
     {
         $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = '
             . $vaid . ' AND side = ' . self::RIGHT);
@@ -679,7 +748,7 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getMethodIdLeft($vaid, $episode)
+    public function getMethodIdLeft($vaid)
     {
         $unit = models\OphCiExamination_VisualAcuity_Reading::model()->findAll('element_id = ' . $vaid
             . ' AND side = ' . self::LEFT);
@@ -745,7 +814,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
@@ -774,7 +843,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : "Not Recorded";
     }
 
     public function getLetterVAMethodName($patient, $side, $use_context = false)
@@ -920,10 +989,9 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityForEpisodeLeft(
         $patient,
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         return $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
@@ -938,10 +1006,9 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityForEpisodeRight(
         $patient,
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
     }
 
@@ -959,10 +1026,9 @@ class OphCiExamination_API extends \BaseAPI
         $patient,
         $side = 'left',
         $include_nr_values = false,
-        $before_date = NULL,
+        $before_date = null,
         $use_context = false
-    )
-    {
+    ) {
         $va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
@@ -1087,6 +1153,7 @@ class OphCiExamination_API extends \BaseAPI
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
                     $summary_obj->comments = $summaries->comments ?: $summaries->getSiblingString();
+                    $summary_obj->comments = preg_replace('/(\r\n\r\n|\r\r|\n\n)/', '<i class="oe-i d-slash small pad pro-theme"></i>', $summary_obj->comments);
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
@@ -1372,15 +1439,22 @@ class OphCiExamination_API extends \BaseAPI
     {
         $follow_up_text = '';
 
-        $o = $this->getElementFromLatestVisibleEvent(
+        $element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context
         );
 
-        if ($o) {
-            if ($o->followup_quantity) {
-                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+        if ($element) {
+            $index = 0;
+            foreach ($element->entries as $entry) {
+                if ($entry->followup_quantity) {
+                    if ($index > 0) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $entry->followup_quantity . ' ' . $entry->followup_period;
+                    $index++;
+                }
             }
         }
 
@@ -1393,8 +1467,11 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                if (!isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])) {
-                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if (!isset($patient_ticket_followup['assignment_date']) || !isset($element->event->event_date) || ($element->event->event_date < $patient_ticket_followup['assignment_date'])) {
+                    if (!empty($follow_up_text)) {
+                        $follow_up_text .= ' AND ';
+                    }
+                    $follow_up_text .= $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
         }
@@ -1479,6 +1556,10 @@ class OphCiExamination_API extends \BaseAPI
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
                 $class = $element_type->class_name;
 
+                if (!class_exists($class)) {
+                    continue;
+                }
+
                 $element = $class::model()->find('event_id=?', array($event->id));
                 if ($element) {
                     // need to check for element behaviour for eyedraw elements
@@ -1546,8 +1627,7 @@ class OphCiExamination_API extends \BaseAPI
         $side,
         $disorder1_id,
         $disorder2_id
-    )
-    {
+    ) {
         $events = $this->getEvents($patient, $use_context);
         $elements = array();
 
@@ -2350,7 +2430,7 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($outcome) {
-            return $outcome->description;
+            return $outcome->comments;
         }
     }
 
@@ -2372,9 +2452,23 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($element) {
-            $str = $element->status->name;
-            if ($element->status->followup) {
-                $str .= " in {$element->followup_quantity} {$element->followup_period}";
+            $str .= '<table><tbody>';
+            foreach ($element->entries as $index => $entry) {
+                if ($index > 0) {
+                    $str .= '<tr><td>AND</td>';
+                } else {
+                    $str .= '<tr><td></td>';
+                }
+                $str .= '<td style="text-align:left">' . $entry->status->name;
+                if ($entry->status->followup) {
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
+                }
+                $str .= "</td></tr>";
+            }
+            $str .= '</tbody></table>';
+
+            if ($element->comments) {
+                $str .= "<strong>Comments:</strong> {$element->comments}";
             }
         }
         return $str;
@@ -2389,7 +2483,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string
      */
-    public function getCataractSurgicalManagement(\Patient $patient, $use_context = false)
+    public function getCataractSurgicalManagementAsText(\Patient $patient, $use_context = false)
     {
         $str = '';
         $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
@@ -2397,29 +2491,79 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
 
         if ($element) {
-            $str = "Eye: {$element->eye()->name}" . PHP_EOL;
-            $str .= "Straight Forward: " . ($element->fast_track == 1 ? 'Yes' : 'No') . PHP_EOL;
-            $str .= "Post Operative Target: {$element->target_postop_refraction}D" . PHP_EOL;
-            $str .= "Suitable for: {$element->suitable_for_surgeon->name}" . ($element->supervised == 1 ? " (supervised)" : "") . PHP_EOL;
-            $str .= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery" . PHP_EOL : "");
-            $str .= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye" . PHP_EOL : "");
-            $reasons = [];
-            foreach ($element->reasonForSurgery as $reason) {
-                $reasons[] = $reason->name;
+            if ($element->eye_id === (string) \Eye::BOTH) {
+                $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+                if ($element->right_eye_id === $first_eye_id) {
+                    $first_eye = 'right';
+                    $second_eye = 'left';
+                } else {
+                    $first_eye = 'left';
+                    $second_eye = 'right';
+                }
+
+                $str = "Listed for {$first_eye} cataract surgery followed by {$second_eye} cataract surgery.";
+            } else {
+                $str = "Listed for {$element->eye->name} cataract surgery.";
             }
 
-            if (!empty($reasons)) {
-                $str .= "Primary reason for surgery: " . implode(", ", $reasons) . PHP_EOL;
-            }
+            $str .= PHP_EOL;
         }
+
         return $str;
+    }
+
+    public function getCataractSurgicalManagementAsTable(Patient $patient, $use_context = false)
+    {
+        $element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+            $patient,
+            $use_context);
+
+        $first_eye_id = (string)\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::FIRST_EYE;
+        $refractive_categories = [0 => 'Emmetropia', 1 => 'Myopia', 2 => 'Other'];
+
+        if ($element) {
+            $is_both_eyes = $element->eye_id === (string) \Eye::BOTH;
+            $eye_sides = $is_both_eyes ? ($element->left_eye_id === $first_eye_id ? ['1st' => 'left', '2nd' => 'right'] : ['1st' => 'right', '2nd' => 'left']) : ($element->eye_id === (string)\Eye::RIGHT ? ['right'] : ['left']);
+            ob_start(); ?>
+            <table style="border-collapse: collapse; width: 80%;" border="1">
+                <tbody>
+                <?php foreach ($eye_sides as $key => $side) { ?>
+                    <tr>
+                        <th style="width: 10%;">
+                            <strong>
+                                <?= ucfirst($side) ?> eye <?= $is_both_eyes ? "($key)" : '' ?>
+                            </strong>
+                        </th>
+                        <th style="width: 30%;"></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Reason for surgery:</th>
+                        <th style="width: 30%;"><?= ($element->{$side . 'ReasonForSurgery'} ? $element->{$side . 'ReasonForSurgery'}->name : 'N/A') ?></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Guarded prognosis:</th>
+                        <th style="width: 30%;"><?= (string)$element->{$side . '_guarded_prognosis'} === '1' ? 'Yes' : 'No' ?></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 10%;">Refractive target:</th>
+                        <?php $refractive_target = 'Not recorded';
+                        if ($element->{$side . '_target_postop_refraction'}) {
+                            $refractive_target = $element->{$side . '_target_postop_refraction'} . 'D' . " ({$refractive_categories[$element->{$side . '_refraction_category'}]})";
+                        } ?>
+                        <th style="width: 30%;"><?= $refractive_target ?></th>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        <?php }
+        return ob_get_clean();
     }
 
     /**
      *
      * @param $patient
      * @param $risk_name
-     * @return mixed
+     * @return array|null
      */
     public function getRiskByName($patient, $risk_name)
     {
@@ -2436,10 +2580,49 @@ class OphCiExamination_API extends \BaseAPI
                 case (models\HistoryRisksEntry::$NOT_PRESENT):
                     $status = false;
                     break;
+                default:
+                    $status = null;
+                    break;
             }
 
             return array(
                 'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param $patient
+     * @param $allergy_name
+     * @return mixed
+     */
+    public function getAllergyByName($patient, $allergy_name)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\Allergies',
+            array('mode' => Allergies::$DATA_MODE, 'patient' => $patient));
+        $entry = $widget->element->getAllergyEntryByName($allergy_name);
+        if ($entry) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\AllergyEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\AllergyEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+                default:
+                    $status = null;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->allergy,
                 'status' => $status,
                 'comments' => $entry->comments,
                 'date' => $entry->element->event->event_date
@@ -2525,6 +2708,52 @@ class OphCiExamination_API extends \BaseAPI
                     $allergy = $allergy_entry->ophciexaminationAllergy;
                     if (isset($allergy) && isset($allergy->id)) {
                         $required[$allergy->id] = $allergy;
+                    }
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
+     * Get required pupillary abnormalities
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAbnormalities(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationPupillaryAbnormalitySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $abnormality_entry) {
+                    $abnormality = $abnormality_entry->ophciexaminationAbnormality;
+                    if ($abnormality && $abnormality->id) {
+                        $required[$abnormality->id] = $abnormality;
                     }
                 }
             }
@@ -2923,7 +3152,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_eye_meds) {
-            return "(no current eye medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current eye medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
@@ -2942,22 +3179,53 @@ class OphCiExamination_API extends \BaseAPI
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($current_eye_meds as $entry) : ?>
-                <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
-                    <td>
-                        <?php
-                        $laterality = $entry->getLateralityDisplay();
-                        \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers: []; ?>
+                    <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
+                        <td>
+                            <?php
+                            $laterality = $entry->getLateralityDisplay();
+                            \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?= $entry->frequency ? $entry->frequency : ''; ?>
+                        </td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay("Ongoing"); ?></td>
+                    </tr>
+                    <?php
+                                        $taper_date = $entry->end_date;
+                    foreach ($tapers as $taper) :
+                        if ($taper->duration) {
+                            if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                $taper_display_date = $taper->duration->name;
+                            } else if ($taper_date) {
+                                $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                            } else {
+                                $taper_display_date = 'Ongoing';
+                            }
+                        }
                         ?>
-                    </td>
-                    <td>
-                        <?= $entry->frequency ? $entry->frequency : ''; ?>
-                    </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
-                </tr>
-            <?php endforeach; ?>
+                        <tr>
+                            <td>
+                                <div class="oe-i child-arrow small no-click"></div>
+                                <i> then</i>
+                            </td>
+                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                            <td>
+                            </td>
+                            <td>
+                                <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                            </td>
+                            <td>
+                                <?= $taper_display_date ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
 
@@ -2986,7 +3254,15 @@ class OphCiExamination_API extends \BaseAPI
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
         if (!$current_systemic_meds) {
-            return "(no current systemic medications)";
+            return "
+                <table class='standard'>
+                    <tbody>
+                        <tr>
+                            <td>(no current systemic medications)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                    ";
         }
 
         ob_start();
@@ -3005,14 +3281,43 @@ class OphCiExamination_API extends \BaseAPI
             </thead>
             <tbody>
             <?php foreach ($current_systemic_meds as $entry) : ?>
+                            <?php $tapers = $entry->prescription_item_id ? \OphDrPrescription_Item::model()->findByPk($entry->prescription_item_id)->tapers : []; ?>
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->dose . ($entry->units ? (' ' . $entry->units) : '') ?></td>
                     <td>
                         <?= $entry->frequency ? $entry->frequency : ''; ?>
                     </td>
-                    <td><?= $entry->getEndDateDisplay('Ongoing'); ?></td>
+                    <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
                 </tr>
+                            <?php
+                            $taper_date = $entry->end_date;
+                            foreach ($tapers as $taper) :
+                                if ($taper->duration) {
+                                    if (in_array($taper->duration->name, array('Until review', 'Once', 'Other'))) {
+                                                    $taper_display_date = $taper->duration->name;
+                                    } else if ($taper_date) {
+                                                    $taper_display_date = $entry->getTaperDateDisplay($taper_date, $taper->duration->name);
+                                                    $taper_date = date('Y-m-d', strtotime($taper_date. $taper->duration->name));
+                                    } else {
+                                                    $taper_display_date = 'Ongoing';
+                                    }
+                                }
+                                ?>
+                                    <tr>
+                                            <td>
+                                                    <div class="oe-i child-arrow small no-click"></div>
+                                                    <i> then</i>
+                                            </td>
+                                            <td><?=$taper->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                                            <td>
+                                                    <?= $taper->frequency ? $taper->frequency->long_name : '' ?>
+                                            </td>
+                                            <td>
+                                                    <?= $taper_display_date ?>
+                                            </td>
+                                    </tr>
+                            <?php endforeach; ?>
             <?php endforeach; ?>
             </tbody>
         </table>

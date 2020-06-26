@@ -284,7 +284,19 @@ class WorklistManager extends CComponent
      */
     public function getWorklistDefinitions($exclude_unbooked = false)
     {
-        return $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->displayOrder()->findAll();
+        $definitions = $this->getModelForClass('WorklistDefinition' . ($exclude_unbooked ? ':withoutUnbooked' : '') )->displayOrder()->findAll();
+
+        //this is to move the elements with 0 instances at the top of the list
+        //in this way the display_order will be respected by all the other entries
+        $reordered_definitions = [];
+        foreach ($definitions as $key => $definition) {
+            if ($definition->worklistCount === "0") {
+                $reordered_definitions[] = $definition;
+                unset($definitions[$key]);
+            }
+        }
+
+        return $reordered_definitions + $definitions;
     }
 
     /**
@@ -640,7 +652,16 @@ class WorklistManager extends CComponent
             }
         }
 
-        return $worklists;
+        $unique_ids = array();
+        $unique_worklists = array();
+        foreach ($worklists as $wl) {
+            if(!in_array($wl->id, $unique_ids)) {
+                $unique_worklists[] = $wl;
+                $unique_ids[] = $wl->id;
+            }
+        }
+
+        return $unique_worklists;
     }
 
     public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
@@ -1539,3 +1560,4 @@ class WorklistManager extends CComponent
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
 }
+

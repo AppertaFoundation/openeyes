@@ -688,6 +688,12 @@ class OphCoCorrespondence_API extends BaseAPI
             'delimiter' => "\n",
         ));
 
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true) {
+            if ($m[1] == 'ContactPracticeAssociate') {
+                    $contact = $contact->gp;
+            }
+        }
+
         if (!$address) {
             $address = '';
         }
@@ -714,7 +720,7 @@ class OphCoCorrespondence_API extends BaseAPI
         } else if ($m[1] == 'Optometrist') {
             $contact_type = 'Optometrist';
         }
-        
+
         if ( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ) {
             $contact_type = 'Other';
         }
@@ -952,6 +958,13 @@ class OphCoCorrespondence_API extends BaseAPI
         if (empty($macro_name)) {
             $macro_name = \SettingMetadata::model()->getSetting("default_{$episode->status->key}_letter");
         }
+
+        return $this->getDefaultMacro($firm, $site_id, $macro_name);
+
+    }
+
+    public function getDefaultMacro($firm = null, $site_id = null, $macro_name = null)
+    {
         $macro = LetterMacro::model()->find('name = ? AND firm_id = ?', [$macro_name, $firm->id]);
 
         if (!$macro) {

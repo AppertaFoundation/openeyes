@@ -73,7 +73,8 @@ class EventImageController extends BaseController
      *
      * @return string {"done_urs":[], "remaining_event_ids":[]}
      */
-    public function actionGetImageUrlsBulk(){
+    public function actionGetImageUrlsBulk()
+    {
         $event_ids = CJSON::decode($_GET['event_ids']);
         $remaining_event_ids = null;
         $generated_image_event_ids = array();
@@ -118,10 +119,10 @@ class EventImageController extends BaseController
             $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
             if ($page_count != 0) {
                 $image_info = ['page_count' => $page_count, 'url' => $url];
-                echo CJSON::encode($image_info);
+                $this->renderJSON($image_info);
             }
         } catch (Exception $exception) {
-            echo CJSON::encode(['error' => $exception->getMessage()]);
+            $this->renderJSON(['error' => $exception->getMessage()]);
         }
     }
 
@@ -130,7 +131,7 @@ class EventImageController extends BaseController
      * @param integer $id the ID of the model to be displayed
      * @param integer $page The page number for multi image events
      */
-    public function actionView($id, $page = null, $eye = null)
+    public function actionView($id, $page = null, $eye = null, $document_number = null)
     {
         // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
         $criteria = new CDbCriteria();
@@ -143,6 +144,13 @@ class EventImageController extends BaseController
         if ($eye !== null) {
             $criteria->addCondition('eye_id = :eye');
             $criteria->params[':eye'] = $eye;
+        }
+
+        if ($document_number !== null && $document_number != "") {
+            $criteria->addCondition('document_number = :document_number');
+            $criteria->params[':document_number'] = $document_number;
+        } else {
+            $criteria->addCondition('document_number IS NULL');
         }
         $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
 

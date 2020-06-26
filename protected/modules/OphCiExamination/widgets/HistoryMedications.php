@@ -34,6 +34,7 @@ class HistoryMedications extends \BaseEventElementWidget
     public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
     public $is_latest_element = null;
     public $missing_prescription_items = null;
+    public $pro_theme;
 
     protected $print_view = 'HistoryMedications_event_print';
 
@@ -243,7 +244,14 @@ class HistoryMedications extends \BaseEventElementWidget
             $stopped = array();
             $current = array();
             foreach ($this->element->entries as $entry) {
-                if ($entry->end_date && $entry->end_date <= date("Y-m-d")) {
+                $end_date_including_tapers = $entry->end_date;
+                if ($entry->prescription_item_id) {
+                    $prescription_item_end_date = $entry->prescription_item->stopDateFromDuration();
+                    if ($prescription_item_end_date && ($prescription_item_end_date < $entry->end_date)) {
+                        $end_date_including_tapers = $prescription_item_end_date;
+                    }
+                }
+                if ($end_date_including_tapers && $end_date_including_tapers <= date("Y-m-d")) {
                     $stopped[] = $entry;
                 } else {
                     $current[] = $entry;
@@ -275,10 +283,6 @@ class HistoryMedications extends \BaseEventElementWidget
      * @param $entry
      * @return string
      */
-    public function getPrescriptionLink($entry)
-    {
-        return '/OphDrPrescription/Default/view/' . $entry->prescription_item->prescription->event_id;
-    }
 
     /**
      * @return string

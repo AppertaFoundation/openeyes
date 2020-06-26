@@ -27,13 +27,16 @@ namespace OEModule\OphCiExamination\models;
  * @property datetime $no_allergies_date
  *
  * @property \Event $event
- * @property Allergy_Entry[] $entries
+ * @property AllergyEntry[] $entries
  * @property \EventType $eventType
  * @property \User $user
  * @property \User $usermodified
  */
 class Allergies extends \BaseEventTypeElement
 {
+    use traits\CustomOrdering;
+    protected $default_view_order = 50;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -138,6 +141,35 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
+     * Gets all required missing allergies
+     * @return array
+     */
+    public function getMissingRequiredAllergies($patient)
+    {
+        $current_ids = array_map(function ($e) {
+            return $e->allergy_id;
+        },
+            $this->entries);
+
+        $missing = array();
+        foreach ($this->getRequiredAllergies($patient) as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new AllergyEntry();
+                $entry->allergy_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
+    }
+
+    public function getRequiredAllergies($patient)
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredAllergies($patient);
+    }
+
+
+    /**
      * @param \BaseEventTypeElement $element
      */
     public function loadFromExisting($element)
@@ -158,6 +190,16 @@ class Allergies extends \BaseEventTypeElement
         }
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();
+
+        if (isset($element->event_id)) {
+            $missing_required_allergies = $this->getMissingRequiredAllergies($element->event->patient);
+            if ($missing_required_allergies) {
+                $this->no_allergies_date = null;
+            } else {
+                $this->no_allergies_date = $element->no_allergies_date;
+            }
+        }
+        $this->is_initialized = true;
     }
 
     /**
@@ -206,11 +248,6 @@ class Allergies extends \BaseEventTypeElement
         return $entries;
     }
 
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 50 : parent::getDisplayOrder($action);
-    }
-
     /**
      * @return string
      */
@@ -227,5 +264,15 @@ class Allergies extends \BaseEventTypeElement
     public function softDelete()
     {
         $this->updateAll(array('deleted' => 1), 'event_id = :event_id', array(':event_id' => $this->event_id));
+    }
+
+    public function getAllergyEntryByName($name)
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->allergy->name === $name) {
+                return $entry;
+            }
+        }
+        return null;
     }
 }

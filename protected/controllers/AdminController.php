@@ -57,7 +57,7 @@ class AdminController extends BaseAdminController
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
-        $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
+        $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         if (!$subspecialty_id) {
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
@@ -119,7 +119,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . $common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
@@ -212,7 +212,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . $common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
@@ -247,11 +247,12 @@ class AdminController extends BaseAdminController
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
 
             foreach ($findings as $key => $finding) {
-                if (isset($finding['id'])) {
+                if ($finding['id']) {
                     $finding_object = Finding::model()->findByPk($finding['id']);
                 } else {
                     $finding_object = new Finding();
                 }
+
 
                 $finding_object->name = $finding['name'];
                 $finding_object->display_order = $finding['display_order'];
@@ -299,34 +300,34 @@ class AdminController extends BaseAdminController
         /*$drug = new Drug('create');
 
         if (!empty($_POST)) {
-            $drug->attributes = $_POST['Drug'];
+                $drug->attributes = $_POST['Drug'];
 
-            if (!$drug->validate()) {
-                $errors = $drug->getErrors();
-            } else {
-                if (!$drug->save()) {
-                    throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                if (!$drug->validate()) {
+                        $errors = $drug->getErrors();
+                } else {
+                        if (!$drug->save()) {
+                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                        }
+
+                        if (isset($_POST['allergies'])) {
+                                $posted_allergy_ids = $_POST['allergies'];
+
+                                //add new allergy mappings
+                                foreach ($posted_allergy_ids as $asign) {
+                                        $allergy_assignment = new DrugAllergyAssignment();
+                                        $allergy_assignment->drug_id = $drug->id;
+                                        $allergy_assignment->allergy_id = $asign;
+                                        $allergy_assignment->save();
+                                }
+                        }
+
+                        $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
                 }
-
-                if (isset($_POST['allergies'])) {
-                    $posted_allergy_ids = $_POST['allergies'];
-
-                    //add new allergy mappings
-                    foreach ($posted_allergy_ids as $asign) {
-                        $allergy_assignment = new DrugAllergyAssignment();
-                        $allergy_assignment->drug_id = $drug->id;
-                        $allergy_assignment->allergy_id = $asign;
-                        $allergy_assignment->save();
-                    }
-                }
-
-                $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
-            }
         }
 
         $this->render('/admin/adddrug', array(
-            'drug' => $drug,
-            'errors' => @$errors,
+                'drug' => $drug,
+                'errors' => @$errors,
         ));*/
     }
 
@@ -336,71 +337,71 @@ class AdminController extends BaseAdminController
 
         /*$drug = Drug::model()->findByPk($id);
         if (!$drug) {
-            throw new Exception("Drug not found: $id");
+                throw new Exception("Drug not found: $id");
         }
         $drug->scenario = 'update';
 
         if (!empty($_POST)) {
-            $drug->attributes = $_POST['Drug'];
+                $drug->attributes = $_POST['Drug'];
 
-            if (!$drug->validate()) {
-                $errors = $drug->getErrors();
-            } else {
-                if (!$drug->save()) {
-                    throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                if (!$drug->validate()) {
+                        $errors = $drug->getErrors();
+                } else {
+                        if (!$drug->save()) {
+                                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+                        }
+
+                        $posted_allergy_ids = array();
+
+                        if (isset($_POST['allergies'])) {
+                                $posted_allergy_ids = $_POST['allergies'];
+                        }
+
+                        $criteria = new CDbCriteria();
+                        $criteria->compare('drug_id', $drug->id);
+                        $allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+
+                        $allergy_assignment_ids = array();
+                        foreach ($allergy_assignments as $allergy_assignment) {
+                                $allergy_assignment_ids[] = $allergy_assignment->allergy_id;
+                        }
+
+                        $allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids, $posted_allergy_ids);
+                        $posted_allergy_ids_to_assign = array_diff($posted_allergy_ids, $allergy_assignment_ids);
+
+                        //add new allergy mappings
+                        foreach ($posted_allergy_ids_to_assign as $asign) {
+                                $allergy_assignment = new DrugAllergyAssignment();
+                                $allergy_assignment->drug_id = $drug->id;
+                                $allergy_assignment->allergy_id = $asign;
+                                $allergy_assignment->save();
+                        }
+
+                        //delete redundant allergy mappings
+                        foreach ($allergy_assignments as $asigned) {
+                                if (in_array($asigned->allergy_id, $allergy_assignment_ids_to_delete)) {
+                                        $asigned->delete();
+                                }
+                        }
+
+                        $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
                 }
-
-                $posted_allergy_ids = array();
-
-                if (isset($_POST['allergies'])) {
-                    $posted_allergy_ids = $_POST['allergies'];
-                }
-
-                $criteria = new CDbCriteria();
-                $criteria->compare('drug_id', $drug->id);
-                $allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
-
-                $allergy_assignment_ids = array();
-                foreach ($allergy_assignments as $allergy_assignment) {
-                    $allergy_assignment_ids[] = $allergy_assignment->allergy_id;
-                }
-
-                $allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids, $posted_allergy_ids);
-                $posted_allergy_ids_to_assign = array_diff($posted_allergy_ids, $allergy_assignment_ids);
-
-                //add new allergy mappings
-                foreach ($posted_allergy_ids_to_assign as $asign) {
-                    $allergy_assignment = new DrugAllergyAssignment();
-                    $allergy_assignment->drug_id = $drug->id;
-                    $allergy_assignment->allergy_id = $asign;
-                    $allergy_assignment->save();
-                }
-
-                //delete redundant allergy mappings
-                foreach ($allergy_assignments as $asigned) {
-                    if (in_array($asigned->allergy_id, $allergy_assignment_ids_to_delete)) {
-                        $asigned->delete();
-                    }
-                }
-
-                $this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
-            }
         }
 
         $this->render('/admin/editdrug', array(
-            'drug' => $drug,
-            'errors' => @$errors,
+                'drug' => $drug,
+                'errors' => @$errors,
         ));*/
     }
 
-    public function actionUserFind()
+    public function actionUserFind($term)
     {
         $res = array();
-        if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+        if (Yii::app()->request->isAjaxRequest && $term) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(username)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(first_name)', strtolower($_REQUEST['search']), true, 'OR');
-            $criteria->compare('LOWER(last_name)', strtolower($_REQUEST['search']), true, 'OR');
+            $criteria->compare('LOWER(username)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(first_name)', strtolower($term), true, 'OR');
+            $criteria->compare('LOWER(last_name)', strtolower($term), true, 'OR');
             foreach (User::model()->findAll($criteria) as $user) {
                 $res[] = array(
                     'id' => $user->id,
@@ -410,7 +411,8 @@ class AdminController extends BaseAdminController
                 );
             }
         }
-        echo CJSON::encode($res);
+
+        $this->renderJSON($res);
     }
 
     public function actionUsers($id = false)
@@ -467,13 +469,16 @@ class AdminController extends BaseAdminController
 
             if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
+                $user->password_hashed = true;
+            } else {
+                $user->password_hashed = false;
             }
             $user->attributes = $userAtt;
 
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if (!$user->save()) {
+                if (!$user->save(false)) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
@@ -526,6 +531,7 @@ class AdminController extends BaseAdminController
         }
 
         $user->password = '';
+        $user->password_repeat = '';
 
         $this->render('/admin/edituser', array(
             'user' => $user,
@@ -771,7 +777,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-        echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
+        $this->renderJSON(CHtml::listData($institution->sites, 'id', 'name'));
     }
 
     public function actionInstitutions($id = false)
@@ -934,7 +940,6 @@ class AdminController extends BaseAdminController
          */
 
         $contact->nick_name = 'NULL';
-        $contact->primary_phone = 'NULL';
         $contact->title = null;
         $contact->first_name = '';
         $contact->last_name = '';
@@ -1787,8 +1792,9 @@ class AdminController extends BaseAdminController
             foreach ($filter as $logoKey => $logoName) {
                 $uploadLogo = CUploadedFile::getInstance($logo, $logoKey);
                 $fileInfo = pathinfo($logoName);
-                foreach (glob($savePath . $logoKey) as $existingLogo) {
-                    unlink($savePath . $existingLogo);
+
+                foreach (glob($savePath . $logoKey . '.*') as $existingLogo) {
+                    unlink($existingLogo);
                 }
 
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
@@ -1822,11 +1828,11 @@ class AdminController extends BaseAdminController
         $deleteSecondaryLogo = @$_GET['secondary_logo'];
 
         if (!empty($deleteHeaderLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteHeaderLogo);
+            @unlink($deleteHeaderLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         } elseif (!empty($deleteSecondaryLogo)) {
-            @unlink(Yii::app()->basePath . '/runtime/' . $deleteSecondaryLogo);
+            @unlink($deleteSecondaryLogo);
             Yii::app()->user->setFlash('success', 'Logo Deleted Successfully');
             $this->redirect(array('/admin/logo'));
         }
@@ -1867,6 +1873,36 @@ class AdminController extends BaseAdminController
             }
         }
         $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+    }
+
+    public function actionEditInstallationSetting()
+    {
+        $this->group = "System";
+
+        $key = isset($_GET['key']) ? $_GET['key'] : null;
+        $metadata = SettingMetadata::model()->find('`key`=?', array($key));
+        if (!$metadata) {
+            $this->redirect(array('/admin/settings'));
+        }
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            $setting_installation = SettingInstallation::model()->findByAttributes(['key' => $key]);
+            if (!$setting_installation) {
+                $setting_installation = new SettingInstallation();
+                $setting_installation->key = $key;
+            }
+            $value = \Yii::app()->request->getPost($key);
+            $setting_installation->value = $value;
+            if (!$setting_installation->save()) {
+                $errors = $setting_installation->errors;
+            } else {
+                $this->redirect(array('/admin/settings'));
+            }
+        }
+
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'allowed_classes' => ['SettingInstallation']));
     }
 
     /**
@@ -1964,5 +2000,28 @@ class AdminController extends BaseAdminController
     public function actionPatientShortcodes()
     {
         $this->render('patient_shortcodes', ['short_codes' => PatientShortcode::model()->findAll()]);
+    }
+
+    public function actionAttachments($id = false)
+    {
+        if (!empty($_POST)) {
+            $event_types_post = $_POST['EventType'];
+
+            foreach ($event_types_post as $id => $event_type_post) {
+                $eventType = EventType::model()->findByPk($id);
+                $eventType->show_attachments = $event_type_post['show_attachments'];
+
+                if (!$eventType->saveOnlyIfDirty()->save() && $eventType->getErrors()) {
+                    throw new Exception('Unable to save attachment: ' . print_r($eventType->getErrors(), true));
+                }
+            }
+            Audit::add('admin-Attachments', 'edit');
+        } else {
+            Audit::add('admin-Attachments', 'list');
+        }
+
+        $this->render('/admin/attachments/index', array(
+            'event_types' => EventType::model()->findAll(),
+        ));
     }
 }

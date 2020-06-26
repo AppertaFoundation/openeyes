@@ -72,6 +72,7 @@ class Address extends BaseActiveRecordVersioned
             array('contact_id, country_id', 'required'),
             array('email', 'required', 'on'=>array('self_register')),
             array('id, address1, address2, city, postcode, county, email, country_id, address_type_id, date_start, date_end', 'safe', 'on' => 'search'),
+            array('city', 'cityValidator'),
         );
     }
 
@@ -155,7 +156,7 @@ class Address extends BaseActiveRecordVersioned
         }
 
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-            if (!empty($this->$field) && trim($this->$field) != ',') {
+            if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
                 if ($field == 'address1') {
                     $line = str_replace(',', '', $line);
@@ -217,12 +218,23 @@ class Address extends BaseActiveRecordVersioned
             if ($this->isNewRecord && !$this->address_type_id) {
                 // make correspondence the default address type
                 $this->address_type_id = AddressType::CORRESPOND;
+                $this->address1 = str_replace("\T\\", "&", $this->address1);
+                $this->address2 = str_replace("\T\\", "&", $this->address2);
+                $this->city = str_replace("\T\\", "&", $this->city);
             }
 
             return true;
         }
 
         return false;
+    }
+
+    public function cityValidator($attribute, $param){
+        if (isset($this->city)) {
+            if (1 === preg_match('~[0-9]~', $this->city)) {
+                $this->addError($attribute, "City has Numeric values");
+            }
+        }
     }
 
     public function getDefaultCountryId(){

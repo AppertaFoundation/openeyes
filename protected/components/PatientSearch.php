@@ -18,10 +18,6 @@
  */
 class PatientSearch
 {
-    // NHS number (assume 10 digit number is an NHS number)
-    const NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
-    const NHS_NUMBER_REGEX_2 = '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
-
     const HOSPITAL_NUMBER_SEARCH_PREFIX = '(H|Hosnum)\s*[:;]\s*';
 
     // Hospital number (assume a < 10 digit number is a hosnum)0
@@ -66,15 +62,19 @@ class PatientSearch
         );
 
         // NHS number
-        if ($nhs = $this->getNHSnumber($term)) {
+        $nhs = $this->getNHSnumber($term);
+        if ($nhs) {
             $search_terms['nhs_num'] = $nhs;
+        }
 
-        // Hospital number (assume a < 10 digit number is a hosnum)
-        } elseif ($hos_num = $this->getHospitalNumber($term)) {
+       $hos_num = $this->getHospitalNumber($term);
+       if ($hos_num) {
             $search_terms['hos_num'] = $hos_num;
+       }
 
         // Patient name
-        } elseif ($name = $this->getPatientName($term)) {
+        $name = $this->getPatientName($term);
+        if (!$nhs && !$hos_num && $name) {
             $search_terms['first_name'] = trim($name['first_name']);
             $search_terms['last_name'] = trim($name['last_name']);
         }
@@ -163,8 +163,12 @@ class PatientSearch
      */
     public function getNHSnumber($term)
     {
+        // NHS number (assume 10 digit number is an NHS number)
+        $NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
+        $NHS_NUMBER_REGEX_2 = isset(Yii::app()->params['nhs_num_length'])  ? '/^([0-9]{'.Yii::app()->params['nhs_num_length'].'})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+
         $result = null;
-        if (preg_match(self::NHS_NUMBER_REGEX_1, $term, $matches) || preg_match(self::NHS_NUMBER_REGEX_2, $term, $matches)) {
+        if (preg_match($NHS_NUMBER_REGEX_1, $term, $matches) || preg_match($NHS_NUMBER_REGEX_2, $term, $matches)) {
             $nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
             $nhs = str_replace(array('-', ' '), '', $nhs);
             $result = $nhs;

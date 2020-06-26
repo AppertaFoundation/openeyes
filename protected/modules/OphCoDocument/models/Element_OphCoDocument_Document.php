@@ -19,8 +19,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            //array('single_document_id', 'required'),
             array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type, comment', 'safe'),
+            array('single_document_id', 'documentRequired'),
         );
     }
 
@@ -52,6 +52,12 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
             'document_id' => 'Document',
             'comment' => 'Comments'
         );
+    }
+
+    public function documentRequired($attribute, $params) {
+        if ($this->getScenario() != "fileDeleted" && !$this->single_document && (!$this->left_document && !$this->right_document)) {
+            $this->addError($attribute, 'at least one document is required.');
+        }
     }
 
     /**

@@ -24,7 +24,9 @@ $widget = $this;
             <?php } else { ?>
             <table>
                 <colgroup>
-                    <col class="cols-7">
+                    <col>
+                    <col class="cols-fifth">
+                    <col class="cols-2">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
@@ -34,18 +36,21 @@ $widget = $this;
                         </td>
                         <td>
                             <?php if (array_key_exists('link', $operation)) { ?>
-                                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
+                                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>
                             <?php } ?>
                         </td>
-                        <td>
+                        <td class="nowrap">
                             <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
                             <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>
                         <td>
-                                                    <span class="oe-date">
-                                                        <?= array_key_exists('object', $operation) ?
-                                                            $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
-                                                    </span>
+                            <span class="oe-date">
+                                <?= array_key_exists('object', $operation) ?
+                                    $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <strong><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayHasOperation() : ''; ?></strong>
                         </td>
                     </tr>
                         <?php }

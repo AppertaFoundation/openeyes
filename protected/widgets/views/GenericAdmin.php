@@ -38,7 +38,7 @@
     if ($filters_ready) { ?>
         <?= CHtml::beginForm() ?>
 
-        <table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?>">
+        <table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?> ">
             <thead>
                 <tr>
                     <?php if ($display_order) { ?>
@@ -47,7 +47,7 @@
                     }
                     if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
-                    <?php endif;?>
+                                <?php endif;?>
                     <?php foreach ($extra_fields as $field) {?>
                         <th>
                             <?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
@@ -70,13 +70,13 @@
 ?>
 
 <?php foreach ($items as $i => $row) {
-    $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field));
+    $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field, 'input_class' => $input_class));
 }
 
 if (!$get_row && $filters_ready) {
     if (!$this->new_row_url) {
         $this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
-                            'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
+                            'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'input_class' => $input_class));
     } ?>
             </tbody>
             <?php if ($model::model()->hasAttribute('default')) {?>

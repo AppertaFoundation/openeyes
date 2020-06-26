@@ -102,4 +102,14 @@ class DefaultController extends BaseAdminController
             ));
     }
 
+    public function actionDispenseCondition()
+    {
+        $this->render('/admin/dispense_condition/index');
+    }
+
+    public function actionDispenseLocation()
+    {
+        $this->render('/admin/dispense_location/index');
+    }
+
 }

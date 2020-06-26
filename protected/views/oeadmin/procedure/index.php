@@ -80,6 +80,7 @@
             <th>Aliases</th>
             <th>Has Benefits</th>
             <th>Has Complications</th>
+            <th>Whiteboard Risks</th>
             <th>Active</th>
         </tr>
         </thead>
@@ -109,6 +110,10 @@
                 <td><?php echo implode(", ", array_map(function ($complication) {
                         return $complication->name;
                     }, $procedure->complications)); ?>
+                </td>
+                <td><?php echo implode(", ", array_map(function ($risk) {
+                        return $risk->name;
+                    }, $procedure->risks)); ?>
                 </td>
                 <td>
                     <?php echo ($procedure->active) ?

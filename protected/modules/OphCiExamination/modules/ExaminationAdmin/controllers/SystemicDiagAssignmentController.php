@@ -26,13 +26,6 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet';
 
-    public function accessRules()
-    {
-        return [
-            ['allow', 'users' => ['@']],
-        ];
-    }
-
     /**
      * Lists all models.
      */
@@ -65,7 +58,7 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
         $this->render('/systemicdiagnosesassignment/edit', [
             'model' => $model,
             'errors' => $errors,
-            'title' => 'Create required risk set',
+            'title' => 'Create required systemic diagnosis set',
         ]);
     }
 
@@ -87,7 +80,7 @@ class SystemicDiagAssignmentController extends BaseAssignmentController
         $this->render('/systemicdiagnosesassignment/edit', [
             'errors' => isset($errors) ? $errors : '',
             'model' => $model,
-            'title' => 'Edit required risk set',
+            'title' => 'Edit required systemic diagnosis set',
         ]);
     }
 

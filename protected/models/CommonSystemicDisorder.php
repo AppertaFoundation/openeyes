@@ -23,6 +23,8 @@
  *
  * @property int $id
  * @property string $disorder_id
+ * @property int $display_order
+ * @property int $group_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
@@ -52,14 +54,10 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
         return array(
             array('disorder_id', 'required'),
-            array('disorder_id', 'length', 'max' => 10),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, disorder_id', 'safe', 'on' => 'search'),
+            array('disorder_id', 'length', 'max' => 20),
+            array('id, disorder_id, group_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -68,10 +66,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
         return array(
-            'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+            'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
         );
     }
 
@@ -107,25 +103,35 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return Disorders[]
+     * @return Disorder[]
      */
     public static function getDisorders()
     {
         return Disorder::model()->findAll(array(
             'condition' => 'specialty_id is null',
-            'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
-            'order' => 'term',
+            'join' => 'JOIN common_systemic_disorder csd ON csd.disorder_id = t.id',
+            'order' => 'csd.display_order',
+        ));
+    }
+
+    public static function getCommonSystemicDisorders()
+    {
+        return CommonSystemicDisorder::model()->findAll(array(
+            'condition' => 'specialty_id is null',
+            'join' => 'JOIN disorder ON t.disorder_id = disorder.id',
+            'order' => 't.display_order',
         ));
     }
 
     public static function getDisordersWithDiabetesInformation()
     {
         $diagnoses = [];
-        foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
+        foreach (CommonSystemicDisorder::getCommonSystemicDisorders() as $common_systemic_disorder) {
             $diagnoses[] = [
-                'term' => $disorder->term,
-                'id' => $disorder->id,
-                'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET)
+                'term' => $common_systemic_disorder->disorder->term,
+                'id' => $common_systemic_disorder->disorder->id,
+                'group_id' => $common_systemic_disorder->group_id,
+                'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($common_systemic_disorder->disorder_id), Disorder::$SNOMED_DIABETES_SET)
             ];
         }
         return $diagnoses;

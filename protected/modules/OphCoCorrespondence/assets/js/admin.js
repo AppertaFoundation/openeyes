@@ -71,8 +71,10 @@ $(document).ready(function() {
 	//Add a shortcode to the current editor at the cursor position
 	$('#shortcode').change(function() {
 		if ($(this).val() !== '') {
-      tinyMCE.activeEditor.execCommand('mceInsertContent', false, '['+$(this).val()+']');
-			$(this).val('');
+			if(tinyMCE.activeEditor) {
+				tinyMCE.activeEditor.execCommand('mceInsertContent', false, '[' + $(this).val() + ']');
+				$(this).val('');
+			}
 		}
 	});
 

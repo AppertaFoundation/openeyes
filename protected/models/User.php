@@ -39,6 +39,7 @@ class User extends BaseActiveRecordVersioned
      * @var string
      */
     public $password_repeat;
+    public $password_hashed;
 
     /**
      * Returns the static model of the specified AR class.
@@ -82,60 +83,49 @@ class User extends BaseActiveRecordVersioned
                 'safe',
             ),
         );
+        $user = Yii::app()->request->getPost('User');
+        // if the global firm rights is set to No, at least one context needs to be selected
+        if ($user['global_firm_rights'] == 0) {
+            $commonRules = array_merge(
+                $commonRules,
+                array(
+                    array('firms', 'required'),
+                )
+            );
+        }
 
         if (Yii::app()->params['auth_source'] == 'BASIC') {
-            $user = Yii::app()->request->getPost('User');
+            $pw_restrictions = $this->getPasswordRestrictions();
+            $generalUserRules = array(
+                array(
+                    'username',
+                    'match',
+                    'pattern' => '/^[\w|\.\-_\+@]+$/',
+                    'message' => 'Only letters, numbers and underscores are allowed for usernames.',
+                ),
+                array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+                array('username, first_name, last_name', 'length', 'max' => 40),
+                array(
+                    'password',
+                    'length',
+                    'min' => $pw_restrictions['min_length'],
+                    'tooShort' => $pw_restrictions['min_length_message'],
+                    'max' => $pw_restrictions['max_length'],
+                    'tooLong' => $pw_restrictions['max_length_message'],
+                ),
+                array('password','match','pattern'=> $pw_restrictions['strength_regex'],'message'=> $pw_restrictions['strength_message']),
+                array('email', 'length', 'max' => 80),
+                array('email', 'email'),
+                array('salt', 'length', 'max' => 10),
+                // Added for password comparison functionality
+                array('password_repeat', 'safe'),
+            );
+            $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
 
             if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
-                return array_merge(
-                    $commonRules,
-                    array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => 5,
-                            'message' => 'Passwords must be at least 6 characters long.',
-                        ),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
+                return array_merge($commonRules, $surgeonRules, $generalUserRules);
             } else {
-                return array_merge(
-                    $commonRules,
-                    array(
-                        array(
-                            'username',
-                            'match',
-                            'pattern' => '/^[\w|\.\-_\+@]+$/',
-                            'message' => 'Only letters, numbers and underscores are allowed for usernames.',
-                        ),
-                        array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-                        array('username, password, first_name, last_name', 'length', 'max' => 40),
-                        array(
-                            'password',
-                            'length',
-                            'min' => 5,
-                            'message' => 'Passwords must be at least 6 characters long.',
-                        ),
-                        array('email', 'length', 'max' => 80),
-                        array('email', 'email'),
-                        array('salt', 'length', 'max' => 10),
-                        // Added for password comparison functionality
-                        array('password_repeat', 'safe'),
-                    )
-                );
+                return array_merge($commonRules, $generalUserRules);
             }
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
             return array_merge(
@@ -176,7 +166,8 @@ class User extends BaseActiveRecordVersioned
                 'firm_id',
                 'through' => 'firm_preferences',
                 'order' => 'firm_preferences.position DESC',
-                'limit' => 6,
+                'limit' => (string)SettingMetadata::model()->getSetting('recent_context_firm_limit'), //Method to get recent_context_firm_limit from setting_installation (default is 6)
+                'group' => 'user_id, firm_id',
             ),
             'firmSelections' => array(
                 self::MANY_MANY,
@@ -196,7 +187,8 @@ class User extends BaseActiveRecordVersioned
      * @return mixed|null
      * @deprecated - since v2.2
      */
-    public function getIs_doctor(){
+    public function getIs_doctor()
+    {
         return $this->is_surgeon;
     }
 
@@ -242,6 +234,7 @@ class User extends BaseActiveRecordVersioned
             'password_new' => 'New password',
             'password_confirm' => 'Confirm password',
             'global_firm_rights' => 'Global firm rights',
+            'firms' => 'Context',
             'is_consultant' => 'Consultant',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
@@ -272,41 +265,16 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * Saves or updates a db record and creates the salt for a new record of
-     *    authentication type 'basic'.
-     *
-     * @return bool
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false, $save_archive = false)
-    {
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
-            /*
-             * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
-             */
-            if ($this->getIsNewRecord() && !$this->salt) {
-                $salt = '';
-                $possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-                for ($i = 0; $i < 10; ++$i) {
-                    $salt .= $possible[mt_rand(0, strlen($possible) - 1)];
-                }
-
-                $this->salt = $salt;
-            }
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
-    }
-
-    /**
      * Hashes the user password for insertion into the db.
      */
     protected function afterValidate()
     {
         parent::afterValidate();
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
-            $this->password = $this->hashPassword($this->password, $this->salt);
+        if (!$this->password_hashed) {
+            $this->salt = null;
+            $this->password = $this->hashPassword($this->password, null);
+            $this->password_hashed = true;
         }
     }
 
@@ -320,6 +288,9 @@ class User extends BaseActiveRecordVersioned
      */
     public function hashPassword($password, $salt)
     {
+        if (!$salt) {
+            return password_hash($password, PASSWORD_BCRYPT);
+        }
         return md5($salt . $password);
     }
 
@@ -330,12 +301,27 @@ class User extends BaseActiveRecordVersioned
      * else return false.
      *
      * @param string $password
+     * @throws Exception
      *
      * @return bool
      */
     public function validatePassword($password)
     {
-        return $this->hashPassword($password, $this->salt) === $this->password;
+        if (!$this->salt) {
+            return password_verify($password, $this->password);
+        }
+        if ($this->hashPassword($password, $this->salt) === $this->password) {
+            // Regenerate the hash using the new method.
+            $this->salt = null;
+            $this->password = $this->hashPassword($password, null);
+            if (!$this->saveAttributes(array('password','salt'))) {
+                $this->audit('login', 'auto-encrypt-password-failed', "user_id = {$this->id}, with error :". var_export($this->getErrors(), true));
+                return false;
+            }
+            $this->audit('login', 'auto-encrypt-password', "user_id = {$this->id}");
+            return password_verify($password, $this->password);
+        }
+        return false;
     }
 
     /**
@@ -404,6 +390,14 @@ class User extends BaseActiveRecordVersioned
     public function getFullNameAndTitle()
     {
         return implode(' ', array($this->title, $this->first_name, $this->last_name));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstInitialFullNameAndTitle()
+    {
+        return implode(' ', array($this->title, strtoupper($this->first_name[0]), $this->last_name));
     }
 
     /**
@@ -487,13 +481,14 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
+        
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
         }
 
-        if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
+        if (!$this->password_hashed) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
             }
@@ -609,10 +604,44 @@ class User extends BaseActiveRecordVersioned
 
         foreach ($added_roles as $role) {
             Yii::app()->authManager->assign($role, $this->id);
+//            If one of the roles added is an admin, then provide the user with permissions to manage all trials - CERA -523
+            if ($role == 'admin') {
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $newPermission = new UserTrialAssignment();
+                    $newPermission->user_id = $this->id;
+                    $newPermission->trial_id = $trial->id;
+                    $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
+                    if (UserTrialAssignment::model()->exists($criteria) == false) {
+                        if (!$newPermission->save()) {
+                            throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
+                                . print_r($newPermission->getErrors(), true));
+                        }
+                    }
+                }
+            }
         }
 
         foreach ($removed_roles as $role) {
             Yii::app()->authManager->revoke($role, $this->id);
+//            If one of the roles removed from the user is that of an admin, thhn remove ability to manage trials not owned by the user - CERA-523
+            if ($role == 'admin') {
+                $trials = Trial::model()->findAll();
+                foreach ($trials as $trial) {
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id AND role IS NULL AND is_principal_investigator=:is_principal_investigator AND is_study_coordinator=:is_study_coordinator';
+                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id,':is_principal_investigator'=>0,':is_study_coordinator'=>0 );
+                    if (UserTrialAssignment::model()->exists($criteria)) {
+                        if (!UserTrialAssignment::model()->deleteAll($criteria)) {
+                            throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
+                                . print_r(UserTrialAssignment::model()->getErrors(), true));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -743,6 +772,44 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
+     * @return array
+     */
+    protected function getPasswordRestrictions()
+    {
+        $pw_restrictions = Yii::app()->params['pw_restrictions'];
+
+        if ($pw_restrictions===null) {
+            $pw_restrictions = array(
+                'min_length' => 8,
+                'min_length_message' => 'Passwords must be at least 8 characters long',
+                'max_length' => 70,
+                'max_length_message' => 'Passwords must be at least 70 characters long',
+                'strength_regex' => '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%',
+                'strength_message' => 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+            );
+        }
+        if (!isset($pw_restrictions['min_length'])) {
+            $pw_restrictions['min_length'] = 8;
+        }
+        if (!isset($pw_restrictions['min_length_message'])) {
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+        }
+        if (!isset($pw_restrictions['max_length'])) {
+            $pw_restrictions['max_length'] = 70;
+        }
+        if (!isset($pw_restrictions['max_length_message'])) {
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+        }
+        if (!isset($pw_restrictions['strength_regex'])) {
+            $pw_restrictions['strength_regex'] = "%.*%";
+        }
+        if (!isset($pw_restrictions['strength_message'])) {
+            $pw_restrictions['strength_message'] = "N/A";
+        }
+        return $pw_restrictions;
+    }
+
+    /**
      * @param $signature_pin
      * @return bool|string
      */
@@ -801,5 +868,15 @@ class User extends BaseActiveRecordVersioned
         }
 
         return $users_with_roles;
+    }
+
+    public function getUserActiveStatus($user)
+    {
+        if ($user->active) {
+            $active = '1';
+        } else {
+            $active = '0';
+        }
+        return $active;
     }
 }

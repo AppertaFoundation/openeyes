@@ -59,12 +59,17 @@ branch=0
 demo=0
 nofiles=0
 showhelp=0
-checkoutparams="--sample-only --no-fix"
+checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
 cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
 restorefile="/tmp/openeyes_sample_data.sql"
+hscic=0
+nopost=0
+postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
+eventimages=1
+fallbackbranch=master
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -78,6 +83,9 @@ do
     	--no-migrate|-nm|--nomigrate) migrate=0
     		## nomigrate will prevent database migrations from running automatically at the end of reset
     		;;
+		--no-event-images|-ni) eventimages=0
+			## Do not generate event lightning images after demo import
+			;;
     	--banner) # set banner textr and move to next param
             bannertext="$2"
             shift
@@ -89,6 +97,9 @@ do
     	--demo) demo=1
     		## Install demo scripts (worklists, etc)
     		;;
+		--develop|-d) fallbackbranch=develop
+			## fallback to the develop branch if the named branch does not exist
+			;;
     	--help) showhelp=1
     		;;
     	--no-files) nofiles=1
@@ -110,6 +121,13 @@ do
     	--no-fix) nofix=1
     		## do not run oe-fix (useful when calling from other scripts)
     	;;
+		--no-post) nopost=1
+		    ## do not run local post reset scripts
+		;;
+		--post-path) # change the location of the local-post folder
+			postpath="$2"
+			shift
+		;;
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
@@ -119,6 +137,9 @@ do
 		-f|--custom-file) # use a custom database backup for the restore
 			restorefile="$2"
 			shift
+		;;
+		--hscic|-hscic|-gp|--gp) hscic=1
+			# run the hscic import after reset
 		;;
     	*)  if [ "$p" == "--hard" ]; then
                 echo "Unknown parameter $p $2"
@@ -132,11 +153,10 @@ do
     shift # move to next parameter
 done
 
-# If we are checking out new branch,then pass all unprocessed commands to checkout command and set single-branch and depth for speed
+# If we are checking out new branch,then pass all unprocessed commands to checkout command
 # Else, throw error and list unknown commands
 if  [ ${#PARAMS[@]} -gt 0 ]; then
     if [ "$branch" != "0" ]; then
-		checkoutparams="$chekoutparams --depth 1 --single-branch"
         for i in "${PARAMS[@]}"
         do
             checkoutparams="$checkoutparams $i"
@@ -183,9 +203,11 @@ if [ $showhelp = 1 ]; then
 	echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
 	echo "	--ignore-warnings	: Ignore warnings during migration"
 	echo "	--no-fix		: do not run oe-fix routines after reset"
+	echo "  --no-post       : do not run local post reset scripts"
 	echo "	--custom-file"
 	echo "			| -f:	: Use a custom .sql file to restore instead of default. e.g; "
 	echo "					  'oe-reset -f <filename>.sql' "
+	echo "  --hscic         : Run the hscic import after reset"
 	echo ""
     exit 1
 fi
@@ -211,7 +233,7 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 
-    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
+    bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
 fi
 
 echo "Clearing current database..."
@@ -227,15 +249,24 @@ echo ""
 
 if [ $nofiles = "0" ]; then
 	echo Deleting protected files
+	# remove protected/files
 	sudo rm -rf $WROOT/protected/files/*
+	# remove any docman process files
 	sudo rm -rf /tmp/docman
+	# remove hscic import history (otherwise hscic import requires --force to run after reset)
+	if [ -d $WROOT/protected/data/hscic ]; then
+		sudo find $WROOT/protected/data/hscic ! -name 'temp' -type d -exec rm -rf {} + ;
+	fi
 fi
 
 if [ $cleanbase = "0" ]; then
   # Extract or copy sample DB (since v3.2 db has been zipped)
   rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && cp $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp || :
-  [ -f $MODULEROOT/sample/sql/sample_db.zip ] && unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp || :
+  if [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ]; then 
+  	cp -f $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp
+  elif [ -f $MODULEROOT/sample/sql/sample_db.zip ]; then
+  	unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp
+  fi
 
 	echo "Re-importing database"
 	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
@@ -243,7 +274,7 @@ fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
 # First checks OE_INSTITUTION_CODE environment variable. Otherwise uses value from common.php
-[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
+[ ! -z $OE_INSTITUTION_CODE ] && icode=$OE_INSTITUTION_CODE || icode=$(grep -oP "(?<=institution_code. => getenv\(\'OE_INSTITUTION_CODE\'\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=institution_code. => \!empty\(trim\(getenv\(\'OE_INSTITUTION_CODE\'\)\)\) \? getenv\(\'OE_INSTITUTION_CODE\'\) :.\').*?(?=\',)|(?<=\'institution_code. => \').*?(?=.,)" $WROOT/protected/config/local/common.php)
 if [ ! -z $icode ]; then
 
 	echo "
@@ -286,21 +317,24 @@ if [ $migrate = "1" ]; then
 fi
 
 # Run demo scripts
+# Actual scripts are in sample module, for greater flexibility
 if [ $demo = "1" ]; then
 
 	echo "RUNNING DEMO SCRIPTS..."
 
+	basefolder="$MODULEROOT/sample/sql/demo"
+
 	shopt -s nullglob
-	for f in $(ls $MODULEROOT/sample/sql/demo | sort -V)
-	do
+	for f in $(ls $basefolder | sort -V)
+    do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/$f"
+			bash -l "$basefolder/$f"
 		fi
-	done
+    done
 fi
 
 # Run genetics scripts if genetics is enabled
@@ -308,15 +342,17 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
 
 	echo "RUNNING Genetics files..."
 
+	basefolder="$MODULEROOT/sample/sql/demo/genetics"
+
 	shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/genetics | sort -V)
+    for f in $(ls $basefolder | sort -V)
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/genetics/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/genetics/$f"
+			bash -l "$basefolder/$f"
 		fi
     done
 
@@ -335,25 +371,50 @@ if [ ! $nobanner = "1" ]; then
 fi
 
 # Run local post-migaration demo scripts
-if [ $demo = "1" ]; then
+if [ $nopost = "0" ]; then
 
 	echo "RUNNING POST RESET SCRIPTS..."
 
+	basefolder="$MODULEROOT/sample/sql/demo/local-post"
+
 	shopt -s nullglob
-    for f in $(ls $MODULEROOT/sample/sql/demo/local-post | sort -V)
+    for f in $(ls $postpath | sort -V)
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/local-post/$f
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
-			bash -l "$MODULEROOT/sample/sql/demo/local-post/$f"
+			bash -l "$postpath/$f"
 		fi
     done
 fi
 
 if [ ! $nofix = 1 ]; then
 	bash $SCRIPTDIR/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
+fi
+
+if [ $hscic = 1 ]; then
+	bash $SCRIPTDIR/import-hscic-data.sh --force
+fi
+
+# Generate lightning event images for demo patients
+# Actual script(s) are in sample module, for greater flexibility
+if [[ $eventimages = 1 && $demo = 1 ]]; then
+	echo "RUNNING POST RESET SCRIPTS..."
+
+	basefolder="$MODULEROOT/sample/sql/demo/event-image"
+	shopt -s nullglob
+    for f in $(ls $basefolder | sort -V)
+    do
+		if [[ $f == *.sql ]]; then
+			echo "importing $f"
+			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
+		elif [[ $f == *.sh ]]; then
+			echo "running $f"
+			bash -l "$basefolder/$f"
+		fi
+    done
 fi
 
 # restart the service if we stopped it

@@ -46,64 +46,64 @@
 
     <!-- search options -->
     <table class="search-options">
+        <?php $emergency_list = Yii::app()->request->getParam('emergency_list'); ?>
       <tbody>
       <tr>
         <td>Site:</td>
         <td>
-            <?=\CHtml::dropDownList('site-id', @$_POST['site-id'],
-                Site::model()->getListForCurrentInstitution(), array(
-                    'empty' => 'All sites',
-                    'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+            <?=\CHtml::dropDownList('site-id', Yii::app()->request->getPost('site-id', 'All'),
+                ['All' => 'All sites'] + Site::model()->getListForCurrentInstitution(), array(
+                    'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
                 )) ?>
         </td>
       </tr>
       <tr>
         <td>Theatre:</td>
         <td>
-            <?=\CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array(
-                'empty' => 'All theatres',
-                'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+            <?=\CHtml::dropDownList('theatre-id', Yii::app()->request->getPost('theatre-id', 'All'),
+                ['All' => 'All theatres'] + $theatres, array(
+                'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
             )) ?>
         </td>
       </tr>
-      <tr>
-        <td>Subspeciality:</td>
-        <td>
-            <?=\CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'],
-                Subspecialty::model()->getList(), array(
-                    'empty' => 'All specialties',
-                    'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
-                )) ?>
-        </td>
-      </tr>
+            <tr>
+                <td>Subspeciality:</td>
+                <td>
+                    <?=\CHtml::dropDownList('subspecialty-id', Yii::app()->request->getPost('subspecialty-id', 'All'),
+                        ['All'=>'All specialties']+Subspecialty::model()->getList(), array(
+                            'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
+                        )) ?>
+                </td>
+
+            </tr>
       <tr>
         <td><?= Firm::contextLabel() ?>:</td>
         <td>
-            <?php if (!@$_POST['subspecialty-id']) { ?>
-                <?=\CHtml::dropDownList('firm-id', '', array(),
-                    array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => 'disabled')) ?>
+            <?php $subspecialty_id = Yii::app()->request->getPost('subspecialty-id', 'All');
+            if ($subspecialty_id === '') { ?>
+                <?=\CHtml::dropDownList('firm-id', 'All', ['All'=>'All '.Firm::model()->contextLabel().'s'],
+                    array('disabled' => 'disabled')) ?>
             <?php } else { ?>
-                <?=\CHtml::dropDownList('firm-id', @$_POST['firm-id'],
-                    Firm::model()->getList(@$_POST['subspecialty-id']), array(
-                        'empty' => 'All '.Firm::model()->contextLabel().'s',
-                        'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
-                    )) ?>
+                              <?=\CHtml::dropDownList('firm-id', Yii::app()->request->getPost('firm-id', 'All'),
+                                ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
+                                'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
+                  )) ?>
             <?php } ?>
         </td>
       </tr>
       <tr>
         <td>Ward:</td>
         <td>
-            <?=\CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array(
-                'empty' => 'All wards',
-                'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+            <?=\CHtml::dropDownList('ward-id', Yii::app()->request->getPost('ward-id', 'All'),
+                ['All' => 'All wards'] + $wards, array(
+                'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
             )) ?>
         </td>
       </tr>
       <tr>
         <td>Emergency list</td>
         <td>
-            <?=\CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1)) ?>
+            <?=\CHtml::checkBox('emergency_list', ($emergency_list == 1)) ?>
         </td>
       </tr>
       </tbody>
@@ -111,26 +111,27 @@
 
 
     <h3>Select days</h3>
+      <?php $date_filter = Yii::app()->request->getPost('date-filter', ''); ?>
     <div class="search-date-filters">
       <div class="common-date-ranges flex-layout">
 
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_0"
-                 value="today"<?php if (@$_POST['date-filter'] == 'today') {
+                 value="today"<?php if ($date_filter == 'today') {
                         ?> checked="checked"<?php
                               } ?>>
           Today
         </label>
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_1"
-                 value="week"<?php if (@$_POST['date-filter'] == 'week') {
+                 value="week"<?php if ($date_filter == 'week') {
                         ?> checked="checked"<?php
                              } ?>>
           Next 7 days
         </label>
         <label class="inline highlight">
           <input type="radio" name="date-filter" id="date-filter_2"
-                 value="month"<?php if (@$_POST['date-filter'] == 'month') {
+                 value="month"<?php if ($date_filter == 'month') {
                         ?> checked="checked"<?php
                               } ?>>
           Next 30 days
@@ -142,8 +143,8 @@
       <h3>Filter by Date</h3>
 
       <div class="flex-layout">
-            <?=\CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
-            <?=\CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
+            <?=\CHtml::textField('date-start', Yii::app()->request->getPost('date-start', date('Y-m-d')), array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
+            <?=\CHtml::textField('date-end', Yii::app()->request->getPost('date-end', date('Y-m-d')), array('class' => 'cols-5', 'placeholder' => 'to')) ?>
       </div>
 
       <div class="flex-layout v-pad">
@@ -190,17 +191,3 @@
   }
 </style>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        pickmeup('#date-start', {
-            format: 'Y-m-d',
-            hide_on_select: true,
-        });
-        pickmeup('#date-end', {
-            format: 'Y-m-d',
-            hide_on_select: true,
-        });
-
-        return getDiary();
-    });
-</script>

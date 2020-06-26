@@ -65,7 +65,7 @@ class Procedure extends BaseActiveRecordVersioned
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
             array('term, short_format, snomed_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
         );
     }
 
@@ -83,6 +83,7 @@ class Procedure extends BaseActiveRecordVersioned
             'opcsCodes' => array(self::MANY_MANY, 'OPCSCode', 'proc_opcs_assignment(proc_id, opcs_code_id)'),
             'additional' => array(self::MANY_MANY, 'Procedure', 'procedure_additional(proc_id, additional_proc_id)'),
             'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
+            'risks' => array(self::MANY_MANY, '\OEModule\OphCiExamination\models\OphCiExaminationRisk', 'procedure_risk(proc_id, risk_id)'),
             'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
         );
     }
@@ -155,14 +156,14 @@ class Procedure extends BaseActiveRecordVersioned
         $where .= ' and proc.active = 1';
 
         return Yii::app()->db->createCommand()
-            ->select('term')
+            ->select('proc.term as label,proc.id')
             ->from('proc')
             ->where($where, array(
                 ':term' => $term,
                 ':search' => $search,
             ))
             ->order('term')
-            ->queryColumn();
+            ->queryAll();
     }
 
     /**
@@ -239,8 +240,8 @@ class Procedure extends BaseActiveRecordVersioned
         if ($count > 1) {
             //At this moment, only Cataract and Biometry can be saved together
             foreach ($this->$attribute as $attr) {
-                $is_cataract =  $attr->class_name == 'Element_OphTrOperationnote_Cataract' ? true : $is_cataract;
-                $is_biometry =  $attr->class_name == 'Element_OphTrOperationnote_Biometry' ? true : $is_biometry;
+                $is_cataract =  $attr->class_name === 'Element_OphTrOperationnote_Cataract' ? true : $is_cataract;
+                $is_biometry =  $attr->class_name === 'Element_OphTrOperationnote_Biometry' ? true : $is_biometry;
             }
 
             if ($count != 2 || !$is_cataract || !$is_biometry) {
@@ -321,6 +322,16 @@ class Procedure extends BaseActiveRecordVersioned
     protected function get_has_complications()
     {
         return count($this->complications) > 0;
+    }
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @return bool
+     * @codingStandardsIgnoreStart
+     */
+    protected function get_has_risks()
+    {
+        return count($this->risks) > 0;
     }
     // @codingStandardsIgnoreEnd
 }

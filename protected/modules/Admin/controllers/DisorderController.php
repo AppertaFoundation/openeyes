@@ -16,7 +16,6 @@
 class DisorderController extends BaseAdminController
 {
     public $items_per_page = 60;
-
     public $group = 'Disorders';
 
     public function actionList()
@@ -24,7 +23,7 @@ class DisorderController extends BaseAdminController
         Audit::add('admin', 'list', null, false,
             array('module' => 'OphTrOperationnote',
                 'model' => 'Disorder'));
-        $query = \Yii::app()->request->getQuery('q');
+        $query = \Yii::app()->request->getQuery('searchQuery');
         $specialty = \Yii::app()->request->getQuery('specialty');
         $criteria = new \CDbCriteria();
         $criteria->order = 'fully_specified_name';
@@ -65,11 +64,15 @@ class DisorderController extends BaseAdminController
         }
         if ($request->getPost('Disorder')) {
             $model->attributes = $request->getPost('Disorder');
-            if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'Disorder saved');
-                $this->redirect(array('List'));
-            } else {
+            if (!$model->validate()) {
                 $errors = $model->getErrors();
+            } else {
+                if ($model->save()) {
+                    Yii::app()->user->setFlash('success', 'Disorder saved');
+                    $this->redirect(array('List'));
+                } else {
+                    $errors = $model->getErrors();
+                }
             }
         }
 
@@ -126,6 +129,6 @@ class DisorderController extends BaseAdminController
             }
         }
 
-        echo json_encode($result);
+        $this->renderJSON($result);
     }
 }

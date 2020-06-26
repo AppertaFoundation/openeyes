@@ -38,7 +38,7 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
     }
 }
 ?>
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" id="<?= $model_name . '_diagnoses_entries_row_' . $row_count ?>">
     <td>
         <?=$values['disorder_display'];?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
@@ -59,14 +59,31 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
         </div>
     </td>
 
-    <?php $this->widget('application.widgets.EyeSelector', [
-        'inputNamePrefix' => $field_prefix,
-        'selectedEyeId' => $values['eye_id'],
-        'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
-    ]); ?>
+    <?php if (isset($is_template) && $is_template) { ?>
+        <td class='nowrap'>
+            <span class='oe-eye-lat-icons'>
+                <label class="inline highlight">
+                <input class="js-right-eye" data-eye-side="right" type="checkbox" value="1" {{#right_eye_checked}} checked="checked"{{/right_eye_checked}} name="<?= $field_prefix ?>[right_eye]" id="<?= $model_name ?>_entries_{{row_count}}_right_eye" /> R</label>
+                <label class="inline highlight">
+                <input class="js-left-eye" data-eye-side="left" type="checkbox" value="1" {{#left_eye_checked}} checked="checked"{{/left_eye_checked}} name="<?= $field_prefix ?>[left_eye]" id="<?= $model_name ?>_entries_{{row_count}}_left_eye" /> L</label >
+            </span>
+        </td>
+    <?php } else {
+        $this->widget('application.widgets.EyeSelector', [
+            'inputNamePrefix' => $field_prefix,
+            'selectedEyeId' => $values['eye_id'],
+            'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
+        ]);
+    }
+    ?>
 
     <td>
-        <?=\CHtml::radioButton("principal_diagnosis_row_key", $values['is_principal'] == 1, ['value' => $row_count]); ?>
+        <?php if (isset($is_template) && $is_template) {  ?>
+            <input value="<?= $row_count ?>" {{#is_principal}} checked="checked"{{/is_principal}} type="radio" name="principal_diagnosis_row_key" id="principal_diagnosis_row_key" />
+        <?php } else {
+            echo \CHtml::radioButton("principal_diagnosis_row_key", $values['is_principal'] == 1, ['value' => $row_count]);
+        }
+        ?>
     </td>
     <td>
           <input id="diagnoses-datepicker-<?= $row_count; ?>"
@@ -91,8 +108,4 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
         <?php endif; ?>
     </td>
 </tr>
-<?php
-$assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
-?>
+

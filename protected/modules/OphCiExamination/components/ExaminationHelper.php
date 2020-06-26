@@ -22,7 +22,7 @@ class ExaminationHelper
                     $right_principals[] = array($patient_episode->diagnosis, $patient_episode->getSubspecialtyText());
                 }
                 if (in_array($patient_episode->eye_id, array(\Eye::LEFT, \Eye::BOTH))) {
-                    $left_principals[] = array($patient_episode->diagnosis, $patient_episode->getSubspecialtyText());;
+                    $left_principals[] = array($patient_episode->diagnosis, $patient_episode->getSubspecialtyText());
                 }
             }
         }
@@ -47,7 +47,9 @@ class ExaminationHelper
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk',
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Comorbidities',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Risks'
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Risks',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement_Archive',
         ));
 
     }

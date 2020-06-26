@@ -16,7 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-5">
+<?php $model_name = CHtml::modelName($model); ?>
+<div class="cols-11">
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-1">
@@ -62,6 +63,24 @@
                     [1 => 'Yes', 0 => 'No'],
                     ['separator' => ' ', 'selected' => '1']
                 ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Sub type icon</td>
+            <td>
+                <fieldset>
+                    <div class="cols-11">
+                        <?php
+                        $sub_type_event_icons = EventIcon::model()->findAll();
+                        foreach ($sub_type_event_icons as $key => $icon) { ?>
+                            <label class="inline highlight" for="<?= $model_name . '_sub_type_event_icon_id_' . $key?>">
+                                <input type="radio" id="<?= $model_name . '_sub_type_event_icon_id_' . $key ?>" <?= $model->sub_type_event_icon_id === $icon->id ? 'checked="checked"' : '' ?>
+                                       name="<?=$model_name?>[sub_type_event_icon_id]" value="<?= $icon->id ?>">
+                                <i class="oe-i-e large <?= $icon->name ?>"></i>
+                            </label>
+                        <?php } ?>
+                    </div>
+                </fieldset>
             </td>
         </tr>
         </tbody>

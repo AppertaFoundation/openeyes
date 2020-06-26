@@ -87,8 +87,12 @@
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
                 serviceName: self.options.currentSubspecialties[i].service,
                 serviceId: self.options.currentSubspecialties[i].firm.id,
+                multiple_services: self.options.currentSubspecialties[i].services_available.length > 0,
+                services_available: self.options.currentSubspecialties[i].services_available
             });
-            currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            if (!inArray(self.options.currentSubspecialties[i].subspecialty.id, currentSubspecialtyIds)) {
+                currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
+            }
         }
 
         // subspecialties/services/contexts initialisation
@@ -151,13 +155,29 @@
         var self = this;
 
         self.content.on('click', selectors.subspecialtyItem, function (e) {
-            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            let selected_subspecialty = self.content.find(selectors.subspecialtyItem + '.selected');
+            let multiple_services = selected_subspecialty.find('.change-service');
+            if (multiple_services.length !== 0) {
+                multiple_services.hide();
+                selected_subspecialty.find('.service').show();
+            }
+            selected_subspecialty.removeClass('selected');
+
             $(this).addClass('selected');
+            let selected_multiple_services = $(this).find('.change-service');
+            if (selected_multiple_services.length !== 0) {
+                $(this).find('.service').hide();
+                selected_multiple_services.show();
+            }
             // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
             if (!$(this).hasClass('new')) {
                 self.removeNewSubspecialty();
             }
             self.updateContextList();
+        });
+
+        self.content.on('click', 'select.change-service', function (e) {
+            e.stopPropagation();
         });
 
         // change of the new subspecialty
@@ -205,7 +225,6 @@
         self.content.on('click', selectors.confirmChangeBtn, function () {
             self.changeEventContext();
         });
-
     };
 
     NewEventDialog.prototype.setDefaultSelections = function () {
@@ -247,7 +266,14 @@
         if (id) {
             // deselect the current subspecialty card to provide clear visual clue to
             // user that they are now on a different path
-            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            let selected_subspecialty = self.content.find(selectors.subspecialtyItem + '.selected');
+            let multiple_services = selected_subspecialty.find('.change-service');
+            if (multiple_services.length !== 0) {
+                multiple_services.hide();
+                selected_subspecialty.find('.service').show();
+            }
+            selected_subspecialty.removeClass('selected');
+
             self.updateContextList();
             var services = self.servicesBySubspecialtyId[id];
             if (services.length === 1) {
@@ -504,7 +530,8 @@
         const selectedSubspecialtyItem = $(selectors.subspecialtyItem).filter('.selected');
         const newSubspecialty = $(selectors.newSubspecialtyItem);
         const selectedWorkflowStepItem = $(selectors.workflowStepItem).filter('.selected');
-        
+        const change_service = selectedSubspecialtyItem.find('.change-service');
+
         if(selectedContextItem.length !== 0){
          //   if((parseInt(self.options.userContext.id) !== selectedContextItem.data('context-id')) || (parseInt(self.options.currentStep.id) !== selectedWorkflowStepItem.data('workflow-id'))) {
                 let postData = {
@@ -519,6 +546,11 @@
                 if(newSubspecialty.length !== 0){
                     postData.selected_firm_id = newSubspecialty.data('service-id');
                 }
+
+                if (change_service.length > 0) {
+                    postData.change_service = change_service.children("option:selected"). val();
+                }
+
                 $('nav.event-header').append($('<div>', {"class": 'spinner-loader'}).append($('<i>', {"class": "spinner"})));
 
                 if (postData !== undefined) {

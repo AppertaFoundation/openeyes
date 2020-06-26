@@ -132,7 +132,6 @@ EOH;
         $pending_documents = $this->getDocumentsByOutputStatus("PENDING");
         foreach ($pending_documents as $document) {
             $this->event = Event::model()->findByPk($document->document_target->document_instance->correspondence_event_id);
-
             $this->processDocumentOutput($document);
         }
     }
@@ -203,6 +202,7 @@ EOH;
         $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
         $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
         $criteria->addCondition("e.deleted = 0");
+        $criteria->addCondition("e.delete_pending = 0");
 
         $criteria_string = '';
         if ($this->with_internal_referral) {

@@ -205,7 +205,7 @@ class DefaultController extends BaseEventTypeController
             $bookings = array();
 
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                $bookings = $api->getOperationsForEpisode($this->patient);
+                $bookings = $api->getIncompleteOperationsForEpisode($this->patient);
             }
 
             $this->title = 'Please select booking';
@@ -320,7 +320,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        echo json_encode($users);
+        $this->renderJSON($users);
     }
 
     public function actionDoPrint($id)

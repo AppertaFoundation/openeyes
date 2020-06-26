@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,29 +19,34 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <?php $this->renderPartial('//base/head/_meta'); ?>
     <?php $this->renderPartial('//base/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes oe-grid">
-<!-- Minimum screed width warning -->
-<div id="oe-minimum-width-warning">Device width not supported</div>
 
-<!--    --><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-    <?php $this->renderPartial('//base/_debug'); ?>
+<?php $training_mode = SettingMetadata::checkSetting('training_mode_enabled', 'on')
+  ? 'training-mode' : '';
+?>
+<body class="open-eyes oe-grid <?=$training_mode?>">
+    <!-- Minimum screed width warning -->
+    <div id="oe-minimum-width-warning">Device width not supported</div>
 
-  <!-- Branding (logo) -->
-  <div class="openeyes-brand">
+    <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
+
+    <!-- Branding (logo) -->
+    <div class="openeyes-brand">
         <?php $this->renderPartial('//base/_brand'); ?>
-  </div>
-<div id="oe-restrict-print">
-    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
-</div>
+    </div>
+    <div id="oe-restrict-print">
+        <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+    </div>
     <?php $this->renderPartial('//base/_header'); ?>
 
-            <?php echo $content; ?>
+    <?php echo $content; ?>
 
-        <?php $this->renderPartial('//base/_footer'); ?>
+    <?php $this->renderPartial('//base/_footer'); ?>
 </body>
+
 </html>

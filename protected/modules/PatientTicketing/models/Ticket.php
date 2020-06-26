@@ -138,6 +138,7 @@ class Ticket extends \BaseActiveRecordVersioned
     {
         return array(
             'event_id' => 'Source Event',
+            'priority_id' => 'Priority',
         );
     }
 
@@ -218,6 +219,15 @@ class Ticket extends \BaseActiveRecordVersioned
     public function hasHistory()
     {
         return count($this->queue_assignments) > 1;
+    }
+
+    /*
+     * returns true if ticket has any recorded queue assignments
+     *
+     * */
+    public function hasRecordedQueueAssignments()
+    {
+        return !empty($this->queue_assignments);
     }
 
     /**

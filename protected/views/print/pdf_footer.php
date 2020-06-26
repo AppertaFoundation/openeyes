@@ -18,6 +18,7 @@
 		}
 
 		var docrefs = {{DOCREFS}};
+		docrefs[document_no] = docrefs[document_no].replace("\{\{PAGE\}\}", vars['page']);
 		var y = document.getElementsByClassName('docref');
 		for (var j=0; j<y.length; j++) {
 			y[j].innerHTML = docrefs[document_no];
@@ -40,7 +41,7 @@
 
 		var y = document.getElementsByClassName('patient_hosnum');
 		for (var j=0; j<y.length; j++) {
-			y[j].innerHTML = "Hosp No: " + patient_hosnums[document_no];
+			y[j].innerHTML = "{{Hos No}}: " + patient_hosnums[document_no];
 		}
 
 		var y = document.getElementsByClassName('patient_nhsnum');

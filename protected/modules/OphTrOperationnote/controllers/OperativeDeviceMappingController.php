@@ -18,7 +18,7 @@
  */
 class OperativeDeviceMappingController extends BaseAdminController
 {
-    public $group = 'Operation Note';
+    public $group = 'Operation note';
 
     /**
      * To list the operative devices per site per subspeciality
@@ -224,7 +224,7 @@ class OperativeDeviceMappingController extends BaseAdminController
                     'id' => $resultRow->id,
                 );
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 

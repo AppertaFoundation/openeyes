@@ -18,7 +18,6 @@ class NodAuditReport extends Report implements ReportInterface
     public function __construct($app)
     {
         $this->months = $app->getRequest()->getQuery('months', 4);
-        $this->months = ceil($this->months*30);
 
         parent::__construct($app);
     }
@@ -74,6 +73,8 @@ class NodAuditReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo, $type)
     {
+        $unit = 'MONTH';
+        $num = $this->months;
         $this->command->reset();
         $this->command->from('et_ophtroperationnote_cataract eoc')
             ->join('event e1', 'eoc.event_id = e1.id')
@@ -92,10 +93,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eov.id as va_element_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
-                    ->group('e2.id');
+                    ->join('et_ophciexamination_visualacuity eov', 'eov.event_id = e2.id')
+                    ->andWhere("ABS(date_diff('MONTH',e2.event_date,e1.event_date)) <= :month", array(':month' => 6))
+                    ->group('e2.id, e1.id');
                 break;
             //refraction
             case 'RF':
@@ -104,10 +104,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eor.id as refraction_element_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
-                    ->andWhere('(DATEDIFF(e1.event_date,e2.event_date) <= 30 AND TIMEDIFF(e1.event_date,e2.event_date)>0) 
-                                OR (DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0)', array(':days'=>$this->months))
-                    ->group('e2.id');
+                    ->join('et_ophciexamination_refraction eor', 'eor.event_id = e2.id')
+                    ->andWhere("ABS(date_diff('$unit',e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
+                    ->group('e2.id, e1.id');
                 break;
             //biometry
             case 'BM':
@@ -115,12 +114,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eoc.event_id as cataract_event_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophinbiometry_measurement eom', 'eom.event_id = e2.id')
-                    ->leftJoin('ophinbiometry_imported_events oie', 'oie.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_selection eos', 'eos.event_id = e2.id')
-                    ->leftJoin('et_ophinbiometry_calculation eoc2', 'eoc2.id = eos.formula_id_left')
+                    ->join('et_ophinbiometry_measurement eom', 'eom.event_id = e2.id')
                     ->andWhere('eom.deleted = 0')
-                    ->andWhere('DATEDIFF(e1.event_date,e2.event_date) <= :days AND TIMEDIFF(e1.event_date, e2.event_date)>0', array(':days'=> $this->months));
+                    ->group('e2.id, e1.id');
                 break;
             case 'CT':
                 $this->command->select('eoc.id as cataract_element_id, 
@@ -137,9 +133,9 @@ class NodAuditReport extends Report implements ReportInterface
                                         eopc.id as post_op_complication_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->leftJoin('et_ophciexamination_postop_complications eopc', 'eopc.event_id = e2.id')
-                    ->andWhere('DATEDIFF(e2.event_date,e1.event_date) <= :days AND TIMEDIFF(e2.event_date, e1.event_date)>0', array(':days'=>$this->months))
-                    ->group('e2.id');
+                    ->join('et_ophciexamination_postop_complications eopc', 'eopc.event_id = e2.id')
+                    ->andWhere("ABS(date_diff('$unit',e2.event_date,e1.event_date)) <= :month", array(':month' => $num))
+                    ->group('e2.id, e1.id');
                 break;
             // indication for surgery
             case 'IS':
@@ -153,7 +149,10 @@ class NodAuditReport extends Report implements ReportInterface
                                         eoc.event_id as cataract_event_id, 
                                         e1.event_date as cataract_date, 
                                         e2.event_date as other_date')
-                    ->andWhere('eoc.id IS NULL');
+                    ->join('et_ophtroperationnote_procedurelist eop', 'eoc.event_id = eop.event_id')
+                    ->join('et_ophciexamination_cataractsurgicalmanagement eocsc', 'eocsc.event_id = e2.id')
+                    ->andWhere('IF(eop.eye_id = 1, eocsc.left_guarded_prognosis, eocsc.right_guarded_prognosis) = 1')
+                    ->group('e2.id, e1.id');
                 break;
             case 'E/I':
                 $this->command->select('eoc.id as cataract_element_id, eoc.event_id as cataract_event_id, ep1.patient_id as patient_id,')
@@ -169,6 +168,20 @@ class NodAuditReport extends Report implements ReportInterface
                     ->andWhere('et_ophtroperationnote_surgeon.surgeon_id IS NOT NULL')
                     ->group('eoc.id');
                 break;
+            case 'CATPROM5':
+                if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                    $this->command->select('eoc.id as cataract_element_id,
+                                                eoc.event_id as cataract_event_id,
+                                                e1.event_date as cataract_date,
+                                                e2.event_date as other_date,
+                                                cp5er.event_id as catprom5_element_id,
+                                                cp5er.total_rasch_measure as rasch_score,
+                                                cp5er.total_raw_score as raw_score')
+                        ->leftJoin('cat_prom5_event_result cp5er', 'e2.id = cp5er.event_id')
+                        ->andWhere('cp5er.event_id is not null')
+                        ->group('e2.id, e1.id');
+                }
+                    break;
         }
 
         if ($dateFrom) {
@@ -254,11 +267,19 @@ class NodAuditReport extends Report implements ReportInterface
             } else {
                 $return_data['total'] += count($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CT'));
             }
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                if (!isset($return_data['CATPROM5'])) {
+                    $return_data['CATPROM5'] = $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']);
+                } else {
+                    $return_data['CATPROM5'] = array_merge_recursive($return_data['CATPROM5'], $this->InsertDataToArray($this->queryData($surgeon_id['id'], $this->from, $this->to, 'CATPROM5'), $surgeon_id['id']));
+                }
+            }
         }
         return $return_data;
     }
 
-    public function InsertDataToArray($data, $surgeon_id){
+    public function InsertDataToArray($data, $surgeon_id)
+    {
         $return_data = array(
             'pre-complete'=>array(),
             'post-complete'=>array(),
@@ -277,7 +298,7 @@ class NodAuditReport extends Report implements ReportInterface
                     if (!in_array($case['cataract_event_id'], $return_data['post-complete'])) {
                         array_push($return_data['post-complete'], $case['cataract_event_id']);
                     }
-                } elseif ($other_date < $cataract_date) {
+                } elseif ($other_date <= $cataract_date) {
                     if (!in_array($case['cataract_event_id'], $return_data['pre-complete'])) {
                         array_push($return_data['pre-complete'], $case['cataract_event_id']);
                     }
@@ -290,7 +311,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function PCRRiskDataToArray($data){
+    public function PCRRiskDataToArray($data)
+    {
         $return_data = array(
             'known'=> array(),
             'not_known'=> array(),
@@ -305,7 +327,8 @@ class NodAuditReport extends Report implements ReportInterface
         return $return_data;
     }
 
-    public function IndicationForSurgeryDataToArray($data){
+    public function IndicationForSurgeryDataToArray($data)
+    {
         $return_data=array(
             'complete'=>array(),
             'incomplete'=>array(),
@@ -319,7 +342,8 @@ class NodAuditReport extends Report implements ReportInterface
         }
         return $return_data;
     }
-    public function NodEligibilityDataToArray($data, $surgeon_id){
+    public function NodEligibilityDataToArray($data, $surgeon_id)
+    {
         $return_data=array(
             'eligible'=>array(),
             'ineligible'=>array(),
@@ -348,6 +372,45 @@ class NodAuditReport extends Report implements ReportInterface
     public function tracesJson()
     {
         $dataset = $this->dataSet();
+        $incomplete_y = array();
+        $complete_y = array();
+        $hovertemplate = '%{x} %{y} of Total ' . $dataset['total'] . ' Ops';
+        if ($dataset['total'] !== 0) {
+            $incomplete_y = array(
+                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
+                count($dataset['VA']['post-incomplete'])/$dataset['total'],
+                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
+                count($dataset['RF']['post-incomplete'])/$dataset['total'],
+                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
+                count($dataset['E/I']['ineligible'])/$dataset['total'],
+            );
+            $complete_y = array(
+                count($dataset['VA']['pre-complete'])/$dataset['total'],
+                count($dataset['VA']['post-complete'])/$dataset['total'],
+                count($dataset['RF']['pre-complete'])/$dataset['total'],
+                count($dataset['RF']['post-complete'])/$dataset['total'],
+                count($dataset['BM']['pre-complete'])/$dataset['total'],
+                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
+                count($dataset['PCR_RISK']['known'])/$dataset['total'],
+                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
+                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
+                count($dataset['E/I']['eligible'])/$dataset['total'],
+            );
+            if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+                array_push($incomplete_y,
+                    count($dataset['CATPROM5']['pre-incomplete'])/$dataset['total'],
+                    count($dataset['CATPROM5']['post-incomplete'])/$dataset['total']
+                );
+                array_push($complete_y,
+                    count($dataset['CATPROM5']['pre-complete'])/$dataset['total'],
+                    count($dataset['CATPROM5']['post-complete'])/$dataset['total']
+                );
+            }
+        }
         $trace2 = array(
             'name'=>'Incomplete',
             'type' => 'bar',
@@ -361,20 +424,9 @@ class NodAuditReport extends Report implements ReportInterface
                 'Pre-operative Risk Factors',
                 'Post-op Complications',
                 'Indication For Surgery',
-                'Eligibility For NOD Audit'
+                'Eligibility For NOD Audit',
             ),
-            'y' => array(
-                count($dataset['VA']['pre-incomplete'])/$dataset['total'],
-                count($dataset['VA']['post-incomplete'])/$dataset['total'],
-                count($dataset['RF']['pre-incomplete'])/$dataset['total'],
-                count($dataset['RF']['post-incomplete'])/$dataset['total'],
-                count($dataset['BM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-incomplete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['not_known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-incomplete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['incomplete'])/$dataset['total'],
-                count($dataset['E/I']['ineligible'])/$dataset['total'],
-            ),
+            'y' => $incomplete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-incomplete'],
                 $dataset['VA']['post-incomplete'],
@@ -387,7 +439,19 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['INDICATION_FOR_SURGERY']['incomplete'],
                 $dataset['E/I']['ineligible'],
             ),
+            'hovertemplate' => $hovertemplate,
         );
+
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            array_push($trace2['x'],
+                'CatProm5 Pre-op',
+                'CatProm5 Post-op'
+            );
+            array_push($trace2['customdata'],
+                $dataset['CATPROM5']['pre-incomplete'],
+                $dataset['CATPROM5']['post-incomplete']
+            );
+        }
         $trace1 = array(
             'name'=>'Complete',
             'type' => 'bar',
@@ -403,18 +467,7 @@ class NodAuditReport extends Report implements ReportInterface
                 'Indication For Surgery',
                 'Eligibility For NOD Audit',
             ),
-            'y' => array(
-                count($dataset['VA']['pre-complete'])/$dataset['total'],
-                count($dataset['VA']['post-complete'])/$dataset['total'],
-                count($dataset['RF']['pre-complete'])/$dataset['total'],
-                count($dataset['RF']['post-complete'])/$dataset['total'],
-                count($dataset['BM']['pre-complete'])/$dataset['total'],
-                count($dataset['PRE-EXAM']['pre-complete'])/$dataset['total'],
-                count($dataset['PCR_RISK']['known'])/$dataset['total'],
-                count($dataset['COMPLICATION']['post-complete'])/$dataset['total'],
-                count($dataset['INDICATION_FOR_SURGERY']['complete'])/$dataset['total'],
-                count($dataset['E/I']['eligible'])/$dataset['total'],
-            ),
+            'y' => $complete_y,
             'customdata'=>array(
                 $dataset['VA']['pre-complete'],
                 $dataset['VA']['post-complete'],
@@ -427,12 +480,24 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['INDICATION_FOR_SURGERY']['complete'],
                 $dataset['E/I']['eligible'],
             ),
+            'hovertemplate' => $hovertemplate,
         );
+        if (isset(Yii::app()->modules['OphOuCatprom5'])) {
+            array_push($trace1['x'],
+                'CatProm5 Pre-op',
+                'CatProm5 Post-op'
+            );
+            array_push($trace1['customdata'],
+                $dataset['CATPROM5']['pre-complete'],
+                $dataset['CATPROM5']['post-complete']
+            );
+        }
 
         return json_encode(array($trace1, $trace2));
     }
 
-    public function plotlyConfig(){
+    public function plotlyConfig()
+    {
         return json_encode($this->plotlyConfig);
     }
 

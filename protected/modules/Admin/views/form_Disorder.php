@@ -28,11 +28,19 @@
         <tr>
             <td>Id</td>
             <td class="cols-full">
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'id',
-                    ['class' => 'cols-full']
-                ); ?>
+                <?php if ($this->action->id == 'edit') { ?>
+                    <?= \CHtml::activeHiddenField(
+                        $model,
+                        'id'
+                    ); ?>
+                    <?= $model->id ?>
+                <?php } else { ?>
+                    <?= \CHtml::activeTextField(
+                        $model,
+                        'id',
+                        ['class' => 'cols-full']
+                    ); ?>
+                <?php } ?>
             </td>
         </tr>
         <tr>

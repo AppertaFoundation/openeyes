@@ -99,7 +99,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-fields flex-layout full-width">
-        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true)) ?>
+        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true), false) ?>
     </div>
   </section>
 <?php } ?>
@@ -127,7 +127,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             return [
                 'label' => $drug['name'],
                 'id' => $drug['id'],
-                'allergies' => CJSON::encode(array_map(function($allergy){
+                'allergies' => CJSON::encode(array_map(function ($allergy) {
                         return $allergy->id;
                 }, $drug->allergies)),
             ];
@@ -146,6 +146,16 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     <?php if (isset($this->patient)) { ?>
     var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
     <?php } ?>
+
+    // This case handles displaying the button correctly whenever changing the dispense condition.
+    $('#prescription_items tbody').on('change', '.dispenseCondition', function() {
+        fpTenPrintOption();
+    });
+
+    // This case handles displaying the button correctly when first accessing the edit screen.
+    $(document).ready(function() {
+        fpTenPrintOption();
+    })
 
 </script>
 

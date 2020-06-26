@@ -25,12 +25,14 @@
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 
-<body class="open-eyes oe-grid">
+<?php $training_mode = SettingMetadata::checkSetting('training_mode_enabled', 'on')
+  ? 'training-mode' : '';
+?>
+<body class="open-eyes oe-grid <?=$training_mode?>">
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
 
-<?php //$this->renderPartial('//base/_banner_watermark'); ?>
-<?php $this->renderPartial('//base/_debug'); ?>
+<?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
 <!-- Branding (logo) -->
 <div class="openeyes-brand">

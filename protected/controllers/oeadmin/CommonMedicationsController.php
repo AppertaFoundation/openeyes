@@ -111,7 +111,7 @@ class CommonMedicationsController extends BaseAdminController
                     'id' => $drug->id,
                 );
             }
-            echo CJSON::encode($return);
+            $this->renderJSON($return);
         }
     }
 }

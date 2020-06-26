@@ -142,7 +142,7 @@ class HistoryMedicationsEntry extends \BaseElement
      *
      * @param $item
      */
-    private function clonefromPrescriptionItem($item)
+    private function cloneFromPrescriptionItem($item)
     {
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
@@ -155,7 +155,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency = $item->frequency;
         $this->start_date = date('Y-m-d', strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
-            $end_date = $item->stopDateFromDuration();
+            $end_date = $item->stopDateFromDuration(false);
 
             if ($end_date !== null) {
                 if (strtotime($end_date->format('Y-m-d')) < time()) {
@@ -245,6 +245,16 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getPrescriptionLink()
+    {
+        return '/OphDrPrescription/Default/view/' . $this->prescription_item->prescription->event_id;
+    }
+
+    public function getExaminationLink()
+    {
+        return '/OphCiExamination/Default/view/' . $this->element->event_id;
+    }
+
     /**
      * Check element attributes to determine if anything has been set that would allow it to be recorded
      * Can be used to remove entries from the containing element.
@@ -298,7 +308,7 @@ class HistoryMedicationsEntry extends \BaseElement
 
         if ($med) {
             return count(OphCiExaminationRisk::findForTagIds(array_map(
-                function($t) {
+                function ($t) {
                     return $t->id;
                 }, $med->tags
             ))) > 0;
@@ -315,6 +325,11 @@ class HistoryMedicationsEntry extends \BaseElement
         return $this->medication_name ? :
             ($this->medication_drug ? (string) $this->medication_drug :
                 ($this->drug ? $this->drug->tallmanlabel : ''));
+    }
+
+    public function isStopped()
+    {
+        return isset($this->end_date) ? ($this->end_date <= date("Y-m-d")) : false;
     }
 
     /**
@@ -361,8 +376,18 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getTaperDateDisplay($currentDate, $taper_duration)
+    {
+        if ($taper_duration && $currentDate) {
+            return \Helper::formatFuzzyDate(date('Y-m-d', strtotime($currentDate. $taper_duration)));
+        } else {
+            return \Helper::formatFuzzyDate($this->end_date);
+        }
+    }
+
     public function getStartDateDisplay()
     {
+
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
 
@@ -371,7 +396,8 @@ class HistoryMedicationsEntry extends \BaseElement
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
-    public function getStopReasonDisplay(){
+    public function getStopReasonDisplay()
+    {
         $res = array();
         if ($this->stop_reason) {
             $res[] = "{$this->stop_reason}";
@@ -399,7 +425,8 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
-    public function getDoseAndFrequency(){
+    public function getDoseAndFrequency()
+    {
         $result = [];
 
         if ($this->dose) {

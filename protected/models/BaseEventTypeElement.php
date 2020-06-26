@@ -31,6 +31,7 @@ class BaseEventTypeElement extends BaseElement
     public $widgetClass = null;
     // allow us to store a widget on the element so that it doesn't have to widgetised twice
     public $widget = null;
+    public $is_initialized = false;
     /**
      * set to true for the element to load from previous
      * @see BaseElement::loadFromExisting
@@ -42,17 +43,7 @@ class BaseEventTypeElement extends BaseElement
 
     protected $_element_type;
     protected $frontEndErrors = array();
-    // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
-        'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
-        'Element_OphDrPrescription_Details_items' => 'prescription_items',
-        'Element_OphTrConsent_Procedure_procedures' => 'typeProcedure',
-        'Element_OphTrLaser_Treatment_left_procedures' => 'treatment_left_procedures',
-        'Element_OphTrLaser_Treatment_right_procedures' => 'treatment_right_procedures',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_left_treatments' => 'dilation_left',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation_right_treatments' => 'dilation_right',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_values.reading_id' => 'OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_values.reading_id' => 'OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values',
     );
 
     private $settings = array();
@@ -304,6 +295,11 @@ class BaseEventTypeElement extends BaseElement
     public function getFrontEndErrors()
     {
         echo json_encode($this->frontEndErrors);
+    }
+
+    public function setFrontEndError($attribute)
+    {
+        $this->frontEndErrors[] = $attribute;
     }
 
     public function requiredIfSide($attribute, $params)
