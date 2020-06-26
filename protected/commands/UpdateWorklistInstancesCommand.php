@@ -140,9 +140,9 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
             return false;   
         } else {
             $worklist_attributes = $this->validateAttributes($args[0]);
-            if (isset($args[1])) {
-                $worklist_definition_ids = $this->validateWorklistDefinitions($args[1]);
-            }
+            $worklist_definition_ids = isset($args[1])
+                ? $this->validateWorklistDefinitions($args[1])
+                : [ 'all' ];
         }
 
         $worklist_definitions = in_array('all', $worklist_definition_ids)
