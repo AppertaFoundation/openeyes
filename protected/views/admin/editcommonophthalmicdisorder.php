@@ -89,7 +89,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'name' => 'finding.name',
             'type' => 'raw',
             'value' => function ($data, $row) {
-
                 $finding_data = array(
                     'id' => isset($data->id) ? $data->id : null,
                     'name' => isset($data->finding) ? $data->finding->name : null,
@@ -124,7 +123,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'name' => 'alternate_disorder.term',
             'type' => 'raw',
             'value' => function ($data, $row) {
-
                 $alternate_disorder_data = array(
                     'id' => isset($data->id) ? $data->id : null,
                     'name' => isset($data->alternate_disorder) ? $data->alternate_disorder->term : null,
@@ -194,11 +192,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 </form>
 
 <script>
-
-    var $table = $('.generic-admin');
+    let $table = $('.generic-admin');
 
     function initialiseRow($row) {
-        var DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
+        let DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': 'CommonOphthalmicDisorder',
             'renderCommonlyUsedDiagnoses': false,
@@ -256,8 +253,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         });
 
         $('#add_new').on('click', function () {
-            var $tr = $('table.generic-admin tbody tr');
-            var output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
+            let $tr = $('table.generic-admin tbody tr');
+            let output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 "group_options": common_ophthalmic_disorder_group_options,
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
@@ -273,8 +270,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     });
 
     function initTriggers($row, selector) {
-
-        var $inputField = $row.find('.' + selector + '-search-inputfield');
+        let $inputField = $row.find('.' + selector + '-search-inputfield');
         $row.on('click', '.' + selector + '-rename', function () {
             $inputField.show();
             $(this).closest('.' + selector + '-display').hide();
@@ -306,7 +302,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'beforeSend': function () {
                     },
                     'success': function (data) {
-                        data = $.parseJSON(data);
                         response(data);
                     }
                 });
@@ -329,6 +324,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             },
             response: function (event, ui) {
                 $inputField.removeClass('inset-loader');
+            },
+            open: function () {
+                $(this).autocomplete('widget').zIndex(100);
             }
         });
     }
