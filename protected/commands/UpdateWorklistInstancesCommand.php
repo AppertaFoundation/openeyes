@@ -121,7 +121,6 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
                     $new_mapping = new WorklistAttribute();
                     $new_mapping->name = $mapping_name;
                     $new_mapping->worklist_id = $worklist->id;
-                    $new_mapping->save();
                     if (!$new_mapping->save()) {
                         $this->transaction->rollback();
                         $this->printError("There was an error saving the mappings");
