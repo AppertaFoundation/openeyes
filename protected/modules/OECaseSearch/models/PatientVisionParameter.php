@@ -28,10 +28,8 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'vision';
-        $this->options['operations'][0]['label'] = 'INCLUDES';
-        $this->options['operations'][0]['id'] = 'IN';
-        $this->options['operations'][1]['label'] = 'DOES NOT INCLUDE';
-        $this->options['operations'][1]['id'] = 'NOT IN';
+        $this->options['operations'][] = array('label' => 'IS LESS THAN', 'id' => '<');
+        $this->options['operations'][] = array('label' => 'IS MORE THAN', 'id' => '>');
         $this->va_values = Element_OphCiExamination_VisualAcuity::model()->getUnitValuesForForm(
             OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'ETDRS Letters'))->id,
             false
@@ -94,11 +92,7 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     public function query()
     {
         $second_operation = 'OR';
-        $op = '=';
-
-        if ($this->operation === 'NOT IN') {
-            $op = '!=';
-        }
+        $op = $this->operation;
 
         if ($this->bothEyesIndicator) {
             $second_operation = 'AND';
