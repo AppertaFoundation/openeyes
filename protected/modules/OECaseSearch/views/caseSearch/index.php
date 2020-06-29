@@ -27,14 +27,14 @@ $user_searches = array_map(
 <div class="oe-full-header flex-layout">
     <div class="title wordcaps">
         <?= $this->trialContext === null ?
-            'Search' :
+            'Advanced Search' :
             'Adding Participants to Trial: ' . $this->trialContext->name
         ?>
     </div>
 </div>
 <div class="oe-full-content subgrid wide-side-panel oe-query-search">
     <nav class="oe-full-side-panel">
-        <h3>Custom Search</h3>
+        <h3>Search criteria</h3>
         <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
         <table id="param-list" class="standard normal-text last-right">
             <tbody>
@@ -51,44 +51,44 @@ $user_searches = array_map(
             </tbody>
         </table>
         <div class="flex-layout row">
+            <button class="js-save-search-dialog-btn">Save criteria</button>
             <div>
-                <button id="load-saved-search">All searches</button>
-                <?= CHtml::htmlButton(
-                    'Save',
-                    array(
-                        'class' => 'js-save-search-dialog-btn',
-                    )
-                ) ?>
+                <button id="load-saved-search" class="button hint green">Saved searches</button>
+                <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
+                        data-popup="add-to-search-queries">
+                    Add criteria
+                </button>
             </div>
-            <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
-                    data-popup="add-to-search-queries">Add Query
-            </button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
-        <h3>Variables</h3>
-        <table id="js-variable-table" class="standard normal-text last-right">
-            <tbody>
-            <?php foreach ($variables as $variable) { ?>
-                <tr class="search-var" data-id="<?= $variable->field_name ?>">
-                    <td>
-                        <?= $variable->label ?>
-                    </td>
-                    <td>
-                        <i class="oe-i remove-circle small"></i>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-        <?= CHtml::hiddenField('variable_list', implode(',', array_map(
-            static function ($item) {
-                return $item->field_name;
-            }, $variables)), array('id' => 'js-variable-list')) ?>
-        <button id="add-variable" class="button hint green js-add-select-btn"
-                data-popup="add-to-variable-list">
-            <i class="oe-i plus pro-theme"></i>
-        </button>
+        <h3>Display</h3>
+        <div class="flex-layout row">
+            <div class="cols-10">
+                <table id="js-variable-table" class="standard normal-text last-right">
+                    <tbody>
+                    <?php foreach ($variables as $variable) { ?>
+                        <tr class="search-var" data-id="<?= $variable->field_name ?>">
+                            <td>
+                                <?= $variable->label ?>
+                            </td>
+                            <td>
+                                <i class="oe-i remove-circle small"></i>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+                <?= CHtml::hiddenField('variable_list', implode(',', array_map(
+                    static function ($item) {
+                        return $item->field_name;
+                    }, $variables)), array('id' => 'js-variable-list')) ?>
+            </div>
+            <button id="add-variable" class="button hint green js-add-select-btn"
+                    data-popup="add-to-variable-list">
+                <i class="oe-i plus pro-theme"></i>
+            </button>
+        </div>
         <hr class="divider"/>
         <h3>Date range</h3>
         <div class="flex-layout">
@@ -432,7 +432,8 @@ $user_searches = array_map(
             }).open();
         });
 
-        $('.js-save-search-dialog-btn').click(function () {
+        $('.js-save-search-dialog-btn').click(function (e) {
+            e.preventDefault();
             new OpenEyes.UI.Dialog.SaveSearch({
                 id: 'save-search-dialog',
                 title: 'Save search'

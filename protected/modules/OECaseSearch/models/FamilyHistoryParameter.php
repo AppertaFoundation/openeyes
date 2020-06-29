@@ -10,17 +10,17 @@ use OEModule\OphCiExamination\models\FamilyHistorySide;
 class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var integer $relative
+     * @var int $relative
      */
     public $relative;
 
     /**
-     * @var integer $side
+     * @var int $side
      */
     public $side;
 
     /**
-     * @var integer $condition
+     * @var int $condition
      */
     public $condition;
 
@@ -40,9 +40,8 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $this->name = 'family_history';
         $this->operation = '=';
 
-        $this->options['operations'][0]['label'] = 'INCLUDES';
-        $this->options['operations'][0]['id'] = 'IN';
-        unset($this->options['operations'][1]);
+        $this->options['operations'][0] = array('label' => 'INCLUDES', 'id' => 'IN');
+        $this->options['operations'][1] = array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN');
 
         $relatives = FamilyHistoryRelative::model()->findAll();
         $sides = FamilyHistorySide::model()->findAll();
@@ -142,29 +141,27 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         $query_condition = '';
 
         if ($this->side !== '') {
-            $query_side = ":f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
+            $query_side = "AND (:f_h_side_$this->id IS NULL OR fh.side_id = :f_h_side_$this->id)";
         }
         if ($this->relative !== '') {
-            if ($query_side === '') {
-                $query_relative = ":f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
-            } else {
-                $query_relative = " AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
-            }
+            $query_relative = " AND (:f_h_relative_$this->id IS NULL OR fh.relative_id = :f_h_relative_$this->id)";
         }
         if ($this->condition !== '') {
-            if ($query_side === '' && $query_relative === '') {
-                $query_condition = ":f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
-            } else {
-                $query_condition = " AND (:f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
-            }
+            $query_condition = " AND (:f_h_condition_$this->id IS NULL OR fh.condition_id = :f_h_condition_$this->id)";
         }
 
-        return '
+        $baseQuery = "
 SELECT DISTINCT p.id 
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (' . $query_side . $query_relative . $query_condition;
+WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
+
+        if ($this->operation === 'IN') {
+            return $baseQuery;
+        } else {
+            return "SELECT id FROM patient p WHERE id NOT IN ({$baseQuery})";
+        }
     }
 
     /**
