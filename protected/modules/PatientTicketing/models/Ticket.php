@@ -412,14 +412,13 @@ class Ticket extends \BaseActiveRecordVersioned
 
         while ($outcomes !== null) {
             if (count($outcomes) > 1) {
-                $ticket_future_steps['?'] = [];
                 foreach ($outcomes as $outcome) {
-                    $ticket_future_steps['?'][] = $outcome->outcome_queue->name;
+                    $ticket_future_steps['?'][] = $outcome->outcome_queue;
                 }
                 $outcomes = null;
             } else if (count($outcomes) === 1) {
                 $outcome_queue = $outcomes[0]->outcome_queue;
-                $ticket_future_steps[] = $outcome_queue;
+                $ticket_future_steps[] = [$outcome_queue];
                 $outcomes = !empty($outcome_queue->outcomes) ? $outcome_queue->outcomes : null;
             }
         }
