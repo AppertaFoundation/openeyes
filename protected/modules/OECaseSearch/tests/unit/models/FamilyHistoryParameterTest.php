@@ -94,7 +94,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
         $saved_search = $this->parameter->saveSearch();
 
         $this->assertEquals('FamilyHistoryParameter', $saved_search['class_name']);
-        $this->assertEquals('=', $saved_search['operation']);
+        $this->assertEquals('IN', $saved_search['operation']);
         $this->assertEquals($relative, $saved_search['relative']);
         $this->assertEquals($side, $saved_search['side']);
         $this->assertEquals($condition, $saved_search['condition']);
@@ -122,7 +122,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
         $expected = FamilyHistoryCondition::model()->findByPk($condition) ? ('has ' . FamilyHistoryCondition::model()->findByPk($condition)->name) : 'Any condition';
         $this->assertEquals($expected, $this->parameter->getValueForAttribute('condition'));
 
-        $expected = '=';
+        $expected = 'IN';
         $this->assertEquals($expected, $this->parameter->getValueForAttribute('operation'));
 
         $this->expectException('CException');
@@ -170,30 +170,29 @@ class FamilyHistoryParameterTest extends CDbTestCase
         $query_condition = '';
 
         if ($side !== '') {
-            $query_side = ":f_h_side_0 IS NULL OR fh.side_id = :f_h_side_0)";
+            $query_side = "AND (:f_h_side_0 IS NULL OR fh.side_id = :f_h_side_0)";
         }
         if ($relative !== '') {
-            if ($query_side === '') {
-                $query_relative = ":f_h_relative_0 IS NULL OR fh.relative_id = :f_h_relative_0)";
-            } else {
-                $query_relative = " AND (:f_h_relative_0 IS NULL OR fh.relative_id = :f_h_relative_0)";
-            }
+            $query_relative = " AND (:f_h_relative_0 IS NULL OR fh.relative_id = :f_h_relative_0)";
         }
         if ($condition !== '') {
-            if ($query_side === '' && $query_relative === '') {
-                $query_condition = ":f_h_condition_0 IS NULL OR fh.condition_id = :f_h_condition_0)";
-            } else {
-                $query_condition = " AND (:f_h_condition_0 IS NULL OR fh.condition_id = :f_h_condition_0)";
-            }
+            $query_condition = " AND (:f_h_condition_0 IS NULL OR fh.condition_id = :f_h_condition_0)";
         }
 
-        $expected = '
+        $expected = "
 SELECT DISTINCT p.id 
 FROM patient p 
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
-WHERE (' . $query_side . $query_relative . $query_condition;
+WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
 
-        $this->assertEquals($expected, $this->parameter->query());
+        foreach (array('IN', 'NOT IN') as $sign) {
+            $this->parameter->operation = $sign;
+            if ($sign === 'NOT IN') {
+                $expected = "SELECT id FROM patient p WHERE id NOT IN ({$expected})";
+            }
+            $this->assertEquals($expected, $this->parameter->query());
+        }
+
     }
 }

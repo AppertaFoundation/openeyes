@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use BaseActiveRecord;
 use Yii;
 
 /**
@@ -39,11 +40,11 @@ use Yii;
  * @property OphCiExamination_VisualAcuity_Reading[] $readings
  * @property OphCiExamination_VisualAcuity_Reading[] $left_readings
  * @property OphCiExamination_VisualAcuity_Reading[] $right_readings
- * @property User $user
- * @property User $usermodified
- * @property Eye eye
- * @property EventType $eventType
- * @property Event $event
+ * @property \User $user
+ * @property \User $usermodified
+ * @property \Eye eye
+ * @property \EventType $eventType
+ * @property \Event $event
  */
 class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 {
@@ -65,7 +66,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return BaseActiveRecord|Element_OphCiExamination_VisualAcuity The static model class
      */
     public static function model($className = __CLASS__)
     {

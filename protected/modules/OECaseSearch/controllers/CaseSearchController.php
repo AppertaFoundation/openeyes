@@ -50,7 +50,7 @@ class CaseSearchController extends BaseModuleController
 
     /**
      * Primary case search action.
-     * @param $trial_id integer The Trial that this case search is in context of
+     * @param $trial_id int The Trial that this case search is in context of
      * @throws Exception
      */
     public function actionIndex($trial_id = null)
@@ -225,7 +225,7 @@ class CaseSearchController extends BaseModuleController
         /**
          * @var $parameter CaseSearchParameter
          */
-        $parameter = new $param['type'];
+        $parameter = new $param['type']();
         $parameter->id = $param['id'];
         $parameter->operation = $param['operation'];
         if (array_key_exists('value', $param)) {
@@ -260,7 +260,7 @@ class CaseSearchController extends BaseModuleController
          * @var $parameter CaseSearchParameter
          */
         $type = Yii::app()->request->getQuery('type');
-        $parameter = new $type;
+        $parameter = new $type();
         echo json_encode($parameter->getOptions());
     }
 
@@ -398,7 +398,7 @@ class CaseSearchController extends BaseModuleController
                         /**
                          * @var $newParam CaseSearchParameter
                          */
-                        $newParam = new $paramName;
+                        $newParam = new $paramName();
                         $newParam->attributes = $_POST[$paramName][$id];
                         if (!$newParam->validate()) {
                             $valid = false;

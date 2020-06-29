@@ -6,12 +6,12 @@
 class PatientDiagnosisParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var integer $firm_id
+     * @var int $firm_id
      */
     public $firm_id;
 
     /**
-     * @var boolean $only_last_event
+     * @var bool $only_last_event
      */
     public $only_latest_event;
 

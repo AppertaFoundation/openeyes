@@ -61,9 +61,6 @@ WHERE p.id = :p_n_name_{$this->id}
 
     public static function getCommonItemsForTerm($term)
     {
-        /**
-         * @var $patients Patient[]
-         */
         $patients = Patient::model()->findAllBySql(
             "SELECT p.* FROM patient p
 JOIN contact c ON c.id = p.contact_id

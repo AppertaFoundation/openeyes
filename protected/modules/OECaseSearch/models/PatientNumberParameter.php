@@ -63,9 +63,6 @@ WHERE p.id $op :p_num_number_{$this->id}";
 
     public static function getCommonItemsForTerm($term)
     {
-        /**
-         * @var $patients Patient[]
-         */
         $patients = Patient::model()->findAllBySql(
             "SELECT p.* FROM patient p
 WHERE p.hos_num LIKE :term

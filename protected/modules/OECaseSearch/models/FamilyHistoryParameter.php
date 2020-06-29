@@ -38,7 +38,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'family_history';
-        $this->operation = '=';
+        $this->operation = 'IN';
 
         $this->options['operations'][0] = array('label' => 'INCLUDES', 'id' => 'IN');
         $this->options['operations'][1] = array('label' => 'DOES NOT INCLUDE', 'id' => 'NOT IN');
@@ -193,7 +193,14 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
         $side = $this->side ?: 'Any side';
         $relative = $this->relative ?: 'any relative';
         $condition = $this->condition ?: 'any condition';
-        return "$this->name: $side $relative $this->operation \"$condition\"";
+        $op = null;
+
+        if ($this->operation === 'IN') {
+            $op = '=';
+        } elseif ($this->operation === 'NOT IN') {
+            $op = '!=';
+        }
+        return "$this->name: $side $relative $op \"$condition\"";
     }
 
     public function saveSearch()

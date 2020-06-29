@@ -18,7 +18,7 @@
     'use strict';
 
     // Base Dialog.
-    var Dialog = exports;
+    const Dialog = exports;
 
     function SaveSearchDialog(options) {
         options = $.extend(true, {}, SaveSearchDialog._defaultOptions, options);
@@ -44,7 +44,7 @@
      * Manage all the provided option data into required internal data structures for initialisation.
      */
     SaveSearchDialog.prototype.create = function () {
-        var self = this;
+        const self = this;
 
         // parent initialisation
         SaveSearchDialog._super.prototype.create.call(self);

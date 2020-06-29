@@ -9,11 +9,17 @@ class DBProvider extends SearchProvider
 {
     private $_driver = 'mariadb';
 
+    /**
+     * @return string Driver label
+     */
     public function getDriver()
     {
         return $this->_driver;
     }
 
+    /**
+     * @param $driver string Driver label.
+     */
     public function setDriver($driver)
     {
         $this->_driver = $driver;

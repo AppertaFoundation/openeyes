@@ -4,7 +4,7 @@
  * This is the model class for table "case_search_saved_search".
  *
  * The followings are the available columns in table 'case_search_saved_search':
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $search_criteria
  * @property string $variables
@@ -77,7 +77,7 @@ class SavedSearch extends BaseActiveRecordVersioned
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return SavedSearch the static model class
+     * @return BaseActiveRecord|SavedSearch the static model class
      */
     public static function model($className = __CLASS__)
     {

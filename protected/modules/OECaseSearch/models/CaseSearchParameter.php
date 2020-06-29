@@ -18,7 +18,7 @@ abstract class CaseSearchParameter extends CFormModel
     public $operation;
 
     /**
-     * @var integer $id
+     * @var int $id
      */
     public $id;
 

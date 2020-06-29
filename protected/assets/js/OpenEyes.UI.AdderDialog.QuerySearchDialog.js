@@ -164,7 +164,7 @@
                 class: 'add-options number single js-digits' + i,
                 "data-multiselect": "false"
             });
-            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (digit) {
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(digit => {
                 dialog.digitList.append($('<li />', {
                     'data-id': digit,
                     'class': (digit === 0 && i === 0) ? 'selected' : '',

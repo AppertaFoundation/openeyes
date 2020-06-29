@@ -38,9 +38,6 @@ abstract class SearchProvider extends CApplicationComponent
     {
         $auditValues = array();
         if ($result_count === 0) {
-            /**
-             * @var $param CaseSearchParameter
-             */
             foreach ($parameters as $param) {
                 $auditValues[] = $param->getAuditData();
             }

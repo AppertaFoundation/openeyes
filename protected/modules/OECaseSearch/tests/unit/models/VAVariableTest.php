@@ -22,7 +22,6 @@ class VAVariableTest extends CDbTestCase
         'firms' => Firm::class,
         'ssa' => ServiceSubspecialtyAssignment::class,
         'subspecialties' => Subspecialty::class,
-        'contacts' => Contact::class,
     );
 
     public static function setUpBeforeClass()

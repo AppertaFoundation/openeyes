@@ -18,7 +18,7 @@
     'use strict';
 
     // Base Dialog.
-    var Dialog = exports;
+    const Dialog = exports;
 
     function LoadSavedSearchDialog(options) {
         options = $.extend(true, {}, LoadSavedSearchDialog._defaultOptions, options);
@@ -44,7 +44,7 @@
     };
 
     // selectors for finding and hooking into various of the key elements.
-    var selectors = {
+    const selectors = {
         currentUserSearchTemplate: '#all-search-template',
         searchContentTemplate: '#search-contents-template',
         otherUserTemplate: '#other-user-item-template',
@@ -65,7 +65,7 @@
      * Manage all the provided option data into required internal data structures for initialisation.
      */
     LoadSavedSearchDialog.prototype.create = function () {
-        var self = this;
+        const self = this;
 
         // parent initialisation
         LoadSavedSearchDialog._super.prototype.create.call(self);
@@ -95,7 +95,7 @@
      * Setup all the interaction event hooks for clicking and updating form elements in the dialog.
      */
     LoadSavedSearchDialog.prototype.setupEventHandlers = function () {
-        var self = this;
+        const self = this;
 
         self.content.on('click', selectors.currentUserSearchList, function (e) {
             e.preventDefault();
@@ -156,7 +156,7 @@
     };
 
     LoadSavedSearchDialog.prototype.updateSearchContentsList = function () {
-        var self = this;
+        const self = this;
         $.ajax({
             url: '/OECaseSearch/caseSearch/loadSearch/' + self.selectedSearchId + '?preview=1',
             type: 'GET',

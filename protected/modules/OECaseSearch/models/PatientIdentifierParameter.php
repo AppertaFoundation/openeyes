@@ -113,9 +113,6 @@ WHERE p.code $op :p_code_$this->id AND p.value $op :p_id_number_$this->id";
 
     public static function getCommonItemsForTerm($term)
     {
-        /**
-         * @var $patients Patient[]
-         */
         $patients = PatientIdentifier::model()->findAllBySql(
             "SELECT p.* FROM patient_identifier p
 WHERE p.value LIKE :term
