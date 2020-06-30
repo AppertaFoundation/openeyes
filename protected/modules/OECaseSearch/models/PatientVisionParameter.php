@@ -4,20 +4,29 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
 /**
  * Class PatientVisionParameter
- *
- * @property int $minValue Represents a minimum value.
- * @property int $maxValue Represents a maximum value.
- * @property bool $bothEyesIndicator
  */
 class PatientVisionParameter extends CaseSearchParameter implements DBProviderInterface
 {
+    /**
+     * @var bool $bothEyesIndicator Indicates whether value must be identical for both eyes when searching.
+     */
     public $bothEyesIndicator = false;
+
+    /**
+     * @var array $va_values List of VA values ($base_value => $etdrs_value)
+     */
     private $va_values;
 
+    /**
+     * @var string[] $options List of options for the Adder Dialog.
+     */
     protected $options = array(
         'value_type' => 'multi_select',
     );
 
+    /**
+     * @var string $_label Label to display in adder dialog for the parameter.
+     */
     protected $_label = 'Vision';
 
     /**

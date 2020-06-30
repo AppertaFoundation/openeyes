@@ -1,6 +1,10 @@
 <?php
 class CCTVariable extends CaseSearchVariable implements DBProviderInterface
 {
+    /**
+     * CCTVariable constructor.
+     * @param $id_list int[] Patient ID list
+     */
     public function __construct($id_list)
     {
         parent::__construct($id_list);
@@ -10,6 +14,10 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
         $this->eye_cardinality = true;
     }
 
+    /**
+     * Get the SQL query string.
+     * @return string Query
+     */
     public function query()
     {
         switch ($this->csv_mode) {
@@ -46,6 +54,10 @@ class CCTVariable extends CaseSearchVariable implements DBProviderInterface
         }
     }
 
+    /**
+     * Get list of bind values
+     * @return array List of bind variables.
+     */
     public function bindValues()
     {
         return array();

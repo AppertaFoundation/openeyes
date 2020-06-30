@@ -34,6 +34,7 @@ $user_searches = array_map(
 </div>
 <div class="oe-full-content subgrid wide-side-panel oe-query-search">
     <nav class="oe-full-side-panel">
+        <button id="load-saved-search" class="cols-full">Previous searches</button>
         <h3>Search criteria</h3>
         <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
         <table id="param-list" class="standard normal-text last-right">
@@ -50,15 +51,11 @@ $user_searches = array_map(
             endif; ?>
             </tbody>
         </table>
-        <div class="flex-layout row">
-            <button class="js-save-search-dialog-btn">Save criteria</button>
-            <div>
-                <button id="load-saved-search" class="button hint green">Saved searches</button>
-                <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
-                        data-popup="add-to-search-queries">
-                    Add criteria
-                </button>
-            </div>
+        <div class="flex-layout flex-right row">
+            <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
+                    data-popup="add-to-search-queries">
+                Add criteria
+            </button>
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
@@ -102,7 +99,8 @@ $user_searches = array_map(
         <div class="button-stack">
             <?= CHtml::hiddenField('var', isset($variables[0]) ? $variables[0]->field_name : null) ?>
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
-            <?= CHtml::htmlButton('Clear all filters', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
+            <button class="js-save-search-dialog-btn cols-full">Save search</button>
+            <?= CHtml::htmlButton('Clear search', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
                     'Download CSV BASIC',
                     array(

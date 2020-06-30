@@ -1,15 +1,19 @@
 <?php
 
 /**
- * Class DBProvider
+ * A SearchProvider subclass that searches the OpenEyes database using SQL.
  *
  * @property string $driver
  */
 class DBProvider extends SearchProvider
 {
+    /**
+     * @var string $_driver Driver name.
+     */
     private $_driver = 'mariadb';
 
     /**
+     * Gets the driver name. Used as a magic method.
      * @return string Driver label
      */
     public function getDriver()
@@ -18,6 +22,7 @@ class DBProvider extends SearchProvider
     }
 
     /**
+     * Sets the driver name. Used as a magic method. Setter is used implicitly when specifying override values in config files.
      * @param $driver string Driver label.
      */
     public function setDriver($driver)
@@ -26,7 +31,8 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * @param array $criteria The parameters to search with. The parameters must implement the DBProviderInterface interface.
+     * Execute the search using the given parameters.
+     * @param CaseSearchParameter[] $criteria The parameters to search with. The parameters must implement the DBProviderInterface interface.
      * @return array The returned data from the search.
      * @throws CDbException
      * @throws CException
@@ -46,6 +52,9 @@ class DBProvider extends SearchProvider
                 $queryStr .= ($pos === 0) ? "WHERE p.id IN ($from)" : " AND p.id IN ($from)";
                 $bindValues = array_merge($bindValues, $param->bindValues());
                 $pos++;
+            } else {
+                // Log that the parameter does not contain the necessary interface and proceed to the next one.
+                OELog::log('Search parameter does not implement DBProviderInterface: ' . $param->label);
             }
         }
         // Do not count the deleted patients.
@@ -61,12 +70,12 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * @param CaseSearchVariable $variable
-     * @param null|DateTime $start_date
-     * @param null|DateTime $end_date
-     * @param string $mode
-     * @return array|null
-     * @throws CException
+     * Internal function to retrieve variable data for the selected variable.
+     * @param CaseSearchVariable $variable Variable to retrieve data for.
+     * @param null|DateTime $start_date Start date
+     * @param null|DateTime $end_date End date
+     * @param string $mode CSV display mode. Pass null if the data should not be in CSV format.
+     * @return array|null The raw variable data for display in plots or CSV files.
      */
     private function getVariableDataInternal($variable, $start_date, $end_date, $mode = null)
     {
@@ -90,12 +99,13 @@ class DBProvider extends SearchProvider
     }
 
     /**
-     * @param CaseSearchVariable|CaseSearchVariable[] $variables
-     * @param null|DateTime $start_date
-     * @param null|DateTime $end_date
-     * @param bool $return_csv
-     * @param string $mode
-     * @return array|void
+     * Get variable data for all selected variables
+     * @param CaseSearchVariable|CaseSearchVariable[] $variables List of variables.
+     * @param null|DateTime $start_date Start date
+     * @param null|DateTime $end_date End date
+     * @param bool $return_csv True if rendering a CSV file; otherwise false.
+     * @param string $mode CSV render mode ('BASIC' or 'ADVANCED')
+     * @return array|void Variable data for plotting. No data is returned if rendering a CSV.
      * @throws CException
      */
     public function getVariableData($variables, $start_date = null, $end_date = null, $return_csv = false, $mode = 'BASIC')

@@ -363,9 +363,9 @@ class CaseSearchController extends BaseModuleController
     }
 
     /**
-     * @param $id
+     * Deletes the selected saved search
+     * @param $id int ID of the saved search to delete.
      * @throws CHttpException
-     * @throws CDbException
      */
     public function actionDeleteSearch($id)
     {
@@ -379,6 +379,11 @@ class CaseSearchController extends BaseModuleController
         }
     }
 
+    /**
+     * Populate the list of search parameters.
+     * @param bool $populate_param_cache True if the controller's parameter cache should be populated as well; otherwise false.
+     * @return bool
+     */
     protected function populateParams($populate_param_cache = false)
     {
         $valid = true;
@@ -425,7 +430,8 @@ class CaseSearchController extends BaseModuleController
     }
 
     /**
-     * @param $patient_ids
+     * Get the drilldown list for the selected datapoint.
+     * @param $patient_ids string List of patient IDs as a string (List is a string due to it being a parameter of a HTTP request).
      * @throws CException
      */
     public function actionGetDrilldownList($patient_ids) {

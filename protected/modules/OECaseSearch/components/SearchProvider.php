@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class SearchProvider
+ * Base class for search engine hooks to use when performing an advanced search.
  */
 abstract class SearchProvider extends CApplicationComponent
 {
@@ -30,8 +30,8 @@ abstract class SearchProvider extends CApplicationComponent
     /**
      * Override this function to customise the behaviour of the search provider after performing the search.
      * This function can be used to clean up resources and is currently used to record audit data if the search returns no results.
-     * @param $parameters CaseSearchParameter[]
-     * @param $result_count int
+     * @param $parameters CaseSearchParameter[] List of parameters
+     * @param $result_count int Number of results
      * @throws Exception
      */
     protected function afterSearch($parameters, $result_count)
@@ -47,7 +47,7 @@ abstract class SearchProvider extends CApplicationComponent
 
     /**
      * Search delegate function. Implement this function to specify how the search will be executed.
-     * @param $criteria array A list of search parameters.
+     * @param $criteria CaseSearchParameter[] A list of search parameters.
      * @return array Search results.
      */
     abstract protected function executeSearch($criteria);
