@@ -404,4 +404,25 @@ class Ticket extends \BaseActiveRecordVersioned
 
         return $this->current_queue_assignment;
     }
+
+    public function getFutureSteps()
+    {
+        $ticket_future_steps = [];
+        $outcomes = $this->current_queue->outcomes;
+
+        while ($outcomes !== null) {
+            if (count($outcomes) > 1) {
+                foreach ($outcomes as $outcome) {
+                    $ticket_future_steps['?'][] = $outcome->outcome_queue;
+                }
+                $outcomes = null;
+            } else if (count($outcomes) === 1) {
+                $outcome_queue = $outcomes[0]->outcome_queue;
+                $ticket_future_steps[] = [$outcome_queue];
+                $outcomes = !empty($outcome_queue->outcomes) ? $outcome_queue->outcomes : null;
+            }
+        }
+
+        return $ticket_future_steps;
+    }
 }
