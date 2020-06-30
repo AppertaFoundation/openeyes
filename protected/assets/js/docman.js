@@ -153,7 +153,7 @@ var docman = (function() {
                         delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
 
@@ -165,14 +165,14 @@ var docman = (function() {
                         delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods = '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
                         }
                     }
