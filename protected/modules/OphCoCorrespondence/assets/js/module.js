@@ -613,10 +613,10 @@ function savePDFprint( module , event_id , $content, $data_id, title)
     });
 }
 
-function updateReData(recipient) {
+function updateReData(recipient, is_Cc) {
 	let default_re = document.getElementById("default_re").value;
 	let element_letter_re = document.getElementById('ElementLetter_re');
-	if (recipient.match(/^Patient/)) {
+	if (recipient.match(/^Patient/) && !is_Cc) {
 		element_letter_re.value = default_re.substring(default_re.indexOf('DOB'));
 	} else {
 		element_letter_re.value = default_re;
@@ -635,7 +635,7 @@ function correspondence_load_data(data) {
 			}
 		} else if (m = i.match(/^sel_(.*)$/)) {
 			if (m[1] == 'address_target') {
-				updateReData(data[i]);
+				updateReData(data[i], false);
 			}
 			$('#' + m[1]).val(data[i]);
 		} else if (m = i.match(/^check_(.*)$/)) {

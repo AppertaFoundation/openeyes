@@ -84,8 +84,18 @@ class User extends BaseActiveRecordVersioned
                 'safe',
             ),
         );
+        $user = Yii::app()->request->getPost('User');
+        // if the global firm rights is set to No, at least one context needs to be selected
+        if ($user['global_firm_rights'] == 0) {
+            $commonRules = array_merge(
+                $commonRules,
+                array(
+                    array('firms', 'required'),
+                )
+            );
+        }
+
         if (Yii::app()->params['auth_source'] == 'BASIC') {
-            $user = Yii::app()->request->getPost('User');
             $pw_restrictions = $this->getPasswordRestrictions();
             $generalUserRules = array(
                 array(
@@ -225,6 +235,7 @@ class User extends BaseActiveRecordVersioned
             'password_new' => 'New password',
             'password_confirm' => 'Confirm password',
             'global_firm_rights' => 'Global firm rights',
+            'firms' => 'Context',
             'is_consultant' => 'Consultant',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
@@ -595,7 +606,7 @@ class User extends BaseActiveRecordVersioned
         foreach ($added_roles as $role) {
             Yii::app()->authManager->assign($role, $this->id);
 //            If one of the roles added is an admin, then provide the user with permissions to manage all trials - CERA -523
-            if ($role == 'admin'){
+            if ($role == 'admin') {
                 $trials = Trial::model()->findAll();
                 foreach ($trials as $trial) {
                     $newPermission = new UserTrialAssignment();
@@ -605,7 +616,7 @@ class User extends BaseActiveRecordVersioned
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
                     $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
-                    if (UserTrialAssignment::model()->exists($criteria) == false){
+                    if (UserTrialAssignment::model()->exists($criteria) == false) {
                         if (!$newPermission->save()) {
                             throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
                                 . print_r($newPermission->getErrors(), true));
@@ -618,14 +629,14 @@ class User extends BaseActiveRecordVersioned
         foreach ($removed_roles as $role) {
             Yii::app()->authManager->revoke($role, $this->id);
 //            If one of the roles removed from the user is that of an admin, thhn remove ability to manage trials not owned by the user - CERA-523
-            if ($role == 'admin'){
+            if ($role == 'admin') {
                 $trials = Trial::model()->findAll();
                 foreach ($trials as $trial) {
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id AND role IS NULL AND is_principal_investigator=:is_principal_investigator AND is_study_coordinator=:is_study_coordinator';
                     $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id,':is_principal_investigator'=>0,':is_study_coordinator'=>0 );
-                    if (UserTrialAssignment::model()->exists($criteria)){
-                        if(!UserTrialAssignment::model()->deleteAll($criteria)) {
+                    if (UserTrialAssignment::model()->exists($criteria)) {
+                        if (!UserTrialAssignment::model()->deleteAll($criteria)) {
                             throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
                                 . print_r(UserTrialAssignment::model()->getErrors(), true));
                         }
@@ -860,12 +871,13 @@ class User extends BaseActiveRecordVersioned
         return $users_with_roles;
     }
 
-    public function getUserActiveStatus($user){
-      if($user->active){
-        $active = '1';
-      } else {
-        $active = '0';
-      }
-      return $active;
+    public function getUserActiveStatus($user)
+    {
+        if ($user->active) {
+            $active = '1';
+        } else {
+            $active = '0';
+        }
+        return $active;
     }
 }

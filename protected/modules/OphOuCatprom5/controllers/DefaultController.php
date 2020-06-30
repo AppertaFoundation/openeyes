@@ -6,6 +6,7 @@ use OEModule\OphOuCatprom5\models;
 
 class DefaultController extends \BaseEventTypeController
 {
+    public $show_element_sidebar = false;
 
     public function actionView($id)
     {
