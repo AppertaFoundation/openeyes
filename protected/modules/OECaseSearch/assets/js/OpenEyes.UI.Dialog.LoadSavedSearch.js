@@ -144,6 +144,7 @@
 
                     // Automatically execute the search.
                     $('form#search-form').submit();
+                    $('#js-analytics-spinner').show();
                 },
                 error: function() {
                     new OpenEyes.UI.Dialog.Alert({
