@@ -123,7 +123,7 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
                     $new_mapping->worklist_id = $worklist->id;
                     if (!$new_mapping->save()) {
                         $this->transaction->rollback();
-                        $this->printError("There was an error saving the mappings");
+                        $this->printErrors("There was an error saving the mappings");
                     }
                 }
                 break;
@@ -166,7 +166,7 @@ class UpdateWorklistInstancesCommand extends CConsoleCommand
                 }
                 if (!$worklist->save()) {
                     $this->transaction->rollback();
-                    $this->printError("There was an error saving the worklists");
+                    $this->printErrors("There was an error saving the worklists");
                 }
             }
         }
