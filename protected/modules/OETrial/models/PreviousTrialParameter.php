@@ -18,7 +18,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
     private $statusList = array();
 
-    protected $_label = 'Previous Trial';
+    protected $label_ = 'Previous Trial';
 
     protected $options = array(
         'value_type' => 'multi_select',
