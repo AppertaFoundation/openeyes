@@ -117,8 +117,6 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         } else {
             $this->assertEquals($expected, $this->parameter->getValueForAttribute($attribute));
         }
-
-
     }
 
     /**

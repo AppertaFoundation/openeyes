@@ -632,6 +632,4 @@ class OphCiExamination_APITest extends CDbTestCase
 
         return $element;
     }
-
-
 }

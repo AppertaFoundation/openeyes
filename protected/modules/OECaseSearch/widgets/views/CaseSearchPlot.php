@@ -26,9 +26,11 @@
         data-x="<?= CHtml::encode(json_encode($x)) ?>"
         data-y="<?= CHtml::encode(json_encode($y)) ?>"
         data-patient-id-list="<?= CHtml::encode(json_encode(array_map(
-                static function ($item) {
+            static function ($item) {
                     return explode(', ', $item);
-                }, $customdata))) ?>"
+            },
+            $customdata
+        ))) ?>"
         data-total="<?= $n ?>"
         data-bin-size="<?= $variable->bin_size ?>"
         data-min-value="<?= $variable->min_value ?>"

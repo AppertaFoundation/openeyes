@@ -79,7 +79,9 @@ $user_searches = array_map(
                 <?= CHtml::hiddenField('variable_list', implode(',', array_map(
                     static function ($item) {
                         return $item->field_name;
-                    }, $variables)), array('id' => 'js-variable-list')) ?>
+                    },
+                    $variables
+                )), array('id' => 'js-variable-list')) ?>
             </div>
             <button id="add-variable" class="button hint green js-add-select-btn"
                     data-popup="add-to-variable-list">
@@ -102,8 +104,8 @@ $user_searches = array_map(
             <button class="js-save-search-dialog-btn cols-full">Save search</button>
             <?= CHtml::htmlButton('Clear search', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
-                    'Download CSV BASIC',
-                    array(
+                'Download CSV BASIC',
+                array(
                         'id' => 'download-csv-basic',
                         'type' => 'submit',
                         'class' => 'cols-full',
@@ -111,8 +113,8 @@ $user_searches = array_map(
                     )
             ) ?>
             <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
-                    'Download CSV Advanced',
-                    array(
+                'Download CSV Advanced',
+                array(
                         'id' => 'download-csv-advanced',
                         'type' => 'submit',
                         'class' => 'cols-full',
@@ -315,7 +317,9 @@ $user_searches = array_map(
                     <?= json_encode(array_map(
                         static function ($item) {
                             return array('id' => $item['id'], 'label' => $item['label']);
-                        }, $variableList)) ?>,
+                        },
+                        $variableList
+                    )) ?>,
                     {'multiSelect': true, 'id': 'variable-type-list', 'deselectOnReturn': true,}
                 ),
             ],

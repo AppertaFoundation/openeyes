@@ -2,8 +2,8 @@
 
 class m200623_052130_add_crt_and_refraction_views extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         $this->execute("CREATE OR REPLACE
         ALGORITHM = UNDEFINED VIEW `v_patient_crt` AS
         select
@@ -73,11 +73,11 @@ class m200623_052130_add_crt_and_refraction_views extends CDbMigration
         order by
             1,
             3");
-	}
+    }
 
-	public function down()
-	{
-	    $this->execute('DROP VIEW v_patient_refraction');
-	    $this->execute('DROP VIEW v_patient_crt');
-	}
+    public function down()
+    {
+        $this->execute('DROP VIEW v_patient_refraction');
+        $this->execute('DROP VIEW v_patient_crt');
+    }
 }

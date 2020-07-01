@@ -129,7 +129,7 @@ class DBProvider extends SearchProvider
             }
 
             $results = $this->getVariableDataInternal($variables, $start_date, $end_date, $mode);
-            $output = fopen('php://output', 'w') or die ('Can\'t open php://output');
+            $output = fopen('php://output', 'w') or die('Can\'t open php://output');
             header('Content-Type: application/csv');
             header("Content-Disposition:attachment;filename=search_results_{$variables->field_name}_$mode.csv");
 

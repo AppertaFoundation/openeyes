@@ -193,6 +193,5 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
             }
             $this->assertEquals($expected, $this->parameter->query());
         }
-
     }
 }

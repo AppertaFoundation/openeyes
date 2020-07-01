@@ -56,7 +56,7 @@ class IOPVariable extends CaseSearchVariable implements DBProviderInterface
         ORDER BY 1, 2, 3, 4, 5";
                 break;
             default:
-            return "
+                return "
         SELECT 10 * FLOOR(value/10) iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
         FROM v_patient_iop iop
         WHERE iop.patient_id IN (" . implode(', ', $this->id_list) . ")
