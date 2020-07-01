@@ -9,7 +9,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
         'value_type' => 'number',
     );
 
-    protected $_label = 'Age';
+    protected $label_ = 'Age';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.

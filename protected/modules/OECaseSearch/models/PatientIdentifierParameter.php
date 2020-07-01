@@ -27,7 +27,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
         'value_type' => 'string_search',
     );
 
-    protected $_label = 'Identifier Number';
+    protected $label_ = 'Identifier Number';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.

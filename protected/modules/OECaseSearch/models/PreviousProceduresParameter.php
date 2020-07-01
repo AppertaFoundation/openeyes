@@ -7,7 +7,7 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
  */
 class PreviousProceduresParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $_label = 'Previous Procedure';
+    protected $label_ = 'Previous Procedure';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.

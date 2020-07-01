@@ -9,7 +9,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
         'value_type' => 'string_search',
     );
 
-    protected $_label = null;
+    protected $label_ = null;
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.

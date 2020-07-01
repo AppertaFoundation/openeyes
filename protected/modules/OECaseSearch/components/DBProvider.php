@@ -8,9 +8,9 @@
 class DBProvider extends SearchProvider
 {
     /**
-     * @var string $_driver Driver name.
+     * @var string $driver_ Driver name.
      */
-    private $_driver = 'mariadb';
+    private $driver_ = 'mariadb';
 
     /**
      * Gets the driver name. Used as a magic method.
@@ -18,7 +18,7 @@ class DBProvider extends SearchProvider
      */
     public function getDriver()
     {
-        return $this->_driver;
+        return $this->driver_;
     }
 
     /**
@@ -27,7 +27,7 @@ class DBProvider extends SearchProvider
      */
     public function setDriver($driver)
     {
-        $this->_driver = $driver;
+        $this->driver_ = $driver;
     }
 
     /**

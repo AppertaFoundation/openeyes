@@ -9,7 +9,7 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         'value_type' => 'boolean',
     );
 
-    protected $_label = 'Patient Deceased';
+    protected $label_ = 'Patient Deceased';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.

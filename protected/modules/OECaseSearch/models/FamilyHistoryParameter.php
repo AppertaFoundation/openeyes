@@ -24,7 +24,7 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
      */
     public $condition;
 
-    protected $_label = 'Family History';
+    protected $label_ = 'Family History';
 
     protected $options = array(
         'value_type' => 'multi_select',

@@ -19,7 +19,7 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
         'value_type' => 'string_search',
     );
 
-    protected $_label = 'Diagnosis';
+    protected $label_ = 'Diagnosis';
 
     /**
      * PatientAgeParameter constructor. This overrides the parent constructor so that the name can be immediately set.

@@ -25,9 +25,9 @@ class PatientVisionParameter extends CaseSearchParameter implements DBProviderIn
     );
 
     /**
-     * @var string $_label Label to display in adder dialog for the parameter.
+     * @var string $label_ Label to display in adder dialog for the parameter.
      */
-    protected $_label = 'Vision';
+    protected $label_ = 'Vision';
 
     /**
      * PatientVisionParameter constructor. This overrides the parent constructor so that the name can be immediately set.

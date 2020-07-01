@@ -30,7 +30,7 @@ abstract class CaseSearchParameter extends CFormModel
     /**
      * @var string $label Label to display in adder dialog for the parameter.
      */
-    protected $_label = null;
+    protected $label_ = null;
 
     /**
      * @var string[] $options List of options for the Adder Dialog.

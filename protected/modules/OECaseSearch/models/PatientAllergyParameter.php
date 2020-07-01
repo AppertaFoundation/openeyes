@@ -5,7 +5,7 @@
  */
 class PatientAllergyParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    protected $_label = 'Allergy';
+    protected $label_ = 'Allergy';
 
     /**
      * CaseSearchParameter constructor. This overrides the parent constructor so that the name can be immediately set.
