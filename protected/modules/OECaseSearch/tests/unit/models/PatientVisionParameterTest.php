@@ -100,11 +100,7 @@ class PatientVisionParameterTest extends CDbTestCase
             $this->parameter->bothEyesIndicator = true;
         }
 
-        if ($op === '=') {
-            $this->parameter->operation = 'IN';
-        } else {
-            $this->parameter->operation = 'NOT IN';
-        }
+        $this->parameter->operation = $op;
 
         $this->parameter->value = 1;
 
