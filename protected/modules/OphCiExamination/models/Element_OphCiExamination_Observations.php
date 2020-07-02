@@ -60,6 +60,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
             array('weight', 'numerical', 'min'=>0.0, 'max'=>250.0),
             array('pulse', 'numerical', 'min'=>0, 'max'=>200),
             array('blood_pressure_systolic,blood_pressure_diastolic,o2_sat,blood_glucose,hba1c,height,weight,pulse', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('blood_pressure_systolic,blood_pressure_diastolic,o2_sat,blood_glucose,hba1c,height,weight,pulse', 'AtLeastOneRequired'),
             array('id, event_id, blood_pressure_systolic, blood_pressure_diastolic, o2_sat, blood_glucose, hba1c, height, weight, pulse, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
