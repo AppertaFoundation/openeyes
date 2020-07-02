@@ -60,7 +60,7 @@ abstract class CaseSearchParameter extends CFormModel
      */
     final public function getLabel()
     {
-        return $this->_label;
+        return $this->label_;
     }
 
     /**
