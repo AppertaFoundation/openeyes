@@ -1117,7 +1117,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterManagement($patient, $use_context = false)
     {
-        $management = $this->getElementFromLatestVisibleEvent(
+        $management = $this->getLatestElement(
             'models\Element_OphCiExamination_Management',
             $patient,
             $use_context
