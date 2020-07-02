@@ -45,6 +45,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                     $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
                     $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
                     $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
+                    $procedureSubspecialtyAssignment->need_eur = isset($assignment['need_eur']) ? $assignment['need_eur'] : 0;
 
                     if (!$procedureSubspecialtyAssignment->save()) {
                         $errors[] = $procedureSubspecialtyAssignment->getErrors();

@@ -41,7 +41,7 @@ class DatePicker extends BaseFieldWidget
             }
         } else {
             if ($this->name) {
-                $this->value = $this->getPostValue($this->name);
+                $this->value = $this->getPostValue($this->name) ?: date('d M Y');
             } else {
                 $this->value = Yii::app()->request->getPost(get_class($this->element))[$this->field];
             }
