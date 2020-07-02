@@ -346,15 +346,20 @@ class Ticket extends \BaseActiveRecordVersioned
      *
      * @return mixed
      */
-    public function getReport()
+    public function getReport($report_type = 'report')
     {
-        foreach ($this->reversed_queue_assignments as $ass) {
-            if ($ass->report) {
-                return $ass->report;
+        foreach ($this->reversed_queue_assignments as $assignment) {
+            if ($assignment->report) {
+                return $assignment->$report_type;
             }
         }
 
         return '';
+    }
+
+    public function getFormattedReport()
+    {
+        return $this->getReport('formattedReport');
     }
 
     /**
@@ -403,5 +408,26 @@ class Ticket extends \BaseActiveRecordVersioned
         }
 
         return $this->current_queue_assignment;
+    }
+
+    public function getFutureSteps()
+    {
+        $ticket_future_steps = [];
+        $outcomes = $this->current_queue->outcomes;
+
+        while (!empty($outcomes)) {
+            if (count($outcomes) > 1) {
+                foreach ($outcomes as $outcome) {
+                    $ticket_future_steps['?'][] = $outcome->outcome_queue;
+                }
+                $outcomes = null;
+            } else if (count($outcomes) === 1) {
+                $outcome_queue = $outcomes[0]->outcome_queue;
+                $ticket_future_steps[] = [$outcome_queue];
+                $outcomes = $outcome_queue->outcomes;
+            }
+        }
+
+        return $ticket_future_steps;
     }
 }

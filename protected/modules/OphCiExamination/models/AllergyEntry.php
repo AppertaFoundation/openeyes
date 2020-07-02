@@ -65,6 +65,7 @@ class AllergyEntry extends \BaseElement
         return array(
             array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
+            array('other', 'validateOtherAllergies'),
             array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -170,6 +171,13 @@ class AllergyEntry extends \BaseElement
         } else {
             throw new Exception('Cannot check if new allergy entry is other without proposed allergy id, 
             new records do not have allergy_id set, please use staticIsOther($allergy_id)');
+        }
+    }
+
+    public function validateOtherAllergies($attribute)
+    {
+        if ($this->allergy_id == AllergyEntry::$OTHER_VAL && $this->$attribute == "" ) {
+            $this->addError($attribute, 'Allergy cannot be blank');
         }
     }
 }

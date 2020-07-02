@@ -21,8 +21,6 @@ $row_count = 0;
 $api = Yii::app()->moduleAPI->get('PatientTicketing');
 $ticket = $api->getTicketForEvent($this->event);
 $display_queue_assignment = $ticket ? $ticket->getDisplayQueueAssignment() : null;
-$incomplete_steps = [];
-$complete_or_current_steps_keys = [];
 $queue_set_service = Yii::app()->service->getService('PatientTicketing_QueueSet');
 $ticket_entries = [];
 $non_ticket_entries = [];
@@ -61,98 +59,106 @@ $non_ticket_entries = [];
         <hr class="divider">
     <?php } ?>
     <?php foreach ($ticket_entries as $entry) { ?>
-        <div class="flex-layout flex-top col-gap">
-            <div class="cols-5">
-                <table class="last-left">
-                    <colgroup>
-                        <col class="cols-4">
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <th>Priority</th>
-                        <?php if ($entry->priority) { ?>
-                            <td>
-                                <span class="highlighter <?= $entry->priority->colour ?>"><?= $entry->priority->name ?></span>
-                            </td>
-                        <?php } ?>
-                    </tr>
-                    <tr>
-                        <th>State</th>
-                        <td><?= $entry->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
-                    </tr>
-                    <tr>
-                        <th>Virtual Clinic</th>
-                        <td><?= $queue_set_service->getQueueSetForQueue($entry->current_queue->id)->name ?></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <hr class="divider">
-                <div class="oe-vc-mode in-element row">
-                    <ul class="vc-steps">
-                        <?php foreach ($entry->getNearestQueuesInStepOrder(2) as $step => $queue) {
-                            $is_completed = $queue->id <= $entry->current_queue->id;
-                            $is_current = $queue->id === $entry->current_queue->id; ?>
-                            <?php if ($is_completed) {
-                                $complete_or_current_steps_keys[$queue->id] = $step;
-                                $queue_assignment = \OEModule\PatientTicketing\models\TicketQueueAssignment::model()->findByAttributes(['ticket_id' => $entry->id, 'queue_id' => $queue->id]) ?>
-                                <li class="completed">
-                                    <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
-                                </li>
-                            <?php } else {
-                                $incomplete_steps[$step] = $queue;
-                            } ?>
-                            <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
-                                <?= $step . '. ' . $queue->name; ?>
+    <div class="flex-layout flex-top col-gap">
+        <div class="cols-5">
+            <table class="last-left">
+                <colgroup>
+                    <col class="cols-4">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th>Priority</th>
+                    <?php if ($entry->priority) { ?>
+                        <td>
+                            <span class="highlighter <?= $entry->priority->colour ?>"><?= $entry->priority->name ?></span>
+                        </td>
+                    <?php } ?>
+                </tr>
+                <tr>
+                    <th>State</th>
+                    <td><?= $entry->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($display_queue_assignment->assignment_date) . ')' ?></td>
+                </tr>
+                <tr>
+                    <th>Virtual Clinic</th>
+                    <td><?= $queue_set_service->getQueueSetForQueue($entry->current_queue->id)->name ?></td>
+                </tr>
+                </tbody>
+            </table>
+            <hr class="divider">
+            <div class="oe-vc-mode in-element row">
+                <ul class="vc-steps">
+                    <?php foreach ($entry->queue_assignments as $step => $queue_assignment) {
+                        $is_completed = $queue_assignment->queue->id <= $entry->current_queue->id;
+                        $is_current = $queue_assignment->queue->id === $entry->current_queue->id; ?>
+                        <?php if ($is_completed) { ?>
+                            <li class="completed">
+                                <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
                             </li>
                         <?php } ?>
-                    </ul>
-                </div>
+                        <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
+                            <?= $step + 1 . '. ' . $queue_assignment->queue->name; ?>
+                        </li>
+                    <?php } ?>
+                    <?php $index = count($entry->queue_assignments) + 1;
+                    foreach ($ticket->getFutureSteps() as $case => $futureSteps) {
+                        foreach ($futureSteps as $futureStep) { ?>
+                            <li>
+                                <?= ($case === '?' ? $case : $index) . '. ' . $futureStep->name; ?>
+                            </li>
+                            <?php $index++;
+                        }
+                    } ?>
+                </ul>
             </div>
-            <div class="cols-7">
-                <?php if ($entry->hasHistory() || $entry->hasRecordedQueueAssignments()) { ?>
-                    <?php foreach ($entry->queue_assignments as $step => $old_assignment) {
-                        $is_current_queue = $old_assignment->queue->id === $entry->current_queue->id;
-                        ?>
-                        <div class="collapse-data">
-                            <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand' ?>">
-                                <?php echo $complete_or_current_steps_keys[$old_assignment->queue->id] . '. ' . $old_assignment->queue->name . ' -'; ?>
-                                <?php if ($old_assignment->assignment_date) {
-                                    echo Helper::convertDate2NHS($old_assignment->assignment_date);
-                                } ?>
-                                <?php if ($old_assignment->queue->id <= $entry->current_queue->id) {
-                                    echo '(' . $old_assignment->assignment_user->getFullName() . ')';
-                                } ?>
-                            </div>
-                            <div class="collapse-data-content" style="display: <?= $is_current_queue ? 'block' : 'none' ?>">
-                                <div class="vc-data">
-                                    <div class="flex-layout flex-top flex-left col-gap">
-                                        <div class="cols-8">
-                                            <?= $old_assignment->report ?>
-                                        </div>
-                                        <div class="cols-4">
+        </div>
+        <div class="cols-7">
+            <?php foreach ($entry->queue_assignments as $step => $old_assignment) {
+                $is_current_queue = $old_assignment->queue->id === $entry->current_queue->id;
+                ?>
+                <div class="collapse-data">
+                    <div class="collapse-data-header-icon <?= $is_current_queue ? 'collapse' : 'expand' ?>">
+                        <?= $step + 1 . '. ' . $old_assignment->queue->name . ' -'; ?>
+                        <?php if ($old_assignment->assignment_date) {
+                            echo Helper::convertDate2NHS($old_assignment->assignment_date);
+                        } ?>
+                        <?php if ($old_assignment->queue->id <= $entry->current_queue->id) {
+                            echo '(' . $old_assignment->assignment_user->getFullName() . ')';
+                        } ?>
+                    </div>
+                    <div class="collapse-data-content" style="display: <?= $is_current_queue ? 'block' : 'none' ?>">
+                        <div class="vc-data">
+                            <div class="flex-layout flex-top flex-left col-gap">
+                                <div class="cols-8">
+                                    <?= $old_assignment->report ?>
+                                </div>
+                                <div class="cols-4">
                                             <span class="user-comment">
                                                 <?php if ($old_assignment->notes) { ?>
                                                     <i class="oe-i comments small pad-right disabled"></i><br/>
-                                                    <?= $old_assignment->notes ?>
+                                                    <?= \OELinebreakReplacer::replace($old_assignment->notes) ?>
                                                 <?php } ?>
                                             </span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php } ?>
-            <?php } ?>
-            <?php foreach ($incomplete_steps as $step => $queue) { ?>
-                <div class="collapse-data">
-                    <div class="collapse-data-header-icon expand">
-                        <?= $step . '. ' . $queue->name ?> - <em class="fade">still to do</em>
-                    </div>
-                    <div class="collapse-data-content" style="display: none">
-                        <div class="alert-box info">Virtual Clinic step not started yet</div>
-                    </div>
                 </div>
             <?php } ?>
+            <?php $index = count($entry->queue_assignments) + 1;
+            foreach ($entry->getFutureSteps() as $case => $futureSteps) {
+                foreach ($futureSteps as $futureStep) { ?>
+                    <div class="collapse-data">
+                        <div class="collapse-data-header-icon expand">
+                            <?= ($case === '?' ? $case : $index) . '. ' . $futureStep->name ?> -
+                            <em class="fade">still to do</em>
+                        </div>
+                        <div class="collapse-data-content" style="display: none">
+                            <div class="alert-box info">Virtual Clinic step not started yet</div>
+                        </div>
+                    </div>
+                    <?php $index++;
+                }
+            } ?>
         </div>
         <?php } ?>
     </div>

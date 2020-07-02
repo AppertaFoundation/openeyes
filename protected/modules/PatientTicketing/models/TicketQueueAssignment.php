@@ -124,7 +124,7 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
      *
      * @return string $replaced_text
      */
-    public function replaceAssignmentCodes($text)
+    public function replaceAssignmentCodes($text, $replace_linebreaks = false)
     {
         if ($this->details) {
             $flds = json_decode($this->details, true);
@@ -144,7 +144,12 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
             preg_match_all('/\[pt_([a-z_]+)\]/is', $text, $m);
 
             foreach ($m[1] as $el) {
-                $text = preg_replace('/\[pt_'.$el.'\]/is', @$by_id[$el] ? $by_id[$el] : 'Not recorded', $text);
+                $replacement_text = @$by_id[$el] ?
+                    $replace_linebreaks ?
+                        \OELinebreakReplacer::replace($by_id[$el])
+                        : $by_id[$el]
+                    : 'Not recorded';
+                $text = preg_replace('/\[pt_'.$el.'\]/is', $replacement_text, $text);
             }
         }
         return $text;
@@ -154,5 +159,10 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
     public function generateReportText()
     {
         $this->report = \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
+    }
+
+    public function getFormattedReport()
+    {
+        return \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition, true), $this->ticket->patient);
     }
 }

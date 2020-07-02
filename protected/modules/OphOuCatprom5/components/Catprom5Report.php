@@ -315,7 +315,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         $this->series = array(
             array(
                 'data' => $this->dataSet(),
-                'name' => 'Catprom5',
+                'name' => 'Cat-PROM5',
             ),
         );
         return json_encode($this->series);
@@ -329,7 +329,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         $dataset = $this->dataset();
         $temp = array_keys($dataset);
         $trace1 = array(
-            'name' => 'Catprom5',
+            'name' => 'Cat-PROM5',
             'type' => 'bar',
             'marker' => array(
                 'color' => '#7cb5ec',
@@ -347,7 +347,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                 return $item['ids'];
             }, array_values($dataset)),
             'hovertext' => array_map(function ($item, $item2) {
-                return '<b>Catprom5</b><br><i>Score: </i>'. $item .
+                return '<b>Cat-PROM5</b><br><i>Score: </i>'. $item .
                 '<br><i>Num results:</i> '. $item2['count'];
             }, $temp, $dataset),
             'hoverinfo' => 'text',
@@ -369,7 +369,7 @@ class Catprom5Report extends \Report implements \ReportInterface
      */
     public function plotlyConfig()
     {
-        $this->plotlyConfig['title'] = 'Catprom5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
+        $this->plotlyConfig['title'] = 'Cat-PROM5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
         return json_encode($this->plotlyConfig);
     }
  

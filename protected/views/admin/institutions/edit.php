@@ -16,7 +16,7 @@
 
 <div class="cols-7">
 
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
@@ -42,23 +42,25 @@
         </colgroup>
 
         <tbody>
-        <?php foreach (['name', 'remote_id'] as $field) : ?>
             <tr>
-                <td><?php echo $institution->getAttributeLabel($field); ?></td>
+                <td><?= $institution->getAttributeLabel('name'); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $institution,
-                        $field,
+                        'name',
                         ['class' => 'cols-full']
                     ); ?>
                 </td>
             </tr>
-        <?php endforeach; ?>
+        <tr>
+            <td><?= $institution->getAttributeLabel('remote_id'); ?></td>
+            <td><?= htmlspecialchars($institution->remote_id) ?></td>
+        </tr>
         <?php
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
             <tr>
-                <td><?php echo $address->getAttributeLabel($field); ?></td>
+                <td><?= $address->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $address,
@@ -125,13 +127,13 @@
             <?php
             foreach ($institution->sites as $site) { ?>
                 <tr class="clickable"
-                    data-id="<?php echo $site->id ?>"
-                    data-uri="admin/editsite?site_id=<?php echo $site->id ?>">
-                    <td><?php echo $site->id ?></td>
-                    <td><?php echo $site->remote_id ?>&nbsp;</td>
-                    <td><?php echo $site->name ?>&nbsp;</td>
+                    data-id="<?= $site->id ?>"
+                    data-uri="admin/editsite?site_id=<?= $site->id ?>">
+                    <td><?= $site->id ?></td>
+                    <td><?= $site->remote_id ?>&nbsp;</td>
+                    <td><?= $site->name ?>&nbsp;</td>
                     <td>
-                        <?php echo $site->getLetterAddress(
+                        <?= $site->getLetterAddress(
                             array('delimiter' => ', ')
                         ) ?>&nbsp
                     </td>

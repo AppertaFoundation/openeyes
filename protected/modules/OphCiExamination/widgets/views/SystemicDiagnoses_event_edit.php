@@ -164,15 +164,21 @@ $required_diagnoses_ids = array_map(function ($r) {
                 let filters = $('ul.category-filter').find('li.selected');
                 if (filters.length > 0) {
                     systemic_diagnoses_controller.$popup.find('li').each(function () {
-                        if (!$(this).data('filter_value') === $(filters[0]).data('filter-value')) {
+                        let already_used = $(this).hasClass('js-already-used');
+                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used)&&!$(this).data('filter-value')) {
                             $(this).hide();
+                        } else {
+                            $(this).show();
                         }
+
+                    });
+                } else {
+                    adder_dialog.popup.find('li').each(function () {
+                        let already_used = $(this).hasClass('js-already-used');
+                        $(this).toggle(!already_used);
                     });
                 }
-                adder_dialog.popup.find('li').each(function () {
-                    let already_used = $(this).hasClass('js-already-used');
-                    $(this).toggle(!already_used);
-                });
+
             },
             searchOptions: {
                 searchSource: systemic_diagnoses_controller.options.searchSource,

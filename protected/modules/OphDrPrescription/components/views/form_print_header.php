@@ -32,6 +32,7 @@
                     <table>
                         <tbody>
                         <tr>
+                            <?php if ($address) { ?>
                             <td <?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
                                 <?php if ($patient_has_address) { ?>
                                     <?= $this->patient->contact->address->city ?><br/>
@@ -46,6 +47,12 @@
                                     <?= $this->patient->contact->address->postcode ?>
                                 <?php } ?>
                             </td>
+                            <?php } else { ?>
+                                <br/>
+                                <td<?= ($form_css_class !== 'wpten') ? 'style="width: 70%"' : ''?>>
+                                    Patient's address is unknown<br/>
+                                </td>
+                            <?php } ?>
                         </tr>
                         <?php if ($form_css_class === 'wpten') : ?>
                             <tr>

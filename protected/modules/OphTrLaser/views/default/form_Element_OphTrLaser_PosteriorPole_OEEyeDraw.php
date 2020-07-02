@@ -18,7 +18,7 @@
 <?php
 $widget = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole', 'VitelliformMacularLesion', 'PigmentEpitheliumDetachment', 'ChoroidalEffusion'),
+        array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole', 'VitelliformMacularLesion'),
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('PostPole')),

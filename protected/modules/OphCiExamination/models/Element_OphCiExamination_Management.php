@@ -31,6 +31,13 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Management extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    const ELEMENT_CHILDREN = [
+        'Element_OphCiExamination_CataractSurgicalManagement',
+        'Element_OphCiExamination_OverallManagementPlan',
+        'Element_OphCiExamination_CurrentManagementPlan',
+        'Element_OphCiExamination_LaserManagement',
+        'Element_OphCiExamination_InjectionManagement'
+    ];
 
     /**
      * Returns the static model of the specified AR class.
@@ -59,11 +66,24 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('comments', 'safe'),
-            array('comments', 'required', 'message' => '{attribute} cannot be blank when there are no child elements', 'on' => 'formHasNoChildren'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, comments', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function eventScopeValidation($elements)
+    {
+        $element_names = array_map(
+            function ($element) {
+                return \Helper::getNSShortname($element);
+            },
+            $elements
+        );
+
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+            $this->addError('comments', 'Comments cannot be blank when there are no child elements');
+        }
     }
 
     /**
@@ -142,9 +162,9 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
     public function getSiblingString($delimiter = ' // ')
     {
         return implode($delimiter, array_map(
-                function ($el) {
-                    return $el->elementType->name . ': ' . $el;
-                }, $this->getSiblings())
+            function ($el) {
+                return $el->elementType->name . ': ' . $el;
+            }, $this->getSiblings())
         );
     }
 
