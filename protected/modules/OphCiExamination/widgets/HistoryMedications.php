@@ -280,7 +280,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
+        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
@@ -304,10 +304,10 @@ class HistoryMedications extends BaseMedicationWidget
             }
         }
 
-        if ( $this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE) {
-            // when new we want to always set to default so we can track changes
-            // but if this element already exists then we don't want to override
-            // it with the tip data
+        // when new we want to always set to default so we can track changes
+        // but if this element already exists then we don't want to override
+        // it with the tip data
+        if ($this->element && $this->mode === self::$EVENT_EDIT_MODE) {
             $this->setElementFromDefaults();
         }
 
