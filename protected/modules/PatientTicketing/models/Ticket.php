@@ -346,15 +346,20 @@ class Ticket extends \BaseActiveRecordVersioned
      *
      * @return mixed
      */
-    public function getReport()
+    public function getReport($report_type = 'report')
     {
-        foreach ($this->reversed_queue_assignments as $ass) {
-            if ($ass->report) {
-                return $ass->report;
+        foreach ($this->reversed_queue_assignments as $assignment) {
+            if ($assignment->report) {
+                return $assignment->$report_type;
             }
         }
 
         return '';
+    }
+
+    public function getFormattedReport()
+    {
+        return $this->getReport('formattedReport');
     }
 
     /**

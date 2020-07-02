@@ -135,7 +135,7 @@ $non_ticket_entries = [];
                                             <span class="user-comment">
                                                 <?php if ($old_assignment->notes) { ?>
                                                     <i class="oe-i comments small pad-right disabled"></i><br/>
-                                                    <?= $old_assignment->notes ?>
+                                                    <?= \OELinebreakReplacer::replace($old_assignment->notes) ?>
                                                 <?php } ?>
                                             </span>
                                 </div>
