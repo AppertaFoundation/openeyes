@@ -15,6 +15,7 @@
 ?>
 
 <?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
 foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
 }
@@ -192,6 +193,23 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 </form>
 
 <script>
+
+    let formStructure = {
+        'name' : 'CommonOphthalmicDisorders',
+        'tableSelector': '.generic-admin.standard.sortable',
+        'rowSelector': 'tr',
+        'rowIdentifier': 'row',
+        'structure': {
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][id]' : '',
+            'display_order[ROW_IDENTIFIER]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_disorder_id_actual',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][group_id]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][finding_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_finding_id.finding-id',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_alternate_disorder_id.alternate-disorder-id',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : ''
+        }
+    };
+    let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
     let $table = $('.generic-admin');
 
     function initialiseRow($row) {
@@ -205,7 +223,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 "<span class='diagnosis-name'></span></span>" +
                 "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
                 "{{{input_field}}}" +
-                "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
 
         // Init finding, unfortunately we cannot use DiagnosesSearchController for this
@@ -239,6 +257,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             } else {
                 // validation finished, set the flag
                 findings_are_validated = true;
+                GenericFormJSONConverter.convert();
+
                 // only if there are no errors in the page proceed to save
                 $(this).trigger('click');
             }

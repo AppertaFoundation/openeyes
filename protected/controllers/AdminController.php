@@ -65,29 +65,49 @@ class AdminController extends BaseAdminController
 
         if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
+            $JSON_string = Yii::app()->request->getParam('CommonOphthalmicDisorders');
+            $json_error = false;
+            if (!$JSON_string || !array_key_exists('JSON_string', $JSON_string)) {
+                $json_error = true;
+            }
 
-            $display_orders = Yii::app()->request->getParam('display_order', array());
-            $disorders = Yii::app()->request->getParam('CommonOphthalmicDisorder', array());
+            $JSON = json_decode(str_replace("'", '"', $JSON_string['JSON_string']), true);
+            if (json_last_error() != 0) {
+                $json_error = true;
+            }
 
-            $ids = array();
-            foreach ($disorders as $key => $disorder) {
-                $common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
-                if (!$common_ophtalmic_disorder) {
-                    $common_ophtalmic_disorder = new CommonOphthalmicDisorder;
-                    $disorder['id'] = null;
+            if (!$json_error) {
+                $display_orders = array_map(function ($entry) {
+                      return $entry['display_order'];
+                }, $JSON);
+
+                $disorders = array_map(function ($entry) {
+                      return $entry['CommonOphthalmicDisorder'];
+                }, $JSON);
+
+
+                $ids = array();
+                foreach ($disorders as $key => $disorder) {
+                    $common_ophthalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
+                    if (!$common_ophthalmic_disorder) {
+                        $common_ophthalmic_disorder = new CommonOphthalmicDisorder;
+                        $disorder['id'] = null;
+                    }
+
+                    $common_ophthalmic_disorder->attributes = $disorder;
+                    $common_ophthalmic_disorder->display_order = $display_orders[$key];
+
+                    //$_GET['subspecialty_id'] must be present, we do not use the default value 1
+                    $common_ophthalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
+
+                    if (!$common_ophthalmic_disorder->save()) {
+                        $errors[] = $common_ophthalmic_disorder->getErrors();
+                    }
+
+                    $ids[$common_ophthalmic_disorder->id] = $common_ophthalmic_disorder->id;
                 }
-
-                $common_ophtalmic_disorder->attributes = $disorder;
-                $common_ophtalmic_disorder->display_order = $display_orders[$key];
-
-                //$_GET['subspecialty_id'] must be present, we do not use the default value 1
-                $common_ophtalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
-
-                if (!$common_ophtalmic_disorder->save()) {
-                    $errors[] = $common_ophtalmic_disorder->getErrors();
-                }
-
-                $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
+            } else {
+                $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
             }
 
             if (empty($errors)) {
@@ -119,7 +139,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>' . $common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
