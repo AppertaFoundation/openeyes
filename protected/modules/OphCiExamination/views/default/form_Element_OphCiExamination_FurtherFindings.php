@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,7 +18,7 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-  <div class="furtherfindings-multi-select cols-full">
+    <div class="furtherfindings-multi-select cols-full">
         <?php
         $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
         echo $form->multiSelectListFreeText(
@@ -38,18 +39,18 @@
             ),
             array(),
             array(
-              'empty' => '-- Add --',
-              'label' => 'Findings',
-              'nowrapper' => true,
-              'requires_description_field' => 'requires_description',
+                'empty' => '-- Add --',
+                'label' => 'Findings',
+                'nowrapper' => true,
+                'requires_description_field' => 'requires_description',
             ),
             false,
             true,
-            'No further findings',
+            'Please add a further finding',
             true,
             true,
             array(),
             'Finding'
         ) ?>
-  </div>
+    </div>
 </div>

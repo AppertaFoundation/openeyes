@@ -24,7 +24,10 @@
         )); ?>
         <?php $this->renderPartial('//base/head/_assets'); ?>
     </head>
-    <body class="open-eyes oe-grid">
+    <?php $training_mode = SettingMetadata::checkSetting('training_mode_enabled', 'on')
+      ? 'training-mode' : '';
+    ?>
+    <body class="open-eyes oe-grid <?=$training_mode?>">
         <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
         <div class="openeyes-brand">

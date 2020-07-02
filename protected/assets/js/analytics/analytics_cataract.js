@@ -318,7 +318,7 @@ var analytics_cataract = (function () {
 
 		$(document).off('ajaxComplete').on("ajaxComplete", function (event, request, settings) {
 			settings.global = false;
-			if (settings.url.includes(currentPlot.replace('Report', '').replace(/_/g, '\\')) &&
+			if ((settings.url.replace(/_/g, '\\')).includes(currentPlot.replace('Report', '').replace(/_/g, '\\')) &&
 			event.target.activeElement.id !== 'js-download-pdf') {
 				var report = document.getElementById(currentPlot);
 				analytics_drill_down(report, null);
