@@ -1153,6 +1153,7 @@ class OphCiExamination_API extends \BaseAPI
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
                     $summary_obj->comments = $summaries->comments ?: $summaries->getSiblingString();
+                    $summary_obj->comments = \OELinebreakReplacer::replace($summary_obj->comments);
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;
@@ -2458,13 +2459,13 @@ class OphCiExamination_API extends \BaseAPI
                 } else {
                     $str .= '<tr><td></td>';
                 }
-                $str .= '<td>' . $entry->status->name;
+                $str .= '<td style="text-align:left">' . $entry->status->name;
                 if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->followup_period} with {$entry->role->name} ({$entry->followup_comments})";
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
                 }
                 $str .= "</td></tr>";
             }
-            $str .= '</table></tbody>';
+            $str .= '</tbody></table>';
 
             if ($element->comments) {
                 $str .= "<strong>Comments:</strong> {$element->comments}";
@@ -3192,7 +3193,7 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?= $entry->frequency ? $entry->frequency : ''; ?>
                         </td>
-                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay(); ?></td>
+                        <td><?= $entry->prescription_item_id ? $entry->getEndDateDisplay($entry->prescription_item->duration->name) : $entry->getEndDateDisplay("Ongoing"); ?></td>
                     </tr>
                     <?php
                                         $taper_date = $entry->end_date;

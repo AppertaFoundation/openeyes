@@ -16,7 +16,7 @@
 
 <div class="cols-7">
 
-<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+<?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
 <?php
 $form = $this->beginWidget(
     'BaseEventTypeCActiveForm',
@@ -44,16 +44,19 @@ $form = $this->beginWidget(
         <tbody>
         <?php foreach (['name', 'remote_id'] as $field) : ?>
             <tr>
-                <td><?php echo $institution->getAttributeLabel($field); ?></td>
+                <td><?= $institution->getAttributeLabel($field); ?></td>
                 <td>
-                    <?= \CHtml::activeTextField(
+                    <?php if ($field == 'remote_id') {
+                        ?><div class="alert-box alert">Once added, this field will not be editable</div><?php
+                    }
+                    echo \CHtml::activeTextField(
                         $institution,
                         $field,
                         [
                             'class' => 'cols-full',
                             'autocomplete' => Yii::app()->params['html_autocomplete']
                         ]
-                    ); ?>
+                    );?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -61,7 +64,7 @@ $form = $this->beginWidget(
         $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
             <tr>
-                <td><?php echo $address->getAttributeLabel($field); ?></td>
+                <td><?= $address->getAttributeLabel($field); ?></td>
                 <td>
                     <?= \CHtml::activeTextField(
                         $address,

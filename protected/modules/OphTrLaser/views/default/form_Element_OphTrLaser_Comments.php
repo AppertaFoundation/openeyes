@@ -17,5 +17,8 @@
 ?>
 
 <div class="element-fields">
-    <?php echo $form->textArea($element, 'comments', array('label' => false), false, array('rows' => 1, 'placeholder' => "Comments"), array('label' => 0, 'field' => 10)) ?>
+    <?php echo $form->textArea($element, 'comments', array('nowrapper' => true),
+        false,
+        array('rows' => 1, 'placeholder' => "Comments",'class' => 'autosize')
+    ) ?>
 </div>

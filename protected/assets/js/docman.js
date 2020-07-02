@@ -153,7 +153,7 @@ var docman = (function() {
                         delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
 
@@ -165,14 +165,14 @@ var docman = (function() {
                         delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
-                        if( $('button#et_saveprint').length ){
+                        if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods = '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
                         }
                     }
@@ -266,54 +266,48 @@ var docman = (function() {
                     }
         },
 
-        getRecipientData: function(contact_id, element) {
-            var document_set_id = '';
-            var document_set_id_param = '';
-            var rowindex = $(element).data("rowindex");
-            var $tr = $('tr.rowindex-' + rowindex);
-            if( $('#DocumentSet_id').length > 0 ){
+        getRecipientData: function (contact_id, element) {
+            let document_set_id = '';
+            let document_set_id_param = '';
+            let rowindex = $(element).data("rowindex");
+            if ($('#DocumentSet_id').length > 0) {
                 document_set_id = $('#DocumentSet_id').val();
                 document_set_id_param = '&document_set_id=' + document_set_id;
             }
 
-            var current_type =  $('#DocumentTarget_' + rowindex + '_attributes_contact_type option:selected').text();
-            var selected_type = contact_id.match(/^([a-zA-Z]+)([0-9]+)$/);
-            var other_rowindex;
-            var other_id;
+            let current_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type option:selected').text();
+            let selected_type = contact_id.match(/^([a-zA-Z]+)([0-9]+)$/);
+            let other_rowindex;
+            let other_id;
 
-            if(selected_type){
+            if (selected_type) {
                 other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
-        }
+            }
 
-            if(contact_id != 'OTHER' ){
-            	if(other_rowindex !== undefined){
+            if (contact_id !== 'OTHER') {
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').attr('disabled', 'true');
+                if (other_rowindex !== undefined) {
                     current_type = current_type.toLowerCase();
-                    type = current_type[0].toUpperCase() + current_type.slice(1);
-
-                    if(type !== 'Other' && type !== undefined && type !== '- type -'){
-                        other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
-                    }
-
+                    let type = current_type[0].toUpperCase() + current_type.slice(1);
                     other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
                 }
 
                 this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
                 this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
-
-            } else if(contact_id.toUpperCase() === 'OTHER'){
+            } else if (contact_id.toUpperCase() === 'OTHER') {
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val('');
-                $('#Document_Target_Address_' + rowindex ).val('');
-								$('#Document_Target_Address_' + rowindex).trigger('autosize');
+                $('#Document_Target_Address_' + rowindex).val('');
+                $('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
-								$('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
-                $('#ElementLetter_use_nickname').prop('checked','');
+                $('#ElementLetter_use_nickname').prop('checked', '');
             }
         },
         
@@ -327,9 +321,8 @@ var docman = (function() {
             return is_added;
         },
 
-        updateRow: function(rowindex, contact_id, OE_patient_id, document_set_id_param) {
-
-            if(contact_id === undefined){
+        updateRow: function (rowindex, contact_id, OE_patient_id, document_set_id_param) {
+            if (contact_id === undefined) {
                 return;
             }
 
@@ -338,28 +331,29 @@ var docman = (function() {
                 'url': '/' + moduleName + '/default/getAddress?contact=' + contact_id + '&patient_id=' + OE_patient_id + document_set_id_param,
                 context: this,
                 dataType: 'json',
-                'beforeSend': function(){
+                'beforeSend': function () {
                     $('#dm_table .docman_loader').show();
                 },
                 'success': function (resp) {
-
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
-										$('#Document_Target_Address_' + rowindex).trigger('autosize');
+                    $('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+                    let is_Cc = $('#DocumentTarget_' + rowindex + '_attributes_ToCc').val() === "Cc";
+                    updateReData(resp.contact_type, is_Cc);
 
                     $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
                     //check if the contact_type is disabled - if it is we have to insert a hidden field
-                    if( $('#DocumentTarget_' + rowindex + '_attributes_contact_type').is(':disabled') ){
+                    if ($('#DocumentTarget_' + rowindex + '_attributes_contact_type').is(':disabled')) {
                         $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase());
                     }
 
-                    if(rowindex === 0){
-                        $('#ElementLetter_use_nickname').prop('checked','');
-                        $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
+                    if (rowindex === 0) {
+                        $('#ElementLetter_use_nickname').prop('checked', '');
+                        $("#ElementLetter_introduction").val(resp.text_ElementLetter_introduction);
                     }
                     $('#docman_recipient_' + rowindex).val('');
                     $('#dm_table .docman_loader').hide();

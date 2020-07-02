@@ -54,18 +54,18 @@ return [
     'params' => [
 
         'pasapi' => [
-            'enabled' => false,
-            'url' => 'http://localhost:4200',
+            'enabled' => (getenv("OE_PASAPI_ENABLE") && trim(strtolower(getenv("OE_PASAPI_ENABLE")))) == "false" ? false : true,
+            'url' => getenv("OE_PASAPI_URL") ?: 'http://localhost:4200',
             'curl_timeout' => 10, //sec
 
             // comment this out to use the params['curl_proxy']
             // use 'false' to bypass any proxies
-            'proxy' => false,
+            'proxy' => getenv("OE_PASAPI_PROXY") ?: false,
 
             // set the caching time in seconds - don't query the PAS for data that had been cached within the last X minutes
             // set cache_time to null (never stale] to never update the object from PAS
             // set cache_time to 0 (always stale] to update the object from PAS every time
-            'cache_time' => 300, //sec
+            'cache_time' => getenv("OE_PASAPI_CACHE_TIME") ?: 300, //sec
             'allowed_params' => [],
         ],
     ],

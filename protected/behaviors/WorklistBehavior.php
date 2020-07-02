@@ -14,9 +14,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-use \OEModule\PASAPI\models\PasApiAssignment;
-use \OEModule\PASAPI\resources\PatientAppointment;
-use \OEModule\PatientTicketing\models\Ticket;
+
+use OEModule\PASAPI\models\PasApiAssignment;
+use OEModule\PASAPI\resources\PatientAppointment;
+use OEModule\PatientTicketing\models\Ticket;
 
 class WorklistBehavior extends CBehavior
 {
@@ -114,7 +115,8 @@ class WorklistBehavior extends CBehavior
             if ($ticket) {
                 // disableDefaultScope() to find deleted events as well, we just want to get the patient, nothing else
                 $patientticket_event = Event::model()->disableDefaultScope()->findByPk($ticket->event_id);
-                $ticket_patient_id = $patientticket_event->episode->patient_id;
+                $patientticket_episode = Episode::model()->disableDefaultScope()->findByPK($patientticket_event->episode_id);
+                $ticket_patient_id = $patientticket_episode->patient_id;
             }
 
             // creating event for the patient who has ticket set in session['patientticket_ticket_ids']
@@ -129,7 +131,7 @@ class WorklistBehavior extends CBehavior
         if ($this->owner->event->worklist_patient_id) {
             $criteria = new \CDbCriteria();
 
-            $criteria->with = ['worklist.displayContext.subspecialty'];
+            $criteria->with = ['worklist.worklist_definition.display_contexts.subspecialty'];
             $criteria->together = true;
             $criteria->addCondition('t.when >= :start_date');
             $criteria->addCondition('t.when <= :end_date');

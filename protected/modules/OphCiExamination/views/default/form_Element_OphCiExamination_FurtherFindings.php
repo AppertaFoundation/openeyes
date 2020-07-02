@@ -42,7 +42,7 @@
           ),
           false,
           true,
-          'No further findings',
+          'Please add a further finding',
           true,
           true,
           array(),

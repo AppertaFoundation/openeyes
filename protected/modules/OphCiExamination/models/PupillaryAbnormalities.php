@@ -179,12 +179,16 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
                 foreach ($element->{'entries_' . $side} as $entry) {
                     $new_entry = new PupillaryAbnormalityEntry();
                     $new_entry->loadFromExisting($entry);
+                    if ($this->{'no_pupillaryabnormalities_date_' . $side} != null) {
+                        $new_entry->has_abnormality = (string)PupillaryAbnormalityEntry::$NOT_PRESENT;
+                    }
                     $entries[] = $new_entry;
                 }
             }
             $this->{'entries_' . $side} = $entries;
         }
         $this->originalAttributes = $this->getAttributes();
+        $this->is_initialized = true;
     }
 
     public function getSortedEntries($eye_side)
@@ -207,11 +211,6 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
         });
 
         return $entries;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action === 'view' ? 50 : parent::getDisplayOrder($action);
     }
 
     /**

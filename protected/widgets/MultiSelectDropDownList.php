@@ -73,13 +73,20 @@ class MultiSelectDropDownList extends BaseCWidget
 
     public function renderList()
     {
+        $data = isset($this->options['dropDown']['data']) ? $this->options['dropDown']['data'] : null;
         $items = isset($this->options['dropDown']['selectedItems']) ? $this->options['dropDown']['selectedItems'] : [];
+
+        // Remove values which are not in the selection list to avoid empty/invalid options
+        $valid_items = array_filter($items, function ($key) use ($data) {
+            return array_key_exists($key, $data);
+        });
+
         echo \CHtml::openTag('ul', [
             'class' => 'oe-multi-select inline',
             'style' => (!$items ? 'display:none' : ''),
             'data-inputname' => $this->options['dropDown']['selectedItemsInputName']]);
 
-        foreach ($items as $value) {
+        foreach ($valid_items as $value) {
             echo \CHtml::openTag('li');
             echo isset($this->options['dropDown']['data'][$value]) ? $this->options['dropDown']['data'][$value] : '';
             //acting strange: \CHtml::tag('i', ['encode' => false, 'class' =>'oe-i remove-circle small-icon pad-left']);

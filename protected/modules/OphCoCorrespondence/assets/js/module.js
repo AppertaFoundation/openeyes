@@ -138,8 +138,8 @@ function updateConsultantDropdown(subspecialty_id){
         data: {"subspecialty_id": subspecialty_id },
         dataType: "json",
         beforeSend: function(){
-            $('button#et_saveprint').prop('disabled', true);
-            $('button#et_savedraft').prop('disabled', true);
+            $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+            $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
         success: function(data){
             var options = [];
@@ -166,8 +166,8 @@ function updateConsultantDropdown(subspecialty_id){
             });
         },
         complete: function(){
-            $('button#et_saveprint').prop('disabled', false);
-            $('button#et_savedraft').prop('disabled', false);
+            $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+            $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
         }
 
     });
@@ -196,15 +196,15 @@ $(document).ready(function() {
             data: { firm_id: $('#ElementLetter_to_firm_id').val(), },
             dataType: "json",
             beforeSend: function(){
-                $('button#et_saveprint').prop('disabled', true);
-                $('button#et_savedraft').prop('disabled', true);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
             success: function(data){
                 updateSalutation(data);
             },
             complete: function(){
-                $('button#et_saveprint').prop('disabled', false);
-                $('button#et_savedraft').prop('disabled', false);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             }
         });
 
@@ -220,15 +220,15 @@ $(document).ready(function() {
 
                 // empty the value of the address textarea because if the ajax slow the user may save a wrong address
                 $('#Document_Target_Address_0').val('');
-                $('button#et_saveprint').prop('disabled', true);
-                $('button#et_savedraft').prop('disabled', true);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
             },
             success: function(data){
                 $('#Document_Target_Address_0').val(data.correspondence_name);
             },
             complete: function(){
-                $('button#et_saveprint').prop('disabled', false);
-                $('button#et_savedraft').prop('disabled', false);
+                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
             }
         });
 
@@ -255,11 +255,11 @@ $(document).ready(function() {
 		}
 	});
 
-    $('#et_save').click(function(e){
+    $('#et_save, #et_save_footer').click(function(e){
 		$('#'+event_form ).submit();
     });
 
-    $('#et_saveprint').click(function(e){
+    $('#et_saveprint, #et_saveprint_footer').click(function(e){
         e.preventDefault();
 
         var event_button = $(this);
@@ -275,7 +275,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#et_savedraft').click(function(e){
+    $('#et_savedraft, #et_savedraft_footer').click(function(e){
         e.preventDefault();
 
         var event_button = $(this);
@@ -308,191 +308,6 @@ $(document).ready(function() {
 				}
 			}
 		});
-	});
-
-
-	$('#address_target').change(function() {
-		var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
-
-		if ($(this).children('option:selected').val() != '') {
-			if ($(this).children('option:selected').text().match(/NO ADDRESS/)) {
-
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Sorry, this contact has no address so you can't send a letter to them."
-				}).open();
-
-				$(this).val(selected_recipient);
-				return false;
-			}
-
-			var val = $(this).children('option:selected').val();
-
-			if (re_field == null) {
-				if ($('#re_default').length >0) {
-					re_field = $('#re_default').val();
-				} else {
-					re_field = $('#ElementLetter_re').val();
-				}
-			}
-
-			var target = $(this);
-
-			$.ajax({
-				'type': 'GET',
-				'dataType': 'json',
-				'url': baseUrl+'/OphCoCorrespondence/Default/getAddress?patient_id='+OE_patient_id+'&contact='+val+'&nickname='+nickname,
-				'success': function(data) {
-
-					$('#ElementLetter_address').attr('readonly', (data['contact_type'] == 'Gp'));
-
-					if (data['error'] == 'DECEASED') {
-
-						new OpenEyes.UI.Dialog.Alert({
-							content: "This patient is deceased and cannot be written to."
-						}).open();
-
-						target.val(selected_recipient);
-						return false;
-					}
-
-					if (val.match(/^Patient/)) {
-						$('#ElementLetter_re').val('');
-						$('#ElementLetter_re').parent().parent().hide();
-					} else {
-						if (re_field != null) {
-							$('#ElementLetter_re').val(re_field);
-							$('#ElementLetter_re').parent().parent().show();
-						}
-					}
-
-					correspondence_load_data(data);
-					selected_recipient = val;
-
-					// try to remove the selected recipient's address from the cc field
-					if ($('#ElementLetter_cc').val().length >0) {
-						$.ajax({
-							'type': 'GET',
-							'url': baseUrl+'/OphCoCorrespondence/Default/getCc?patient_id='+OE_patient_id+'&contact='+val,
-							'success': function(text) {
-								if (text.match(/DECEASED/)) {
-									new OpenEyes.UI.Dialog.Alert({
-										content: "This patient is deceased and cannot be cc'd."
-									}).open();
-									target.val(selected_recipient);
-									return false;
-								} else if (!text.match(/NO ADDRESS/)) {
-									if ($('#ElementLetter_cc').val().length >0) {
-										var cur = $('#ElementLetter_cc').val();
-
-										if (cur.indexOf(text) != -1) {
-											var strings = cur.split("\n");
-											var replace = '';
-
-											for (var i in strings) {
-												if (strings[i].length >0 && strings[i].indexOf(text) == -1) {
-													if (replace.length >0) {
-														replace += "\n";
-													}
-													replace += $.trim(strings[i]);
-												}
-											}
-
-											$('#ElementLetter_cc').val(replace);
-										}
-									}
-
-									var targets = '';
-
-									$('#cc_targets').children().map(function() {
-										if ($(this).val() != val) {
-											targets += '<input type="hidden" name="CC_Targets[]" value="'+$(this).val()+'" />';
-										}
-									});
-									$('#cc_targets').html(targets);
-								}
-							}
-						});
-					}
-
-					// if the letter is to anyone but the GP we need to cc the GP
-					if (!val.match(/^Gp|^Practice/)) {
-						var contact;
-						if (OE_gp_id) {
-							contact = 'Gp' + OE_gp_id;
-						}
-						else if (OE_practice_id) {
-							contact = 'Practice' + OE_practice_id;
-						}
-						if (contact) {
-							$.ajax({
-								'type': 'GET',
-								'url': baseUrl+'/OphCoCorrespondence/Default/getCc?patient_id='+OE_patient_id+'&contact='+contact,
-								'success': function(text) {
-									if (!text.match(/NO ADDRESS/)) {
-										if ($('#ElementLetter_cc').val().length >0) {
-											var cur = $('#ElementLetter_cc').val();
-
-											if (cur.indexOf(text) == -1) {
-												if (!$('#ElementLetter_cc').val().match(/[\n\r]$/)) {
-													cur += "\n";
-												}
-
-												$('#ElementLetter_cc').val(cur+text);
-												$('#cc_targets').append('<input type="hidden" name="CC_Targets[]" value="gp" />');
-											}
-
-										} else {
-											$('#ElementLetter_cc').val(text);
-											$('#cc_targets').append('<input type="hidden" name="CC_Targets[]" value="gp" />');
-										}
-									} else {
-										new OpenEyes.UI.Dialog.Alert({
-											content: "Warning: letters should be cc'd to the patient's GP, but the current patient's GP has no valid address."
-										}).open();
-									}
-								}
-							});
-						}
-					} else {
-						// if the letter is to the GP we need to cc the patient
-						$.ajax({
-							'type': 'GET',
-							'url': baseUrl+'/OphCoCorrespondence/Default/getCc?patient_id='+OE_patient_id+'&contact=Patient'+OE_patient_id,
-							'success': function(text) {
-								if (text.match(/DECEASED/)) {
-									new OpenEyes.UI.Dialog.Alert({
-										content: "The patient is deceased so cannot be cc'd."
-									}).open();
-									target.val(selected_recipient);
-									return false;
-								} else if (!text.match(/NO ADDRESS/)) {
-									if ($('#ElementLetter_cc').val().length >0) {
-										var cur = $('#ElementLetter_cc').val();
-
-										if (cur.indexOf(text) == -1) {
-											if (!$('#ElementLetter_cc').val().match(/[\n\r]$/)) {
-												cur += "\n";
-											}
-
-											$('#ElementLetter_cc').val(cur+text);
-											$('#cc_targets').append('<input type="hidden" name="CC_Targets[]" value="patient" />');
-										}
-
-									} else {
-										$('#ElementLetter_cc').val(text);
-										$('#cc_targets').append('<input type="hidden" name="CC_Targets[]" value="patient" />');
-									}
-								} else {
-									new OpenEyes.UI.Dialog.Alert({
-										content: "Warning: letters to the GP should be cc'd to the patient's, but the patient has no valid address."
-									}).open();
-								}
-							}
-						});
-					}
-				}
-			});
-		}
 	});
 
 	$('input[id="ElementLetter_use_nickname"][type="checkbox"]').click(function() {
@@ -798,37 +613,39 @@ function savePDFprint( module , event_id , $content, $data_id, title)
     });
 }
 
-var re_field = null;
+function updateReData(recipient, is_Cc) {
+	let default_re = document.getElementById("default_re").value;
+	let element_letter_re = document.getElementById('ElementLetter_re');
+	if (recipient.match(/^Patient/) && !is_Cc) {
+		element_letter_re.value = default_re.substring(default_re.indexOf('DOB'));
+	} else {
+		element_letter_re.value = default_re;
+	}
+
+	autosize.update(element_letter_re);
+}
 
 function correspondence_load_data(data) {
 	for (var i in data) {
 		if (m = i.match(/^text_(.*)$/)) {
-			if (m[1] == 'ElementLetter_body'){
-        element_letter_controller.setContent(data[i]);
+			if (m[1] == 'ElementLetter_body') {
+				element_letter_controller.setContent(data[i]);
 			} else {
-        $('#'+m[1]).val(data[i]);
-      }
+				$('#' + m[1]).val(data[i]);
+			}
 		} else if (m = i.match(/^sel_(.*)$/)) {
 			if (m[1] == 'address_target') {
-				if (data[i].match(/^Patient/)) {
-					$('#ElementLetter_re').val('');
-					$('#ElementLetter_re').parent().parent().hide();
-				} else {
-					if (re_field != null) {
-						$('#ElementLetter_re').val(re_field);
-						$('#ElementLetter_re').parent().parent().show();
-					}
-				}
+				updateReData(data[i], false);
 			}
-			$('#'+m[1]).val(data[i]);
+			$('#' + m[1]).val(data[i]);
 		} else if (m = i.match(/^check_(.*)$/)) {
-			$('input[id="'+m[1]+'"][type="checkbox"]').attr('checked',(parseInt(data[i]) == 1 ? true : false));
+			$('input[id="' + m[1] + '"][type="checkbox"]').attr('checked', (parseInt(data[i]) == 1 ? true : false));
 		} else if (m = i.match(/^textappend_(.*)$/)) {
-			$('#'+m[1]).val($('#'+m[1]).val()+data[i]);
+			$('#' + m[1]).val($('#' + m[1]).val() + data[i]);
 		} else if (m = i.match(/^hidden_(.*)$/)) {
-			$('#'+m[1]).val(data[i]);
+			$('#' + m[1]).val(data[i]);
 		} else if (m = i.match(/^elementappend_(.*)$/)) {
-			$('#'+m[1]).append(data[i]);
+			$('#' + m[1]).append(data[i]);
 		} else if (i == 'alert') {
 			new OpenEyes.UI.Dialog.Alert({
 				content: data[i]

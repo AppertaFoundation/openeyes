@@ -26,6 +26,13 @@
             <th>Patient’s Post code</th>
             <th>Date of Prescription</th>
             <th>Drug name</th>
+            <th>Drug Dose</th>
+            <th>Drug Frequency</th>
+            <th>Drug Duration</th>
+            <th>Drug Route</th>
+            <th>Dispense condition</th>
+            <th>Dispense location</th>
+            <th>Laterality</th>
             <th>Prescribed Clinician’s name</th>
             <th>Prescribed Clinician’s Job-role</th>
             <th>Prescription event date</th>
@@ -51,6 +58,13 @@
                     <td><?php echo $drug['postcode']?></td>
                     <td><?php echo date('j M Y', strtotime($drug['created_date']))?> <?php echo substr($drug['created_date'], 11, 5)?></td>
                     <td><?php echo $drugObj->tallmanLabel?></td>
+                    <td><?php echo $drug['dose']?></td>
+                    <td><?php echo $drug['frequency']?></td>
+                    <td><?php echo $drug['duration']?></td>
+                    <td><?php echo $drug['route']?></td>
+                    <td><?php echo $drug['dispense_condition']?></td>
+                    <td><?php echo $drug['dispense_location']?></td>
+                    <td><?php echo $drug['laterality'] ?: 'N/A' ?></td>
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>
