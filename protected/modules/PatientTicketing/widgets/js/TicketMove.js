@@ -29,12 +29,13 @@
    * @param {callback} success
    */
   TicketMoveController.prototype.getQueueAssForm = function (id, success) {
+    let ticket_id = $(this.options.formClass).find('input[name="ticket_id"]').val();
     if (!this.queueAssForms[id]) {
       disableButtons();
-      var self = this;
-      var form = $.ajax({
+      let self = this;
+      $.ajax({
         url: this.options.queueAssignmentFormURI,
-        data: {id: id, ticket_id: this.ticketId},
+        data: {id: id, ticket_id: ticket_id},
         success: function (response) {
           self.queueAssForms[id] = response;
           enableButtons();
