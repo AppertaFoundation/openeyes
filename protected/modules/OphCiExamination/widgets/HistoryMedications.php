@@ -307,7 +307,7 @@ class HistoryMedications extends BaseMedicationWidget
         // when new we want to always set to default so we can track changes
         // but if this element already exists then we don't want to override
         // it with the tip data
-        if ($this->element && $this->mode === self::$EVENT_EDIT_MODE) {
+        if ($this->element && $this->element->getIsNewRecord() && $this->mode === self::$EVENT_EDIT_MODE) {
             $this->setElementFromDefaults();
         }
 
