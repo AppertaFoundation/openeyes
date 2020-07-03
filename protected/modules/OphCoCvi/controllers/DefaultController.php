@@ -157,7 +157,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
-        if (!$this->getManager()->isIssued($this->event)) {
+        if (is_a($this->event, 'Event') && !$this->getManager()->isIssued($this->event)) {
             return false;
         }
 

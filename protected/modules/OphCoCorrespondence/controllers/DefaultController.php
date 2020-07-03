@@ -573,7 +573,10 @@ class DefaultController extends BaseEventTypeController
          */
         $this->pdf_print_documents = 1;
 
-        if ($print_outputs) {
+        // This action gets called internally in the PDF generation process, we do not want
+        // to change the status in this case nor the case where the PDF is loaded in the view
+        // as neither are riven by the user printing the document.
+        if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
             foreach ($print_outputs as $output) {
                 $output->output_status = "COMPLETE";
                 $output->save();

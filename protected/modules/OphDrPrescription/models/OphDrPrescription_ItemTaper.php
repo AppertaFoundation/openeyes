@@ -127,8 +127,12 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
 
     public function compareTo(OphDrPrescription_ItemTaper $taper)
     {
-        $fields = array('frequency_id, duration_id', 'dose');
-        return $this->getAttributes($fields) == $taper->getAttributes($fields);
+        foreach (['frequency_id', 'duration_id', 'dose'] as $attribute) {
+            if ($this->$attribute !== $taper->$attribute) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

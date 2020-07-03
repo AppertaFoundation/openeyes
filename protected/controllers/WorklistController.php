@@ -53,6 +53,9 @@ class WorklistController extends BaseController
         }
 
         if ($date_from || $date_to) {
+            foreach (['date_from', 'date_to'] as $date) {
+                ${$date} = is_numeric(str_replace([" ", "/"], "", ${$date})) ? str_replace([" ", "/"], "-", ${$date}) : str_replace(['/'], " ", ${$date});
+            }
             Yii::app()->session['worklist'] = ['date_from' => $date_from, 'date_to' => $date_to];
         }
 
@@ -64,6 +67,8 @@ class WorklistController extends BaseController
                 }
             }
         }
+
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
 
         if ($redirect) {
             return $this->redirect(array('/worklist/view?date_from='.$date_from.'&date_to='.$date_to));

@@ -1303,7 +1303,16 @@ class BaseEventTypeController extends BaseModuleController
         // validate
         foreach ($this->open_elements as $element) {
             $this->setValidationScenarioForElement($element);
-            if (!$element->validate()) {
+            // Validate the element
+            $element->validate();
+
+            // Perform validation that requires knowledge of full event
+            // scope. (ie. knowledge of which other elements are present)
+            if (method_exists($element, 'eventScopeValidation')) {
+                $element->eventScopeValidation($this->open_elements);
+            }
+            // If either validation pass has errors
+            if ($element->hasErrors()) {
                 $name = $element->getElementTypeName();
                 foreach ($element->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {

@@ -37,11 +37,11 @@
                 <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?> pad"></i>
             </span>
            <?= Helper::oeDateAsStr($entry->getStartDateDisplay()) ?><i class="oe-i direction-right small no-click pad"></i>
-            <?php if (isset($entry->end_date)) { ?>
-                <?= Helper::oeDateAsStr($entry->getEndDateDisplay()) ?>
-                </div>
-                <div class="meds-stop-reason">
-                <br><em class="fade"><?= "({$entry->stopReason})" ?></em>    
+            <?php if (isset($entry->end_date) && (!$entry->prescriptionItem || $entry->prescriptionItem && $entry->prescriptionItem->prescription->draft === '0')) { ?>
+                    <?= Helper::oeDateAsStr($entry->getEndDateDisplay()) ?>
+                    </div>
+                    <div class="meds-stop-reason">
+                    <br><em class="fade"><?= "({$entry->stopReason})" ?></em>
             <?php } else {
                 ?><em class="fade">Ongoing</em><?php
             } ?>

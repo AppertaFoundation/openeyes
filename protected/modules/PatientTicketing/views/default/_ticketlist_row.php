@@ -54,7 +54,7 @@
   </td>
   <td>
     <div class="clinic-info scroll-content">
-        <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->report) : '-'; ?>
+        <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->formattedReport) : '-'; ?>
     </div>
   </td>
   <td>
