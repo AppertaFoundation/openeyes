@@ -468,16 +468,16 @@
 
             switch($('#catprom5-mode').val()){
                 case '0':
-                    newTitle = 'Catprom5: Pre-op vs Post-op difference';                
+                    newTitle = 'Cat-PROM5: Pre-op vs Post-op difference';                
                     chart.layout['xaxis']['autorange'] = true;
                     break;
                 case '1':
-                    newTitle = 'Catprom5: Pre-op';
+                    newTitle = 'Cat-PROM5: Pre-op';
                     chart.layout['xaxis']['autorange'] = false;
                     chart.layout['xaxis']['range'] = [-10,8];
                     break;
                 case '2':
-                    newTitle = 'Catprom5: Post-op';
+                    newTitle = 'Cat-PROM5: Post-op';
                     chart.layout['xaxis']['autorange'] = false;
                     chart.layout['xaxis']['range'] = [-10,8];
                     break;

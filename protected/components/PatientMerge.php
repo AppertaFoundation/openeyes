@@ -233,6 +233,11 @@ class PatientMerge
                 $is_merged = $is_merged && $this->updateGenetics($this->primary_patient, $this->secondary_patient);
             }
 
+            // Update Hot-list
+            $is_merged = $is_merged && $this->updateHotList($this->primary_patient, $this->secondary_patient);
+
+            // Update Work-lists
+            $is_merged = $is_merged && $this->updateWorkLists($this->primary_patient, $this->secondary_patient);
 
             if ($is_merged) {
                 $secondary_patient = $this->secondary_patient;
@@ -748,5 +753,71 @@ class PatientMerge
         }
 
         return array($start_date, $end_date);
+    }
+    
+    /**
+    * Updating Lists including Hot list and worklist
+    * @param Patient $primary_patient
+    * @param Patient $secondary_patient
+    *
+    * @return bool
+    *
+    * @throws Exception
+    */
+    public function updateHotList(Patient $primary_patient, Patient $secondary_patient)
+    {
+        // Get complete hot list (including for other users)
+        $hotlist_items = \UserHotlistItem::model()->findAllByAttributes(['patient_id'=>$secondary_patient->id]);
+
+        // for each row where $secondary_patient is included
+        foreach($hotlist_items as $h_item){
+            // TODO: Potentiality add check for duplicates here
+            // set $secondary_patient to $primary_patient
+            $h_item->patient_id = $primary_patient->id;
+            $h_item->user_comment = $h_item->user_comment . " Hotlist item Merged from ".$secondary_patient->id." to ".$primary_patient->id.".";
+            // try to save row
+            if($h_item->save()){
+                $msg = 'Hotlist item for user '.$h_item->createdUser->first_name." " .$h_item->createdUser->last_name." updated. Changed patient id from ".$secondary_patient->id." to ".$primary_patient->id.".";
+                $this->addLog($msg);
+                Audit::add('Patient Merge', 'Hotlist item Patient updated', $msg);
+            }
+            else{
+                // throw exception if fail
+                throw new Exception('Failed to update hotlist item: '.$h_item->id.' '.print_r($h_item->errors, true));
+            }            
+        }
+        return true;
+    }
+
+    /**
+    * Updating Lists including Hot list and worklist
+    * @param Patient $primary_patient
+    * @param Patient $secondary_patient
+    *
+    * @return bool
+    *
+    * @throws Exception
+    */
+    public function updateWorkLists(Patient $primary_patient, Patient $secondary_patient)
+    {       
+        // Get Worklist items        
+        $worklist_items = \WorklistPatient::model()->findAllByAttributes(['patient_id'=>$secondary_patient->id]);
+        // for each row where $secondary_patient is included
+        foreach($worklist_items as $w_item){
+            // TODO: Potentiality add check for duplicates here
+            // set $secondary_patient to $primary_patient                
+            $w_item->patient_id = $primary_patient->id;
+            // try to save row
+            if($w_item->save()){
+                $msg = 'Worklist item for worklist '.$w_item->worklist->name." at time ".$w_item->getScheduledTime() ." updated. Changed patient id from ".$secondary_patient->id." to ".$primary_patient->id.".";
+                $this->addLog($msg);
+                Audit::add('Patient Merge', 'Worklist item Patient updated', $msg);
+            }
+            else{
+                // throw exception if fail
+                throw new Exception('Failed to update worklist item: '.$w_item->id.' '.print_r($w_item->errors, true));
+            }
+        }
+        return true;
     }
 }

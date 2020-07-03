@@ -558,14 +558,14 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             foreach ($summaries as $summary) { ?>
                                 <tr>
                                     <td><?= $summary->service ?></td>
-                                    <td class="fade">
-                                <span class="oe-date">
-                                    <span class="day"><?= $summary->date[0] ?></span>
-                                    <span class="month"><?= $summary->date[1] ?></span>
-                                    <span class="year"><?= $summary->date[2] ?></span>
-                                </span>
-                                    </td>
                                     <td><?= $summary->comments ?></td>
+                                    <td class="fade">
+                                        <span class="oe-date">
+                                            <span class="day"><?= $summary->date[0] ?></span>
+                                            <span class="month"><?= $summary->date[1] ?></span>
+                                            <span class="year"><?= $summary->date[2] ?></span>
+                                        </span>
+                                    </td>
                                     <td><i class="oe-i info small pro-theme js-has-tooltip"
                                            data-tooltip-content="<?= $summary->user ?>"></i></td>
                                 </tr>

@@ -131,7 +131,7 @@ class WorklistBehavior extends CBehavior
         if ($this->owner->event->worklist_patient_id) {
             $criteria = new \CDbCriteria();
 
-            $criteria->with = ['worklist.displayContext.subspecialty'];
+            $criteria->with = ['worklist.worklist_definition.display_contexts.subspecialty'];
             $criteria->together = true;
             $criteria->addCondition('t.when >= :start_date');
             $criteria->addCondition('t.when <= :end_date');
