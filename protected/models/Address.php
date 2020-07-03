@@ -213,6 +213,10 @@ class Address extends BaseActiveRecordVersioned
 
     public function beforeSave()
     {
+        if (!$this->email) {
+            $this->email = null;
+        }
+
         if (parent::beforeSave()) {
             if ($this->isNewRecord && !$this->address_type_id) {
                 // make correspondence the default address type
@@ -228,7 +232,8 @@ class Address extends BaseActiveRecordVersioned
         return false;
     }
 
-    public function cityValidator($attribute, $param){
+    public function cityValidator($attribute, $param)
+    {
         if (isset($this->city)) {
             if (1 === preg_match('~[0-9]~', $this->city)) {
                 $this->addError($attribute, "City has Numeric values");
@@ -236,7 +241,8 @@ class Address extends BaseActiveRecordVersioned
         }
     }
 
-    public function getDefaultCountryId(){
+    public function getDefaultCountryId()
+    {
         $default_country_setting = SettingMetadata::model()->getSetting('default_country');
         return Country::model()->find('name = ?', [$default_country_setting])->id;
     }
@@ -254,5 +260,4 @@ class Address extends BaseActiveRecordVersioned
         $this->date_end = Helper::convertNHS2MySQL($this->date_end);
         return parent::beforeValidate();
     }
-
 }

@@ -1959,7 +1959,7 @@ class BaseEventTypeController extends BaseModuleController
 
     /**
      * @param $id
-     * @return mixed
+     * @return mixed|void
      */
     public function actionPDFPrint($id)
     {

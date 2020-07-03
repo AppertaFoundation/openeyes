@@ -86,7 +86,7 @@ class User extends BaseActiveRecordVersioned
         );
         $user = Yii::app()->request->getPost('User');
         // if the global firm rights is set to No, at least one context needs to be selected
-        if ($user['global_firm_rights'] == 0) {
+        if (isset($user) && $user['global_firm_rights'] == 0) {
             $commonRules = array_merge(
                 $commonRules,
                 array(
@@ -484,7 +484,7 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-        
+
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;

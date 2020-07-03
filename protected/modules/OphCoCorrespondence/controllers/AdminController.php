@@ -21,7 +21,8 @@ class AdminController extends \ModuleAdminController
 
     public $defaultAction = 'letterMacros';
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortLetterMacros' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -56,6 +57,20 @@ class AdminController extends \ModuleAdminController
     {
         $this->render('/admin/letter_settings', array(
             'settings' => OphCoCorrespondenceLetterSettings::model()->findAll(),
+        ));
+    }
+
+    public function actionSenderEmailAddresses()
+    {
+        $this->render('/admin/sender_email_addresses', array(
+            'addresses' => SenderEmailAddresses::model()->findAll(),
+        ));
+    }
+
+    public function actionEmailTemplates()
+    {
+        $this->render('/admin/email_templates', array(
+            'templates' => EmailTemplate::model()->findAll(),
         ));
     }
 
@@ -269,6 +284,39 @@ class AdminController extends \ModuleAdminController
         }
     }
 
+    /**
+     * @throws Exception
+     */
+    public function actionDeleteEmailTemplates()
+    {
+        if (!isset($_POST['id'])) {
+            return;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('id', @$_POST['id']);
+        if (EmailTemplate::model()->deleteAll($criteria)) {
+            echo '1';
+        } else {
+            echo '0';
+        }
+    }
+
+    public function actionDeleteEmailAddresses()
+    {
+        if (!isset($_POST['id'])) {
+            return;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('id', @$_POST['id']);
+        if (SenderEmailAddresses::model()->deleteAll($criteria)) {
+            echo '1';
+        } else {
+            echo '0';
+        }
+    }
+
     public function actionAddSiteSecretary($id = null)
     {
         $firmId = $id;
@@ -380,5 +428,160 @@ class AdminController extends \ModuleAdminController
             $this->renderJSON($result);
         }
         throw new CHttpException(400, 'Invalid method');
+    }
+
+    public function actionAddEmailAddress()
+    {
+        $senderEmailAddresses = new SenderEmailAddresses();
+
+        $errors = array();
+
+        if (!empty($_POST)) {
+            $senderEmailAddresses->attributes = $_POST['SenderEmailAddresses'];
+
+            if (!$senderEmailAddresses->validate()) {
+                $errors = $senderEmailAddresses->errors;
+            } else {
+                if (isset($senderEmailAddresses->password)) {
+                    $encryptionDecryptionHelper = new EncryptionDecryptionHelper();
+                    try {
+                        $senderEmailAddresses->password = $encryptionDecryptionHelper->encryptData($senderEmailAddresses->password);
+                    } catch (Exception $e) {
+                        throw new \Exception($e);
+                    }
+                }
+
+                if (!$senderEmailAddresses->save()) {
+                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                }
+
+                Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
+
+                $this->redirect('/OphCoCorrespondence/admin/senderEmailAddresses');
+            }
+        } else {
+            Audit::add('admin', 'view', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
+        }
+
+        $this->render('_email_addresses', array(
+            'title' => 'Add',
+            'senderEmailAddresses' => $senderEmailAddresses,
+            'errors' => $errors,
+        ));
+    }
+
+    public function actionEditEmailAddress($id)
+    {
+        $senderEmailAddresses = SenderEmailAddresses::model()->findByPk($id);
+
+        $errors = array();
+
+        if (!empty($_POST)) {
+            $senderEmailAddresses->attributes = $_POST['SenderEmailAddresses'];
+
+            if (!$senderEmailAddresses->validate()) {
+                $errors = $senderEmailAddresses->errors;
+            } else {
+                if (isset($senderEmailAddresses->password)) {
+                    $encryptionDecryptionHelper = new EncryptionDecryptionHelper();
+                    try {
+                        $senderEmailAddresses->password = $encryptionDecryptionHelper->encryptData($senderEmailAddresses->password);
+                    } catch (Exception $e) {
+                        throw new \Exception($e);
+                    }
+                }
+
+                if (!$senderEmailAddresses->save()) {
+                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                }
+
+                Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
+
+                $this->redirect('/OphCoCorrespondence/admin/senderEmailAddresses');
+            }
+        } else {
+            Audit::add('admin', 'view', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
+        }
+
+        $this->render('_email_addresses', array(
+            'title' => 'Edit',
+            'senderEmailAddresses' => $senderEmailAddresses,
+            'errors' => $errors,
+        ));
+    }
+
+    public function actionAddEmailTemplate()
+    {
+        $template = new EmailTemplate();
+
+        $errors = array();
+
+        if (!empty($_POST)) {
+            $template->attributes = $_POST['EmailTemplate'];
+
+            if (!$template->validate()) {
+                $errors = $template->errors;
+            } else {
+                if (!$template->save()) {
+                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                }
+
+                Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
+
+                $this->redirect('/OphCoCorrespondence/admin/emailTemplates');
+            }
+        } else {
+            Audit::add('admin', 'view', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
+        }
+
+        $this->render('_email_template', array(
+            'title' => 'Add',
+            'template' => $template,
+            'errors' => $errors,
+        ));
+    }
+
+    public function actionEditEmailTemplate($id)
+    {
+        $template = EmailTemplate::model()->findByPk($id);
+
+        $errors = array();
+
+        if (!empty($_POST) && $template) {
+            $template->attributes = $_POST['EmailTemplate'];
+
+            if (!$template->validate()) {
+                $errors = $template->errors;
+            } else {
+                if (!$template->save()) {
+                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                }
+
+                Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
+
+                $this->redirect('/OphCoCorrespondence/admin/emailTemplates');
+            }
+        } else {
+            Audit::add('admin', 'view', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
+        }
+
+        $this->render('_email_template', array(
+            'title' => 'Edit',
+            'template' => $template,
+            'errors' => $errors,
+        ));
+    }
+
+    public function actionGetEmailBody($recipient_type)
+    {
+        if ($recipient_type != '') {
+            $email_body = \Yii::app()->db->createCommand()
+                ->select('email_body')
+                ->from('ophcocorrespondence_default_recipient_email_templates')
+                ->where('recipient_type=:recipient_type', array(':recipient_type' => $recipient_type))
+                ->queryScalar();
+
+            echo $email_body;
+        }
     }
 }

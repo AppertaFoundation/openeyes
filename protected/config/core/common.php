@@ -193,7 +193,7 @@ return array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'sendmail',
+            'mode' => 'smtp',
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -676,6 +676,7 @@ return array(
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
         ),
+        'sodium_crypto_key_path' => '/run/secrets/SODIUM_CRYPTO_KEY',
         'portal' => array(
             'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
             'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])

@@ -15,17 +15,21 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var $element ElementLetter
+ */
 ?>
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
-$macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
+$macro_id = $_POST['macro_id'] ?? $element->macro->id ?? null;
 
 if (!$macro_id) {
-    $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
+    $macro_id = $element->document_instance[0]->document_instance_data[0]->macro_id ?? null;
 }
 
 $macro_letter_type_id = null;
@@ -34,10 +38,10 @@ if ($macro_id) {
     $macro_letter_type_id = $macro->letter_type_id;
 }
 
-$element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id);
+$element->letter_type_id = ($element->letter_type_id ?: $macro_letter_type_id);
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
-$creating = isset($creating) ? $creating : false;
+$creating = $creating ?? false;
 ?>
 <?php if ($creating === false) : ?>
     <input type="hidden" id="re_default"
@@ -54,7 +58,7 @@ $creating = isset($creating) ? $creating : false;
             <tbody>
             <?php
             $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-            if ($correspondeceApp === "on") { ?>
+            if ($correspondeceApp === 'on') { ?>
             <tr>
               <td>
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -64,8 +68,8 @@ $creating = isset($creating) ? $creating : false;
                       $element,
                       'is_signed_off',
                       array(
-                      1 => 'Yes',
-                      0 => 'No',
+                        1 => 'Yes',
+                        0 => 'No',
                       ),
                       $element->is_signed_off,
                       false,
@@ -127,7 +131,7 @@ $creating = isset($creating) ? $creating : false;
                         $element,
                         'letter_type_id',
                         CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')
+                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width cols-full')
                     ) ?>
               </td>
             </tr>
@@ -179,7 +183,6 @@ $creating = isset($creating) ? $creating : false;
           </table>
         </div>
     </div>
-
       <div class="cols-9">
         <div class="cols-full">
           <div id="docman_block" class="cols-12">
@@ -189,7 +192,7 @@ $creating = isset($creating) ? $creating : false;
 
                     if ($document_set) {
                         $this->renderPartial('//docman/_update', array(
-                          'row_index' => (isset($row_index) ? $row_index : 0),
+                          'row_index' => ($row_index ?? 0),
                           'document_set' => $document_set,
                           'macro_id' => $macro_id,
                           'element' => $element,
@@ -203,34 +206,40 @@ $creating = isset($creating) ? $creating : false;
                     }
                     // set back posted data on error
                     if (isset($_POST['DocumentTarget'])) {
+                        $i = 0;
                         foreach ($_POST['DocumentTarget'] as $document_target) {
-                            if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'To') {
-                                $macro_data['to'] = array(
-                                  'contact_type' => $document_target['attributes']['contact_type'],
-                                  'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
-                                  'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
-                                  'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                );
-                            } else {
-                                if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+                            if (isset($document_target['attributes']['ToCc'])) {
+                                if ($document_target['attributes']['ToCc'] === 'To') {
+                                    $macro_data['to'] = array(
+                                        'contact_type' => $document_target['attributes']['contact_type'],
+                                        'contact_id' => $document_target['attributes']['contact_id'] ?? null,
+                                        'contact_name' => $document_target['attributes']['contact_name'] ?? null,
+                                        'address' => $document_target['attributes']['address'] ?? null,
+                                        'email' => $document_target['attributes']['email'] ?? null,
+                                    );
+                                } elseif ($document_target['attributes']['ToCc'] === 'Cc') {
                                     $macro_data['cc'][] = array(
-                                      'contact_type' => $document_target['attributes']['contact_type'],
-                                      'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
-                                      'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
-                                      'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                      'is_mandatory' => false,
+                                        'contact_type' => $document_target['attributes']['contact_type'],
+                                        'contact_id' => $document_target['attributes']['contact_id'] ?? null,
+                                        'contact_name' => $document_target['attributes']['contact_name'] ?? null,
+                                        'address' => $document_target['attributes']['address'] ?? null,
+                                        'email' => $document_target['attributes']['email'] ?? null,
+                                        'is_mandatory' => false,
                                     );
                                 }
                             }
                         }
                     }
-                    $gp_address = isset($patient->gp->contact->correspondAddress) ? $patient->gp->contact->correspondAddress : (isset($patient->gp->contact->address) ? $patient->gp->contact->address : null);
+                    /**
+                     * @var $gp_address Address|null
+                     */
+                    $gp_address = $patient->gp->contact->correspondAddress ?? $patient->gp->contact->address ?? null;
                     if (!$gp_address) {
-                        $gp_address = isset($patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress : (isset($patient->practice->contact->address) ? $patient->practice->contact->address : null);
+                        $gp_address = $patient->practice->contact->correspondAddress ?? $patient->practice->contact->address ?? null;
                     }
 
                     if (!$gp_address) {
-                        $gp_address = "The contact does not have a valid address.";
+                        $gp_address = 'The contact does not have a valid address.';
                     } else {
                         $gp_address = implode("\n", $gp_address->getLetterArray());
                     }
@@ -238,16 +247,17 @@ $creating = isset($creating) ? $creating : false;
                     $contact_string = '';
                     if ($patient->gp) {
                         $contact_string = 'Gp' . $patient->gp->id;
-                    } else {
-                        if ($patient->practice) {
-                            $contact_string = 'Practice' . $patient->practice->id;
-                        }
+                    } elseif ($patient->practice) {
+                        $contact_string = 'Practice' . $patient->practice->id;
                     }
 
-                    $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
+                    /**
+                     * @var $patient_address Address|null
+                     */
+                    $patient_address = $patient->contact->correspondAddress ?? $patient->contact->address ?? null;
 
                     if (!$patient_address) {
-                        $patient_address = "The contact does not have a valid address.";
+                        $patient_address = 'The contact does not have a valid address.';
                     } else {
                         $patient_address = implode("\n", $patient_address->getLetterArray());
                     }
@@ -257,15 +267,15 @@ $creating = isset($creating) ? $creating : false;
                         $address_data = $api->getAddress($patient_id, $contact_string);
                     }
 
-                    $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
-                    $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
-                    $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
-                    $address = isset($address_data['address']) ? $address_data['address'] : null;
+                    $contact_id = $address_data['contact_id'] ?? null;
+                    $contact_name = $address_data['contact_name'] ?? null;
+                    $contact_nickname = $address_data['contact_nickname'] ?? null;
+                    $address = $address_data['address'] ?? null;
 
                     $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
                     $this->renderPartial('//docman/_create', array(
-                      'row_index' => (isset($row_index) ? $row_index : 0),
+                      'row_index' => ($row_index ?? 0),
                       'macro_data' => $macro_data,
                       'macro_id' => $macro_id,
                       'element' => $element,
@@ -279,7 +289,7 @@ $creating = isset($creating) ? $creating : false;
                               'contact_nickname' => $contact_nickname,
                           ),
                           'Cc' => array(
-                              'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
+                              'contact_id' => $patient->contact->id ?? null,
                               'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
                               'contact_type' => 'PATIENT',
                               'address' => $patient_address,
@@ -306,12 +316,12 @@ $creating = isset($creating) ? $creating : false;
                 </tr>
                 <tr>
                     <td>
-                        <?= \CHtml::dropDownList(
+                        <?= CHtml::dropDownList(
                             'macro_id',
                             $macro_id,
                             $element->letter_macros,
-                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')
-                        ); ?>
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
+                        ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -412,7 +422,7 @@ $creating = isset($creating) ? $creating : false;
                             $element,
                             're',
                             array('rows' => 1, 'label' => false, 'nowrapper' => true),
-                            empty($_POST) ? strlen($element->re) == 0 : strlen(@$_POST['ElementLetter']['re']) == 0,
+                            empty($_POST) ? strlen($element->re) === 0 : strlen(@$_POST['ElementLetter']['re']) === 0,
                             array('class' => 'autosize')
                         ) ?>
                 </td>
@@ -434,12 +444,21 @@ $creating = isset($creating) ? $creating : false;
             <col class="cols-2">
             <col>
           </colgroup>
-          <tbody> 
+          <tbody>
             <tr>
               <td>From</td>
               <td>
-                <?php $this->widget('application.widgets.AutoCompleteSearch', ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]); ?>
-                <?php echo $form->textArea($element, 'footer', array('label' => false, 'nowrapper' => true), false, array('class' => 'correspondence-letter-text autosize', 'style' => "overflow: hidden; overflow-wrap: break-word; height: 54px;")) ?>
+                <?php $this->widget(
+                    'application.widgets.AutoCompleteSearch',
+                    ['htmlOptions' => ['placeholder' => 'Search for users full title and details']]
+                ); ?>
+                <?php echo $form->textArea(
+                    $element,
+                    'footer',
+                    array('label' => false, 'nowrapper' => true),
+                    false,
+                    array('class' => 'correspondence-letter-text autosize', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 54px;')
+                ) ?>
               </td>
             </tr>
             <tr>
@@ -454,7 +473,7 @@ $creating = isset($creating) ? $creating : false;
                         <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                             <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
                                 <div class="data-group collapse in enclosureItem flex-layout">
-                                    <?= \CHtml::textField(
+                                    <?= CHtml::textField(
                                         "EnclosureItems[$key]",
                                         $value,
                                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
@@ -466,7 +485,7 @@ $creating = isset($creating) ? $creating : false;
                         <?php } else { ?>
                             <?php foreach ($element->enclosures as $i => $item) { ?>
                                 <div class="data-group collapse in enclosureItem flex-layout">
-                                    <?= \CHtml::textField(
+                                    <?= CHtml::textField(
                                         "EnclosureItems[enclosure$i]",
                                         $item->content,
                                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
@@ -498,7 +517,7 @@ $creating = isset($creating) ? $creating : false;
             );
 
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-        if ($associated_content == null) {
+        if ($associated_content === null) {
             $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(
                 array('macro_id' => $macro_id),
                 array('order' => 'display_order asc')
@@ -512,12 +531,12 @@ $creating = isset($creating) ? $creating : false;
         ?>
     </div>
     <script>
-        var element_letter_controller;
+        let element_letter_controller;
         $(document).ready(function () {
             element_letter_controller =
                 new OpenEyes.OphCoCorrespondence.LetterMacroController(
                     "ElementLetter_body",
-                    <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
+                    <?= CJSON::encode(Yii::app()->params['tinymce_default_options'])?>
                 );
 
             OpenEyes.UI.AutoCompleteSearch.init({
@@ -554,4 +573,3 @@ $creating = isset($creating) ? $creating : false;
             });
         });
     </script>
-

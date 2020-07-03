@@ -26,6 +26,9 @@
  * @property string $pas_code
  * @property string $cost_code
  * @property string $name
+ * @property string $service_email
+ * @property string $context_email
+ * @property boolean $can_own_an_episode
  *
  * The followings are the available model relations:
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
@@ -70,11 +73,15 @@ class Firm extends BaseActiveRecordVersioned
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
             array('name', 'length', 'max' => 40),
+            array('service_email, context_email', 'length', 'max' => 255),
+            array('service_email, context_email','email'),
+            array('name', 'filter', 'filter' => 'htmlspecialchars'),
+            array('name, service_email, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             array('name', 'filter', 'filter' => 'htmlspecialchars'),
             array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, service_subspecialty_assignment_id, pas_code, name', 'safe', 'on' => 'search'),
+            array('id, service_subspecialty_assignment_id, pas_code, name, service_email, context_email', 'safe', 'on' => 'search'),
         );
     }
 
@@ -108,6 +115,8 @@ class Firm extends BaseActiveRecordVersioned
             'name' => 'Name',
             'serviceSubspecialtyAssignment.subspecialty.name' => 'Subspeciality Name',
             'active' => 'Active',
+            'service_email' => 'Email',
+            'context_email' => 'Email',
         );
     }
 
@@ -349,6 +358,14 @@ class Firm extends BaseActiveRecordVersioned
             $this->service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?', array($this->subspecialty_id))->id;
         }
 
+        if ($this->service_email === "") {
+            $this->service_email = null;
+        }
+
+        if ($this->context_email === "") {
+            $this->context_email = null;
+        }
+
         return parent::beforeSave();
     }
 
@@ -388,5 +405,32 @@ class Firm extends BaseActiveRecordVersioned
     public function isSupportServicesFirm()
     {
         return is_null($this->serviceSubspecialtyAssignment);
+    }
+
+    public function beforeValidate()
+    {
+        if ( $this->can_own_an_episode && $this->service_email != '' ) {
+            // check if there is an email already existing for this subspeciality
+            $criteria = new CDbCriteria();
+            // get the service_subspeciality_assignment_id from the service_id
+            $serviceSubspecialityAssignmentId = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($this->subspecialty_id));
+            $criteria->addCondition('service_subspecialty_assignment_id = :service_subspecialty_assignment_id and service_email IS NOT NULL');
+            $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
+            if (!$this->isNewRecord) {
+                $criteria->addCondition('id != :id');
+                $criteria->params[':id'] = $this->id;
+            }
+            $firm = $this->findAll($criteria);
+            if (count($firm) >= 1  ) {
+                $this->addError('service_email', 'Email already set for another service of this specialty.');
+            }
+        }
+        return parent::beforeValidate();
+    }
+
+    public function getContextEmail()
+    {
+        $contextEmail = $this->context_email;
+        return $contextEmail ?? null;
     }
 }
