@@ -35,6 +35,10 @@ class Element_OphCiExamination_AdnexalComorbidity extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
+    const ELEMENT_CHILDREN = [
+        'MedicalLids',
+        'SurgicalLids'
+    ];
 
     /**
      * Returns the static model of the specified AR class.
@@ -63,12 +67,25 @@ class Element_OphCiExamination_AdnexalComorbidity extends \SplitEventTypeElement
         // will receive user inputs.
         return array(
                 array('left_description, right_description, eye_id', 'safe'),
-                array('left_description', 'requiredIfSide', 'side' => 'left', 'on' => 'formHasNoChildren'),
-                array('right_description', 'requiredIfSide', 'side' => 'right', 'on' => 'formHasNoChildren'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, left_description, right_description, eye_id', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function eventScopeValidation($elements)
+    {
+        $element_names = array_map(
+            function ($element) {
+                return \Helper::getNSShortname($element);
+            },
+            $elements
+        );
+
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+            $this->addError('left_description', 'Left Description cannot be blank when there are no child elements');
+            $this->addError('right_description', 'Right Description cannot be blank when there are no child elements');
+        }
     }
 
     public function sidedFields()

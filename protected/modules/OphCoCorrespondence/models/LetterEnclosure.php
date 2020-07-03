@@ -21,6 +21,9 @@
  *
  * @property string $id
  * @property int $event_id
+ * @property int $element_letter_id
+ * @property int $display_order
+ * @property string $content
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -30,7 +33,8 @@ class LetterEnclosure extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @param string $className
+     * @return LetterEnclosure the static model class
      */
     public static function model($className = __CLASS__)
     {

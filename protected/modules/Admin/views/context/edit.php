@@ -14,7 +14,7 @@
  */
 ?>
 
-<div class="cols-7">
+<div class="cols-9">
     <div class="row divider">
         <h2>
             <?=$firm->id ? 'Edit' : 'Add' ?>
@@ -32,15 +32,16 @@
             'focus' => '#username',
             'layoutColumns' => array(
                 'label' => 2,
-                'field' => 5,
+                'field' => 10,
             ),
         ]
     ) ?>
 
     <table class="standard">
         <colgroup>
+            <col class="cols-2">
+            <col class="cols-4">
             <col class="cols-3">
-            <col class="cols-5">
         </colgroup>
         <tbody>
         <tr>
@@ -72,15 +73,19 @@
             <td>Service Enabled</td>
             <td><?=\CHtml::activeCheckBox(
                 $firm,
-                'can_own_an_episode'
+                'can_own_an_episode',
+                array('checked' => $firm->can_own_an_episode)
             ) ?></td>
+            <td> <?= $form->textField($firm, 'service_email', array('placeholder' => 'Enter email address', 'class' => 'cols-full')) ?> </td>
         </tr>
         <tr class="col-gap">
-            <td>Context Enabled:</td>
+            <td>Context Enabled</td>
             <td><?=\CHtml::activeCheckBox(
                 $firm,
-                'runtime_selectable'
+                'runtime_selectable',
+                array('checked' => $firm->runtime_selectable)
             ) ?></td>
+            <td> <?= $form->textField($firm, 'context_email', array('placeholder' => 'Enter email address', 'class' => 'cols-full')) ?> </td>
         </tr>
         <tr class="col-gap">
             <td>Active</td>
@@ -128,6 +133,31 @@
     <?php endif; ?>
 </div>
 
+<script>
+    $(document).ready(function () {
+
+        // This is to make the email textbox visible on adding a new context service as the checkbox is checked.
+        toggleEmailTextBox('input[id=Firm_can_own_an_episode]', '#div_Firm_service_email');
+        toggleEmailTextBox('input[id=Firm_runtime_selectable]', '#div_Firm_context_email');
+
+        $('input[id=Firm_can_own_an_episode]').change(function(){
+            toggleEmailTextBox(this, '#div_Firm_service_email');
+        });
+
+        $('input[id=Firm_runtime_selectable]').change(function(){
+            toggleEmailTextBox(this, '#div_Firm_context_email');
+        });
+
+        // This function controls the email textbox based on whether the service enabled is checked or not.
+        function toggleEmailTextBox($element, $emailContainer) {
+            if($($element).is(':checked')) {
+                $($emailContainer).show();
+            } else {
+                $($emailContainer).hide();
+            }
+        }
+    })
+</script>
 <?php
 if ($firm->id && Episode::model()->count('firm_id=?', [$firm->id]) !== '0') : ?>
 <script>

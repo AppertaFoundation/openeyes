@@ -231,79 +231,94 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     <?php } ?>
                     <?php if (Yii::app()->params['demographics_content']['pas'] === true) { ?>
                         <table class="patient-demographics" style="position: relative; right: 0;">
-                                <tbody>
+                            <tbody>
                                 <tr>
-                                        <td>
-                                                <h2>PAS Contacts</h2>
-                                        </td>
+                                    <td>
+                                        <h2>PAS Contacts</h2>
+                                    </td>
                                 </tr>
                                 <tr>
-                                        <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
-                                        <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+                                    <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                                    <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                                 </tr>
                                 <tr>
-                                        <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
-                                        <td>
+                                    <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                                    <td>
+                                    <?php
+                                    // Show GP Practice address if available, otherwise fallback to GP address
+                                    if ($this->patient->practice && $this->patient->practice->contact->address) {
+                                        echo $this->patient->practice->contact->address->letterLine;
+                                    } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
+                                            echo $this->patient->gp->contact->address->letterLine;
+                                    } else {
+                                        echo 'Unknown';
+                                    } ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                                    <td>
+                                    <?php
+                                    // Show Practice phone number first, if not, fall back to GP phone number
+                                    if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
+                                        echo $this->patient->practice->contact->primary_phone;
+                                    } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
+                                            echo $this->patient->gp->contact->primary_phone;
+                                    } else {
+                                        echo 'Unknown';
+                                    } ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><?php echo Yii::app()->params['gp_label'] ?> Email</td>
+                                    <td>
                                         <?php
-                                        // Show GP Practice address if available, otherwise fallback to GP address
-                                        if ($this->patient->practice && $this->patient->practice->contact->address) {
-                                            echo $this->patient->practice->contact->address->letterLine;
-                                        } elseif ($this->patient->gp && $this->patient->gp->contact->address) {
-                                                echo $this->patient->gp->contact->address->letterLine;
+                                        // Show Email address
+                                        if ($this->patient->gp && $this->patient->gp->contact->address) {
+                                            echo $this->patient->gp->contact->address->email;
                                         } else {
                                             echo 'Unknown';
                                         } ?>
-                                        </td>
+                                    </td>
                                 </tr>
                                 <tr>
-                                        <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
-                                        <td>
-                                        <?php
-                                        // Show Practice phone number first, if not, fall back to GP phone number
-                                        if ($this->patient->practice && $this->patient->practice->contact->primary_phone) {
-                                            echo $this->patient->practice->contact->primary_phone;
-                                        } elseif ($this->patient->gp && $this->patient->gp->contact->primary_phone) {
-                                                echo $this->patient->gp->contact->primary_phone;
-                                        } else {
-                                            echo 'Unknown';
-                                        } ?>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td>
-                                                <h2>Patient Contacts</h2>
-                                        </td>
+                                    <td>
+                                        <h2>Patient Contacts</h2>
+                                    </td>
                                 </tr>
                                 <?php
                                 $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
                                 foreach ($this->patient->contactAssignments as $contactAssignment) {
-                                        $contact = $contactAssignment->contact;
-
+                                    $contact = $contactAssignment->contact;
                                     if (isset($contact) && $contact->id != $gp_contact_id) { ?>
-                                                <tr>
-                                                        <td><?= $contact->label ? $contact->label->name : "" ?></td>
-                                                        <td><?= $contact->fullName ?></td>
-                                                </tr>
-                                                <tr>
-                                                        <td>Address</td>
-                                                        <td><?= $contact->address ? $contact->address->letterLine : "" ?></td>
-                                                </tr>
-                                                <tr>
-                                                        <td>Telephone</td>
-                                                        <td><?= $contact->primary_phone ?></td>
-                                                </tr>
-                                    <?php }
+                                        <tr>
+                                            <td><?= $contact->label ? $contact->label->name : "" ?></td>
+                                            <td><?= $contact->fullName ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Address</td>
+                                            <td><?= $contact->address ? $contact->address->letterLine : "" ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Telephone</td>
+                                            <td><?= $contact->primary_phone ?></td>
+                                        </tr>
+                                <?php }
                                 } ?>
 
                                 <?php $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
                                     <tr>
                                         <td>
-                                            <h2>Communication Preferences</h2>
+                                            <h2>Preferences</h2>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Large print</td>
                                         <td><span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email correspondence</td>
+                                        <td><span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span></td>
                                     </tr>
                                 </tbody>
                         </table>
@@ -558,14 +573,14 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             foreach ($summaries as $summary) { ?>
                                 <tr>
                                     <td><?= $summary->service ?></td>
-                                    <td class="fade">
-                                <span class="oe-date">
-                                    <span class="day"><?= $summary->date[0] ?></span>
-                                    <span class="month"><?= $summary->date[1] ?></span>
-                                    <span class="year"><?= $summary->date[2] ?></span>
-                                </span>
-                                    </td>
                                     <td><?= $summary->comments ?></td>
+                                    <td class="fade">
+                                        <span class="oe-date">
+                                            <span class="day"><?= $summary->date[0] ?></span>
+                                            <span class="month"><?= $summary->date[1] ?></span>
+                                            <span class="year"><?= $summary->date[2] ?></span>
+                                        </span>
+                                    </td>
                                     <td><i class="oe-i info small pro-theme js-has-tooltip"
                                            data-tooltip-content="<?= $summary->user ?>"></i></td>
                                 </tr>

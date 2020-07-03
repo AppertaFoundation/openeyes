@@ -31,6 +31,14 @@
                 <span class="data-value large-text"><?= $element->correspondence_in_large_letters ? 'Yes' : 'No' ?></span>
             </td>
         </tr>
+        <tr>
+            <td>
+                <span class="data-label fade"><?= $element->getAttributeLabel('agrees_to_insecure_email_correspondence') ?></span>
+            </td>
+            <td>
+                <span class="data-value large-text"><?= $element->agrees_to_insecure_email_correspondence ? 'Yes' : 'No' ?></span>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

@@ -77,6 +77,7 @@ class User extends BaseActiveRecordVersioned
             // Added for uniqueness of username
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
+            array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array(
                 'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
@@ -85,7 +86,7 @@ class User extends BaseActiveRecordVersioned
         );
         $user = Yii::app()->request->getPost('User');
         // if the global firm rights is set to No, at least one context needs to be selected
-        if ($user['global_firm_rights'] == 0) {
+        if (isset($user) && $user['global_firm_rights'] == 0) {
             $commonRules = array_merge(
                 $commonRules,
                 array(
@@ -483,7 +484,7 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-        
+
         if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;

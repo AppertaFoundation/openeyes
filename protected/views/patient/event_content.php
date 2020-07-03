@@ -62,15 +62,6 @@
                       }
                     });
 
-                    $date_input.on('keypress click', function(){
-                     $(this).closest('.pickmeup.pmu-view-days').show();
-
-                    });
-
-                    $date_input.on('blur', function(){
-                        $(this).closest('.pickmeup.pmu-view-days').hide();
-                    });
-
                     $('.pickmeup.pmu-view-days').on('click', function () {
                       if ($(this).hasClass('pmu-hidden')) {
                         $date_input.hide();

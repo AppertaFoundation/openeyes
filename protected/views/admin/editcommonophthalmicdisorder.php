@@ -15,6 +15,7 @@
 ?>
 
 <?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
 foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
 }
@@ -89,7 +90,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'name' => 'finding.name',
             'type' => 'raw',
             'value' => function ($data, $row) {
-
                 $finding_data = array(
                     'id' => isset($data->id) ? $data->id : null,
                     'name' => isset($data->finding) ? $data->finding->name : null,
@@ -126,7 +126,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'name' => 'alternate_disorder.term',
             'type' => 'raw',
             'value' => function ($data, $row) {
-
                 $alternate_disorder_data = array(
                     'id' => isset($data->id) ? $data->id : null,
                     'name' => isset($data->alternate_disorder) ? $data->alternate_disorder->term : null,
@@ -199,10 +198,26 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 
 <script>
 
-    var $table = $('.generic-admin');
+    let formStructure = {
+        'name' : 'CommonOphthalmicDisorders',
+        'tableSelector': '.generic-admin.standard.sortable',
+        'rowSelector': 'tr',
+        'rowIdentifier': 'row',
+        'structure': {
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][id]' : '',
+            'display_order[ROW_IDENTIFIER]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_disorder_id_actual',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][group_id]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][finding_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_finding_id.finding-id',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_alternate_disorder_id.alternate-disorder-id',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : ''
+        }
+    };
+    let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
+    let $table = $('.generic-admin');
 
     function initialiseRow($row) {
-        var DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
+        let DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': 'CommonOphthalmicDisorder',
             'renderCommonlyUsedDiagnoses': false,
@@ -212,7 +227,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 "<span class='diagnosis-name'></span></span>" +
                 "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
                 "{{{input_field}}}" +
-                "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
 
         // Init finding, unfortunately we cannot use DiagnosesSearchController for this
@@ -246,6 +261,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             } else {
                 // validation finished, set the flag
                 findings_are_validated = true;
+                GenericFormJSONConverter.convert();
+
                 // only if there are no errors in the page proceed to save
                 $(this).trigger('click');
             }
@@ -260,8 +277,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         });
 
         $('#add_new').on('click', function () {
-            var $tr = $('table.generic-admin tbody tr');
-            var output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
+            let $tr = $('table.generic-admin tbody tr');
+            let output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 "group_options": common_ophthalmic_disorder_group_options,
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
@@ -277,8 +294,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     });
 
     function initTriggers($row, selector) {
-
-        var $inputField = $row.find('.' + selector + '-search-inputfield');
+        let $inputField = $row.find('.' + selector + '-search-inputfield');
         $row.on('click', '.' + selector + '-rename', function () {
             $inputField.show();
             $(this).closest('.' + selector + '-display').hide();
@@ -310,7 +326,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'beforeSend': function () {
                     },
                     'success': function (data) {
-                        data = $.parseJSON(data);
                         response(data);
                     }
                 });
@@ -333,6 +348,9 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             },
             response: function (event, ui) {
                 $inputField.removeClass('inset-loader');
+            },
+            open: function () {
+                $(this).autocomplete('widget').zIndex(100);
             }
         });
     }

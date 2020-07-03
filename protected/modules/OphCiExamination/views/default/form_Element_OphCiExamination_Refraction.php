@@ -138,14 +138,14 @@
                         </li>
                       </ul>
 
-                      <ul class="add-options sphere-integer">
+                      <ul class="add-options number sphere-integer">
                           <?php
                             $sign_id = ($element->{$eye_side . '_sphere'} > 0) ? 1 : 2;
                             foreach (\OEModule\OphCiExamination\models\OphCiExamination_Refraction_Sphere_Integer::model()->findAll('sign_id=' . $sign_id) as $integer) : ?>
                             <li data-str="<?= $integer->value ?>"><?= $integer->value ?></li>
                             <?php endforeach; ?>
                       </ul>
-                      <ul class="add-options sphere-fraction">
+                      <ul class="add-options number sphere-fraction">
                           <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll() as $fraction) : ?>
                             <li data-str="<?= $fraction->value ?>">
                               <span class="auto-width"><?= $fraction->value ?></span>
@@ -164,14 +164,14 @@
                           <span class="auto-width"><i class="oe-i minus active"></i></span>
                         </li>
                       </ul>
-                      <ul class="add-options cylinder-integer">
+                      <ul class="add-options number cylinder-integer">
                           <?php
                             $sign_id = ($element->{$eye_side . '_cylinder'} > 0) ? 1 : 2;
                             foreach (\OEModule\OphCiExamination\models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll('sign_id=' . $sign_id) as $integer) : ?>
                             <li data-str="<?= $integer->value ?>"><?= $integer->value ?></li>
                             <?php endforeach; ?>
                       </ul>
-                      <ul class="add-options cylinder-fraction">
+                      <ul class="add-options number cylinder-fraction">
                           <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll() as $fraction) : ?>
                             <li data-str="<?= $fraction->value ?>">
                               <span class="auto-width"><?= $fraction->value ?></span>
@@ -182,7 +182,7 @@
                   </td>
                   <td>
                     <div class="flex-layout flex-top flex-left">
-                      <ul class="add-options axis">
+                      <ul class="add-options number axis">
                           <?php foreach (range(1, 180) as $axis) : ?>
                             <li data-str="<?= $axis ?>"><?= $axis ?></li>
                             <?php endforeach; ?>

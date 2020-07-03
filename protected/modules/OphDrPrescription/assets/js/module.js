@@ -37,7 +37,7 @@ $(document).ready(function () {
 
   autosize($('#Element_OphDrPrescription_Details_comments'));
 
-  $(document).on('click', '#et_save_print', function (e) {
+  $(document).on('click', '#et_save_print, #et_save_print_footer', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
       e.preventDefault();
