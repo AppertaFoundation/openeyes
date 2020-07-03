@@ -61,6 +61,9 @@
                 <th>Doctor</th>
                 <th>Roles</th>
                 <th>Active</th>
+                <?php if (Yii::app()->params['auth_source'] === 'BASIC') { ?>
+                    <th>Pw Status</th>
+                <?php } ?>
             </tr>
             </thead>
             <tbody>
@@ -83,6 +86,9 @@
                         ?>
                     </td>
                     <td><i class="oe-i <?=($user->active ? 'tick' : 'remove');?> small"></i></td>
+                    <?php if (Yii::app()->params['auth_source'] === 'BASIC') { ?>
+                        <td><?=$user->getUserPwStatusName();?></td>
+                    <?php } ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -106,7 +112,7 @@
                         ]
                     ); ?>
                 </td>
-                <td colspan="4">
+                <td colspan="<?=(Yii::app()->params['auth_source'] === 'BASIC')? '5' : '4' ?>">
                     <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
                 </td>
             </tr>
