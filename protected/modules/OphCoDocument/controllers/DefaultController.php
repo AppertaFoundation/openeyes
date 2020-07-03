@@ -20,7 +20,6 @@ use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
 
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
     protected $max_document_size = 10485760;
     protected $max_document_name_length = 255;
     protected $max_content_length = 8388608;
@@ -95,7 +94,7 @@ class DefaultController extends BaseEventTypeController
 
         switch ($files['Document']['error'][$index]) {
             case UPLOAD_ERR_OK:
-            break;
+                break;
             case UPLOAD_ERR_NO_FILE:
                 $message = 'No file was uploaded!';
                 return $message;

@@ -53,6 +53,10 @@ class DefaultController extends \BaseEventTypeController
      */
     protected $show_index_search = true;
 
+    protected $show_element_sidebar = true;
+
+    protected $show_manage_elements = true;
+
     // if set to true, we are advancing the current event step
     protected $set;
     protected $mandatoryElements;

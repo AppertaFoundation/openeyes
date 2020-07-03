@@ -42,8 +42,6 @@ class DefaultController extends BaseEventTypeController
         'getDraftPrintRecipients' => self::ACTION_TYPE_PRINT,
     );
 
-    protected $show_element_sidebar = false;
-
     protected $pdf_output;
 
     public function actionView($id)
@@ -1067,6 +1065,7 @@ class DefaultController extends BaseEventTypeController
         if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
             return;
         }
+    }
 
         parent::verifyActionAccess($action);
     }

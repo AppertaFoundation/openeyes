@@ -2,8 +2,13 @@
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
 <?php $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name)); ?>
 
+<?php $this->renderPartial('//patient/episodes_sidebar'); ?>
 
-<nav class="sidebar " id="episodes-and-events">
+<nav class="sidebar-header">
+    <div id="js-element-structure-btn" class="icon-button element-structure"></div>
+</nav>
+
+<nav class="sidebar element-overlay" id="episodes-and-events" style="display: none">
 
 </nav>
 
@@ -21,6 +26,19 @@
             event_id: <?= $this->event->id ?>
             <?php } ?>
         });
+        
+        let manage_btn = document.getElementById("js-element-structure-btn");
+        let element_dropDown = document.getElementById("episodes-and-events"); 
+        manage_btn.onclick = function() {
+            manage_btn.classList.toggle('selected');
+            if(element_dropDown.style.display == "none") {
+                element_dropDown.style.display = "block";
+            }
+            else {
+                element_dropDown.style.display = "none";
+            }
+        }
+
     });
 
 </script>

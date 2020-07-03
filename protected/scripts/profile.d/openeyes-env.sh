@@ -72,3 +72,15 @@
 # export PW_RES_MAX_LEN_MESS='Passwords must be at most 70 characters long'
 # export PW_RES_STRENGTH='%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%'
 # export PW_RES_STRENGTH_MESS='Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+
+## Number of password tries before triggering status change (any integer or 0 to disable)
+# export PW_STAT_TRIES =3
+
+## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
+# export PW_STAT_TRIES_FAILED= 'locked'
+# export PW_STAT_ADMIN_CHANGE = 'stale'
+
+## Number of days before password stales, expires or locks - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
+# export PW_STAT_DAYS_STALE= '15 days'
+# export PW_STAT_DAYS_EXPIRE = '30 days' 
+# export PW_STAT_DAYS_LOCK =  '45 days'

@@ -82,7 +82,7 @@ class UserIdentity extends CUserIdentity
         /*
          * Here we diverge depending on the authentication source.
          */
-        if (Yii::app()->params['auth_source'] == 'LDAP') {
+        if (Yii::app()->params['auth_source'] === 'LDAP') {
             /*
              * Required for LDAP authentication
              */
@@ -285,10 +285,20 @@ class UserIdentity extends CUserIdentity
                     throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(), true));
                 }
             }
-        } elseif (Yii::app()->params['auth_source'] == 'BASIC') {
-            if (!$force && !$user->validatePassword($this->password)) {
+        } elseif (Yii::app()->params['auth_source'] === 'BASIC') {
+            $validPw=$user->validatePassword($this->password);
+            $pwActive = !$user->testUserPWStatus('locked');
+
+            if (!$force && !($validPw && $pwActive)) { //if failed logon or locked
+                if(!$validPw && isset(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
+                    //Increase the number of failed tries
+                    $user->password_failed_tries++;
+                    $user->saveAttributes(array('password_failed_tries')); 
+                    
+                    $user->setUserLogOnAttemptsCheck();
+                }
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
-                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: invalid password");
+                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: ". $validPw?'valid password':'invalid password');
 
                 return false;
             }

@@ -15,9 +15,8 @@ class DefaultController extends BaseEventTypeController
     const SHORTALLIMIT = 22;
     const LONGALLIMIT = 25;
 
-    protected $show_element_sidebar = false;
     protected $render_optional_elements = false;
-
+  
     /**
      * @param Event                         $unlinkedEvent
      * @param OphInBiometry_Imported_Events $importedEvent
@@ -74,7 +73,7 @@ class DefaultController extends BaseEventTypeController
         if (count($unlinkedEvents) === 0 || Yii::app()->request->getQuery('force_manual') == '1') {
             Yii::app()->user->setFlash('issue.formula', $this->flash_message);
             parent::actionCreate();
-        } else if (count($unlinkedEvents) === 1) {
+        } elseif (count($unlinkedEvents) === 1) {
             // if we have only 1 unlinked event we just simply link that event to the episode
             $this->updateImportedEvent(Event::model()->findByPk($unlinkedEvents[0]->event_id), $unlinkedEvents[0]);
             $this->redirect(array('/OphInBiometry/default/update/' . $unlinkedEvents[0]->event_id));
@@ -326,7 +325,8 @@ class DefaultController extends BaseEventTypeController
         return parent::beforeAction($action);
     }
 
-    public function afterAction($action){
+    public function afterAction($action)
+    {
         return parent::afterAction($action);
     }
 

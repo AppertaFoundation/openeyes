@@ -5,6 +5,7 @@
 </nav>
 
 <?php $this->renderSidebar('//patient/episodes_sidebar') ?>
+<?php $this->renderManageElements() ?>
 
 <?php $this->renderPartial(($this->getViewFile('event_content') ? '' : '//patient/') . 'event_content', [
     'content' => $content,

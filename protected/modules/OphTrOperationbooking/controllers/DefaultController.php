@@ -31,7 +31,6 @@ class DefaultController extends OphTrOperationbookingEventController
     protected $operation = null;
     protected $contact_details = null;
 
-    protected $show_element_sidebar = false;
 
     /**
      * setup the various js scripts for this controller.
