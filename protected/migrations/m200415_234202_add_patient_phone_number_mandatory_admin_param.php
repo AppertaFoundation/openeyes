@@ -4,8 +4,14 @@ class m200415_234202_add_patient_phone_number_mandatory_admin_param extends CDbM
 {
     public function safeUp()
     {
+        $radio_button_field_type_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('setting_field_type')
+            ->where('name = :name', array(':name' => 'Radio buttons'))
+            ->queryScalar();
+
         $this->insert('setting_metadata', [
-            'field_type_id' => SettingFieldType::model()->find('name = ?', ["Radio buttons"])->id,
+            'field_type_id' => $radio_button_field_type_id,
             'key' => 'patient_phone_number_mandatory',
             'name' => 'Patient Phone Number Mandatory',
             'data' => serialize(['1' => 'Yes', '0' => 'No']),

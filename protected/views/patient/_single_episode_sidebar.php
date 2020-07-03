@@ -50,7 +50,13 @@ $operation_status_to_css_class = [
     'On-Hold' => 'pause'
     // extend this list with new statuses, e.g.:
     // 'Reserved ... ' => 'flag', for OE-7194
-]; ?>
+];
+$correspondence_email_status_to_css_class = [
+    'Sending' => 'scheduled',
+    'Complete' => 'done',
+    'Failed' => 'cancelled',
+    'Pending' => 'scheduled',
+];?>
 <div class="sidebar-eventlist">
     <?php if (is_array($ordered_episodes)) { ?>
         <ul class="events" id="js-events-by-date">
@@ -116,6 +122,31 @@ $operation_status_to_css_class = [
                                         // as an event issue, while the others are not
                                         $event_issue_class .= ' ' . $css_class;
                                         $event_issue_text .= 'Operation ' . $status_name . "\n";
+                                    }
+                                }
+                                if ($event->eventType->class_name === 'OphCoCorrespondence') {
+                                    $eventStatus = null;
+                                    $emails = ElementLetter::model()->find('event_id = ?', array($event->id))->getOutputByType(['Email', 'Email (Delayed)']);
+                                    // If there is a document output that has one of the two email delivery methods, only then proceed.
+                                    if ( count($emails) > 0 ) {
+                                        foreach ($emails as $email) {
+                                            if ($email->output_status === 'SENDING' || $email->output_status === 'PENDING') {
+                                                $eventStatus = "Pending";
+                                                continue;
+                                            }
+                                            if ($email->output_status === 'FAILED') {
+                                                $eventStatus = "Failed";
+                                                continue;
+                                            }
+                                        }
+                                        if (!isset($eventStatus)) {
+                                            $eventStatus = "Complete";
+                                        }
+                                        $css_class = $correspondence_email_status_to_css_class[$eventStatus];
+                                        $event_icon_class .= ' ' . $css_class;
+
+                                        $event_issue_class .= ' ' . $correspondence_email_status_to_css_class[$eventStatus];
+                                        $event_issue_text = $eventStatus;
                                     }
                                 }
 

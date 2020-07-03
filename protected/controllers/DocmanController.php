@@ -159,6 +159,7 @@ class DocmanController extends BaseController
 
         $contact_name = null;
         $contact_nickname = null;
+        $email = null;
         if ($contact_id) {
             $contact = Contact::model()->findByPk($contact_id);
             $address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
@@ -169,8 +170,9 @@ class DocmanController extends BaseController
             }
             $contact_name = $contact->getFullName();
             $contact_nickname = $contact->nick_name;
+            $email = isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null;
         }
-        
+
         if ($address) {
             $address = implode("\n", $address->getLetterArray());
         }
@@ -187,13 +189,15 @@ class DocmanController extends BaseController
                 'contact_nickname' => $contact_nickname,
                 'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
                 'is_internal_referral' => true,
-                'is_mandatory' => $is_mandatory == 'true' ? true : false
+                'is_mandatory' => $is_mandatory == 'true' ? true : false,
+                'email' => $email,
+                'patient_id' => $patient_id,
             )
         );
         $this->getApp()->end();
     }
 
-    
+
     public function actionAjaxGetMacros()
     {
         header("Content-Type: application/json");
@@ -232,6 +236,7 @@ class DocmanController extends BaseController
 
     public function actionAjaxGetMacroTargets()
     {
+        $patient_id = null;
         $macro_data = null;
         if ($macro_id = Yii::app()->request->getQuery('macro_id')) {
             if ($api = Yii::app()->moduleAPI->get('OphCoCorrespondence')) {
@@ -244,6 +249,7 @@ class DocmanController extends BaseController
         echo $this->renderPartial('/docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
+                'patient_id' => $patient_id,
                 'macro_id' => $macro_id,
                 'element' => $element,
                 'can_send_electronically' => true,
@@ -259,5 +265,4 @@ class DocmanController extends BaseController
             );
         }
     }
-
 }
