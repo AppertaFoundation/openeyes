@@ -32,7 +32,8 @@ class LetterStringGroup extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @param string $className
+     * @return LetterStringGroup the static model class
      */
     public static function model($className = __CLASS__)
     {

@@ -33,6 +33,10 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
+    const ELEMENT_CHILDREN = [
+        'Element_OphCiExamination_OCT',
+        'Element_OphCiExamination_Keratometry'
+    ];
 
     /**
      * Returns the static model of the specified AR class.
@@ -61,11 +65,24 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
                 array('description', 'safe'),
-                array('description', 'required', 'message' => '{attribute} cannot be blank when there are no child elements', 'on' => 'formHasNoChildren'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, description, ', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function eventScopeValidation($elements)
+    {
+        $element_names = array_map(
+            function ($element) {
+                return \Helper::getNSShortname($element);
+            },
+            $elements
+        );
+
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+            $this->addError('description', 'Description cannot be blank when there are no child elements');
+        }
     }
 
     /**

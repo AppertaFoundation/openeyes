@@ -91,7 +91,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202006180850',
+            'time' => '202007021635',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -193,7 +193,7 @@ return array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'sendmail',
+            'mode' => 'smtp',
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -657,7 +657,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
             //            'Worklist',
         ),
-        'oe_version' => 'Q3 \'20 nightly',
+        'oe_version' => '20Q3 nightly',
         // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
         'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -676,6 +676,7 @@ return array(
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
         ),
+        'sodium_crypto_key_path' => '/run/secrets/SODIUM_CRYPTO_KEY',
         'portal' => array(
             'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
             'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])

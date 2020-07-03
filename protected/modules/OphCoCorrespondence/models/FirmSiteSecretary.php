@@ -20,6 +20,7 @@
  * The followings are the available columns in table 'ophcocorrespondence_firm_site_secretary':.
  *
  * @property string $id
+ * @property int $event_id
  * @property int $firm_id
  * @property int $site_id
  * @property string direct_line
@@ -32,7 +33,8 @@ class FirmSiteSecretary extends BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @param string $className
+     * @return FirmSiteSecretary the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -111,7 +113,7 @@ class FirmSiteSecretary extends BaseEventTypeElement
     /**
      * @param $firmId
      *
-     * @return mixed
+     * @return FirmSiteSecretary[]
      */
     public function findSiteSecretaryForFirm($firmId)
     {

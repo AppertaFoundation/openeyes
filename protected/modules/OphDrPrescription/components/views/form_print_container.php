@@ -15,7 +15,8 @@
         <?php
             $this->render('form_print_header', array(
                 'form_css_class' => $form_css_class,
-                'side' => $side
+                'side' => $side,
+                'address' => $this->patient->contact->address
             ));
 
             $this->render('form_print_item_list', array(

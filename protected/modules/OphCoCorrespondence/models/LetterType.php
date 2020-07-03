@@ -31,7 +31,7 @@ class LetterType extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @return LetterType the static model class
      */
     public static function model($className = __CLASS__)
     {

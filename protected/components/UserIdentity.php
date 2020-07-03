@@ -278,9 +278,12 @@ class UserIdentity extends CUserIdentity
 
             // using isModelDirty() because
             // $user->saveOnlyIfDirty()->save() returns false if the model wasn't dirty => model wasn't saved
-            if ($user->isModelDirty() && !$user->save()) {
-                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(), true));
-                throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(), true));
+            if ($user->isModelDirty()) {
+                $user->password_hashed = true;
+                if (!$user->save()) {
+                    $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(), true));
+                    throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(), true));
+                }
             }
         } elseif (Yii::app()->params['auth_source'] == 'BASIC') {
             if (!$force && !$user->validatePassword($this->password)) {

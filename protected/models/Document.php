@@ -34,19 +34,19 @@ class Document //extends BaseActiveRecord
     public static function getContactTypes()
     {
         return [
-                'GP' => \Yii::app()->params['gp_label'],
-                'PATIENT' => 'Patient',
-                'DRSS' => 'DRSS',
-                'OPTOMETRIST' => 'Optometrist',
-                'OTHER' => 'Other',
-            ];
+            'GP' => \Yii::app()->params['gp_label'],
+            'PATIENT' => 'Patient',
+            'DRSS' => 'DRSS',
+            'OPTOMETRIST' => 'Optometrist',
+            'OTHER' => 'Other',
+        ];
     }
 
     public static function getInternalReferralContactType()
     {
         return [
-                'INTERNALREFERRAL' => 'Booking'
-            ];
+            'INTERNALREFERRAL' => 'Booking'
+        ];
     }
 
     /**
@@ -276,7 +276,7 @@ class Document //extends BaseActiveRecord
 
         if (isset($data['DocumentTarget'])) {
             // Before saving new Targets we check if there were any Recipients to remove
-            if ( Yii::app()->controller->action->id === 'update') {
+            if (Yii::app()->controller->action->id === 'update') {
                 $this->removeTargetAndOutput($doc_set->id, $data['DocumentTarget']);
             }
 
@@ -284,9 +284,10 @@ class Document //extends BaseActiveRecord
                 $data = array(
                     'to_cc' => $post_document_target['attributes']['ToCc'],
                     'contact_type' => $post_document_target['attributes']['contact_type'],
-                    'contact_id' => isset($post_document_target['attributes']['contact_id']) ? $post_document_target['attributes']['contact_id'] : null,
-                    'contact_name' => isset($post_document_target['attributes']['contact_name']) ? $post_document_target['attributes']['contact_name'] : null,
+                    'contact_id' => $post_document_target['attributes']['contact_id'] ?? null,
+                    'contact_name' => $post_document_target['attributes']['contact_name'] ?? null,
                     'address' => $post_document_target['attributes']['address'],
+                    'email' => $post_document_target['attributes']['email'] ?? null,
                 );
 
                 if (isset($post_document_target['attributes']['id'])) {
@@ -297,9 +298,12 @@ class Document //extends BaseActiveRecord
                 if (isset($post_document_target['DocumentOutput'])) {
                     // If an output id is not posted back we remove it from the DB
                     if (isset($post_document_target['attributes']['id'])) {
-                        $this->removeOutputs($post_document_target['attributes']['id'], $post_document_target['DocumentOutput']);
+                        $this->removeOutputs(
+                            $post_document_target['attributes']['id'],
+                            $post_document_target['DocumentOutput']
+                        );
                     }
-                    
+
                     foreach ($post_document_target['DocumentOutput'] as $document_output) {
                         if (isset($document_output['output_type'])) {
                             $data = array(
@@ -310,10 +314,10 @@ class Document //extends BaseActiveRecord
                                 $data['id'] = $document_output['id'];
                             }
 
-                            if ( $this->is_draft && ($data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ) {
+                            if ($this->is_draft && ($data['output_type'] === 'Docman' || $data['output_type'] === 'Internalreferral')) {
                                 $data['output_status'] = "DRAFT";
-                            } else if ($this->is_draft == 0 && ( $data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ) {
-                                $data['output_status'] = "PENDING";
+                            } elseif ($this->is_draft == 0 && ($data['output_type'] === 'Docman' || $data['output_type'] === 'Internalreferral')) {
+                                    $data['output_status'] = "PENDING";
                             }
 
                             $this->createNewDocOutput($doc_target, $doc_instance_version, $data);
@@ -323,7 +327,7 @@ class Document //extends BaseActiveRecord
             }
         }
     }
-    
+
     public function createNewDocTarget($doc_instance, $data)
     {
         $doc_target = null;
@@ -339,6 +343,7 @@ class Document //extends BaseActiveRecord
         $doc_target->contact_name = $data['contact_name'];
         $doc_target->ToCc = $data['to_cc'];
         $doc_target->address = $data['address'];
+        $doc_target->email = $data['email'];
         $doc_target->save();
 
         if (!$doc_target->save()) {
@@ -347,7 +352,7 @@ class Document //extends BaseActiveRecord
 
         return $doc_target;
     }
-    
+
     public function createNewDocOutput($doc_target, $doc_instance_version, $data)
     {
         $doc_output = null;
@@ -362,16 +367,15 @@ class Document //extends BaseActiveRecord
         $doc_output->output_type = $data['output_type'];
         $doc_output->requestor_id = 0;
 
-        if ( isset($data['output_status']) && $doc_output->output_type != "COMPLETE") {
+        if (isset($data['output_status']) && $doc_output->output_type != "COMPLETE") {
             $doc_output->output_status = $data['output_status'];
         }
 
         if (!$doc_output->save()) {
             \OELog::log(print_r($doc_output->getErrors(), true));
         }
-
     }
-    
+
     /**
      * When the user removes a saved DocumentTarget we remove the target and the output from the DB
      * @param type $document_id
@@ -380,29 +384,29 @@ class Document //extends BaseActiveRecord
     protected function removeTargetAndOutput($document_id, $new_document_targets)
     {
         $document_set = DocumentSet::model()->findByPk($document_id);
-        
-        if ( isset($document_set->document_instance[0]->document_target) ) {
+
+        if (isset($document_set->document_instance[0]->document_target)) {
             // get saved document_targets
             $document_targets = $document_set->document_instance[0]->document_target;
             foreach ($document_targets as $document_target) {
                 //check if the document_target is in he posted ones
                 $is_in = false;
                 foreach ($new_document_targets as $new_document_target) {
-                    if ( isset($new_document_target['attributes']['id']) && $document_target->id == $new_document_target['attributes']['id']) {
+                    if (isset($new_document_target['attributes']['id']) && $document_target->id == $new_document_target['attributes']['id']) {
                         $is_in = true;
                     }
                 }
-                
+
                 // the target in the DB is not posted back so we can delete it as they removed it from the UI
                 if (!$is_in) {
                     $deletable = true;
                     foreach ($document_target->document_output as $document_output) {
                         // we don't delete if it is already DocMan delivered
-                        if ( $document_output->output_status == 'COMPLETE' && $document_output->output_type == 'Docman' ) {
+                        if ($document_output->output_status === 'COMPLETE' && $document_output->output_type === 'Docman') {
                             $deletable = false;
                         }
                     }
-                    
+
                     if ($deletable) {
                         foreach ($document_target->document_output as $document_output) {
                             $document_output->delete();
@@ -413,23 +417,23 @@ class Document //extends BaseActiveRecord
             }
         }
     }
-    
+
     protected function removeOutputs($document_target_id, $new_document_outputs)
     {
         $document_output_ids = array();
         foreach ($new_document_outputs as $document_output) {
-            if ( isset($document_output['id']) && isset($document_output['output_type']) ) {
+            if (isset($document_output['id']) && isset($document_output['output_type'])) {
                 $document_output_ids[] = $document_output['id'];
             }
         }
-        
+
         $criteria = new CDbCriteria();
-        
+
         $criteria->addCondition('document_target_id = :document_target_id');
         $criteria->params[':document_target_id'] = $document_target_id;
-        
+
         $criteria->addNotInCondition('id', $document_output_ids);
-        
+
         DocumentOutput::model()->deleteAll($criteria);
     }
 }

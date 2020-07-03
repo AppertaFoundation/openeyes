@@ -73,6 +73,10 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
                 array('right_coefficient_variation_value, left_coefficient_variation_value', 'numerical',
                 'integerOnly'=>false),
 
+                array('right_endothelial_cell_density_value, right_coefficient_variation_value',
+                'requiredIfSide', 'side' => 'right'),
+                array('left_endothelial_cell_density_value, left_coefficient_variation_value',
+                'requiredIfSide', 'side' => 'left'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, eye_id, event_id, specular_microscope_id, scan_quality_id, right_endothelial_cell_density_value, 

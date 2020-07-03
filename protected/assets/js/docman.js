@@ -59,7 +59,7 @@ var docman = (function() {
                 fc = myNode.firstChild;
             }
             $("#"+this.dom_id).append("<table id='"+this.prefix+"table'>" +
-                "<tr id='"+this.prefix+"0'><th>Document Type</th><th>To/CC</th><th>Recipient</th>" + 
+                "<tr id='"+this.prefix+"0'><th>Document Type</th><th>To/CC</th><th>Recipient</th>" +
                 "<th>Delivery Method(s)</th><th>Delivery Status</th></tr></table>");
         },
 
@@ -76,8 +76,10 @@ var docman = (function() {
 
 
         addMacroHandler: function(){
-            $('#macro_id').on('change', function(){ 
+            $('#macro_id').on('change', function(){
                 docman2.changeSelectedMacro($('#macro_id').val(), $('#macro_id'));
+                // This is to make sure the salutation updateHandler is added, when the macro is selected.
+                docman2.addContactNameUpdate();
             });
         },
 
@@ -88,13 +90,15 @@ var docman = (function() {
                     docman.getRecipientData(event.target.value, event.target);
 										// $.first('.autosize').trigger('autosize');
                 }
-            });
-            $('#docman_block').on("change", '.docman_contact_type', function (){
                 var rowindex = $(this).data("rowindex");
-                docman.setDeliveryMethods(rowindex);
+                resetEmailField(rowindex);
+            });
+            $('#docman_block').on("change", '.docman_contact_type', function (e, data){
+                var rowindex = $(this).data("rowindex");
+                docman.setDeliveryMethods(rowindex, data.email);
             });
         },
-                
+
         addRemoveHandler: function(){
             $('#docman_block').on("click", '.remove_recipient', function(event)
             {
@@ -109,7 +113,7 @@ var docman = (function() {
             this.addDocmanMethodMandatory();
             this.addContactNameUpdate();
         },
-        
+
         addContactNameUpdate: function(){
             $('#dm_table').on('keyup', '#DocumentTarget_0_attributes_contact_name',function(){
                 $('#ElementLetter_introduction').val( 'Dear ' + $(this).val() );
@@ -135,10 +139,12 @@ var docman = (function() {
             return contact_type;
         },
 
-        setDeliveryMethods: function(row)
+        setDeliveryMethods: function(row, email)
         {
             var delivery_methods = '';
-             
+            var element_id = 0;
+            let is_print_checked = email ? '' : 'checked';
+            let isGPEmailChecked = true;
             $('#dm_table tr').each(function()
             {
                 if($(this).data("rowindex") == row)
@@ -148,7 +154,11 @@ var docman = (function() {
                     {
                         //electronic_sending_method_label is coming from config
                         electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
-                            
+
+                        if (electronic_sending_method_label === 'Electronic') {
+                            isGPEmailChecked = false;
+                        }
+
                         delivery_methods = '<div><label class="inline highlight"><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
                         delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
@@ -156,26 +166,68 @@ var docman = (function() {
                         if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
+                        element_id = 2;
 
                     }
                     else if(contact_type == 'INTERNALREFERRAL'){
                         internal_referral_method_label = internal_referral_method_label ? internal_referral_method_label : 'Electronic (Internal Referral)';
 
-                        delivery_methods = '<div><label class="inline highlight"><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
+                        delivery_methods = '<div><label class="inline highlight electronic-label internal-referral"><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked><span>' + internal_referral_method_label + '</span>';
                         delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint, button#et_saveprint_footer').length ){
                             delivery_methods += '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
+                        element_id = 2;
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint, button#et_saveprint_footer').length ){
-                            delivery_methods = '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
+                            delivery_methods = '<div><label class="inline highlight"><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" ' + is_print_checked + '> Print</label></div>';
+                        }
+                        element_id = 1;
+                    }
+
+                    // This check is to make sure that the email functionality should be disabled for patients, if they
+                    // do not agree to receive the insecure email correspondence.
+                    let emailWarningElement = null, isEmailEnabled;
+                    if (contact_type === "PATIENT") {
+                        if (agrees_to_insecure_email_correspondence === "0") {
+                            isEmailEnabled  = "disabled";
+                            emailWarningElement = "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='Please note this patient has opted out of receiving email correspondence.'></i>";
+                        }
+                        if (agrees_to_insecure_email_correspondence == null) {
+                            isEmailEnabled  = "disabled";
+                            emailWarningElement = "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='No communication preference has been set for this patient.'></i>";
                         }
                     }
+
+                    let is_email_checked, is_email_delayed_checked = null;
+                    // The email checkbox should never appear for the internal referral recipient type.
+                    if(contact_type !== 'INTERNALREFERRAL') {
+                        if (send_email_immediately === 'on') {
+                            is_email_checked = typeof isEmailEnabled === "undefined" ? (email && isGPEmailChecked ? 'checked' : '') : isEmailEnabled;
+                            delivery_methods += '<div><label class="inline highlight"><input value="Email" onclick="isEmailPresent(' + row + ', \'' + contact_type + '\' , this);" name="DocumentTarget[' + row + '][DocumentOutput][' + element_id + '][output_type]" type="checkbox" ' + is_email_checked + '> Email</label>' + (emailWarningElement != null ? emailWarningElement : '') + '</div>';
+                        }
+                    }
+
+                    if( (contact_type === 'INTERNALREFERRAL' && internal_referral_service_email != null) || contact_type !== 'INTERNALREFERRAL' ) {
+                        if (send_email_delayed === 'on') {
+                            is_email_delayed_checked = typeof isEmailEnabled === "undefined" ? (email && isGPEmailChecked ? 'checked' : '') : isEmailEnabled;
+                            delivery_methods += '<div><label class="inline highlight"><input value="Email (Delayed)" onclick="isEmailPresent(' + row + ', \'' + contact_type + '\' , this);" name="DocumentTarget[' + row + '][DocumentOutput][' + element_id++ + '][output_type]" type="checkbox" ' + is_email_delayed_checked + '> Email (Delayed)</label>' + (emailWarningElement != null ? emailWarningElement : '') + '</div>';
+                        }
+                    }
+
+                    if (is_email_checked === 'checked' || is_email_delayed_checked === 'checked') {
+                        $(`#DocumentTarget_${row}_attributes_email`).val(email);
+                        $(`#DocumentTarget_${row}_attributes_email`).prop("readonly", true);
+                        $(`#DocumentTarget_${row}_attributes_email`).show();
+                    } else {
+                        resetEmailField(row);
+                    }
+
                     $(this).find('.docman_delivery_method').html(delivery_methods);
                 }
             });
@@ -192,7 +244,7 @@ var docman = (function() {
                         'data':  null,
                         context: this,
                         async: false,
-                        'success': function(resp) {                       
+                        'success': function(resp) {
                             $('#dm_table').replaceWith(resp);
                         }
                     }
@@ -255,68 +307,62 @@ var docman = (function() {
                     this.setDocTableToHTML(resp);
                     $('#dm_table .docman_loader').hide();
                 }
-                    });
+            });
         },
 
         setDocTableToHTML: function(data){
             $('#docman_block').html(data);
 
-                    if(macro_id > 0){
-                        $('#macro_id').val(macro_id).change();
-                    }
+            if(macro_id > 0){
+                $('#macro_id').val(macro_id).change();
+            }
         },
 
-        getRecipientData: function(contact_id, element) {
-            var document_set_id = '';
-            var document_set_id_param = '';
-            var rowindex = $(element).data("rowindex");
-            var $tr = $('tr.rowindex-' + rowindex);
-            if( $('#DocumentSet_id').length > 0 ){
+        getRecipientData: function (contact_id, element) {
+            let document_set_id = '';
+            let document_set_id_param = '';
+            let rowindex = $(element).data("rowindex");
+            if ($('#DocumentSet_id').length > 0) {
                 document_set_id = $('#DocumentSet_id').val();
                 document_set_id_param = '&document_set_id=' + document_set_id;
             }
 
-            var current_type =  $('#DocumentTarget_' + rowindex + '_attributes_contact_type option:selected').text();
-            var selected_type = contact_id.match(/^([a-zA-Z]+)([0-9]+)$/);
-            var other_rowindex;
-            var other_id;
+            let current_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type option:selected').text();
+            let selected_type = contact_id.match(/^([a-zA-Z]+)([0-9]+)$/);
+            let other_rowindex;
+            let other_id;
 
-            if(selected_type){
+            if (selected_type) {
                 other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
-        }
+            }
 
-            if(contact_id != 'OTHER' ){
-            	if(other_rowindex !== undefined){
+            if (contact_id !== 'OTHER') {
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').attr('disabled', 'true');
+                if (other_rowindex !== undefined) {
                     current_type = current_type.toLowerCase();
-                    type = current_type[0].toUpperCase() + current_type.slice(1);
-
-                    if(type !== 'Other' && type !== undefined && type !== '- type -'){
-                        other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
-                    }
-
+                    let type = current_type[0].toUpperCase() + current_type.slice(1);
                     other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
                 }
 
                 this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
                 this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
-
-            } else if(contact_id.toUpperCase() === 'OTHER'){
+            } else if (contact_id.toUpperCase() === 'OTHER') {
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val('');
-                $('#Document_Target_Address_' + rowindex ).val('');
-								$('#Document_Target_Address_' + rowindex).trigger('autosize');
+                $('#Document_Target_Address_' + rowindex).val('');
+                $('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
-								$('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
-                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change', [{email:null}]);
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
-                $('#ElementLetter_use_nickname').prop('checked','');
+                $('#ElementLetter_use_nickname').prop('checked', '');
             }
         },
-        
+
         isContactTypeAdded: function(type){
             var is_added = false;
             $('.docman_contact_type').each(function(i,$element){
@@ -328,7 +374,6 @@ var docman = (function() {
         },
 
         updateRow: function (rowindex, contact_id, OE_patient_id, document_set_id_param) {
-
             if (contact_id === undefined) {
                 return;
             }
@@ -347,7 +392,8 @@ var docman = (function() {
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
-                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change', [{email:resp.email}]);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').attr('disabled', 'disabled');
                     let is_Cc = $('#DocumentTarget_' + rowindex + '_attributes_ToCc').val() === "Cc";
                     updateReData(resp.contact_type, is_Cc);
 
@@ -473,8 +519,10 @@ var docman = (function() {
                     // TODO: should be POST but we need the YII_TOKEN for that!!!
                     'type': 'GET',
                     'url': this.baseUrl + 'ajaxUpdateTargetAddress',
-                    'data': {'doc_target_id':addressId,
-                             'new_address':$('#docman_address_edit_'+addressId).val()},
+                    'data': {
+                        'doc_target_id':addressId,
+                        'new_address':$('#docman_address_edit_'+addressId).val()
+                    },
                     'success': function(resp) {
                         $('#docman_address_'+addressId).html(resp);
                         $('#docman_edit_button_'+addressId).show();
@@ -482,25 +530,6 @@ var docman = (function() {
                     }
                 }
             );
-        },
-
-        //-------------------------------------------------------------
-        //  test / junk
-        //-------------------------------------------------------------
-
-        getEventId: function() {
-            return 1001;
-            //return this.data.data.docset[0].event_id;
-        },
-                
-        f1: function() {
-          return 6;
-        },
-
-        f2: function() {
-          var x = this.f1() /2;
-          alert(x);
-          return x;
         },
 
     };

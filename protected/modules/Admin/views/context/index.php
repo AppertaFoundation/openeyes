@@ -52,16 +52,18 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?=Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <thead>
-            <th><input type="checkbox" name="selectall" id="selectall"/></th>
-            <th>Id</th>
-            <th>PAS Code</th>
-            <th>Name</th>
-            <th>Subspecialty</th>
-            <th>Consultant</th>
-            <th>Cost Code</th>
-            <th>Service Enabled</th>
-            <th>Context Enabled</th>
-            <th>Active</th>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Id</th>
+                <th>PAS Code</th>
+                <th>Name</th>
+                <th>Subspecialty</th>
+                <th>Consultant</th>
+                <th>Cost Code</th>
+                <th>Service Enabled</th>
+                <th>Context Enabled</th>
+                <th>Active</th>
+            </tr>
             </thead>
             <tbody>
             <?php foreach ($firms as $firm) : ?>
@@ -76,9 +78,9 @@
                     <td><?=($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
                     <td><?=$firm->cost_code;?></td>
 
-                    <td><?=\OEHtml::icon($firm->can_own_an_episode ? 'tick' : 'remove');?></td>
-                    <td><?=\OEHtml::icon($firm->runtime_selectable ? 'tick' : 'remove');?></td>
-                    <td><?=\OEHtml::icon($firm->active ? 'tick' : 'remove');?></td>
+                    <td><?= OEHtml::icon($firm->can_own_an_episode ? 'tick' : 'remove');?></td>
+                    <td><?= OEHtml::icon($firm->runtime_selectable ? 'tick' : 'remove');?></td>
+                    <td><?= OEHtml::icon($firm->active ? 'tick' : 'remove');?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

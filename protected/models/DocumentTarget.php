@@ -82,7 +82,31 @@ class DocumentTarget extends BaseActiveRecord
             $this->contact_id = null;
         }
 
+        if (!$this->email) {
+            $this->email = null;
+        }
+
         return parent::beforeSave();
+    }
+
+    public function getEmailDocumentOutputStatus()
+    {
+        $emailStatus = null;
+        $delayedEmailStatus = null;
+
+        $documentOutputs = $this->document_output;
+
+        foreach ($documentOutputs as $documentOutput) {
+            if ($documentOutput->output_type === 'Email') {
+                $emailStatus = 'Email: ' . $documentOutput->output_status . '<br/>' . 'Address: ' . $this->email;
+            }
+            if ($documentOutput->output_type === 'Email (Delayed)') {
+                $delayedEmailStatus = 'Email (Delayed): ' . $documentOutput->output_status . '<br/>' .'Address: ' . $this->email;
+            }
+        }
+
+        return isset($emailStatus, $delayedEmailStatus) ? $emailStatus . '<br/>' . $delayedEmailStatus :
+            (isset($emailStatus) ? $emailStatus : (isset($delayedEmailStatus) ? $delayedEmailStatus : "Email is not selected as a delivery output for this recipient."));
     }
 
     public function getContactTypes()
@@ -95,5 +119,19 @@ class DocumentTarget extends BaseActiveRecord
         }
 
         return array_combine($option_array, $option_array);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecipientDocumentOutputEmail() {
+        $documentOutputs = $this->document_output;
+
+        foreach ($documentOutputs as $documentOutput) {
+            if ($documentOutput->output_type === 'Email' || $documentOutput->output_type === 'Email (Delayed)') {
+                return true;
+            }
+        }
+        return false;
     }
 }
