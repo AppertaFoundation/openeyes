@@ -32,8 +32,6 @@ class DefaultController extends \BaseEventTypeController
         'addcomment' => self::ACTION_TYPE_MYMESSAGE,
     );
 
-    protected $show_element_sidebar = false;
-
     /**
      * @var \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */
@@ -405,7 +403,7 @@ class DefaultController extends \BaseEventTypeController
                 && $el->last_comment->marked_as_read) {
                 return true;
             }
-        } else if ($this->isIntendedRecipient() && $el->marked_as_read) {
+        } elseif ($this->isIntendedRecipient() && $el->marked_as_read) {
             return true;
         }
 

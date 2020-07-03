@@ -141,7 +141,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @var bool
      */
-    protected $show_element_sidebar = true;
+    protected $show_element_sidebar = false;
 
     /**
      * Set to true if the index search bar should appear in the header when creating/editing the event
@@ -149,6 +149,13 @@ class BaseEventTypeController extends BaseModuleController
      * @var bool
      */
     protected $show_index_search = false;
+
+    /**
+     * Set to true if the manage element should appear on the sidebar
+     *
+     * @var bool
+     */
+    protected $show_manage_elements = false;
 
     public function behaviors()
     {
@@ -1538,6 +1545,20 @@ class BaseEventTypeController extends BaseModuleController
             $event_type_id = ($this->event->attributes["event_type_id"]);
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = $event_type->name;
+        }
+    }
+
+    public function renderManageElements()
+    {
+        if ($this->show_manage_elements && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
+            $event_type_id = $this->event->attributes["event_type_id"];
+            $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+            $event_name =  preg_replace('/\s+/', '_', $event_type->name);
+            $this->renderPartial(('//patient/_patient_manage_elements'), array('event_name'=>$event_name));
         }
     }
 
