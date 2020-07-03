@@ -373,6 +373,8 @@ class MedicationManagement extends BaseMedicationElement
                     $prescription_item->saveTapers();
                     $entry = self::$entry_class::model()->findByPk($entry->id);
                     $entry->prescription_item_id = $prescription_item->id;
+                    $end_date = $prescription_item->stopDateFromDuration();
+                    $entry->end_date = $end_date ? $end_date->format('Y-m-d') : null;
                     $entry->save();
                     $changed = true;
                 }
