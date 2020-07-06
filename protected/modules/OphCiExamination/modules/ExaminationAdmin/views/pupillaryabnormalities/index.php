@@ -25,7 +25,7 @@
     <form id="admin_pupillaryabnormalities">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
-        <table class="standard" id="et_sort" data-uri="/OphCiExamination/admin/PupillaryAbnormalities/sortConditions">
+        <table class="standard" id="et_sort" data-uri="/OphCiExamination/admin/PupillaryAbnormalities/sortPupillaryAbnormalities">
             <thead>
             <tr>
                 <th>Re-order</th>
