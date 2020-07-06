@@ -35,6 +35,18 @@ $model_name = CHtml::modelName($element);
                 <col class="cols-1">
             </colgroup>
             <tbody>
+            <tr class="cols-full <?= $model_name ?>_no_pastsurgery_wrapper">
+                <td colspan="5" class="align-left">
+                    <label class="inline highlight" for="<?= $model_name ?>_no_pastsuregery">
+                        <?= \CHtml::checkBox(
+                            $model_name . '[no_pastsurgery]',
+                            $element->no_pastsurgery_date ? true : false,
+                            array('class' => $model_name.'_no_pastsurgery')
+                        ); ?>
+                        No previous eye surgery or laser treatment
+                    </label>
+                </td>
+            </tr>
             <?php
             $row_count = 0;
             // these are the missing but required to collect operations
@@ -114,7 +126,8 @@ $model_name = CHtml::modelName($element);
         </div>
     </div>
 
-    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery">
+    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery"
+         style="display: <?php echo $element->no_pastsurgery_date ? 'none' : ''; ?>">
         <button id="<?= $model_name ?>-comment-button"
                 class="button js-add-comments"
                 data-comment-container="#<?= $model_name ?>-comments"

@@ -71,9 +71,9 @@ class SystemicSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return [
-            ['event_id, operations, comments', 'safe'],
+            ['event_id, operations, comments, no_systemicsurgery_date', 'safe'],
             // The following rule is used by search().
-            ['id, event_id, comments', 'safe', 'on'=>'search'],
+            ['id, event_id, comments, no_systemicsurgery_date', 'safe', 'on'=>'search'],
         ];
     }
 
@@ -130,6 +130,15 @@ class SystemicSurgery extends \BaseEventTypeElement
         }
         $this->operations = $entries;
         return parent::beforeSave();
+    }
+
+    public function afterValidate()
+    {
+        if (!$this->no_systemicsurgery_date && !$this->operations && !$this->comments) {
+            $this->addError('no_systemicsurgery_date', 'Please confirm patient has had no previous systemic surgery');
+        }
+
+        parent::afterValidate();
     }
 
     /**

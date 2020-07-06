@@ -41,9 +41,13 @@ if ($historyElement) {
             $current_eye_medications = array_filter($medicationsElement->current_entries, $filter_eye_medication);
             $stopped_eye_medications = array_filter($medicationsElement->closed_entries, $filter_eye_medication);
             ?>
-            <?php if (!$current_eye_medications && !$stopped_eye_medications) { ?>
+            <?php if (!$current_eye_medications && !$stopped_eye_medications && !$medicationsElement->no_ophthalmic_medications_date) { ?>
                 <div class="data-value not-recorded">
                     Nil recorded this examination
+                </div>
+            <?php } elseif ($medicationsElement->no_ophthalmic_medications_date) { ?>
+                <div class="data-value">
+                    Patient takes no eye medications
                 </div>
             <?php } else { ?>
                 <?php if ($current_eye_medications) { ?>
@@ -189,9 +193,13 @@ if ($historyElement) {
                 $stopped_systemic_medications = $medicationsElement ?
                     array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
                 ?>
-                <?php if (!$current_systemic_medications && !$stopped_systemic_medications) { ?>
+                <?php if (!$current_systemic_medications && !$stopped_systemic_medications && !$medicationsElement->no_systemic_medications_date) { ?>
                     <div class="data-value not-recorded">
                         Nil recorded this examination
+                    </div>
+                <?php } elseif ($medicationsElement->no_systemic_medications_date) { ?>
+                    <div class="data-value">
+                        Patient takes no systemic medications
                     </div>
                 <?php } else { ?>
                     <?php if ($current_systemic_medications) { ?>

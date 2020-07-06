@@ -2525,6 +2525,20 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoSystemicDiagnosesDate(\Patient $patient, $use_context = false)
+    {
+        $element = $this->getLatestElement('models\SystemicDiagnoses', $patient, $use_context);
+        if ($element) {
+            return $element->no_systemic_diagnoses_date;
+        }
+        return null;
+    }
+
+    /**
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
@@ -3170,6 +3184,13 @@ class OphCiExamination_API extends \BaseAPI
         return $result;
     }
 
+    /*
+     * Last Blood Pressure (returned as systolic / diastolic - e.g, 100/80)
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
     public function getLastBloodPressure(\Patient $patient, $use_context = true)
     {
         $bp = $this->getLatestElement(
@@ -3182,6 +3203,13 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->blood_pressure_systolic . '/' . $bp->blood_pressure_diastolic;
         }
     }
+
+    /*
+     * Last O2 Stat
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
 
     public function getLastO2Stat(\Patient $patient, $use_context = true)
     {
@@ -3196,6 +3224,13 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /*
+     * Last Blood Glucose
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
     public function getLastBloodGlucose(\Patient $patient, $use_context = true)
     {
         $bp = $this->getLatestElement(
@@ -3208,6 +3243,13 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->blood_glucose;
         }
     }
+
+    /*
+     * Last HbA1c
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
 
     public function getLastHbA1c(\Patient $patient, $use_context = true)
     {
@@ -3223,7 +3265,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /*
-     * Last Blood Pressure (returned as systolic / diastolic - e.g, 100/80)
+     * Last height
      * @param $patient
      * @param bool $use_context
      * @return string
@@ -3242,7 +3284,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /*
-     * Last O2 Stat
+     * Last weight
      * @param $patient
      * @param bool $use_context
      * @return string
@@ -3262,7 +3304,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /*
-     * Last Blood Glucose
+     * Last BMI
      * @param $patient
      * @param bool $use_context
      * @return string
@@ -3287,7 +3329,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /*
-     * Last HbA1c
+     * Last Pulse Measurement
      * @param $patient
      * @param bool $use_context
      * @return string
@@ -3307,11 +3349,23 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /*
-     * Last height
+     * Last Temperature Measurement
      * @param $patient
      * @param bool $use_context
      * @return string
      */
+    public function getLastTemperatureMeasurement(\Patient $patient, $use_context = true)
+    {
+        $bp = $this->getLatestElement(
+            'models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context
+        );
+
+        if ($bp) {
+            return $bp->temperature;
+        }
+    }
 
     public function getPrincipalOphtalmicDiagnosis(\Episode $episode, $disorder_id = null)
     {
@@ -3334,13 +3388,6 @@ class OphCiExamination_API extends \BaseAPI
         $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
         return $value;
     }
-
-    /*
-     * Last weight
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     */
 
     /**
      * Handler routine for DST shortcode
@@ -3370,13 +3417,6 @@ class OphCiExamination_API extends \BaseAPI
         return "(no drugs started today)";
     }
 
-    /*
-     * Last BMI
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     */
-
     /**
      * Handler routine for DSP shortcode
      * @param $patient
@@ -3402,13 +3442,6 @@ class OphCiExamination_API extends \BaseAPI
 
         return "(no drugs stopped today)";
     }
-
-    /*
-     * Last Pulse Measurement
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     */
 
     /**
      * Handler routine for DCT shortcode

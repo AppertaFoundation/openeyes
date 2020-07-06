@@ -33,6 +33,8 @@ use Yii;
  * @property \User $user
  * @property \User $usermodified
  * @property \Eye $eye
+ * @property string $left_notes
+ * @property string $right_notes
  * @property OphCiExamination_ColourVision_Reading $readings
  * @property OphCiExamination_ColourVision_Reading $left_readings
  * @property OphCiExamination_ColourVision_Reading $right_readings
@@ -66,8 +68,8 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('event_id, eye_id', 'safe'),
-                array('id, event_id, eye_id', 'safe', 'on' => 'search'),
+                array('event_id, eye_id, left_notes, right_notes', 'safe'),
+                array('id, event_id, eye_id, left_notes, right_notes', 'safe', 'on' => 'search'),
                 array('left_readings', 'requiredIfSide', 'side' => 'left'),
                 array('right_readings', 'requiredIfSide', 'side' => 'right'),
         );
@@ -103,6 +105,8 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
             'eye_id' => 'Eye',
             'left_readings' => 'Readings',
             'right_readings' => 'Readings',
+            'left_notes' => 'Comments',
+            'right_notes' => 'Comments',
         );
     }
 
@@ -120,6 +124,8 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('left_notes', $this->left_notes, true);
+        $criteria->compare('right_notes', $this->right_notes, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
@@ -134,7 +140,7 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
      * @param string                               $side   - left or right
      * @param OphCiExamination_ColourVision_Method $method
      *
-     * @return OphCiExamination_ColourVision_Readin|null
+     * @return OphCiExamination_ColourVision_Reading|null
      */
     public function getReading($side, $method)
     {

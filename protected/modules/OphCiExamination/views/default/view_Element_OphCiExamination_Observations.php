@@ -99,6 +99,16 @@
                         <td>
                             <span class="data-value"><?php echo (!empty($element->pulse)) ? $element->pulse . ' BPM' : ''; ?></span>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="data-label"><?= $element->getAttributeLabel('temperature') ?>:</span>
+                        </td>
+                        <td>
+                            <span class="data-value"><?php echo (!empty($element->temperature)) ? $element->temperature . ' &deg;C' : ''; ?></span>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <span class="data-label">BMI:</span>&emsp;&nbsp;&nbsp;
                         </td>

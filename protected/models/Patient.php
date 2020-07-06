@@ -939,6 +939,18 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * Wrapper function that relies on magic method behaviour to intercept calls for the no_systemic_diagnoses_date property
+     * @return null|datetime
+     */
+    public function get_no_systemic_diagnoses_date()
+    {
+        if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
+            return $api->getNoSystemicDiagnosesDate($this);
+        }
+        return null;
+    }
+
+    /**
      * @return bool Is patient deceased?
      */
     public function isDeceased()

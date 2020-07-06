@@ -465,10 +465,16 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 <col>
                             </colgroup>
                             <tbody>
-                            <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
+                            <?php if (count($this->patient->systemicDiagnoses) === 0 && !$this->patient->get_no_systemic_diagnoses_date()) { ?>
                                 <tr>
                                     <td>
                                         <div class="nil-recorded">Nil recorded</div>
+                                    </td>
+                                </tr>
+                            <?php } elseif ($this->patient->get_no_systemic_diagnoses_date()) { ?>
+                                <tr>
+                                    <td>
+                                        <div class="nil-recorded">Patient has no known Systemic Diagnoses</div>
                                     </td>
                                 </tr>
                             <?php } ?>

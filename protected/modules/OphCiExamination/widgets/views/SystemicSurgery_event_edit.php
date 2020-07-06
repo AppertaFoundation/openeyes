@@ -34,6 +34,18 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
                 <col class="cols-1">
             </colgroup>
             <tbody>
+            <tr class="cols-full <?= $model_name ?>_no_systemicsurgery_wrapper">
+                <td colspan="5" class="align-left">
+                    <label class="inline highlight" for="<?= $model_name ?>_no_systemicsuregery">
+                        <?= \CHtml::checkBox(
+                            $model_name . '[no_systemicsurgery]',
+                            $element->no_systemicsurgery_date ? true : false,
+                            array('class' => $model_name.'_no_systemicsurgery')
+                        ); ?>
+                        No previous systemic surgery
+                    </label>
+                </td>
+            </tr>
             <?php
             $row_count = 0;
             // these are the missing but required to collect operations
@@ -98,7 +110,8 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
         </div>
     </div>
 
-    <div class="add-data-actions flex-item-bottom" id="add-to-systemic-past-surgery">
+    <div class="add-data-actions flex-item-bottom" id="add-to-systemic-past-surgery"
+         style="display: <?php echo $element->no_systemicsurgery_date ? 'none' : ''; ?>">
         <button id="<?= $model_name ?>-comment-button"
                 class="button js-add-comments"
                 data-comment-container="#<?= $model_name ?>-comments"

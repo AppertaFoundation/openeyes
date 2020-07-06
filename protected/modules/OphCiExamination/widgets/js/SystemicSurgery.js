@@ -25,6 +25,10 @@ OpenEyes.OphCiExamination.SystemicPreviousSurgeryController = (function () {
 
         this.options = $.extend(true, {}, SystemicPreviousSurgeryController._defaultOptions, options);
 
+        this.$noSystemicSurgeryFld = $('.' + this.options.modelName + '_no_systemicsurgery');
+        this.$noSystemicSurgeryWrapper = $('.' + this.options.modelName + '_no_systemicsurgery_wrapper');
+        this.$commentFld = $('#' + this.options.modelName + '_comments');
+        this.$commentWrapper = $('#' + this.options.modelName + '-comments');
         this.$section = $('section.' + this.options.modelName);
         this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
@@ -66,6 +70,15 @@ OpenEyes.OphCiExamination.SystemicPreviousSurgeryController = (function () {
     SystemicPreviousSurgeryController.prototype.initialiseTriggers = function () {
 
         let controller = this;
+
+        $(document).ready(function () {
+            if(controller.$noSystemicSurgeryFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+            }
+            controller.hideNoSystemicSurgery();
+        });
+
         controller.$popupSelector.on('click', '.add-icon-btn', function (e) {
             e.preventDefault();
             controller.addEntry();
@@ -74,6 +87,7 @@ OpenEyes.OphCiExamination.SystemicPreviousSurgeryController = (function () {
         controller.$table.on('click', '.remove_item', function (e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
+            controller.showNoSystemicSurgery();
         });
 
         controller.$section.on('input', ('.' + controller.options.modelName + '_operations'), function () {
@@ -85,11 +99,49 @@ OpenEyes.OphCiExamination.SystemicPreviousSurgeryController = (function () {
             $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
 
+        controller.$noSystemicSurgeryFld.on('click', function () {
+            if (controller.$noSystemicSurgeryFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+                controller.$commentWrapper.hide();
+            } else {
+                controller.$popupSelector.show();
+                if(controller.$commentFld.val()) {
+                    controller.$commentWrapper.show();
+                }
+                controller.$table.find('tr:not(:first-child)').show();
+            }
+        });
+
+        controller.$popupSelector.on('click', function (e) {
+            e.preventDefault();
+            controller.hideNoSystemicSurgery();
+            if(controller.$table.hasClass('hidden')){
+                controller.$table.removeClass('hidden');
+            }
+            controller.$table.show();
+        });
+
         let eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$section
         });
 
         controller.$table.data('eyeSelector', eye_selector);
+    };
+
+    SystemicPreviousSurgeryController.prototype.hideNoSystemicSurgery = function() {
+        if (this.$table.find('tbody tr').length !== 1) {
+            this.$noSystemicSurgeryFld.prop('checked', false);
+            this.$noSystemicSurgeryWrapper.hide();
+        }
+    };
+
+    SystemicPreviousSurgeryController.prototype.showNoSystemicSurgery = function() {
+        if (this.$table.find('tbody tr').length === 1) {
+            this.$noSystemicSurgeryWrapper.show();
+        } else {
+            this.hideNoSystemicSurgery();
+        }
     };
 
     /**
