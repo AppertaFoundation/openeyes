@@ -35,7 +35,7 @@ OpenEyes.OphCiExamination.DilationController = (function () {
         "drug_name": drug_name,
         "drug_id": drug_id,
         "data_order": data_order,
-        "treatment_time": (new Date).toTimeString().substr(0, 5)
+        "treatment_time": (new Date()).toTimeString().substr(0, 5)
       };
       var form = Mustache.render(template, data);
       this.$table.show();
@@ -62,9 +62,9 @@ OpenEyes.OphCiExamination.DilationController = (function () {
   };
 
   $('.dilation_drug').keypress(function (e) {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       var side = $(this).closest('.js-element-eye').attr('data-side');
-      OphCiExamination_Dilation_addTreatment(this, side);
+      this.OphCiExamination_Dilation_addTreatment(this, side);
     }
   });
 

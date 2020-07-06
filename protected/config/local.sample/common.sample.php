@@ -119,7 +119,8 @@ $config = array(
         'OphGeneric',
         'OECaseSearch',
         'OETrial',
-        'OphOuCatprom5'
+        'OphOuCatprom5',
+        'OphCiTheatreadmission'
     ),
 
     'params' => array(
