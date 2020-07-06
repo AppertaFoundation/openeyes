@@ -57,16 +57,18 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_systemic_medications', $data) && $data['no_systemic_medications'] === '1' && !$element->no_systemic_medications_date) {
-            $element->no_systemic_medications_date = date('Y-m-d H:i:s');
-        } elseif ($element->no_systemic_medications_date) {
-            $element->no_systemic_medications_date = null;
-        }
+        if (is_a($element, 'HistoryMedications')) {
+            if (array_key_exists('no_systemic_medications', $data) && $data['no_systemic_medications'] === '1' && !$element->no_systemic_medications_date) {
+                $element->no_systemic_medications_date = date('Y-m-d H:i:s');
+            } elseif ($element->no_systemic_medications_date) {
+                $element->no_systemic_medications_date = null;
+            }
 
-        if (array_key_exists('no_ophthalmic_medications', $data) && $data['no_ophthalmic_medications'] === '1' && !$element->no_ophthalmic_medications_date) {
-            $element->no_ophthalmic_medications_date = date('Y-m-d H:i:s');
-        } elseif ($element->no_ophthalmic_medications_date) {
-            $element->no_ophthalmic_medications_date = null;
+            if (array_key_exists('no_ophthalmic_medications', $data) && $data['no_ophthalmic_medications'] === '1' && !$element->no_ophthalmic_medications_date) {
+                $element->no_ophthalmic_medications_date = date('Y-m-d H:i:s');
+            } elseif ($element->no_ophthalmic_medications_date) {
+                $element->no_ophthalmic_medications_date = null;
+            }
         }
 
         /** @var BaseMedicationElement $element */
