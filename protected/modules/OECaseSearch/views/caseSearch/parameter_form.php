@@ -3,48 +3,68 @@
 /* @var $id int */
 /* @var $model CaseSearchParameter */
 /* @var $form CActiveForm */
+
+$operation_display = null;
+
+if (!isset($readonly)) {
+    $readonly = false;
+}
+
+switch ($model->operation) {
+    case '<':
+        $operation_display = 'IS LESS THAN';
+        break;
+    case '>':
+        $operation_display = 'IS MORE THAN';
+        break;
+    case '1':
+    case '=':
+        $operation_display = 'IS';
+        break;
+    case '0':
+    case '!=':
+        $operation_display = 'IS NOT';
+        break;
+    case 'IN':
+        $operation_display = 'INCLUDES';
+        break;
+    case 'NOT IN':
+        $operation_display = 'DOES NOT INCLUDE';
+        break;
+    default:
+        $operation_display = $model->operation;
+        break;
+}
 ?>
-<tr class="parameter" id="<?php echo $id; ?>">
-  <td>
-    <div class="<?php echo $model->name; ?> flex-layout"
-         style="padding-bottom: 6px; padding-top: 6px;"
-    >
-      <div class="js-case-search-AND-label ">
-        <p class="highlighter"
-           style='margin-right: 8px;'>AND</p>
-      </div>
-      <div class="cols-10">
-            <?php $model->renderParameter($id); ?>
-            <?php echo CHtml::activeHiddenField($model, "[$id]id"); ?>
-      </div>
-
-      <div class="js-case-search-placeholder">
-      </div>
-
-      <div class="cols-2">
-        <i id="<?= $id ?>-remove" class="oe-i trash"></i>
-      </div>
-      <hr/>
-    </div>
-  </td>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $('.parameter').each(function(){
-        if($(this).index() == 0){
-          $(this).find('.js-case-search-AND-label').remove();
-          $(this).find('.js-case-search-placeholder').html("<pre>       </pre>");
+<tr class="parameter" id="<?= $id ?>">
+    <td>
+        <?= $model->label ?>
+        <?= !$readonly ? CHtml::hiddenField(CHtml::modelName($model) . "[$id][type]", CHtml::modelName($model)) : '' ?>
+        <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]id") : '' ?>
+    </td>
+    <td>
+        <?= $operation_display ?>
+        <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]operation") : '' ?>
+    </td>
+    <td>
+        <?php
+        if ($model->value !== null && !is_array($model->value)) {
+            echo $model->getValueForAttribute('value');
+            echo !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '';
         }
-      });
-    });
-    $('#<?= $id?>-remove').on('click', function () {
-      if ($(this).closest('.parameter').index() == 0){
-        $('.js-case-search-AND-label').first().remove();
-        $(this).closest('.parameter').find('.js-case-search-placeholder').remove();
-        $('.js-case-search-placeholder').first().html("<pre>       </pre>");
-      }
-      this.closest('.parameter').remove();
-    })
-  </script>
+        foreach ($model->attributeNames() as $attribute) {
+            if (strpos('operation, id, name, value', $attribute) === false) { ?>
+                <br/>
+                <?= $model->getValueForAttribute($attribute) ?>
+                <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
+            <?php }
+        }?>
+    </td>
+    <?php if (!$readonly) : ?>
+    <td>
+        <i id="<?= $id ?>-remove" class="oe-i remove-circle small"></i>
+    </td>
+    <?php endif; ?>
 </tr>
 
 
