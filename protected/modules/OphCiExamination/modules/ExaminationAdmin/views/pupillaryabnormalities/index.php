@@ -21,22 +21,27 @@
     <div class="js-admin-error-container"></div>
 </div>
 
-<div class="cols-5">
+<div class="cols-5" id="generic-admin-list">
     <form id="admin_pupillaryabnormalities">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
-        <table class="standard generic-admin">
+        <table class="standard" id="et_sort" data-uri="/OphCiExamination/admin/PupillaryAbnormalities/sortConditions">
             <thead>
             <tr>
+                <th>Re-order</th>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>Name</th>
                 <th>Active</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="sortable">
             <?php foreach ($model_list as $i => $model) { ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="OphCiExamination/admin/PupillaryAbnormalities/update/<?= $model->id ?>" >
+                    <td class="reorder">
+                        <span>↑↓</span>
+                        <?=\CHtml::hiddenField("OphCiExamination_PupillaryAbnormalities_Abnormality[display_order][]", $model->id);?>
+                    </td>
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
                     <td>
                         <?= $model->name ?>

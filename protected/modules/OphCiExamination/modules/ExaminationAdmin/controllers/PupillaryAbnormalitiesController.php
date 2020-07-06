@@ -21,7 +21,7 @@ class PupillaryAbnormalitiesController extends \ModuleAdminController
     public function actions()
     {
         return [
-            'sortPupillaryAbnormalities' => [
+            'sortConditions' => [
                 'class' => 'SaveDisplayOrderAction',
                 'model' => OphCiExamination_PupillaryAbnormalities_Abnormality::model(),
                 'modelName' => 'OphCiExamination_PupillaryAbnormalities_Abnormality',
