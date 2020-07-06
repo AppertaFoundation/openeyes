@@ -444,8 +444,8 @@ class NodAuditReport extends Report implements ReportInterface
 
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             array_push($trace2['x'],
-                'CatProm5 Pre-op',
-                'CatProm5 Post-op'
+                'Cat-PROM5 Pre-op',
+                'Cat-PROM5 Post-op'
             );
             array_push($trace2['customdata'],
                 $dataset['CATPROM5']['pre-incomplete'],
@@ -484,8 +484,8 @@ class NodAuditReport extends Report implements ReportInterface
         );
         if (isset(Yii::app()->modules['OphOuCatprom5'])) {
             array_push($trace1['x'],
-                'CatProm5 Pre-op',
-                'CatProm5 Post-op'
+                'Cat-PROM5 Pre-op',
+                'Cat-PROM5 Post-op'
             );
             array_push($trace1['customdata'],
                 $dataset['CATPROM5']['pre-complete'],

@@ -22,8 +22,8 @@
         </div>
         <h3>Filter by Date</h3>
         <div class="flex-layout">
-            <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= @$_GET['date_from'] ?>">
-            <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= @$_GET['date_to'] ?>">
+            <input id="worklist-date-from" class="cols-4" placeholder="from" type="text" value="<?= Yii::app()->request->getParam('date_from', '') ?>">
+            <input id="worklist-date-to" class="cols-4" placeholder="to" type="text" value="<?= Yii::app()->request->getParam('date_to', '') ?>">
             <a href="#" class="selected js-clear-dates" id="sidebar-clear-date-ranges">All dates</a>
         </div>
 
@@ -45,7 +45,6 @@
 </div>
 <script type="text/javascript">
     $(function () {
-
         pickmeup('#worklist-date-from', {
             format: 'd b Y',
             hide_on_select: true,
@@ -60,9 +59,13 @@
         });
 
         $('#worklist-date-from, #worklist-date-to').on('pickmeup-change change', function () {
-            window.location.href = jQuery.query
-                .set('date_from', $('#worklist-date-from').val())
-                .set('date_to', $('#worklist-date-to').val());
+            if ((input_validator.validate($(this).val(), ['date']) || $(this).val() === '')) {
+                let parameter = this.id.includes('from') ? 'date_from' : 'date_to';
+                window.location.href = jQuery.query
+                    .set(parameter, $(this).val())
+            }else {
+                $(this).addClass('error');
+            }
         });
 
         const worklist_selected = $.cookie("worklist_selected");
