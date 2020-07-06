@@ -112,7 +112,10 @@ class PcrRisk
         $user = Yii::app()->session['user'];
         $user_id = $user->id;
         if (strpos(get_class($element), 'OphTrOperationnote') !== false) {
-            $user_id = $this->getOperationNoteSurgeonId($patientId);
+            $operation_note_surgeon_id = $this->getOperationNoteSurgeonId($patientId);
+            if ($operation_note_surgeon_id !== 0) {
+                $user_id = $operation_note_surgeon_id;
+            }
         }
 
         if ( isset($set_data['PcrRisk'][$side]['pcr_doctor_grade']) ){
