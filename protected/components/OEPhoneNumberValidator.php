@@ -22,6 +22,9 @@ class OEPhoneNumberValidator extends CValidator
 
     public function validateAttribute($object, $attribute)
     {
+        if (isset($object->source) && $object->source == 'PASAPI') {
+            return;
+        }
         $object->$attribute=str_replace( array(' ','-'),'',$object->$attribute);
 
         $value = $object->$attribute;
