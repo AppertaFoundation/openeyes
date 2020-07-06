@@ -2325,6 +2325,26 @@ class OphCiExamination_API extends \BaseAPI
      */
 
     /**
+     * Get the latest CCT Date - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getCCTDate($patient, $use_context = false)
+    {
+        $cct = $this->getLatestElement(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            $patient,
+            $use_context
+        );
+        if (isset($cct) && isset($cct->event)) {
+            return $cct->event->event_date;
+        }
+        return null;
+    }
+
+    /**
      * Get the glaucoma risk as a string for the patient - we get this from the most recent examination that has a glaucoma risk recording
      * as it's possible that it's not going to be recorded each time.
      *
