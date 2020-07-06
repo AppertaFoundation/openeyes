@@ -16,8 +16,6 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
-
     const FP10_PRINT_MODE = 2;
     const WP10_PRINT_MODE = 3;
     const NORMAL_PRINT_MODE = 1;

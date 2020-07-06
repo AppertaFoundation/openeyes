@@ -1,9 +1,10 @@
 <?php
-
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2019
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,26 +13,28 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DefaultController extends \BaseEventTypeController
+class PasswordStaleWidgetReminder extends CWidget
 {
+    public $title = 'Your OpenEyes password needs changing';
+    public $returnUrl;
 
-    protected function initActionCreate()
+    public function init()
     {
-        parent::initActionCreate();
-        $this->registerEditScripts();
+        if (!$this->returnUrl) {
+            $this->returnUrl = Yii::app()->request->url;
+        }
     }
 
-    protected function initActionUpdate()
+    public function run()
     {
-        parent::initActionUpdate();
-        $this->registerEditScripts();
-    }
-
-    protected function registerEditScripts()
-    {
-        Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js', 'application.modules.OphInLabResults.assets');
+        if (Yii::app()->params['auth_source'] === 'BASIC') {
+            //grab the array that may contain keys for $DaysExpire and $DaysLock
+            $daysLeft = Yii::app()->session['user']->getUserDaysLeft();
+            //pass that array so that the keys in the array become passed in parameters
+            $this->render('PasswordStaleWidgetReminder', $daysLeft);
+        }
     }
 }

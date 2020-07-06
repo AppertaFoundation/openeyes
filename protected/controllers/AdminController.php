@@ -547,6 +547,14 @@ class AdminController extends BaseAdminController
                 $user->password_hashed = true;
             } else {
                 $user->password_hashed = false;
+                if (Yii::app()->params['auth_source'] === 'BASIC') {
+                    $user->setPWStatusHarsher(Yii::app()->params['pw_status_checks']['pw_admin_pw_change']?: 'stale', null, false);
+                    $user->password_last_changed_date = date('Y-m-d H:i:s');
+                    $user->password_failed_tries = 0;
+                }
+            }
+            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
+                unset($userAtt['password_status']);
             }
             $user->attributes = $userAtt;
 
@@ -611,7 +619,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/edituser', array(
             'user' => $user,
             'errors' => @$errors,
-            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
+            'is_ldap' => \Yii::app()->params['auth_source'] === 'LDAP',
         ));
     }
 

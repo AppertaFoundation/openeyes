@@ -23,7 +23,7 @@ $navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias
     ksort($flash_messages);
     foreach ($flash_messages as $flash_key => $flash_message) {
         $parts = explode('.', $flash_key);
-        $class = isset($parts[1]) ? $parts[0] : 'info';
+        $class = isset($parts[0]) ? $parts[0] : 'info';
         $iconClass = ($class === 'warning') ? 'triangle' : $class;
         $id = isset($parts[1]) ? $parts[1] : $parts[0];
         ?>

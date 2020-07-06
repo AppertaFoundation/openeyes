@@ -156,6 +156,19 @@
                 ['separator' => ' ']
             ); ?></td>
         </tr>
+        <?php if (Yii::app()->params['auth_source'] === 'BASIC') { ?>
+            <tr>
+                <td>Set Password Status</td>
+                <td>
+                <?= \CHtml::dropDownList(
+                    'User[password_status]',
+                    '',
+                    array('current'=>"Current Password",'stale'=>"Stale Password",'expired'=>"Expire Password",'locked'=>"Lock Password"),
+                    ['class' => 'cols-full', 'empty' => '- No Change -']
+                ); ?>
+                </td>
+            </tr>
+        <?php } ?>
         <tr>
             <td>Password</td>
             <td>

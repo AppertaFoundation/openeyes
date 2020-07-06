@@ -26,6 +26,11 @@ if (!Yii::app()->user->isGuest) {
             Yii::app()->session['shown_reminder'] = true;
             $this->widget('SiteAndFirmWidgetReminder');
         }
+        
+        if ((Yii::app()->params['auth_source'] === 'BASIC') && $user->testUserPWStatus('stale') && empty(Yii::app()->session['shown_pw_reminder'])) {
+            Yii::app()->session['shown_pw_reminder'] = true;
+            $this->widget('PasswordStaleWidgetReminder');
+        }
     }
     if (empty(Yii::app()->session['user'])) {
         Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
