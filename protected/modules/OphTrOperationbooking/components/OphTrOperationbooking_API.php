@@ -241,6 +241,24 @@ class OphTrOperationbooking_API extends BaseAPI
         return $operation->eye;
     }
 
+    public function getDisorderForDiagnosis($event_id)
+    {
+        if (!$diagnosis = Element_OphTrOperationbooking_Diagnosis::model()->find('event_id=?', array($event_id))) {
+            throw new Exception("Operation event not found: $event_id");
+        }
+
+        return $diagnosis->disorder;
+    }
+
+    public function getPriorityForOperation($event_id)
+    {
+        if (!$operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id))) {
+            throw new Exception("Operation event not found: $event_id");
+        }
+
+        return $operation->priority;
+    }
+
     /**
      * Returns the most recent booking for the given patient across all
      * contexts (by default). Looks through operations defined for the
