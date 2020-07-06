@@ -12,19 +12,17 @@ foreach ($data->getWarnings() as $warn) {
 $data->hasAllergyStatus();
 ?>
 <tr>
-    <td>
-        <?php
-        /** @var $patientPanel PatientPanel */
-        $patientPanel = $this->createWidget(
-            'application.widgets.PatientPanel',
-            array(
-                'patient' => $data,
-                'layout' => 'list',
-                'trial' => $this->trialContext,
-                'list_mode' => true,
-            )
-        );
-        $patientPanel->render('PatientPanel');
-        ?>
-    </td>
+    <?php
+    /** @var $patientPanel PatientPanel */
+    $patientPanel = $this->createWidget(
+        'application.widgets.PatientPanel',
+        array(
+            'patient' => $data,
+            'layout' => 'list',
+            'trial' => $this->trialContext,
+            'list_mode' => true,
+        )
+    );
+    $patientPanel->render('PatientPanel');
+    ?>
 </tr>
