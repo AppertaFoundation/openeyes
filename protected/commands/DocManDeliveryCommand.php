@@ -27,6 +27,7 @@ class DocManDeliveryCommand extends CConsoleCommand
     private $event;
 
     private $generate_xml = false;
+    private $with_print = false;
 
     private $generate_csv = false;
     private $csv_file_options = [
@@ -79,6 +80,7 @@ EOH;
 
         $this->generate_xml = isset(\Yii::app()->params['docman_generate_xml']) && \Yii::app()->params['docman_generate_xml'];
         $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
+        $this->with_print = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
 
         $this->checkPath($this->path);
 
@@ -155,6 +157,34 @@ EOH;
                 $internal_referral_command->actionGenerateOne($this->event->id);
             }
         }
+        if ($this->with_print) {
+            $this->generatePrintForEvent();
+        }
+    }
+
+    public function generatePrintForEvent()
+    {
+        if (!$this->event) {
+            return;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_target ON t.document_target_id = document_target.id";
+        $criteria->join .= " JOIN document_instance ON document_target.document_instance_id = document_instance.id";
+
+        $criteria->join .= " JOIN event ON document_instance.correspondence_event_id = event.id";
+
+        $criteria->addCondition("event.id = " . $this->event->id);
+        $criteria->addCondition("event.deleted = 0");
+        // For a document with PENDING docman status, find COMPLETE print status letters to generate.
+        $criteria->addCondition("t.`output_type`= 'Print' AND t.`output_status`= 'COMPLETE'");
+
+        $document_outputs = DocumentOutput::model()->findAll($criteria);
+        foreach ($document_outputs as $document) {
+            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Print' . PHP_EOL;
+            $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
+        }
+
     }
 
     public function actionGenerateOne($event_id, $path = null)
