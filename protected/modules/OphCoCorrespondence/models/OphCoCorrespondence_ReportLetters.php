@@ -177,10 +177,10 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         foreach ($data->queryAll() as $i => $row) {
             if (@$row['lid']) {
                 $row['type'] = "Correspondence ({$this->mapOutputType($row['output_type'])})";
-                $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphCoCorrespondence/default/view/' . $row['event_id'];
+                $row['link'] = Yii::app()->createURL('/OphCoCorrespondence/default/view/' . $row['event_id']);
             } else {
                 $row['type'] = 'Legacy letter';
-                $row['link'] = 'http' . (@$_SERVER['https'] ? 's' : '') . '://' . @$_SERVER['SERVER_NAME'] . '/OphLeEpatientletter/default/view/' . $row['l2_event_id'];
+                $row['link'] = Yii::app()->createURL('/OphLeEpatientletter/default/view/' . $row['l2_event_id']);
             }
 
             $this->letters[] = $row;
