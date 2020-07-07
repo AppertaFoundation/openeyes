@@ -223,11 +223,13 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function getEyeForOperation($event_id)
     {
-        if (!$operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id))) {
+        $eur = EUREventResults::model()->find('event_id=?', array($event_id));
+        $operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($event_id));
+        if (!$eur && !$operation) {
             throw new Exception("Operation event not found: $event_id");
         }
 
-        return $operation->eye;
+        return $operation ? $operation->eye : $eur->eye_side;
     }
 
     /**

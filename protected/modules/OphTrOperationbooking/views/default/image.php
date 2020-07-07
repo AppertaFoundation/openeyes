@@ -18,6 +18,9 @@
 ?>
 
 <?php $this->beginContent('//patient/event_content_image'); ?>
+<?php if ($eur) {
+    $this->renderPartial('view_eur', array('eur' => $eur));
+}?>
 <?php $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
 <?php $this->endContent(); ?>
