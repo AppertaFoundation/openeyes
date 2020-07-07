@@ -78,7 +78,7 @@
                                 $element,
                                 'weight',
                                 ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'tabindex' => '7']
+                                'tabindex' => '8']
                             ); ?>
                         </div>
                     </td>
@@ -127,7 +127,7 @@
                                 $element,
                                 'height',
                                 ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'tabindex' => '8']
+                                'tabindex' => '9']
                             ); ?>
                         </div>
                     </td>
@@ -155,6 +155,21 @@
                             'pulse',
                             ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'tabindex' => '4']
+                        ); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label for="<?= CHtml::modelName($element) . '_temperature'; ?>">
+                            <?= $element->getAttributeLabel('temperature') ?> (&deg;C)
+                        <label>
+                    </td>
+                    <td>
+                        <?= CHtml::activeTextField(
+                            $element,
+                            'temperature',
+                            ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'tabindex' => '7']
                         ); ?>
                     </td>
                 </tr>

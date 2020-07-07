@@ -62,14 +62,14 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_method_id, left_value, right_method_id, right_value, ', 'safe'),
+                array('eye_id, left_method_id, left_value, right_method_id, right_value, left_notes, right_notes', 'safe'),
                 array('left_method_id ,left_value', 'requiredIfSide', 'side' => 'left'),
                 array('right_method_id, right_value', 'requiredIfSide', 'side' => 'right'),
                 array('left_value', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 0),
                 array('right_value', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 0),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, left_method_id, right_method_id, left_value, right_value', 'safe', 'on' => 'search'),
+                array('id, event_id, left_method_id, right_method_id, left_value, right_value, left_notes, right_notes', 'safe', 'on' => 'search'),
         );
     }
 
@@ -115,6 +115,8 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
                 'right_value' => 'Value',
                 'left_method' => 'Method',
                 'right_method' => 'Method',
+                'left_notes' => 'Comments',
+                'right_notes' => 'Comments',
         );
     }
 
@@ -136,6 +138,8 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
         $criteria->compare('right_value', $this->right_value);
         $criteria->compare('left_method_id', $this->left_method_id);
         $criteria->compare('right_method_id', $this->right_method_id);
+        $criteria->compare('left_notes', $this->left_notes);
+        $criteria->compare('right_notes', $this->right_notes);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

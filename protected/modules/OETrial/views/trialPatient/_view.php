@@ -25,8 +25,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
 ?>
 <tr class="js-trial-patient" data-trial-patient-id="<?= $data->id ?>">
-
-  <td colspan="4">
         <?php
       /** @var $patientPanel PatientPanel */
         $patientPanel = $this->createWidget(
@@ -39,7 +37,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
         );
         $patientPanel->render('PatientPanel');
         ?>
-  </td>
   <td> <!-- External Reference -->
         <?php
         if ($permission->can_edit) {
@@ -138,7 +135,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
                 <span>
                     <button href="javascript:void(0)"
                        onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-                       class="accept-patient-button button hint blue">Re-Shortlist
+                       class="accept-patient-button button hint blue">Shortlist
                     </button>
                 </span>
                 <?php endif; ?>

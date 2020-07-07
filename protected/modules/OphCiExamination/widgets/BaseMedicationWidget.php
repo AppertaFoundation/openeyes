@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2018
+ * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2018, OpenEyes Foundation
+ * @copyright Copyright (c) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -55,6 +55,20 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
         if (!is_a($element, static::$elementClass)) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
+        }
+
+        if (is_a($element, 'HistoryMedications')) {
+            if (array_key_exists('no_systemic_medications', $data) && $data['no_systemic_medications'] === '1' && !$element->no_systemic_medications_date) {
+                $element->no_systemic_medications_date = date('Y-m-d H:i:s');
+            } elseif ($element->no_systemic_medications_date) {
+                $element->no_systemic_medications_date = null;
+            }
+
+            if (array_key_exists('no_ophthalmic_medications', $data) && $data['no_ophthalmic_medications'] === '1' && !$element->no_ophthalmic_medications_date) {
+                $element->no_ophthalmic_medications_date = date('Y-m-d H:i:s');
+            } elseif ($element->no_ophthalmic_medications_date) {
+                $element->no_ophthalmic_medications_date = null;
+            }
         }
 
         /** @var BaseMedicationElement $element */

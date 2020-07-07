@@ -66,8 +66,27 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         <button class="button hint green" id="add-procedure-btn-<?= $eye_side ?>" type="button">
                             <i class="oe-i plus pro-theme"></i>
                         </button>
+                        <button id="colour-vision-<?= $eye_side ?>-comment-button"
+                                class="button js-add-comments" data-comment-container="#colour-vision-<?= $eye_side ?>-comments"
+                                type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                            <i class="oe-i comments small-icon"></i>
+                        </button>
                         <!-- oe-add-select-search -->
                     </div>
+                </div>
+                <div id="colour-vision-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                     style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#colour-vision-<?= $eye_side ?>-comment-button">
+                    <?=\CHtml::activeTextArea(
+                        $element,
+                        $eye_side . '_notes',
+                        array(
+                            'rows' => 1,
+                            'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                            'class' => 'cols-full js-comment-field',
+                            'style' => 'overflow-wrap: break-word; height: 24px;',
+                        )
+                    ) ?>
+                    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
                 <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
                     ?> none <?php

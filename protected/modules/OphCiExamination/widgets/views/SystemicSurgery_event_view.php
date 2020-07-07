@@ -20,8 +20,12 @@ $widget = $this;
 <div class="element-data">
     <div class="data-value">
         <div class="tile-data-overflow">
-            <?php if (!$operations || count($operations) === 0) { ?>
+            <?php if ((!$operations || count($operations) === 0) && !$element->no_systemicsurgery_date) { ?>
                 <div class="data-value not-recorded">Nil recorded this examination</div>
+            <?php } elseif ($element->no_systemicsurgery_date) { ?>
+                <div class="data-value">
+                    Patient has had no previous systemic surgery
+                </div>
             <?php } else { ?>
                 <table>
                     <colgroup>
@@ -55,8 +59,9 @@ $widget = $this;
                     <?php } ?>
                     </tbody>
                 </table>
+            <?php } if (!$element->no_systemicsurgery_date) { ?>
+                <?= CHtml::encode($element->comments) ?>
             <?php } ?>
-            <?= CHtml::encode($element->comments) ?>
         </div>
     </div>
 </div>

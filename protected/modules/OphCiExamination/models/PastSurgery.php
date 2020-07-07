@@ -79,10 +79,10 @@ class PastSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, operations, comments', 'safe'),
+            array('event_id, operations, comments, no_pastsurgery_date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, comments',  'safe', 'on' => 'search')
+            array('id, event_id, comments, no_pastsurgery_date',  'safe', 'on' => 'search')
         );
     }
 
@@ -118,6 +118,10 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function afterValidate()
     {
+        if (!$this->no_pastsurgery_date && !$this->operations && !$this->comments) {
+            $this->addError('no_pastsurgery_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
+        }
+
         foreach ($this->operations as $i => $operation) {
             if (!$operation->validate()) {
                 foreach ($operation->getErrors() as $fld => $err) {

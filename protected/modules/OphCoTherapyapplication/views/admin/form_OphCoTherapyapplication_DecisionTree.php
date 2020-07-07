@@ -17,4 +17,4 @@
  */
 ?>
 
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 40, 'maxlength' => 40)); ?>
+<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 40, 'maxlength' => 40));

@@ -5,7 +5,6 @@
  */
 class OECaseSearchModule extends BaseModule
 {
-    private $searchProviders = array();
     /**
      * @var array $config
      */
@@ -15,47 +14,28 @@ class OECaseSearchModule extends BaseModule
     {
         // import the module-level models and components
         $this->config = Yii::app()->params['CaseSearch'];
-        $dependencies = array();
+        $dependencies = array(
+            'OECaseSearch.components.*',
+            'OECaseSearch.models.*',
+            'OECaseSearch.controllers.*',
+            'OECaseSearch.widgets.*',
+        );
         if (!isset(Yii::app()->params['patient_identifiers'])) {
-            unset($this->config['parameters']['core'][array_search('PatientIdentifier', $this->config['parameters']['core'])]);
+            unset($this->config['parameters']['OECaseSearch'][array_search('PatientIdentifier', $this->config['parameters']['OECaseSearch'], true)]);
         }
+        // Set imports for other modules with parameters.
         foreach ($this->config['parameters'] as $module => $paramList) {
-            if ($module !== 'core' && !isset($dependencies[$module])) {
+            if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
                 $dependencies[$module] = "$module.models.*";
             }
         }
-
-        foreach ($this->config['fixedParameters'] as $module => $paramList) {
-            if ($module !== 'core' && !isset($dependencies[$module])) {
+        // Set imports for other modules with variables.
+        foreach ($this->config['variables'] as $module => $variableList) {
+            if ($module !== 'core' && $module !== 'OECaseSearch' && !isset($dependencies[$module])) {
                 $dependencies[$module] = "$module.models.*";
             }
         }
         $this->setImport($dependencies);
-
-        // Initialise the search provider/s.
-        foreach ($this->config['providers'] as $providerID => $searchProvider) {
-            $this->searchProviders[$providerID] = new $searchProvider($providerID);
-        }
-    }
-
-    /**
-     * @return array The list of fixed parameter class instances configured for the case search module.
-     */
-    public function getFixedParams()
-    {
-        $fixedParams = array();
-        $count = 0;
-        foreach ($this->config['fixedParameters'] as $group) {
-            foreach ($group as $parameter) {
-                $className = $parameter . 'Parameter';
-                $obj = new $className;
-                $obj->id = "fixed_$count";
-                $fixedParams[$obj->id] = $obj;
-                $count++;
-            }
-        }
-
-        return $fixedParams;
     }
 
     /**
@@ -70,8 +50,32 @@ class OECaseSearchModule extends BaseModule
                 /**
                  * @var $obj CaseSearchParameter
                  */
-                $obj = new $className;
-                $keys[$className] = $obj->getLabel();
+                $obj = new $className();
+                $keys[] = array('type' => $className, 'label' => $obj->label, 'id' => $className);
+            }
+        }
+
+        return $keys;
+    }
+
+    public function getVariableList()
+    {
+        $keys = array();
+        foreach ($this->config['variables'] as $group) {
+            foreach ($group as $variable) {
+                /**
+                 * @var $obj CaseSearchVariable
+                 */
+                $obj = null;
+                if (is_array($variable)) {
+                    $obj = new $variable['class'](null);
+                    foreach ($variable as $k => $v) {
+                        $obj->$k = $v;
+                    }
+                } else {
+                    $obj = new $variable(null);
+                }
+                $keys[] = array('type' => $variable, 'label' => $obj->label, 'id' => $obj->field_name);
             }
         }
 
@@ -85,25 +89,5 @@ class OECaseSearchModule extends BaseModule
     public function getConfigParam($param)
     {
         return $this->config[$param];
-    }
-
-    /**
-     * @param $providerID mixed The unique ID of the search provider you wish to use. This can be found in config/common.php for each included search provider.
-     * @return SearchProvider The search provider identified by $providerID
-     */
-    public function getSearchProvider($providerID)
-    {
-        return $this->searchProviders[$providerID];
-    }
-
-    public function beforeControllerAction($controller, $action)
-    {
-        if (parent::beforeControllerAction($controller, $action)) {
-            // this method is called before any module controller action is performed
-            // you may place customized code here
-            return true;
-        }
-
-        return false;
     }
 }

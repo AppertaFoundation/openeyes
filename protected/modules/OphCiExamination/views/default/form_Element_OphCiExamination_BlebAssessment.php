@@ -99,7 +99,7 @@ $model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebA
       <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <div class="cols-9">
+          <div class="cols-full">
             <table class="bleb-assessment last-left cols-full">
               <thead>
               <tr>
@@ -182,9 +182,33 @@ $model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebA
                         array()
                     ); ?>
                 </td>
+                  <td>
+                      <div class="add-data-actions flex-item-bottom">
+                          <button id="bleb-assessment-<?= $eye_side ?>-comment-button"
+                                  class="button js-add-comments" data-comment-container="#bleb-assessment-<?= $eye_side ?>-comments"
+                                  type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
+                              <i class="oe-i comments small-icon"></i>
+                          </button>
+                      </div>
+                  </td>
               </tr>
               </tbody>
             </table>
+
+              <div id="bleb-assessment-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
+                   style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#bleb-assessment-<?= $eye_side ?>-comment-button">
+                  <?= \CHtml::activeTextArea(
+                      $element,
+                      $eye_side . '_notes',
+                      array(
+                          'rows' => 1,
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                          'class' => 'cols-full js-comment-field',
+                          'style' => 'overflow-wrap: break-word; height: 24px;',
+                      )
+                  ) ?>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+              </div>
           </div>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">

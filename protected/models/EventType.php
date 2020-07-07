@@ -485,6 +485,7 @@ class EventType extends BaseActiveRecordVersioned
             'OphCiDidNotAttend' => 'i-PatientDNA',
             'OphGeneric' => 'i-ImOCT',
             'OphOuCatprom5' => 'i-CoCatPROM5',
+            'OphCiTheatreadmission' => 'i-TrSafetyChecklist',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;
