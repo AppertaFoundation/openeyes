@@ -322,7 +322,8 @@ class MedicationManagement extends BaseMedicationElement
                     } elseif (!$mgment_item->compareToPrescriptionItem()) {
                         //management item was updated
                         $prescription_Item->updateFromManagementItem();
-                        $mgment_item->end_date = $prescription_Item->stopDateFromDuration()->format('Y-m-d');
+                        $end_date = $prescription_Item->stopDateFromDuration();
+                        $mgment_item->end_date = $end_date ? $end_date->format('Y-m-d') : null;
                         $mgment_item->save();
                         $changed = true;
                     }
@@ -372,7 +373,8 @@ class MedicationManagement extends BaseMedicationElement
                     $prescription_item->saveTapers();
                     $entry = self::$entry_class::model()->findByPk($entry->id);
                     $entry->prescription_item_id = $prescription_item->id;
-                    $entry->end_date = $prescription_item->stopDateFromDuration()->format('Y-m-d');
+                    $end_date = $prescription_item->stopDateFromDuration();
+                    $entry->end_date = $end_date ? $end_date->format('Y-m-d') : null;
                     $entry->save();
                     $changed = true;
                 }
@@ -426,7 +428,8 @@ class MedicationManagement extends BaseMedicationElement
             $class = self::$entry_class;
             $entry = $class::model()->findBypk($item->original_item_id);
             $entry->prescription_item_id = $item->id;
-            $entry->end_date = $item->stopDateFromDuration()->format('Y-m-d');
+            $end_date = $item->stopDateFromDuration();
+            $entry->end_date = $end_date ? $end_date->format('Y-m-d') : null;
             $entry->save();
         }
 
