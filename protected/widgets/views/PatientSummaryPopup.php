@@ -580,49 +580,46 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
     </div><!-- .flex-layout -->
 </div>
 
-    <div class="oe-patient-popup patient-popup-management" style="display: none;">
-        <div class="flex-layout flex-top">
-            <div class="cols-left">
-                <div class="popup-overflow">
-                    <div class="subtitle">Management Summaries</div>
-                    <table class="management-summaries">
-                        <tbody>
-                        <?php $summaries = $exam_api->getManagementSummaries($patient);
-                        if (sizeof($summaries) != 0) {
-                            foreach ($summaries as $summary) { ?>
-                                <tr>
-                                    <td><?= $summary->service ?></td>
-                                    <td><?= $summary->comments ?></td>
-                                    <td class="fade">
-                                        <span class="oe-date">
-                                            <span class="day"><?= $summary->date[0] ?></span>
-                                            <span class="month"><?= $summary->date[1] ?></span>
-                                            <span class="year"><?= $summary->date[2] ?></span>
-                                        </span>
-                                    </td>
-                                    <td><i class="oe-i info small pro-theme js-has-tooltip"
-                                           data-tooltip-content="<?= $summary->user ?>"></i></td>
-                                </tr>
-                            <?php }
-                        } ?>
-                        </tbody>
-                    </table>
-                </div><!-- .popup-overflow -->
-                <div class="popup-overflow">
-                    <div class="subtitle">Appointments</div>
-                    <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
-                </div><!-- .popup-overflow -->
-            </div><!-- left -->
-            <div class="cols-right">
-                <div class="popup-overflow">
-                    <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]); ?>
-                </div><!-- .popup-overflow -->
-            </div>
-        </div><!-- flex -->
-    </div>
-<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
-  <div class="flex-layout flex-top">
-    <div class="cols-left">
+<div class="oe-patient-popup patient-popup-management" style="display: none;">
+    <div class="flex-layout flex-top">
+        <div class="cols-left">
+            <div class="popup-overflow">
+                <div class="subtitle">Management Summaries</div>
+                <table class="management-summaries">
+                    <tbody>
+                    <?php $summaries = $exam_api->getManagementSummaries($patient);
+                    if (sizeof($summaries) != 0) {
+                        foreach ($summaries as $summary) { ?>
+                            <tr>
+                                <td><?= $summary->service ?></td>
+                                <td><?= $summary->comments ?></td>
+                                <td class="fade">
+                                    <span class="oe-date">
+                                        <span class="day"><?= $summary->date[0] ?></span>
+                                        <span class="month"><?= $summary->date[1] ?></span>
+                                        <span class="year"><?= $summary->date[2] ?></span>
+                                    </span>
+                                </td>
+                                <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                       data-tooltip-content="<?= $summary->user ?>"></i></td>
+                            </tr>
+                        <?php }
+                    } ?>
+                    </tbody>
+                </table>
+            </div><!-- .popup-overflow -->
+            <div class="popup-overflow">
+                <div class="subtitle">Appointments</div>
+                <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme']) ?>
+            </div><!-- .popup-overflow -->
+        </div><!-- left -->
+        <div class="cols-right">
+            <div class="popup-overflow">
+                <?php $this->widget('application.widgets.PlansProblemsWidget', ['patient_id' => $this->patient->id, 'pro_theme' => 'pro-theme', 'is_popup' => true]); ?>
+            </div><!-- .popup-overflow -->
+        </div>
+    </div><!-- flex -->
+</div>
 
 <div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
     <div class="flex-layout flex-top">
