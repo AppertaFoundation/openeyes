@@ -21,11 +21,12 @@ class AtLeastOneRequired extends CValidator {
     public $message = 'At least one field must be filled.';
     public $attributes = [];
 
-    public function validate($model)
+    public function validate($model, $attributes = null)
     {
-        $attributes_filled = array_map(function ($attribute) use($model) { return !empty($model->$attribute); }, $this->attributes);
+        $attributes = $this->attributes;
+        $attributes_filled = array_map(function ($attribute) use($model) { return !empty($model->$attribute); }, $attributes);
         if (!in_array(true, $attributes_filled)) {
-            array_map(function ($attribute) use($model) { $model->addError($attribute, $this->message); }, $this->attributes);
+            array_map(function ($attribute) use($model) { $model->addError($attribute, $this->message); }, $attributes);
         }
     }
 
