@@ -241,7 +241,7 @@
 
         let delaySearch = 0;
         $searchInput.on('keyup', function () {
-            let searchInputVal = $(this).val();            
+            let searchInputVal = $(this).val();
             clearTimeout(delaySearch); //stop previous search request
 
             delaySearch = setTimeout(function(){
@@ -593,6 +593,8 @@
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+                // deselect options when closing the adderDialog
+                dialog.popup.find('.selected').removeClass('selected');
             }
 
             itemSets.each(function (itemSetIndex, itemSet) {
