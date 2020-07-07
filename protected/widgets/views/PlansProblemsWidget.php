@@ -65,7 +65,6 @@
                             </td>
                             <td class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></td>
                         </tr>
-
                     <?php } ?>
                     </tbody>
                 </table>

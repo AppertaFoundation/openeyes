@@ -2,7 +2,7 @@
 
 return array(
     'va1' => array(
-        'event_id' => 1,
+        'event_id' => 15,
         'eye_id' => 3,
         'unit_id' => 1,
         'left_unable_to_assess' => 0,

@@ -66,6 +66,30 @@ foreach ($element->entries as $entry) {
           </tr>
           </thead>
         <tbody>
+        <tr class="cols-full <?= $model_name ?>_no_systemic_medications_wrapper">
+            <td colspan="5" class="align-left">
+                <label class="inline highlight" for="<?= $model_name ?>_no_systemic_medications">
+                    <?= \CHtml::checkBox(
+                        $model_name . '[no_systemic_medications]',
+                        $element->no_systemic_medications_date ? true : false,
+                        array('class' => $model_name.'_no_systemic_medications')
+                    ); ?>
+                    No systemic medications
+                </label>
+            </td>
+        </tr>
+        <tr class="cols-full <?= $model_name ?>_no_ophthalmic_medications_wrapper">
+            <td colspan="5" class="align-left">
+                <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_medications">
+                    <?= \CHtml::checkBox(
+                        $model_name . '[no_ophthalmic_medications]',
+                        $element->no_ophthalmic_medications_date ? true : false,
+                        array('class' => $model_name.'_no_ophthalmic_medications')
+                    ); ?>
+                    No eye medications
+                </label>
+            </td>
+        </tr>
         <?php
                 $row_count = 0;
         $total_count = count($current_entries);
@@ -204,7 +228,7 @@ foreach ($element->entries as $entry) {
       </button>
     </div>
   </div>
-  <div id="hm-handler-1" class="js-save-handler-function" style="display:none;" /> 
+  <div id="hm-handler-1" class="js-save-handler-function" style="display:none;" />
     <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_entry_template' ?>">
         <?php
         $empty_entry = new EventMedicationUse();

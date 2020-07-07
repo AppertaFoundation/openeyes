@@ -25,7 +25,7 @@
          id="<?=$model_name?>_no_family_history_wrapper">
       <label class="inline highlight" for="<?=$model_name?>_no_family_history" id="<?=$model_name?>_no_family_history">
         <?=\CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
-          Confirm patient has no family history
+          No family history
       </label>
     </div>
 

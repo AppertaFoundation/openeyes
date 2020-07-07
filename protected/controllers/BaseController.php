@@ -278,6 +278,7 @@ class BaseController extends Controller
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
+        $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);
