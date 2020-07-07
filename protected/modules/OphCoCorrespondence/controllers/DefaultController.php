@@ -1065,8 +1065,6 @@ class DefaultController extends BaseEventTypeController
         if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
             return;
         }
-    }
-
         parent::verifyActionAccess($action);
     }
 
