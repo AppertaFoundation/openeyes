@@ -1047,14 +1047,6 @@ class AdminController extends BaseAdminController
             $address = new Address();
             $logo = new SiteLogo();
             $errors = array();
-            /*
-            * Set default blank contact to fulfill the current relationship with a site
-            */
-            $contact->nick_name = 'NULL';
-            $contact->title = null;
-            $contact->first_name = '';
-            $contact->last_name = '';
-            $contact->qualifications = null;
         } else {
             $id = @$_GET['site_id'];
             $site = Site::model()->findByPk($id);
