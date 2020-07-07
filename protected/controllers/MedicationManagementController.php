@@ -105,8 +105,23 @@ class MedicationManagementController extends BaseController
         $criteria->limit = $limit > 1000 ? 1000 : $limit;
         $criteria->order = "preferred_term";
         $criteria->with = array('medicationSearchIndexes');
-        $criteria->addCondition("deleted_date IS NULL");
+        $criteria->addCondition("t.deleted_date IS NULL");
         $criteria->together = true;
+
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+        $site_id = Yii::app()->session['selected_site_id'];
+
+        $source = \Yii::app()->request->getParam('source');
+        $prescribable_sets = \MedicationSet::model()->findByUsageCode('PRESCRIBABLE_DRUGS', $site_id, $subspecialty_id);
+        $prescribable_set_ids = array_map(fn($set) => $set->id, $prescribable_sets);
+
+        // prescription(event) and MedicationManagement(element) where the request is coming from
+        // we should find a better solution to make a restriction by source (event, element, etc)
+        if ($prescribable_sets && ($source === 'prescription' || $source === 'MedicationManagement')) {
+            $criteria->addInCondition('medicationSet.id', $prescribable_set_ids);
+            $criteria->with = array_merge($criteria->with, ['medicationSetItems', 'medicationSetItems.medicationSet', 'medicationSetItems.medicationSet.medicationSetRules']);
+        }
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications
         // this will need to be used in prescription Adder dialog

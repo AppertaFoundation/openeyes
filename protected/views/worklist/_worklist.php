@@ -38,17 +38,16 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             No patients in this worklist.
         </div>
     <?php else : ?>
-    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows last-right js-table-controller <?=$is_printing?"allow-page-break":""?>">
+    <table id="js-worklist-<?=$worklist->id?>" class="standard highlight-rows js-table-controller <?=$is_printing?"allow-page-break":""?>">
         <colgroup>
             <col class="cols-1"><!--Time-->
             <col class="cols-1"><!--Hos Num-->
+            <col class="cols-1"><!--All in one icon-->
             <col class="cols-3"><!--Name-->
-
             <!--spacing, this will be removed and PSD will be placed here, probably with auto widths for reset -->
             <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
                 <col class="cols-2">
             <?php endfor;?>
-
             <col class="cols-1"><!--Gender-->
             <col class="cols-2"><!--DOB-->
         </colgroup>
@@ -62,6 +61,8 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             <th>Time</th>
             <th class="nowrap">Hospital No.</th>
             <!--<th class="nowrap">P1-3</th>-->
+            <!--all in one icon-->
+            <th></th>
             <th>Name</th>
             <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
                 <th></th>
@@ -82,14 +83,17 @@ $is_printing = isset($is_printing) && ($is_printing === true);
                     <td><?=$wl_patient->scheduledtime;?></td>
                     <td><?=$wl_patient->patient->hos_num;?></td>
                     <?php /*<!--PSD--><td><i class="oe-i triangle-amber js-has-tooltip" data-tooltip-content="Patient Risk: 2 (Medium).<br>Reversible harm from delayed appointment. <br>Previous Cancelled: 0"></i></td>*/?>
+                    <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient->id ?>">
+                        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
+                    </td>
                     <td>
-                        <?php if (!$is_printing) :
+                      <?php if (!$is_printing) :
                             ?><a href="<?=$link;?>"><?php
+                      endif; ?>
+                        <?=$wl_patient->patient->getHSCICName();?>
+                        <?php if (!$is_printing) :
+                            ?></a><?php
                         endif; ?>
-                            <?=$wl_patient->patient->getHSCICName();?>
-                            <?php if (!$is_printing) :
-                                ?></a><?php
-                            endif; ?>
                     </td>
 
                     <?php for ($i = 1; $i<=2-count($worklist->displayed_mapping_attributes); $i++) : ?>
@@ -117,3 +121,7 @@ $is_printing = isset($is_printing) && ($is_printing === true);
     </table>
     <?php endif; ?>
 </div>
+
+<?php
+    $this->renderPartial('application.widgets.views.PatientIcons', array('patients' => $data_provider,'page' => 'worklist'));
+?>

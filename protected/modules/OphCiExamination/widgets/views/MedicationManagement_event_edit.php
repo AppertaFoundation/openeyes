@@ -362,6 +362,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             modelName: '<?=$model_name?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
+            searchSource: '/medicationManagement/findRefMedications?source=MedicationManagement',
 
             onInit: function (controller) {
                 registerElementController(controller, "MMController", "HMController");

@@ -187,6 +187,33 @@ class MedicationSet extends BaseActiveRecordVersioned
     }
 
     /**
+     * Find set by usage code with additional site and subspecialty params
+     *
+     * @param string $usage_code
+     * @param null $site_id
+     * @param null $subspecialty_id
+     * @return MedicationSet[]
+     */
+    public function findByUsageCode(string $usage_code, $site_id = null, $subspecialty_id = null) : array
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = "JOIN medication_set_rule r ON t.id = r.medication_set_id ";
+        $criteria->join .= "JOIN medication_usage_code c ON r.usage_code_id = c.id";
+
+        $criteria->addCondition("c.usage_code = :usage_code");
+        $criteria->params = [
+            ':usage_code' => $usage_code
+        ];
+
+        $criteria->addCondition("(r.site_id = :site_id OR r.site_id IS NULL) AND (r.subspecialty_id = :subspecialty_id OR r.subspecialty_id IS NULL)");
+
+        $criteria->params[':site_id'] = $site_id;
+        $criteria->params[':subspecialty_id'] = $subspecialty_id;
+
+        return self::findAll($criteria);
+    }
+
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * Typical usecase:
