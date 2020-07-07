@@ -156,6 +156,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
         $data->select(implode(',', $select));
         $data->andWhere('e.deleted = 0');
+        $data->andWhere('p.is_deceased = 0');
 
         $this->executeQuery($data);
     }
