@@ -554,6 +554,10 @@ class User extends BaseActiveRecordVersioned
         return $contacts;
     }
 
+    public function getActiveSiteSelections() {
+        return array_filter($this->siteSelections, function ($site) { return $site->active; });
+    }
+
     public function getNotSelectedSiteList()
     {
         $site_ids = array();

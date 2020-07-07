@@ -83,7 +83,8 @@ class SiteAndFirmWidget extends CWidget
             $model->site_id = Yii::app()->session['selected_site_id'];
         }
 
-        if (!$sites = $user->siteSelections) {
+        $sites = $user->activeSiteSelections;
+        if (!$sites) {
             $sites = Institution::model()->getCurrent()->sites;
         }
 
