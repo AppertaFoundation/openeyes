@@ -13,7 +13,7 @@ class m200503_234755_create_eur_results_tables extends OEMigration
                 'event_id' => 'int(10) unsigned not null',
                 // eye_num is for first eye or second eye
                 'eye_num' => 'tinyint not null',
-                'eye_side' => 'int(10) unsigned unsigned',
+                'eye_side' => 'int(10) unsigned',
                 'CONSTRAINT fk_eur_event_result_event FOREIGN KEY (event_id) REFERENCES event(id)',
                 'CONSTRAINT fk_eur_event_result_eye FOREIGN KEY (eye_side) REFERENCES eye(id)'
             ),
