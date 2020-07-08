@@ -903,9 +903,15 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $this->render('create', array(
+        $params = array(
             'errors' => @$errors,
-        ));
+        );
+        if (isset($this->eur_res) && isset($this->eur_answer_res)) {
+            $params['eur_res'] = $this->eur_res;
+            $params['eur_answer_res'] = $this->eur_answer_res;
+        }
+
+        $this->render($this->action->id, $params);
     }
 
     /**
@@ -1066,10 +1072,14 @@ class BaseEventTypeController extends BaseModuleController
                 array('level' => 'cancel')
             ),
         );
-
-        $this->render($this->action->id, array(
+        $params = array(
             'errors' => @$errors,
-        ));
+        );
+        if (isset($this->eur_res) && isset($this->eur_answer_res)) {
+            $params['eur_res'] = $this->eur_res;
+            $params['eur_answer_res'] = $this->eur_answer_res;
+        }
+        $this->render($this->action->id, $params);
     }
 
     /**
@@ -1435,6 +1445,9 @@ class BaseEventTypeController extends BaseModuleController
             if (!$this->event->save()) {
                 OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
                 throw new Exception('Unable to save event.');
+            }
+            if (isset($data['eur_result'])) {
+                $this->saveEURForm();
             }
             OELog::log("Created new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
         }

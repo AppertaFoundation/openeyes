@@ -161,6 +161,8 @@ $correspondence_email_status_to_css_class = [
                                 <?php if ($event->hasIssue()) {
                                     if ($event->hasIssue('ready')) {
                                         $event_icon_class .= ' ready';
+                                    } else if ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
+                                        $event_icon_class .= ' cancelled';
                                     } else {
                                         $event_icon_class .= ' alert';
                                     }
