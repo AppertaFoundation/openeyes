@@ -127,6 +127,25 @@ class ProcedureSubspecialtyAssignment extends BaseActiveRecordVersioned
     }
 
     /**
+     * Retrieves a list of procedures that needs eur form associated with the subspecialty with the given id.
+     *
+     * @param int $id
+     *
+     * @return array of procedures (proc_id=>term)
+     */
+    public function getEURProcedureListFromSubspecialty($id)
+    {
+        $list = self::model()->findAll('subspecialty_id = :id', array(':id' => $id));
+        $result = array();
+
+        foreach ($list as $subspecialty) {
+            $result[$subspecialty->proc_id] = $subspecialty->need_eur;
+        }
+        
+        return $result;
+    }
+    
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
