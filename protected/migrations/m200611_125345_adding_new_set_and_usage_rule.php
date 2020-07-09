@@ -24,13 +24,13 @@ class m200611_125345_adding_new_set_and_usage_rule extends OEMigration
             ['usage_code' => 'PRESCRIBABLE_DRUGS', 'name' => 'Prescribable Drugs', 'active' => 1]
         );
 
-        $usage_code_id = \Yii::app()->db->getLastInsertID();
+        $usage_code_id = $this->dbConnection->getLastInsertID();
 
         $this->insert(
             'medication_set',
             ['name' => 'Prescribable Drugs', 'automatic' => 1]
         );
-        $set_id = \Yii::app()->db->getLastInsertID();
+        $set_id = $this->dbConnection->getLastInsertID();
 
         $this->insert('medication_set_rule', [
                 'medication_set_id' => $set_id,
