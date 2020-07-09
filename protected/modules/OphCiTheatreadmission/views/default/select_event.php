@@ -13,9 +13,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-?>
-
-<?php
 $this->beginContent('//patient/event_container', array('no_face' => true));
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';

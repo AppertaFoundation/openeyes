@@ -149,7 +149,7 @@ EOD;
 
     private function _getImportDir()
     {
-        return Yii::getPathOfAlias('application') . '/data/dmd_data';
+        return getenv('DMD_EXTRACT_FOLDER') ?? Yii::getPathOfAlias('application') . '/data/dmd_data';
     }
 
     public function getParams($params)

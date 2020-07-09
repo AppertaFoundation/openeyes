@@ -271,6 +271,7 @@ class Trial extends BaseActiveRecordVersioned
    * @param string $sort_by The field name to sort by
    * @param string $sort_dir The direction to sort the results by
    * @return array An array of data providers with one for each patient status
+   * @throws CException Thrown if an error occurs when created the data providers
    */
     public function getPatientDataProviders($sort_by, $sort_dir)
     {
@@ -318,27 +319,29 @@ class Trial extends BaseActiveRecordVersioned
 
           $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
 
-        return new CActiveDataProvider('TrialPatient', array(
-            'criteria' => array(
-                'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
-                'join' => 'JOIN patient p ON p.id = t.patient_id
-                                   JOIN contact c ON c.id = p.contact_id
-                                   LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
-                'order' => $sortExpr,
-                'params' => array(
-                  ':trialId' => $this->id,
-                  ':patientStatus' => $patient_status->id,
-                ),
-            ),
-            'pagination' => array(
-                'pageSize' => 10,
-            ),
-        ));
+          $patientDataProvider = new CActiveDataProvider('TrialPatient', array(
+          'criteria' => array(
+          'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
+          'join' => 'JOIN patient p ON p.id = t.patient_id
+                             JOIN contact c ON c.id = p.contact_id
+                             LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
+          'order' => $sortExpr,
+          'params' => array(
+            ':trialId' => $this->id,
+            ':patientStatus' => $patient_status->id,
+          ),
+          ),
+          'pagination' => array(
+          'pageSize' => 10,
+          ),
+          ));
+
+          return $patientDataProvider;
     }
 
     /**
      * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
-     * @param int $type The trial type ID.
+     * @param TrialType $type The trial type.
      * @return array A list of trials of the specified trial type.
      */
     public static function getTrialList($type)
@@ -360,7 +363,6 @@ class Trial extends BaseActiveRecordVersioned
      * @param Patient $patient The patient to add
      * @param TrialPatientStatus $patient_status The initial trial status for the patient (default to shortlisted)
      * @returns TrialPatient The new TrialPatient record
-     * @return TrialPatient
      * @throws Exception Thrown if an error occurs when saving the TrialPatient record
      */
     public function addPatient(Patient $patient, $patient_status)
@@ -456,6 +458,7 @@ class Trial extends BaseActiveRecordVersioned
      * Removes a UserTrialAssignment
      *
      * @param int $permission_id The ID of the permission to remove
+     * @throws CHttpException Thrown if the permission cannot be found
      * @return string The return code
      * @throws Exception Thrown if the permission cannot be deleted
      */
@@ -558,13 +561,9 @@ class Trial extends BaseActiveRecordVersioned
      *
      * @return bool True if the deletion was successful, otherwise false
      * @throws CDbException Thrown if an error occurs during rollback or commit
-     * @throws CException
      */
     public function deepDelete()
     {
-        /**
-         * @var $transaction CDbTransaction
-         */
         $transaction = Yii::app()->db->beginTransaction();
 
         foreach ($this->userAssignments as $permission) {
@@ -599,19 +598,16 @@ class Trial extends BaseActiveRecordVersioned
 
     public function getTrialPrincipalInvestigators()
     {
-        return UserTrialAssignment::model()->findAll('trial_id=? and is_principal_investigator = 1', array($this->id));
+        $principal_investigators = UserTrialAssignment::model()->findAll('trial_id=? and is_principal_investigator = 1', array($this->id));
+        return $principal_investigators;
     }
 
     public function getTrialStudyCoordinators()
     {
-        return UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
+        $study_coordinators = UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
+        return $study_coordinators;
     }
-
-    /**
-     * @param $attribute
-     * @throws Exception
-     */
-    public function closedDateValidator($attribute, $params = null)
+    public function closedDateValidator($attribute, $params)
     {
         if ($this->hasErrors('closed_date')) {
             return;

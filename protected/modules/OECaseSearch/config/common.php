@@ -7,11 +7,6 @@
  */
 
 return array(
-    'components' => array(
-        'searchProvider' => array(
-            'class' => 'DBProvider',
-        ),
-    ),
     'params' => array(
         'menu_bar_items' => array(
             'casesearch' => array(
@@ -23,7 +18,7 @@ return array(
         ),
         'CaseSearch' => array(
             'parameters' => array(
-                'OECaseSearch' => array(
+                'core' => array(
                     'PatientAge',
                     'PatientDiagnosis',
                     'PatientMedication',
@@ -33,29 +28,12 @@ return array(
                     'PatientNumber',
                     'PreviousProcedures',
                     'PatientVision',
-                    'PatientIdentifier',
-                    'PatientDeceased',
+                    'PatientIdentifier'
                 ),
             ),
-            'variables' => array(
-                'OECaseSearch' => array(
-                    'age' => 'AgeVariable',
-                    'iop_first' => array(
-                        'class' => 'IOPVariable',
-                        'field_name' => 'iop_first',
-                        'label' => 'IOP (first)',
-                        'query_flags' => array('first'),
-                    ),
-                    'iop_last' => array(
-                        'class' => 'IOPVariable',
-                        'field_name' => 'iop_last',
-                        'label' => 'IOP (last)',
-                        'query_flags' => array('last'),
-                    ),
-                    'va' => 'VAVariable',
-                    'cct' => 'CCTVariable',
-                    'crt' => 'CRTVariable',
-                    'refraction' => 'RefractionVariable'
+            'fixedParameters' => array(
+                'core' => array(
+                    'PatientDeceased',
                 ),
             ),
             'providers' => array(

@@ -1,14 +1,15 @@
-<?= '<?php' ?>
+<?php
+echo '<?php'; ?>
 
 /**
- * Class <?= $this->className ?>Parameter
+ * Class <?php echo $this->className; ?>Parameter
  */
-class <?= $this->className ?>Parameter extends CaseSearchParameter implements <?= str_replace(',', 'Interface, ', $this->searchProviders) . 'Interface' ?>
+class <?php echo $this->className; ?>Parameter extends CaseSearchParameter implements <?php echo str_replace(',', 'Interface, ', $this->searchProviders) . 'Interface'; ?>
 
 {
 <?php if (!empty($this->attributeList)) :
     foreach (explode(',', $this->attributeList) as $attribute) :?>
-    public $<?= $attribute ?>;
+    public $<?php echo $attribute; ?>;
     <?php endforeach;
 endif; ?>
 
@@ -19,13 +20,13 @@ endif; ?>
     public function __construct($scenario = '')
     {
         parent::__construct($scenario);
-        $this->name = '<?= str_replace(' ', '_', strtolower($this->name)) ?>';
+        $this->name = '<?php echo str_replace(' ', '_', strtolower($this->name)); ?>';
     }
 
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return '<?= $this->name ?>';
+        return '<?php echo $this->name; ?>';
     }
 
     /**
@@ -34,14 +35,13 @@ endif; ?>
     */
     public function attributeNames()
     {
-        return array_merge(
-            parent::attributeNames(),
-            array(
+        return array_merge(parent::attributeNames(), array(
 <?php if (!empty($this->attributeList)) :
     foreach (explode(',', $this->attributeList) as $attribute) :?>
-                '<?= $attribute ?>',
+                '<?php echo $attribute; ?>',
     <?php endforeach;
-endif; ?>        )
+endif; ?>
+            )
         );
     }
 
@@ -54,11 +54,21 @@ endif; ?>        )
         return parent::rules();
     }
 
+    public function renderParameter($id)
+    {
+        // Initialise any rendering variables here.
+        ?>
+        <!-- Place screen-rendering code here. -->
+        <?php
+        echo '<?php'; ?>
+
+    }
+
 <?php foreach (explode(',', $this->searchProviders) as $searchProvider) :?>
     <?php if ($searchProvider === 'DBProvider') :?>
     /**
     * Generate a SQL fragment representing the subquery of a FROM condition.
-    * @param $searchProvider <?= $searchProvider ?> The search provider. This is used to determine whether or not the search provider is using SQL syntax.
+    * @param $searchProvider <?php echo $searchProvider; ?> The search provider. This is used to determine whether or not the search provider is using SQL syntax.
     * @return string The constructed query string.
     */
     public function query($searchProvider)
@@ -77,35 +87,11 @@ endif; ?>        )
         return array(
         <?php if (!empty($this->attributeList)) :
             foreach (explode(',', $this->attributeList) as $attribute) :?>
-    "<?= $this->alias ?>_<?= $attribute ?>_$this->id" => $this-><?= $attribute ?>,
+            "<?php echo $this->alias ?>_<?php echo $attribute; ?>_$this->id" => $this-><?php echo $attribute; ?>,
             <?php endforeach;
         endif;?>
-);
-    }
-    <?php endif;?>
-
-    public function getAuditData()
-    {
-        return "insert audit string here";
-    }
-
-    public function saveSearch()
-    {
-        return array_merge(
-            parent::saveSearch(),
-            array(
-                // Add all additional properties here.
-    <?php if (!empty($this->attributeList)) :
-        foreach (explode(',', $this->attributeList) as $attribute) :?>
-            '<?= $attribute ?>' => $this-><?= $attribute ?>,
-        <?php endforeach;
-    endif; ?>    )
         );
     }
-
-    public function getDisplayString()
-    {
-        return 'insert display string content here'
-    }
+    <?php endif;?>
 <?php endforeach;?>
 }

@@ -12,9 +12,8 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true));
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print', null, array('class'=>'small button'));
