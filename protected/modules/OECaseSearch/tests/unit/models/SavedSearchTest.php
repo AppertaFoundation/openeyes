@@ -44,6 +44,6 @@ class SavedSearchTest extends ActiveRecordTestCase
      */
     public function testAttributeLabels()
     {
-        $this->assertCount(8, $this->model->attributeLabels());
+        $this->assertCount(7, $this->model->attributeLabels());
     }
 }
