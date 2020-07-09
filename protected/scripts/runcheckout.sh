@@ -70,7 +70,7 @@ set -- "${PARAMS[@]}" # restore positional parameters
 ## Read in stored git config and modules config
 source $SCRIPTDIR/git.conf
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
-[ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF=$SCRIPTDIR
+[ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source $MODULES_CONF
 
 # store original ssh value, needed for updating remotes during pull
