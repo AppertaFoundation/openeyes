@@ -17,16 +17,18 @@
 */
 ?>
 <?php
-$clinical = $clinical = $this->checkAccess('OprnViewClinical');
-
-$warnings = $this->patient->getWarnings($clinical);
-
 $this->beginContent('//patient/event_container', array('no_face'=>true));
 
-$this->moduleNameCssClass .= ' highlight-fields';
-$this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';
-
-if ($warnings) { ?>
+if ($eur) {
+    $this->renderPartial('view_eur', array('eur' => $eur));
+}
+if (isset($operation) && $operation) {
+    $clinical = $clinical = $this->checkAccess('OprnViewClinical');
+    
+    $warnings = $this->patient->getWarnings($clinical);
+    $this->moduleNameCssClass .= ' highlight-fields';
+    $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';
+    if ($warnings) { ?>
         <div class="cols-12">
             <div class="alert-box patient with-icon">
                 <?php foreach ($warnings as $warn) {?>
@@ -35,8 +37,7 @@ if ($warnings) { ?>
                 }?>
             </div>
         </div>
-<?php }?>
-
+    <?php }?>
     <?php if (!$operation->has_gp) {?>
         <div class="alert-box alert with-icon">
             Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
@@ -70,12 +71,12 @@ if ($warnings) { ?>
     $this->renderOpenElements($this->action->id);
     $this->renderOptionalElements($this->action->id);
     ?>
-<?php
-$this->renderPartial('//default/delete');
-$this->renderPartial('on_hold');
-// Event actions
-if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::printButton();
-}
-?>
+    <?php
+    $this->renderPartial('//default/delete');
+    $this->renderPartial('on_hold');
+    // Event actions
+    if ($this->checkPrintAccess()) {
+        $this->event_actions[] = EventAction::printButton();
+    }
+}?>
 <?php $this->endContent();?>
