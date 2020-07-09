@@ -215,7 +215,7 @@ EOH;
         }
 
         if (!$this->with_print) {
-            $criteria_string = " OR t.`output_type`= 'Print'";
+            $criteria_string .= " OR t.`output_type`= 'Print'";
         }
 
         if ($output_status) {
