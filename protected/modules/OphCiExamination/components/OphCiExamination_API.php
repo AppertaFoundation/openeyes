@@ -2463,8 +2463,8 @@ class OphCiExamination_API extends \BaseAPI
                 if ($entry->status->followup) {
                     $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
 
-                    if(!empty($entry->followup_comments)){
-                        $str.="({$entry->followup_comments})";
+                    if (!empty($entry->followup_comments)) {
+                        $str .= "({$entry->followup_comments})";
                     }
                 }
                 $str .= "</td></tr>";
