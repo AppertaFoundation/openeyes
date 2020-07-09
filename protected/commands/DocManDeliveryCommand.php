@@ -214,7 +214,7 @@ EOH;
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
         }
 
-        if (!$this->with_print) {
+        if ($this->with_print) {
             $criteria_string .= " OR t.`output_type`= 'Print'";
         }
 
