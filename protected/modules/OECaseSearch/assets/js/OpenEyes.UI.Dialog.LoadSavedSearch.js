@@ -56,7 +56,6 @@
         otherUserList: '#other-user-list li',
         otherUserSearchList: '#other-user-search-list',
         searchContentsList: 'table.query-list tbody',
-        searchVariableList: 'table.var-list tbody',
         loadSearchButton: '.searches td button.js-use-query'
     };
     LoadSavedSearchDialog.prototype.selectedSearchId = 0;
@@ -130,17 +129,11 @@
                 type: 'GET',
                 success: function (response) {
                     let $tableBody = $('#param-list tbody');
-                    let $varTable = $('#js-variable-table');
                     let $params = $(response).find('tr.parameter');
-                    let $variables = $(response).find('tr.search-var');
-                    let $varList = $('#js-variable-list');
 
                     // Append the HTML from the response appropriately.
                     $($tableBody).find('.parameter').remove();
-                    $($varTable).find('.search-var').remove();
                     $tableBody.append($params);
-                    $varTable.append($variables);
-                    $varList.val($(response).find('tr#var-list td').text());
 
                     // Automatically execute the search.
                     $('form#search-form').submit();
@@ -166,18 +159,6 @@
                 self.content.find(selectors.searchContentsList).empty();
                 self.content.find(selectors.searchContentsList).append(
                     $(response).find('tr.parameter').map(function() {
-                        return self.compileTemplate({
-                            selector: selectors.searchContentTemplate,
-                            data: {
-                                searchContents: $(this).html(),
-                            }
-                        });
-                    }).get().join()
-                );
-                // Replace the contents of the search variables table with the returned HTML.
-                self.content.find(selectors.searchVariableList).empty();
-                self.content.find(selectors.searchVariableList).append(
-                    $(response).find('tr.search-var').map(function() {
                         return self.compileTemplate({
                             selector: selectors.searchContentTemplate,
                             data: {

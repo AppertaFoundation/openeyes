@@ -59,36 +59,6 @@ $user_searches = array_map(
         </div>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <hr class="divider"/>
-        <h3>Display</h3>
-        <div class="flex-layout row">
-            <div class="cols-10">
-                <table id="js-variable-table" class="standard normal-text last-right">
-                    <tbody>
-                    <?php foreach ($variables as $variable) { ?>
-                        <tr class="search-var" data-id="<?= $variable->field_name ?>">
-                            <td>
-                                <?= $variable->label ?>
-                            </td>
-                            <td>
-                                <i class="oe-i remove-circle small"></i>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
-                <?= CHtml::hiddenField('variable_list', implode(',', array_map(
-                    static function ($item) {
-                        return $item->field_name;
-                    },
-                    $variables
-                )), array('id' => 'js-variable-list')) ?>
-            </div>
-            <button id="add-variable" class="button hint green js-add-select-btn"
-                    data-popup="add-to-variable-list">
-                <i class="oe-i plus pro-theme"></i>
-            </button>
-        </div>
-        <hr class="divider"/>
         <h3>Date range</h3>
         <div class="flex-layout">
             <?= CHtml::textField('from_date', CHtml::encode($from_date), array('placeholder' => 'from', 'disabled' => $show_all_dates, 'class' => 'date datepicker-from')) ?>
@@ -155,11 +125,6 @@ $user_searches = array_map(
             <table>
                 {{{queryTable}}}
             </table>
-            <h3>Variables</h3>
-            <table>
-                {{{variableTable}}}
-            </table>
-            <input type="hidden" name="variable_list" value="{{variableList}}"/>
         </div>
         <div class="show-query">
             <h3>Save search as</h3>
@@ -203,10 +168,6 @@ $user_searches = array_map(
             <table class="query-list">
                 <tbody>
                 </tbody>
-            </table>
-            <h3>Current variables</h3>
-            <table class="var-list">
-                <tbody></tbody>
             </table>
         </div>
     </div>

@@ -129,26 +129,23 @@ class CaseSearchController extends BaseModuleController
 
         $all_searches = SavedSearch::model()->findAll();
 
-        if (array_key_exists('variable_list', $_POST) && !empty($ids)) {
-            $variable_names = explode(',', $_POST['variable_list']);
-            if ($variable_names[0] != '') {
-                foreach ($variable_names as $variable_name) {
-                    $variables[] = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$variable_name], $ids);
-                }
-                if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
-                    if ($_POST['from_date']) {
-                        $from = new DateTime($_POST['from_date']);
-                    }
-                    if ($_POST['to_date']) {
-                        $to = new DateTime($_POST['to_date']);
-                    }
-                } else {
-                    $from = null;
-                    $to = null;
-                    $show_all_dates = true;
-                }
-                $variable_data = Yii::app()->searchProvider->getVariableData($variables, $from, $to);
+        if (!empty($ids)) {
+            foreach (Yii::app()->params['CaseSearch']['variables']['OECaseSearch'] as $var) {
+                $variables[] = $this->getVariableInstance($var, $ids);
             }
+            if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
+                if (isset($_POST['from_date']) && $_POST['from_date']) {
+                    $from = new DateTime($_POST['from_date']);
+                }
+                if (isset($_POST['to_date']) && $_POST['to_date']) {
+                    $to = new DateTime($_POST['to_date']);
+                }
+            } else {
+                $from = null;
+                $to = null;
+                $show_all_dates = true;
+            }
+            $variable_data = Yii::app()->searchProvider->getVariableData($variables, $from, $to);
         }
 
         if (!array_key_exists('from_date', $_POST) && !array_key_exists('to_date', $_POST)) {
@@ -309,24 +306,6 @@ class CaseSearchController extends BaseModuleController
                 );
             }
         }
-
-        if ($preview) {
-            foreach (explode(',', $search->variables) as $var) {
-                $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var]);
-                echo '<tr class="search-var">
-                <td>' . $variable->label . '</td>
-                </tr>';
-            }
-        } else {
-            foreach (explode(',', $search->variables) as $var) {
-                $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var]);
-                echo '<tr class="search-var" data-id="' . $variable->field_name . '">
-                <td>' . $variable->label . '</td>
-                <td><i class="oe-i remove-circle small"></i></td>
-                </tr>';
-            }
-            echo '<tr id="var-list"><td>' . $search->variables . '</td></tr>';
-        }
         echo '</tbody>';
     }
 
@@ -351,7 +330,6 @@ class CaseSearchController extends BaseModuleController
             $search_criteria = serialize($criteria_list);
             $search->search_criteria = $search_criteria;
             $search->name = $_POST['search_name'];
-            $search->variables = $_POST['variable_list'];
 
             if (!$search->save()) {
                 Yii::log(var_export($search->getErrors(), true));
@@ -515,10 +493,10 @@ class CaseSearchController extends BaseModuleController
         $variable = $this->getVariableInstance(Yii::app()->params['CaseSearch']['variables']['OECaseSearch'][$var], $ids);
 
         if (!isset($_POST['show-all-dates']) || $_POST['show-all-dates'] !== '1') {
-            if ($_POST['from_date']) {
+            if (isset($_POST['from_date']) && $_POST['from_date']) {
                 $start_date = new DateTime($_POST['from_date']);
             }
-            if ($_POST['to_date']) {
+            if (isset($_POST['to_date']) && $_POST['to_date']) {
                 $end_date = new DateTime($_POST['to_date']);
             }
         } else {

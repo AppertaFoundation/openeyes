@@ -11,7 +11,6 @@ class m200227_230457_create_saved_search_table extends OEMigration
                 'id' => 'pk',
                 'name' => 'varchar(50) NOT NULL',
                 'search_criteria' => 'text NOT NULL',
-                'variables' => 'varchar(255)'
             ),
             true
         );
