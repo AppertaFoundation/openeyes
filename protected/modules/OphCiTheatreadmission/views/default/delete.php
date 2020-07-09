@@ -12,9 +12,7 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php
 $this->beginContent('//patient/event_container');?>
 
 <div id="delete_event">

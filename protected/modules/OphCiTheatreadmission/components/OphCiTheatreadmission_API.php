@@ -12,3 +12,26 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+class OphCiTheatreadmission_API extends BaseAPI
+{
+    /**
+     * get laterality of event by looking at the procedure list element eye side
+     *
+     * @param $event_id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getLaterality($event_id)
+    {
+        $theatreAdmissionProcedureList = Element_OphCiTheatreadmission_ProcedureList::model()->find(
+            'event_id=?',
+            array($event_id)
+        );
+        if (!$theatreAdmissionProcedureList) {
+            throw new Exception("Theatre admission (procedure list) event not found: $event_id");
+        }
+
+        return $theatreAdmissionProcedureList->eye;
+    }
+}
