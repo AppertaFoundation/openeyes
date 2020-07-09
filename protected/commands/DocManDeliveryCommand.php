@@ -214,14 +214,16 @@ EOH;
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
         }
 
+        if (!$this->with_print) {
+            $criteria_string = " OR t.`output_type`= 'Print'";
+        }
+
         if ($output_status) {
             $criteria->addCondition("t.`output_status` = :output_status");
             $criteria->params = array(':output_status' => $output_status);
         }
 
-        if (!$this->with_print) {
-            $criteria->addCondition("(t.`output_type`= 'Docman'" . $criteria_string . ")");
-        }
+        $criteria->addCondition("(t.`output_type`= 'Docman'" . $criteria_string . ")");
 
         return DocumentOutput::model()->findAll($criteria);
     }
