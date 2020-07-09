@@ -2461,7 +2461,7 @@ class OphCiExamination_API extends \BaseAPI
                 }
                 $str .= '<td style="text-align:left">' . $entry->status->name;
                 if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}";
+                    $str .= " in {$entry->followup_quantity} {$entry->followup_period}({$entry->followup_comments})";
                 }
                 $str .= "</td></tr>";
             }
