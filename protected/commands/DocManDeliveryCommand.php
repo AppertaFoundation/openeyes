@@ -156,7 +156,7 @@ EOH;
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
             }
-        } else if ($document->output_type == 'Print') {
+        } else if ($document->output_type == 'Print' && $this->with_print) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Print' . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
