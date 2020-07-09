@@ -36,6 +36,7 @@ $user_searches = array_map(
     <nav class="oe-full-side-panel">
         <button id="load-saved-search" class="cols-full">Previous searches</button>
         <h3>Search criteria</h3>
+        <p id="criteria-initial" <?= isset($params) ? 'style="display: none;"' : null ?>>Select criteria for search...</p>
         <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
         <table id="param-list" class="standard normal-text last-right">
             <tbody>
@@ -69,11 +70,10 @@ $user_searches = array_map(
         </div>
         <hr class="divider"/>
         <div class="button-stack">
-            <?= CHtml::hiddenField('var', isset($variables[0]) ? $variables[0]->field_name : null) ?>
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
             <button class="js-save-search-dialog-btn cols-full">Save search</button>
             <?= CHtml::htmlButton('Clear search', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
-            <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
+            <?= (!$patients || $patients->totalItemCount === 0) ? null : CHtml::htmlButton(
                 'Download CSV BASIC',
                 array(
                         'id' => 'download-csv-basic',
@@ -82,7 +82,7 @@ $user_searches = array_map(
                         'formaction' => '/OECaseSearch/caseSearch/downloadCSV?mode=BASIC',
                     )
             ) ?>
-            <?= (!$patients || $patients->totalItemCount === 0 || !isset($variables[0])) ? null : CHtml::htmlButton(
+            <?= (!$patients || $patients->totalItemCount === 0) ? null : CHtml::htmlButton(
                 'Download CSV Advanced',
                 array(
                         'id' => 'download-csv-advanced',
@@ -104,15 +104,15 @@ $user_searches = array_map(
                 'variables' => $variables,
                 'total_patients' => $patients->totalItemCount,
                 'list_selector' => '.oe-search-results',
-                'display' => isset($variables[0]) ? true : false,
+                'display' => true,
             ));
             $this->renderPartial('patient_drill_down_list', array(
                 'patients' => $patients,
                 'display_class' => 'oe-search-results',
-                'display' => isset($variables[0]) ? false : true,
+                'display' => false,
             ));
         } else { ?>
-            <p>No patients found.</p>
+            <div class="alert-box info">No patients found.</div>
         <?php } ?>
         <div id="js-analytics-spinner" style="display: none;"><i class="spinner"></i></div>
     </main>
@@ -272,36 +272,6 @@ $user_searches = array_map(
             default_date: false
         });
 
-        new OpenEyes.UI.AdderDialog({
-            itemSets: [
-                new OpenEyes.UI.AdderDialog.ItemSet(
-                    <?= json_encode(array_map(
-                        static function ($item) {
-                            return array('id' => $item['id'], 'label' => $item['label']);
-                        },
-                        $variableList
-                    )) ?>,
-                    {'multiSelect': true, 'id': 'variable-type-list', 'deselectOnReturn': true,}
-                ),
-            ],
-            openButton: $('#add-variable'),
-            parentContainer: 'body',
-            id: 'add-variable-dialog',
-            onReturn: function (dialog, selectedValues) {
-                let $variableList = $('#js-variable-list');
-                $('#js-variable-table tbody').empty();
-                $variableList.val('');
-                // Add a row to the table for each selected variable, and add each one to the hidden field as a CSV list.
-                $.each(selectedValues, function (index, item) {
-                    $('#js-variable-table tbody').append('<tr class="search-var" data-id="' + item.id + '"><td>' + item.label + '</td><td><i class="oe-i remove-circle small"></i></td></tr>');
-                    if ($variableList.val()) {
-                        $variableList.val($variableList.val() + ',' + item.id);
-                    } else {
-                        $variableList.val(item.id);
-                    }
-                });
-            }
-        });
         new OpenEyes.UI.AdderDialog.QuerySearchDialog({
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(
@@ -355,7 +325,11 @@ $user_searches = array_map(
                     type: 'GET',
                     success: function (response) {
                         // Append the dynamic parameter HTML before the first fixed parameter.
+                        const $criteria_initial = $('#criteria-initial');
                         $('#param-list tbody').append(response);
+                        if ($criteria_initial.is(':visible')) {
+                            $criteria_initial.hide();
+                        }
                     },
                     error: function (xhr, status, error) {
                         new OpenEyes.UI.Dialog.Alert({
@@ -367,6 +341,9 @@ $user_searches = array_map(
         });
 
         $('.oe-full-side-panel').on('click', '#param-list tbody td .remove-circle', function () {
+            if ($('#param-list tbody tr').length === 1) {
+                $('#criteria-initial').show();
+            }
             this.closest('tr').remove();
         });
 
@@ -415,18 +392,6 @@ $user_searches = array_map(
             performSort(value, $container);
         });
 
-        $('#js-variable-table i.remove-circle').click(function () {
-            let newList = '';
-            $(this).closest('tr').remove();
-            $.each($('#js-variable-table tr'), function (index, item) {
-                if (index !== 0) {
-                    newList = newList + ',';
-                }
-                newList = newList + $(item).data('id');
-            });
-            $('input[name="variable_list"]').val(newList);
-        });
-
         $('#clear-search').click(function () {
             $.ajax({
                 url: '<?php echo $this->createUrl('caseSearch/clear')?>',
@@ -434,14 +399,13 @@ $user_searches = array_map(
                 success: function () {
                     $('#case-search-results').children().remove();
                     $('#param-list tbody tr').remove();
-                    $('#js-variable-table tbody tr').remove();
-                    $('#js-variable-list').val('');
                     $('.date').val('');
                     $('.js-plotly-plot').remove();
                     $('.results-options').hide();
-                    $('.oe-full-main').append('<p>No patients found.</p>');
+                    $('.oe-full-main').append('<div class="alert-box info">No patients found.</div>');
                     $('#download-csv-basic').hide();
                     $('#download-csv-advanced').hide();
+                    $('#criteria-initial').show();
                 },
                 error: function () {
                     new OpenEyes.UI.Dialog.Alert({

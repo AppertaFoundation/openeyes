@@ -134,6 +134,7 @@
                     // Append the HTML from the response appropriately.
                     $($tableBody).find('.parameter').remove();
                     $tableBody.append($params);
+                    $('#criteria-initial').hide();
 
                     // Automatically execute the search.
                     $('form#search-form').submit();
