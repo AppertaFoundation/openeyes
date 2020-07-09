@@ -7,7 +7,6 @@
  * @property int $id
  * @property string $name
  * @property string $search_criteria
- * @property string $variables
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -38,8 +37,7 @@ class SavedSearch extends BaseActiveRecordVersioned
             array('name, search_criteria', 'required'),
             array('name', 'length', 'max' => 50),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('variables', 'length', 'max' => 255),
-            array('last_modified_date, created_date, variables', 'safe'),
+            array('last_modified_date, created_date', 'safe'),
         );
     }
 
@@ -65,7 +63,6 @@ class SavedSearch extends BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
             'search_criteria' => 'Search Criteria',
-            'variables' => 'Variable List',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
