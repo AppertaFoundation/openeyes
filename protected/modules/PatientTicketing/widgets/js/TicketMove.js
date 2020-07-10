@@ -354,6 +354,17 @@
     $('select[name="to_queue_id"]').on('change', function () {
       ticketMoveController.getQueueAssForm($(this).val(), function (response) {
         $('#PatientTicketing-queue-assignment').html(response);
+
+        $(document).on('change', '.outcome-select', function() {
+          let fup = $(this).find('option:selected').data('followup');
+          let form_name = $(this).parents('tbody').data('formname');
+          if (fup) {
+            $('#'+form_name+'-followup').show();
+          }
+          else {
+            $('#'+form_name+'-followup').hide();
+          }
+        });
       });
     });
   });
