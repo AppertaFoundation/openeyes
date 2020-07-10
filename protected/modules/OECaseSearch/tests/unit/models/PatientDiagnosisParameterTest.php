@@ -166,7 +166,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         $this->assertEquals(1, PatientDiagnosisParameter::getCommonItemsForTerm('Myopia')[0]['id']);
 
         // Partial match
-        $this->assertCount(8, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
+        $this->assertCount(2, PatientDiagnosisParameter::getCommonItemsForTerm('m'));
     }
 
     public function getSearchData()
