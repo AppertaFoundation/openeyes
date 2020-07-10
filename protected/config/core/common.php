@@ -707,5 +707,6 @@ return array(
             'pw_days_lock' => getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
             'pw_admin_pw_change' => getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
         ),
+        'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
     ),
 );
