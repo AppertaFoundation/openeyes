@@ -84,3 +84,7 @@
 # export PW_STAT_DAYS_STALE= '15 days'
 # export PW_STAT_DAYS_EXPIRE = '30 days' 
 # export PW_STAT_DAYS_LOCK =  '45 days'
+
+## Set hos num parameters
+# export OE_HOS_NUM_REGEX='/^([a-zA-Z]*[0-9]*)$/'
+# export OE_HOS_NUM_PAD='%07s'
