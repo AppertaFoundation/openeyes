@@ -48,7 +48,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         $allergies = Allergy::model()->findAllBySql('
 SELECT a.*
 FROM allergy a 
-WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "%$term%"));
+WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "$term%"));
         $values = array();
         foreach ($allergies as $allergy) {
             $values[] = array('id' => $allergy->id, 'label' => $allergy->name);

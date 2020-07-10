@@ -170,7 +170,7 @@ WHERE LOWER(term) LIKE LOWER(:term)
    OR LOWER(aliases) LIKE LOWER(:term)
    OR LOWER(fully_specified_name) LIKE LOWER(:term)
 ORDER BY term LIMIT  ' . self::_AUTOCOMPLETE_LIMIT,
-            array('term' => "%$term%")
+            array('term' => "$term%")
         );
         $values = array();
         foreach ($disorders as $disorder) {
