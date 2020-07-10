@@ -100,6 +100,11 @@
     }
 
     $(document).ready(function () {
+        var disable_proc_select = typeof procedure_readonly != 'undefined' ? procedure_readonly : false;
+        if(disable_proc_select){
+            $('.Element_OphTrOperationbooking_Operation #typeProcedure .removeProcedure').remove();
+            $('.Element_OphTrOperationbooking_Operation .add-data-actions.flex-item-bottom').remove();
+        }
         updateRTTInfo($('#Element_OphTrOperationbooking_Operation_referral_id'));
         $('#Element_OphTrOperationbooking_Operation_referral_id').on('change', function () {
             updateRTTInfo($(this));

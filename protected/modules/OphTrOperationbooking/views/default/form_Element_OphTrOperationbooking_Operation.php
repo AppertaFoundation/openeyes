@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($this->open_elements);
+$procedure_readonly = $this->procedure_readonly;
 ?>
 
 <div class="element-fields full-width">
