@@ -56,8 +56,7 @@ class HistoryMedications extends BaseMedicationElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, entries', 'safe'),
-            array('entries', 'required', 'message' => 'At least one medication must be recorded, or the History Medications element should be removed.')
+            array('event_id, entries, no_systemic_medications_date, no_ophthalmic_medications_date', 'safe'),
         );
     }
 
@@ -81,6 +80,16 @@ class HistoryMedications extends BaseMedicationElement
             ),
             $this->getEntryRelations()
         );
+    }
+
+    public function afterValidate()
+    {
+        if (!$this->entries && !$this->no_systemic_medications_date && !$this->no_ophthalmic_medications_date) {
+            $this->addError('no_systemic_medications_date', 'Please confirm patient has had no previous systemic treatment');
+            $this->addError('no_ophthalmic_medications_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
+        }
+
+        parent::afterValidate();
     }
 
     protected function errorAttributeException($attribute, $message)

@@ -34,8 +34,6 @@ class DefaultController extends \BaseEventTypeController
 
     public $demographicsData;
 
-    protected $show_element_sidebar = false;
-
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(
@@ -157,7 +155,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function checkPrintAccess()
     {
-        if (!$this->getManager()->isIssued($this->event)) {
+        if (is_a($this->event, 'Event') && !$this->getManager()->isIssued($this->event)) {
             return false;
         }
 
@@ -403,7 +401,6 @@ class DefaultController extends \BaseEventTypeController
             $answer_data = array_key_exists('patient_factors', $data[$model_name]) ? $data[$model_name]['patient_factors'] : array();
             $element->updatePatientFactorAnswers($answer_data);
         }
-
     }
 
     /**
@@ -517,8 +514,6 @@ class DefaultController extends \BaseEventTypeController
             $this->getApp()->user->setFlash('error.cvi_issue', 'The CVI could not be generated.');
             $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
-
-
     }
 
     /**
@@ -533,7 +528,6 @@ class DefaultController extends \BaseEventTypeController
         if ($this->getApp()->request->getParam('print', null) == 1) {
             $this->jsVars['cvi_do_print'] = 1;
         }
-
     }
 
     /**
@@ -876,7 +870,6 @@ class DefaultController extends \BaseEventTypeController
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         imagepng(imagecreatefromstring($signature_element->getDecryptedSignature()));
-
     }
 
     /**

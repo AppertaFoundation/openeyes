@@ -207,6 +207,41 @@ class OphCiExamination_APITest extends CDbTestCase
         $this->assertEquals($expected, $this->api->getCCTAbbr($this->patient('patient1')));
     }
 
+    public function testGetCCTDate_Right()
+    {
+            $event = $this->createEvent(date('Y-m-d 23:59:58'));
+            $this->createCctElement($event, Eye::RIGHT);
+
+            $expected = date("Y-m-d 23:59:58");
+
+            $this->assertEquals($expected, $this->api->getCCTDate($this->patient('patient1')));
+    }
+
+    public function testGetCCTDate_Left()
+    {
+        $event = $this->createEvent(date('Y-m-d 23:59:58'));
+        $this->createCctElement($event, Eye::LEFT);
+
+        $expected = date("Y-m-d 23:59:58");
+
+        $this->assertEquals($expected, $this->api->getCCTDate($this->patient('patient1')));
+    }
+
+    public function testGetCCTDate_Both()
+    {
+        $event = $this->createEvent(date('Y-m-d 23:59:58'));
+        $this->createCctElement($event, Eye::BOTH);
+
+        $expected = date("Y-m-d 23:59:58");
+
+        $this->assertEquals($expected, $this->api->getCCTDate($this->patient('patient1')));
+    }
+
+    public function testGetCCTDate_NotRecorded()
+    {
+        $this->assertNull($this->api->getTargetIOP($this->patient('patient1')));
+    }
+
     public function testGetPrincipalVanHerick()
     {
         $event = $this->createEvent();

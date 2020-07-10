@@ -229,13 +229,19 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
     let ElementFormJSONConverterMM = new OpenEyes.OphCiExamination.ElementFormJSONConverter();
     $(document).ready(function () {
         let prescribed_medications = [];
+        let taper_fields_selectors = ['.js-frequency', '.js-duration'];
         let select_fields_selectors = ['.js-frequency', '.js-route', '.js-duration', '.js-dispense-condition', '.js-dispense-location'];
         let prescription_event_exists = false;
         let prescription_is_final = <?= CJavaScript::encode($element->prescription && $element->prescription->draft === '0') ?>;
 
         $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescribe]"]').each(function () {
             if ($(this).prop('checked')) {
+                let $parent_row = $(this).parents('tr.js-first-row');
+                let $taper_rows = $(this).parents('tbody').find('.js-taper-row[data-parent-key='+ $parent_row.data('key') +']');
                 prescribed_medications.push($(this).parents('tr.js-first-row'));
+                $taper_rows.each(function () {
+                    prescribed_medications.push($(this));
+                });
             }
         });
 
@@ -258,7 +264,9 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     prescription_modified = true;
                 }
 
-                select_fields_selectors.forEach(function (selector) {
+                let selectors = $(medication).hasClass('js-taper-row') ? taper_fields_selectors : select_fields_selectors;
+
+                selectors.forEach(function (selector) {
                     let $select_field = $(medication).find(selector);
                     let $previous_option;
 
@@ -291,9 +299,15 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             let prescribed_medications_check = [];
             $('.js-entry-table tr.js-first-row:not("new")').find('[name$="prescription_item_id]"]').each(function () {
                 if ($(this).val()) {
+                    let $parent_row = $(this).parents('tr.js-first-row');
+                    let $taper_rows = $(this).parents('tbody').find('.js-taper-row[data-parent-key='+ $parent_row.data('key') +']');
                     prescribed_medications_check.push($(this).parents('tr.js-first-row'));
+                    $taper_rows.each(function () {
+                        prescribed_medications_check.push($(this));
+                    });
                 }
             });
+
             if (prescribed_medications_check.length !== prescribed_medications.length) {
                 prescription_modified = true;
             }
@@ -348,6 +362,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             modelName: '<?=$model_name?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
             allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
+            searchSource: '/medicationManagement/findRefMedications?source=MedicationManagement',
 
             onInit: function (controller) {
                 registerElementController(controller, "MMController", "HMController");

@@ -17,7 +17,6 @@
  */
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
 
     protected static $action_types = array(
         'users' => self::ACTION_TYPE_FORM,

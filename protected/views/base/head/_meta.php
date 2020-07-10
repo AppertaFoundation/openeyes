@@ -12,7 +12,7 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <?php if (isset($whiteboard) && $whiteboard) : ?>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 <?php else : ?>
-    <meta name="viewport" content="width=1230, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.5">
 <?php endif; ?>
 <meta name="format-detection" content="telephone=no">
 

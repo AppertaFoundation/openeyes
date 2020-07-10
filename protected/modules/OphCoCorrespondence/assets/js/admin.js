@@ -30,6 +30,18 @@ $(document).ready(function() {
 		window.location.href = baseUrl + '/OphCoCorrespondence/admin/addMacro';
 	});
 
+	$('.addEmailAddress').click(function(e) {
+		e.preventDefault();
+
+		window.location.href = baseUrl + '/OphCoCorrespondence/admin/addEmailAddress';
+	});
+
+	$('.addEmailTemplate').click(function(e) {
+		e.preventDefault();
+
+		window.location.href = baseUrl + '/OphCoCorrespondence/admin/addEmailTemplate';
+	});
+
 	$(this).on('click','.cancelEditMacro',function(e) {
 		e.preventDefault();
 
@@ -71,8 +83,10 @@ $(document).ready(function() {
 	//Add a shortcode to the current editor at the cursor position
 	$('#shortcode').change(function() {
 		if ($(this).val() !== '') {
-      tinyMCE.activeEditor.execCommand('mceInsertContent', false, '['+$(this).val()+']');
-			$(this).val('');
+			if(tinyMCE.activeEditor) {
+				tinyMCE.activeEditor.execCommand('mceInsertContent', false, '[' + $(this).val() + ']');
+				$(this).val('');
+			}
 		}
 	});
 
@@ -101,6 +115,60 @@ $(document).ready(function() {
 				'success': function(resp) {
 					if (resp != "1") {
 						alert("Something went wrong trying to delete the macro(s). Please try again or contact support for assistance.");
+					} else {
+						window.location.reload();
+					}
+				}
+			});
+		}
+	});
+
+	$('.deleteEmailTemplates').click(function() {
+		if ($('#admin_email_templates tbody').find('input[type="checkbox"]:checked').length == 0) {
+			alert("Please select one or more email templates to delete.");
+		} else {
+			var list = {
+				id: []
+			};
+
+			$('#admin_email_templates tbody').find('input[type="checkbox"]:checked').map(function() {
+				list.id.push($(this).val());
+			});
+
+			$.ajax({
+				'type': 'POST',
+				'url': baseUrl + '/OphCoCorrespondence/admin/deleteEmailTemplates',
+				'data': $.param(list) + '&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
+				'success': function(resp) {
+					if (resp != "1") {
+						alert("Something went wrong trying to delete the email template(s). Please try again or contact support for assistance.");
+					} else {
+						window.location.reload();
+					}
+				}
+			});
+		}
+	});
+
+	$('.deleteEmailAddresses').click(function() {
+		if ($('#sender_email_addresses tbody').find('input[type="checkbox"]:checked').length == 0) {
+			alert("Please select one or more email addresses to delete.");
+		} else {
+			var list = {
+				id: []
+			};
+
+			$('#sender_email_addresses tbody').find('input[type="checkbox"]:checked').map(function() {
+				list.id.push($(this).val());
+			});
+
+			$.ajax({
+				'type': 'POST',
+				'url': baseUrl + '/OphCoCorrespondence/admin/deleteEmailAddresses',
+				'data': $.param(list) + '&YII_CSRF_TOKEN=' + YII_CSRF_TOKEN,
+				'success': function(resp) {
+					if (resp != "1") {
+						alert("Something went wrong trying to delete the email address(es). Please try again or contact support for assistance.");
 					} else {
 						window.location.reload();
 					}

@@ -154,7 +154,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
       return true;
     },
     searchOptions: {
-      searchSource: '/medicationManagement/findRefMedications',
+      searchSource: '/medicationManagement/findRefMedications?source=prescription',
     },
     enableCustomSearchEntries: true,
     searchAsTypedItemProperties: {

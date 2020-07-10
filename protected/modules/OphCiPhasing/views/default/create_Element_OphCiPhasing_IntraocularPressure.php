@@ -21,4 +21,3 @@ $this->renderPartial(
     '_'.$element->form_view,
     array('element' => $element, 'data' => $data, 'form' => $form)
 );
-?>

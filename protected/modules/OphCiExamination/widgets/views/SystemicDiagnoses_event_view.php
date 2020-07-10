@@ -22,10 +22,14 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
 ?>
 
 <div class="element-data">
-    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
+    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses && !$element->no_systemic_diagnoses_date) { ?>
       <div class="data-value not-recorded">
           Nil recorded this examination
       </div>
+    <?php } elseif ($element->no_systemic_diagnoses_date) { ?>
+        <div class="data-value">
+            Patient has no known Systemic Diagnoses
+        </div>
     <?php } else { ?>
         <div class="data-value">
             <div class="tile-data-overflow">

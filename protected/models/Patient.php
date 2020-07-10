@@ -348,9 +348,9 @@ class Patient extends BaseActiveRecordVersioned
                 $this->addError($attribute, 'Date of death cannot be blank.');
             } elseif ( !$format_check) {
                 $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
-            } else if ($patient_dod_date < $patient_dob_date) {
+            } elseif ($patient_dod_date < $patient_dob_date) {
                 $this->addError($attribute, "Patient's date of death cannot be earlier than date of birth ".$patient_dob_date->format('d/m/Y'));
-            } else if ($patient_dod_date > $current_date) {
+            } elseif ($patient_dod_date > $current_date) {
                 $this->addError($attribute, 'Date of death cannot be in the future');
             } elseif ($patient_dod_date < $earliest_date) {
                 $this->addError($attribute, "Patient's date of death cannot be earlier than ".$earliest_date->format('d/m/Y'));
@@ -934,6 +934,18 @@ class Patient extends BaseActiveRecordVersioned
     {
         if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
             return $api->getNoRisksDate($this);
+        }
+        return null;
+    }
+
+    /**
+     * Wrapper function that relies on magic method behaviour to intercept calls for the no_systemic_diagnoses_date property
+     * @return null|datetime
+     */
+    public function get_no_systemic_diagnoses_date()
+    {
+        if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
+            return $api->getNoSystemicDiagnosesDate($this);
         }
         return null;
     }
@@ -1586,7 +1598,7 @@ class Patient extends BaseActiveRecordVersioned
             Yii::app()->event->dispatch('patient_add_diagnosis', array('diagnosis' => $sd));
 
             $this->audit('patient', $action);
-        } else if ($sd->eye_id !== $eye_id || $sd->date !== $date) {
+        } elseif ($sd->eye_id !== $eye_id || $sd->date !== $date) {
             $sd->eye_id = $eye_id;
             $sd->date = $date;
             if (!$sd->save()) {
@@ -2189,7 +2201,6 @@ class Patient extends BaseActiveRecordVersioned
         if ($date_of_birth > $currentDate || $date_of_birth < $min_date_of_birth) {
             $this->addError($attribute, 'Invalid date. Value does not fall within the expected range.');
         }
-
     }
 
     /**
@@ -2201,6 +2212,37 @@ class Patient extends BaseActiveRecordVersioned
     {
         return Helper::getAge($this->dob, $this->date_of_death);
     }
+
+    /**
+     * Get the patient's nhs number.
+     *
+     * @return string
+     */
+    public function getNhs()
+    {
+        return $this->nhs_num;
+    }
+
+    /**
+     * Get the patient's hospital number.
+     *
+     * @return string
+     */
+    public function getHos()
+    {
+        return $this->hos_num;
+    }
+
+    /**
+     * Get the patient's first name initial.
+     *
+     * @return string
+     */
+    public function getFni()
+    {
+        return substr($this->first_name, 0, 1);
+    }
+
     /**
      * Find all patients with the same date of birth and similar-sounding names.
      * @param $firstName string First name.
@@ -2256,7 +2298,6 @@ class Patient extends BaseActiveRecordVersioned
               ';
 
         return Patient::model()->findAllBySql($sql, array(':identifier_code' => $identifier_code, ':identifier_value' => $identifier_value, ':id' => $id));
-
     }
 
     /**

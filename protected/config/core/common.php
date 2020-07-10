@@ -91,7 +91,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202006180850',
+            'time' => '202007081253',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -193,7 +193,7 @@ return array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'sendmail',
+            'mode' => 'smtp',
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -657,7 +657,7 @@ return array(
         'exclude_admin_structure_param_list' => array(
             //            'Worklist',
         ),
-        'oe_version' => 'Q3 \'20 nightly',
+        'oe_version' => '20Q4 (November) Nighltly',
         // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
         'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -676,6 +676,7 @@ return array(
             'strength_regex' => getenv('PW_RES_STRENGTH') ?: '%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).*$%',
             'strength_message' => getenv('PW_RES_STRENGTH_MESS') ? htmlspecialchars(getenv('PW_RES_STRENGTH_MESS')) : 'Passwords must include an upper case letter, a lower case letter, a number, and a special character'
         ),
+        'sodium_crypto_key_path' => '/run/secrets/SODIUM_CRYPTO_KEY',
         'portal' => array(
             'uri' => getenv('OE_PORTAL_URI') ?: 'http://api.localhost:8000',
             'frontend_url' => getenv('OE_PORTAL_EXTERNAL_URI') ?: 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
@@ -691,6 +692,20 @@ return array(
                 'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
                 'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
             ),
+        ),
+        'pw_status_checks' =>array(
+            /* pw_status key:
+                    'current' = user can log in as normal,
+                    'stale'  = user can log in, but they will be prompted to change their password on login. (they can also log out)
+                    'expired'  = user can log in, however the only things they can do is change their password, which they will be prompted to change on login. (they can also log out)
+                    'locked' = user cannot log in even with valid password,
+                Invalid statuses will act as 'locked' */
+            'pw_tries' => getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
+            'pw_tries_failed' => getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'locked', //password status after number of tries exceeded
+            'pw_days_stale' => getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '45 days', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
+            'pw_days_expire' => getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
+            'pw_days_lock' => getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
+            'pw_admin_pw_change' => getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
         ),
     ),
 );

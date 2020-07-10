@@ -32,6 +32,7 @@ if (!isset($values)) {
         'has_allergy' => $entry->has_allergy,
     );
 }
+$other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error error' : '';
 ?>
 
 <tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
@@ -39,7 +40,7 @@ if (!isset($values)) {
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
             <span class="js-other-allergy" style="display: none;">
-            <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off'));?>
+            <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off', 'class' => $other_text_field_classes));?>
         </span>
             <span class="js-not-other-allergy">
             <?= $values['allergy_display'];?>

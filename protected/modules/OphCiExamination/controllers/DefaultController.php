@@ -53,6 +53,10 @@ class DefaultController extends \BaseEventTypeController
      */
     protected $show_index_search = true;
 
+    protected $show_element_sidebar = true;
+
+    protected $show_manage_elements = true;
+
     // if set to true, we are advancing the current event step
     protected $set;
     protected $mandatoryElements;
@@ -806,7 +810,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Advance the workflow step for the event if requested.
      *
-     * @param Event $event
+     * @param \Event $event
      *
      * @throws \CException
      */
@@ -828,6 +832,9 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save assignment');
             }
         }
+
+        // save email address in the contact model
+        $this->saveContactEmailAddressForCommunicationPreferences($_POST);
     }
 
     protected function afterCreateElements($event)
@@ -848,6 +855,9 @@ class DefaultController extends \BaseEventTypeController
                 throw new \CException('Cannot save assignment');
             }
         }
+
+        // save email address in the contact model
+        $this->saveContactEmailAddressForCommunicationPreferences($_POST);
     }
 
     /**
@@ -1547,6 +1557,10 @@ class DefaultController extends \BaseEventTypeController
         $data = $this->unpackJSONAttributes($data);
         $errors = parent::setAndValidateElementsFromData($data);
 
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences'])) {
+            $errors = $this->setAndValidateCommunicationPreferencesFromData($data, $errors);
+        }
+
         if (isset($data['OEModule_OphGeneric_models_Assessment'])) {
             $errors = $this->setAndValidateOctFromData($data, $errors);
         }
@@ -2076,5 +2090,44 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return $errors;
+    }
+
+    /**
+     * Custom validation for Communication Preferences element
+     *
+     * @param $data
+     * @param $errors
+     * @return mixed
+     */
+    protected function setAndValidateCommunicationPreferencesFromData($data, $errors)
+    {
+        $et_name = models\Element_OphCiExamination_CommunicationPreferences::model()->getElementTypeName();
+        $agrees_to_insecure_email_correspondence = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'];
+        if ($agrees_to_insecure_email_correspondence === '1') {
+            // check if the email is empty
+            $address = Yii::app()->request->getPost('Address', null);
+            if ($address['email'] === '') {
+                $errors[$et_name][] = 'Please enter an email address.';
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * Updates the email address in the contact data model for the Communication Preferences element.
+     *
+     * @param $data
+     * @throws \CException
+     */
+    protected function saveContactEmailAddressForCommunicationPreferences($data) {
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']) &&
+            $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'] === '1') {
+            $postAddress = Yii::app()->request->getPost('Address');
+            $address = \Address::model()->findByPk($postAddress['id']);
+            $address->email = $postAddress['email'];
+            if (!$address->save()) {
+                throw new \CException('Cannot save address');
+            }
+        }
     }
 }

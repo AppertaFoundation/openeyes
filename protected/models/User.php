@@ -30,6 +30,9 @@
  * @property string $password
  * @property string $salt
  * @property int    $global_firm_rights
+ * @property date   $password_last_changed_date
+ * @property int    $password_failed_tries
+ * @property string $password_status
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -77,24 +80,27 @@ class User extends BaseActiveRecordVersioned
             // Added for uniqueness of username
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
+            array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
             array(
                 'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
                 'safe',
             ),
         );
-        $user = Yii::app()->request->getPost('User');
-        // if the global firm rights is set to No, at least one context needs to be selected
-        if ($user['global_firm_rights'] == 0) {
-            $commonRules = array_merge(
-                $commonRules,
-                array(
-                    array('firms', 'required'),
-                )
-            );
-        }
 
-        if (Yii::app()->params['auth_source'] == 'BASIC') {
+        if (Yii::app()->params['auth_source'] === 'BASIC') {
+            $user = Yii::app()->request->getPost('User');
+
+            // if the global firm rights is set to No, at least one context needs to be selected
+            if (isset($user['global_firm_rights']) && $user['global_firm_rights'] == 0) {
+                $commonRules = array_merge(
+                    $commonRules,
+                    array(
+                        array('firms', 'required'),
+                    )
+                );
+            }
+
             $pw_restrictions = $this->getPasswordRestrictions();
             $generalUserRules = array(
                 array(
@@ -118,7 +124,7 @@ class User extends BaseActiveRecordVersioned
                 array('email', 'email'),
                 array('salt', 'length', 'max' => 10),
                 // Added for password comparison functionality
-                array('password_repeat', 'safe'),
+                array('password_repeat, password_last_changed_date, password_failed_tries, password_status', 'safe'),
             );
             $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
 
@@ -127,7 +133,7 @@ class User extends BaseActiveRecordVersioned
             } else {
                 return array_merge($commonRules, $generalUserRules);
             }
-        } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
+        } elseif (Yii::app()->params['auth_source'] === 'LDAP') {
             return array_merge(
                 $commonRules,
                 array(
@@ -240,7 +246,10 @@ class User extends BaseActiveRecordVersioned
             'is_consultant' => 'Consultant',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
-            'role' => 'Position'
+            'role' => 'Position',
+            'password_last_changed_date' => 'Date Password was last changed',
+            'password_failed_tries' => 'Number of failed Password attempts',
+            'password_status' => 'Status of User Password',
         );
     }
 
@@ -483,8 +492,8 @@ class User extends BaseActiveRecordVersioned
     public function beforeValidate()
     {
         //When LDAP is enabled and the user is not a local user than we generate a random password
-        
-        if ($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local) {
+  
+        if ($this->isNewRecord && \Yii::app()->params['auth_source'] === 'LDAP' && !$this->is_local) {
             $password = $this->generateRandomPassword();
             $this->password = $password;
             $this->password_repeat = $password;
@@ -543,6 +552,10 @@ class User extends BaseActiveRecordVersioned
         }
 
         return $contacts;
+    }
+
+    public function getActiveSiteSelections() {
+        return array_filter($this->siteSelections, function ($site) { return $site->active; });
     }
 
     public function getNotSelectedSiteList()
@@ -874,6 +887,12 @@ class User extends BaseActiveRecordVersioned
         return $users_with_roles;
     }
 
+    /**
+     * Returns active status for a selected user
+     *
+     * @param User $user
+     * @return bool active status for a user
+     */
     public function getUserActiveStatus($user)
     {
         if ($user->active) {
@@ -882,5 +901,200 @@ class User extends BaseActiveRecordVersioned
             $active = '0';
         }
         return $active;
+    }
+
+     /**
+     * Returns if user has that a password status
+     *
+     * @param string $status
+     * @param User $user
+     * @return bool is user at that level
+     */
+    public function testUserPWStatus($status = 'locked', $user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        if ($user->password_status == $status) {
+            return true;
+        }
+        if ($status == 'locked') { // checking bad statuses
+            if (!($user->password_status =='current' || $user->password_status =='expired' ||$user->password_status =='stale' )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Returns if setting the password status was successful
+     *
+     * @param string $status
+     * @param User $user
+     * @param bool $save should the function save the value itself?
+     * @return bool is user at that level or greater - if true and saving were there issues saving? false = "I cannot do that" either due to rules or error saving (like the value is already set to that)
+     */
+    public function setPWStatusHarsher($status = null, $user = null, $save = true)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        switch ($status) {
+            case 'locked':
+                $user->password_status ='locked';
+                if ($save) {
+                    return $user->saveAttributes(array('password_status'));
+                } else {
+                    return true;
+                }
+                break;
+            case 'expired':
+                if ($user->password_status =='current'||$user->password_status =='stale') {
+                    $user->password_status ='expired';
+                    if ($save) {
+                        return $user->saveAttributes(array('password_status'));
+                    } else {
+                        return true;
+                    }
+                }
+                break;
+            case 'stale':
+                if ($user->password_status =='current') {
+                    $user->password_status ='stale';
+                    if ($save) {
+                        return $user->saveAttributes(array('password_status'));
+                    } else {
+                        return true;
+                    }
+                }
+                break;
+        }
+        return false;
+    }
+    /**
+     * Checks if the user has passed the allowed log in attempts, and will apply the appropriate status if so.
+     *
+     * @param User $user
+     * @return bool has status level been changed?
+     */
+    public function setUserLogOnAttemptsCheck($user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        $threshold = isset(Yii::app()->params['pw_status_checks']['pw_tries'])?Yii::app()->params['pw_status_checks']['pw_tries']:3;
+        if ($threshold) { //only check pw tries if we have a threshold to check against
+            $pwTriesFailed = Yii::app()->params['pw_status_checks']['pw_tries_failed']?: 'locked';
+
+            if ($user->password_failed_tries >= $threshold) {   // if the number of attempts is greater than what is allowed then try to lock the account
+                $user->password_failed_tries = $threshold; //reset to avoid overflow errors
+                if ($user->setPWStatusHarsher($pwTriesFailed, $user)) {
+                    $user->audit('login', 'user-' . $pwTriesFailed, null, "User: {$this->username} has exceeded " . $threshold.' tries, account is now ' . $pwTriesFailed);
+                } else {
+                    $user->audit('login', 'user-' . $pwTriesFailed.'-same', null, "User: {$this->username} has exceeded " . $threshold.' tries, account is already ' . $pwTriesFailed);
+                }
+                return $user->saveAttributes(array('password_failed_tries')); // save only these values
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the user has the time allowed for changing thier password, and will apply the appropriate status if so.
+     *
+     * @param User $user
+     * @return bool has status level been changed?
+     */
+    public function testUserPwDate($date = null, $user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        if ($date == null) {
+            $date = $this->password_last_changed_date;
+        }
+        if ($date == null) {
+            $date = date("Y-m-d H:i:s");
+        }
+        //Get params
+        $pwDaysLock = isset(Yii::app()->params['pw_status_checks']['pw_days_lock']) ? Yii::app()->params['pw_status_checks']['pw_days_lock'] : '45 days'; //get tolerance for pw expiry
+        $pwDaysExpire = isset(Yii::app()->params['pw_status_checks']['pw_days_expire']) ? Yii::app()->params['pw_status_checks']['pw_days_expire'] : '30 days'; //get tolerance for pw expiry
+        $pwDaysStale = isset(Yii::app()->params['pw_status_checks']['pw_days_stale']) ? Yii::app()->params['pw_status_checks']['pw_days_stale'] : '15 days'; //get tolerance for pw expiry
+        
+        if ($pwDaysLock && $user->password_last_changed_date) {
+            $pwDateCutoffLock =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock)); // get last valid time
+            Yii::log($pwDateCutoffLock);
+            if ($date <= $pwDateCutoffLock) {
+                return $user->setPWStatusHarsher('locked');
+            }
+        }
+        if ($pwDaysExpire) {
+            $pwDateCutoffExpire =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysExpire)); // get last valid time
+            Yii::log($pwDateCutoffExpire);
+            if ($date <= $pwDateCutoffExpire) {
+                return $user->setPWStatusHarsher('expired');
+            }
+        }
+        if ($pwDaysStale) {
+            $pwDateCutoffStale =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale)); // get last valid time
+            Yii::log($pwDateCutoffStale);
+            if ($date <= $pwDateCutoffStale) {
+                return $user->setPWStatusHarsher('stale');
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets the frontend name of the password status
+     * @param string $user
+     * @return string Name of status
+     */
+    public function getUserPwStatusName($user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        switch ($user->password_status) {
+            case 'current':
+                return 'Current';
+                break;
+            case 'stale':
+                return 'Stale';
+                break;
+            case 'expired':
+                return 'Expired';
+                break;
+            default:
+                return 'Locked';
+                break;
+        }
+    }
+        /**
+     * Gets the frontend name of the password status
+     * @param string $user
+     * @return string Name of status
+     */
+    public function getUserDaysLeft($user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        $daysLeft = array();
+        if ($user->password_last_changed_date) {
+            $pwDaysStale = isset(Yii::app()->params['pw_status_checks']['pw_days_stale'])?Yii::app()->params['pw_status_checks']['pw_days_stale']:'15 days'; //get tolerance for pw expiry
+            $pwDaysExpire = isset(Yii::app()->params['pw_status_checks']['pw_days_expire'])?Yii::app()->params['pw_status_checks']['pw_days_expire']:'30 days'; //get tolerance for pw expiry
+            $pwDaysLock = isset(Yii::app()->params['pw_status_checks']['pw_days_lock'])?Yii::app()->params['pw_status_checks']['pw_days_lock']:'45 days'; //get tolerance for pw expiry
+            
+            if ($pwDaysStale) {
+                $daysLeft["DaysStale"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale))), date_create($user->password_last_changed_date))->format('%a days');
+            }
+            if ($pwDaysExpire) {
+                $daysLeft["DaysExpire"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysExpire))), date_create($user->password_last_changed_date))->format('%a days');
+            }
+            if ($pwDaysLock) {
+                $daysLeft["DaysLock"]=date_diff(date_create(date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock))), date_create($user->password_last_changed_date))->format('%a days');
+            }
+        }
+        return $daysLeft;
     }
 }

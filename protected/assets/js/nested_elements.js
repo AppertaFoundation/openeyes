@@ -23,7 +23,17 @@ function addElement(element, animate, previous_id, params, callback) {
     if (typeof (params) === 'undefined')
         params = {};
 
-    const element_type_id = $(element).data('element-type-id');
+
+  const element_type_id = $(element).data('element-type-id');
+  var element_type_class = $(element).data('element-type-class');
+
+  var $menuLi = findMenuItemForElementClass(element_type_class);
+
+  if($menuLi) {
+    if(!$menuLi.find('a').hasClass('selected')) {
+      $menuLi.find('a').addClass('selected');
+    }
+  }
 
     const core_params = {
         id: element_type_id,

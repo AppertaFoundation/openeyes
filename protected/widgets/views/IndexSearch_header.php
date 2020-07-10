@@ -1,7 +1,3 @@
-<nav class="sidebar-header">
-  <span class="title">Examination</span>
-</nav>
-
 <div class="search-in-event" id="js-search-in-event-popup" style="display: none;">
   <div class="close-icon-btn">
     <i class="oe-i remove-circle"></i>

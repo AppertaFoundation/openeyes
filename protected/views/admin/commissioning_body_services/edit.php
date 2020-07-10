@@ -142,7 +142,7 @@
         </tr>
 
         <?php
-        $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
+        $address_fields = ['email', 'address1', 'address2', 'city', 'county', 'postcode'];
         foreach ($address_fields as $field) : ?>
             <tr>
                 <td><?php echo $address->getAttributeLabel($field); ?></td>

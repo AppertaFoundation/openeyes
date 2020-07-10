@@ -26,6 +26,7 @@ class DefaultController extends BaseEventTypeController
         'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
         'getSalutationByFirm' => self::ACTION_TYPE_FORM,
         'getSiteInfo' => self::ACTION_TYPE_FORM,
+        'getDocumentOutputStatus' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -34,10 +35,12 @@ class DefaultController extends BaseEventTypeController
         'printCopy' => self::ACTION_TYPE_PRINT,
         'getInitMethodDataById' => self::ACTION_TYPE_FORM,
         'savePrint'    => self::ACTION_TYPE_PRINT,
+        'sendEmail' => self::ACTION_TYPE_FORM,
+        'getContactEmailAddress' => self::ACTION_TYPE_FORM,
         'printForRecipient' => self::ACTION_TYPE_PRINT,
+        'getInternalReferralOutputType' => self::ACTION_TYPE_FORM,
+        'getDraftPrintRecipients' => self::ACTION_TYPE_PRINT,
     );
-
-    protected $show_element_sidebar = false;
 
     protected $pdf_output;
 
@@ -49,7 +52,7 @@ class DefaultController extends BaseEventTypeController
         if ($output) {
             $docnam = $output[0]; //for now only one Docman allowed
             $title = $docnam->output_status;
-            if ($docnam->output_status == 'COMPLETE') {
+            if ($docnam->output_status === 'COMPLETE') {
                 $title = 'Sent';
             }
             $title = strtolower($title);
@@ -69,7 +72,10 @@ class DefaultController extends BaseEventTypeController
 
         //if the letter is generated than we set a warning (only admin should reach this point, handled in $letter->isEditable())
         if ($letter->isGeneratedFor(['Docman', 'Internalreferral'])) {
-            Yii::app()->user->setFlash('warning.letter_warning', 'Please note this letter has already been sent. Only modify if it is really necessary!');
+            Yii::app()->user->setFlash(
+                'warning.letter_warning',
+                'Please note this letter has already been sent. Only modify if it is really necessary!'
+            );
         }
 
         parent::actionUpdate($id);
@@ -86,8 +92,8 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Unknown patient: ' . @$_GET['patient_id']);
         }
 
-        if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', @$_GET['contact'], $m)) {
-            throw new Exception('Invalid contact format: ' . @$_GET['contact']);
+        if (!preg_match('/^([a-zA-Z]+)(\d+)$/', @$_GET['contact'], $m)) {
+            throw new Exception('Invalid contact format: '.@$_GET['contact']);
         }
 
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
@@ -116,7 +122,7 @@ class DefaultController extends BaseEventTypeController
 
         $macro->substitute($patient);
 
-        if ($macro->recipient && $macro->recipient->name == 'Patient') {
+        if ($macro->recipient && $macro->recipient->name === 'Patient') {
             $data['sel_address_target'] = 'Patient' . $patient->id;
             $contact = $patient;
             if ($patient->isDeceased()) {
@@ -126,11 +132,13 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['sel_address_target'] = get_class($contact) . $contact->id;
+        if ($macro->recipient
+            && ($contact = $patient->gp ?: $patient->practice)
+            && $macro->recipient->name === Yii::app()->params['gp_label']) {
+            $data['sel_address_target'] = get_class($contact).$contact->id;
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
+        if ($macro->recipient && $macro->recipient->name === 'Optometrist') {
             $contact = $patient->getPatientOptometrist();
             if (isset($contact)) {
                 $data['sel_address_target'] = get_class($contact) . $contact->id;
@@ -179,11 +187,15 @@ class DefaultController extends BaseEventTypeController
                 ));
                 $cc['targets'][] = '<input type="hidden" name="CC_Targets[]" value="Patient' . $patient->id . '" />';
             } else {
-                $data['alert'] = "Letters to the " . \Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['alert'] = 'Letters to the '
+                    . Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 
-        if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        /**
+         * @var $cc_contact Gp|Practice
+         */
+        if ($macro->cc_doctor && $cc_contact = $patient->gp ?: $patient->practice) {
             $cc['text'][] = $cc_contact->getLetterAddress(array(
                 'patient' => $patient,
                 'include_name' => true,
@@ -213,7 +225,7 @@ class DefaultController extends BaseEventTypeController
             if ($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {
                 $drss = null;
                 foreach ($commissioningbody->services as $service) {
-                    if ($service->type->shortname == 'DRSS') {
+                    if ($service->type->shortname === 'DRSS') {
                         $cc['text'][] = $service->getLetterAddress(array(
                             'include_name' => true,
                             'include_label' => true,
@@ -235,7 +247,7 @@ class DefaultController extends BaseEventTypeController
         $data['associated_content'] = '';
         $data['checkAttachmentFileExist'] = 0;
 
-        if ($macroInitAssocContent != null) {
+        if ($macroInitAssocContent !== null) {
             $data['associated_content'] = $this->renderPartial('event_associated_content', array(
                 'associated_content' => $macroInitAssocContent,
                 'patient' => $patient,
@@ -261,6 +273,10 @@ class DefaultController extends BaseEventTypeController
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Patient not found: ' . @$_GET['patient_id']);
         }
+        /**
+         * @var $string LetterString
+         */
+        $string = null;
 
         switch (@$_GET['string_type']) {
             case 'site':
@@ -286,7 +302,6 @@ class DefaultController extends BaseEventTypeController
         }
 
         $string->substitute($patient);
-
         echo $string->body;
     }
 
@@ -330,7 +345,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Invalid contact format: ' . @$_GET['contact']);
         }
 
-        if ($m[1] == 'Contact') {
+        if ($m[1] === 'Contact') {
             $contact = Person::model()->find('contact_id=?', array($m[2]));
         } elseif ($m[1] === 'GP') {
             $contact = Gp::model()->findByPk($m[2]);
@@ -354,10 +369,9 @@ class DefaultController extends BaseEventTypeController
             'include_prefix' => true,
         ));
 
-        $address = str_replace(',', ';', $address);
-        $address = str_replace('|', ',', $address);
+        $address = str_replace(array(',', '|'), array(';', ','), $address);
 
-        echo $address ? $address : 'NO ADDRESS';
+        echo $address ?: 'NO ADDRESS';
     }
 
     /**
@@ -374,7 +388,7 @@ class DefaultController extends BaseEventTypeController
         $text = @$_POST['text'];
         $textNew = OphCoCorrespondence_Substitution::replace($text, $patient);
 
-        if ($text != $textNew) {
+        if ($text !== $textNew) {
             echo $textNew;
         }
     }
@@ -416,32 +430,41 @@ class DefaultController extends BaseEventTypeController
      * Gets all the recipients for a letter based on the ElementLetter model
      *
      * @param $id
-     * @param $is_view
+     * @param bool $is_view
      * @return array
      */
-    private function getRecipients($id, $is_view = false)
+    private function getRecipients($id, $is_view = false, $document_target_id = null)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
-        if (!$is_view && \Yii::app()->user->getState('correspondece_element_letter_saved', true) && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== "1")) {
+        if (!$is_view
+            && (!isset($_GET['print_only_gp']) || $_GET['print_only_gp'] !== '1')
+            && Yii::app()->user->getState('correspondece_element_letter_saved', true)) {
             if ($letter->document_instance) {
                 // check if the first recipient is GP
                 $document_instance = $letter->document_instance[0];
-                $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)', array(
-                    ':id' => $document_instance->id, ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'], ':type_ir' => 'INTERNALREFERRAL', ));
+                $to_recipient_gp = DocumentTarget::model()->find(
+                    'document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',
+                    array(
+                        ':id' => $document_instance->id,
+                        ':ToCc' => 'To', ':type_gp' => Yii::app()->params['gp_label'],
+                        ':type_ir' => 'INTERNALREFERRAL',
+                    )
+                );
 
                 if ($to_recipient_gp) {
                     // print an extra copy to note
+
                     if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
                         $recipients[$to_recipient_gp->id] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                     }
                 }
             }
 
-            $print_outputs = $letter->getOutputByType("Print");
+            $print_outputs = $letter->getOutputByType('Print');
             if ($print_outputs) {
                 foreach ($print_outputs as $print_output) {
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
@@ -455,13 +478,18 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
             }
+        } elseif (isset($document_target_id)) {
+            // return the recipient for sending email
+            $document_target = DocumentTarget::model()->findByPk($document_target_id);
+            if ($document_target) {
+                $recipients[$document_target->id] = ($document_target->contact_name . "\n" . $document_target->address);
+            }
         } else {
-
             /**
              * this is a hotfix for DocMan, when we generate correspondences
              * where the main recipient is NOT the GP than we need to cherrypick it
              */
-            if ( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ) {
+            if (isset($_GET['print_only_gp']) && $_GET['print_only_gp'] === '1') {
                 $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
                 foreach ($gp_targets as $gp_target) {
                     $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
@@ -472,8 +500,8 @@ class DefaultController extends BaseEventTypeController
 
             $recipients[] = $letter->getToAddress();
 
-            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            if ($this->pdf_print_suffix === 'all' || @$_GET['all']) {
+                if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
                     $recipients[] = $letter->getToAddress();
                 }
                 if (!$is_view) {
@@ -553,14 +581,16 @@ class DefaultController extends BaseEventTypeController
         $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $is_view = Yii::app()->request->getParam('is_view', false);
-        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+        $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
 
-        $print_outputs = $letter->getOutputByType("Print");
+        $document_target_id = Yii::app()->request->getParam('document_target_id', false);
+
+        $print_outputs = $letter->getOutputByType('Print');
 
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
         }
-        if (\Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
+        if (Yii::app()->user->getState('correspondece_element_letter_saved', false)) {
             $this->pdf_print_suffix = 'all';
         }
 
@@ -573,19 +603,28 @@ class DefaultController extends BaseEventTypeController
          */
         $this->pdf_print_documents = 1;
 
-        if ($print_outputs) {
+        // This action gets called internally in the PDF generation process, we do not want
+        // to change the status in this case nor the case where the PDF is loaded in the view
+        // as neither are riven by the user printing the document.
+        if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
             foreach ($print_outputs as $output) {
                 $output->output_status = "COMPLETE";
                 $output->save();
             }
         }
+
         // render 1 recipient's letter + attachments at once...
         // we need the letter as PDF
         $attachments = $letter->getAllAttachments();
-        $recipients = $this->getRecipients($id, $is_view);
+
+        if ($document_target_id) {
+            $recipients = $this->getRecipients($id, true, $document_target_id);
+        } else {
+            $recipients = $this->getRecipients($id, $is_view);
+        }
 
         // check if printing is necessary
-        if (count($recipients) == 0) {
+        if (count($recipients) === 0) {
             return true;
         }
 
@@ -597,7 +636,7 @@ class DefaultController extends BaseEventTypeController
             $html_letter = "http://localhost/{$this->getModule()->name}/{$this->id}/printForRecipient/{$id}?recipient_address={$recipient_query}&target_id={$target_id}";
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
             if (!isset($_GET['html']) || !$_GET['html']) {
-                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
+                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . '.pdf');
             }
 
             // add attachments for each
@@ -616,7 +655,7 @@ class DefaultController extends BaseEventTypeController
 
         $pdf_path = $this->getPdfPath($event);
 
-        $this->pdf_output->Output("F", $pdf_path);
+        $this->pdf_output->Output('F', $pdf_path);
 
         $event->unlock();
         if (!isset($_GET['html']) || !$_GET['html']) {
@@ -632,7 +671,7 @@ class DefaultController extends BaseEventTypeController
 
     public function getPdfPath($event)
     {
-        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
+        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix. '.pdf';
     }
 
     /**
@@ -657,10 +696,8 @@ class DefaultController extends BaseEventTypeController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $consultant = null;
         // only want a consultant for medical firms
-        if ($specialty = $firm->getSpecialty()) {
-            if ($specialty->medical) {
-                $consultant = $firm->consultant;
-            }
+        if (($specialty = $firm->getSpecialty()) && $specialty->medical) {
+            $consultant = $firm->consultant;
         }
 
         foreach (User::model()->findAll($criteria) as $user) {
@@ -770,9 +807,8 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Returns the consultant's or subspecialty salutation
+     * Returns the consultant's or subspecialty salutation.
      * @param $firm_id
-     * @return json salutation
      * @throws Exception when firm not found by ID
      */
     public function actionGetSalutationByFirm($firm_id)
@@ -790,7 +826,48 @@ class DefaultController extends BaseEventTypeController
             $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
         }
 
-        $this->renderJSON($salutation);
+        $this->renderJSON(array($salutation));
+        Yii::app()->end();
+    }
+
+    /**
+     *
+     * Returns the service email address if present.
+     *
+     * @param $subspecialty_id
+     * @param $firm_id
+     * @throws Exception
+     */
+    public function actionGetInternalReferralOutputType($subspecialty_id, $firm_id) {
+        $output_type = null;
+        // Both the subspecialty and firm is selected
+        if ($subspecialty_id !== '' && $firm_id !== '') {
+            if ($firm_id !== '') {
+                $firm = Firm::model()->findByPk($firm_id);
+                if (!$firm) {
+                    throw new Exception(Firm::contextLabel() . " not found. ID: $firm_id");
+                }
+                $contextEmail = $firm->getContextEmail();
+                $output_type = $contextEmail;
+            }
+        }
+        // Only the subspecialty is selected
+        if ($subspecialty_id !== '' && $firm_id === '') {
+            // when both
+            $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+            if (!$subspecialty) {
+                throw new Exception("Subspecialty not found. ID: $subspecialty_id");
+            }
+            $serviceEmail = $subspecialty->getSubspecialtyEmail();
+            $output_type = $serviceEmail;
+        }
+
+        // email does not exist, set the electronic as output type for internal referral
+        if (!$output_type) {
+            $output_type = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label', 'Electronic');
+        }
+
+        $this->renderJSON(array('output_type' => $output_type));
         Yii::app()->end();
     }
 
@@ -810,7 +887,34 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * This method return true if the status of any of the print document_output type for a given event is DRAFT.
+     *
+     * @param $id Event Id
+     */
+    public function actionGetDraftPrintRecipients($id) {
+        $return = false;
+        $documentOutput = DocumentOutput::model()->with(
+            array(
+                'document_target' => array(
+                    'with' => array(
+                        'document_instance'=> array(
+                            'condition'=>'correspondence_event_id=' . $id
+                        )
+                    )
+                )
+            )
+        )->findAll('output_type="Print" and output_status="DRAFT"');
+
+        if (count($documentOutput) >= 1) {
+            $return = true;
+        }
+
+        $this->renderJSON($return);
+    }
+
+    /**
      * @throws CHttpException
+     * @throws CException
      */
     public function actionGetInitMethodDataById()
     {
@@ -861,15 +965,16 @@ class DefaultController extends BaseEventTypeController
     /**
      * Return document sub type if the name is Document if not return the event type name
      * @param $event
+     * @return string
      */
     public function getEventSubType($event)
     {
         if ($event->eventType->name === 'Document') {
-            $document_model = Element_OphCoDocument_Document::model()->findByAttributes(["event_id" => $event->id]);
+            $document_model = Element_OphCoDocument_Document::model()->findByAttributes(['event_id' => $event->id]);
             return isset($document_model->sub_type) ? $document_model->sub_type->name : '';
-        } else {
-            return $event->eventType->name;
         }
+
+        return $event->eventType->name;
     }
 
     /**
@@ -915,6 +1020,7 @@ class DefaultController extends BaseEventTypeController
      * Merges a PDF file to the end of the output
      *
      * @param $pdf_path
+     * @throws Exception
      */
     private function addPDFToOutput($pdf_path)
     {
@@ -959,7 +1065,6 @@ class DefaultController extends BaseEventTypeController
         if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
             return;
         }
-
         parent::verifyActionAccess($action);
     }
 
@@ -979,9 +1084,10 @@ class DefaultController extends BaseEventTypeController
     {
         parent::afterUpdateElements($event);
 
+        $data = array();
         $letter = null;
         foreach ($this->open_elements as $element) {
-            if (get_class($element) == 'ElementLetter') {
+            if (get_class($element) === 'ElementLetter') {
                 $letter = $element;
             }
         }
@@ -991,7 +1097,7 @@ class DefaultController extends BaseEventTypeController
         $document->is_draft = $letter ? $letter->draft : null;
 
         foreach (['DocumentTarget', 'DocumentSet', 'DocumentInstance', 'DocumentInstanceData', 'macro_id'] as $name) {
-            $data[$name] = \Yii::app()->request->getPost($name);
+            $data[$name] = Yii::app()->request->getPost($name);
         }
 
         $document->createNewDocSet($data);
@@ -1003,20 +1109,31 @@ class DefaultController extends BaseEventTypeController
 
         $letter = null;
         foreach ($this->open_elements as $element) {
-            if (get_class($element) == 'ElementLetter') {
+            if (get_class($element) === 'ElementLetter') {
                 $letter = $element;
             }
         }
+        $data = array();
 
         $document = new Document();
         $document->event_id = $this->event->id;
         $document->is_draft = $letter ? $letter->draft : null;
 
         foreach (['DocumentTarget', 'DocumentSet', 'DocumentInstance', 'DocumentInstanceData', 'macro_id'] as $name) {
-            $data[$name] = \Yii::app()->request->getPost($name);
+            $data[$name] = Yii::app()->request->getPost($name);
         }
 
         $document->createNewDocSet($data);
+    }
+
+    /**
+     * This is called by email.js via ajax request.
+     * @param $event_id
+     */
+    public function actionSendEmail($event_id)
+    {
+        $emailManager = new CorrespondenceEmailManager();
+        $emailManager->actionSendEmail($event_id);
     }
 
     public function actionSavePrint($event_id)
@@ -1025,11 +1142,35 @@ class DefaultController extends BaseEventTypeController
         $cookies['savePrint'] = new CHttpCookie('savePrint', $event_id, [
             'expire' => strtotime('+20 seconds')
         ]);
+        $cookies['email'] = new CHttpCookie('email', $event_id, [
+            'expire' => strtotime('+20 seconds')
+        ]);
         if ($cookies->contains('savePrint')) {
             echo 'ok';
         } else {
             echo 'failed to created print cookie';
         }
+    }
+
+    /**
+     * To get the current status of the document output.
+     * @param $document_target_id
+     */
+    public function actionGetDocumentOutputStatus($document_target_id)
+    {
+        $documentTarget = DocumentTarget::model()->findByPk($document_target_id);
+        echo $documentTarget->getEmailDocumentOutputStatus();
+    }
+
+    /**
+     * To get the email address based on the contact_id
+     * @param $contact_id
+     * @param $contact_type
+     */
+    public function actionGetContactEmailAddress($contact_id)
+    {
+        $contact = Contact::model()->findByPk($contact_id);
+        echo isset($contact->address) ? $contact->address->email : '';
     }
 
     /**
@@ -1042,20 +1183,38 @@ class DefaultController extends BaseEventTypeController
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
 
+        $this->jsVars['send_email_immediately'] = SettingInstallation::model()->findByAttributes(array('key' => 'send_email_immediately'))['value'];
+        $this->jsVars['send_email_delayed'] = SettingInstallation::model()->findByAttributes(array('key' => 'send_email_delayed'))['value'];
+        $this->jsVars['manually_add_emails_correspondence'] = SettingInstallation::model()->findByAttributes(array('key' => 'manually_add_emails_correspondence'))['value'];
+
+        $patient = Patient::model()->findByPk(@$_GET['patient_id']);
+        if ($patient) {
+            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+            $examination_communication_preferences = $exam_api->getElementFromLatestVisibleEvent('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient);
+            if ($examination_communication_preferences) {
+                $agrees_to_insecure_email_correspondence = $examination_communication_preferences->agrees_to_insecure_email_correspondence;
+            }
+        }
+
+        $this->jsVars['agrees_to_insecure_email_correspondence'] = $agrees_to_insecure_email_correspondence ?? null;
+
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
         $this->jsVars['internal_referral_booking_address'] = $site->getCorrespondenceName();
 
         $this->jsVars['internal_referral_method_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label');
 
+        $serviceEmail = $this->event ? $this->event->episode->firm->service_email : null;
+        $this->jsVars['internal_referral_service_email'] = $serviceEmail ?? null;
+
         $event_id = Yii::app()->request->getQuery('id');
         if ($event_id) {
             $letter = ElementLetter::model()->find('event_id=?', array($event_id));
-            $this->editable = $letter->isEditable();
-            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+            if ($letter) {
+                $this->editable = $letter->isEditable();
+                $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
-            if ($action == 'update') {
-                if (!Yii::app()->request->isPostRequest && $letter->draft) {
+                if (($action === 'update') && $letter->draft && !Yii::app()->request->isPostRequest) {
                     $gp_targets = $letter->getTargetByContactType(Yii::app()->params['gp_label']);
 
                     foreach ($gp_targets as $gp_target) {
@@ -1071,7 +1230,7 @@ class DefaultController extends BaseEventTypeController
 
             $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
                 array('site_id' => Yii::app()->session['selected_site_id'],
-                    'is_active' => 1)
+                      'is_active' => 1)
             );
 
             $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
@@ -1127,42 +1286,33 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = parent::setAndValidateElementsFromData($data);
 
-        //$gp_found = false;
-        //$patient_found = false;
-
         $document_target = $data['DocumentTarget'];
-        if (!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create') {
+        if (!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id === 'create') {
             $errors['Letter'][] = 'To Address: Please add at least one recipient!';
         }
 
         if (isset($document_target)) {
             foreach ($document_target as $target) {
-                if (!isset($target['attributes']['address']) || empty($target['attributes']['address'])) {
-                    $errors['Letter'][] = 'To Address: Address cannot be empty!';
+                if (!isset($target['attributes']['email']) || empty($target['attributes']['email'])) {
+                    if (!isset($target['attributes']['address']) || empty($target['attributes']['address'])) {
+                        $errors['Letter'][] = 'To Address: Address cannot be empty!';
+                    }
                 }
 
-                /*if ($target['attributes']['contact_type'] === 'PATIENT'){
-                    $patient_found = true;
+                if ($target['attributes']['contact_type'] === 'OTHER') {
+                    // If the recipient is OTHER and the email is selected as delivery method, then check if the
+                    // email address is entered.
+                    foreach ($target['DocumentOutput'] as $document_output) {
+                        if (isset($document_output['output_type'])) {
+                            if ( ($document_output['output_type'] === 'Email' || $document_output['output_type'] === 'Email (Delayed)') && (!isset($target['attributes']['email']) || empty($target['attributes']['email'])) ) {
+                                $errors['Letter'][] = 'To Email: Email cannot be empty!';
+                            }
+                        }
+                    }
                 }
-                if ($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
-                    $gp_found = true;
-                }*/
             }
-
-            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
-            //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
-
-            //this throws an error if GP or Patient not found in Internal referral
-
-            /**
-             * awaiting for requirements... ...
-             */
-
-            /*if ($this->letter_type_id == $internalreferral_letter_type->id ){
-                if ( !$gp_found || !$patient_found ){
-                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
-                }
-            }*/
         }
+
+        return $errors;
     }
 }

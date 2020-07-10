@@ -31,7 +31,7 @@
                 array(
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
                     'readonly' => 'readonly',
-                    'class' => 'cols-full',
+                    'class' => 'cols-full' . ($element->hasErrors('consultant_id') ? ' highlighted-error error' : ''),
                 )
             ) ?>
         </td>

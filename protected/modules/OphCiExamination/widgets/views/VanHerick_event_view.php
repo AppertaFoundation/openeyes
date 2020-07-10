@@ -18,11 +18,32 @@
 
 <div class="element-data element-eyes row">
     <div class="js-element-eye right-eye column">
-      <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not assessed in this examination';?></div>
+        <table class="large">
+            <tbody>
+                <tr>
+                    <td><?= $element->hasRight() ? $element->right_van_herick->name : 'Not assessed in this examination';?></td>
+                </tr>
+                <?php if ($element->hasRight() && $element->{'right_notes'}) { ?>
+                <tr>
+                    <td><?= $element->textWithLineBreaks('right_notes') ?></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
     </div>
 
     <div class="js-element-eye left-eye column">
-      <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not assessed in this examination';?></div>
+        <table class="large">
+            <tbody>
+            <tr>
+                <td><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not assessed in this examination';?></td>
+            </tr>
+            <?php if ($element->hasLeft() && $element->{'left_notes'}) { ?>
+            <tr>
+                <td><?= $element->textWithLineBreaks('left_notes') ?></td>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
     </div>
 </div>
- 
