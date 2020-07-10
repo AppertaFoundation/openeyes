@@ -144,7 +144,6 @@ class PatientAgeParameterTest extends CDbTestCase
 
         $search->search_criteria = $search_criteria;
         $search->name = 'test';
-        $search->variables = 'age';
 
         if (!$search->save()) {
             $this->fail('Unable to save search');
@@ -164,7 +163,6 @@ class PatientAgeParameterTest extends CDbTestCase
         $search_criteria = serialize(array($this->parameter->saveSearch()));
         $search->search_criteria = $search_criteria;
         $search->name = 'test';
-        $search->variables = 'age';
 
         if (!$search->save()) {
             $this->fail('Unable to save search');
