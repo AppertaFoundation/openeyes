@@ -27,6 +27,7 @@ class DocManDeliveryCommand extends CConsoleCommand
     private $event;
 
     private $generate_xml = false;
+    private $with_print = false;
 
     private $generate_csv = false;
     private $csv_file_options = [
@@ -79,6 +80,7 @@ EOH;
 
         $this->generate_xml = isset(\Yii::app()->params['docman_generate_xml']) && \Yii::app()->params['docman_generate_xml'];
         $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
+        $this->with_print = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
 
         $this->checkPath($this->path);
 
@@ -154,6 +156,9 @@ EOH;
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
             }
+        } else if ($document->output_type == 'Print' && $this->with_print) {
+            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Print' . PHP_EOL;
+            $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
     }
 
@@ -207,6 +212,10 @@ EOH;
         $criteria_string = '';
         if ($this->with_internal_referral) {
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
+        }
+
+        if ($this->with_print) {
+            $criteria_string .= " OR t.`output_type`= 'Print'";
         }
 
         if ($output_status) {
