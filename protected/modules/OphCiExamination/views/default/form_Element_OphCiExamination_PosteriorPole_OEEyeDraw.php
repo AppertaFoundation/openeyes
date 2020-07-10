@@ -61,8 +61,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'ChoroidalNaevusMelanoma',
             'PCV',
             'MacularDystrophy',
-        ),
-        array(
+            'CentralSerousRetinopathy',
+
             'LaserSpot',
             'FocalLaser',
             'MacularGrid',
