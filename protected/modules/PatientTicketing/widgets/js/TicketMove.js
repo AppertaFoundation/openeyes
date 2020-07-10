@@ -358,12 +358,7 @@
         $(document).on('change', '.outcome-select', function() {
           let fup = $(this).find('option:selected').data('followup');
           let form_name = $(this).parents('tbody').data('formname');
-          if (fup) {
-            $('#'+form_name+'-followup').show();
-          }
-          else {
-            $('#'+form_name+'-followup').hide();
-          }
+          $('#' + form_name + '-followup').toggle(fup);
         });
       });
     });
