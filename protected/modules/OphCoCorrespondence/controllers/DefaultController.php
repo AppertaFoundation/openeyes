@@ -607,8 +607,9 @@ class DefaultController extends BaseEventTypeController
         // to change the status in this case nor the case where the PDF is loaded in the view
         // as neither are riven by the user printing the document.
         if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
+            $withPrint = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
             foreach ($print_outputs as $output) {
-                $output->output_status = "COMPLETE";
+                $output->output_status = $withPrint && $output->printIsUnique() ? 'PENDING' : 'COMPLETE';
                 $output->save();
             }
         }
