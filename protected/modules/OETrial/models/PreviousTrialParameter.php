@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @property integer $trialTypeId
+ * @property int $trialTypeId
  * @property TrialType $trialType
  *
- * @property integer $treatmentTypeId
+ * @property int $treatmentTypeId
  * @property TreatmentType $treatmentType
  *
  * @inherit
@@ -16,7 +16,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     public $status;
     public $treatmentTypeId;
 
-    private $statusList = array();
+    private $statusList;
 
     protected $label_ = 'Previous Trial';
 
@@ -195,7 +195,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     }
 
     /**
-     * Generate a SQL fragment representing the subquery of a FROM condition.
+     * Generate a SQL fragment representing the sub-query of a FROM condition.
      * @return mixed The constructed query string.
      */
     public function query()
