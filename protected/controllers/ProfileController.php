@@ -110,6 +110,14 @@ class ProfileController extends BaseController
                 }
 
                 if (empty($errors)) {
+                    if (Yii::app()->params['auth_source'] === 'BASIC') {
+                        if ($user->password_status==="stale"||$user->password_status==="expired") {// this user pw is now current
+                            $user->password_status = 'current';
+                        }
+                        //reset pw checks
+                        $user->password_last_changed_date = date('Y-m-d H:i:s');
+                        $user->password_failed_tries = 0;
+                    }
                     $user->password = $user->password_repeat = $_POST['User']['password_new'];
                     if (!$user->save()) {
                         $errors = $user->getErrors();

@@ -241,7 +241,7 @@
 
         let delaySearch = 0;
         $searchInput.on('keyup', function () {
-            let searchInputVal = $(this).val();            
+            let searchInputVal = $(this).val();
             clearTimeout(delaySearch); //stop previous search request
 
             delaySearch = setTimeout(function(){
@@ -357,7 +357,7 @@
         let dialog = this;
         let $signContainer = $('<div />');
         let $list = $('<ul />', {
-          class: 'add-options cols-full single' + (itemSet.options.supportDeselectingNumberColumns ? '' : ' required'),
+          class: 'add-options single' + (itemSet.options.supportDeselectingNumberColumns ? '' : ' required'),
         }).appendTo($signContainer);
 
         Object.entries(itemSet.options.signs).forEach(([term, sign]) => {
@@ -379,7 +379,7 @@
     AdderDialog.prototype.generateDecimalValues = function (itemSet) {
         let dialog = this;
         let $decimalValuesContainer = $('<div />');
-        let $list = $('<ul />', {class: 'add-options cols-full single required'}).appendTo($decimalValuesContainer);
+        let $list = $('<ul />', {class: 'add-options single required'}).appendTo($decimalValuesContainer);
 
         itemSet.options.decimalValues.forEach(decimalValue => {
             let $listItem = $('<li />', {'data-addition': decimalValue, 'data-type': itemSet.options.decimalValuesType});
@@ -401,7 +401,7 @@
         for (let i = 0; i < itemSet.options.splitIntegerNumberColumns.length; i++) {
             let type = itemSet.options.splitIntegerNumberColumns.length === itemSet.options.splitIntegerNumberColumns.length ? 'data-type="'+itemSet.options.splitIntegerNumberColumnsTypes[i]+'"' : '';
             let $divList = $('<div />', {class: "list-wrap"}).appendTo($integerColumnsContainer);
-            let $list = $('<ul />', {class: 'number', id: 'number-digit-' + i}).appendTo($divList);
+            let $list = $('<ul />', {class: 'add-options number', id: 'number-digit-' + i}).appendTo($divList);
             for (let digit = itemSet.options.splitIntegerNumberColumns[i].min;
                  digit <= itemSet.options.splitIntegerNumberColumns[i].max; digit++) {
                 let $listItem = $('<li data-'+itemSet.options.id+'="'+digit+'"'+type+'/>');
@@ -593,6 +593,8 @@
                         $(itemSet).find('li').removeClass('selected');
                     }
                 });
+                // deselect options when closing the adderDialog
+                dialog.popup.find('.selected').removeClass('selected');
             }
 
             itemSets.each(function (itemSetIndex, itemSet) {

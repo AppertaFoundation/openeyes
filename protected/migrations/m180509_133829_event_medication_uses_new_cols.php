@@ -25,7 +25,5 @@ class m180509_133829_event_medication_uses_new_cols extends OEMigration
         $this->dropColumn('event_medication_use_version', 'stop_reason_id');
         $this->dropColumn('event_medication_use', 'prescription_item_id');
         $this->dropColumn('event_medication_use_version', 'prescription_item_id');
-
     }
-
 }

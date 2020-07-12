@@ -178,6 +178,27 @@ class BaseController extends Controller
                 $app->session['patient_id'] = 1;
                 $app->session['patient_name'] = 'John Smith';
             }
+        } else {
+            $user = User::model()->findByPk(Yii::app()->user->id);
+            if ($user) {
+                // if not a active user, force log out
+                if (!$user->getUserActiveStatus($user)||$user->testUserPWStatus()) {
+                    $user->audit('BaseControler', 'force-logout', null, "User $user->username logged out because their account is not active");
+                    Yii::app()->user->logout();
+                    $this->redirect(Yii::app()->homeUrl);
+                }
+                $user->testUserPwDate();
+                
+                $user->setUserLogOnAttemptsCheck();
+
+                $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
+
+                // if user is expired, force them to change their password
+                if ((!( $user->password_status=="current" || $user->password_status=="stale")) && !$whitelistedRequest) {
+                    Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                    $this->redirect(array('/profile/password'));
+                }
+            }
         }
 
         if (isset($app->session['firms']) && count($app->session['firms'])) {
@@ -257,6 +278,7 @@ class BaseController extends Controller
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = Yii::app()->params['gp_label'];
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
+        $this->jsVars['popupMode'] = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 
         foreach ($this->jsVars as $key => $value) {
             $value = CJavaScript::encode($value);

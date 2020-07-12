@@ -30,10 +30,12 @@ namespace OEModule\OphCiExamination\models;
  * @property int $left_max_area_id
  * @property int $left_height_id
  * @property int $left_vasc_id
+ * @property string $left_notes
  * @property int $right_central_area_id
  * @property int $right_max_area_id
  * @property int $right_height_id
  * @property int $right_vasc_id
+ * @property string $right_notes
  */
 class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 {
@@ -68,13 +70,13 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('event_id, eye_id, left_central_area_id, left_max_area_id, left_height_id, left_vasc_id,
-					right_central_area_id, right_max_area_id, right_height_id, right_vasc_id', 'safe'),
+                array('event_id, eye_id, left_central_area_id, left_max_area_id, left_height_id, left_vasc_id, left_notes,
+					right_central_area_id, right_max_area_id, right_height_id, right_vasc_id, right_notes', 'safe'),
                 array('left_central_area_id, left_max_area_id, left_height_id, left_vasc_id', 'requiredIfSide', 'side' => 'left'),
                 array('right_central_area_id, right_max_area_id, right_height_id, right_vasc_id', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
-                array('event_id, eye_id, left_central_area_id, left_max_area_id, left_height_id, left_vasc_id,
-					right_central_area_id, right_max_area_id, right_height_id, right_vasc_id', 'safe', 'on' => 'search'),
+                array('event_id, eye_id, left_central_area_id, left_max_area_id, left_height_id, left_vasc_id, left_notes,
+					right_central_area_id, right_max_area_id, right_height_id, right_vasc_id, right_notes', 'safe', 'on' => 'search'),
         );
     }
 
@@ -124,12 +126,14 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
                 'event_id' => 'Event',
                 'left_central_area_id' => 'Central Area',
                 'left_max_area_id' => 'Max Area',
+                'left_notes' => 'Comments',
                 'right_central_area_id' => 'Central Area',
                 'right_max_area_id' => 'Max Area',
                 'left_height_id' => 'Height',
                 'left_vasc_id' => 'Vascularity',
                 'right_height_id' => 'Height',
                 'right_vasc_id' => 'Vascularity',
+                'right_notes' => 'Comments'
         );
     }
 
@@ -152,10 +156,12 @@ class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
         $criteria->compare('left_max_area_id', $this->left_max_area_id);
         $criteria->compare('left_height_id', $this->left_height_id);
         $criteria->compare('left_vasc_id', $this->left_vasc_id);
+        $criteria->compare('left_notes', $this->left_notes);
         $criteria->compare('right_central_area_id', $this->right_central_area_id);
         $criteria->compare('right_max_area_id', $this->right_max_area_id);
         $criteria->compare('right_height_id', $this->right_height_id);
         $criteria->compare('right_vasc_id', $this->right_vasc_id);
+        $criteria->compare('right_notes', $this->right_notes);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

@@ -8,7 +8,7 @@ class m180216_113647_non_local_users_passwords_reset extends CDbMigration
         $dataProvider = new CActiveDataProvider('User');
         $user_iterator = new CDataProviderIterator($dataProvider);
 
-        if ( \Yii::app()->params['auth_source'] == 'LDAP' ) {
+        if ( \Yii::app()->params['auth_source'] === 'LDAP' ) {
             echo "\n\n LDAP aauthentication is enabled, resetting all non local users' password\n\n";
 
             foreach ($user_iterator as $user) {

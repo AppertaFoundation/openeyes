@@ -68,7 +68,12 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
             ->join('user', 'd.created_user_id = user.id')
-            ->where('1=1');
+            ->join('drug_frequency df', 'df.id = i.frequency_id')
+            ->join('drug_duration duration', 'duration.id = i.duration_id')
+            ->join('drug_route route', 'route.id = i.route_id')
+            ->join('ophdrprescription_dispense_condition dc', 'dc.id = i.dispense_condition_id')
+            ->join('ophdrprescription_dispense_location dl', 'dl.id = i.dispense_location_id')
+            ->leftJoin('drug_route_option option', 'option.id = i.route_option_id');
 
         if ($this->drugs) {
             $command->andWhere(array('in', 'medication.id', $this->drugs));
@@ -95,7 +100,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
     public function toCSV()
     {
-        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
+        $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Drug dose,  Frequency, Duration, Route, Dispense Condition, Dispense Location, Laterality, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
         foreach ($this->items as $item) {
             $output .= $item['hos_num'] . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
             $output .= (date('j M Y', strtotime($item['created_date'])) . ' ' . (substr($item['created_date'], 11, 5))) . ', ' . $item['preferred_term'] . ', ';

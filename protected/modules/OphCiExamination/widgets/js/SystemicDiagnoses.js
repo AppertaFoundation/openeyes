@@ -25,6 +25,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     this.$element = this.options.element;
     this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
+    this.$noSystemicDiagnosesFld = this.$element.find('.' + this.options.modelName + '_no_systemic_diagnoses');
+    this.$noSystemicDiagnosesWrapper = this.$element.find('.' + this.options.modelName + '_no_systemic_diagnoses_wrapper');
     this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
     this.$popup = $('#systemic-diagnoses-popup');
     this.searchRequest = null;
@@ -45,6 +47,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     let controller = this;
     let eye_selector;
 
+    $(document).ready(function () {
+        if (controller.$noSystemicDiagnosesFld.prop('checked')) {
+            controller.$table.find('tr:not(:first-child)').hide();
+            controller.$popup.hide();
+        }
+        controller.hideNoSystemicDiagnoses();
+    });
+
     // removal button for table entries
     controller.$table.on('click', 'i.trash', function (e) {
       e.preventDefault();
@@ -52,6 +62,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       let disorder_id = $row.find('input[name$="[disorder_id]"]').val();
       controller.$popup.find('li[data-id=' + disorder_id + ']').removeClass('js-already-used');
       $row.remove();
+      controller.showNoSystemicDiagnoses();
       $(":input[name^='diabetic_diagnoses']").trigger('change');
     });
 
@@ -60,11 +71,46 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.initialiseRow($(this));
     });
 
+    controller.$noSystemicDiagnosesFld.on('click', function () {
+        if (controller.$noSystemicDiagnosesFld.prop('checked')) {
+            controller.$table.find('tr:not(:first-child)').hide();
+            controller.$popup.hide();
+        } else {
+            controller.$popup.show();
+            controller.$table.find('tr:not(:first-child)').show();
+        }
+    });
+
+    controller.$popup.on('click', function(e) {
+        e.preventDefault();
+        controller.hideNoSystemicDiagnoses();
+        if (controller.$table.hasClass('hidden')){
+            controller.$table.removeClass('hidden');
+        }
+        controller.$table.show();
+    });
+
     eye_selector = new OpenEyes.UI.EyeSelector({
       element: controller.$element.closest('section')
     });
 
   };
+
+  SystemicDiagnosesController.prototype.hideNoSystemicDiagnoses = function() {
+      if (this.$table.find('tbody tr').length !== 1) {
+          this.$noSystemicDiagnosesFld.prop('checked', false);
+          this.$noSystemicDiagnosesWrapper.hide();
+      }
+  };
+
+  SystemicDiagnosesController.prototype.showNoSystemicDiagnoses = function() {
+      if (this.$table.find('tbody tr').length === 1) {
+          this.$noSystemicDiagnosesWrapper.show();
+      } else {
+          this.hideNoSystemicDiagnoses();
+      }
+  };
+
   SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
     let row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
     for (let i = 0; i < row_count; i++) {

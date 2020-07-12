@@ -43,6 +43,18 @@ $required_diagnoses_ids = array_map(function ($r) {
             <col class="cols-1">
         </colgroup>
         <tbody>
+        <tr class="cols-full <?= $model_name ?>_no_systemic_diagnoses_wrapper ">
+            <td colspan="5" class="align-left">
+                <label class="inline highlight" for="<?= $model_name ?>_no_systemic_diagnoses">
+                    <?= \CHtml::checkBox(
+                        $model_name . '[no_systemic_diagnoses]',
+                        $element->no_systemic_diagnoses_date ? true : false,
+                        array('class' => $model_name. '_no_systemic_diagnoses')
+                    ); ?>
+                    No systemic diagnoses
+                </label>
+            </td>
+        </tr>
         <?php
         $row_count = 0;
         foreach ($missing_req_diagnoses as $diagnosis) {
@@ -79,7 +91,8 @@ $required_diagnoses_ids = array_map(function ($r) {
         ?>
         </tbody>
     </table>
-    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup">
+    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup"
+         style="display: <?php echo $element->no_systemic_diagnoses_date ? 'none' : ''; ?>">
         <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
             <i class="oe-i plus pro-theme"></i>
         </button>
@@ -166,15 +179,21 @@ $required_diagnoses_ids = array_map(function ($r) {
                 let filters = $('ul.category-filter').find('li.selected');
                 if (filters.length > 0) {
                     systemic_diagnoses_controller.$popup.find('li').each(function () {
-                        if (!$(this).data('filter_value') === $(filters[0]).data('filter-value')) {
+                        let already_used = $(this).hasClass('js-already-used');
+                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used)&&!$(this).data('filter-value')) {
                             $(this).hide();
+                        } else {
+                            $(this).show();
                         }
+
+                    });
+                } else {
+                    adder_dialog.popup.find('li').each(function () {
+                        let already_used = $(this).hasClass('js-already-used');
+                        $(this).toggle(!already_used);
                     });
                 }
-                adder_dialog.popup.find('li').each(function () {
-                    let already_used = $(this).hasClass('js-already-used');
-                    $(this).toggle(!already_used);
-                });
+
             },
             searchOptions: {
                 searchSource: systemic_diagnoses_controller.options.searchSource,

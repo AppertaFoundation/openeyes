@@ -294,50 +294,7 @@ $(document).ready(function () {
 	});
 
 	$(this).on('mouseover', '.js-has-tooltip', function () {
-		var text = $(this).data('tooltip-content');
-		var leftPos, toolCSS;
-
-		// get icon DOM position
-		let iconPos = $(this)[ 0 ].getBoundingClientRect();
-		let iconCenter = iconPos.width / 2;
-
-		// check for the available space for tooltip:
-    let hotlistPanel = $('body').find('.oe-hotlist-panel');
-    let unsafeWidth = (hotlistPanel.length === 1 && hotlistPanel.css('Display') !== 'none')
-      ? hotlistPanel.width()
-      : 0;
-    let tooltipOverlap = unsafeWidth - ($( window ).width() - iconPos.left - 100);
-
-    if (tooltipOverlap > 0) {
-      leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
-      toolCSS = "oe-tooltip offset-left";
-    } else {
-      leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
-      toolCSS = "oe-tooltip";
-    }
-
-		// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
-		let z_index;
-		if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
-			z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
-		}
-
-		// add, calculate height then show (remove 'hidden')
-		var tip = $( "<div></div>", {
-			"class": toolCSS,
-			"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
-		});
-		// add the tip (HTML as <br> could be in the string)
-		tip.html(text);
-
-		$('body').append(tip);
-		// calc height:
-		var h = $(".oe-tooltip").height();
-		// update position and show
-		var top = iconPos.y - h - 25;
-
-		$(".oe-tooltip").css({"top":top+"px"});
-
+		showToolTip($(this));
 	});
 
 	let $header_print_dropdown = $('#js-header-print-dropdown');
@@ -532,4 +489,44 @@ function concatenateArrayItemLabels(arrayItems){
 		}
 	});
 	return outputString;
+}
+
+function showToolTip(element) {
+	var text = $(element).data('tooltip-content');
+	var leftPos, toolCSS;
+
+	// get icon DOM position
+	let iconPos = $(element)[ 0 ].getBoundingClientRect();
+	let iconCenter = iconPos.width / 2;
+
+	// check for the available space for tooltip:
+	if ( ( $( window ).width() - iconPos.left) < 100 ){
+		leftPos = (iconPos.left - 188) + iconPos.width; // tooltip is 200px (left offset on the icon)
+		toolCSS = "oe-tooltip offset-left";
+	} else {
+		leftPos = (iconPos.left - 100) + iconCenter - 0.5; 	// tooltip is 200px (center on the icon)
+		toolCSS = "oe-tooltip";
+	}
+
+	// check if tooltip is in a popup(oe-popup, oe-popup-wrap)
+	let z_index;
+	if ($('body > .oe-popup-wrap > .oe-popup').length > 0) {
+		z_index = parseInt($('body > .oe-popup-wrap').css('z-index')) + 5;
+	}
+
+	// add, calculate height then show (remove 'hidden')
+	var tip = $( "<div></div>", {
+		"class": toolCSS,
+		"style":"left:"+leftPos+"px; top:0;"+(z_index !== "undefined" ? "z-index:"+z_index+";" : "")
+	});
+	// add the tip (HTML as <br> could be in the string)
+	tip.html(text);
+
+	$('body').append(tip);
+	// calc height:
+	var h = $(".oe-tooltip").height();
+	// update position and show
+	var top = iconPos.y - h - 25;
+
+	$(".oe-tooltip").css({"top":top+"px"});
 }

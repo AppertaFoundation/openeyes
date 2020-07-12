@@ -25,6 +25,10 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         this.options = $.extend(true, {}, PreviousSurgeryController._defaultOptions, options);
 
         //TODO: these should be driven by  options
+        this.$noPastSurgeryFld = $('.' + this.options.modelName + '_no_pastsurgery');
+        this.$noPastSurgeryWrapper = $('.' + this.options.modelName + '_no_pastsurgery_wrapper');
+        this.$commentFld = $('#' + this.options.modelName + '_comments');
+        this.$commentWrapper = $('#' + this.options.modelName + '-comments');
         this.$section = $('section.' + this.options.modelName);
         this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
@@ -67,6 +71,15 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
   PreviousSurgeryController.prototype.initialiseTriggers = function(){
 
         let controller = this;
+
+      $(document).ready(function () {
+          if(controller.$noPastSurgeryFld.prop('checked')) {
+              controller.$table.find('tr:not(:first-child)').hide();
+              controller.$popupSelector.hide();
+          }
+          controller.hideNoPastSurgery();
+      });
+
         controller.$popupSelector.on('click','.add-icon-btn', function(e) {
             e.preventDefault();
             controller.addEntry();
@@ -75,6 +88,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         controller.$table.on('click', '.remove_item', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
+            controller.showNoPastSurgery();
         });
 
         controller.$section.on('input', ('#'+controller.fuzyDateWrapperSelector), function(e) {
@@ -92,11 +106,49 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
 
+      controller.$noPastSurgeryFld.on('click', function () {
+          if (controller.$noPastSurgeryFld.prop('checked')) {
+              controller.$table.find('tr:not(:first-child)').hide();
+              controller.$popupSelector.hide();
+              controller.$commentWrapper.hide();
+          } else {
+              controller.$popupSelector.show();
+              if(controller.$commentFld.val()) {
+                  controller.$commentWrapper.show();
+              }
+              controller.$table.find('tr:not(:first-child)').show();
+          }
+      });
+
+      controller.$popupSelector.on('click', function (e) {
+          e.preventDefault();
+          controller.hideNoPastSurgery();
+          if(controller.$table.hasClass('hidden')){
+              controller.$table.removeClass('hidden');
+          }
+          controller.$table.show();
+      });
+
         let eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$section
         });
 
         controller.$table.data('eyeSelector', eye_selector);
+    };
+
+    PreviousSurgeryController.prototype.hideNoPastSurgery = function() {
+        if (this.$table.find('tbody tr').length !== 1) {
+            this.$noPastSurgeryFld.prop('checked', false);
+            this.$noPastSurgeryWrapper.hide();
+        }
+    };
+
+    PreviousSurgeryController.prototype.showNoPastSurgery = function() {
+        if (this.$table.find('tbody tr').length === 1) {
+            this.$noPastSurgeryWrapper.show();
+        } else {
+            this.hideNoPastSurgery();
+        }
     };
 
     /**

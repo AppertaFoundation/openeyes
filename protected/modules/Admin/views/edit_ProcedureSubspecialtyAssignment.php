@@ -13,10 +13,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
+<?php
+$enable_eur = SettingMetadata::model()->getSetting('cataract_eur_switch');
+$cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' : 'cols-5';
+?>
 <h2>Procedure Subspecialty Assignments</h2>
 <?php $this->renderPartial('//base/_messages') ?>
-<div class="cols-5">
+<div class="<?=$cols_size?>">
     <form method="get">
         <table class="cols-4">
             <colgroup>
@@ -45,35 +48,48 @@
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
               <?php
                 $columns = [
-                [
-                  'header' => 'Order',
-                  'type' => 'raw',
-                  'value' => function ($data, $row) {
-                    return '<span>&uarr;&darr;</span>' .
-                      CHtml::hiddenField("ProcedureSubspecialtyAssignment[$row][id]", $data->id) .
-                      CHtml::hiddenField("display_order[$row]", $data->display_order);
-                  },
-                  'cssClassExpression' => "'reorder'",
-                ],
-                [
-                  'header' => 'Procedure',
-                  'name' => 'procedure.term',
-                  'type' => 'raw',
-                  'value' => function ($data, $row) use ($procedure_list) {
-                    return CHtml::dropDownList(
-                        (get_class($data) . "[$row][procedure_id]"),
-                        $data->procedure->id,
-                        CHtml::listData($procedure_list, 'id', 'term')
-                    );
-                  }
-                ],
+                    [
+                    'header' => 'Order',
+                    'type' => 'raw',
+                    'value' => function ($data, $row) {
+                        return '<span>&uarr;&darr;</span>' .
+                        CHtml::hiddenField("ProcedureSubspecialtyAssignment[$row][id]", $data->id) .
+                        CHtml::hiddenField("display_order[$row]", $data->display_order);
+                    },
+                    'cssClassExpression' => "'reorder'",
+                    ],
+                    [
+                    'header' => 'Procedure',
+                    'name' => 'procedure.term',
+                    'type' => 'raw',
+                    'value' => function ($data, $row) use ($procedure_list) {
+                        return CHtml::dropDownList((get_class($data) . "[$row][procedure_id]"), $data->procedure->id,
+                            CHtml::listData($procedure_list, 'id', 'term'));
+                    }
+                    ],
+                ];
+                //
+                if (intval($subspecialty_id) === 4 && $enable_eur === 'on') {
+                    $columns[] = [
+                        'header' => 'Require Effective Use of Resources (EUR) assessment',
+                        'type' => 'raw',
+                        'value' => function ($data, $row) {
+                            return CHtml::dropDownList(
+                                (get_class($data) . "[$row][need_eur]"),
+                                $data->need_eur,
+                                ['NO', 'YES'],
+                                array('class' => 'cols-full')
+                            );
+                        }
+                    ];
+                }
+                $columns[] =
                 [
                   'header' => 'Actions',
                   'type' => 'raw',
                   'value' => function ($data) {
                       return '<a href="javascript:void(0)" class="delete">delete</a>';
                   }
-                ],
                 ];
 
                 $this->widget('zii.widgets.grid.CGridView', array(

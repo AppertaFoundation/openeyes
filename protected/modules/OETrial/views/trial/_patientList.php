@@ -12,15 +12,12 @@
  */
 ?>
 <?php
-$dataProvided = $dataProvider->getData();
-$items_per_page = $dataProvider->getPagination()->getPageSize();
-$page_num = $dataProvider->getPagination()->getCurrentPage();
-$from = ($page_num * $items_per_page) + 1;
-$to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
+    $dataProvided = $dataProvider->getData();
+    $items_per_page = $dataProvider->getPagination()->getPageSize();
+    $page_num = $dataProvider->getPagination()->getCurrentPage();
+    $from = ($page_num * $items_per_page) + 1;
+    $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 ?>
-
-<div class="report-summary row divider cols-11">
-    <div class="flex-layout">
         <h2 class=""><?= $title; ?></h2>
         <select class="js-trails-sort-selector">
             <option selected disabled value="" style="display: none;">
@@ -62,7 +59,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                                 'sort_dir' => $new_sort_dir,
                                 'page_num' => $page_num,
                             )
-                        ) ?>"
+                               ) ?>"
                 >
                     <?= CHtml::link(
                         $field . $sort_symbol,
@@ -79,14 +76,14 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 </option>
             <?php endforeach; ?>
         </select>
-    </div>
-    <table class="standard">
-        <thead>
-        <tr>
-        </tr>
-        </thead>
-        <tbody>
 
+    <table class="standard">
+        <colgroup>
+            <col class="cols-4">
+            <col class="cols-2">
+            <col class="cols-2">
+        </colgroup>
+        <tbody>
         <?php /* @var Trial $trial */
         foreach ($dataProvided as $i => $trialPatient) {
             $this->renderPartial('/trialPatient/_view', array(
@@ -95,7 +92,6 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 'permission' => $permission,
             ));
         }
-
         ?>
         </tbody>
         <tfoot class="pagination-container">
@@ -119,4 +115,3 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
         </tr>
         </tfoot>
     </table>
-</div>

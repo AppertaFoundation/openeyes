@@ -60,7 +60,7 @@ $required_risk_ids = array_map(function ($r) {
                     $element->no_risks_date ? true : false,
                     array('class' => $model_name . '_no_risks')
                 ); ?>
-                  Confirm patient has no relevant risks
+                  No relevant risks
               </label>
          </td>
       </tr>

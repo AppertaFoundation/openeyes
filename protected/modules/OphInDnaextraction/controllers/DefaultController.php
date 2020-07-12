@@ -2,7 +2,6 @@
 
 class DefaultController extends BaseEventTypeController
 {
-    protected $show_element_sidebar = false;
 
     var $box_id;
     var $letter;
@@ -291,5 +290,4 @@ class DefaultController extends BaseEventTypeController
 
         Yii::app()->end();
     }
-
 }

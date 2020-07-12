@@ -17,6 +17,7 @@
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/email.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getRequest()->getUserAgent()); ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
@@ -31,7 +32,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             <?php
                             if ($element->is_signed_off == null) {
                                 echo 'N/A';
-                            } else if ((int)$element->is_signed_off == 1) {
+                            } elseif ((int)$element->is_signed_off == 1) {
                                 echo 'Yes';
                             } else {
                                 echo 'No';
@@ -64,11 +65,21 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                         if ($element->document_instance) {
                             foreach ($element->document_instance as $instance) {
                                 foreach ($instance->document_target as $target) {
+                                    $emailOutputStatus = "";
+                                    $isInfoBoxRequired = false;
+                                    foreach ($target->document_output as $documentOutput) {
+                                        if ( ($documentOutput->output_type === 'Email') || ($documentOutput->output_type === 'Email (Delayed)') ) {
+                                            $isInfoBoxRequired = true;
+                                        }
+                                    }
+                                    if ($isInfoBoxRequired) {
+                                        $emailOutputStatus = "<i class='oe-i info small pad js-has-tooltip-document-output-status' id='document_target_id_$target->id' data-tooltip-content=></i>";
+                                    }
                                     if ($target->ToCc == 'To') {
-                                        $toAddress = $target->contact_name . "\n" . $target->address;
+                                        $toAddress = $target->contact_name . ($emailOutputStatus ?? "") . "\n" . $target->address;
                                     } else {
                                         $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                                        $ccString .= "CC: " . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ", " . $element->renderSourceAddress($target->address) . "<br/>";
+                                        $ccString .= "<small class='fade'>CC</small><br/>" . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ($emailOutputStatus ?? "") . "<br/>" . $element->renderSourceAddress($target->address) . "<br/>";
                                     }
                                 }
                             }
@@ -76,11 +87,11 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                             $toAddress = $element->address;
                             foreach (explode("\n", trim($element->cc)) as $line) {
                                 if (trim($line)) {
-                                    $ccString .= "CC: " . str_replace(';', ',', $line) . "<br/>";
+                                    $ccString .= "<small class='fade'>CC</small>" . str_replace(';', ',', $line) . "<br/>";
                                 }
                             }
                         }
-                        echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) . "<br/>" . $ccString;
+                        echo str_replace("\n", '<br/>', $toAddress) . "<br/>" . $ccString;
                         ?>
                 </td>
             </tr>
@@ -122,5 +133,46 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 }
             });
         }
+    });
+
+    function getDocumentOutputStatus($element) {
+        var elementId = $element.id;
+        var id = elementId.substring(elementId.lastIndexOf('_') + 1);
+
+        // get the current status of the document output.
+        $.ajax({
+            'url': baseUrl+'/OphCoCorrespondence/Default/getDocumentOutputStatus?document_target_id=' + id,
+            'type': 'GET',
+            'success': function (data) {
+                let isHovered = $($element).is(":hover");
+                if (isHovered) {
+                    $("#" + elementId).data("tooltip-content", data);
+                    // This method is defined in the script.js
+                    showToolTip($element);
+                }
+            },
+        });
+    }
+
+    $('.js-has-tooltip-document-output-status').mouseover(function(e) {
+        getDocumentOutputStatus(this);
+    });
+
+    $('.js-has-tooltip-document-output-status').mouseout(function () {
+        $('body').find(".oe-tooltip").remove();
+    });
+
+    $(window).on('load', function () {
+        // check if there is any document_output with the print output_type and has the status of DRAFT
+        // if there is any, open the print dialog.
+        $.ajax({
+            'type': 'GET',
+            'url': '/OphCoCorrespondence/Default/getDraftPrintRecipients/' + OE_event_id,
+            'success': function (data) {
+                if (data) {
+                    OphCoCorrespondence_do_print(false)
+                }
+            }
+        });
     });
 </script>

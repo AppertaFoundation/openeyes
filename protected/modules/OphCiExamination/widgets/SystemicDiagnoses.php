@@ -133,6 +133,12 @@ class SystemicDiagnoses extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
+        if (array_key_exists('no_systemic_diagnoses', $data) && $data['no_systemic_diagnoses'] === '1' && !$element->no_systemic_diagnoses_date) {
+            $element->no_systemic_diagnoses_date = date('Y-m-d H:i:s');
+        } elseif ($element->no_systemic_diagnoses_date) {
+            $element->no_systemic_diagnoses_date = null;
+        }
+
         // Ensure we track whether to update the secondary diagnoses for the patient
         // or not when we save this element.
         $element->storePatientUpdateStatus();

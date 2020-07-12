@@ -33,7 +33,7 @@
     </td>
     <td>
         <div class="clinic-info scroll-content">
-            <?= $ass->report ?>
+            <?= $ass->formattedReport ?>
         </div>
     </td>
     <td>

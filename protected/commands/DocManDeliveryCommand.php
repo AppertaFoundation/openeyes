@@ -406,6 +406,7 @@ EOH;
             'output_type' => $document_output->output_type,
 
             'visit_id' => $pasapi_assignment ? $pasapi_assignment->resource_id : '',
+            'document_links' => [$filename],
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);

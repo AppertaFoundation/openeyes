@@ -37,6 +37,11 @@
                             <?php
                         }
                         ?>
+                        <?php if ($element->{'right_notes'}) : ?>
+                            <tr>
+                                <td colspan="12"><?php echo $element->textWithLineBreaks('right_notes') ?></td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             <?php } else { ?>
@@ -64,6 +69,11 @@
                             <?php
                         }
                         ?>
+                        <?php if ($element->{'left_notes'}) : ?>
+                            <tr>
+                                <td colspan="12"><?php echo $element->textWithLineBreaks('left_notes') ?></td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
                 <?php

@@ -141,7 +141,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @var bool
      */
-    protected $show_element_sidebar = true;
+    protected $show_element_sidebar = false;
 
     /**
      * Set to true if the index search bar should appear in the header when creating/editing the event
@@ -149,6 +149,13 @@ class BaseEventTypeController extends BaseModuleController
      * @var bool
      */
     protected $show_index_search = false;
+
+    /**
+     * Set to true if the manage element should appear on the sidebar
+     *
+     * @var bool
+     */
+    protected $show_manage_elements = false;
 
     public function behaviors()
     {
@@ -896,9 +903,15 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
 
-        $this->render('create', array(
+        $params = array(
             'errors' => @$errors,
-        ));
+        );
+        if (isset($this->eur_res) && isset($this->eur_answer_res)) {
+            $params['eur_res'] = $this->eur_res;
+            $params['eur_answer_res'] = $this->eur_answer_res;
+        }
+
+        $this->render($this->action->id, $params);
     }
 
     /**
@@ -1059,10 +1072,14 @@ class BaseEventTypeController extends BaseModuleController
                 array('level' => 'cancel')
             ),
         );
-
-        $this->render($this->action->id, array(
+        $params = array(
             'errors' => @$errors,
-        ));
+        );
+        if (isset($this->eur_res) && isset($this->eur_answer_res)) {
+            $params['eur_res'] = $this->eur_res;
+            $params['eur_answer_res'] = $this->eur_answer_res;
+        }
+        $this->render($this->action->id, $params);
     }
 
     /**
@@ -1303,7 +1320,16 @@ class BaseEventTypeController extends BaseModuleController
         // validate
         foreach ($this->open_elements as $element) {
             $this->setValidationScenarioForElement($element);
-            if (!$element->validate()) {
+            // Validate the element
+            $element->validate();
+
+            // Perform validation that requires knowledge of full event
+            // scope. (ie. knowledge of which other elements are present)
+            if (method_exists($element, 'eventScopeValidation')) {
+                $element->eventScopeValidation($this->open_elements);
+            }
+            // If either validation pass has errors
+            if ($element->hasErrors()) {
                 $name = $element->getElementTypeName();
                 foreach ($element->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {
@@ -1420,6 +1446,9 @@ class BaseEventTypeController extends BaseModuleController
                 OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
                 throw new Exception('Unable to save event.');
             }
+            if (isset($data['eur_result'])) {
+                $this->saveEURForm();
+            }
             OELog::log("Created new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
         }
 
@@ -1529,6 +1558,20 @@ class BaseEventTypeController extends BaseModuleController
             $event_type_id = ($this->event->attributes["event_type_id"]);
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = $event_type->name;
+        }
+    }
+
+    public function renderManageElements()
+    {
+        if ($this->show_manage_elements && in_array(
+            $this->getActionType($this->action->id),
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+            true
+        )) {
+            $event_type_id = $this->event->attributes["event_type_id"];
+            $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+            $event_name =  preg_replace('/\s+/', '_', $event_type->name);
+            $this->renderPartial(('//patient/_patient_manage_elements'), array('event_name'=>$event_name));
         }
     }
 
@@ -1950,7 +1993,7 @@ class BaseEventTypeController extends BaseModuleController
 
     /**
      * @param $id
-     * @return mixed
+     * @return mixed|void
      */
     public function actionPDFPrint($id)
     {
