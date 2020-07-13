@@ -161,7 +161,7 @@ $config = array(
         * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
         * with the actual values needs to be enclosed in curly brackets such as {event.id}. The supported strings are -
         *
-        * {prefix}, {event.id}, {patient.hos_num}, {random}, {document_output.id}, {event.last_modified_date}, {date}.
+        * {prefix}, {event.id}, {patient.hos_num}, {random}, {gp.nat_id}, {document_output.id}, {event.last_modified_date}, {date}.
         *
         */
         'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ? getenv('DOCMAN_FILENAME_FORMAT') : 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',

@@ -367,6 +367,7 @@ EOH;
             '{event.id}' => '',
             '{patient.hos_num}' => '',
             '{random}' => '',
+            '{gp.nat_id}' => '',
             '{document_output.id}' => '',
             '{event.last_modified_date}' => '',
             '{date}' => ''
