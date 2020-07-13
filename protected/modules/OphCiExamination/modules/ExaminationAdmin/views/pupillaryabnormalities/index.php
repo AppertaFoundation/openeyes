@@ -40,7 +40,7 @@
                     data-uri="OphCiExamination/admin/PupillaryAbnormalities/update/<?= $model->id ?>" >
                     <td class="reorder">
                         <span>↑↓</span>
-                        <?=\CHtml::hiddenField("OphCiExamination_PupillaryAbnormalities_Abnormality[display_order][]", $model->id);?>
+                        <?=\CHtml::hiddenField("OphCiExamination_PupillaryAbnormalities_Abnormality[display_order][]", $model->id, ['id' => "OphCiExamination_PupillaryAbnormalities_Abnormality_display_order_{$i}"]);?>
                     </td>
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
                     <td>
