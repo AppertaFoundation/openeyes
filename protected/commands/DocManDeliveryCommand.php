@@ -373,21 +373,29 @@ EOH;
         $templateStrings = $this->getStringsToReplace($fileNameFormat);
 
         foreach ($templateStrings as $templateString) {
-            if ($templateString === '{prefix}') {
-                $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
-            } elseif ($templateString === '{patient.hos_num}') {
-                $replacePairs[$templateString] = $this->event->episode->patient->hos_num;
-            } elseif ($templateString === '{event.id}') {
-                $replacePairs[$templateString] = $this->event->id;
-            } elseif ($templateString === '{random}') {
-                $rand = rand();
-                $replacePairs[$templateString] = $rand;
-            } elseif ($templateString === '{gp.nat_id}') {
-                $replacePairs[$templateString] = $this->event->episode->patient->gp->nat_id;
-            } elseif ($templateString === '{document_output.id}') {
-                $replacePairs[$templateString] = $document_output_id;
-            } elseif ($templateString === '{event.last_modified_date}') {
-                $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
+            switch ($templateString) {
+                case '{prefix}':
+                    $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
+                    break;
+                case '{patient.hos_num}':
+                    $replacePairs[$templateString] = $this->event->episode->patient->hos_num;
+                    break;
+                case '{event.id}':
+                    $replacePairs[$templateString] = $this->event->id;
+                    break;
+                case '{random}':
+                    $rand = rand();
+                    $replacePairs[$templateString] = $rand;
+                    break;
+                case '{gp.nat_id}':
+                    $replacePairs[$templateString] = $this->event->episode->patient->gp->nat_id;
+                    break;
+                case '{document_output.id}':
+                    $replacePairs[$templateString] = $document_output_id;
+                    break;
+                case '{event.last_modified_date}':
+                    $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
+                    break;
             }
         }
 
