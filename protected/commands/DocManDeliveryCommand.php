@@ -52,7 +52,8 @@ class DocManDeliveryCommand extends CConsoleCommand
      */
     private $with_internal_referral = true;
 
-    public function getHelp(){
+    public function getHelp()
+    {
         return <<<EOH
 yiic docmandelivery --xml_template=<file>
     --xml_template: full path and filename to the template : eg.: /var/tmp/test_template.php
@@ -326,7 +327,8 @@ EOH;
      * @param $string
      * @return array Return the array of strings that needs to be replaced
      */
-    private function getStringsToReplace($string) {
+    private function getStringsToReplace($string)
+    {
         $tokens = [
             '{' => '}',
         ];
@@ -345,7 +347,7 @@ EOH;
                 $results[] = $result;
                 $result = "";
                 array_pop($stack);
-            } elseif(!empty($stack)) {
+            } elseif (!empty($stack)) {
                 $result .= $s;
             }
         }
