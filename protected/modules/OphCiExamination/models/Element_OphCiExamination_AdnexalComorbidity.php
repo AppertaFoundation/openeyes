@@ -83,8 +83,12 @@ class Element_OphCiExamination_AdnexalComorbidity extends \SplitEventTypeElement
         );
 
         if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
-            $this->addError('left_description', 'Left Description cannot be blank when there are no child elements');
-            $this->addError('right_description', 'Right Description cannot be blank when there are no child elements');
+            if (!$this->left_description) {
+                $this->addError('left_description', 'Left Description cannot be blank when there are no child elements');
+            }
+            if (!$this->right_description) {
+                $this->addError('right_description', 'Right Description cannot be blank when there are no child elements');
+            }
         }
     }
 
