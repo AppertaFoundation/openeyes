@@ -86,7 +86,7 @@ class User extends BaseActiveRecordVersioned
         );
         $user = Yii::app()->request->getPost('User');
         // if the global firm rights is set to No, at least one context needs to be selected
-        if ($user['global_firm_rights'] == 0) {
+        if (isset($user['global_firm_rights']) && intval($user['global_firm_rights']) === 0) {
             $commonRules = array_merge(
                 $commonRules,
                 array(

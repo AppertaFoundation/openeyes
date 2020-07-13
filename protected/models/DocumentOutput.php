@@ -80,4 +80,22 @@ class DocumentOutput extends BaseActiveRecord
         $event_id = isset($this->document_target->document_instance) ? $this->document_target->document_instance->correspondence_event_id : null;
         return $event_id ? Event::model()->disableDefaultScope()->findByPk($event_id) : null;
     }
+
+    public function printIsUnique()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_target ON t.document_target_id = document_target.id";
+        $criteria->join .= " JOIN document_instance ON document_target.document_instance_id = document_instance.id";
+
+        $criteria->join .= " JOIN event ON document_instance.correspondence_event_id = event.id";
+
+        $criteria->addCondition("t.`output_type`= 'Docman'");
+        $criteria->addCondition("event.id = " . $this->document_target->document_instance->correspondence_event_id);
+        $criteria->addCondition("event.deleted = 0");
+
+        if (!isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false) {
+            $criteria_string = " OR t.`output_type`= 'Internalreferral'";
+        }
+        return DocumentOutput::model()->count($criteria) == 0;
+    }
 }
