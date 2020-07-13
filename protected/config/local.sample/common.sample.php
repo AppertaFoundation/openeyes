@@ -156,7 +156,7 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
-        
+
         /**
         * Filename format for the PDF and XML files output by the docman export
         * possible values:
@@ -166,7 +166,7 @@ $config = array(
         * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
         * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
         */
-        'docman_filename_format' => 'format1',
+        'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ? getenv('DOCMAN_FILENAME_FORMAT') : 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',
         // set this to false if you want to suppress XML output
         'docman_generate_xml' => true,
     ),
