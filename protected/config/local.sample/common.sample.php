@@ -125,11 +125,6 @@ $config = array(
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
-        // This is used in contact page
-        'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
-        'ldap_password' => '',
-        'ldap_dn' => 'CN=Users,dc=example,dc=com',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
         //'default_site_code' => '',
@@ -156,17 +151,6 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
-
-        /**
-        * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
-        * with the actual values needs to be enclosed in curly brackets such as {event.id}. The supported strings are -
-        *
-        * {prefix}, {event.id}, {patient.hos_num}, {random}, {gp.nat_id}, {document_output.id}, {event.last_modified_date}, {date}.
-        *
-        */
-        'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ? getenv('DOCMAN_FILENAME_FORMAT') : 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',
-        // set this to false if you want to suppress XML output
-        'docman_generate_xml' => true,
     ),
 );
 
