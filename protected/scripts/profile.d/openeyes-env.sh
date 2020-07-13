@@ -72,3 +72,7 @@
 # export PW_RES_MAX_LEN_MESS='Passwords must be at most 70 characters long'
 # export PW_RES_STRENGTH='%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%'
 # export PW_RES_STRENGTH_MESS='Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+
+## Set hos num parameters
+# export OE_HOS_NUM_REGEX='/^([a-zA-Z]*[0-9]*)$/'
+# export OE_HOS_NUM_PAD='%07s'

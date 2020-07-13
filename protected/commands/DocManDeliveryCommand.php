@@ -15,7 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-require_once '../vendor/setasign/fpdi/pdf_parser.php';
 class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path
@@ -27,6 +26,7 @@ class DocManDeliveryCommand extends CConsoleCommand
     private $event;
 
     private $generate_xml = false;
+    private $with_print = false;
 
     private $generate_csv = false;
     private $csv_file_options = [
@@ -52,7 +52,8 @@ class DocManDeliveryCommand extends CConsoleCommand
      */
     private $with_internal_referral = true;
 
-    public function getHelp(){
+    public function getHelp()
+    {
         return <<<EOH
 yiic docmandelivery --xml_template=<file>
     --xml_template: full path and filename to the template : eg.: /var/tmp/test_template.php
@@ -79,6 +80,7 @@ EOH;
 
         $this->generate_xml = isset(\Yii::app()->params['docman_generate_xml']) && \Yii::app()->params['docman_generate_xml'];
         $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
+        $this->with_print = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
 
         $this->checkPath($this->path);
 
@@ -143,7 +145,7 @@ EOH;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             // $this->savePDFFile generates xml if required
         } else if ($document->output_type == 'Internalreferral') {
-            $file_info = $this->getFileName('Internal');
+            $file_info = $this->getFileName($document->id, 'Internal');
             //Docman xml will be used
             $xml_generated = $this->generateXMLOutput($file_info['filename'], $document);
 
@@ -154,6 +156,9 @@ EOH;
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
             }
+        } else if ($document->output_type == 'Print' && $this->with_print) {
+            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Print' . PHP_EOL;
+            $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
     }
 
@@ -207,6 +212,10 @@ EOH;
         $criteria_string = '';
         if ($this->with_internal_referral) {
             $criteria_string = " OR t.`output_type`= 'Internalreferral'";
+        }
+
+        if ($this->with_print) {
+            $criteria_string .= " OR t.`output_type`= 'Print'";
         }
 
         if ($output_status) {
@@ -285,13 +294,13 @@ EOH;
                 return false;
             }
 
-            $filename = $this->getFileName()['filename'];
+            $filename = $this->getFileName($output_id)['filename'];
 
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
             if ($this->generate_xml) {
                 $xml_generated = $this->generateXMLOutput($filename, $document_output);
             }
-            
+
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
                 echo 'Generating Docman file ' . $filename . ' failed' . PHP_EOL;
                 return false;
@@ -314,31 +323,91 @@ EOH;
         }
     }
 
-    private function getFileName($prefix = '')
+    /**
+     * @param $string
+     * @return array Return the array of strings that needs to be replaced
+     */
+    private function getStringsToReplace($string)
     {
-        $format =  isset(Yii::app()->params['docman_filename_format']) ? Yii::app()->params['docman_filename_format'] : 'format1';
-        $rand = rand();
+        $tokens = [
+            '{' => '}',
+        ];
 
-        switch ($format) {
-            case 'format2':
-                $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                break;
-            case 'format3':
-                $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                    date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                break;
-            case 'format4':
-                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . ($this->event->id) . "__" . $prefix . "_";
-                break;
-            default:
-            case 'format1':
-                $filename = "OPENEYES_" . ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' .
-                    $this->event->id . "_" . $rand;
-                break;
+        $closeTokens = array_flip($tokens);
+        $results = [];
+        $stack = [];
+        $result = "";
+        for ($i = 0; $i < strlen($string); ++$i) {
+            $s = $string[$i];
+            if (isset($tokens[$s])) {
+                $stack[] = $s;
+                $result .= $s;
+            } else if (isset($closeTokens[$s])) {
+                $result .= $s;
+                $results[] = $result;
+                $result = "";
+                array_pop($stack);
+            } elseif (!empty($stack)) {
+                $result .= $s;
+            }
         }
 
-        return ['filename' => $filename, 'rand' => $rand];
+        return $results;
+    }
+
+    /**
+     * @param int $document_output_id The id column of the document_output table
+     * @param string $prefix Prefix to be prepended to the filename
+     * @return array Name of the output file
+     */
+    private function getFileName($document_output_id, $prefix = '')
+    {
+        $replacePairs = [
+            '{prefix}' => '',
+            '{event.id}' => '',
+            '{patient.hos_num}' => '',
+            '{random}' => '',
+            '{document_output.id}' => '',
+            '{event.last_modified_date}' => '',
+            '{date}' => ''
+        ];
+
+        $fileNameFormat = Yii::app()->params['docman_filename_format'];
+        $templateStrings = $this->getStringsToReplace($fileNameFormat);
+
+        foreach ($templateStrings as $templateString) {
+            switch ($templateString) {
+                case '{prefix}':
+                    $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
+                    break;
+                case '{patient.hos_num}':
+                    $replacePairs[$templateString] = $this->event->episode->patient->hos_num;
+                    break;
+                case '{event.id}':
+                    $replacePairs[$templateString] = $this->event->id;
+                    break;
+                case '{random}':
+                    $rand = rand();
+                    $replacePairs[$templateString] = $rand;
+                    break;
+                case '{gp.nat_id}':
+                    $replacePairs[$templateString] = $this->event->episode->patient->gp->nat_id;
+                    break;
+                case '{document_output.id}':
+                    $replacePairs[$templateString] = $document_output_id;
+                    break;
+                case '{event.last_modified_date}':
+                    $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
+                    break;
+                case '{date}':
+                    $replacePairs[$templateString] = date('YmdHis');
+                    break;
+            }
+        }
+
+        $filename = strtr($fileNameFormat, $replacePairs);
+
+        return ['filename' => $filename, 'rand' => isset($rand) ? $rand : ''];
     }
 
     /**
@@ -434,7 +503,7 @@ EOH;
 
         return $output->save();
     }
-    
+
     private function updateFailedDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
