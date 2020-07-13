@@ -487,7 +487,7 @@ return array(
         /**
          *  Set to false to suppress XML generation for electronic correspondence
          */
-        'docman_generate_xml' => filter_var(getenv('DOCMAN_GENERATE_XML'), FILTER_VALIDATE_BOOLEAN),
+        'docman_generate_xml' => getenv('DOCMAN_GENERATE_XML') ? filter_var(getenv('DOCMAN_GENERATE_XML'), FILTER_VALIDATE_BOOLEAN) : true,
 
 
         /**
