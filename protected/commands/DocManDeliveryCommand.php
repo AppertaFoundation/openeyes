@@ -368,7 +368,8 @@ EOH;
             '{patient.hos_num}' => '',
             '{random}' => '',
             '{document_output.id}' => '',
-            '{event.last_modified_date}' => ''
+            '{event.last_modified_date}' => '',
+            '{date}' => ''
         ];
 
         $fileNameFormat = Yii::app()->params['docman_filename_format'];
@@ -397,6 +398,9 @@ EOH;
                     break;
                 case '{event.last_modified_date}':
                     $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
+                    break;
+                case '{date}':
+                    $replacePairs[$templateString] = date('YmdHis');
                     break;
             }
         }
