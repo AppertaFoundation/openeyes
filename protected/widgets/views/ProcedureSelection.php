@@ -394,7 +394,7 @@
 
                     // append duration of the procedure
                     $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
-                        if ($(this).html() === name) {
+                        if ($(this).text() === name) {
                             $(this).parents('td.procedure').after(data);
                         }
                     });
