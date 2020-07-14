@@ -31,28 +31,28 @@
  */
 class Trial extends BaseActiveRecordVersioned
 {
-  /**
-   * The success return code for addUserPermission()
-   */
+    /**
+     * The success return code for addUserPermission()
+     */
     const RETURN_CODE_USER_PERMISSION_OK = 'success';
 
-  /**
-   * The return code for addUserPermission() if the user tried to share the trial with a user that it is
-   * already shared with
-   */
+    /**
+     * The return code for addUserPermission() if the user tried to share the trial with a user that it is
+     * already shared with
+     */
     const RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS = 'permission_already_exists';
 
-  /**
-   * The return code for actionRemovePermission() if all went well
-   */
+    /**
+     * The return code for actionRemovePermission() if all went well
+     */
     const REMOVE_PERMISSION_RESULT_SUCCESS = 'success';
-  /**
-   * The return code for actionRemovePermission() if the user tried to remove the last user with manage privileges
-   */
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove the last user with manage privileges
+     */
     const REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST = 'remove_last_fail';
-  /**
-   * The return code for actionRemovePermission() if the user tried to remove themselves from the Trial
-   */
+    /**
+     * The return code for actionRemovePermission() if the user tried to remove themselves from the Trial
+     */
     const REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF = 'remove_self_fail';
     /**
      * The return code for actionRemovePermission() if the user tried to remove admin from the Trial
@@ -63,55 +63,55 @@ class Trial extends BaseActiveRecordVersioned
      */
     const REMOVE_PERMISSION_RESULT_CANT_REMOVE_OWNER = 'remove_owner_fail';
 
-  /**
-   * The return code for actionTransitionState() if the transition was a success
-   */
+    /**
+     * The return code for actionTransitionState() if the transition was a success
+     */
     const RETURN_CODE_OK = 'success';
 
-  /**
-   * @return string the associated database table name
-   */
+    /**
+     * @return string the associated database table name
+     */
     public function tableName()
     {
         return 'trial';
     }
 
-  /**
-   * @return array validation rules for model attributes.
-   */
+    /**
+     * @return array validation rules for model attributes.
+     */
     public function rules()
     {
         return array(
-        array('name, owner_user_id, trial_type_id', 'required'),
-        array('name', 'length', 'max' => 200),
-        array('name', 'unique', 'caseSensitive' => false),
-        array('external_data_link', 'url', 'defaultScheme' => 'http'),
-        array(
-        'trial_type_id, owner_user_id, last_modified_user_id, created_user_id',
-        'length',
-        'max' => 10,
-        ),
-        array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
-        array('closed_date','closedDateValidator','on'=>'manual'),
-        array('description, last_modified_date, created_date, ethics_number', 'safe'),
+            array('name, owner_user_id, trial_type_id', 'required'),
+            array('name', 'length', 'max' => 200),
+            array('name', 'unique', 'caseSensitive' => false),
+            array('external_data_link', 'url', 'defaultScheme' => 'http'),
+            array(
+                'trial_type_id, owner_user_id, last_modified_user_id, created_user_id',
+                'length',
+                'max' => 10,
+            ),
+            array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
+            array('closed_date', 'closedDateValidator', 'on' => 'manual'),
+            array('description, last_modified_date, created_date, ethics_number', 'safe'),
         );
     }
 
-  /**
-   * Returns the date this trial was started as a string
-   *
-   * @return string The started date as a string
-   */
+    /**
+     * Returns the date this trial was started as a string
+     *
+     * @return string The started date as a string
+     */
     public function getStartedDateForDisplay()
     {
         return $this->started_date !== null ? Helper::formatFuzzyDate($this->started_date) : 'Pending';
     }
 
-  /**
-   * Returns the date this trial was closed as a string
-   *
-   * @return string The closed date
-   */
+    /**
+     * Returns the date this trial was closed as a string
+     *
+     * @return string The closed date
+     */
     public function getClosedDateForDisplay()
     {
         if ($this->started_date === null) {
@@ -125,70 +125,70 @@ class Trial extends BaseActiveRecordVersioned
         return 'present';
     }
 
-  /*
-  * Get the ethics number as a string
-  */
+    /*
+    * Get the ethics number as a string
+    */
     public function getEthicsNumberForDisplay()
     {
-        return $this->ethics_number === null ? 'NA' : $this-> ethics_number;
+        return $this->ethics_number === null ? 'NA' : $this->ethics_number;
     }
 
-  /**
-   * Gets the relation rules for Trial
-   *
-   * @return array relational rules.
-   */
+    /**
+     * Gets the relation rules for Trial
+     *
+     * @return array relational rules.
+     */
     public function relations()
     {
         return array(
-        'trialType' => array(self::BELONGS_TO, 'TrialType', 'trial_type_id'),
-        'ownerUser' => array(self::BELONGS_TO, 'User', 'owner_user_id'),
-        'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-        'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-        'trialPatients' => array(self::HAS_MANY, 'TrialPatient', 'trial_id'),
-        'userAssignments' => array(self::HAS_MANY, 'UserTrialAssignment', 'trial_id'),
+            'trialType' => array(self::BELONGS_TO, 'TrialType', 'trial_type_id'),
+            'ownerUser' => array(self::BELONGS_TO, 'User', 'owner_user_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'trialPatients' => array(self::HAS_MANY, 'TrialPatient', 'trial_id'),
+            'userAssignments' => array(self::HAS_MANY, 'UserTrialAssignment', 'trial_id'),
         );
     }
 
-  /**
-   * @return array customized attribute labels (name=>label)
-   */
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
     public function attributeLabels()
     {
         return array(
-        'id' => 'ID',
-        'name' => 'Name',
-        'description' => 'Description',
-        'owner_user_id' => 'Owner User',
-        'trial_type_id' => 'Trial Type',
-        'started_date' => 'Start',
-        'closed_date' => 'End',
-        'last_modified_date' => 'Last Modified Date',
-        'last_modified_user_id' => 'Last Modified User',
-        'created_user_id' => 'Created User',
-        'created_date' => 'Created Date',
-        'external_data_link' => 'External Data Link',
-        'ethics_number' => 'Ethics Number',
+            'id' => 'ID',
+            'name' => 'Name',
+            'description' => 'Description',
+            'owner_user_id' => 'Owner User',
+            'trial_type_id' => 'Trial Type',
+            'started_date' => 'Start',
+            'closed_date' => 'End',
+            'last_modified_date' => 'Last Modified Date',
+            'last_modified_user_id' => 'Last Modified User',
+            'created_user_id' => 'Created User',
+            'created_date' => 'Created Date',
+            'external_data_link' => 'External Data Link',
+            'ethics_number' => 'Ethics Number',
         );
     }
 
-  /**
-   * Returns the static model of the specified AR class.
-   * Please note that you should have this exact method in all your CActiveRecord descendants!
-   * @param string $className active record class name.
-   * @return Trial the static model class
-   */
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Trial the static model class
+     */
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
 
 
-  /**
-   * Overrides CActiveModel::beforeValidate()
-   *
-   * @return bool A value indicating whether the trial passed validation
-   */
+    /**
+     * Overrides CActiveModel::beforeValidate()
+     *
+     * @return bool A value indicating whether the trial passed validation
+     */
     public function beforeValidate()
     {
         if (!parent::beforeValidate()) {
@@ -206,11 +206,11 @@ class Trial extends BaseActiveRecordVersioned
         return true;
     }
 
-  /**
-   * Overrides CActiveModel::afterSave()
-   *
-   * @throws Exception Thrown if a new permission cannot be created
-   */
+    /**
+     * Overrides CActiveModel::afterSave()
+     *
+     * @throws Exception Thrown if a new permission cannot be created
+     */
     protected function afterSave()
     {
         parent::afterSave();
@@ -220,7 +220,7 @@ class Trial extends BaseActiveRecordVersioned
             if (array_key_exists('principal_investigator', $_SESSION) && !empty($_SESSION['principal_investigator'])) {
                 $current_user_id = $_SESSION['principal_investigator'];
             } else {
-                $current_user_id =  Yii::app()->user->id;
+                $current_user_id = Yii::app()->user->id;
             }
 
             // unsetting the session, so that if it is empty for the next row it won't insert the principal investigator that was entered for the previous row for the trial import.
@@ -243,18 +243,20 @@ class Trial extends BaseActiveRecordVersioned
                     $newPermission->is_principal_investigator = 1;
                 }
                 if (!$newPermission->save()) {
-                    throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
-                      . print_r($newPermission->getErrors(), true));
+                    throw new CHttpException(
+                        500, 'The owner permission for the new trial could not be saved: '
+                           . print_r($newPermission->getErrors(), true)
+                    );
                 }
             }
         }
     }
 
-  /**
-   * Returns whether or not this trial has any shortlisted patients
-   *
-   * @return bool True if the trial has one or more shortlisted patients, otherwise false
-   */
+    /**
+     * Returns whether or not this trial has any shortlisted patients
+     *
+     * @return bool True if the trial has one or more shortlisted patients, otherwise false
+     */
     public function hasShortlistedPatients()
     {
         return TrialPatient::model()->exists(
@@ -266,13 +268,12 @@ class Trial extends BaseActiveRecordVersioned
         );
     }
 
-  /**
-   * Gets the data providers for each patient status
-   * @param string $sort_by The field name to sort by
-   * @param string $sort_dir The direction to sort the results by
-   * @return array An array of data providers with one for each patient status
-   * @throws CException Thrown if an error occurs when created the data providers
-   */
+    /**
+     * Gets the data providers for each patient status
+     * @param string $sort_by The field name to sort by
+     * @param string $sort_dir The direction to sort the results by
+     * @return array An array of data providers with one for each patient status
+     */
     public function getPatientDataProviders($sort_by, $sort_dir)
     {
         $dataProviders = array();
@@ -293,7 +294,7 @@ class Trial extends BaseActiveRecordVersioned
      */
     public function getPatientDataProvider($patient_status, $sort_by, $sort_dir)
     {
-      // Get the column to sort by ('t' => trial_patient, p => patient, e => ethnic_group, c => contact))
+        // Get the column to sort by ('t' => trial_patient, p => patient, e => ethnic_group, c => contact))
         $sortBySql = null;
         switch ($sort_by) {
             case 'Name':
@@ -317,31 +318,31 @@ class Trial extends BaseActiveRecordVersioned
                 break;
         }
 
-          $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
+        $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
 
-          $patientDataProvider = new CActiveDataProvider('TrialPatient', array(
-          'criteria' => array(
-          'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
-          'join' => 'JOIN patient p ON p.id = t.patient_id
-                             JOIN contact c ON c.id = p.contact_id
-                             LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
-          'order' => $sortExpr,
-          'params' => array(
-            ':trialId' => $this->id,
-            ':patientStatus' => $patient_status->id,
-          ),
-          ),
-          'pagination' => array(
-          'pageSize' => 10,
-          ),
-          ));
-
-          return $patientDataProvider;
+        return new CActiveDataProvider(
+            'TrialPatient', array(
+            'criteria' => array(
+                'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
+                'join' => 'JOIN patient p ON p.id = t.patient_id
+                           JOIN contact c ON c.id = p.contact_id
+                           LEFT JOIN ethnic_group e ON e.id = p.ethnic_group_id',
+                'order' => $sortExpr,
+                'params' => array(
+                    ':trialId' => $this->id,
+                    ':patientStatus' => $patient_status->id,
+                ),
+            ),
+            'pagination' => array(
+                'pageSize' => 10,
+            ),
+        )
+        );
     }
 
     /**
      * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
-     * @param TrialType $type The trial type.
+     * @param string $type The trial type.
      * @return array A list of trials of the specified trial type.
      */
     public static function getTrialList($type)
@@ -363,6 +364,7 @@ class Trial extends BaseActiveRecordVersioned
      * @param Patient $patient The patient to add
      * @param TrialPatientStatus $patient_status The initial trial status for the patient (default to shortlisted)
      * @returns TrialPatient The new TrialPatient record
+     * @return TrialPatient
      * @throws Exception Thrown if an error occurs when saving the TrialPatient record
      */
     public function addPatient(Patient $patient, $patient_status)
@@ -393,8 +395,8 @@ class Trial extends BaseActiveRecordVersioned
         $trialPatient = TrialPatient::model()->find(
             'patient_id = :patientId AND trial_id = :trialId',
             array(
-              ':patientId' => $patient_id,
-              ':trialId' => $this->id,
+                ':patientId' => $patient_id,
+                ':trialId' => $this->id,
             )
         );
 
@@ -431,8 +433,8 @@ class Trial extends BaseActiveRecordVersioned
         if (UserTrialAssignment::model()->exists(
             'trial_id = :trialId AND user_id = :userId',
             array(
-              ':trialId' => $this->id,
-              ':userId' => $user_id,
+                ':trialId' => $this->id,
+                ':userId' => $user_id,
             )
         )
         ) {
@@ -458,14 +460,13 @@ class Trial extends BaseActiveRecordVersioned
      * Removes a UserTrialAssignment
      *
      * @param int $permission_id The ID of the permission to remove
-     * @throws CHttpException Thrown if the permission cannot be found
      * @return string The return code
      * @throws Exception Thrown if the permission cannot be deleted
      */
     public function removeUserAssignment($permission_id)
     {
         $logMessage = null;
-      /* @var UserTrialAssignment $permission */
+        /* @var UserTrialAssignment $permission */
         $assignment = UserTrialAssignment::model()->findByPk($permission_id);
         $admin_user_group = User::model()->findAllByRoles(array('admin'));
         if ($assignment->trial->id !== $this->id) {
@@ -484,13 +485,13 @@ class Trial extends BaseActiveRecordVersioned
             return self::REMOVE_PERMISSION_RESULT_CANT_REMOVE_ADMIN;
         }
 
-      // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
+        // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
         if ($assignment->trialPermission->can_manage) {
             $managerCount = UserTrialAssignment::model()->count(
                 'trial_id = :trialId AND EXISTS (
             SELECT tp.id FROM trial_permission tp WHERE tp.id = trial_permission_id AND tp.can_manage)',
                 array(
-                ':trialId' => $this->id,
+                    ':trialId' => $this->id,
                 )
             );
 
@@ -501,8 +502,10 @@ class Trial extends BaseActiveRecordVersioned
 
 
         if (!$assignment->delete()) {
-            throw new Exception('An error occurred when attempting to delete the permission: '
-            . print_r($assignment->getErrors(), true));
+            throw new Exception(
+                'An error occurred when attempting to delete the permission: '
+                . print_r($assignment->getErrors(), true)
+            );
         }
 
         $this->audit('trial', 'remove-user-permission', null, $logMessage);
@@ -598,15 +601,25 @@ class Trial extends BaseActiveRecordVersioned
 
     public function getTrialPrincipalInvestigators()
     {
-        $principal_investigators = UserTrialAssignment::model()->findAll('trial_id=? and is_principal_investigator = 1', array($this->id));
-        return $principal_investigators;
+        return UserTrialAssignment::model()->findAll(
+            'trial_id=? and is_principal_investigator = 1',
+            array($this->id)
+        );
     }
 
     public function getTrialStudyCoordinators()
     {
-        $study_coordinators = UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
-        return $study_coordinators;
+        return UserTrialAssignment::model()->findAll(
+            'trial_id=? and is_study_coordinator = 1',
+            array($this->id)
+        );
     }
+
+    /**
+     * @param $attribute
+     * @param $params
+     * @throws Exception
+     */
     public function closedDateValidator($attribute, $params)
     {
         if ($this->hasErrors('closed_date')) {
@@ -614,7 +627,7 @@ class Trial extends BaseActiveRecordVersioned
         }
         if (isset($this->started_date) && isset($this->$attribute)) {
             $started_date = new DateTime($this->started_date);
-            $closed_date =  new DateTime($this->$attribute);
+            $closed_date = new DateTime($this->$attribute);
             if ($closed_date < $started_date) {
                 $this->addError($attribute, 'Invalid date. Closed date cannot be earlier than started date.');
             }

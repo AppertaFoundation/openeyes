@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class TrialPatientTest
+ * @method trial_patient($fixtureId)
+ * @method treatment_type($fixtureId)
+ */
 class TrialPatientTest extends ActiveRecordTestCase
 {
     public $fixtures = array(
@@ -19,11 +24,14 @@ class TrialPatientTest extends ActiveRecordTestCase
         return TrialPatient::model();
     }
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass() : void
     {
         Yii::app()->getModule('OETrial');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testChangeStatus()
     {
         /* @var TrialPatient $trialPatient */
@@ -32,15 +40,21 @@ class TrialPatientTest extends ActiveRecordTestCase
         $this->assertEquals('ACCEPTED', $trialPatient->status->code);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testChangeStatusAlreadyInIntervention()
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_2');
-        $this->expectException(CHttpException::class, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
+        $this->expectException(CHttpException::class);
         $trialPatient->changeStatus(TrialPatientStatus::model()->find('code = "ACCEPTED"'));
         $this->assertEquals('SHORTLISTED', $trialPatient->status);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testUpdateExternalId()
     {
         /* @var TrialPatient $trialPatient */
@@ -53,6 +67,9 @@ class TrialPatientTest extends ActiveRecordTestCase
         $this->assertNull($trialPatient->external_trial_identifier);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testUpdateTreatmentType()
     {
         /* @var TrialPatient $trialPatient */
@@ -66,7 +83,7 @@ class TrialPatientTest extends ActiveRecordTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_1');
-        $this->expectException('Exception', 'You cannot change the treatment type until the trial is closed.');
+        $this->expectException('Exception');
         $trialPatient->updateTreatmentType($this->treatment_type('treatment_type_intervention'));
     }
 

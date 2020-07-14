@@ -4,7 +4,7 @@
  * This is the model class for table "treatment_type".
  *
  * The followings are the available columns in table 'treatment_type':
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $code
  * @property string $last_modified_user_id

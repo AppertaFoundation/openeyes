@@ -4,7 +4,7 @@
  * This is the model class for table "trial_patient".
  *
  * The followings are the available columns in table 'trial_patient':
- * @property integer $id
+ * @property int $id
  * @property string $external_trial_identifier
  * @property int $trial_id
  * @property int $patient_id
@@ -31,7 +31,7 @@ class TrialPatient extends BaseActiveRecordVersioned
      * Gets whether a patient is currently in an open Intervention trial (other than the given trial)
      *
      * @param Patient $patient The patient to test for
-     * @param integer $trial_id If set, this function will ignore trials with this ID
+     * @param int $trial_id If set, this function will ignore trials with this ID
      *
      * @return bool Returns true if this patient is currently in an open Intervention trial, otherwise false
      */
@@ -56,7 +56,7 @@ class TrialPatient extends BaseActiveRecordVersioned
      * "Unknown" which will be favoured over "Placebo"
      *
      * @param Patient $patient The patient to test for
-     * @param integer $trial_id If set, this function will ignore trials with this ID
+     * @param int $trial_id If set, this function will ignore trials with this ID
      *
      * @return TreatmentType Returns the treatment type that the patient has undergone as part of previous trials.
      */
@@ -106,7 +106,7 @@ class TrialPatient extends BaseActiveRecordVersioned
     /**
      * @param $patient Patient record.
      * @param $trial_id int Trial ID.
-     * @return CActiveRecord|null TrialPatient record.
+     * @return BaseActiveRecordVersioned|null TrialPatient record.
      */
     public static function getTrialPatient($patient, $trial_id)
     {

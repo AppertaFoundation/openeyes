@@ -12,7 +12,7 @@ class PreviousTrialParameterTest extends CDbTestCase
     protected $searchProvider;
     protected $invalidProvider;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         Yii::app()->getModule('OECaseSearch');
     }
