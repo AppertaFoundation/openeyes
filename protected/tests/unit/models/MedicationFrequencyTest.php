@@ -42,7 +42,7 @@ class MedicationFrequencyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::model
+     * @covers MedicationFrequency::model
      */
     public function testModel()
     {
@@ -50,7 +50,7 @@ class MedicationFrequencyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::tableName
+     * @covers MedicationFrequency::tableName
      */
     public function testTableName()
     {
@@ -58,7 +58,7 @@ class MedicationFrequencyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::rules
+     * @covers MedicationFrequency::rules
      * @throws CException
      */
     public function testRules()

@@ -1,6 +1,9 @@
 <?php
 
 
+use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
+use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
+
 class OETrial_ReportTrialCohortTest extends CDbTestCase
 {
     protected $instance;
@@ -15,20 +18,24 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'trial_patient' => 'TrialPatient',
         'trial_permission' => 'TrialPermission',
         'user_trial_assignment' => 'UserTrialAssignment',
+        'event' => Event::class,
+        'episode' => Episode::class,
+        'et_ophciexamination_diagnose' => Element_OphCiExamination_Diagnoses::class,
+        'ophciexamination_diagnosis' => OphCiExamination_Diagnosis::class,
     );
 
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass()
     {
         Yii::app()->getModule('OETrial');
     }
 
-    public function setUp() : void
+    public function setUp()
     {
         parent::setUp();
         $this->instance = new OETrial_ReportTrialCohort();
     }
 
-    public function tearDown() : void
+    public function tearDown()
     {
         unset($this->instance);
         parent::tearDown();
@@ -42,7 +49,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         return array(
             array(
                 'fixture' => 'patient1',
-                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,"Myopia; Retinal lattice degeneration; Posterior vitreous detachment",,' . "\n"
+                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,"Myopia; Retinal lattice degeneration; Myopia; Retinal lattice degeneration; Posterior vitreous detachment",,' . "\n"
             ),
             array(
                 'fixture' => 'patient3',

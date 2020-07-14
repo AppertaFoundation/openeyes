@@ -15,11 +15,18 @@
 
 namespace services;
 
+use PHPUnit\Framework\MockObject\Generator;
+
 class ServiceManagerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @param $name
+     * @param $extends
+     * @throws \ReflectionException
+     */
     private static function generateMockClass($name, $extends)
     {
-        $mock_class = \PHPUnit_Framework_MockObject_Generator::generate($extends, null, $name);
+        $mock_class = (new Generator())->generate($extends, null, $name);
         eval($mock_class['code']);
     }
 
@@ -38,11 +45,11 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Service 'Aardvark' not defined
+     *
      */
     public function test__get_NonexistentService()
     {
+        $this->expectException(\Exception::class);
         $this->manager->Aardvark;
     }
 
@@ -62,11 +69,11 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException services\NotFound
-     * @expectedExceptionMessage Unsupported resource type: 'Caterpillar'
+     *
      */
     public function testGetFhirService_NotFound()
     {
+        $this->expectException(\services\NotFound::class);
         $this->manager->getFhirService('Caterpillar', array());
     }
 
@@ -76,11 +83,11 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException services\ProcessingNotSupported
-     * @expectedExceptionMessage A profile must be specified for resources of type 'FhirResourceB'
+     *
      */
     public function testGetFhirService_AmbiguousNoProfile()
     {
+        $this->expectException(\services\ProcessingNotSupported::class);
         $this->manager->getFhirService('FhirResourceB', array());
     }
 
@@ -127,20 +134,20 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Unknown service: 'Walrus'
+     *
      */
     public function testServiceAndIdToFhirUrl_UnknownService()
     {
+        $this->expectException(\Exception::class);
         $this->manager->serviceAndIdToFhirUrl('Walrus', 47);
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage No FHIR resource type configured for service 'ServiceManagerTest_NonFhirResource'
+     *
      */
     public function testServiceAndIdToFhirUrl_NonFhirService()
     {
+        $this->expectException(\Exception::class);
         $this->manager->serviceAndIdToFhirUrl('ServiceManagerTest_NonFhirResource', 48);
     }
 

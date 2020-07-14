@@ -29,7 +29,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Whiteboard::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'date_of_birth'
     ];
 

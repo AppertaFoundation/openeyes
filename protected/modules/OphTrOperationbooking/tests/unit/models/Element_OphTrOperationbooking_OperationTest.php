@@ -37,7 +37,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         return Element_OphTrOperationbooking_Operation::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'total_duration'
     ];
 

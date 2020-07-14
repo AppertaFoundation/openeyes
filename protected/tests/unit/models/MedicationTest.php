@@ -50,7 +50,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers MedicationForm::tableName
+     *  @covers Medication::tableName
      *
      *  @todo Implement testTableName().
      */
@@ -60,10 +60,9 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationForm::rules
+     * @covers Medication::rules
      *
      * @throws CException
-     * @todo Implement testRules().
      */
     public function testRules()
     {

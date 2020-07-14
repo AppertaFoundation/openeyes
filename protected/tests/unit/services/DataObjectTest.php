@@ -15,7 +15,17 @@
 
 namespace services;
 
-class DataObjectTest extends \PHPUnit_Framework_TestCase
+use DataTemplate;
+use DataTemplateArray;
+use DataTemplateObject;
+use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub\ReturnCallback;
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
+
+class DataObjectTest extends TestCase
 {
     public static function getMockDataTemplate()
     {
@@ -103,15 +113,19 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
 
 abstract class DataObjectTest_BaseObj extends DataObject
 {
+    /**
+     * @return DataTemplate|DataTemplateArray|DataTemplateObject|MockObject
+     * @throws ReflectionException
+     */
     public static function getFhirTemplate()
     {
         class_exists('DataTemplate');
-        $template = (new \PHPUnit_Framework_MockObject_Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
-        $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('match')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
+        $template = (new Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
+        $template->expects(new AnyInvokedCount())->method('match')
+            ->will(new ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
             }));
-        $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('generate')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($values) { return (object) $values;
+        $template->expects(new \PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount())->method('generate')
+            ->will(new ReturnCallback(function ($values) { return (object) $values;
             }));
 
         return $template;

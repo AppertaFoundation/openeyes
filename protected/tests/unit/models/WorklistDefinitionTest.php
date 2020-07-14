@@ -22,7 +22,7 @@ class WorklistDefinitionTest extends ActiveRecordTestCase
         return WorklistDefinition::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'active_from'
     ];
 

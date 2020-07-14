@@ -42,7 +42,7 @@ class MedicationSetItemTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::model
+     * @covers MedicationSetItem::model
      */
     public function testModel()
     {
@@ -50,7 +50,7 @@ class MedicationSetItemTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::tableName
+     * @covers MedicationSetItem::tableName
      */
     public function testTableName()
     {
@@ -58,7 +58,7 @@ class MedicationSetItemTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers DrugForm::rules
+     * @covers MedicationSetItem::rules
      * @throws CException
      */
     public function testRules()

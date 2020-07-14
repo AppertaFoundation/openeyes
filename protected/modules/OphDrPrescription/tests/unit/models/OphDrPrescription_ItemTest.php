@@ -22,7 +22,7 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
         return OphDrPrescription_Item::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'start_date'
     ];
 
