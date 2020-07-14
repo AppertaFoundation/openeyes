@@ -279,13 +279,13 @@ return array(
         'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
-        'auth_source' => 'BASIC', // Options are BASIC or LDAP.
+        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
         // This is used in contact page
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
-        'ldap_admin_dn' => '',
-        'ldap_password' => '',
-        'ldap_dn' => '',
+        'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
+        'ldap_password' => getenv('OE_LDAP_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) ? rtrim(file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) : ''),
+        'ldap_dn' => getenv('OE_LDAP_DN') ?: 'CN=Users,dc=example,dc=com',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
         // set to integer value of 2 or 3 to force specific ldap protocol
         'ldap_protocol_version' => 3,
@@ -309,8 +309,8 @@ return array(
         'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
         'specialty_sort' => array(130, 'SUP'),
-        'hos_num_regex' => '/^([0-9]{1,9})$/',
-        'pad_hos_num' => '%07s',
+        'hos_num_regex' => !empty(trim(getenv('OE_HOS_NUM_REGEX'))) ? getenv('OE_HOS_NUM_REGEX') : '/^([0-9]{1,9})$/',
+        'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
@@ -476,26 +476,25 @@ return array(
         // set this to false if you want to suppress XML output
 
         /**
-         * defaults to format1
-         * possible values:
-         * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
-         * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
-         * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
-         * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
-         */
-        //'docman_filename_format' => 'format1',
-
+        * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
+        * with the actual values needs to be enclosed in curly brackets such as {event.id}. The supported strings are -
+        *
+        * {prefix}, {event.id}, {patient.hos_num}, {random}, {gp.nat_id}, {document_output.id}, {event.last_modified_date}, {date}.
+        *
+        */
+        'docman_filename_format' => getenv('DOCMAN_FILENAME_FORMAT') ?: 'OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}',
+        
         /**
          *  Set to false to suppress XML generation for electronic correspondence
          */
-        'docman_generate_xml' => false,
+        'docman_generate_xml' => getenv('DOCMAN_GENERATE_XML') ? filter_var(getenv('DOCMAN_GENERATE_XML'), FILTER_VALIDATE_BOOLEAN) : true,
 
 
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
          * To be overriden in local config
          */
-        'electronic_sending_method_label' => 'Electronic',
+        'electronic_sending_method_label' => getenv('DOCMAN_SENDING_LABEL') ?: 'Electronic',
 
         /**
          * Action buttons to be displayed when create/update a correspondence letter

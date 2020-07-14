@@ -72,3 +72,16 @@
 # export PW_RES_MAX_LEN_MESS='Passwords must be at most 70 characters long'
 # export PW_RES_STRENGTH='%^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W]).*$%'
 # export PW_RES_STRENGTH_MESS='Passwords must include an upper case letter, a lower case letter, a number, and a special character'
+
+## Set hos num parameters
+# export OE_HOS_NUM_REGEX='/^([a-zA-Z]*[0-9]*)$/'
+# export OE_HOS_NUM_PAD='%07s'
+
+##    * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
+##    * with the actual values needs to be enclosed in curly brackets such as {event.id}. The supported strings are -
+##    *
+##    * {prefix}, {event.id}, {patient.hos_num}, {random}, {gp.nat_id}, {document_output.id}, {event.last_modified_date}, {date}.
+##    *
+##    */
+# export DOCMAN_FILENAME_FORMAT='OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}'
+# export DOCMAN_GENERATE_XML=true
