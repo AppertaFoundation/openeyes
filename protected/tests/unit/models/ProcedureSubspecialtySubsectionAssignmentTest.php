@@ -52,7 +52,6 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     /**
      * @covers ProcedureSubspecialtySubsectionAssignment::model
      *
-     * @todo   Implement testModel().
      */
     public function testModel()
     {
@@ -62,7 +61,6 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     /**
      * @covers ProcedureSubspecialtySubsectionAssignment::tableName
      *
-     * @todo   Implement testTableName().
      */
     public function testTableName()
     {
@@ -73,7 +71,6 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     /**
      * @covers ProcedureSubspecialtySubsectionAssignment::attributeLabels
      *
-     * @todo   Implement testAttributeLabels().
      */
     public function testAttributeLabels()
     {

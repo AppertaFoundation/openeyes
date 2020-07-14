@@ -90,7 +90,6 @@ class BaseActiveRecordTest extends CDbTestCase
     /**
      * @covers BaseActiveRecord::NHSDate
      *
-     * @todo   Implement testNHSDate().
      */
     public function testNHSDate()
     {
@@ -105,7 +104,6 @@ class BaseActiveRecordTest extends CDbTestCase
     /**
      * @covers BaseActiveRecord::NHSDateAsHTML
      *
-     * @todo   Implement testNHSDateAsHTML().
      */
     public function testNHSDateAsHTML()
     {

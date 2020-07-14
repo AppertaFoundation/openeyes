@@ -14,12 +14,17 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * Class MedicationTest
+ * @method drugs($fixture_id)
+ */
 class MedicationTest extends ActiveRecordTestCase
 {
     /**
      *  @var Medication
      */
-    protected $model;
+    protected Medication $model;
     public $fixtures = array(
         'drugs' => 'Medication',
         'medication_use' => EventMedicationUse::class,
@@ -52,7 +57,6 @@ class MedicationTest extends ActiveRecordTestCase
     /**
      *  @covers Medication::tableName
      *
-     *  @todo Implement testTableName().
      */
     public function testTableName()
     {
@@ -107,7 +111,6 @@ class MedicationTest extends ActiveRecordTestCase
     /**
      * @covers Medication::getLabel
      *
-     * @todo Implement testGetLabel().
      */
     public function testGetLabel()
     {

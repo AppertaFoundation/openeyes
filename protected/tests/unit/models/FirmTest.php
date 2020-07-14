@@ -37,7 +37,6 @@ class FirmTest extends ActiveRecordTestCase
     /**
      * @covers Firm::model
      *
-     * @todo   Implement testModel().
      */
     public function testModel()
     {

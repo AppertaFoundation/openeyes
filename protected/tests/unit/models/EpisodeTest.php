@@ -54,7 +54,6 @@ class EpisodeTest extends ActiveRecordTestCase
     /**
      * @covers Episode::relations
      *
-     * @todo   cover more relations if required, only event is covered for the moment.
      */
     public function testRelations()
     {

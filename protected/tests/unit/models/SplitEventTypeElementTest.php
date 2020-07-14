@@ -81,7 +81,6 @@ class SplitEventTypeElementTest extends CDbTestCase
     /**
      * @covers SplitEventTypeElement::setUpdateOptions
      *
-     * @todo   Implement testSetUpdateOptions().
      */
     public function testSetUpdateOptions()
     {

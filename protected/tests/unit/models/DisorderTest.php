@@ -80,7 +80,6 @@ class DisorderTest extends ActiveRecordTestCase
     /**
      * @covers Disorder::getDisorderOptions
      *
-     * @todo   Implement testGetDisorderOptions().
      */
     public function testGetDisorderOptions()
     {

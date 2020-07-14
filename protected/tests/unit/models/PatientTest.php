@@ -67,7 +67,6 @@ class PatientTest extends ActiveRecordTestCase
     /**
      * @covers Patient::model
      *
-     * @todo   Implement testModel().
      */
     public function testModel()
     {
