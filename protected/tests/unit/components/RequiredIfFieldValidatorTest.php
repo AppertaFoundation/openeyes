@@ -59,6 +59,8 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
     public function testSingleRelation_NotRequired()
@@ -104,6 +106,8 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
     public function testMultipleRelation_NotRequired()
@@ -158,6 +162,8 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
     public function testZeroIsAValue()
@@ -171,6 +177,8 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
     public function testEmptyStringIsNotAValue()
@@ -185,5 +193,7 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 }

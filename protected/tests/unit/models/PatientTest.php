@@ -16,12 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * Class PatientTest
+ *
+ * @method patients($fixtureId)
+ */
 class PatientTest extends ActiveRecordTestCase
 {
     public $model;
     public $fixtures = array(
         'patients' => 'Patient',
         'addresses' => 'Address',
+        'Contact',
         'Disorder',
         'SecondaryDiagnosis',
         'Specialty',
@@ -37,10 +44,10 @@ class PatientTest extends ActiveRecordTestCase
     public function dataProvider_Search()
     {
         return array(
-            array(array('first_name' => 'Katherine', 'last_name' => 'muller', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient3')),
-            array(array('last_name' => 'jones', 'first_name' => 'muller', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient2')), /* case insensitivity test */
-            array(array('hos_num' => 12345, 'last_name' => 'test lastname', 'first_name' => 'test firstname', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient1')),
-            array(array('first_name' => 'John', 'last_name' => 'jones', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 2, array('patient1', 'patient2')),
+            array(array('first_name' => 'Edward', 'last_name' => 'Allan', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient3')),
+            array(array('nhs_num' => 65432, 'last_name' => 'Collin', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient2')), /* case insensitivity test */
+            array(array('hos_num' => 12345, 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 1, array('patient1')),
+            array(array('first_name' => 'Bob', 'sortBy' => 'hos_num*1', 'sortDir' => 'asc', 'pageSize' => 20, 'currentPage' => 0), 3, array('patient2', 'patient5', 'patient7')),
         );
     }
 
@@ -65,7 +72,7 @@ class PatientTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Patient::model
+     * @covers Patient
      *
      */
     public function testModel()
@@ -76,6 +83,9 @@ class PatientTest extends ActiveRecordTestCase
 
     /**
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {
@@ -91,14 +101,14 @@ class PatientTest extends ActiveRecordTestCase
                 $expectedResults[] = $this->patients($key);
             }
         }
-        if (isset($data[0])) {
-            $this->assertEquals($expectedResults, array('0' => $data[0]->getAttributes()));
-        }
+
+        $this->assertEquals($numResults, $results->totalItemCount);
+        $this->assertEquals($expectedResults, $data);
     }
 
 
     /**
-     * @covers Patient::getAge
+     * @covers Patient
      *
      */
     public function testGetAge()
@@ -132,7 +142,8 @@ class PatientTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Patient::editOphInfo
+     * @covers Patient
+     * @throws ReflectionException
      */
     public function testEditOphInfo_Success()
     {
@@ -140,6 +151,9 @@ class PatientTest extends ActiveRecordTestCase
         $this->assertTrue($this->patients('patient1')->editOphInfo($cvi_status, '2000-01-01'));
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function testEditOphInfo_ValidationFailure()
     {
         $cvi_status = ComponentStubGenerator::generate('PatientOphInfoCviStatus', array('id' => 1));
@@ -147,9 +161,8 @@ class PatientTest extends ActiveRecordTestCase
         $this->assertEquals(array('cvi_status_date' => array('This is not a valid date')), $errors);
     }
 
-
     /**
-     * @covers Patient::getSdl
+     * @covers Patient
      */
     public function testGetSdl()
     {
@@ -163,7 +176,7 @@ class PatientTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers Patient::getLatestEvent
+     * @covers Patient
      */
     public function testGetLatestEvent()
     {

@@ -487,12 +487,10 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->addCondition("hos_num = :hos_num OR nhs_num = :nhs_num");
             $criteria->params[':nhs_num'] = $this->nhs_num;
             $criteria->params[':hos_num'] = $this->hos_num;
+        } elseif (strlen($this->nhs_num) == $nhs_num_length) {
+            $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
-            if (strlen($this->nhs_num) == $nhs_num_length) {
-                $criteria->compare('nhs_num', $this->nhs_num, false);
-            } else {
-                $criteria->compare('hos_num', $this->hos_num, false);
-            }
+            $criteria->compare('hos_num', $this->hos_num, false);
         }
 
         $criteria->compare('t.deleted', 0);

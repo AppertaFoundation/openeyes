@@ -42,6 +42,8 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
                 'method' => '',
             ),
         ));
+
+        $this->assertNotNull($test);
     }
 
     public function test_getItemPosition_with_no_ordered_items()
