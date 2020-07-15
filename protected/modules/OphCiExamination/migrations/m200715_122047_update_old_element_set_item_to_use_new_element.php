@@ -2,8 +2,8 @@
 
 class m200715_122047_update_old_element_set_item_to_use_new_element extends CDbMigration
 {
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $archive_cataract_surgical_management_id = $this->dbConnection->createCommand()
             ->select('id')
             ->from('element_type')
@@ -20,12 +20,12 @@ class m200715_122047_update_old_element_set_item_to_use_new_element extends CDbM
 
         $this->update('ophciexamination_element_set_item',
             ['element_type_id' => $new_cataract_surgical_management_id],
-            'element_type_id = :old_element_type_id' ,
+            'element_type_id = :old_element_type_id',
             [':old_element_type_id' => $archive_cataract_surgical_management_id]
         );
 
 
-	}
+    }
 
     public function safeDown()
     {
