@@ -20,11 +20,12 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
      */
     public function testRules()
     {
-        $rules = $this->getModel()->rules();
+        $rules_original = $this->getModel()->rules();
+        $rules = array();
 
-        $rules = array_column(
+        $rules_original = array_column(
             array_filter(
-                $rules,
+                $rules_original,
                 static function ($item) {
                     // Return only the 'required' rules array that is always validated.
                     // Scenario-based validation is meaningless against database mandatory values.
@@ -33,6 +34,13 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
             ),
             0
         );
+
+        foreach ($rules_original as $rule) {
+            $column_list = explode(', ', $rule);
+            $rules = array_merge($rules, $column_list);
+        }
+
+        $rules = array_merge($rules, $this->columns_to_skip);
 
         /**
          * @var $command CDbCommand
@@ -54,14 +62,15 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
         if (!empty($required_columns) && empty($rules) && empty($this->columns_to_skip)) {
             $this->fail('The following mandatory columns do not possess a required validator rule: ' . var_export($required_columns, true));
         } elseif (!empty($rules) && !empty($required_columns)) {
-            $columns = explode(', ', $rules[0]);
-
             // We use array_diff here because the rules may not be in the same order between the two arrays.
-            $diff = array_diff($required_columns, array_merge($columns, $this->columns_to_skip));
+            $diff = array_diff($required_columns, $rules);
             $this->assertEmpty(
                 $diff,
                 'The following mandatory columns do not possess a required validator rule: ' . var_export($diff, true)
             );
+        } else {
+            // No mandatory columns that aren't ignored.
+            $this->assertEmpty($required_columns);
         }
     }
 }
