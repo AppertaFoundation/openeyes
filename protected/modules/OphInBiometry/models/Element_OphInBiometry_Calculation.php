@@ -39,14 +39,6 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
     public $service;
 
     /**
-     * set defaults
-     */
-    public function init(){
-        $this->target_refraction_left = null;
-        $this->target_refraction_right = null;
-    }
-
-    /**
      * Returns the static model of the specified AR class.
      *
      * @return the static model class
@@ -76,6 +68,8 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
             array('target_refraction_left, target_refraction_right', 'match', 'pattern' => '/([0-9]*?)(\.[0-9]{0,2})?/'),
             array('target_refraction_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 10, 'min' => -10),
             array('target_refraction_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 10, 'min' => -10),
+            array('target_refraction_left', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('target_refraction_right', 'default', 'setOnEmpty' => true, 'value' => null),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, ', 'safe', 'on' => 'search'),

@@ -392,8 +392,8 @@
                     let enableDurations = <?php echo $durations ? 'true' : 'false' ?>;
 
                     // append duration of the procedure
-                    $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function() {
-                        if ($(this).html() === name) {
+                    $('#procedureList_' + identifier + ' span.value:contains(' + name + ')').each(function () {
+                        if ($(this).text() === name) {
                             $(this).parents('td.procedure').after(data);
                         }
                     });
