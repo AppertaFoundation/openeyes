@@ -33,6 +33,7 @@
  * @property date   $password_last_changed_date
  * @property int    $password_failed_tries
  * @property string $password_status
+ * @property date   $password_softlocked_until
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -134,7 +135,7 @@ class User extends BaseActiveRecordVersioned
                 array('email', 'email'),
                 array('salt', 'length', 'max' => 10),
                 // Added for password comparison functionality
-                array('password_repeat, password_last_changed_date, password_failed_tries, password_status', 'safe'),
+                array('password_repeat, password_last_changed_date, password_failed_tries, password_status, password_softlocked_until', 'safe'),
             );
             $surgeonRules = array(array('doctor_grade_id,registration_code ','required'));
 
@@ -260,6 +261,7 @@ class User extends BaseActiveRecordVersioned
             'password_last_changed_date' => 'Date Password was last changed',
             'password_failed_tries' => 'Number of failed Password attempts',
             'password_status' => 'Status of User Password',
+            'password_softlocked_until' => 'Password locked until',
         );
     }
 
@@ -564,8 +566,11 @@ class User extends BaseActiveRecordVersioned
         return $contacts;
     }
 
-    public function getActiveSiteSelections() {
-        return array_filter($this->siteSelections, function ($site) { return $site->active; });
+    public function getActiveSiteSelections()
+    {
+        return array_filter($this->siteSelections, function ($site) {
+            return $site->active;
+        });
     }
 
     public function getNotSelectedSiteList()
@@ -928,15 +933,15 @@ class User extends BaseActiveRecordVersioned
         if ($user->password_status == $status) {
             return true;
         }
-        if ($status == 'locked') { // checking bad statuses
-            if (!($user->password_status =='current' || $user->password_status =='expired' ||$user->password_status =='stale' )) {
+        if ($status === 'locked') { // checking bad statuses
+            if (!($user->password_status === 'current' || $user->password_status === 'expired' ||$user->password_status === 'stale' )) {
                 return true;
             }
         }
         return false;
     }
     /**
-     * Returns if setting the password status was successful
+     * Returns if setting the password status was successful/if it would be if $save had been true, assuming the save performs.
      *
      * @param string $status
      * @param User $user
@@ -957,8 +962,21 @@ class User extends BaseActiveRecordVersioned
                     return true;
                 }
                 break;
+            case 'softlocked':
+                if ($user->password_status !='locked') {
+                    $user->password_status ='softlocked';
+                    $temp_now = new DateTime();
+                    $pw_timeout = Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] ?? '10 mins';
+                    $user->password_softlocked_until = date_format(date_add($temp_now, date_interval_create_from_date_string($pw_timeout)), "Y-m-d H:i:s");
+                    if ($save) {
+                        return $user->saveAttributes(array('password_status', 'password_softlocked_until'));
+                    } else {
+                        return true;
+                    }
+                }
+                break;
             case 'expired':
-                if ($user->password_status =='current'||$user->password_status =='stale') {
+                if ($user->password_status === 'current'||$user->password_status === 'stale') {
                     $user->password_status ='expired';
                     if ($save) {
                         return $user->saveAttributes(array('password_status'));
@@ -968,7 +986,7 @@ class User extends BaseActiveRecordVersioned
                 }
                 break;
             case 'stale':
-                if ($user->password_status =='current') {
+                if ($user->password_status === 'current') {
                     $user->password_status ='stale';
                     if ($save) {
                         return $user->saveAttributes(array('password_status'));
@@ -980,20 +998,48 @@ class User extends BaseActiveRecordVersioned
         }
         return false;
     }
+
+    /**
+     * Checks if the user has passed the allowed log in attempts, and will apply the appropriate status if so.
+     *
+     * @param User $user
+     */
+    public function setFailedLogin($user = null)
+    {
+        if (!$user) {
+            $user = $this;
+        }
+        if (!$user->testUserPWStatus()) {
+            //Increase the number of failed tries
+            $user->password_failed_tries++;
+            $user->saveAttributes(array('password_failed_tries'));
+        }
+    }
+
     /**
      * Checks if the user has passed the allowed log in attempts, and will apply the appropriate status if so.
      *
      * @param User $user
      * @return bool has status level been changed?
      */
-    public function setUserLogOnAttemptsCheck($user = null)
+    public function userLogOnAttemptsCheck($user = null)
     {
         if (!$user) {
             $user = $this;
         }
         $threshold = isset(Yii::app()->params['pw_status_checks']['pw_tries'])?Yii::app()->params['pw_status_checks']['pw_tries']:3;
         if ($threshold) { //only check pw tries if we have a threshold to check against
-            $pwTriesFailed = Yii::app()->params['pw_status_checks']['pw_tries_failed']?: 'locked';
+            $pwTriesFailed = Yii::app()->params['p
+            w_status_checks']['pw_tries_failed']?? 'locked';
+            
+            if ($pwTriesFailed === 'softlocked' && $user->password_status === 'softlocked' ) {
+                if ( $user->password_softlocked_until < date("Y-m-d H:i:s")) {
+                    $user->password_failed_tries = 0;
+                    $user->password_status = 'current';
+                    $user->saveAttributes(array('password_status', 'password_failed_tries', 'password_softlocked_until'));
+                    $user->audit('login', 'user-soft-unlock', null, "User: {$this->username} has finished their softlock period ");
+                }
+            }
 
             if ($user->password_failed_tries >= $threshold) {   // if the number of attempts is greater than what is allowed then try to lock the account
                 $user->password_failed_tries = $threshold; //reset to avoid overflow errors
@@ -1032,21 +1078,18 @@ class User extends BaseActiveRecordVersioned
         
         if ($pwDaysLock && $user->password_last_changed_date) {
             $pwDateCutoffLock =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysLock)); // get last valid time
-            Yii::log($pwDateCutoffLock);
             if ($date <= $pwDateCutoffLock) {
                 return $user->setPWStatusHarsher('locked');
             }
         }
         if ($pwDaysExpire) {
             $pwDateCutoffExpire =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysExpire)); // get last valid time
-            Yii::log($pwDateCutoffExpire);
             if ($date <= $pwDateCutoffExpire) {
                 return $user->setPWStatusHarsher('expired');
             }
         }
         if ($pwDaysStale) {
             $pwDateCutoffStale =  date("Y-m-d H:i:s", strtotime('-'.$pwDaysStale)); // get last valid time
-            Yii::log($pwDateCutoffStale);
             if ($date <= $pwDateCutoffStale) {
                 return $user->setPWStatusHarsher('stale');
             }
@@ -1073,6 +1116,9 @@ class User extends BaseActiveRecordVersioned
                 break;
             case 'expired':
                 return 'Expired';
+                break;
+            case 'softlocked':
+                return 'Soft locked with timeout';
                 break;
             default:
                 return 'Locked';

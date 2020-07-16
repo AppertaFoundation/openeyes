@@ -76,6 +76,9 @@
 ## Number of password tries before triggering status change (any integer or 0 to disable)
 # export PW_STAT_TRIES =3
 
+# Amount of time before account is automatically unlocked after failed PW_STAT_TRIES - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
+# export PW_SOFTLOCK_TIMEOUT='10 mins'
+
 ## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
 # export PW_STAT_TRIES_FAILED= 'locked'
 # export PW_STAT_ADMIN_CHANGE = 'stale'

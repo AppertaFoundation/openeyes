@@ -697,10 +697,12 @@ return array(
                     'current' = user can log in as normal,
                     'stale'  = user can log in, but they will be prompted to change their password on login. (they can also log out)
                     'expired'  = user can log in, however the only things they can do is change their password, which they will be prompted to change on login. (they can also log out)
+                    'softlocked' = user cannot log in even with valid password, but gets annother set of tries in 10 mins
                     'locked' = user cannot log in even with valid password,
                 Invalid statuses will act as 'locked' */
             'pw_tries' => getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
-            'pw_tries_failed' => getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'locked', //password status after number of tries exceeded
+            'pw_tries_failed' => getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
+            'pw_softlock_timeout' => getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
             'pw_days_stale' => getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '45 days', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
             'pw_days_expire' => getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
             'pw_days_lock' => getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable

@@ -286,19 +286,17 @@ class UserIdentity extends CUserIdentity
                 }
             }
         } elseif (Yii::app()->params['auth_source'] === 'BASIC') {
+            $user->userLogOnAttemptsCheck($user);
             $validPw=$user->validatePassword($this->password);
             $pwActive = !$user->testUserPWStatus('locked');
-
             if (!$force && !($validPw && $pwActive)) { //if failed logon or locked
+            $user->userLogOnAttemptsCheck($user);
                 if(!$validPw && isset(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries
-                    //Increase the number of failed tries
-                    $user->password_failed_tries++;
-                    $user->saveAttributes(array('password_failed_tries')); 
-                    
-                    $user->setUserLogOnAttemptsCheck();
+                    $user->setFailedLogin();                    
+                    $user->userLogOnAttemptsCheck($user);
                 }
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
-                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: ". $validPw?'valid password':'invalid password');
+                $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: ". ($validPw ?'valid password':'invalid password'));
 
                 return false;
             }
