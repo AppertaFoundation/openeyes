@@ -126,11 +126,6 @@ $config = array(
     'params' => array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
-        'auth_source' => getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC',    // BASIC or LDAP
-        // This is used in contact page
-        'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
-        'ldap_password' => '',
-        'ldap_dn' => 'CN=Users,dc=example,dc=com',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
         //'default_site_code' => '',
@@ -157,19 +152,6 @@ $config = array(
         // 'worklist_allow_duplicate_patients' => bool
         //// any appointments sent in before this date will not trigger errors when sent in
         // 'worklist_ignore_date => 'Y-m-d',
-        
-        /**
-        * Filename format for the PDF and XML files output by the docman export
-        * possible values:
-        *
-        * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
-        * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
-        * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
-        * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
-        */
-        'docman_filename_format' => 'format1',
-        // set this to false if you want to suppress XML output
-        'docman_generate_xml' => true,
     ),
 );
 

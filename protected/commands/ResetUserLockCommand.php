@@ -42,7 +42,8 @@ class ResetUserLockCommand extends CConsoleCommand {
                 echo "found user:" . $user->username."\n";
                 $user->password_status = 'current';
                 $user->password_failed_tries = 0;
-                $user->password_last_changed_date= date("Y-m-d H:i:s");
+                $user->password_softlocked_until = date("Y-m-d H:i:s");
+                $user->password_last_changed_date = date("Y-m-d H:i:s");
                 if($pw){
                     $user->password = $pw;
                     $user->password_repeat = $pw;

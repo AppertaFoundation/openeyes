@@ -116,6 +116,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
         if (is_string($setting_value)) {
             $setting_value = strtolower($setting_value);
         }
+
+        if ( !empty(Yii::app()->params[$key]) ) {
+            $setting_value = strtolower(Yii::app()->params[$key]);
+        }
         return $setting_value === $value;
     }
 

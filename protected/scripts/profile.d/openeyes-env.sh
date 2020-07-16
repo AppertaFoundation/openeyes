@@ -76,6 +76,9 @@
 ## Number of password tries before triggering status change (any integer or 0 to disable)
 # export PW_STAT_TRIES =3
 
+# Amount of time before account is automatically unlocked after failed PW_STAT_TRIES - 0 to disable - (0, X days, X months, X Years,  see https://www.php.net/manual/en/function.strtotime.php  for more options)
+# export PW_SOFTLOCK_TIMEOUT='10 mins'
+
 ## Password status after trigger by number of tries exceeded or after password changed by admin  -  ('current', 'stale', 'expired', 'locked') 
 # export PW_STAT_TRIES_FAILED= 'locked'
 # export PW_STAT_ADMIN_CHANGE = 'stale'
@@ -84,3 +87,16 @@
 # export PW_STAT_DAYS_STALE= '15 days'
 # export PW_STAT_DAYS_EXPIRE = '30 days' 
 # export PW_STAT_DAYS_LOCK =  '45 days'
+
+## Set hos num parameters
+# export OE_HOS_NUM_REGEX='/^([a-zA-Z]*[0-9]*)$/'
+# export OE_HOS_NUM_PAD='%07s'
+
+##    * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
+##    * with the actual values needs to be enclosed in curly brackets such as {event.id}. The supported strings are -
+##    *
+##    * {prefix}, {event.id}, {patient.hos_num}, {random}, {gp.nat_id}, {document_output.id}, {event.last_modified_date}, {date}.
+##    *
+##    */
+# export DOCMAN_FILENAME_FORMAT='OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}'
+# export DOCMAN_GENERATE_XML=true

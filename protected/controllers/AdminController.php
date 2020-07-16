@@ -1099,9 +1099,6 @@ class AdminController extends BaseAdminController
 
                  // get or generate institution logo ID
 
-                Yii::log($site->institution->logo_id);
-                Yii::log($site->logo_id);
-               
                 if ($site->institution->logo_id) {
                     $institution_logo = $site->institution->logo;
                 } else {

@@ -55,7 +55,7 @@ if ($footer_param !== null) {
         <div class="clearfix"><?= $header_text ?></div>
     <?php endif; ?>
 
-    <table class="borders prescription_header">
+    <table class="borders prescription_header" style="margin-bottom:0px">
         <tr>
             <th>Patient Name</th>
             <td><?= $this->patient->fullname ?> (<?= $this->patient->gender ?>)</td>
@@ -77,6 +77,13 @@ if ($footer_param !== null) {
         <tr>
             <th>Patient's address</th>
             <td colspan="3"><?= $this->patient->getSummaryAddress(', ') ?></td>
+        </tr>
+    </table>
+    <table class="borders prescription_header" style="margin-top:0px">
+        <tr style="table-layout: fixed;">
+            <th>Payment status</th>
+            <td> PAID &#9744 </td>
+            <td> EXEMPT &#9744 </td>
         </tr>
     </table>
 
@@ -109,8 +116,7 @@ if ($footer_param !== null) {
                 <th>Duration</th>
                 <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                     <th>Dispense Location</th>
-                    <th>Dispensed</th>
-                    <th>Checked Status</th>
+                    <th>Quantity Dispensed</th>
                 <?php } ?>
             </tr>
             </thead>
@@ -129,7 +135,6 @@ if ($footer_param !== null) {
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                             <td><?= $item->dispense_location->name ?></td>
                             <td></td>
-                            <td></td>
                         <?php } ?>
                     </tr>
                     <?php foreach ($item->tapers as $taper) { ?>
@@ -141,7 +146,6 @@ if ($footer_param !== null) {
                             <td><?= $taper->duration->name ?></td>
                             <?php if (strpos($group_name, 'Hospital') !== false) { ?>
                                 <td></td>
-                                <td>-</td>
                                 <td>-</td>
                             <?php } ?>
                         </tr>
@@ -194,10 +198,74 @@ if ($footer_param !== null) {
             </td>
         </tr>
         <tr class="handWritten">
-            <th>Clinical Checked by</th>
-            <td>&nbsp;</td>
+            <th>Signature</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+            <th>Contact Number</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="borders done_bys"  style="width:48%;float: left">
+        <tr class="handWritten">
+            <th>Screened by</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+        <tr>
             <th>Date</th>
-            <td>&nbsp;</td>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="borders done_bys"  style="width:48%;float: right">
+        <tr class="handWritten">
+            <th>Dispensed by</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="borders done_bys"  style="width:48%;float: left">
+        <tr class="handWritten">
+            <th>Checked by</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="borders done_bys"  style="width:48%;float: right">
+        <tr class="handWritten">
+            <th>Counselled by</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
         </tr>
     </table>
 
