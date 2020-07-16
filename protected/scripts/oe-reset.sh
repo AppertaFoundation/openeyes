@@ -214,10 +214,10 @@ fi
 
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
-	dbpassword="-p$dbpassword"
+	dbpassword="-p'$dbpassword'"
 fi
 
-dbconnectionstring="mysql -u $username $dbpassword --port=$port --host=$host"
+dbconnectionstring="mysql -u '$username' $dbpassword --port=$port --host=$host"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		dwservrunning=1
