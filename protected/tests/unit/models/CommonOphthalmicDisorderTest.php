@@ -16,8 +16,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class CommonOphthalmicDisorderTest extends CDbTestCase
+class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 {
+    private CommonOphthalmicDisorder $model;
 
 	public $fixtures = array(
 		'firms' => 'Firm',
@@ -29,7 +30,12 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		'disorders' => 'CommonOphthalmicDisorder'
 	);
 
-	public function dataProvider_Search()
+	public function getModel()
+    {
+        return CommonOphthalmicDisorder::model();
+    }
+
+    public function dataProvider_Search()
 	{
 		return array(
 			array(array('disorder_id' => 1), 1, array('commonOphthalmicDisorder1')),
@@ -79,6 +85,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 	 */
 	public function testRules()
 	{
+	    parent::testRules();
 		$this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
 		$this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
 	}
@@ -93,15 +100,19 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 			'disorder_id' => 'Disorder',
 			'subspecialty_id' => 'Subspecialty',
 			'finding_id' => 'Finding',
-			'alternate_disorder_id' => 'Alternate Disorder'
+			'alternate_disorder_id' => 'Alternate Disorder',
+            'group_id' => 'Group',
 		);
 
-	// FAILS	$this->assertEquals($expected, $this->model->attributeLabels());
+	    $this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
+    /**
+     * @throws CException
+     */
 	public function testGetList_MissingFirm_ThrowsException()
 	{
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 		$this->model->getList(null);
 	}
 
@@ -113,22 +124,28 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		);
 	}
 
-	/**
-	 * @dataProvider dataProvider_getList
-	 */
+    /**
+     * @dataProvider dataProvider_getList
+     * @param $firmkey
+     * @param $get_findings
+     * @param $result_count
+     * @throws CException
+     */
 	public function testGetList($firmkey, $get_findings, $result_count)
 	{
 		$res = CommonOphthalmicDisorder::getList($this->firms($firmkey), $get_findings);
 		$this->assertCount($result_count, $res);
 	}
 
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
+    /**
+     * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
+     */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
-		$this->markTestIncomplete('Temporarily suspended as search isnt really used');
-		$disorder = new CommonOphthalmicDisorder;
+		$disorder = new CommonOphthalmicDisorder('search');
 		$disorder->setAttributes($searchTerms);
 		$results = $disorder->search();
 		$data = $results->getData();
@@ -140,7 +157,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 			}
 		}
 
-		$this->assertEquals($numResults, $results->getItemCount());
+		$this->assertEquals($numResults, $results->totalItemCount);
 		$this->assertEquals($expectedResults, $data);
 	}
 

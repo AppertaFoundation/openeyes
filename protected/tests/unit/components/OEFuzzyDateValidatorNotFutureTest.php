@@ -54,7 +54,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 		$this->validator->validateAttribute($this->cModelMock, 'bar');
 		$notFutureDateMsgBar  = $this->cModelMock->getErrors('bar');
 		$this->validator->validateAttribute($this->cModelMock, 'foo');
-		$notFutureDateMsgFoo  = $this->cModelMock->getErrors('bar');
+		$notFutureDateMsgFoo  = $this->cModelMock->getErrors('foo');
 		$this->assertTrue($this->cModelMock->hasErrors());
 		$this->assertInternalType('array', $notFutureDateMsgBar);
 		$this->assertEquals('The date cannot be in the future' , $notFutureDateMsgBar[0]);
@@ -70,7 +70,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 	}
 
 	public function testValidateAttributeYearIsRequired(){
-		$this->cModelMock->foo = '0000 14 22';
+		$this->cModelMock->foo = '0000 12 22';
 		$this->validator->validateAttribute($this->cModelMock, 'foo');
 		$yearIsRequiredMsg  = $this->cModelMock->getErrors('foo');
 		$this->assertTrue($this->cModelMock->hasErrors());

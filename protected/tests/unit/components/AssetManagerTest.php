@@ -22,6 +22,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     const BASE_PATH_ALIAS = 'application.tests.assets';
     const BASE_URL = 'assets';
 
+    private $globalInstance;
+
     public function setUp()
     {
         $this->globalInstance = Yii::app()->assetManager;
@@ -260,6 +262,9 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $instance = self::getInstance();
 
+        /**
+         * @var $clientScript ClientScript
+         */
         $clientScript = $this->getMockBuilder('ClientScript')
             ->setMethods(array('registerCoreScript'))
             ->getMock();

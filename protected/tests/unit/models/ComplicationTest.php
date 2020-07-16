@@ -16,19 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ComplicationTest extends CDbTestCase
+class ComplicationTest extends ActiveRecordTestCase
 {
 	/**
 	 * @var Complication
 	 */
-	public $model;
+    public Complication $model;
 
-	/**
+	public function getModel()
+    {
+        return Complication::model();
+    }
+
+    /**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 */
 	public function setUp() {
-		$this->model = new Complication;
+		$this->model = new Complication();
 	}
 
 	/**
@@ -51,7 +56,9 @@ class ComplicationTest extends CDbTestCase
 	 */
 	public function testRules()
 	{
-//		$this->assertTrue($this->model->validate());
+	    parent::testRules();
+	    $this->model->name = 'test';
+		$this->assertTrue($this->model->validate());
 		$this->assertEmpty($this->model->errors);
 	}
 }
