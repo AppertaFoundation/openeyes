@@ -124,6 +124,13 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 		);
 	}
 
+    public function dataProvider_getListSecondaryTo()
+    {
+        return array(
+            array('firm2', 4),
+        );
+    }
+
     /**
      * @dataProvider dataProvider_getList
      * @param $firmkey
@@ -161,8 +168,15 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 		$this->assertEquals($expectedResults, $data);
 	}
 
-	public function testgetListWithSecondaryTo()
+    /**
+     * @dataProvider dataProvider_getListSecondaryTo
+     * @param $firmkey
+     * @param $result_count
+     * @throws CException
+     */
+	public function testgetListWithSecondaryTo($firmkey, $result_count)
 	{
-		$this->markTestIncomplete('Needs to be written post glaucoma haste');
+        $res = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($this->firms($firmkey));
+        $this->assertCount($result_count, $res);
 	}
 }
