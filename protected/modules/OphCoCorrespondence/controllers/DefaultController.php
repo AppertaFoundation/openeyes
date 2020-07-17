@@ -1238,22 +1238,26 @@ class DefaultController extends BaseEventTypeController
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
 
-            $this->loadDirectLines();
+            $this->loadFaxAndDirectLineNumbers();
         }
     }
 
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
-    public function loadDirectLines()
+    public function loadFaxAndDirectLineNumbers()
     {
         $sfs = FirmSiteSecretary::model()->findAll('firm_id=?', array(Yii::app()->session['selected_firm_id']));
-        $vars[] = null;
+        $direct_line_numbers[] = null;
+        $fax_numbers[] = null;
+
         foreach ($sfs as $sf) {
-            $vars[$sf->site_id] = $sf->direct_line;
+            $direct_line_numbers[$sf->site_id] = $sf->direct_line;
+            $fax_numbers[$sf->site_id] = $sf->fax;
         }
 
-        $this->jsVars['correspondence_directlines'] = $vars;
+        $this->jsVars['correspondence_directlines'] = $direct_line_numbers;
+        $this->jsVars['correspondence_fax_numbers'] = $fax_numbers;
     }
 
     /**
