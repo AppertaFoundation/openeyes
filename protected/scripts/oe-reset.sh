@@ -46,9 +46,8 @@ fi
 
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
-# If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
-[ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
-
+# If we're using docker secrets, override DATABASE_PASS with the secret. Else the environment variable will use it's default value
+[ -f /run/secrets/DATABASE_PASS ] && pass="$(</run/secrets/DATABASE_PASS)" || pass=${DATABASE_PASS:-"openeyes"}
 
 # Process commandline parameters
 
@@ -253,7 +252,7 @@ dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-o
 
 echo ""
 ## write-out command to console (helps with debugging)
-#echo "$dbconnectionstring -e \"$dbresetsql\""
+# echo "$dbconnectionstring -e \"$dbresetsql\""
 ## run the same command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
