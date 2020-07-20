@@ -100,3 +100,10 @@
 ##    */
 # export DOCMAN_FILENAME_FORMAT='OPENEYES_{prefix}{patient.hos_num}_{event.id}_{random}'
 # export DOCMAN_GENERATE_XML=true
+
+## Some overrides for database settings of visual mode indicators
+# export OE_TRAINING_MODE=""
+# export OE_USER_BANNER_SHORT=""
+# export OE_USER_BANNER_LONG=""
+# export OE_ADMIN_BANNER_SHORT=""
+# export OE_ADMIN_BANNER_LONG=""

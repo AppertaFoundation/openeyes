@@ -709,5 +709,9 @@ return array(
             'pw_admin_pw_change' => getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
+        'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
+        'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
+        'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
+        'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
     ),
 );
