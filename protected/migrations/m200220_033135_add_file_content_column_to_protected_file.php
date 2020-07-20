@@ -36,7 +36,7 @@ class m200220_033135_add_file_content_column_to_protected_file extends OEMigrati
         $all_files = $this->dbConnection->createCommand()
             ->select('id, uid')
             ->from('protected_file')
-            ->queryAll();
+            ->query();
         foreach ($all_files as $file) {
             // Save the contents of the files on the application server to the database.
             $path = Yii::app()->basePath.'/files/'. $file['uid'][0] .'/'. $file['uid'][1] .'/'. $file['uid'][2] . '/' . $file['uid'];
