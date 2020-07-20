@@ -123,6 +123,17 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
         return $res;
     }
 
+    public function getQueueSetClosingQueues(PatientTicketing_QueueSet $qsr)
+    {
+        $q_svc = Yii::app()->service->getService(self::$QUEUE_SERVICE);
+        $initial_qr = $qsr->initial_queue;
+        if (!$initial_qr) {
+            return [];
+        }
+
+        return $q_svc->getDependentClosingQueues($initial_qr);
+    }
+
     /**
      * Returns the roles configured to allow processing of queue sets.
      *

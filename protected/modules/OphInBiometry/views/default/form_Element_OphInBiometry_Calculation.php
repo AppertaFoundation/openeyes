@@ -54,17 +54,16 @@
       <div id="<?php echo $eye_side ?>-eye-comments"
            class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> disabled"
            data-side="<?php echo $eye_side ?>" style="display: <?=$this->action->id === "create" ? "none" : "" ?>">
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <div class="element-fields">
-            <span class="field-info">General Comments:</span>
-          </div>
-        </div>
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <div class="element-fields">
-              <?php echo $form->textArea($element, 'comments_' . $eye_side,
-                  array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-                  array('class' => 'comments_' . $eye_side)) ?>
-          </div>
+        <div id="biometry-<?= $eye_side ?>-comments" class="active-form js-comment-container"
+            style="<?= !$element->hasEye($eye_side) || !$element->{'comments_' . $eye_side} ? 'display: none;' : '' ?>"
+            data-comment-button="#biometry-<?= $eye_side ?>-comment-button" >
+                <?=\CHtml::activeTextArea($element, 'comments_' . $eye_side,
+                    [
+                        'rows' => 1,
+                        'placeholder' => 'General Comments',
+                        'class' => 'autosize cols-full js-comment-field',
+                    ]
+                )?>
         </div>
       </div>
     <?php endforeach; ?>
