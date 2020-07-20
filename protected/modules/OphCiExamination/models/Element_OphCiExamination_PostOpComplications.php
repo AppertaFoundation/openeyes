@@ -37,6 +37,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use Eye;
+
 class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
@@ -168,7 +170,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          * @return array
          */
     public function getRecordedComplications($eye_id, $operation_note_id = null)
-        {
+    {
         $recordedComplications = array();
 
         $model = new OphCiExamination_Et_PostOpComplications();
@@ -193,6 +195,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             $postOpComplications = \Yii::app()->request->getParam('complication_items', null);
 
             $eyeLetter = $eye_id == \Eye::RIGHT ? 'R' : 'L';
+            $complication_other = \Yii::app()->request->getParam('complication_other');
 
             if (isset($postOpComplications[$eyeLetter])) {
                 $criteria = new \CDbCriteria();
@@ -201,9 +204,11 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
                 if ($complications) {
                     foreach ($complications as $complication) {
+                        $other = $complication->name == 'other' ? $complication_other[$eyeLetter] : null;
                         $recordedComplications[] = array(
                             'id' => $complication->id,
                             'name' => $complication->name,
+                            'other' => $other
                         );
                     }
                 }
@@ -213,6 +218,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 $recordedComplications[] = array(
                     'id' => $complication->complication->id,
                     'name' => $complication->complication->name,
+                    'other' => $complication->other
                 );
             }
         }
@@ -224,7 +230,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
     {
         $complication_items = \Yii::app()->request->getParam('complication_items', false);
         $operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id', null);
-
+        $complication_other_sided = \Yii::app()->request->getParam('complication_other');
         $elementData = \Yii::app()->request->getParam('OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications', null);
         $eye_id = isset($elementData['eye_id']) ? $elementData['eye_id'] : null;
 
@@ -241,7 +247,11 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
                 $complication_items_index = ucfirst($eye_side[0]);
                 if ($this->hasEye($eye_side) ) {
                     if (isset($complication_items[$complication_items_index])) {
-                        $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id, $operation_note_id);
+                        $complication_other = isset($complication_other_sided[$complication_items_index]) ?
+                            $complication_other_sided[$complication_items_index] : null;
+
+                        $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id,
+                            $operation_note_id, $complication_other);
                     }
                 } else {
                     $this->deleteClosedEyeElements($eye_id);
@@ -257,7 +267,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
      * @param $operation_note_id
      * @throws \Exception
      */
-    private function savePostOpComplicationElements($complication_items, $eye_id, $operation_note_id)
+    private function savePostOpComplicationElements($complication_items, $eye_id, $operation_note_id, $complication_other)
     {
         foreach ($complication_items as $cKey => $complication_id) {
             $et_Complication = new OphCiExamination_Et_PostOpComplications();
@@ -266,6 +276,10 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             $et_Complication->complication_id = $complication_id;
             $et_Complication->eye_id = $eye_id;
             $et_Complication->operation_note_id = $operation_note_id;
+
+            $other_complication_id = OphCiExamination_PostOpComplications::model()->find('name = ?', ['other'])->id;
+
+            $et_Complication->other = $other_complication_id === $complication_id ? $complication_other : null;
 
             if (!$et_Complication->save()) {
                 throw new Exception('Unable to save post op complication: ' . print_r($et_Complication->getErrors(), true));
@@ -293,7 +307,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
          * @return array list of op notes
          */
     public function getOperationNoteList()
-        {
+    {
         $patient_id = \Yii::app()->request->getParam('patient_id');
 
         if (!$patient_id && isset($this->event->episode->patient->id) ) {
@@ -358,23 +372,50 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
     public function getFullComplicationList($eye_id)
     {
-        /*$criteria = new \CDbCriteria;
-            $criteria->select = "DISTINCT ophciexamination_postop_et_complications.complication_id";
-            $criteria->join = "JOIN ophciexamination_postop_et_complications ON t.id = ophciexamination_postop_et_complications.complication_id";
-            $criteria->addCondition("eye_id = :eye_id");
-            $criteria->params['eye_id'] = $eye_id;*/
-
-            $list = \Yii::app()->db->createCommand()
-                ->selectDistinct('c.name')
-                ->from('et_ophciexamination_postop_complications t')
-                ->join('ophciexamination_postop_et_complications etc', 't.id = etc.element_id')
-                ->join('ophciexamination_postop_complications c', 'etc.complication_id = c.id')
-                ->where('(etc.eye_id=:eye_id) AND t.event_id = :event_id', array(':eye_id' => $eye_id, ':event_id' => $this->event->id))
-                ->order('etc.created_date DESC')
-                ->queryAll();
+        $list = \Yii::app()->db->createCommand()
+            ->selectDistinct('c.name, etc.other')
+            ->from('et_ophciexamination_postop_complications t')
+            ->join('ophciexamination_postop_et_complications etc', 't.id = etc.element_id')
+            ->join('ophciexamination_postop_complications c', 'etc.complication_id = c.id')
+            ->where('(etc.eye_id=:eye_id) AND t.event_id = :event_id', array(':eye_id' => $eye_id, ':event_id' => $this->event->id))
+            ->order('etc.created_date DESC')
+            ->queryAll();
 
         return $list;
     }
 
+    public function beforeValidate()
+    {
+        $complication_items = \Yii::app()->request->getParam('complication_items', false);
+        $complication_other_sided = \Yii::app()->request->getParam('complication_other');
 
+        if ($complication_items) {
+            foreach (['left' => \Eye::LEFT, 'right' => \Eye::RIGHT] as $eye_side => $eye_id) {
+                // L or R is used as an index to sided items
+                $complication_items_index = ucfirst($eye_side[0]);
+                if ($this->hasEye($eye_side)) {
+                    if (isset($complication_items[$complication_items_index])) {
+                        $complication_other = isset($complication_other_sided[$complication_items_index]) ?
+                            $complication_other_sided[$complication_items_index] : null;
+
+                        $this->validateComplicationItems($complication_items[$complication_items_index], $eye_id,
+                            $complication_other);
+                    }
+                }
+            }
+        }
+        return parent::beforeValidate();
+    }
+
+    private function validateComplicationItems($complication_items, $eye_id, $complication_other)
+    {
+        $other_complication_id = OphCiExamination_PostOpComplications::model()->find('name = ?', ['other'])->id;
+
+        $eye_abbr = $eye_id === Eye::RIGHT ? 'R' : 'L';
+        foreach ($complication_items as $cKey => $complication_id) {
+            if ($other_complication_id == $complication_id && ($complication_other == "" || is_null($complication_other))) {
+                $this->addError('complication_other[' . $eye_abbr . ']', 'Other cannot be empty');
+            }
+        }
+    }
 }
