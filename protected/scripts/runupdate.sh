@@ -117,7 +117,10 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
     echo "Directories not set correctly. Please use oe-checkout.sh"
 fi
 
-source $SCRIPTDIR/modules.conf
+# if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
+[ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
+source $MODULES_CONF
+
 MODULEROOT=$WROOT/protected/modules
 if [ -d "$MODULEROOT/sample" ]; then modules=(${modules[@]} sample); fi # Add sample DB to list if it exists
 
