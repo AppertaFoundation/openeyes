@@ -7,7 +7,7 @@ class m190215_102307_create_sets_from_tags extends CDbMigration
      * @throws CDbException
      * @throws CException
      */
-    public function up()
+    public function safeUp()
     {
         $this->addColumn('ophciexamination_risk_tag', 'medication_set_id', 'int(10) AFTER tag_id');
         $this->createIndex('idx_ref_set_id', 'ophciexamination_risk_tag', 'medication_set_id');
@@ -15,7 +15,7 @@ class m190215_102307_create_sets_from_tags extends CDbMigration
 
 
         $tags = $this->dbConnection
-            ->createCommand('SELECT id, name FROM tag ORDER BY name ASC')
+            ->createCommand('SELECT id, name FROM tag WHERE active = 1 ORDER BY name ASC')
             ->queryAll();
 
         if ($tags) {
@@ -35,7 +35,7 @@ class m190215_102307_create_sets_from_tags extends CDbMigration
                 $this->dbConnection->createCommand("UPDATE ophciexamination_risk_tag SET medication_set_id = " . $ref_set_id . " WHERE tag_id = " . $tag['id'])->execute();
 
                 $drugTags = $this->dbConnection
-                    ->createCommand('SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag['id'])
+                    ->createCommand('SELECT drug_id FROM drug_tag WHERE tag_id = ' . $tag['id'] . ' AND drug_id in (SELECT id from drug)')
                     ->queryAll();
 
                 if ($drugTags) {
@@ -53,7 +53,7 @@ class m190215_102307_create_sets_from_tags extends CDbMigration
                 }
 
                 $medicationDrugTags = $this->dbConnection
-                    ->createCommand('SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id = ' . $tag['id'])
+                    ->createCommand('SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id = ' . $tag['id'] . ' AND medication_drug_id in (SELECT id from medication_drug)')
                     ->queryAll();
 
                 if ($medicationDrugTags) {
