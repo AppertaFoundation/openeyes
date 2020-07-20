@@ -16,11 +16,11 @@
  */
 
 $(document).ready(function() {
-	$(this).on('click','#et_save_draft',function() {
+	$(this).on('click','#et_save_draft, #et_save_draft_footer',function() {
 		$('#Element_OphTrConsent_Type_draft').val(1);
 	});
 
-  $(this).on('click','#et_save_print',function() {
+  $(this).on('click','#et_save_print, #et_save_print_footer',function() {
 		$('#Element_OphTrConsent_Type_draft').val(0);
 	});
 
