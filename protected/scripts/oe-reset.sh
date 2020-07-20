@@ -46,9 +46,8 @@ fi
 
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
-# If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
-[ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
-
+# If we're using docker secrets, override DATABASE_PASS with the secret. Else the environment variable will use it's default value
+[ -f /run/secrets/DATABASE_PASS ] && pass="$(</run/secrets/DATABASE_PASS)" || pass=${DATABASE_PASS:-"openeyes"}
 
 # Process commandline parameters
 
@@ -64,12 +63,16 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
-restorefile="/tmp/openeyes_sample_data.sql"
+restorefile=""
 hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
 fallbackbranch=master
+
+# Pick default restore file based on what is available
+[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
+
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -136,6 +139,8 @@ do
     	;;
 		-f|--custom-file) # use a custom database backup for the restore
 			restorefile="$2"
+			# If '-' is specified as the file name, then we will read in the data from a pipe
+    		[ "$restorefile" == "-" ] && readfrompipe=1 || readfrompipe=0;
 			shift
 		;;
 		--hscic|-hscic|-gp|--gp) hscic=1
@@ -212,12 +217,17 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
+[ -z $restorefile ] && {
+  echo "No restore file was found. Please use --custom-file to specify the restore file"
+  exit 1
+} || :
+
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
-	dbpassword="-p$dbpassword"
+	dbpassword="-p'$dbpassword'"
 fi
 
-dbconnectionstring="mysql -u $username $dbpassword --port=$port --host=$host"
+dbconnectionstring="mysql -u '$username' $dbpassword --port=$port --host=$host"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		dwservrunning=1
@@ -242,7 +252,7 @@ dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-o
 
 echo ""
 ## write-out command to console (helps with debugging)
-#echo "$dbconnectionstring -e \"$dbresetsql\""
+# echo "$dbconnectionstring -e \"$dbresetsql\""
 ## run the same command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
@@ -260,16 +270,33 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
-  # Extract or copy sample DB (since v3.2 db has been zipped)
-  rm -f /tmp/openeyes_sample_data.sql >/dev/null
-  if [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ]; then 
-  	cp -f $MODULEROOT/sample/sql/openeyes_sample_data.sql /tmp
-  elif [ -f $MODULEROOT/sample/sql/sample_db.zip ]; then
-  	unzip $MODULEROOT/sample/sql/sample_db.zip -d /tmp
-  fi
 
-	echo "Re-importing database"
-	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
+	echo "importing $restorefile (may take a few minutes)...."
+	if [[ $restorefile =~ \.zip$ ]]; then
+		# If pv is installed then use it to show progress
+		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
+		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	elif [[ $restorefile =~ \.sql$ ]]; then
+		# If pv is installed then use it to show progress
+		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
+		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	elif [[ $restorefile == '-' ]]; then
+		# pipe stdin straight through
+		eval  "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	else
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
+		exit 1
+	fi
+
 fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
@@ -285,7 +312,7 @@ if [ ! -z $icode ]; then
 
 	echo "UPDATE institution SET remote_id = '$icode' WHERE id = 1;" > /tmp/openeyes-mysql-institute.sql
 
-	eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql
+	eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < /tmp/openeyes-mysql-institute.sql"
 
 	rm /tmp/openeyes-mysql-institute.sql
 fi
@@ -300,7 +327,7 @@ if [ $demo = "1" ]; then
 	do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f
+			eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f"
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
@@ -329,7 +356,7 @@ if [ $demo = "1" ]; then
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
+			eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			bash -l "$basefolder/$f"
@@ -349,7 +376,7 @@ if grep -q "'Genetics'," $WROOT/protected/config/local/common.php && ! grep -q "
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
+			eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			bash -l "$basefolder/$f"
@@ -366,7 +393,7 @@ if [ ! $nobanner = "1" ]; then
 	UPDATE ${DATABASE_NAME:-"openeyes"}.setting_installation s SET s.value=\"$bannertext\" WHERE s.key=\"watermark\";
 	" | sudo tee /tmp/openeyes-mysql-setbanner.sql > /dev/null
 
-	eval $dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql
+	eval "$dbconnectionstring < /tmp/openeyes-mysql-setbanner.sql"
 	sudo rm /tmp/openeyes-mysql-setbanner.sql
 fi
 
@@ -382,7 +409,7 @@ if [ $nopost = "0" ]; then
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f
+			eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $postpath/$f"
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			bash -l "$postpath/$f"
@@ -409,7 +436,7 @@ if [[ $eventimages = 1 && $demo = 1 ]]; then
     do
 		if [[ $f == *.sql ]]; then
 			echo "importing $f"
-			eval $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f
+			eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
 		elif [[ $f == *.sh ]]; then
 			echo "running $f"
 			bash -l "$basefolder/$f"
