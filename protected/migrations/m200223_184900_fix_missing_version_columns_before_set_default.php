@@ -32,19 +32,6 @@ class m200223_184900_fix_missing_version_columns_before_set_default extends OEMi
 
     public function down()
     {
-        // GENERAL EVENT
-        $this->alterOEColumn('event', 'delete_pending', 'TINYINT(1) UNSIGNED NOT NULL', true);
-
-        // FIX DELETED DEFAULTS
-        $tables_without_default_deleted = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'deleted' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL AND TABLE_NAME NOT LIKE '%_version'")->queryAll();
-        foreach ($tables_without_default_deleted as $table) {
-            $this->alterOEColumn($table['TABLE_NAME'], 'deleted', 'TINYINT(1) UNSIGNED NOT NULL', true);
-        }
-
-        // FIX DISPLAY_ORDER DEFAULTS
-        $tables_without_default_display_order = Yii::app()->db->createCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'display_order' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL AND TABLE_NAME NOT LIKE '%_version'")->queryAll();
-        foreach ($tables_without_default_display_order as $table) {
-            $this->alterOEColumn($table['TABLE_NAME'], 'display_order', 'INT(8) NOT NULL', true);
-        }
+        echo "down not supported";
     }
 }
