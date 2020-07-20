@@ -44,8 +44,9 @@ fi
 
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
-# If we're using docker secrets, override DATABASE_PASSWORD with the secret. Else the environment variable will use it's default value
-[ -f /run/secrets/DATABASE_PASSWORD ] && pass="$(</run/secrets/DATABASE_PASSWORD)" || pass=${DATABASE_PASSWORD:-"openeyes"}
+# If we're using docker secrets, override DATABASE_PASS and DATABASE_USER with the secret. Else the environment variable will use it's default value
+[ -f /run/secrets/DATABASE_PASS ] && pass="$(</run/secrets/DATABASE_PASS)" || pass=${DATABASE_PASS:-"openeyes"}
+[ -f /run/secrets/DATABASE_USER ] && dbuser="$(</run/secrets/DATABASE_USER)" || dbuser=${DATABASE_USER:-"openeyes"}
 
 # Process commandline parameters
 
@@ -273,14 +274,11 @@ fi
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes};
-grant all privileges on ${DATABASE_NAME:-openeyes}.* to '${DATABASE_USER:-openeyes}'@'%' identified by '$pass';
-GRANT FILE ON *.* TO '${DATABASE_USER:-openeyes}'@'%';
-flush privileges;"
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
 
 echo ""
 ## write-out command to console (helps with debugging)
-#echo "$dbconnectionstring -e \"$dbresetsql\""
+# echo "$dbconnectionstring -e \"$dbresetsql\""
 ## run the same command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
@@ -298,33 +296,38 @@ if [ $nofiles = "0" ]; then
 fi
 
 if [ $cleanbase = "0" ]; then
-    
-    echo "importing $restorefile (may take a few minutes)...."
-    if [[ $restorefile =~ \.zip$ ]]; then
-        # If pv is installed then use it to show progress
-        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
-        elif [[ $restorefile =~ \.sql$ ]]; then
-        # If pv is installed then use it to show progress
-        [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
-        eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
-        elif [[ $restorefile == '-' ]]; then
-        # pipe stdin straight through
-        eval  "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
-            echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
-            exit 1
-        }
-    else
-        echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
-        exit 1
-    fi
-    
+
+	echo "importing $restorefile (may take a few minutes)...."
+	if [[ $restorefile =~ \.zip$ ]]; then
+		# If pv is installed then use it to show progress
+		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
+		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	elif [[ $restorefile =~ \.sql$ ]]; then
+		# If pv is installed then use it to show progress
+		[ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
+		eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	elif [[ $restorefile == '-' ]]; then
+		# pipe stdin straight through
+		eval  "cat - | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"
+		exit 1
+		}
+	else
+		echo -e "\n\nCOULD NOT IMPORT $restorefile. Unrecognised file extension (Only .zip or .sql files are supported). Quiting...\n\n"
+		exit 1
+	fi
+
+	## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
+    pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
+    echo ""
+    eval "$dbconnectionstring -e \"$pwresetsql\""
+
 fi
 
 # Force default institution code to match common.php (note that white-space is important in the common.php file)
