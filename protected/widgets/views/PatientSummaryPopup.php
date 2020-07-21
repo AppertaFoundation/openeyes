@@ -377,29 +377,6 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     </span>
                 <?php } ?>
             </div>
-        <?php } else { ?>
-            <div class="group">
-                <?php
-                    $leftCCT = $exam_api->getCCTLeft($patient);
-                    $rightCCT = $exam_api->getCCTRight($patient);
-                if ($leftCCT !== null || $rightCCT !== null) {
-                    ?>
-                <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
-                <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
-                <span class="oe-date" style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
-                <?php } else { ?>
-                <span class="data-value not-available">CCT: NA</span>
-                <?php } ?>
-            </div>
-
-            <div class="group">
-                <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
-                    <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-                    <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
-                <?php } else { ?>
-                    <span class="data">CVI Status: NA</span>
-                <?php } ?>
-            </div>
         <?php } ?>
 
         <div class="group">
@@ -414,6 +391,20 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                       style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
             <?php } else { ?>
                 <span class="data-value not-available">Refraction: NA</span>
+            <?php } ?>
+        </div>
+
+        <div class="group">
+            <?php
+                $leftCCT = $exam_api->getCCTLeft($patient);
+                $rightCCT = $exam_api->getCCTRight($patient);
+            if ($leftCCT !== null || $rightCCT !== null) {
+                ?>
+            <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
+            <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
+            <span class="oe-date" style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
+            <?php } else { ?>
+            <span class="data-value not-available">CCT: NA</span>
             <?php } ?>
         </div>
 
