@@ -1533,7 +1533,7 @@ class AdminController extends ModuleAdminController
 
     public function actionEditWard($id = null)
     {
-        if(!isset($id)){
+        if (!isset($id)) {
             $ward = new OphTrOperationbooking_Operation_Ward();
         } else {
             if (!$ward = OphTrOperationbooking_Operation_Ward::model()->findByPk($id)) {
