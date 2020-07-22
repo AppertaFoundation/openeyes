@@ -120,7 +120,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function testSearchNotLike()
     {
         $expected = array();
-        foreach (array(4, 5, 6, 8, 9) as $patientNum) {
+        foreach (array(4, 5, 6, 8, 9, 10) as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
         }
 
@@ -143,7 +143,7 @@ class PatientDiagnosisParameterTest extends CDbTestCase
     public function testSearchFirmInequality()
     {
         $expected = array();
-        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9) as $patientNum) {
+        foreach (array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) as $patientNum) {
             $expected[] = $this->patient("patient$patientNum");
         }
 

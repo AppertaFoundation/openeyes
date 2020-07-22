@@ -32,12 +32,6 @@ class FieldImagesTest extends CDbTestCase
             )
         )->execute();
 
-         //mocking Yii static method to fetch paths
-        $this->yiiMock = $this->getMockClass(
-            'CFileHelper',          // name of class to mock
-            array('findFiles') // list of methods to mock
-        );
-
         $this->assetManagerMock = $this->createMock('AssetManager');
         // Configure the stub.
         $this->assetManagerMock->expects($this->any())
@@ -62,8 +56,7 @@ class FieldImagesTest extends CDbTestCase
 
     public function testGetFieldImagesNotPresent()
     {
-        $yiiMock = $this->yiiMock;
-        $yiiMock->staticExpects($this->any())->method('findFiles')->will($this->returnValue(array()));
+        $yiiMock = new FieldImagesTest_FileHelper_NotPresent();
 
         $results = FiledImagesTest_TestClass::model()->getFieldImages($yiiMock, $this->assetManagerMock);
         $this->assertEmpty($results);
@@ -71,22 +64,33 @@ class FieldImagesTest extends CDbTestCase
 
     public function testGetFieldImages()
     {
-        $yiiMock = $this->yiiMock;
-        $yiiMock::staticExpects($this->any())
-            ->method('findFiles')
-            ->will($this->returnValue(
-                array('somepath/somefile.jpg', 'somepath/FiledImagesTest_TestClass-field-3.jpg', 'somepath/FiledImagesTest_TestClass-field-5.jpg')
-            )
-        );
+        $yiiMock = new FieldImagesTest_FileHelper_Present();
 
-        $results = FiledImagesTest_TestClass::model()
-            ->getFieldImages($yiiMock, $this->assetManagerMock);
+        $results = FiledImagesTest_TestClass::model()->getFieldImages($yiiMock, $this->assetManagerMock);
         $this->assertInternalType('array', $results);
         $this->assertEquals(2, count($results));
         $this->assertTrue(isset($results['3']));
         $this->assertTrue(isset($results['5']));
         $this->assertEquals(DIRECTORY_SEPARATOR.'FiledImagesTest_TestClass-field-3.jpg', $results['3']);
         $this->assertEquals(DIRECTORY_SEPARATOR.'FiledImagesTest_TestClass-field-5.jpg', $results['5']);
+    }
+}
+
+// CFileHelper subclass to allow mocking a static method with hardcoded data.
+class FieldImagesTest_FileHelper_Present extends CFileHelper
+{
+    public static function findFiles($dir, $options = array())
+    {
+        return array('somepath/somefile.jpg', 'somepath/FiledImagesTest_TestClass-field-3.jpg', 'somepath/FiledImagesTest_TestClass-field-5.jpg');
+    }
+}
+
+// CFileHelper subclass to allow mocking a static method with no data.
+class FieldImagesTest_FileHelper_NotPresent extends CFileHelper
+{
+    public static function findFiles($dir, $options = array())
+    {
+        return array();
     }
 }
 

@@ -144,7 +144,7 @@ class PatientAgeParameterTest extends CDbTestCase
         $this->parameter->minValue = 5;
         $this->parameter->maxValue = 80;
 
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             $patients[] = $this->patient("patient$i");
         }
 

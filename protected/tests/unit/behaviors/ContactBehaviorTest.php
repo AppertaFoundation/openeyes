@@ -1,7 +1,8 @@
 <?php
 class _WrapperContactBehavior extends BaseActiveRecord
 {
-	public $contact;
+	public Contact $contact;
+	public string $fax = '09876 543210';
 
 	public function tableName()
 	{
@@ -22,11 +23,6 @@ class _WrapperContactBehavior extends BaseActiveRecord
 		return '01234 567890';
 	}
 
-	public function getFax()
-	{
-		return '09876 543210';
-	}
-
 	public function getPrefix()
 	{
 		return "Excuse me I'm a tad unwell";
@@ -35,8 +31,10 @@ class _WrapperContactBehavior extends BaseActiveRecord
 
 class _WrapperContactBehavior2 extends BaseActiveRecord
 {
-	public $contact;
-	public $date_of_death = '2013-04-01';
+	public Contact $contact;
+	public string $date_of_death = '2013-04-01';
+
+	public int $is_deceased = 1;
 
 	public function tableName()
 	{
@@ -129,7 +127,9 @@ class _WrapperContactBehavior3 extends BaseActiveRecord
 
 class ContactBehaviorTest extends CDbTestCase
 {
-	private $model;
+    private _WrapperContactBehavior $model;
+    private _WrapperContactBehavior2 $model2;
+    private _WrapperContactBehavior3 $model3;
 	public $fixtures = array(
 		'contact' => 'Contact',
 		'address' => 'Address',
@@ -140,13 +140,16 @@ class ContactBehaviorTest extends CDbTestCase
 		'user'	=> 'User'
 	);
 
+    /**
+     * @throws ReflectionException
+     */
 	public function setUp()
 	{
 		parent::setUp();
 
-		$this->model = new _WrapperContactBehavior;
+		$this->model = new _WrapperContactBehavior();
 
-		$this->address = new Address;
+		$this->address = new Address();
 		$this->address->attributes = array(
 			'address1' => 'Line 1',
 			'address2' => 'Line 2',
@@ -156,9 +159,12 @@ class ContactBehaviorTest extends CDbTestCase
 			'country_id' => 1,
 		);
 
-		$label = new ContactLabel;
+		$label = new ContactLabel();
 		$label->name = 'Test Label';
 
+        /**
+         * @var $contact Contact
+         */
 		$contact = ComponentStubGenerator::generate(
 			'Contact',
 			array(
@@ -171,7 +177,7 @@ class ContactBehaviorTest extends CDbTestCase
 
 		$this->model->contact = $contact;
 
-		$this->model2 = new _WrapperContactBehavior2;
+		$this->model2 = new _WrapperContactBehavior2();
 		$this->model2->contact = $contact;
 
 		$contact3 = ComponentStubGenerator::generate(
@@ -184,7 +190,7 @@ class ContactBehaviorTest extends CDbTestCase
 			)
 		);
 
-		$this->model3 = new _WrapperContactBehavior3;
+		$this->model3 = new _WrapperContactBehavior3();
 		$this->model3->contact = $contact3;
 	}
 
@@ -217,15 +223,13 @@ class ContactBehaviorTest extends CDbTestCase
 
 	public function testGetLetterAddressWithCountry()
 	{
-		$this->markTestIncomplete('Currently this is failing for me. Anyone readying please help me and debug me');
-
 		$this->assertEquals(array(
 				'Line 1',
 				'Line 2',
 				'City',
 				'County',
 				'Postcode',
-				'United Kingdom',
+				'United States',
 			),
 			$this->model->getLetterAddress(array('include_country'=>true))
 		);
@@ -334,7 +338,6 @@ class ContactBehaviorTest extends CDbTestCase
 
 	public function testGetLetterAddressWithAllTheTrimmings()
 	{
-		$this->markTestIncomplete('Currently this is failing for me. Anyone readying please help me and debug me');
 		$this->assertEquals(array(
 				'Henry Krinkle',
 				'Test Label',
@@ -343,7 +346,7 @@ class ContactBehaviorTest extends CDbTestCase
 				'City',
 				'County',
 				'Postcode',
-				'United Kingdom',
+				'United States',
 				'Tel: 01234 567890',
 				'Fax: 09876 543210',
 			),
@@ -409,7 +412,7 @@ class ContactBehaviorTest extends CDbTestCase
 
 	public function testAfterDelete()
 	{
-		$patient = $this->patient('patient4');
+		$patient = $this->patient('patient10');
 		$contact_id = $patient->contact_id;
 		$patient->delete();
 

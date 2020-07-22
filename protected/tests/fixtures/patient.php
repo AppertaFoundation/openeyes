@@ -116,4 +116,15 @@ return array(
         'address_id' => 1,
         'contact_id' => 6,
     ),
+    'patient10' => array(
+        'id' => 10,
+        'hos_num' => 5550102,
+        'dob' => '1979-09-08',
+        'date_of_death' => '2019-07-10',
+        'is_deceased' => '1',
+        'title' => 'MR',
+        'primary_phone' => '0208 1111111',
+        'address_id' => 1,
+        'contact_id' => 7,
+    ),
 );
