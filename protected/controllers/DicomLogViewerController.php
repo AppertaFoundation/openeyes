@@ -245,7 +245,13 @@ class DicomLogViewerController extends BaseController
                 $command->andWhere('dil.study_datetime > \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_from'])).'\' AND dil.study_datetime < \''.date('Y-m-d H:i:s', strtotime($_REQUEST['date_to'].' + 24 Hours')).'\'');
             }
         }
-        $data = $command->queryAll();
+
+        try {
+            $data = $command->queryAll();
+        } catch (CDbException $cdbe) {
+            OELog::log($cdbe->getMessage());
+            throw new Exception("An error has occurred.");
+        }
 
         foreach ($data as $k => $y) {
             $data[$k] = $y;
