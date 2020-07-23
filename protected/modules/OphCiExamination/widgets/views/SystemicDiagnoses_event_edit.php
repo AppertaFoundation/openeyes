@@ -34,6 +34,16 @@ $required_diagnoses_ids = array_map(function ($r) {
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
     <input type="hidden" name="diabetic_diagnoses[]"/>
+    <div class="cols-5 align-left <?= $model_name ?>_no_systemic_diagnoses_wrapper">
+        <label class="inline highlight" for="<?= $model_name ?>_no_systemic_diagnoses">
+            <?= \CHtml::checkBox(
+                $model_name . '[no_systemic_diagnoses]',
+                $element->no_systemic_diagnoses_date ? true : false,
+                array('class' => $model_name. '_no_systemic_diagnoses')
+            ); ?>
+            No systemic diagnoses
+        </label>
+    </div>
     <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
         <colgroup>
             <col class="cols-3">
@@ -43,18 +53,6 @@ $required_diagnoses_ids = array_map(function ($r) {
             <col class="cols-1">
         </colgroup>
         <tbody>
-        <tr class="cols-full <?= $model_name ?>_no_systemic_diagnoses_wrapper ">
-            <td colspan="5" class="align-left">
-                <label class="inline highlight" for="<?= $model_name ?>_no_systemic_diagnoses">
-                    <?= \CHtml::checkBox(
-                        $model_name . '[no_systemic_diagnoses]',
-                        $element->no_systemic_diagnoses_date ? true : false,
-                        array('class' => $model_name. '_no_systemic_diagnoses')
-                    ); ?>
-                    No systemic diagnoses
-                </label>
-            </td>
-        </tr>
         <?php
         $row_count = 0;
         foreach ($missing_req_diagnoses as $diagnosis) {
