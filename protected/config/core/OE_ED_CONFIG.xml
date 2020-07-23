@@ -2045,6 +2045,16 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
       <COMMENT>Persist from examination, but cannot be added during op-note</COMMENT>
     </DOODLE_USAGE>
   </DOODLE_USAGE_LIST>
+  <TAG_LIST>
+    <TAG>
+      <TEXT>No evidence of Glaucoma</TEXT>
+      <SNOMED_CODE>150</SNOMED_CODE>
+    </TAG>
+    <TAG>
+      <TEXT>Glaucoma Suspect</TEXT>
+      <SNOMED_CODE>103</SNOMED_CODE>
+    </TAG>
+  </TAG_LIST>
   <EVENT_LIST>
     <EVENT>
       <EVENT_NAME>Examination</EVENT_NAME>

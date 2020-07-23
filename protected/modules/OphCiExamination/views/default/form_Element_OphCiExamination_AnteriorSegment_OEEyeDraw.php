@@ -75,5 +75,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'autoReportEditable' => false,
     'fields' => $cross_section_ed
 ));
-
-?>

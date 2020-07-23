@@ -28,6 +28,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     const DOODLE_TBL        = 'eyedraw_doodle';
     const CANVS_TBL         = 'eyedraw_canvas';
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
+    const TAG_TBL           = 'eyedraw_tag';
+    private $searchable_terms = [];
 
     public function getName()
     {
@@ -86,12 +88,16 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
         $this->refreshTuples();
+
+        foreach ($data->TAG_LIST->TAG as $tag) {
+            $this->processTagDefinition($tag);
+        }
     }
 
-    /**
-     * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
-     * correctly for each doodle.
-     */
+  /**
+  * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
+  * correctly for each doodle.
+  */
     private function refreshTuples()
     {
         $query_string = $this->getRefreshTuplesQuery();
@@ -101,9 +107,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     }
 
     /**
-     * @param $canvas
-     * @param $element_type
-     */
+    * @param $canvas
+    * @param $element_type
+    */
     private function insertOrUpdateCanvas($canvas, $element_type)
     {
         $current = $this->getDb()
@@ -127,10 +133,10 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     }
 
     /**
-     * Create or update a doodle definition
-     *
-     * @param $doodle
-     */
+    * Create or update a doodle definition
+    *
+    * @param $doodle
+    */
     private function insertOrUpdateDoodle($doodle)
     {
         $current = $this->getDb()
@@ -150,10 +156,35 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->query();
     }
 
+    private function insertOrUpdateTag($tag)
+    {
+        $current = $this->getDb()
+            ->createCommand('SELECT count(*) FROM ' . static::TAG_TBL
+                . ' WHERE snomed_code = :snomed_code')
+            ->bindValue(':snomed_code', $tag->SNOMED_CODE)
+            ->queryScalar();
+        if ($current) {
+            $cmd = $this->getDb()
+                ->createCommand('UPDATE ' . static::TAG_TBL
+                    . ' SET text = :text, '
+                    . 'snomed_code = :snomed_code');
+        } else {
+            $cmd = $this->getDb()
+                ->createCommand('INSERT INTO ' . static::TAG_TBL . ' ('
+                    . 'text, '
+                    . 'snomed_code) '
+                    . 'VALUES (:text, :snomed_code)');
+        }
+
+        $cmd->bindValue(':text', $tag->TEXT)
+            ->bindValue(':snomed_code', $tag->SNOMED_CODE)
+            ->query();
+    }
+
     /**
-     * @param $mnemonic
-     * @return bool
-     */
+    * @param $mnemonic
+    * @return bool
+    */
     protected function isCanvasDefined($mnemonic)
     {
         return $this->getDb()
@@ -163,8 +194,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 ->queryScalar() > 0;
     }
     /**
-     * @param $canvas_doodle
-     */
+    * @param $canvas_doodle
+    */
     private function insertOrUpdateCanvasDoodle($canvas_doodle)
     {
         if (!$this->isCanvasDefined($canvas_doodle->CANVAS_MNEMONIC)) {
@@ -214,37 +245,56 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     }
 
     /**
-     *
-     * @param $canvas
-     */
+    *
+    * @param $canvas
+    */
     protected function processCanvasDefinition($canvas)
     {
-        // verify that the element type exists for this definition
+      // verify that the element type exists for this definition
         if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $canvas->OE_ELEMENT_CLASS_NAME))) {
             $this->insertOrUpdateCanvas($canvas, $element_type);
         }
     }
 
     /**
-     * @param $doodle
-     */
+    * @param $doodle
+    */
     protected function processDoodleDefinition($doodle)
     {
         $this->insertOrUpdateDoodle($doodle);
     }
 
     /**
-     * @param $canvas_doodle
+     * @param $tag
      */
+    protected function processTagDefinition($tag)
+    {
+        $this->insertOrUpdateTag($tag);
+    }
+
+    /**
+    * @param $canvas_doodle
+    */
     protected function processCanvasDoodleDefinition($canvas_doodle)
     {
-        //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
+      //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
         $this->insertOrUpdateCanvasDoodle($canvas_doodle);
     }
 
     /**
-     * @return string
-     */
+    * @param $event
+    */
+    protected function processEventDefinition($event)
+    {
+        $index_list = $event->INDEX_LIST;
+        $event_name = $event->EVENT_NAME;
+        $this->searchable_terms["$event_name"] = [];
+        $this->updateEventIndexSearchHTML($index_list, $event_name);
+    }
+
+    /**
+    * @return string
+    */
     private function getRefreshTuplesQuery()
     {
         $doodle_tbl = static::DOODLE_TBL;
