@@ -23,19 +23,22 @@
     <tbody>
     <tr>
         <td>
-            <?php echo $form->checkBox($element, 'correspondence_in_large_letters') ?>
+            <?php echo $form->checkBox(
+                $element,
+                'correspondence_in_large_letters',
+                array('nowrapper' => true)
+            ) ?>
         </td>
     </tr>
     <tr>
         <td>
             <div class="flex-layout">
                 <div class="cols-4 column">
-                    <!-- Not using the $form->checkBox because it changes the label to be 2 cols and field to be 10 cols, which causes the checkbox to be overlapped with the label -->
-                    <label for="<?=\CHtml::modelName($element).'_agrees_to_insecure_email_correspondence';?>">
-                        <?=\CHtml::encode($element->getAttributeLabel('agrees_to_insecure_email_correspondence'))?>:
-                    </label>
-                    <?=\CHtml::hiddenField(CHtml::modelName($element)."[agrees_to_insecure_email_correspondence]", '0', array('id' => CHtml::modelName($element).'_agrees_to_insecure_email_correspondence_hidden'))?>
-                    <?=\CHtml::checkBox(CHtml::modelName($element)."[agrees_to_insecure_email_correspondence]", $element->agrees_to_insecure_email_correspondence)?>
+                    <?php echo $form->checkBox(
+                        $element,
+                        'agrees_to_insecure_email_correspondence',
+                        array('nowrapper' => true)
+                    ) ?>
                 </div>
                 <div class="cols-8 column">
                     <?php
