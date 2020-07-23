@@ -16,11 +16,11 @@
     <?php if ($this->title != 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
                 <div class="extra-info">
-                    <span class="fade">Subspecialty: </span>
+                    <small class="fade">Subspecialty: </small>
                     <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name; ?>
                 </div>
                 <div class="extra-info">
-                    <span class="fade">&nbsp;Context: </span>
+                    <small class="fade">&nbsp;Context: </small>
                     <?= $this->event->firm->name; ?>
                 </div>
             <?php endif; ?>
