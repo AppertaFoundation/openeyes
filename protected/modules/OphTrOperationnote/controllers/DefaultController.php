@@ -1335,7 +1335,13 @@ class DefaultController extends BaseEventTypeController
         //event date
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
-            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            $current_event_date = substr($event->event_date, 0, 10);
+
+            if ($event_date !== $current_event_date) {
+                $event->event_date = $event_date;
+            }
+
             if (!$event->validate()) {
                 foreach ($event->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {
