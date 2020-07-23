@@ -22,19 +22,19 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
             pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
         });
 
-        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").change(function () {
-            var $pcrDiabeticRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex');
-            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex', $pcrDiabeticRight);
+        $('.pcrrisk_diabetic').change(function () {
+            let pcrrisk_diabetic_value = $(this).prop('selectedIndex');
+            $('.pcrrisk_diabetic').prop('selectedIndex', pcrrisk_diabetic_value);
         });
 
-        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").change(function () {
-            var $pcrDiabeticLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex');
-            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex', $pcrDiabeticLeft);
+        $('.pcrrisk_arb').change(function () {
+            let pcrrisk_arb_value = $(this).prop('selectedIndex');
+            $('.pcrrisk_arb').prop('selectedIndex', pcrrisk_arb_value);
         });
 
-        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").change(function () {
-            var $pcrAlphaRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex');
-            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
+        $('.pcr_lie_flat').change(function () {
+            let pcr_lie_flat_value = $(this).prop('selectedIndex');
+            $('.pcr_lie_flat').prop('selectedIndex', pcr_lie_flat_value);
         });
     }
 
