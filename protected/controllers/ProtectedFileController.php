@@ -75,7 +75,7 @@ class ProtectedFileController extends BaseController
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         if (!file_exists($file->getFilePath())) {
-            if (!@mkdir($file->getFilePath(), 0755, true)) {
+            if (!@mkdir($file->getFilePath(), 0774, true)) {
                 throw new Exception("{$file->getPath()} could not be created: permission denied");
             }
         }
