@@ -1334,9 +1334,8 @@ class DefaultController extends BaseEventTypeController
 
         //event date
         if (isset($data['Event']['event_date'])) {
+            $this->setEventDate($data['Event']['event_date']);
             $event = $this->event;
-            $this->setEventDate($event, $data['Event']['event_date']);
-
             if (!$event->validate()) {
                 foreach ($event->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {
