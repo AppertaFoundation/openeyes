@@ -282,6 +282,6 @@ class Allergies extends \BaseEventTypeElement
                 return false;
             }
         }
-        return true;
+        return !empty($this->entries);
     }
 }
