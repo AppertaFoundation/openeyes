@@ -171,6 +171,15 @@ class MedicationManagementEntry extends \EventMedicationUse
         return parent::afterValidate();
     }
 
+    protected function beforeSave()
+    {
+        if ($this->prescribe && $this->end_date) {
+            $this->setStopReasonToCourseComplete();
+        }
+        return parent::beforeSave();
+    }
+
+
     public function beforeDelete()
     {
         \Yii::app()->db->createCommand("DELETE FROM " . \OphDrPrescription_ItemTaper::model()->tableName() . " WHERE item_id = :item_id")->

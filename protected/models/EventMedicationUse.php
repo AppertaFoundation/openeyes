@@ -732,6 +732,9 @@ class EventMedicationUse extends BaseElement
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
+        if (!$this->stop_reason_id) {
+            $this->stop_reason_id = $item->stop_reason_id;
+        }
         if (!$this->end_date) {
             $end_date = $item->end_date;
             $compare_date = new \DateTime();
@@ -746,13 +749,12 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    protected function beforeSave()
+    protected function setStopReasonToCourseComplete()
     {
         $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Course complete']);
-        if ($this->end_date && $this->prescribe && $course_complete_model && $this->stop_reason_id !== $course_complete_model->id) {
+        if ($course_complete_model) {
             $this->stop_reason_id = $course_complete_model->id;
         }
-        return parent::beforeSave();
     }
 
     public function beforeValidate()
