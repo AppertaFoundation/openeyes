@@ -278,7 +278,7 @@ class Allergies extends \BaseEventTypeElement
 
     public function checkAllAllergiesAreSetNo() {
         foreach ($this->entries as $entry) {
-            if ($entry->has_allergy !== "0") {
+            if (intval($entry->has_allergy) !== 0) {
                 return false;
             }
         }
