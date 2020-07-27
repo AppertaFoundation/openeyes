@@ -51,6 +51,13 @@
                     <td><?php echo $drug['postcode']?></td>
                     <td><?php echo date('j M Y', strtotime($drug['created_date']))?> <?php echo substr($drug['created_date'], 11, 5)?></td>
                     <td><?php echo $drug['preferred_term']?></td>
+                    <td><?php echo $drug['dose']. ' '.$drug['dose_unit']?></td>
+                    <td><?php echo $drug['frequency']?></td>
+                    <td><?php echo $drug['duration']?></td>
+                    <td><?php echo $drug['route']?></td>
+                    <td><?php echo $drug['dispense_condition']?></td>
+                    <td><?php echo $drug['dispense_location']?></td>
+                    <td><?php echo $drug['laterality']?></td>
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>
