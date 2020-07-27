@@ -120,7 +120,6 @@ class MultiSelectListFreeText extends BaseFieldWidget
                 }
             } elseif (!isset($_POST[$this->field]) && !isset($_POST[CHtml::modelName($this->element)][$this->relation])) {
                 $this->selected_ids = array();
-                unset($this->filtered_options[$id]);
             }
         }
 
