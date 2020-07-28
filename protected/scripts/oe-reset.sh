@@ -214,11 +214,6 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-[ -z $restorefile ] && {
-  echo "No restore file was found. Please use --custom-file to specify the restore file"
-  exit 1
-} || :
-
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
 	dbpassword="-p'$dbpassword'"
@@ -247,6 +242,12 @@ if [ -z $restorefile ]; then
     # Pick default restore file based on what is available
     [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 fi
+
+[ ! -f $restorefile ] && {
+    echo "Restore file was found at: $restorefile. 
+    Please use --custom-file to specify a valid restore file"
+    exit 1
+} || :
 
 echo "Clearing current database..."
 
