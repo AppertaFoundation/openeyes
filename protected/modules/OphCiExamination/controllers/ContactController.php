@@ -21,15 +21,15 @@ class ContactController extends \BaseController
             $criteria = new \CDbCriteria();
             $criteria->join = "left join contact_label cl on cl.id = t.contact_label_id ";
             $criteria->join .= "left join address ad on ad.contact_id = t.id";
-            if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addSearchCondition('last_name', $term, true, 'OR');
-                $criteria->addSearchCondition('first_name', $term, true, 'OR');
-                $criteria->addSearchCondition('cl.name', $term, true, 'OR');
-                $criteria->addSearchCondition('t.national_code', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.address1', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.address2', $term, true, 'OR');
-                $criteria->addSearchCondition('ad.postcode', $term, true, 'OR');
-                $criteria->addSearchCondition('last_name', $term, true, 'OR');
+            if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
+                $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(first_name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(cl.name)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(t.national_code)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.address1)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.address2)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(ad.postcode)', $term, true, 'OR');
+                $criteria->addSearchCondition('LOWER(last_name)', $term, true, 'OR');
             }
             if (isset($_GET['filter'])) {
                 $contact_label_id = $_GET['filter'];
