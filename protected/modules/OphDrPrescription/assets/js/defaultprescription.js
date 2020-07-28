@@ -39,7 +39,7 @@ $('body').delegate('select.drugRoute', 'change', function () {
  */
 function fpTenPrintOption() {
     let exists = false;
-    let $save_print_form_btn = $('#et_save_print_form');
+    let $save_print_form_btns = $('#et_save_print_form,#et_save_print_form_footer');
 
     $('#prescription_items tbody tr').each(function(i, elem) {
         if ($(elem).find('.dispenseCondition').val() !== undefined && $(elem).find('.dispenseCondition').val() === $(elem).find('.dispenseCondition option:contains("Print to {form_type}")').val()) {
@@ -47,10 +47,10 @@ function fpTenPrintOption() {
         }
     });
 
-    if (exists && $save_print_form_btn.data('enabled') === 'on') {
-        $save_print_form_btn.show();
-    } else if (!$save_print_form_btn.hidden) {
-        $save_print_form_btn.hide();
+    if (exists && $save_print_form_btns.data('enabled') === 'on') {
+        $save_print_form_btns.show();
+    } else if (!$save_print_form_btns.hidden) {
+        $save_print_form_btns.hide();
     }
 }
 
