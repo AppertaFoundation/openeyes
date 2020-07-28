@@ -211,9 +211,14 @@ echo ""
 
 $(ssh-agent)  2>/dev/null
 
-# attempt ssh authentication. If it fails, revert to https
-ssh git@github.com -T
-[ "$?" == "1" ] && usessh=1 || usessh=0
+testgit=$(ssh git@github.com -T 2>&1 | grep -oP --color=never "Hi \K[^\!]*")
+  if [ ! -z "$testgit" ]; then
+   usessh=1 
+   echo "AUTHENTICATED TO GITHUB WITH SSH AS: $testgit"
+  else
+    usessh=0
+    echo "!COULD NOT AUTHENTICATE TO GITHUB WITH SSH, FALLING BACK TO HTTPS!"
+  fi
 
 # Backwards comaptibility, use OE_GITROOT if it exists and GIT_ORG if not
 # If both exist, GIT_ORG takes preference
