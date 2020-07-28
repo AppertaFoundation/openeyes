@@ -243,7 +243,8 @@ if [ -z $restorefile ]; then
     [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 fi
 
-[ ! -f $restorefile ] && {
+# Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
+[[ ! -f $restorefile && "$restorefile" != "-" ]] && {
     echo "Restore file was found at: $restorefile. 
     Please use --custom-file to specify a valid restore file"
     exit 1
