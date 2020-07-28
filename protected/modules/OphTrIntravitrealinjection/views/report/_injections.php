@@ -67,6 +67,3 @@
         <?php }?>
     </tbody>
 </table>
-<div>
-    <button type="submit" class="classy blue mini" id="download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-</div>

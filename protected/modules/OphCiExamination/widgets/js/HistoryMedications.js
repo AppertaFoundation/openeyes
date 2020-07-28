@@ -285,21 +285,29 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.hideNoMedications = function() {
-      if (this.$table.find('tbody tr').length !== 2) {
-          if (!this.$noSystemicMedicationsFld.prop('checked')) {
+      if (this.$table.find('tbody tr').length > 0) {
+          let no_sys_meds_checked = this.$noSystemicMedicationsFld.prop('checked');
+          let no_oph_meds_checked = this.$noOphthalmicMedicationsFld.prop('checked');
+          if (!no_sys_meds_checked) {
               this.$noSystemicMedicationsWrapper.hide();
           }
-          if (!this.$noOphthalmicMedicationsFld.prop('checked')) {
+          if (!no_oph_meds_checked) {
               this.$noOphthalmicMedicationsWrapper.hide();
+          }
+          if (no_sys_meds_checked ? !no_oph_meds_checked : no_oph_meds_checked) {
+              $('#no-oph-sys-meds').show();
+          } else {
+              $('#no-oph-sys-meds').hide();
           }
       }
   };
 
   HistoryMedicationsController.prototype.showNoMedications = function() {
-      if (this.$table.find('tbody tr').length === 2) {
+      if (this.$table.find('tbody tr').length === 0) {
           this.$table.find('thead').hide();
           this.$noOphthalmicMedicationsWrapper.show();
           this.$noSystemicMedicationsWrapper.show();
+          $('#no-oph-sys-meds').hide();
       } else {
           this.hideNoMedications();
       }

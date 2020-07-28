@@ -63,13 +63,13 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         </table>
                     </div>
                     <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-colour_vision_reading">
-                        <button class="button hint green" id="add-procedure-btn-<?= $eye_side ?>" type="button">
-                            <i class="oe-i plus pro-theme"></i>
-                        </button>
                         <button id="colour-vision-<?= $eye_side ?>-comment-button"
                                 class="button js-add-comments" data-comment-container="#colour-vision-<?= $eye_side ?>-comments"
                                 type="button" style="<?= $element->{$eye_side . '_notes'} ? 'visibility: hidden;' : '' ?>">
                             <i class="oe-i comments small-icon"></i>
+                        </button>
+                        <button class="button hint green" id="add-procedure-btn-<?= $eye_side ?>" type="button">
+                            <i class="oe-i plus pro-theme"></i>
                         </button>
                         <!-- oe-add-select-search -->
                     </div>

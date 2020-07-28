@@ -218,9 +218,9 @@ $stop_fields_validation_error = array_intersect(
             </span>
             <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
 
-                    <div class="alternative-display inline">
+        <div class="alternative-display inline">
             <div class="alternative-display-element textual">
-                <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors('end_date')) {
+                <a class="js-meds-stop-btn" id="<?= $model_name . "_entries_" . $row_count . "_stopped_button" ?>" data-row_count="<?= $row_count ?>" href="javascript:void(0); " <?php if ($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id)) {
                     ?> style="display: none;"<?php
                                                 }?>>
                     <?php if (!is_null($entry->end_date)) : ?>
@@ -233,7 +233,7 @@ $stop_fields_validation_error = array_intersect(
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset <?php if (!($entry->hasErrors('end_date'))) {
+            <fieldset <?php if (!($entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id))) {
                 ?> style="display: none;"<?php
                       }?> class="js-datepicker-wrapper js-end-date-wrapper">
                             <i class="oe-i stop small pad"></i>
@@ -249,10 +249,10 @@ $stop_fields_validation_error = array_intersect(
 
             <span id="<?= $model_name . "_entries_" . $row_count . "_stop_reason_id_error" ?>"
                         class="js-stop-reason-select cols-5"
-                        style="<?=  !$stop_fields_validation_error && ($is_new || is_null($entry->end_date)) ? "display:none" : "" ?>">
+                        style="<?=  ((!($stop_fields_validation_error || $entry->hasErrors()) && ($entry->end_date)) || (($is_new || $entry->hasErrors()) && !($entry->end_date || $entry->stop_reason_id)) || (!$is_new && !$entry->end_date)) ? "display:none" : "" ?>">
             <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
         </span>
-            <div class="js-stop-reason-text" style="<?=  !$stop_fields_validation_error && ($is_new || is_null($entry->end_date)) ? "" : "display:none" ?>">
+            <div class="js-stop-reason-text" style="<?=  ((!$stop_fields_validation_error && !$entry->end_date) || (!$entry->hasErrors() && $entry->end_date)) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
             </div>
         </div>

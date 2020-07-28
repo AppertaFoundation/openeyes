@@ -2,7 +2,7 @@ function setYAxis_VA(options) {
   return {
     side: 'right',
     title: {
-              text: 'VA Graph',
+              text: 'VA ('+ $('#va_history_unit_id').children("option:selected").text() +')',
               font: {
                 color: 'white'
               }

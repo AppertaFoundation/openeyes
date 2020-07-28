@@ -25,6 +25,16 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
 <div class="element-fields flex-layout full-width">
     <div class="data-group cols-10">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <div class="cols-5 align-left <?= $model_name ?>_no_systemicsurgery_wrapper">
+            <label class="inline highlight" for="<?= $model_name ?>_no_systemicsurgery">
+                <?= \CHtml::checkBox(
+                    $model_name . '[no_systemicsurgery]',
+                    $element->no_systemicsurgery_date ? true : false,
+                    array('class' => $model_name.'_no_systemicsurgery')
+                ); ?>
+                No previous systemic surgery
+            </label>
+        </div>
         <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
             <colgroup>
                 <col class="cols-3">
@@ -34,18 +44,6 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
                 <col class="cols-1">
             </colgroup>
             <tbody>
-            <tr class="cols-full <?= $model_name ?>_no_systemicsurgery_wrapper">
-                <td colspan="5" class="align-left">
-                    <label class="inline highlight" for="<?= $model_name ?>_no_systemicsuregery">
-                        <?= \CHtml::checkBox(
-                            $model_name . '[no_systemicsurgery]',
-                            $element->no_systemicsurgery_date ? true : false,
-                            array('class' => $model_name.'_no_systemicsurgery')
-                        ); ?>
-                        No previous systemic surgery
-                    </label>
-                </td>
-            </tr>
             <?php
             $row_count = 0;
             // these are the missing but required to collect operations

@@ -97,14 +97,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   SystemicDiagnosesController.prototype.hideNoSystemicDiagnoses = function() {
-      if (this.$table.find('tbody tr').length !== 1) {
+      if (this.$table.find('tbody tr').length > 0) {
           this.$noSystemicDiagnosesFld.prop('checked', false);
           this.$noSystemicDiagnosesWrapper.hide();
       }
   };
 
   SystemicDiagnosesController.prototype.showNoSystemicDiagnoses = function() {
-      if (this.$table.find('tbody tr').length === 1) {
+      if (this.$table.find('tbody tr').length === 0) {
           this.$noSystemicDiagnosesWrapper.show();
       } else {
           this.hideNoSystemicDiagnoses();

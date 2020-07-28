@@ -27,8 +27,8 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
         'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
         'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
-        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes'),
-        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes'),
+        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
+        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
     );
 }
 

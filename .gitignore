@@ -16,8 +16,6 @@ tags
 /protected/media_data/*
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
-/protected/modules/sample
-/protected/modules/eyedraw
 /protected/runtime/*
 /protected/runtime/
 /protected/tests/report/
@@ -53,22 +51,42 @@ package-lock.json
 /.vscode
 .deleted
 
+# exclude external modules
+protected/modules/*
+
 # Include core modules
+!/protected/modules/Admin/
+!/protected/modules/Api/
+!/protected/modules/Genetics/
+!/protected/modules/OECaseSearch/
+!/protected/modules/OETrial/
+!/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/
 !/protected/modules/OphCiPhasing/
+!/protected/modules/OphCiTheatreadmission/
 !/protected/modules/OphCoCorrespondence/
+!/protected/modules/OphCoCvi/
+!/protected/modules/OphCoDocument/
+!/protected/modules/OphCoMessaging/
 !/protected/modules/OphCoTherapyapplication/
 !/protected/modules/OphDrPrescription/
+!/protected/modules/OphGeneric/
 !/protected/modules/OphInBiometry/
+!/protected/modules/OphInDnaextraction/
+!/protected/modules/OphInDnasample/
+!/protected/modules/OphInGeneticresults/
+!/protected/modules/OphInLabResults/
+!/protected/modules/OphInVisualfields/
+!/protected/modules/OphOuAnaestheticsatisfactionaudit/
+!/protected/modules/OphOuCatprom5/
 !/protected/modules/OphTrConsent/
 !/protected/modules/OphTrIntravitrealinjection/
 !/protected/modules/OphTrLaser/
 !/protected/modules/OphTrOperationbooking/
 !/protected/modules/OphTrOperationnote/
+!/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
-!/protected/modules/OphOuAnaestheticsatisfactionaudit/
-!/protected/modules/OphInVisualfields/
-!/protected/modules/OphCoMessaging/
+
 
 # Tests
 /bin/.enabled-modules

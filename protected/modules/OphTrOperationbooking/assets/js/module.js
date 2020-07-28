@@ -100,6 +100,7 @@
     }
 
     $(document).ready(function () {
+        let oeWindow;
         var disable_proc_select = typeof procedure_readonly != 'undefined' ? procedure_readonly : false;
         if(disable_proc_select){
             $('.Element_OphTrOperationbooking_Operation #typeProcedure .removeProcedure').remove();
@@ -151,7 +152,7 @@
 
         $('#js-close-whiteboard').click(function(e) {
             e.preventDefault();
-            let oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
+            oeWindow = window.open('', 'whiteboard', 'fullscreen=yes');
             oeWindow.close();
         });
 

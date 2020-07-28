@@ -216,6 +216,20 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="TAG_LIST">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TAG" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="TEXT" type="xs:string"/>
+										<xs:element name="SNOMED_CODE" type="xs:int"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="EVENT_LIST">
 					<xs:complexType>
 						<xs:sequence maxOccurs="1" minOccurs="1">
