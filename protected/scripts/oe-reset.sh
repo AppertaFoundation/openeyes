@@ -69,11 +69,7 @@ hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
-fallbackbranch=master
-
-# Pick default restore file based on what is available
-[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
-
+fallbackbranch=${OE_RESET_FALLBACK_BRANCH:-master}
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -245,6 +241,11 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 	echo "Downloading database for $branch"
 
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
+fi
+
+if [ -z $restorefile ]; then
+    # Pick default restore file based on what is available
+    [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
 fi
 
 echo "Clearing current database..."
