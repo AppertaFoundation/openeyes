@@ -68,7 +68,7 @@ done
 set -- "${PARAMS[@]}" # restore positional parameters
 
 ## Read in stored git config and modules config
-source $SCRIPTDIR/git.conf
+source $SCRIPTDIR/git.conf 2>/dev/null
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source $MODULES_CONF
@@ -160,6 +160,8 @@ if  [ ${#PARAMS[@]} -gt 0 ]; then
     do
         echo $i
     done
+	echo "continuing in 5 seconds..."
+	sleep 5
 fi
 
 # Show help text
@@ -205,9 +207,14 @@ echo ""
 
 $(ssh-agent)  2>/dev/null
 
-# attempt ssh authentication. If it fails, revert to https
-ssh git@github.com -T
-[ "$?" == "1" ] && usessh=1 || usessh=0
+testgit=$(ssh git@github.com -T 2>&1 | grep -oP --color=never "Hi \K[^\!]*")
+  if [ ! -z "$testgit" ]; then
+   usessh=1 
+   echo "AUTHENTICATED TO GITHUB WITH SSH AS: $testgit"
+  else
+    usessh=0
+    echo "!COULD NOT AUTHENTICATE TO GITHUB WITH SSH, FALLING BACK TO HTTPS!"
+  fi
 
 # Backwards comaptibility, use OE_GITROOT if it exists and GIT_ORG if not
 # If both exist, GIT_ORG takes preference
@@ -226,10 +233,9 @@ echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
 git config --global credential.helper 'cache --timeout=86400'
 
 git config --global core.fileMode false 2>/dev/null
+git config core.fileMode false 2>/dev/null
 
 MODULEROOT=$WROOT/protected/modules
-
-git config core.fileMode false 2>/dev/null
 
 # Add sample DB to checkout if it exists or if --sample has been set
 if [[ -d "$MODULEROOT/sample" ]] || [[ $sample = 1 ]]; then modules=(${modules[@]} sample); fi

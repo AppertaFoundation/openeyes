@@ -69,11 +69,7 @@ hscic=0
 nopost=0
 postpath=${OE_RESET_POST_SCRIPTS_PATH:-"$MODULEROOT/sample/sql/demo/local-post"}
 eventimages=1
-fallbackbranch=master
-
-# Pick default restore file based on what is available
-[ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
-
+fallbackbranch=${OE_RESET_FALLBACK_BRANCH:-master}
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -218,11 +214,6 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-[ -z $restorefile ] && {
-  echo "No restore file was found. Please use --custom-file to specify the restore file"
-  exit 1
-} || :
-
 # add -p to front of dbpassword (deals with blank dbpassword)
 if [ ! -z $dbpassword ]; then
 	dbpassword="-p'$dbpassword'"
@@ -246,6 +237,18 @@ if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams --${fallbackbranch}
 fi
+
+if [ -z $restorefile ]; then
+    # Pick default restore file based on what is available
+    [ -f $MODULEROOT/sample/sql/openeyes_sample_data.sql ] && restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql" || restorefile="$MODULEROOT/sample/sql/sample_db.zip"
+fi
+
+# Test to see if the restore file exists before continuing (note that '-' is a special case for when piping stdin)
+[[ ! -f $restorefile && "$restorefile" != "-" ]] && {
+    echo "Restore file was found at: $restorefile. 
+    Please use --custom-file to specify a valid restore file"
+    exit 1
+} || :
 
 echo "Clearing current database..."
 

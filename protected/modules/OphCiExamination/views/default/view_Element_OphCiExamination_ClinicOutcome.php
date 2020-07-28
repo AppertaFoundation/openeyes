@@ -87,27 +87,7 @@ $non_ticket_entries = [];
             <hr class="divider">
             <div class="oe-vc-mode in-element row">
                 <ul class="vc-steps">
-                    <?php foreach ($entry->queue_assignments as $step => $queue_assignment) {
-                        $is_completed = $queue_assignment->queue->id <= $entry->current_queue->id;
-                        $is_current = $queue_assignment->queue->id === $entry->current_queue->id; ?>
-                        <?php if ($is_completed) { ?>
-                            <li class="completed">
-                                <em><?= $queue_assignment->assignment_user->getFullName() ?></em>
-                            </li>
-                        <?php } ?>
-                        <li class="<?= $is_current ? 'selected' : ($is_completed ? 'completed' : '') ?>">
-                            <?= $step + 1 . '. ' . $queue_assignment->queue->name; ?>
-                        </li>
-                    <?php } ?>
-                    <?php $index = count($entry->queue_assignments) + 1;
-                    foreach ($ticket->getFutureSteps() as $case => $futureSteps) {
-                        foreach ($futureSteps as $futureStep) { ?>
-                            <li>
-                                <?= ($case === '?' ? $case : $index) . '. ' . $futureStep->name; ?>
-                            </li>
-                            <?php $index++;
-                        }
-                    } ?>
+                    <?= $api->renderVirtualClinicSteps($ticket) ?>
                 </ul>
             </div>
         </div>
