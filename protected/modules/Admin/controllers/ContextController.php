@@ -75,7 +75,7 @@ class ContextController extends BaseAdminController
 
         if (!empty($_POST)) {
             $firm->attributes = $_POST['Firm'];
-            if ($firm->id && Episode::model()->count('firm_id=?', [$firm->id]) !== '0'){
+            if ($firm->id && Episode::model()->count('firm_id=?', [$firm->id]) !== '0') {
                 $firm->can_own_an_episode = 1;
             }
             if (!$firm->validate()) {
