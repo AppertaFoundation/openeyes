@@ -40,16 +40,6 @@ class Allergies extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_allergies', $data)  && $data['no_allergies'] == 1) {
-            // TODO: Think about the importance of this date information, and therefore whether it should
-            // TODO: be preserved across change events for the family history
-            if (!$element->no_allergies_date) {
-                $element->no_allergies_date = date('Y-m-d H:i:s');
-            }
-        } elseif ($element->no_allergies_date) {
-            $element->no_allergies_date = null;
-        }
-
         // pre-cache current entries so any entries that remain in place will use the same db row
         $entries_by_id = array();
         foreach ($element->entries as $entry) {
@@ -73,6 +63,16 @@ class Allergies extends \BaseEventElementWidget
             $element->entries = $entries;
         } else {
             $element->entries = array();
+        }
+
+        if ((array_key_exists('no_allergies', $data) && $data['no_allergies'] == 1) || $element->checkAllAllergiesAreSetNo()) {
+            // TODO: Think about the importance of this date information, and therefore whether it should
+            // TODO: be preserved across change events for the family history
+            if (!$element->no_allergies_date) {
+                $element->no_allergies_date = date('Y-m-d H:i:s');
+            }
+        } elseif ($element->no_allergies_date) {
+            $element->no_allergies_date = null;
         }
     }
 
