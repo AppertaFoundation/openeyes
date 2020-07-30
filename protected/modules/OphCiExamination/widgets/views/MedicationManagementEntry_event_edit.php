@@ -98,7 +98,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                     array_keys($entry->errors)
                 ); ?>
             <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>"
-                <?php if (!$direct_edit && !$dfrl_validation_error) {
+                <?php if (!$direct_edit && empty($entry->errors)) {
                     echo 'style="display: none;"';
                 }?>>
 
@@ -160,7 +160,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 array('class'=>'laterality-input' )
             ); ?>
             </div>
-            <div class="alternative-display-element textual" <?php if ($direct_edit || $dfrl_validation_error) {
+            <div class="alternative-display-element textual" <?php if ($direct_edit || !empty($entry->errors)) {
                 echo 'style="display: none;"';
                                                              }?>>
                     <div class="flex-meds-inputs textual-display">
@@ -247,7 +247,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 ?> display: none <?php
                                               } ?>">
                 <div class="alternative-display inline">
-                    <div class="alternative-display-element textual">
+                    <div class="alternative-display-element textual" style="display: <?= $entry->hasErrors() && ($entry->end_date || $entry->stop_reason_id) ? 'none' : ''?>">
                         <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);" >
                                 <?php if (!is_null($entry->end_date)) : ?>
                                 <i class="oe-i stop small pad"></i>
@@ -257,7 +257,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                                 <?php endif; ?>
                         </a>
                     </div>
-                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= $entry->hasErrors() ? '' : ' style="display:none;"'?>>
+                    <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"'?>>
                         <i class="oe-i stop small pad"></i>
                         <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date"
                                 name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
@@ -268,11 +268,11 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
                 </div>
             </span>
             <span id="<?= $model_name . '_entries_' . $row_count . '_stop_reason_id_error' ?>" class="js-stop-reason-select cols-5"
-                    style="<?= is_null($entry->end_date) || $entry->prescribe ? 'display: none' : '' ?>"
+                    style="<?= (($entry->hasErrors() || $is_new) && !($entry->end_date || $entry->stop_reason_id)) || $entry->prescribe || !$entry->hasErrors() ? 'display: none' : '' ?>"
             >
                 <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
             </span>
-            <div class="js-stop-reason-text" style="<?= $is_new || is_null($entry->end_date) ? "" : "display:none" ?>">
+            <div class="js-stop-reason-text" style="<?= $is_new || (!$entry->hasErrors() && $entry->end_date && $entry->stop_reason_id) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
             </div>
         </td>

@@ -377,29 +377,6 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     </span>
                 <?php } ?>
             </div>
-        <?php } else { ?>
-            <div class="group">
-                <?php
-                    $leftCCT = $exam_api->getCCTLeft($patient);
-                    $rightCCT = $exam_api->getCCTRight($patient);
-                if ($leftCCT !== null || $rightCCT !== null) {
-                    ?>
-                <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
-                <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
-                <span class="oe-date" style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
-                <?php } else { ?>
-                <span class="data-value not-available">CCT: NA</span>
-                <?php } ?>
-            </div>
-
-            <div class="group">
-                <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
-                    <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-                    <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
-                <?php } else { ?>
-                    <span class="data">CVI Status: NA</span>
-                <?php } ?>
-            </div>
         <?php } ?>
 
         <div class="group">
@@ -414,6 +391,20 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                       style="text-align: left"><?= Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient)) ?></span>
             <?php } else { ?>
                 <span class="data-value not-available">Refraction: NA</span>
+            <?php } ?>
+        </div>
+
+        <div class="group">
+            <?php
+                $leftCCT = $exam_api->getCCTLeft($patient);
+                $rightCCT = $exam_api->getCCTRight($patient);
+            if ($leftCCT !== null || $rightCCT !== null) {
+                ?>
+            <span class="data">R <?= $rightCCT ?: 'NA' ?> </span>
+            <span class="data">L <?= $leftCCT ?: 'NA' ?> </span>
+            <span class="oe-date" style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
+            <?php } else { ?>
+            <span class="data-value not-available">CCT: NA</span>
             <?php } ?>
         </div>
 
@@ -467,49 +458,48 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         </tbody>
                     </table>
                 </div>
-                <!-- group-->
-                <div class="group">
-                    <div class="label">Systemic Diagnoses</div>
-                    <div class="data">
-                        <table>
-                            <colgroup>
-                                <col class="cols-8">
-                                <col>
-                            </colgroup>
-                            <tbody>
-                            <?php if (count($this->patient->systemicDiagnoses) === 0 && !$this->patient->get_no_systemic_diagnoses_date()) { ?>
-                                <tr>
-                                    <td>
-                                        <div class="nil-recorded">Nil recorded</div>
-                                    </td>
-                                </tr>
-                            <?php } elseif ($this->patient->get_no_systemic_diagnoses_date()) { ?>
-                                <tr>
-                                    <td>
-                                        <div class="nil-recorded">Patient has no known Systemic Diagnoses</div>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                            <?php foreach ($this->patient->systemicDiagnoses as $systemic_diagnosis) { ?>
-                                <tr>
-                                    <td> <?= $systemic_diagnosis->disorder->term ?></td>
-                                    <td><i class="oe-i"></i></td>
-                                    <td class="nowrap">
-                                        <?php $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => '')) ?>
-                                        <div class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></div>
-                                    </td>
-                                    <td>
-                                        <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
-                                        if ($diagnosis) { ?>
-                                            <?php $event_id = $diagnosis->element->event_id ?>
-                                        <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <div class="group">
+                <div class="label">Systemic Diagnoses</div>
+                <div class="data">
+                    <table>
+                        <colgroup>
+                            <col class="cols-8">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <?php if (count($this->patient->systemicDiagnoses) === 0 && !$this->patient->get_no_systemic_diagnoses_date()) { ?>
+                            <tr>
+                                <td>
+                                    <div class="nil-recorded">Nil recorded</div>
+                                </td>
+                            </tr>
+                        <?php } elseif ($this->patient->get_no_systemic_diagnoses_date()) { ?>
+                            <tr>
+                                <td>
+                                    <div class="nil-recorded">Patient has no known Systemic Diagnoses</div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        <?php foreach ($this->patient->systemicDiagnoses as $systemic_diagnosis) { ?>
+                            <tr>
+                                <td> <?= $systemic_diagnosis->disorder->term ?></td>
+                                <td><i class="oe-i"></i></td>
+                                <td class="nowrap">
+                                    <?php $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => '')) ?>
+                                    <div class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></div>
+                                </td>
+                                <td>
+                                    <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
+                                    if ($diagnosis) { ?>
+                                        <?php $event_id = $diagnosis->element->event_id ?>
+                                    <a href="/OphCiExamination/default/view/<?= $event_id ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

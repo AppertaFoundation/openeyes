@@ -3,6 +3,7 @@
     <?php $this->renderIndexSearch(); ?>
     <?php $this->renderPartial('//patient/event_actions'); ?>
 </nav>
+<i class="spinner" title="Loading..." style="display: none;"></i>
 
 <?php $this->renderSidebar('//patient/episodes_sidebar') ?>
 <?php $this->renderManageElements() ?>

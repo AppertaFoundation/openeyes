@@ -300,7 +300,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 $_POST = array();
                 parent::actionCreate();
             }
-        } else if (isset($_POST['#']) || (isset($_POST['schedule_now']) && $_POST['schedule_now'])) {
+        } elseif (isset($_POST['#']) || (isset($_POST['schedule_now']) && $_POST['schedule_now'])) {
             // from create.php
             parent::actionCreate();
         }
@@ -400,6 +400,18 @@ class DefaultController extends OphTrOperationbookingEventController
         );
     }
 
+    /**
+     * Make sure the EUR is displayed properly in lightning viewer
+     * @param $id: event id
+     */
+    public function actionRenderEventImage($id)
+    {
+        $eur = EUREventResults::model()->findByAttributes(array('event_id' => $id));
+        if ($eur) {
+            $this->extraViewProperties = array('eur' => $eur);
+        }
+        parent::actionRenderEventImage($id);
+    }
     /**
      * Handle procedures.
      *
@@ -799,7 +811,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
                 return $this->redirect(array('default/view/'.$this->event->id));
             }
-        } else if ($this->eur_res) {
+        } elseif ($this->eur_res) {
             parent::actionDelete($id);
         }
     }

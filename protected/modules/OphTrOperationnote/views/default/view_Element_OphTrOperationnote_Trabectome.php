@@ -23,8 +23,7 @@
   </header>
   <section class="element-fields full-width">
     <div class="eyedraw flex-layout flex-top">
-      <div class="eyedraw-canvas">
-            <?php
+        <?php
             $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'mode' => 'view',
               'width' => 200,
@@ -35,7 +34,6 @@
               'idSuffix' => 'Trabectome',
             ));
             ?>
-      </div>
       <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>

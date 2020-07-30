@@ -33,7 +33,16 @@ $required_risk_ids = array_map(function ($r) {
   <div class="data-group cols-10">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-
+    <div class="cols-5 align-left <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
+        <label class="inline highlight" for="<?= $model_name ?>_no_risks">
+            <?= \CHtml::checkBox(
+                $model_name . '[no_risks]',
+                $element->no_risks_date ? true : false,
+                array('class' => $model_name . '_no_risks')
+            ); ?>
+            No relevant risks
+        </label>
+    </div>
     <table
         class="<?= $model_name ?>_entry_table cols-full">
       <colgroup>
@@ -52,18 +61,6 @@ $required_risk_ids = array_map(function ($r) {
       <tr>
       </thead>
       <tbody>
-      <tr class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
-         <td colspan="5" class="align-left">
-              <label class="inline highlight" for="<?= $model_name ?>_no_risks">
-                <?= \CHtml::checkBox(
-                    $model_name . '[no_risks]',
-                    $element->no_risks_date ? true : false,
-                    array('class' => $model_name . '_no_risks')
-                ); ?>
-                  No relevant risks
-              </label>
-         </td>
-      </tr>
         <?php if (count($element->entries) || count($missing_req_risks)) : ?>
             <?php
             $row_count = 0;

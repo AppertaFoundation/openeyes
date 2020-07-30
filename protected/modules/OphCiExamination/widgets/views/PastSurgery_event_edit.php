@@ -26,6 +26,16 @@ $model_name = CHtml::modelName($element);
 <div class="element-fields flex-layout full-width">
     <div class="data-group cols-10">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <div class="cols-5 align-left <?= $model_name ?>_no_pastsurgery_wrapper">
+            <label class="inline highlight" for="<?= $model_name ?>_no_pastsurgery">
+                <?= \CHtml::checkBox(
+                    $model_name . '[no_pastsurgery]',
+                    $element->no_pastsurgery_date ? true : false,
+                    array('class' => $model_name.'_no_pastsurgery')
+                ); ?>
+                No previous eye surgery or laser treatment
+            </label>
+        </div>
         <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
             <colgroup>
                 <col class="cols-3">
@@ -35,18 +45,6 @@ $model_name = CHtml::modelName($element);
                 <col class="cols-1">
             </colgroup>
             <tbody>
-            <tr class="cols-full <?= $model_name ?>_no_pastsurgery_wrapper">
-                <td colspan="5" class="align-left">
-                    <label class="inline highlight" for="<?= $model_name ?>_no_pastsuregery">
-                        <?= \CHtml::checkBox(
-                            $model_name . '[no_pastsurgery]',
-                            $element->no_pastsurgery_date ? true : false,
-                            array('class' => $model_name.'_no_pastsurgery')
-                        ); ?>
-                        No previous eye surgery or laser treatment
-                    </label>
-                </td>
-            </tr>
             <?php
             $row_count = 0;
             // these are the missing but required to collect operations

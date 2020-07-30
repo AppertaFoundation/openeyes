@@ -607,8 +607,9 @@ class DefaultController extends BaseEventTypeController
         // to change the status in this case nor the case where the PDF is loaded in the view
         // as neither are riven by the user printing the document.
         if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
+            $withPrint = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
             foreach ($print_outputs as $output) {
-                $output->output_status = "COMPLETE";
+                $output->output_status = $withPrint && $output->printIsUnique() ? 'PENDING' : 'COMPLETE';
                 $output->save();
             }
         }
@@ -1237,22 +1238,26 @@ class DefaultController extends BaseEventTypeController
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
 
-            $this->loadDirectLines();
+            $this->loadFaxAndDirectLineNumbers();
         }
     }
 
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
-    public function loadDirectLines()
+    public function loadFaxAndDirectLineNumbers()
     {
         $sfs = FirmSiteSecretary::model()->findAll('firm_id=?', array(Yii::app()->session['selected_firm_id']));
-        $vars[] = null;
+        $direct_line_numbers[] = null;
+        $fax_numbers[] = null;
+
         foreach ($sfs as $sf) {
-            $vars[$sf->site_id] = $sf->direct_line;
+            $direct_line_numbers[$sf->site_id] = $sf->direct_line;
+            $fax_numbers[$sf->site_id] = $sf->fax;
         }
 
-        $this->jsVars['correspondence_directlines'] = $vars;
+        $this->jsVars['correspondence_directlines'] = $direct_line_numbers;
+        $this->jsVars['correspondence_fax_numbers'] = $fax_numbers;
     }
 
     /**

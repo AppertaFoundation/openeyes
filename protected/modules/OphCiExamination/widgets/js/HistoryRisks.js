@@ -146,7 +146,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $(document).ready(function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$table.find('tr').hide();
                 controller.$popupSelector.hide();
             }
             controller.updateNoRisksState();
@@ -177,12 +177,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$noRisksFld.on('click', function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$table.find('tr').hide();
                 controller.$popupSelector.hide();
                 controller.setRadioButtonsToNo();
             } else {
                 controller.$popupSelector.show();
-                controller.$table.find('tr:not(:first-child)').show();
+                controller.$table.find('tr').show();
                 controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });

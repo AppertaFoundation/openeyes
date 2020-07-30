@@ -142,6 +142,7 @@ class EventMedicationUse extends BaseElement
             array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
             array('usage_subtype', 'default', 'value' => static::getUsageSubType(), 'on' => 'insert'),
             array('end_date', 'OEFuzzyDateValidator'),
+            array('end_date', 'validateEndDateStopReason'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
             array('last_modified_date, created_date, event_id, comments', 'safe'),
@@ -209,8 +210,15 @@ class EventMedicationUse extends BaseElement
 
     public function validateStopReason()
     {
-        if ($this->end_date && !$this->stop_reason_id && !$this->prescribe) {
+        if ($this->end_date && !$this->stop_reason_id) {
             $this->addError("stop_reason_id", "You must select a stop reason if the medication is stopped.");
+        }
+    }
+
+    public function validateEndDateStopReason()
+    {
+        if (!$this->end_date && $this->stop_reason_id) {
+            $this->addError('end_date', "You must set an end date if a stop reason is selected.");
         }
     }
 
@@ -724,6 +732,9 @@ class EventMedicationUse extends BaseElement
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;
         }
+        if (!$this->stop_reason_id) {
+            $this->stop_reason_id = $item->stop_reason_id;
+        }
         if (!$this->end_date) {
             $end_date = $item->end_date;
             $compare_date = new \DateTime();
@@ -738,13 +749,12 @@ class EventMedicationUse extends BaseElement
         }
     }
 
-    protected function beforeSave()
+    protected function setStopReasonToCourseComplete()
     {
         $course_complete_model = HistoryMedicationsStopReason::model()->findByAttributes(['name' => 'Course complete']);
-        if ($this->end_date && $this->prescribe && $course_complete_model && $this->stop_reason_id !== $course_complete_model->id) {
+        if ($course_complete_model) {
             $this->stop_reason_id = $course_complete_model->id;
         }
-        return parent::beforeSave();
     }
 
     public function beforeValidate()

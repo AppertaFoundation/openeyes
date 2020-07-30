@@ -23,19 +23,17 @@
   </header>
   <section class="element-fields full-width">
     <div class="eyedraw flex-layout flex-top">
-      <div class="eyedraw-canvas">
-            <?php
-            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-              'side' => $element->eye->getShortName(),
-              'mode' => 'view',
-              'width' => 200,
-              'height' => 200,
-              'model' => $element,
-              'attribute' => 'eyedraw',
-              'idSuffix' => 'Buckle',
-            ));
-            ?>
-      </div>
+        <?php
+        $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+          'side' => $element->eye->getShortName(),
+          'mode' => 'view',
+          'width' => 200,
+          'height' => 200,
+          'model' => $element,
+          'attribute' => 'eyedraw',
+          'idSuffix' => 'Buckle',
+        ));
+        ?>
       <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>

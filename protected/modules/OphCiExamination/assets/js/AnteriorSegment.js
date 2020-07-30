@@ -35,6 +35,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       Hyphaema: 'HyphaemaCrossSection',
       EndothelialKeratoplasty: 'EndothelialKeratoplastyCrossSection',
       CornealThinning: 'CornealThinningCrossSection',
+      KeraticPrecipitates: 'KeraticPrecipitatesCrossSection'
     }
   };
 
@@ -338,7 +339,19 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
               if (!this.secondaryDrawing.hasDoodleOfClass(secondaryClass) || !newDoodle.isUnique) {
                 const secondaryDoodle = this.secondaryDrawing.addDoodle(secondaryClass);
                 this.setDoodleParameter(newDoodle, 'id', secondaryDoodle, 'linkedDoodle');
+
+
+                // Adjust position in relation to other doodles (array defined in the doodle subclass)
+                for (let i = 0; i < secondaryDoodle.inFrontOfClassArray.length; i++) {
+                  secondaryDoodle.drawing.moveNextTo(secondaryDoodle, secondaryDoodle.inFrontOfClassArray[i], true);
+                }
+
+                for (let i = 0; i < secondaryDoodle.behindClassArray.length; i++) {
+                  secondaryDoodle.drawing.moveNextTo(secondaryDoodle, secondaryDoodle.behindClassArray[i], false);
+                }
+
                 this.secondaryDrawing.deselectDoodles();
+                this.primaryDrawing.selectDoodle(newDoodle);
               }
             }
           }
@@ -348,6 +361,15 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
           // ensure the initial value is stored correctly.
           this.storeToHiddenField(this.$nuclearCataract, newDoodle.nuclearGrade);
           this.storeToHiddenField(this.$corticalCataract, newDoodle.corticalGrade);
+        }
+
+        // Adjust position in relation to other doodles (array defined in the doodle subclass)
+        for (let i = 0; i < newDoodle.inFrontOfClassArray.length; i++) {
+          newDoodle.drawing.moveNextTo(newDoodle, newDoodle.inFrontOfClassArray[i], true);
+        }
+
+        for (let i = 0; i < newDoodle.behindClassArray.length; i++) {
+          newDoodle.drawing.moveNextTo(newDoodle, newDoodle.behindClassArray[i], false);
         }
         break;
       }

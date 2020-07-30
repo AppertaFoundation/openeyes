@@ -29,6 +29,16 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
             <div class="active-form flex-layout" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
                 <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                 <div class="cols-full">
+                    <div class="cols-5 align-left" id="<?= $model_name ?>_no_abnormalities_wrapper_<?= $eye_side ?>"
+                        <?= $this->isAbnormalitiesSet($element, $eye_side) ? ' style="display:none"' : '' ?>>
+                        <input type="hidden"
+                               name="<?= $model_name . '[' . $eye_side . '_no_pupillaryabnormalities]' ?>"
+                               value="0">
+                        <label class="inline highlight" for="<?= $model_name . '_' . $eye_side ?>_no_pupillaryabnormalities" id="<?= $model_name . '_' . $eye_side ?>_no_pa_label">
+                            <?= \CHtml::checkBox($model_name . '[' . $eye_side . '_no_pupillaryabnormalities]', $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? true : false); ?>
+                            Confirm patient has no pupillary abnormalities
+                        </label>
+                    </div>
                     <table class="cols-full pa-entry-table">
                         <colgroup>
                             <col class="cols-3">
@@ -36,18 +46,6 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
                             <col class="cols-4">
                         </colgroup>
                         <tbody>
-                        <tr id="<?= $model_name ?>_no_abnormalities_wrapper_<?= $eye_side ?>"
-                            <?= $this->isAbnormalitiesSet($element, $eye_side) ? ' style="display:none"' : '' ?>>
-                            <td colspan="4">
-                                <input type="hidden"
-                                       name="<?= $model_name . '[' . $eye_side . '_no_pupillaryabnormalities]' ?>"
-                                       value="0">
-                                <label class="inline highlight" for="<?= $model_name . '_' . $eye_side ?>_no_pupillaryabnormalities" id="<?= $model_name . '_' . $eye_side ?>_no_pa_label">
-                                    <?= \CHtml::checkBox($model_name . '[' . $eye_side . '_no_pupillaryabnormalities]', $element->{'no_pupillaryabnormalities_date_' . $eye_side} ? true : false); ?>
-                                    Confirm patient has no pupillary abnormalities
-                                </label>
-                            </td>
-                        </tr>
 
                         <?php
                         $missing_req_abnormalities = $this->getMissingRequiredAbnormalities($eye_side);
