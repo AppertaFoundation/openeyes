@@ -139,6 +139,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     }
 
     /**
+     * @param bool $include_tapers
      * @return DateTime|null
      * @throws Exception
      */
@@ -317,6 +318,8 @@ class OphDrPrescription_Item extends EventMedicationUse
         $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         if ($this->end_date) {
             $this->setStopReasonToCourseComplete();
+        } else {
+            $this->stop_reason_id = null;
         }
         return parent::beforeSave();
     }
