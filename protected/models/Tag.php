@@ -34,6 +34,7 @@
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Int $active
+ * @deprecated See MedicationSet
  */
 class Tag extends BaseActiveRecordVersioned
 {

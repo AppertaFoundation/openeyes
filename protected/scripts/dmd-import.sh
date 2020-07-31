@@ -100,6 +100,5 @@ php $WROOT/protected/yiic importdrugs import
 php $WROOT/protected/yiic importdrugs copytooe
 php $WROOT/protected/yiic importdrugs bindimportedmedications
 php $WROOT/protected/yiic medicationsetimport --filename=$setsimportfile
-php $WROOT/protected/yiic localmedicationtodmdmedication
 php $WROOT/protected/yiic populateautomedicationsets
 php $WROOT/protected/yiic oldmedicationanddrugdeletion

@@ -2759,11 +2759,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionEDTagSearch()
     {
-        $term = $_POST["EDSearchTerm"];
+        $term = $_GET["EDSearchTerm"];
 
         $result_models = EyedrawTag::model()->findAll("text LIKE '%" . strtolower($term) . "%'");
-
-        OELog::log(print_r($result_models, true));
 
         $processed_results =
             array_map(

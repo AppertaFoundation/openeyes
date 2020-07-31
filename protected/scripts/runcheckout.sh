@@ -355,6 +355,10 @@ for module in ${modules[@]}; do
 			fetchparams+=" --depth=$depth"
 		fi
 
+        # Make sure the fetch root is correct - for some reason it sometimes get set to a specific
+        # branch (e.g, develop), and then matching to upstream branches will break
+        git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+
         # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
         if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
             git -C $MODGITROOT fetch --all $fetchparams
