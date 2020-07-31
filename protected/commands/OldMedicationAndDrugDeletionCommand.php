@@ -75,6 +75,7 @@ EOH;
                      'ophdrprescription_item',
                      'site_subspecialty_drug',
                      'medication_drug',
+                     'medication_drug_version',
                  ];
 
         foreach (Yii::app()->db->getSchema()->getTableNames() as $table_to_rename) {

@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 SELECT id INTO @amp_id FROM medication_set WHERE `name` = 'DM+D AMP';
 SELECT id INTO @vmp_id FROM medication_set WHERE `name` = 'DM+D VMP';
 SELECT id INTO @vtm_id FROM medication_set WHERE `name` = 'DM+D VTM';
@@ -45,3 +47,5 @@ FROM medication rm
   LEFT JOIN medication_route mr ON mr.term = lr.desc AND mr.source_type = 'DM+D'
 WHERE
   rm.source_type='DM+D';
+
+COMMIT;
