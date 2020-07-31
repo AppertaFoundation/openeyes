@@ -123,5 +123,23 @@ $is_printing = isset($is_printing) && ($is_printing === true);
 </div>
 
 <?php
-    $this->renderPartial('application.widgets.views.PatientIcons', array('patients' => $data_provider,'page' => 'worklist'));
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/worklist/renderPopups",
+            data: {
+                "worklistId" : (<?= $worklist->id?>),
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN
+            },
+            success: function (resp) {
+                $("body.open-eyes.oe-grid").append(resp);
+            }
+        })
+    })
+</script>

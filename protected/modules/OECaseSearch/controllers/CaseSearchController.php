@@ -23,7 +23,7 @@ class CaseSearchController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('index', 'addParameter', 'clear'),
+                'actions' => array('index', 'addParameter', 'clear', 'renderPopups'),
                 'users' => array('@'),
             ),
         );
@@ -205,5 +205,16 @@ class CaseSearchController extends BaseModuleController
         Yii::app()->clientScript->registerScriptFile($path . '/jquery.autosize.js');
 
         return parent::beforeAction($action);
+    }
+
+    public function actionRenderPopups()
+    {
+        if (isset($_POST["patientsID"])) {
+            $patientsID = explode(",", $_POST["patientsID"]);
+            foreach ($patientsID as $i => $patientID) {
+                $patient = Patient::model()->findByPk($patientID);
+                $this->renderPartial('application.widgets.views.PatientIcons', array('data' => $patient, 'page' => 'caseSearch'));
+            }
+        }
     }
 }

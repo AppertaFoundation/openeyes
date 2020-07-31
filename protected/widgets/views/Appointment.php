@@ -1,27 +1,61 @@
 <?php
-/**
- * OpenEyes.
- *
- * (C) OpenEyes Foundation, 2019
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @link http://www.openeyes.org.uk
- *
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
- */
+    /**
+     * OpenEyes.
+     *
+     * (C) OpenEyes Foundation, 2019
+     * This file is part of OpenEyes.
+     * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+     * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+     * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+     *
+     * @link http://www.openeyes.org.uk
+     *
+     * @author OpenEyes <info@openeyes.org.uk>
+     * @copyright Copyright (c) 2019, OpenEyes Foundation
+     * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+     */
 
 ?>
 
 <!--Beginning of the side view-->
-<?php
-    $data_mode = SettingMetadata::model()->getSetting('patient_overview_popup_mode');
+<?php if (isset($is_popup)) { ?>
+    <table class="patient-appointments">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-6">
+            <col class="cols-2">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <?php
+        foreach ($worklist_patients as $worklist_patient) {
+            $time = date('H:i', strtotime($worklist_patient->when));
+            $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
+            $worklist_name = $worklist_patient->worklist->name;
+            $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
+            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
+            ?>
+                <tr>
+                    <td><span class="time"><?= $time ?></span></td>
+                    <td><?= $worklist_name ?></td>
+                    <td><span class="oe-date"><?= $date ?></span></td>
+                    <td>
+                    <?php if (isset($worklist_status)) { ?>
+                            <?= $worklist_status->attribute_value ?>
+                    <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
+                            Did not attend.
+                    <?php } ?>
+                    </td>
+                </tr>
+        <?php } ?>
+        </tbody>
+    </table>
 
-if ($data_mode == "side") {?>
+    <?php if ($past_worklist_patients) { ?>
+        <div>
+            <h3>Past Appointments</h3>
+        </div>
+        <!-- restrict data height, overflow will scroll -->
         <table class="patient-appointments">
             <colgroup>
                 <col class="cols-1">
@@ -30,79 +64,33 @@ if ($data_mode == "side") {?>
                 <col class="cols-3">
             </colgroup>
             <tbody>
-                <?php
-                foreach ($worklist_patients as $worklist_patient) {
-                    $time = date('H:i', strtotime($worklist_patient->when));
-                    $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-                    $worklist_name = $worklist_patient->worklist->name;
-                    $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-                    $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-                    ?>
-                <tr>
-                    <td><span class="time"><?= $time ?></span></td>
-                    <td><?= $worklist_name ?></td>
-                    <td><span class="oe-date"><?= $date ?></span></td>
-                    <td>
+            <?php
+            foreach ($past_worklist_patients as $worklist_patient) {
+                $time = date('H:i', strtotime($worklist_patient->when));
+                $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
+                $worklist_name = $worklist_patient->worklist->name;
+                $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
+                $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
+                ?>
+                    <tr>
+                        <td><span class="time"><?= $time ?></span></td>
+                        <td><?= $worklist_name ?></td>
+                        <td><span class="oe-date"><?= $date ?></span></td>
+                        <td>
                         <?php if (isset($worklist_status)) { ?>
-                            <?= $worklist_status->attribute_value ?>
+                                <?= $worklist_status->attribute_value ?>
                         <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                            Did not attend.
+                                Did not attend.
                         <?php } ?>
-                    </td>
-                </tr>
-                <?php } ?>
+                        </td>
+                    </tr>
+            <?php } ?>
             </tbody>
         </table>
+    <?php } ?>
+    <!--End of the side view-->
 
-        <?php if ($past_worklist_patients) { ?>
-            <div class="collapse-data">
-                <div class="collapse-data-header-icon expand">
-                    Past Appointments
-                    <small>(<?= sizeof($past_worklist_patients) ?>)</small>
-                </div>
-                <div class="collapse-data-content">
-                    <div class="restrict-data-shown">
-                        <div class="restrict-data-content rows-10">
-                            <!-- restrict data height, overflow will scroll -->
-                            <table class="patient-appointments">
-                                <colgroup>
-                                    <col class="cols-1">
-                                    <col class="cols-6">
-                                    <col class="cols-2">
-                                    <col class="cols-3">
-                                </colgroup>
-                                <tbody>
-                                    <?php
-                                    foreach ($past_worklist_patients as $worklist_patient) {
-                                        $time = date('H:i', strtotime($worklist_patient->when));
-                                        $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
-                                        $worklist_name = $worklist_patient->worklist->name;
-                                        $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-                                        $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
-                                        ?>
-                                    <tr>
-                                        <td><span class="time"><?= $time ?></span></td>
-                                        <td><?= $worklist_name ?></td>
-                                        <td><span class="oe-date"><?= $date ?></span></td>
-                                        <td>
-                                            <?php if (isset($worklist_status)) { ?>
-                                                <?= $worklist_status->attribute_value ?>
-                                            <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                                                Did not attend.
-                                            <?php } ?>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-        <!--End of the side view-->
-
-<?php } else {?>
+<?php } else { ?>
     <table class="patient-appointments">
         <colgroup>
             <col class="cols-2">
@@ -119,18 +107,18 @@ if ($data_mode == "side") {?>
             $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
             $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
             ?>
-            <tr>
-                <td><span class="time"><?= $time ?></span></td>
-                <td><?= $worklist_name ?></td>
-                <td><span class="oe-date"><?= $date ?></span></td>
-                <td>
+                <tr>
+                    <td><span class="time"><?= $time ?></span></td>
+                    <td><?= $worklist_name ?></td>
+                    <td><span class="oe-date"><?= $date ?></span></td>
+                    <td>
                     <?php if (isset($worklist_status)) { ?>
-                        <?= $worklist_status->attribute_value ?>
+                            <?= $worklist_status->attribute_value ?>
                     <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                        Did not attend.
+                            Did not attend.
                     <?php } ?>
-                </td>
-            </tr>
+                    </td>
+                </tr>
         <?php } ?>
         </tbody>
     </table>
@@ -161,18 +149,18 @@ if ($data_mode == "side") {?>
                                 $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
                                 $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
                                 ?>
-                                <tr>
-                                    <td><span class="time"><?= $time ?></span></td>
-                                    <td><?= $worklist_name ?></td>
-                                    <td><span class="oe-date"><?= $date ?></span></td>
-                                    <td>
+                                    <tr>
+                                        <td><span class="time"><?= $time ?></span></td>
+                                        <td><?= $worklist_name ?></td>
+                                        <td><span class="oe-date"><?= $date ?></span></td>
+                                        <td>
                                         <?php if (isset($worklist_status)) { ?>
-                                            <?= $worklist_status->attribute_value ?>
+                                                <?= $worklist_status->attribute_value ?>
                                         <?php } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") { ?>
-                                            Did not attend.
+                                                Did not attend.
                                         <?php } ?>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                             <?php } ?>
                             </tbody>
                         </table>

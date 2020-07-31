@@ -459,4 +459,15 @@ class WorklistController extends BaseAdminController
 
         $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition_id));
     }
+
+    public function actionRenderPopups()
+    {
+        if (isset($_POST['worklistId'])) {
+            $worklist = $this->manager->getWorklist($_POST["worklistId"]);
+            $dataProvider = $this->manager->getPatientsForWorklist($worklist);
+            foreach ($dataProvider->getData() as $dataProvider) {
+                $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'worklist'));
+            }
+        }
+    }
 }
