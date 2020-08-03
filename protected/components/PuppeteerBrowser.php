@@ -483,7 +483,7 @@ class PuppeteerBrowser extends CApplicationComponent
         $page = $this->newPage();
         if ($use_cookies) {
             $page->setCookie(
-                array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
+           //     array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
                 array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
