@@ -72,6 +72,7 @@
 
         closeButton.click(toggleView);
         self.$element.click(toggleView);
+        self.$elementContainer.click(setOffView);
 
         function toggleView(){
             var $manageElement = self.$element;
@@ -84,6 +85,13 @@
                 $manageElement.isOpened = false;
                 $manageElement.removeClass('selected');
             }
+        }
+
+        function setOffView(){
+            var $manageElement = self.$element;
+            $navPopup.hide();
+            $manageElement.isOpened = false;
+            $manageElement.removeClass('selected');
         }
 
         $navPopup.on('click', '.element-list li', function(e) {
