@@ -109,7 +109,7 @@ do
         --master|--m|-m) defaultbranch=master
             ## will use master baranches when the named branch does not exist for a module
         ;;
-        --merge|-m) #merge an upstream branch after checkout
+        --merge) #merge an upstream branch after checkout
             mergebranch=$2
             shift
         ;;
@@ -395,9 +395,9 @@ for module in ${modules[@]}; do
         ## Attempt to merge in an upstream branch
         if [ ! -z $mergebranch ]; then
             echo "Attempting to merge $mergebranch...."
-            if ! git merge origin $mergebranch 2>/dev/null; then
+            if ! git -C $MODGITROOT merge origin $mergebranch 2>/dev/null; then
                 echo "unable to merge. Will rollback any changes...."
-                git merge --abort 2>/dev/null
+                git -C $MODGITROOT merge --abort 2>/dev/null
             fi
         fi
     fi
