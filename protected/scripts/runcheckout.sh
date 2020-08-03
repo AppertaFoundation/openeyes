@@ -43,6 +43,8 @@ changesshid=0
 cloneparams=""
 fetchparams=""
 depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
+mergebranch=""
+
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -106,6 +108,10 @@ do
         ;;
         --master|--m|-m) defaultbranch=master
             ## will use master baranches when the named branch does not exist for a module
+        ;;
+        --merge|-m) #merge an upstream branch after checkout
+            mergebranch=$2
+            shift
         ;;
         --nomigrate|--no-migrate|--n|-n|-nm) fixparams="$fixparams --no-migrate"
             ## nomigrate will prevent database migrations from running automatically at the end of checkout
@@ -196,6 +202,7 @@ if [ $showhelp = 1 ]; then
     echo "  --no-summary   : Do not display a summary of the checked-out modules after "
     echo "                   completion"
     echo "  --depth <int>  : Only clone/fetch to the given depth"
+    echo "  --merge <branch> : Perform a merge of the given upstream branch into the checked-out code"
     echo ""
     exit 1
 fi
@@ -383,6 +390,15 @@ for module in ${modules[@]}; do
             fi
             git -C $MODGITROOT pull
             git -C $MODGITROOT submodule update --init --force
+        fi
+
+        ## Attempt to merge in an upstream branch
+        if [ ! -z $mergebranch ]; then
+            echo "Attempting to merge $mergebranch...."
+            if ! git merge origin $mergebranch 2>/dev/null; then
+                echo "unable to merge. Will rollback any changes...."
+                git merge --abort 2>/dev/null
+            fi
         fi
     fi
     
