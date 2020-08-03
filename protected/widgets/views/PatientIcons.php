@@ -35,9 +35,4 @@
         PatientPanel.patientPopups.init(false,<?= $data->id?>);
     });
 </script>
-<script type="application/javascript">
-    $('body').on('click', '.js-patient-expand-btn', function () {
-        $(this).toggleClass('collapse expand');
-        $(this).parents('table').find('tbody').toggle();
-    });
-</script>
+

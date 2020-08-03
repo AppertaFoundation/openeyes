@@ -142,4 +142,8 @@ $is_printing = isset($is_printing) && ($is_printing === true);
             }
         })
     })
+    $('body').on('click', '.collapse-data-header-icon', function () {
+        $(this).toggleClass('collapse expand');
+        $(this).next('div').toggle();
+    });
 </script>

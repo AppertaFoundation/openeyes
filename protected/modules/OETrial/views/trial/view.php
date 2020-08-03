@@ -151,6 +151,10 @@
             }
         })
     })
+    $('body').on('click', '.collapse-data-header-icon', function () {
+        $(this).toggleClass('collapse expand');
+        $(this).next('div').toggle();
+    });
 </script>
 
 <script type="application/javascript">

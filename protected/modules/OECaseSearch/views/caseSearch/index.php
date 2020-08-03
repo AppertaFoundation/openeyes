@@ -137,10 +137,6 @@ foreach ($patients->getData() as $i => $SearchPatient) {
 ?>
 
 <script type="application/javascript">
-    $('body').on('click', '.js-patient-expand-btn', function () {
-        $(this).toggleClass('collapse expand');
-        $(this).parents('table').find('tbody').toggle();
-    });
 
     function addPatientToTrial(patient_id, trial_id) {
         var addSelector = '#add-to-trial-link-' + patient_id;
@@ -303,6 +299,10 @@ foreach ($patients->getData() as $i => $SearchPatient) {
                 $("body.open-eyes.oe-grid").append(resp);
             }
         })
+        $('body').on('click', '.collapse-data-header-icon', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).next('div').toggle();
+        });
     })
 </script>
 
