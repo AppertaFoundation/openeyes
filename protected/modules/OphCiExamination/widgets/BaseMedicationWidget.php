@@ -188,4 +188,18 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
         return isset($_POST[$class_name_underscores]['entries']) || isset($decoded_json['entries']);
     }
+
+    /**
+     * @param $entry
+     * @return string
+     */
+    public function getPrescriptionLink($entry)
+    {
+        return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
+    }
+
+    public function getExaminationLink($entry)
+    {
+        return '/OphCiExamination/Default/view/' . $entry->event_id;
+    }
 }

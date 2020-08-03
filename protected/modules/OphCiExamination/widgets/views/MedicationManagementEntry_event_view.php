@@ -69,7 +69,16 @@
             <i class="oe-i circle-<?= $is_draft ? 'orange' : 'green' ?> small js-has-tooltip" data-tt-type="basic" data-tooltip-content="<?= $is_draft ? 'Draft' : 'Prescribed' ?>"></i>
                        <?php } ?></td>
     <td class="nowrap">
-        <!-- no audit trail, use blank spacer icon to maintain table layout alignment --><i class="oe-i spacer small pad-right"></i><i class="oe-i direction-right-circle small-icon js-has-tooltip" data-tt-type="basic" data-tooltip-content="View Prescription"></i></td>
+    <!-- no audit trail, use blank spacer icon to maintain table layout alignment -->
+    <?php if ($entry->prescription_item_id) { ?>
+        <i class="oe-i spacer small pad-right"></i>
+        <a href="<?= $this->getPrescriptionLink($entry) ?>">
+            <span class="oe-i direction-right-circle small-icon js-has-tooltip"
+                    data-tooltip-content="View prescription">
+            </span>
+        </a>
+    <?php } ?>
+    </td>
 </tr>
 
 <?php if ($entry->taper_support) : ?>
