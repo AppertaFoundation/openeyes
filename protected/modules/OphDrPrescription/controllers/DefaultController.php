@@ -525,6 +525,8 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->puppeteer->rightMargin = '0mm';
             Yii::app()->puppeteer->topMargin = '6mm';
             Yii::app()->puppeteer->bottomMargin = '0mm';
+            Yii::app()->puppeteer->scale = 0.998;
+
             $this->render('print_fpten', array(
                 'user' => $user,
                 'print_mode' => $print_mode
@@ -579,6 +581,7 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->puppeteer->rightMargin = '0mm';
             Yii::app()->puppeteer->topMargin= '6mm';
             Yii::app()->puppeteer->bottomMargin = '0mm';
+            Yii::app()->puppeteer->scale = 0.998;
         } else {
             $this->print_args = null;
         }

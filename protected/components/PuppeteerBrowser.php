@@ -41,6 +41,7 @@ class PuppeteerBrowser extends CApplicationComponent
     public $orientation = 'Portrait';
     public $page_width;
     public $page_height;
+    protected $_scale;
 
     public function __destruct()
     {
@@ -281,6 +282,16 @@ class PuppeteerBrowser extends CApplicationComponent
         $this->_right_margin = $right_margin;
     }
 
+    public function setScale($scale)
+    {
+        $this->_scale = $scale;
+    }
+
+    public function getScale()
+    {
+        return $this->_scale;
+    }
+
     /**
      * @param $imageDirectory
      * @param $prefix
@@ -328,11 +339,15 @@ class PuppeteerBrowser extends CApplicationComponent
             'headerTemplate' => '<div></div>',
         );
 
-        if ($this->page_width) {
+        if (isset($this->scale)) {
+            $options['scale'] = $this->scale;
+        }
+
+        if (isset($this->page_width)) {
             $options['page_width'] = $this->page_width;
         }
 
-        if ($this->page_width) {
+        if (isset($this->page_height)) {
             $options['page_height'] = $this->page_height;
         }
 
@@ -340,7 +355,7 @@ class PuppeteerBrowser extends CApplicationComponent
 
         foreach (array('top', 'left', 'bottom', 'right') as $side) {
             if ($this->{"_{$side}_margin"}) {
-                $margins[$side] = $this->{"_{$side}_margin"};
+                $margins[$side] = $this->{"_{$side}_margin"} === '0mm' ? 0 : $this->{"_{$side}_margin"};
             }
         }
 
