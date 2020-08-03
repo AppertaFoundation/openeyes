@@ -385,6 +385,27 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * @param $medication
+     * @return bool
+     */
+    public function isDuplicate($medication) : bool
+    {
+        $result = false;
+
+        if ($medication->medication_id === $this->medication_id) {
+            if ($this->route_id === $medication->route_id && $this->route->has_laterality) {
+                if ($this->laterality === $medication->laterality || $this->laterality === (string) Eye::BOTH || $medication->laterality === (string) Eye::BOTH) {
+                    $result = true;
+                }
+            } elseif ($this->route_id === $medication->route_id) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return bool
      */
     public function prescriptionNotCurrent()

@@ -282,27 +282,42 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         }
     }
 
+    public function isPreviousEntry($entry) {
+        return $entry->copied_from_med_use_id || $entry->prescription_item_id !== '';
+    }
+
     public function afterValidate()
     {
-        $unique_medication_ids = array();
+        $previous_entries = array_filter($this->entries, function ($entry) {
+            return $this->isPreviousEntry($entry);
+        });
+
+        $current_event_entries = array_filter($this->entries, function ($entry) use ($previous_entries) {
+            return !in_array($entry, $previous_entries);
+        });
+
+
+        $previous_medication_ids = array_unique(array_map(function ($entry) {
+            return $entry->medication_id;
+        }, $previous_entries));
 
         foreach ($this->entries as $key => $entry) {
-            if ($this->check_for_duplicate_entries && !$entry->is_copied_from_previous_event && !$entry->prescription_item_id) {
-                if (in_array($entry->medication_id, $unique_medication_ids)) {
-                    $processed_entries = array_slice($this->entries, 0, $key, true);
+            if ($this->check_for_duplicate_entries) {
+                if (in_array($entry->medication_id, $previous_medication_ids) && !$this->isPreviousEntry($entry)) {
+                    $same_drug_entries = array_filter($current_event_entries, function ($current_event_entry) use ($entry) {
+                        return $entry->isDuplicate($current_event_entry) && $entry !== $current_event_entry;
+                    });
 
-                    foreach ($processed_entries as $index => $processed_entry) {
-                        if ($entry->isEqualsAttributes($processed_entry, true)) {
-                            if (!$this->getError("entries_{$index}_duplicate_error")) {
-                                $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
-                            }
-                            if (!$this->getError("entries_{$key}_duplicate_error")) {
-                                $this->addError("entries_{$key}_duplicate_error", ($key + 1) . '- The entry is duplicate');
-                            }
+                    foreach ($same_drug_entries as $index => $same_drug_entry) {
+                        if (!$this->getError("entries_{$index}_duplicate_error")) {
+                            $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
+                        }
+                        if (!$this->getError("entries_{$key}_duplicate_error")) {
+                            $this->addError("entries_{$key}_duplicate_error", ($key + 1) . '- The entry is duplicate');
                         }
                     }
                 } else {
-                    $unique_medication_ids[] = $entry->medication_id;
+                    $previous_medication_ids[] = $entry->medication_id;
                 }
             }
 
