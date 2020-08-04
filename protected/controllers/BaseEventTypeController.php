@@ -2581,7 +2581,7 @@ class BaseEventTypeController extends BaseModuleController
         $path = $this->event->getImagePath($filename, $extension);
 
         if (!file_exists(dirname($path))) {
-            mkdir(dirname($path));
+            mkdir(dirname($path), 0775, true);
         }
 
         return $path;
