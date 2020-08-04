@@ -1,4 +1,5 @@
 <?php
+
 use \Nesk\Puphpeteer\Puppeteer;
 use Nesk\Puphpeteer\Resources\Browser;
 use Nesk\Puphpeteer\Resources\Page;
@@ -366,7 +367,7 @@ class PuppeteerBrowser extends CApplicationComponent
         // Note that we have to evaluate the subst function so that the footer template is
         // correctly populated using Javascript on the page.
         $footerPage = $this->newPage();
-        $footerPage->goto('file://'.$footer_file);
+        $footerPage->goto('file://' . $footer_file);
         $footerPage->evaluate(JsFunction::createWithBody('subst();'));
         $options['footerTemplate'] = $footerPage->content();
         $footerPage->close();
@@ -406,7 +407,6 @@ class PuppeteerBrowser extends CApplicationComponent
         $page = $this->newPage();
         if ($use_cookies) {
             $page->setCookie(
-                array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
                 array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
@@ -483,7 +483,6 @@ class PuppeteerBrowser extends CApplicationComponent
         $page = $this->newPage();
         if ($use_cookies) {
             $page->setCookie(
-           //     array('name' => 'YII_CSRF_TOKEN', 'value' => $_COOKIE['YII_CSRF_TOKEN'], 'url' => $url),
                 array('name' => ini_get('session.name'), 'value' => $_COOKIE[ini_get('session.name')], 'url' => $url)
             );
         }
@@ -576,7 +575,7 @@ class PuppeteerBrowser extends CApplicationComponent
     {
         return @filesize($path);
     }
-    
+
     public function setCustomTag($tag_name, $value)
     {
         $this->custom_tags[$tag_name] = $value;
