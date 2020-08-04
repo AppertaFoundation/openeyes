@@ -201,7 +201,7 @@ class EventMedicationUse extends BaseElement
     public function validateDoseUnitTerm()
     {
         if (
-            !$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            !$this->hidden && $this->dose_unit_term == "" && !empty($this->dose)
             && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)
         ) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
@@ -381,6 +381,27 @@ class EventMedicationUse extends BaseElement
                 return $result;
             }
         }
+        return $result;
+    }
+
+    /**
+     * @param $medication
+     * @return bool
+     */
+    public function isDuplicate($medication) : bool
+    {
+        $result = false;
+
+        if ($medication->medication_id === $this->medication_id) {
+            if ($this->route_id === $medication->route_id && $this->route->has_laterality) {
+                if ($this->laterality === $medication->laterality || $this->laterality === (string) Eye::BOTH || $medication->laterality === (string) Eye::BOTH) {
+                    $result = true;
+                }
+            } elseif ($this->route_id === $medication->route_id) {
+                $result = true;
+            }
+        }
+
         return $result;
     }
 

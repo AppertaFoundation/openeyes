@@ -114,7 +114,10 @@ $this->pageTitle = 'Case Search';
                     );
                     ?>
                     <table id="case-search-results" class="cols-10">
-                        <tbody class=" cols-full">
+                        <colgroup>
+                            <col class="cols-3">
+                        </colgroup>
+                        <tbody>
                         <?= $searchResults->renderItems(); ?>
                         </tbody>
                         <tfoot><tr><th class="flex-right flex-layout"><?php $pager->run()?></th></tr></tfoot>
@@ -126,9 +129,15 @@ $this->pageTitle = 'Case Search';
     </main>
 </div>
 
+<?php
+    $patientsID = [];
+foreach ($patients->getData() as $i => $SearchPatient) {
+    array_push($patientsID, $SearchPatient->id);
+}
+?>
 
+<script type="application/javascript">
 
-<script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
         var addSelector = '#add-to-trial-link-' + patient_id;
         var removeSelector = '#remove-from-trial-link-' + patient_id;
@@ -272,7 +281,28 @@ $this->pageTitle = 'Case Search';
 
 
 <?php
-$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
-Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
+    Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            'type': "POST",
+            'data': "patientsID=" + (<?= json_encode($patientsID)?>)
+            + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'url': "/OECaseSearch/caseSearch/renderPopups",
+            success: function (resp) {
+                $("body.open-eyes.oe-grid").append(resp);
+            }
+        })
+        $('body').on('click', '.collapse-data-header-icon', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).next('div').toggle();
+        });
+    })
+</script>
 

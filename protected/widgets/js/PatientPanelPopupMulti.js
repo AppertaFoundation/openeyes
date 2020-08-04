@@ -1,4 +1,5 @@
 var PatientPanel = PatientPanel || {};
+let allPopupBtns={};
 PatientPanel.patientPopups = {
     init: function (parentElement, patientId) {
         if(!parentElement){
@@ -111,7 +112,8 @@ PatientPanel.patientPopups = {
 
             if( (total + iconHeight)  > windowHeight) {
                 // this property is removed when the mouse leaves the icon.
-                $(content).css({ top: (topButton - popupHeight - iconHeight) + 'px' });
+                $(content).css({ top: (topButton - popupHeight - iconHeight * 0.5) + 'px' });
+                // 0.5 here is for solving minor anchor positioning issue when floating panel appears above the icon
             }else{
                 // adjust the distance between icon and patient popups in case they are too close to each other.
                 $(content).css({ top: (topButton + iconHeight * 0.75) + 'px' });

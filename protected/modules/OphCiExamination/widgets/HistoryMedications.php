@@ -233,20 +233,6 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @param $entry
-     * @return string
-     */
-    public function getPrescriptionLink($entry)
-    {
-        return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
-    }
-
-    public function getExaminationLink()
-    {
-        return '/OphCiExamination/Default/view/' . $this->element->event_id;
-    }
-
-    /**
      * @return string
      */
     public function popupList()

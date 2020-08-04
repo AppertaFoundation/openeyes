@@ -54,7 +54,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             class="divider col-gap js-first-row <?=$field_prefix ?>_row <?= $is_new ? ' new' : ''?><?= $entry->hidden === '1' ? ' hidden' : '' ?>"
     >
 
-        <td class="drug-details" rowspan="2">
+        <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
                     <?php if ($entry->originallyStopped) { ?>
                         <i class="oe-i stop small pad"></i>
                     <?php } ?>
@@ -85,6 +85,7 @@ $prescribe_hide_style = $entry->prescribe ? "display: initial" : "display: none"
             <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int) $entry->is_copied_from_previous_event; ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[locked]" value="<?= $locked ?>" class="js-locked" />
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>

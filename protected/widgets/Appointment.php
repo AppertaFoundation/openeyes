@@ -23,7 +23,7 @@ class Appointment extends BaseCWidget
     public $past_worklist_patients;
     public $worklist_patients;
     public $pro_theme = '';
-    public $data_mode = '';
+    public $is_popup;
 
     public function init()
     {

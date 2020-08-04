@@ -15,14 +15,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 namespace OEModule\OphCiExamination\models;
+use CHtml;
+use Event;
+use EventMedicationUse;
+use Medication;
+use User;
+use Yii;
+
 /**
  * Class HistoryMedications
  * @package OEModule\OphCiExamination\models
  *
- * @property \Event $event
- * @property \User $user
- * @property \User $usermodified
- * @property \EventMedicationUse[] $entries
+ * @property Event $event
+ * @property User $user
+ * @property User $usermodified
+ * @property EventMedicationUse[] $entries
  * @property HistoryMedicationsEntry[] $current_entries
  * @property HistoryMedicationsEntry[] $closed_entries
  * @property HistoryMedicationsEntry[] $prescribed_entries
@@ -84,9 +91,26 @@ class HistoryMedications extends BaseMedicationElement
 
     public function afterValidate()
     {
-        if (!$this->entries && !$this->no_systemic_medications_date && !$this->no_ophthalmic_medications_date) {
-            $this->addError('no_systemic_medications_date', 'Please confirm patient has had no previous systemic treatment');
-            $this->addError('no_ophthalmic_medications_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
+        $ophthalmic_medication_ids = Medication::model()->listOphthalmicMedicationIds();
+        $no_systemic_medications = true;
+        $no_ophthalmic_medications = true;
+        foreach ($this->entries as $entry) {
+            if (in_array($entry->medication_id, $ophthalmic_medication_ids)) {
+                $no_ophthalmic_medications = false;
+            } else {
+                $no_systemic_medications = false;
+            }
+
+            if (!$no_systemic_medications && !$no_ophthalmic_medications) {
+                break;
+            }
+        }
+
+        foreach (['systemic', 'ophthalmic'] as $type) {
+            $no_medications = 'no_' . $type . '_medications';
+            if (!$this->{$no_medications . '_date'} && ${$no_medications}) {
+                $this->addError($no_medications, 'Please confirm the patient is not taking any '. $type . ' medications');
+            }
         }
 
         parent::afterValidate();
@@ -94,9 +118,9 @@ class HistoryMedications extends BaseMedicationElement
 
     protected function errorAttributeException($attribute, $message)
     {
-        if ($attribute === \CHtml::modelName($this) . '_entries') {
+        if ($attribute === CHtml::modelName($this) . '_entries') {
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                return \CHtml::modelName($this) . '_entries tbody tr:eq(' . ($match[1]-1) . ')';
+                return CHtml::modelName($this) . '_entries tbody tr:eq(' . ($match[1]-1) . ')';
             }
         }
         return parent::errorAttributeException($attribute, $message);
@@ -108,12 +132,12 @@ class HistoryMedications extends BaseMedicationElement
     {
         $entries = array();
         foreach ($element->entries as $entry) {
-            $new = new \EventMedicationUse();
+            $new = new EventMedicationUse();
             $new->loadFromExisting($entry);
-            $new->usage_type = \EventMedicationUse::getUsageType();
-            $new->usage_subtype = \EventMedicationUse::getUsageSubtype();
+            $new->usage_type = EventMedicationUse::getUsageType();
+            $new->usage_subtype = EventMedicationUse::getUsageSubtype();
             if (!$entry->prescription_item_id) {
-                $existing_event_date = $entry->copied_from_med_use_id ? \Event::model()->findByPk($entry->copied_from_med_use_id)->event_date : $entry->event->event_date;
+                $existing_event_date = $entry->copied_from_med_use_id ? Event::model()->findByPk($entry->copied_from_med_use_id)->event_date : $entry->event->event_date;
                 $new->previous_event_date = date('Y-m-d', strtotime($existing_event_date));
             }
             $prescription_end_date = isset($entry->prescription_item_id) ? $entry->prescriptionItem->stopDateFromDuration() : null;
@@ -179,12 +203,12 @@ class HistoryMedications extends BaseMedicationElement
 
     public function getEntryRelations()
     {
-        $usage_type_condition = "usage_type = '".\EventMedicationUse::getUsageType()."' AND usage_subtype = '".\EventMedicationUse::getUsageSubtype()."'";
+        $usage_type_condition = "usage_type = '". EventMedicationUse::getUsageType()."' AND usage_subtype = '". EventMedicationUse::getUsageSubtype()."'";
 
         return array(
             'entries' => array(
                 self::HAS_MANY,
-                \EventMedicationUse::class,
+                EventMedicationUse::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
                 'on' => $usage_type_condition,
@@ -192,7 +216,7 @@ class HistoryMedications extends BaseMedicationElement
             ),
             'current_entries' => array(
                 self::HAS_MANY,
-                \EventMedicationUse::class,
+                EventMedicationUse::class,
                 array('id' => 'event_id'),
                 'on' => "$usage_type_condition AND (current_entries.end_date > NOW() OR ( current_entries.end_date is NULL OR current_entries.end_date = ''))",
                 'through' => 'event',
@@ -200,7 +224,7 @@ class HistoryMedications extends BaseMedicationElement
             ),
             'closed_entries' => array(
                 self::HAS_MANY,
-                \EventMedicationUse::class,
+                EventMedicationUse::class,
                 array('id' => 'event_id'),
                 'on' => "$usage_type_condition AND (closed_entries.end_date < NOW() AND ( closed_entries.end_date is NOT NULL OR closed_entries.end_date != '') )",
                 'through' => 'event',
@@ -208,7 +232,7 @@ class HistoryMedications extends BaseMedicationElement
             ),
             'prescribed_entries' => array(
                 self::HAS_MANY,
-                \EventMedicationUse::class,
+                EventMedicationUse::class,
                 array('id' => 'event_id'),
                 'on' => $usage_type_condition,
                 'through' => 'event',
@@ -220,7 +244,7 @@ class HistoryMedications extends BaseMedicationElement
     public function getEntriesForUntrackedPrescriptionItems($patient)
     {
         $untracked = array();
-        $api = \Yii::app()->moduleAPI->get('OphDrPrescription');
+        $api = Yii::app()->moduleAPI->get('OphDrPrescription');
         if ($api) {
             $tracked_prescr_item_ids = array_map(
                 function ($entry) {
@@ -231,7 +255,7 @@ class HistoryMedications extends BaseMedicationElement
             $untracked_prescription_items = $api->getPrescriptionItemsForPatient($patient, $tracked_prescr_item_ids);
             if ($untracked_prescription_items) {
                 foreach ($untracked_prescription_items as $item) {
-                    $entry = new \EventMedicationUse();
+                    $entry = new EventMedicationUse();
                     $entry->loadFromPrescriptionItem($item);
                     $entry->usage_type = 'OphDrPrescription';
                     $untracked[] = $entry;

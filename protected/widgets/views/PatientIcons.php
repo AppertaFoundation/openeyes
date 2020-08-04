@@ -18,39 +18,21 @@
 
 <?php
     $patient_overview_popup_mode = isset(Yii::app()->controller->jsVars['popupMode']) ? Yii::app()->controller->jsVars['popupMode'] : SettingMetadata::model()->getSetting('patient_overview_popup_mode');
-foreach ($patients->getData() as $SearchPatient) {
-    if ($page === 'caseSearch') {
-        $data = $SearchPatient;
-    } elseif ($page === 'trial' || 'worklist') {
-        $data = $SearchPatient->patient;
-    }
     $patientSummaryPopup = $this->createWidget(
         'application.widgets.PatientSummaryPopup',
         array(
             'patient' => $data,
         )
     );
-    if ($patient_overview_popup_mode=='side') {
-        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup'.($page==='worklist'?'Worklist':'').'Side', []);
-    } elseif ($patient_overview_popup_mode=='float') {
-        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup'.($page==='worklist'?'Worklist':'Multi').'Float', []);
+    if ($patient_overview_popup_mode == 'side') {
+        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . ($page === 'worklist' ? 'Worklist' : '') . 'Side', []);
+    } elseif ($patient_overview_popup_mode == 'float') {
+        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . ($page === 'worklist' ? 'Worklist' : 'Multi') . 'Float', []);
     }
     ?>
-        <script type="application/javascript">
-            $(function () {
-                PatientPanel.patientPopups.init(false ,<?= $data->id?>);
-            });
-        </script>
-    <?php
-}
-    $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
-?>
 <script type="application/javascript">
-    let allPopupBtns={};
-    $('body').on('click', '.js-patient-expand-btn', function () {
-        $(this).toggleClass('collapse expand');
-        $(this).parents('table').find('tbody').toggle();
+    $(function () {
+        PatientPanel.patientPopups.init(false,<?= $data->id?>);
     });
 </script>
+
