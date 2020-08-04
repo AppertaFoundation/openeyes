@@ -62,7 +62,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
             } ?>
             </span>
 
-        <input type="hidden" name="<?= $field_prefix ?>[medication_id]" value="<?= $entry->medication_id ?>"/>
+        <input type="hidden" class="medication_id" name="<?= $field_prefix ?>[medication_id]" value="<?= $entry->medication_id ?>"/>
 
     </td>
     <td class="dose-frequency-route">
