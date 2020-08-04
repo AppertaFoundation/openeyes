@@ -15,14 +15,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 namespace OEModule\OphCiExamination\models;
-abstract class BaseMedicationElement extends \BaseEventTypeElement
+use BaseEventTypeElement;
+use CActiveRecord;
+use CDbCriteria;
+use Element_OphDrPrescription_Details;
+use EventMedicationUse;
+use MedicationFrequency;
+use MedicationLaterality;
+use MedicationRoute;
+
+abstract class BaseMedicationElement extends BaseEventTypeElement
 {
     protected $auto_update_relations = false;
     protected $auto_validate_relations = false;
     protected $default_from_previous = true;
-    /** @var \Element_OphDrPrescription_Details */
+    /** @var Element_OphDrPrescription_Details */
     public $prescription_details = null;
-    /** @var \EventMedicationUse[] */
+    /** @var EventMedicationUse[] */
     public $entries_to_prescribe = array();
     /**
      * Allows to disable saving of entries, e.g
@@ -34,7 +43,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     public $do_not_save_entries = false;
     public $check_for_duplicate_entries = true;
 
-    public static $entry_class = \EventMedicationUse::class;
+    public static $entry_class = EventMedicationUse::class;
 
     /**
      * @inheritdoc
@@ -121,17 +130,17 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     protected function saveEntries()
     {
-        $criteria = new \CDbCriteria();
+        $criteria = new CDbCriteria();
         $class = self::$entry_class;
         $criteria->addCondition("event_id = :event_id AND usage_type = '".$class::getUsageType()."' AND usage_subtype = '".$class::getUsageSubtype()."'");
         $criteria->params['event_id'] = $this->event_id;
-        $orig_entries = \EventMedicationUse::model()->findAll($criteria);
+        $orig_entries = EventMedicationUse::model()->findAll($criteria);
         $saved_ids = array();
 
         $entries = $this->mergeSameMedication();
 
         foreach ($entries as $entry) {
-            /** @var \EventMedicationUse $entry */
+            /** @var EventMedicationUse $entry */
             $entry->event_id = $this->event_id;
 
             /* Why do I have to do this? */
@@ -168,28 +177,28 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         return HistoryMedicationsStopReason::model()->findAll();
     }
     /**
-     * @return \CActiveRecord[]
+     * @return CActiveRecord[]
      */
     public function getRouteOptions()
     {
-        return \MedicationRoute::model()->findAll([
+        return MedicationRoute::model()->findAll([
             'condition' => 'source_type =:source_type',
             'params' => [':source_type' => 'DM+D'],
             'order' => "term ASC"]);
     }
     /**
-     * @return \CActiveRecord[]
+     * @return CActiveRecord[]
      */
     public function getFrequencyOptions()
     {
-        return \MedicationFrequency::model()->findAll('deleted_date IS NULL');
+        return MedicationFrequency::model()->findAll('deleted_date IS NULL');
     }
     /**
-     * @return \CActiveRecord[]
+     * @return CActiveRecord[]
      */
     public function getLateralityOptions()
     {
-        return \MedicationLaterality::model()->findAll('deleted_date IS NULL');
+        return MedicationLaterality::model()->findAll('deleted_date IS NULL');
     }
     /**
      * Assorts entries into current, closed and prescribed sets
@@ -199,7 +208,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         $current = array();
         $closed = array();
         $prescribed = array();
-        /** @var \EventMedicationUse $entry */
+        /** @var EventMedicationUse $entry */
         foreach ($this->entries as $entry) {
             if ($entry->usage_type == 'OphCiExamination') {
                 if (!is_null($entry->end_date) && $entry->end_date <= date("Y-m-d")) {
@@ -232,7 +241,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     public function getNewEntries()
     {
         return array_filter($this->entries, function ($entry) {
-            /** @var \EventMedicationUse $entry */
+            /** @var EventMedicationUse $entry */
             return !$entry->is_copied_from_previous_event && $entry->usage_type == 'OphCiExamination' && $entry->getIsNewRecord();
         });
     }
@@ -244,7 +253,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     public function hasRisks()
     {
         foreach ($this->entries as $entry) {
-            /** @var \EventMedicationUse $entry */
+            /** @var EventMedicationUse $entry */
             if ($entry->hasRisk()) {
                 return true;
             }
@@ -292,11 +301,6 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             return $this->isPreviousEntry($entry);
         });
 
-        $current_event_entries = array_filter($this->entries, function ($entry) use ($previous_entries) {
-            return !in_array($entry, $previous_entries);
-        });
-
-
         $previous_medication_ids = array_unique(array_map(function ($entry) {
             return $entry->medication_id;
         }, $previous_entries));
@@ -304,13 +308,15 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         foreach ($this->entries as $key => $entry) {
             if ($this->check_for_duplicate_entries) {
                 if (in_array($entry->medication_id, $previous_medication_ids) && !$this->isPreviousEntry($entry)) {
-                    $same_drug_entries = array_filter($current_event_entries, function ($current_event_entry) use ($entry) {
-                        return $entry->isDuplicate($current_event_entry) && $entry !== $current_event_entry;
+                    $same_drug_entries = array_filter($this->entries, function ($current_entry) use ($entry) {
+                        return $entry->isDuplicate($current_entry) && $entry !== $current_entry;
                     });
 
                     foreach ($same_drug_entries as $index => $same_drug_entry) {
-                        if (!$this->getError("entries_{$index}_duplicate_error")) {
-                            $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
+                        if (!$this->isPreviousEntry($same_drug_entry)) {
+                            if (!$this->getError("entries_{$index}_duplicate_error")) {
+                                $this->addError("entries_{$index}_duplicate_error", ($index + 1) . '- The entry is duplicate');
+                            }
                         }
                         if (!$this->getError("entries_{$key}_duplicate_error")) {
                             $this->addError("entries_{$key}_duplicate_error", ($key + 1) . '- The entry is duplicate');
