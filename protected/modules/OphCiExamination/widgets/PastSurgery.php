@@ -163,7 +163,7 @@ class PastSurgery extends \BaseEventElementWidget
 
         // merge by sorting by date
         uasort($operations, function ($a, $b) {
-            return $a['date'] >= $b['date'] ? -1 : 1;
+            return strtotime($a['date']) >= strtotime($b['date']) ? -1 : 1;
         });
 
         return $operations;
