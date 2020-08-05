@@ -353,13 +353,13 @@ class OphCoCorrespondence_API extends BaseAPI
                 echo json_encode(array('error' => 'DECEASED'));
                 return;
             }
-            $data['to']['email'] = Contact::model()->findByPk($contact->contact->id)->address->email ?? null;
+            $data['to']['email'] = $contact->contact->email ?? null;
         }
 
         if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
-            $data['to']['email'] = Contact::model()->findByPk($contact->contact->id)->address->email ?? null;
+            $data['to']['email'] = $contact->contact->email ?? null;
         }
 
         if ($macro->recipient && $macro->recipient->name == 'Optometrist') {
@@ -367,7 +367,7 @@ class OphCoCorrespondence_API extends BaseAPI
             if (isset($contact)) {
                 $data['to']['contact_type'] = "Optometrist";
                 $data['to']['contact_id'] = $contact->id;
-                $data['to']['email'] = Contact::model()->findByPk($contact->id)->address->email ?? null;
+                $data['to']['email'] = $contact->email ?? null;
             }
         }
 
@@ -409,7 +409,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
                 $data['cc'][$k]['address'] = "Letters to the " . \Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
             }
-            $data['cc'][$k]['email'] = isset(Contact::model()->findByPk($patient->contact->id)->address) ? Contact::model()->findByPk($patient->contact->id)->address->email : null;
+            $data['cc'][$k]['email'] = isset($patient->contact) ? $patient->contact->email : null;
             $k++;
         }
 
@@ -424,7 +424,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 'delimiter' => "\n",
                 'include_prefix' => false,
             ));
-            $data['cc'][$k]['email'] = isset(Contact::model()->findByPk($cc_contact->contact->id)->address) ? Contact::model()->findByPk($cc_contact->contact->id)->address->email : null;
+            $data['cc'][$k]['email'] = isset($cc_contact->contact) ? $cc_contact->contact->email : null;
             $k++;
         }
 
@@ -441,7 +441,7 @@ class OphCoCorrespondence_API extends BaseAPI
                     'delimiter' => "\n",
                     'include_prefix' => false,
                 ));
-                $data['cc'][$k]['email'] = isset(Contact::model()->findByPk($cc_contact->id)->address) ? Contact::model()->findByPk($cc_contact->id)->address->email : null;
+                $data['cc'][$k]['email'] = isset($cc_contact) ? $cc_contact->email : null;
                 $k++;
             }
         }
@@ -466,7 +466,7 @@ class OphCoCorrespondence_API extends BaseAPI
                             'delimiter' => "\n",
                             'include_prefix' => false,
                         ));
-                        $data['cc'][$k]['email'] = isset(Contact::model()->findByPk($service->contact->id)->address) ? Contact::model()->findByPk($service->contact->id)->address->email : null;
+                        $data['cc'][$k]['email'] = isset($service->contact) ? $service->contact->email : null;
                         break;
                     }
                 }
@@ -728,7 +728,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         $contact_id = isset($contact->contact) ? $contact->contact->id : $contact->id;
-        $email = isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null;
+        $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
 
         if ( !in_array($contact_type, array('Gp','Patient','DRSS', 'Optometrist' , 'GP')) ) {
             $contact_type = 'Other';

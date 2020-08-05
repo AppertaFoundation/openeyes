@@ -1215,7 +1215,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getEmail()
     {
-        return $this->contact->address ? $this->contact->address->email : '';
+        return $this->contact ? $this->contact->email : '';
     }
 
     /**

@@ -89,7 +89,7 @@
                 </tr>
                 <tr>
                     <td>Email</td>
-                    <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
+                    <td><?= !empty($this->patient->contact->email) ? $this->patient->contact->email : 'Unknown' ?></td>
                 </tr>
                 <tr>
                     <td><h3>PAS Contacts</h3></td>

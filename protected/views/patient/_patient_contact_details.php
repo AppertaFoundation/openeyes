@@ -33,7 +33,7 @@
             </tr>
             <tr class="data-group">
                 <td class="data-label">Email:</td>
-                <td class="data-value"><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></td>
+                <td class="data-value"><?= !empty($this->patient->contact->email) ? $this->patient->contact->email : 'Unknown'?></td>
             </tr>
             <tr class="data-group">
                 <td class="data-label">Next of Kin:</td>

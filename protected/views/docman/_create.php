@@ -81,7 +81,7 @@
                                             'contact_type' => strtoupper($contact_type),
                                             'row_index' => $row_index,
                                             'can_send_electronically' => $can_send_electronically,
-                                            'email' => isset($macro_data["to"]["contact_id"]) ? (isset(Contact::model()->findByPk($macro_data["to"]["contact_id"])->address) ? Contact::model()->findByPk($macro_data["to"]["contact_id"])->address->email : null) : null,
+                                            'email' => isset($macro_data["to"]["contact_id"]) ? (isset(Contact::model()->findByPk($macro_data["to"]["contact_id"])->id) ? Contact::model()->findByPk($macro_data["to"]["contact_id"])->email : null) : null,
                                             'patient_id' => isset($patient_id) ? $patient_id : null,
                                     ));
                                     ?>
@@ -154,7 +154,7 @@
                             'row_index' => $index,
                             'patient_id' => $patient_id ?? null,
                             'can_send_electronically' => $can_send_electronically,
-                            'email' => isset($contact_id) ? (isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null) : null
+                            'email' => isset($contact_id) ? (isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null) : null
                         ));
                         ?>
                     </td>
@@ -178,7 +178,7 @@
             }
             $email = null;
             if (isset($contact_id, $contact_type)) {
-                $email = isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null;
+                $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
             }
             $address = null;
             if (isset($defaults['To']['address'])) {
@@ -220,7 +220,7 @@
             $email = null;
             if (isset($contact_id, $contact_type)) {
                 // This will always be a patient.
-                $email = isset(Contact::model()->findByPk($contact_id)->address) ? Contact::model()->findByPk($contact_id)->address->email : null;
+                $email = isset(Contact::model()->findByPk($contact_id)->id) ? Contact::model()->findByPk($contact_id)->email : null;
             }
             $address = null;
             if (isset($defaults['Cc']['address'])) {

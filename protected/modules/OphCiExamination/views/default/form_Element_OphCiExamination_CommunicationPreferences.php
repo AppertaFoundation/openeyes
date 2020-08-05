@@ -52,14 +52,15 @@
                     }
                     $patient = Patient::model()->findByPk($patientId);
                     $address = $patient->contact->address;
+                    $contact = $patient->contact;
                     $postAddress = Yii::app()->request->getPost('Address');
                     if (isset($postAddress)) {
-                        $address->email = $postAddress['email'];
+                        $contact->email = $postAddress['email'];
                     }
                     ?>
                     <span id="patient_email_address_container" class="flex-layout flex-left">
                         <label for="patient_email_address">Email:</label>
-                        <input type="text" name="Address[email]" id="patient_email_address" placeholder="Enter Email Address" size="40" value="<?= $address->email; ?>" />
+                        <input type="text" name="Address[email]" id="patient_email_address" placeholder="Enter Email Address" size="40" value="<?= $contact->email; ?>" />
                         <input type="hidden" name="Address[id]" value="<?= $address->id; ?>"/>
                     </span>
                 </div>

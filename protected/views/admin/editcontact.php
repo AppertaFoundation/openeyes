@@ -111,7 +111,7 @@
             foreach ($contact->addresses as $index => $address) { ?>
                 <tr class="clickable" data-id="<?php echo $address->id ?>"
                     data-uri="Admin/address/edit?id=<?php echo $address->id ?>&contact_id=<?= $contact->id?>">
-                    <td><?= $address->email ?></td>
+                    <td><?= $contact->email ?></td>
                     <td><?= $address->address1 ?></td>
                     <td><?= $address->address2 ?></td>
                     <td><?= $address->city ?></td>
