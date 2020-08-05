@@ -2165,13 +2165,14 @@ class DefaultController extends \BaseEventTypeController
      * @param $data
      * @throws \CException
      */
-    protected function saveContactEmailAddressForCommunicationPreferences($data) {
+    protected function saveContactEmailAddressForCommunicationPreferences($data)
+    {
         if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']) &&
             $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'] === '1') {
             $postAddress = Yii::app()->request->getPost('Address');
             $address = \Address::model()->findByPk($postAddress['id']);
             $address->contact->email = $postAddress['email'];
-            if(!$address->contact->save()){
+            if (!$address->contact->save()) {
                 throw new \CException('Cannot save contact');
             }
             if (!$address->save()) {

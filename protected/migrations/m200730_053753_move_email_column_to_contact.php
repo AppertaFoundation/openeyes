@@ -12,7 +12,7 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
 
         $this->addOEColumn('contact', 'email', 'varchar(255) default null AFTER qualifications', true);
 
-        foreach($address_emails as $address_email){
+        foreach ($address_emails as $address_email) {
             $this->update(
                 'contact',
                 array(
@@ -94,7 +94,6 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
             ((`p`.`ethnic_group_id` = `e`.`id`)))
         where
             (`p`.`deleted` = 0);");
-
     }
 
     public function down()
@@ -108,7 +107,7 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
         $this->addOEColumn('address', 'email', 'varchar(255) default null AFTER country_id', true);
 
 
-        foreach($contact_emails as $contact_email){
+        foreach ($contact_emails as $contact_email) {
             $this->update(
                 'address',
                 array(
@@ -190,7 +189,6 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
             ((`p`.`ethnic_group_id` = `e`.`id`)))
         where
             (`p`.`deleted` = 0);");
-
     }
 
     /*

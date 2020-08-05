@@ -24,9 +24,9 @@ class AddressController extends BaseAdminController
         }
         if ($request->getPost('Address')) {
             $model->attributes = $request->getPost('Address');
-            if($request->getPost('Contact')){
+            if ($request->getPost('Contact')) {
                 $model->contact->attributes = $request->getPost('Contact');
-                if(!$model->contact->save()){
+                if (!$model->contact->save()) {
                     $errors = $model->contact->getErrors();
                 }
             }
@@ -54,9 +54,9 @@ class AddressController extends BaseAdminController
         $model->contact_id = $request->getParam('contact_id');
         if ($request->getPost('Address')) {
             $model->attributes = $request->getPost('Address');
-            if($request->getPost('Contact')){
+            if ($request->getPost('Contact')) {
                 $model->contact->attributes = $request->getPost('Contact');
-                if(!$model->contact->save()){
+                if (!$model->contact->save()) {
                     $errors = $model->contact->getErrors();
                 }
             }
