@@ -153,6 +153,10 @@ class ContactBehavior extends CActiveRecordBehavior
 
     public function beforeSave($event)
     {
+        if (!$this->email) {
+            $this->email = null;
+        }
+
         if ($this->owner->isNewRecord) {
             // create a base contact object
             if ($this->owner->hasAttribute('contact_id') && !$this->owner->contact_id) {
