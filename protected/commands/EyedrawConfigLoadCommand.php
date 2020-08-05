@@ -163,17 +163,19 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 . ' WHERE snomed_code = :snomed_code')
             ->bindValue(':snomed_code', $tag->SNOMED_CODE)
             ->queryScalar();
+        echo "adding tag: " . print_r($tag, true) . "\n";
         if ($current) {
             $cmd = $this->getDb()
                 ->createCommand('UPDATE ' . static::TAG_TBL
-                    . ' SET text = :text, '
-                    . 'snomed_code = :snomed_code');
+                    . ' SET text = :text'
+                    . ' WHERE snomed_code = :snomed_code');
+            echo "tag found, updating\n";
         } else {
             $cmd = $this->getDb()
-                ->createCommand('INSERT INTO ' . static::TAG_TBL . ' ('
-                    . 'text, '
-                    . 'snomed_code) '
+                ->createCommand('INSERT INTO ' . static::TAG_TBL
+                    . ' (text, snomed_code) '
                     . 'VALUES (:text, :snomed_code)');
+            echo "tag not found, adding\n";
         }
 
         $cmd->bindValue(':text', $tag->TEXT)
