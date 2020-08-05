@@ -225,12 +225,12 @@ foreach ($ethnic_list as $key => $item) {
       </tr>
       <tr>
         <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
-            <?= $form->label($address, 'email') ?>
+            <?= $form->label($contact, 'email') ?>
           <br/>
-            <?= $form->error($address, 'email') ?>
+            <?= $form->error($contact, 'email') ?>
         </td>
         <td>
-            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255, 'placeholder'=>'Email','autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+            <?= $form->emailField($contact, 'email', array('size' => 15, 'maxlength' => 255, 'placeholder'=>'Email','autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
         </td>
       </tr>
       </tbody>
