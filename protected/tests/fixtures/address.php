@@ -30,7 +30,6 @@ return array(
         'postcode' => 'ec1v 0dx',
         'county' => 'london',
         'country_id' => 1,
-        'email' => 'bleakley1@bleakley1.com',
         'contact_id' => 1,
     ),
     'address2' => array(
@@ -40,7 +39,6 @@ return array(
         'postcode' => 'ec1v 0dx',
         'county' => 'london',
         'country_id' => 1,
-        'email' => 'bleakley2@bleakley2.com',
         'contact_id' => 2,
     ),
     'address3' => array(
@@ -50,7 +48,6 @@ return array(
         'postcode' => 'ec1v 0dx',
         'county' => 'london',
         'country_id' => 1,
-        'email' => 'bleakley3@bleakley3.com',
         'contact_id' => 3,
     ),
 );
