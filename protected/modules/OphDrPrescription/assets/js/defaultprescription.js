@@ -47,7 +47,8 @@ function fpTenPrintOption() {
         }
     });
 
-    if (exists && $save_print_form_btns.data('enabled') === 'on') {
+
+    if (exists && $('#et_save_print_form').data('enabled') === 'on') {
         $save_print_form_btns.show();
     } else if (!$save_print_form_btns.hidden) {
         $save_print_form_btns.hide();
