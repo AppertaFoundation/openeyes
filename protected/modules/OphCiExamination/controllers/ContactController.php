@@ -72,7 +72,7 @@ class ContactController extends \BaseController
                 " " . ($contact->address ? $contact->address->getLetterLine() : ""),
             'id' => $contact['id'],
             'name' => $contact->getFullName(),
-            'email' => $contact->address ? $contact->email : "",
+            'email' => $contact->email,
             'phone' => $contact->primary_phone,
             'address' => $contact->address ? $contact->address->getLetterLine() : "",
             'contact_label' => $contact->label ? $contact->label->name : "",
