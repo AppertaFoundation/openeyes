@@ -57,7 +57,7 @@ return array(
             'password' => $db['password'],
         ),
         'dbTestNotConnecting' => array(
-            'class' => 'CDbConnection',
+            'class' => 'OEDbConnection',
             'connectionString' => 'mysql:host=notArealDB;dbname=openeyestest',
             'username' => 'oe',
             'password' => '_OE_TESTDB_PASSWORD_',
