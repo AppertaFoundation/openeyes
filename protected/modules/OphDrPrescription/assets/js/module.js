@@ -44,7 +44,7 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_save_print_form', function (e) {
+  $(document).on('click', '#et_save_print_form,#et_save_print_form_footer', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
     if (!checkPrescriptionLength()) {
       e.preventDefault();
