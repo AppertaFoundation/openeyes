@@ -266,9 +266,6 @@ if [ "${OE_MODE^^}" != "BUILD" ]; then
 		# If apache was running, restart it. Otherwise we assume it will be started by another process
 	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
-    # copy cron tasks
-    bash $SCRIPTDIR/set-cron.sh
-
 fi
 
 echo ""

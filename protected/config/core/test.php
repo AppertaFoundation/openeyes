@@ -17,6 +17,25 @@
  */
 Yii::setPathOfAlias('yiitests', Yii::getPathOfAlias('system').'/../tests/framework');
 
+/**
+* Obtain db access credentials.
+* - If old db.conf file exists (old method from OpenEyes v2.x) then use it.
+*   - Else chack for docker secrets
+*     - Else test environment variables
+*       - Else use default values
+**/
+if (file_exists('/etc/openeyes/db.conf')) {
+    $db = parse_ini_file('/etc/openeyes/db.conf');
+} else {
+    $db = array(
+        'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
+        'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
+        'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
+        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
+        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
+    );
+}
+
 return array(
     'name' => 'OpenEyes Test',
     'import' => array(
@@ -33,9 +52,9 @@ return array(
         ),
         'db' => array(
             'class' => 'OEDbConnection',
-            'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-            'username' => 'oe',
-            'password' => '_OE_TESTDB_PASSWORD_',
+            'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
+            'username' => $db['username'],
+            'password' => $db['password'],
         ),
         'dbTestNotConnecting' => array(
             'class' => 'CDbConnection',
