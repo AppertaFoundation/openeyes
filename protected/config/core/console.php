@@ -58,13 +58,13 @@ $config = array(
     ),
     'components' => array(
         'db' => array(
-            'class' => "CDbConnection",
+            'class' => "OEDbConnection",
             'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
             'username' => $db['username'],
             'password' => $db['password'],
         ),
         'testdb' => array(
-            'class' => "CDbConnection",
+            'class' => "OEDbConnection",
             'connectionString' => "mysql:host={$db_test['host']};port={$db_test['port']};dbname={$db_test['dbname']}",
             'username' => $db_test['username'],
             'password' => $db_test['password'],
