@@ -291,7 +291,38 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         }
     }
 
-    public function isPreviousEntry($entry) {
+
+    public function mergePrescriptionEntries($entries)
+    {
+        $merged_entries = [];
+        $medication_ids = [];
+        $prescription_entries = [];
+        $old_prescription_entries = [];
+        foreach ($entries as $entry) {
+            $entry_to_add = $entry->prescriptionItem ?? $entry;
+            if (!$entry_to_add->latest_med_use_id) {
+                $prescription_entries[] = $entry_to_add;
+            } else {
+                $old_prescription_entries[] = $entry_to_add;
+            }
+        }
+
+        $prescription_entries = array_merge($prescription_entries, $old_prescription_entries);
+        foreach ($prescription_entries as $entry) {
+            $medication_is_present = in_array($entry->medication_id, $medication_ids);
+            if (!$medication_is_present || ($medication_is_present && is_null($entry->latest_med_use_id))) {
+                $merged_entries[] = $entry;
+                if (!$medication_is_present) {
+                    $medication_ids[] = $entry->medication_id;
+                }
+            }
+        }
+
+        return $merged_entries;
+    }
+
+    public function isPreviousEntry($entry)
+    {
         return $entry->copied_from_med_use_id || $entry->prescription_item_id !== '';
     }
 

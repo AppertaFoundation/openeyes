@@ -15,9 +15,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
+
 /**
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $current
- * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $stopped
+ * @var HistoryMedicationsEntry[] $current
+ * @var HistoryMedicationsEntry[] $stopped
  */
 
 $model_name = CHtml::modelName($element);
@@ -31,6 +33,7 @@ $eye_filter = function($e) {
     return !is_null($e->route_id) && $e->route->has_laterality;
 };
 
+$current = $element->mergePrescriptionEntries($current);
 $current_systemic_meds = array_filter($current, $systemic_filter);
 $stopped_systemic_meds = array_filter($stopped, $systemic_filter);
 $current_eye_meds = array_filter($current, $eye_filter);
@@ -78,11 +81,16 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                             </td>
                             <td>
-                                <?php if ($entry->prescription_item_id) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                                            class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
-                                            data-tooltip-content="View prescription"></span></a>
-                                    <?php } ?>
+                                <?php
+                                if (($entry->prescription_item_id && isset($entry->prescription_item->prescription->event))) {
+                                    $link = $this->getPrescriptionLink($entry->prescription_item);
+                                } else {
+                                    $link = $entry->usage_type === 'OphDrPrescription' ? $this->getPrescriptionLink($entry) : $this->getExaminationLink($entry);
+                                }
+                                $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
+                                <a href="<?= $link ?>"><span
+                                        class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
+                                        data-tooltip-content="<?= $tooltip_content ?>"></span></a>
                             </td>
                         </tr>
                         <?php $index++; ?>
@@ -134,13 +142,17 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                         <span class="oe-date"><?= $entry->getEndDateDisplay() ?></span>
                                     </td>
                                     <td>
-                                    <?php if ($entry->prescription_item_id) { ?>
-                                        <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
+                                    <?php
+                                    if (($entry->prescription_item_id && isset($entry->prescription_item->prescription->event))) {
+                                        $link = $this->getPrescriptionLink($entry->prescription_item);
+                                    } else {
+                                        $link = $entry->usage_type === 'OphDrPrescription' ? $this->getPrescriptionLink($entry) : $this->getExaminationLink($entry);
+                                    }
+                                    $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
+                                        <a href="<?= $link ?>"><span
                                                 class="js-has-tooltip fa oe-i direction-right-circle small pad pro-theme"
-                                                data-tooltip-content="View prescription"></span></a>
-                                        <?php } ?>
+                                                data-tooltip-content="<?= $tooltip_content ?>"></span></a>
                                     </td>
-
                                 </tr>
                                 <?php $index++; ?>
                             <?php endforeach; ?>
@@ -205,7 +217,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                                 </td>
                                 <td>
                                     <?php
-                                    $link = $entry->prescription_item_id && isset($entry->prescriptionItem->prescription->event) ? $this->getPrescriptionLink($entry) : $this->getExaminationLink($entry);
+                                    if (($entry->prescription_item_id && isset($entry->prescription_item->prescription->event))) {
+                                        $link = $this->getPrescriptionLink($entry->prescription_item);
+                                    } else {
+                                        $link = $entry->usage_type === 'OphDrPrescription' ? $this->getPrescriptionLink($entry) : $this->getExaminationLink($entry);
+                                    }
                                     $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                                     <a href="<?= $link ?>">
                                         <i class="js-has-tooltip fa pro-theme oe-i direction-right-circle small pad"

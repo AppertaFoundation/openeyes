@@ -72,7 +72,7 @@
     <!-- no audit trail, use blank spacer icon to maintain table layout alignment -->
     <?php if ($entry->prescription_item_id) { ?>
         <i class="oe-i spacer small pad-right"></i>
-        <a href="<?= $this->getPrescriptionLink($entry) ?>">
+        <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>">
             <span class="oe-i direction-right-circle small-icon js-has-tooltip"
                     data-tooltip-content="View prescription">
             </span>
