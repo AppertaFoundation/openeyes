@@ -232,8 +232,8 @@ echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400'
 
+# Set fileMode to false, to prevent windows machines removing the execute bit on checkin
 git config --global core.fileMode false 2>/dev/null
-git config core.fileMode false 2>/dev/null
 
 MODULEROOT=$WROOT/protected/modules
 
@@ -335,6 +335,7 @@ for module in ${modules[@]}; do
 	if [ $processgit = 1 ]; then
 		printf "\e[32m$module: \e[0m"
 		git -C $MODGITROOT reset --hard
+		git -C $MODGITROOT config core.fileMode false 2>/dev/null
 		git -C $MODGITROOT fetch --all
 
 		if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
