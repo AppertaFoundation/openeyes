@@ -916,4 +916,15 @@ class OEMigration extends CDbMigration
         }
         return false;
     }
+
+    protected function renameOETable($current_name, $new_name, $versioned=false){
+        $this->renameTable($current_name, $new_name);
+
+        if($versioned && $this->verifyTableVersioned($current_name)){
+            $this->renameTable($current_name.'_version', $new_name.'_version');
+        }
+
+    }
+
+
 }
