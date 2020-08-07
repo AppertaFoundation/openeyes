@@ -56,7 +56,7 @@ showhelp=0
 ignorelocal=0
 
 # Read in stored github config (username, root, usessh, etc)
-source $SCRIPTDIR/git.conf 2>dev/null
+source $SCRIPTDIR/git.conf 2>/dev/null
 
 for i in "$@"
 do
