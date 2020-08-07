@@ -190,15 +190,4 @@ class m200730_053753_move_email_column_to_contact extends OEMigration
         where
             (`p`.`deleted` = 0);");
     }
-
-    /*
-    // Use safeUp/safeDown to do migration with transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
 }
