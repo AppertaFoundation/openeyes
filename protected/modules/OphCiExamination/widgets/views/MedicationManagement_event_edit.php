@@ -394,9 +394,11 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
                             $medicationManagementRow = $(medicationManagementRow);
-                        } else if ($(historyMedicationRow).find('.js-prescription-item-id').val() === $(medicationManagementRow).find('.js-prescription-item-id').val() || mm_usage_type === 'OphDrPrescription') {
-                            $(medicationManagementRow).parent().find('tr.js-second-row[data-key='+ $(medicationManagementRow).data('key') +']').remove();
-                            $(medicationManagementRow).remove();
+                        } else if ($(historyMedicationRow).find('.js-prescription-item-id').val() !== '') {
+                            if ($(medicationManagementRow).find('.js-prescription-item-id').val() || mm_usage_type === 'OphDrPrescription') {
+                                $(medicationManagementRow).parent().find('tr.js-second-row[data-key='+ $(medicationManagementRow).data('key') +']').remove();
+                                $(medicationManagementRow).remove();
+                            }
                         }
                     });
 
