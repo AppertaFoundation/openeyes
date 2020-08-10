@@ -52,6 +52,32 @@ function printEvent(printOptions)
 	printIFrameUrl(OE_print_url, printOptions);
 }
 
+$(window).load(function() {
+	var data = {};
+	if( typeof OE_event_last_modified !== "undefined" ){
+		data['last_modified_date'] = OE_event_last_modified;
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl + '/eventImage/generateImage/' + OE_event_id,
+			'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+			'success': function(resp) {
+				switch (resp.trim()) {
+					case "ok":
+						break;
+					case "outofdate":
+						$.cookie('print',1);
+						window.location.reload();
+						break;
+					default:
+						alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+						break;
+				}
+			}
+		});
+	}
+})
+
 
 $(document).ready(function() {
 	if ($.cookie('print') == 1) {
