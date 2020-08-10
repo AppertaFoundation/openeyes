@@ -44,7 +44,6 @@
                 <th>Order</th>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>Type</th>
-                <th>Element Id</th>
                 <th>Field Type</th>
                 <th>Show Units</th>
                 <th>Units Editable</th>
@@ -63,19 +62,18 @@
                     </td>
                     <td><input type="checkbox" name="resultTypes[]" value="<?php echo $model->id ?>"/></td>
                     <td><?= $model->type; ?></td>
-                    <td><?= $model->result_element_type->name ?></td>
                     <td><?= $model->fieldType->name ?></td>
                     <td><?= $model->show_units ?></td>
                     <td><?= $model->allow_unit_change ?></td>
-                    <td><?= $model->default_units ?></td>
-                    <td><?= $model->custom_warning_message ?></td>
+                    <td><?= $model->default_units ? $model->default_units : '-' ?></td>
+                    <td><?= $model->custom_warning_message ? $model->custom_warning_message : '-' ?></td>
                     <td><?= $model->show_on_whiteboard ?></td>
                 </tr>
             <?php } ?>
             </tbody>
             <tr>
                 <td colspan="2">
-                    <?= \CHtml::button(
+                    <?= CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -85,7 +83,7 @@
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?= \CHtml::submitButton(
+                    <?= CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
