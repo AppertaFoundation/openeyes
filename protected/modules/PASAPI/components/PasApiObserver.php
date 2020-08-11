@@ -49,7 +49,7 @@ class PasApiObserver
         $proxy = isset(\Yii::app()->params['pasapi']['proxy']) ? \Yii::app()->params['pasapi']['proxy'] : $default_proxy;
         $request_timeout = isset(\Yii::app()->params['pasapi']['curl_timeout']) ? \Yii::app()->params['pasapi']['curl_timeout'] : 60;
 
-        curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
+        if (!empty($proxy)) curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
         curl_setopt($this->_curl->curl, CURLOPT_TIMEOUT, $request_timeout);
 
         $this->_xml_helper = new XmlHelper();

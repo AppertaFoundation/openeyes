@@ -193,7 +193,10 @@ class ProcessHscicDataCommand extends CConsoleCommand
         echo "Downloading from: " . static::$base_url . $services_path ."\n";
 
         $curl = curl_init(static::$base_url . $services_path);
-        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        if (!empty(Yii::app()->params['curl_proxy'])) {
+            echo "Using proxy: " . Yii::app()->params['curl_proxy'];
+            curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        }
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -216,7 +219,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         if ($other_path) {
             echo "Downloading from: " . static::$base_url . $other_path . "\n";
             $curl = curl_init(static::$base_url . $other_path);
-            curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+            if (!empty(Yii::app()->params['curl_proxy'])) curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
             curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -1084,7 +1087,7 @@ EOH;
         $file_handler = fopen($file, 'w');
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        if (!empty(Yii::app()->params['curl_proxy'])) curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
