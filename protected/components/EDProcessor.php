@@ -133,7 +133,7 @@ class EDProcessor
             }
 
             foreach ($ed_json as $ed_doodle) {
-                if(!array_key_exists('tags', $ed_doodle)){
+	            if (!isset($ed_doodle->tags)) {
                     $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
                 }
             }
