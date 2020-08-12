@@ -1,7 +1,7 @@
 <?php
 
 
-class DBProviderTest extends CTestCase
+class DBProviderTest extends CDbTestCase
 {
     public $searchProvider;
 
