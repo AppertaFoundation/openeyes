@@ -410,7 +410,7 @@
                     <span class="oe-date"
                           style="text-align: left"><?= Helper::convertDate2NHS($exam_api->getCCTDate($patient)); ?></span>
             <?php } else { ?>
-                    <span class="data-value not-available">CCT: NA</span>
+                    <span class="data">CCT: NA</span>
             <?php } ?>
         </div>
 

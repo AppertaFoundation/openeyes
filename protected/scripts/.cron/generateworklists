@@ -1,3 +1,2 @@
-# Run daily at 00:20 to generate new worklist slots
-# pulls in environment variables from /etc/profile or /env.sh
-20 00 * * * 	root	. /env.sh >/dev/null 2>&1 ; . /etc/profile >/dev/null 2>&1 ; bash $WROOT/protected/scripts/generateworklists.sh > $WROOT/protected/runtime/generateworklists_`date +\%Y\%m\%d\%H\%M\%S`.log 2>&1
+# Run daily to generate new worklist slots
+${CRON_GENERTAEWORKLISTS_SCH:-20 00 * * *}  bash $WROOT/protected/scripts/cronrunner.sh 'bash $WROOT/protected/scripts/generateworklists.sh'

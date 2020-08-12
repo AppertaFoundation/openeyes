@@ -204,7 +204,7 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
      */
     public function getPrescriptionLink($entry)
     {
-        return '/OphDrPrescription/Default/view/' . $entry->prescriptionItem->event_id;
+        return '/OphDrPrescription/Default/view/' . $entry->event_id;
     }
 
     public function getExaminationLink($entry)

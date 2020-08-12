@@ -243,8 +243,8 @@ echo "usessh=$usessh" | sudo tee $SCRIPTDIR/git.conf > /dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400'
 
+# Set fileMode to false, to prevent windows machines removing the execute bit on checkin
 git config --global core.fileMode false 2>/dev/null
-git config core.fileMode false 2>/dev/null
 
 MODULEROOT=$WROOT/protected/modules
 
@@ -356,7 +356,7 @@ for module in ${modules[@]}; do
     if [ $processgit = 1 ]; then
         printf "\e[32m$module: \e[0m"
         git -C $MODGITROOT reset --hard
-        
+        git -C $MODGITROOT config core.fileMode false 2>/dev/null
         # Add depth if specified
         if [[ ! -z $depth ]]; then
 			fetchparams+=" --depth=$depth"
@@ -364,7 +364,7 @@ for module in ${modules[@]}; do
 
         # Make sure the fetch root is correct - for some reason it sometimes get set to a specific
         # branch (e.g, develop), and then matching to upstream branches will break
-        git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+        git -C $MODGITROOT config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
 
         # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
         if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
@@ -385,8 +385,8 @@ for module in ${modules[@]}; do
         ## fast forward to latest head
         if [ ! "$nopull" = "1" ]; then
             echo "Pulling latest changes: "
-            if ! [ -z $trackbranch ] && ! git config --get branch.$branch.merge >/dev/null 2>&1 ; then 
-                git branch --set-upstream-to=origin/$trackbranch
+            if ! [ -z $trackbranch ] && ! git -C $MODGITROOT config --get branch.$branch.merge >/dev/null 2>&1 ; then 
+                git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
             fi
             git -C $MODGITROOT pull
             git -C $MODGITROOT submodule update --init --force

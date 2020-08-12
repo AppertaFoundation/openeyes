@@ -44,7 +44,7 @@
                                     <?= $entry->getMedicationDisplay() ?>
                                 </strong>
                                 <?php if ($entry->prescription_item_id) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td>
@@ -63,7 +63,7 @@
                                     <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
                                     <?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item_id) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $this->getPrescriptionLink($entry->prescriptionItem) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
