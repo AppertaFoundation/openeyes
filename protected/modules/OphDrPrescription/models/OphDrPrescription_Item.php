@@ -68,7 +68,7 @@ class OphDrPrescription_Item extends EventMedicationUse
         return array_merge(parent::relations(), array(
             'tapers' => array(self::HAS_MANY, OphDrPrescription_ItemTaper::class, 'item_id'),
             'prescription' => array(
-                self::HAS_ONE,
+                self::BELONGS_TO,
                 Element_OphDrPrescription_Details::class,
                 array('event_id' => 'event_id'),
             ),
@@ -139,6 +139,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     }
 
     /**
+     * @param bool $include_tapers
      * @return DateTime|null
      * @throws Exception
      */
@@ -309,5 +310,17 @@ class OphDrPrescription_Item extends EventMedicationUse
             $taper->delete();
         }
         return parent::beforeDelete();
+    }
+
+    protected function beforeSave()
+    {
+        $end_date = $this->stopDateFromDuration();
+        $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
+        if ($this->end_date) {
+            $this->setStopReasonToCourseComplete();
+        } else {
+            $this->stop_reason_id = null;
+        }
+        return parent::beforeSave();
     }
 }

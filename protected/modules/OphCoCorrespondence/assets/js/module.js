@@ -342,6 +342,10 @@ $(document).ready(function () {
         if (correspondence_directlines) {
             $('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);
         }
+
+        if (correspondence_fax_numbers) {
+            $('#ElementLetter_fax').val(correspondence_fax_numbers[$('#ElementLetter_site_id').val()]);
+        }
     });
 
     $('#et_save, #et_save_footer').click(function (e) {

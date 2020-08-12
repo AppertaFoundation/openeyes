@@ -97,7 +97,7 @@ if ($side === 'left') {
             'doctor_grade_id' => $pcr_grades['display'],
             'pxf_phako' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
             'pupil_size' => array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-            'axial_length_group' => array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
+            'axial_length_group' => array(0 => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
             'arb' => array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
             'lie_flat' => array('N' => 'No', 'Y' => 'Yes'),
         );
@@ -325,7 +325,8 @@ if ($side === 'left') {
 
       function selectItemsetOption(options, id) {
         options.forEach((option) => {
-          if (option.id === id) {
+          //id will always be a string, option.id may be a number so we convert it and avoid automatic type coercion
+          if (option.id.toString() === id) {
             option.selected = true;
           }
         });
@@ -347,7 +348,7 @@ if ($side === 'left') {
           {'id':'Y', 'label':'Yes'}
         ], '<?= $pcr['lie_flat'] ?>'),
         drop_axial_length = selectItemsetOption([
-          {'id':'NK', 'label':'Not Known'},
+          {'id': 0, 'label':'Not Known'},
           {'id': 1, 'label':'< 26'},
           {'id': 2, 'label':'> or = 26'}
         ], '<?= $pcr['axial_length_group'] ?>'),

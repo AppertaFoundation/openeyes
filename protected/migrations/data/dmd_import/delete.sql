@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 CREATE TEMPORARY TABLE tmp_delete_from_sets
 SELECT id
 FROM medication_set
@@ -28,3 +30,7 @@ DELETE FROM medication_attribute;
 ALTER TABLE medication_attribute AUTO_INCREMENT = 1;
 DELETE FROM medication_form WHERE source_type = 'DM+D';
 DELETE FROM medication_route WHERE source_type = 'DM+D';
+
+DROP TABLE tmp_delete_from_sets;
+
+COMMIT;

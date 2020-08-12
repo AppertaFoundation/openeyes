@@ -130,14 +130,14 @@ OpenEyes.OphCiExamination.SystemicPreviousSurgeryController = (function () {
     };
 
     SystemicPreviousSurgeryController.prototype.hideNoSystemicSurgery = function() {
-        if (this.$table.find('tbody tr').length !== 1) {
+        if (this.$table.find('tbody tr').length > 0) {
             this.$noSystemicSurgeryFld.prop('checked', false);
             this.$noSystemicSurgeryWrapper.hide();
         }
     };
 
     SystemicPreviousSurgeryController.prototype.showNoSystemicSurgery = function() {
-        if (this.$table.find('tbody tr').length === 1) {
+        if (this.$table.find('tbody tr').length === 0) {
             this.$noSystemicSurgeryWrapper.show();
         } else {
             this.hideNoSystemicSurgery();

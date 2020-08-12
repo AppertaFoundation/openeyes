@@ -1,8 +1,8 @@
 <?php
 
-class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigration
+class m191218_121522_add_sub_type_event_icons_to_document_event extends OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         $sub_types = [
             'General' => 'i-CoDocument',
@@ -22,10 +22,9 @@ class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigra
             'Ultrasound' => 'i-ImUltraSound',
         ];
 
-        $this->addColumn('ophcodocument_sub_types', 'sub_type_event_icon_id', 'int(11)');
+        $this->addOEColumn('ophcodocument_sub_types', 'sub_type_event_icon_id', 'int(11)', true );
         $this->addForeignKey('document_sub_type_event_icon_id_fk', 'ophcodocument_sub_types', 'sub_type_event_icon_id', 'event_icon', 'id');
 
-        $this->addColumn('ophcodocument_sub_types_version', 'sub_type_event_icon_id', 'int(10) unsigned');
 
         foreach ($sub_types as $sub_type => $icon) {  //set default values for document sub types
             $event_icon = $this->dbConnection->createCommand('SELECT id FROM event_icon WHERE name = :name')
@@ -35,11 +34,10 @@ class m191218_121522_add_sub_type_event_icons_to_document_event extends CDbMigra
         }
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropForeignKey('document_sub_type_event_icon_id_fk', 'ophcodocument_sub_types');
-        $this->dropColumn('ophcodocument_sub_types', 'sub_type_event_icon_id');
-        $this->dropColumn('ophcodocument_sub_types_version', 'sub_type_event_icon_id');
+        $this->dropOEColumn('ophcodocument_sub_types', 'sub_type_event_icon_id', true);
     }
 
 }

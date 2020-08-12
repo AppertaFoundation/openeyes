@@ -28,7 +28,7 @@
 <?php $training_mode = SettingMetadata::checkSetting('training_mode_enabled', 'on')
   ? 'training-mode' : '';
 ?>
-<body class="open-eyes oe-grid <?=$training_mode?>">
+<body class="open-eyes oe-grid sem <?=$training_mode?>">
 <!-- Minimum screed width warning -->
 <div id="oe-minimum-width-warning">Device width not supported</div>
 

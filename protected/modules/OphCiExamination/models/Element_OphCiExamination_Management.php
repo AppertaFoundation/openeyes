@@ -82,7 +82,7 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
             $elements
         );
 
-        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN))) {
+        if (empty(array_intersect($element_names, self::ELEMENT_CHILDREN)) && !$this->comments) {
             $this->addError('comments', 'Comments cannot be blank when there are no child elements');
         }
     }

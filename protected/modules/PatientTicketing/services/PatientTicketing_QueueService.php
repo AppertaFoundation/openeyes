@@ -127,6 +127,14 @@ class PatientTicketing_QueueService extends \services\ModelService
         */
     }
 
+    public function getDependentClosingQueues(PatientTicketing_Queue $qr)
+    {
+        $queue = $this->readModel($qr->getId());
+        $d_ids = $queue->getDependentQueueIds();
+
+        return $this->model->closing()->findAllByPk($d_ids);
+    }
+
     public function getRootQueue($queue_id)
     {
         $queue = $this->readModel($queue_id);

@@ -189,7 +189,7 @@ class BaseController extends Controller
                 }
                 $user->testUserPwDate();
                 
-                $user->setUserLogOnAttemptsCheck();
+                $user->userLogOnAttemptsCheck();
 
                 $whitelistedRequest = ($_SERVER['REQUEST_URI']=='/profile/password')||($_SERVER['REQUEST_URI']=='/site/logout'); // get stale pw whitelisted actions
 

@@ -19,7 +19,12 @@
                 <b><?php echo CHtml::encode($element->getAttributeLabel('target_refraction_' . $side)) ?></b>
             </td>
             <td>
-                <?php echo CHtml::encode($element->{'target_refraction_' . $side}) ?>
+                <?php if ($element->{'target_refraction_' . $side}) {
+                    echo CHtml::encode($element->{'target_refraction_' . $side});
+                } else {
+                    $csm_refraction = \OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement::getLatestTargetRefraction($this->patient, $side);
+                    echo $csm_refraction ? CHtml::encode($csm_refraction) : 'Not recorded';
+                } ?>
             </td>
         </tr>
     </table>

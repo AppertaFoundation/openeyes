@@ -48,6 +48,27 @@ foreach ($element->entries as $entry) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
       <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
       <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
+      <div class="cols-5 <?= $model_name ?>_no_systemic_medications_wrapper">
+          <label class="inline highlight" for="<?= $model_name ?>_no_systemic_medications">
+              <?= \CHtml::checkBox(
+                  $model_name . '[no_systemic_medications]',
+                  $element->no_systemic_medications_date ? true : false,
+                  array('class' => $model_name.'_no_systemic_medications')
+              ); ?>
+              No systemic medications
+          </label>
+      </div>
+      <div class="cols-5 <?= $model_name ?>_no_ophthalmic_medications_wrapper">
+          <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_medications">
+              <?= \CHtml::checkBox(
+                  $model_name . '[no_ophthalmic_medications]',
+                  $element->no_ophthalmic_medications_date ? true : false,
+                  array('class' => $model_name.'_no_ophthalmic_medications')
+              ); ?>
+              No eye medications
+          </label>
+      </div>
+      <hr id="no-oph-sys-meds" class="divider" style="display: none">
       <table id="<?= $model_name ?>_entry_table" class="js-entry-table medications js-current-medications">
           <colgroup>
               <col class="cols-2">
@@ -66,30 +87,6 @@ foreach ($element->entries as $entry) {
           </tr>
           </thead>
         <tbody>
-        <tr class="cols-full <?= $model_name ?>_no_systemic_medications_wrapper">
-            <td colspan="5" class="align-left">
-                <label class="inline highlight" for="<?= $model_name ?>_no_systemic_medications">
-                    <?= \CHtml::checkBox(
-                        $model_name . '[no_systemic_medications]',
-                        $element->no_systemic_medications_date ? true : false,
-                        array('class' => $model_name.'_no_systemic_medications')
-                    ); ?>
-                    No systemic medications
-                </label>
-            </td>
-        </tr>
-        <tr class="cols-full <?= $model_name ?>_no_ophthalmic_medications_wrapper">
-            <td colspan="5" class="align-left">
-                <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_medications">
-                    <?= \CHtml::checkBox(
-                        $model_name . '[no_ophthalmic_medications]',
-                        $element->no_ophthalmic_medications_date ? true : false,
-                        array('class' => $model_name.'_no_ophthalmic_medications')
-                    ); ?>
-                    No eye medications
-                </label>
-            </td>
-        </tr>
         <?php
                 $row_count = 0;
         $total_count = count($current_entries);

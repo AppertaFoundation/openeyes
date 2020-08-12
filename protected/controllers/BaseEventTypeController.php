@@ -78,6 +78,7 @@ class BaseEventTypeController extends BaseModuleController
         'printCopy' => self::ACTION_TYPE_PRINT,
         'savePDFprint' => self::ACTION_TYPE_PRINT,
         'createImage' => self::ACTION_TYPE_VIEW,
+        'EDTagSearch' => self::ACTION_TYPE_FORM,
         'renderEventImage' => self::ACTION_TYPE_VIEW,
     );
 
@@ -2412,7 +2413,7 @@ class BaseEventTypeController extends BaseModuleController
     {
         $user = Yii::app()->user;
         $hotlistItem = UserHotlistItem::model()->find(
-            'created_user_id = :user_id AND patient_id = :patient_id 
+            'created_user_id = :user_id AND patient_id = :patient_id
                        AND (DATE(last_modified_date) = :current_date OR is_open = 1)',
             array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d'))
         );
@@ -2750,5 +2751,26 @@ class BaseEventTypeController extends BaseModuleController
             $imagick->setImageBackgroundColor('white');
             $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
+    }
+
+
+    /**
+     * Searches for tags used by Eyedraw via AJAX
+     */
+    public function actionEDTagSearch()
+    {
+        $term = $_GET["EDSearchTerm"];
+
+        $result_models = EyedrawTag::model()->findAll("text LIKE '%" . strtolower($term) . "%'");
+
+        $processed_results =
+            array_map(
+                function ($result) {
+                    return ['pk_id' => $result->id, 'text' => $result->text, 'snomed_code' => $result->snomed_code];
+                },
+                $result_models
+            );
+
+        echo json_encode($processed_results);
     }
 }

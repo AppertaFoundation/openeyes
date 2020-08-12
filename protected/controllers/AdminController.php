@@ -535,6 +535,7 @@ class AdminController extends BaseAdminController
             throw new Exception("User not found: $id");
         } elseif (!$id) {
             $user = new User();
+            $user->has_selected_firms = 0;
         }
 
         $request = Yii::app()->getRequest();
@@ -570,10 +571,10 @@ class AdminController extends BaseAdminController
                     $contact = new Contact();
                 }
 
-                $contact->title = $user->title;
-                $contact->first_name = $user->first_name;
-                $contact->last_name = $user->last_name;
-                $contact->qualifications = $user->qualifications;
+                $contact->title = $userAtt['title'];
+                $contact->first_name = $userAtt['first_name'];
+                $contact->last_name = $userAtt['last_name'];
+                $contact->qualifications = $userAtt['qualifications'];
 
                 if (!$contact->save()) {
                     throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
@@ -1099,9 +1100,6 @@ class AdminController extends BaseAdminController
 
                  // get or generate institution logo ID
 
-                Yii::log($site->institution->logo_id);
-                Yii::log($site->logo_id);
-               
                 if ($site->institution->logo_id) {
                     $institution_logo = $site->institution->logo;
                 } else {

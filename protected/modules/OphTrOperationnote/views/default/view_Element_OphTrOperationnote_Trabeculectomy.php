@@ -24,21 +24,19 @@
   <div class="element-fields full-width">
 
     <div class="eyedraw flex-layout">
-      <div class="eyedraw-canvas">
-            <?php
-            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-              'idSuffix' => 'Trabeculectomy',
-              'side' => $element->eye->getShortName(),
-              'mode' => 'view',
-              'width' => 250,
-              'height' => 250,
-              'scale' => 0.72,
-              'model' => $element,
-              'attribute' => 'eyedraw',
-              'idSuffix' => 'Trabeculectomy',
-            ));
-            ?>
-      </div>
+        <?php
+        $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+          'idSuffix' => 'Trabeculectomy',
+          'side' => $element->eye->getShortName(),
+          'mode' => 'view',
+          'width' => 250,
+          'height' => 250,
+          'scale' => 0.72,
+          'model' => $element,
+          'attribute' => 'eyedraw',
+          'idSuffix' => 'Trabeculectomy',
+        ));
+        ?>
       <div class="eyedraw-data">
         <table class="label-value no-lines last-left">
           <colgroup>

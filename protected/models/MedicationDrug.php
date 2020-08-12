@@ -28,6 +28,7 @@
  * @property string $external_id
  * @property string $external_source
  * @property Tag[] $tags
+ * @deprecated See Medication
  */
 class MedicationDrug extends BaseActiveRecordVersioned
 {

@@ -177,13 +177,9 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return array();
     }
 
-    public function deleteRelatedTicket($ticket) {
+    public function deleteRelatedTicket($ticket)
+    {
         TicketQueueAssignment::model()->deleteAllByAttributes(array('ticket_id' => $ticket->id));
         $ticket->delete();
-    }
-
-    public function getTileSize($action)
-    {
-        return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
     }
 }

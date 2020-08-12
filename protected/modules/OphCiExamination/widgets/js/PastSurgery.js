@@ -137,14 +137,14 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     };
 
     PreviousSurgeryController.prototype.hideNoPastSurgery = function() {
-        if (this.$table.find('tbody tr').length !== 1) {
+        if (this.$table.find('tbody tr').length > 0) {
             this.$noPastSurgeryFld.prop('checked', false);
             this.$noPastSurgeryWrapper.hide();
         }
     };
 
     PreviousSurgeryController.prototype.showNoPastSurgery = function() {
-        if (this.$table.find('tbody tr').length === 1) {
+        if (this.$table.find('tbody tr').length === 0) {
             this.$noPastSurgeryWrapper.show();
         } else {
             this.hideNoPastSurgery();
