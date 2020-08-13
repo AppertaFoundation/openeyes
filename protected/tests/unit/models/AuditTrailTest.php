@@ -49,7 +49,7 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::model
+     * @covers AuditTrail
      */
     public function testModel()
     {
@@ -57,7 +57,7 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::tableName
+     * @covers AuditTrail
      */
     public function testTableName()
     {

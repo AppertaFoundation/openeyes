@@ -50,7 +50,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::model
+     * @covers AddressType
      */
     public function testModel()
     {
@@ -58,7 +58,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::tableName
+     * @covers AddressType
      */
     public function testTableName()
     {
@@ -66,7 +66,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::rules
+     * @covers AddressType
      * @throws CException
      */
     public function testRules()
@@ -77,7 +77,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::attributeLabels
+     * @covers AddressType
      */
     public function testAttributeLabels()
     {

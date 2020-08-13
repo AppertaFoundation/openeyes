@@ -51,7 +51,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::model
+     * @covers Disorder
      */
     public function testModel()
     {
@@ -59,7 +59,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::tableName
+     * @covers Disorder
      */
     public function testTableName()
     {
@@ -67,7 +67,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::rules
+     * @covers Disorder
      * @throws CException
      */
     public function testRules()
@@ -78,7 +78,7 @@ class DisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Disorder::getDisorderOptions
+     * @covers Disorder
      *
      */
     public function testGetDisorderOptions()

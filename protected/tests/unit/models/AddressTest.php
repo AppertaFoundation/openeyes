@@ -56,7 +56,7 @@ class AddressTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers AuditTrail::rules
+     * @covers Address
      *
      * @throws CException
      */
@@ -68,7 +68,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::isCurrent
+     * @covers Address
      *
      */
     public function testIsCurrent()
@@ -77,7 +77,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getLetterLine
+     * @covers Address
      *
      */
     public function testGetLetterLine()
@@ -90,7 +90,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getSummary
+     * @covers Address
      *
      */
     public function testGetSummary()
@@ -103,7 +103,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getLetterArray
+     * @covers Address
      *
      */
     public function testGetLetterArray()

@@ -60,11 +60,11 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->model = new CommonOphthalmicDisorder;
+        $this->model = new CommonOphthalmicDisorder();
     }
 
     /**
-     * @covers CommonOphthalmicDisorder::model
+     * @covers CommonOphthalmicDisorder
      */
     public function testModel()
     {
@@ -72,7 +72,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonOphthalmicDisorder::tableName
+     * @covers CommonOphthalmicDisorder
      */
     public function testTableName()
     {
@@ -81,7 +81,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonOphthalmicDisorder::rules
+     * @covers CommonOphthalmicDisorder
      */
     public function testRules()
     {
@@ -91,7 +91,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonOphthalmicDisorder::attributeLabels
+     * @covers CommonOphthalmicDisorder
      */
     public function testAttributeLabels()
     {

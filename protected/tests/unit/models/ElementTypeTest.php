@@ -43,7 +43,7 @@ class ElementTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ElementType::model
+     * @covers ElementType
      */
     public function testModel()
     {
@@ -51,7 +51,7 @@ class ElementTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ElementType::tableName
+     * @covers ElementType
      */
     public function testTableName()
     {
@@ -59,7 +59,7 @@ class ElementTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ElementType::rules
+     * @covers ElementType
      * @throws CException
      */
     public function testRules()
@@ -70,7 +70,7 @@ class ElementTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ElementType::attributeLabels
+     * @covers ElementType
      */
     public function testAttributeLabels()
     {
@@ -83,7 +83,7 @@ class ElementTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ElementType::search
+     * @covers ElementType
      */
     public function testSearch()
     {

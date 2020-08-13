@@ -35,7 +35,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::model
+     * @covers Firm
      *
      */
     public function testModel()
@@ -44,7 +44,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getServiceText
+     * @covers Firm
      */
     public function testGetServiceText()
     {
@@ -54,7 +54,7 @@ class FirmTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers Firm::getConsultantName
+     * @covers Firm
      */
     public function testGetConsultantName()
     {
@@ -62,7 +62,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getConsultantName
+     * @covers Firm
      */
     public function testGetConsultantName_NoConsultant()
     {
@@ -70,7 +70,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getReportDisplay
+     * @covers Firm
      */
     public function testGetReportDisplay()
     {
@@ -78,7 +78,7 @@ class FirmTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Firm::getNameAndSubspecialty
+     * @covers Firm
      */
     public function testGetNameAndSubspecialty()
     {

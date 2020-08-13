@@ -46,7 +46,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers Medication::model
+     *  @covers Medication
      *
      */
     public function testModel()
@@ -55,7 +55,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers Medication::tableName
+     *  @covers Medication
      *
      */
     public function testTableName()
@@ -64,7 +64,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Medication::rules
+     * @covers Medication
      *
      * @throws CException
      */
@@ -77,7 +77,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     *  @covers Medication::attributeLabels
+     *  @covers Medication
      */
     public function testAttributeLabels()
     {
@@ -109,7 +109,7 @@ class MedicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Medication::getLabel
+     * @covers Medication
      *
      */
     public function testGetLabel()

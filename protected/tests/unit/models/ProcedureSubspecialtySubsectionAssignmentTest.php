@@ -50,7 +50,7 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::model
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
      */
     public function testModel()
@@ -59,7 +59,7 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::tableName
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
      */
     public function testTableName()
@@ -69,7 +69,7 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers ProcedureSubspecialtySubsectionAssignment::attributeLabels
+     * @covers ProcedureSubspecialtySubsectionAssignment
      *
      */
     public function testAttributeLabels()

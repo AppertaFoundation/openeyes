@@ -49,7 +49,7 @@ class AuditTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Audit::model
+     * @covers Audit
      */
     public function testModel()
     {
@@ -57,7 +57,7 @@ class AuditTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Audit::tableName
+     * @covers Audit
      */
     public function testTableName()
     {
@@ -65,7 +65,7 @@ class AuditTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Audit::attributeLabels
+     * @covers Audit
      */
     public function testAttributeLabels()
     {
@@ -111,7 +111,7 @@ class AuditTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Audit::getColour
+     * @covers Audit
      */
     public function testGetColour()
     {

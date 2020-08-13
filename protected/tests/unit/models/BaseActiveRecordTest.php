@@ -65,7 +65,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
-     * @covers BaseActiveRecord::save
+     * @covers BaseActiveRecord
      */
     public function test_basic_save()
     {
@@ -88,7 +88,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
-     * @covers BaseActiveRecord::NHSDate
+     * @covers BaseActiveRecord
      *
      */
     public function testNHSDate()
@@ -102,7 +102,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
-     * @covers BaseActiveRecord::NHSDateAsHTML
+     * @covers BaseActiveRecord
      *
      */
     public function testNHSDateAsHTML()

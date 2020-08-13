@@ -44,7 +44,7 @@ class EpisodeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Episode::model
+     * @covers Episode
      */
     public function testModel()
     {
@@ -52,7 +52,7 @@ class EpisodeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Episode::relations
+     * @covers Episode
      *
      */
     public function testRelations()
@@ -69,7 +69,7 @@ class EpisodeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Episode::tableName
+     * @covers Episode
      */
     public function testTableName()
     {
@@ -77,7 +77,7 @@ class EpisodeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Episode::attributeLabels
+     * @covers Episode
      */
     public function testAttributeLabels()
     {

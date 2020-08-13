@@ -50,7 +50,7 @@ class ContactMetadataTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactMetadata::model
+     * @covers ContactMetadata
      */
     public function testModel()
     {
@@ -58,7 +58,7 @@ class ContactMetadataTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactMetadata::tableName
+     * @covers ContactMetadata
      */
     public function testTableName()
     {
@@ -66,7 +66,7 @@ class ContactMetadataTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactMetadata::rules
+     * @covers ContactMetadata
      * @throws CException
      */
     public function testRules()

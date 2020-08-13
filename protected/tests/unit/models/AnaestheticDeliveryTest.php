@@ -39,7 +39,7 @@ class AnaestheticDeliveryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AnaestheticAgent::model
+     * @covers AnaestheticDelivery
      */
     public function testModel()
     {
@@ -47,7 +47,7 @@ class AnaestheticDeliveryTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AnaestheticAgent::tableName
+     * @covers AnaestheticDelivery
      */
     public function testTableName()
     {

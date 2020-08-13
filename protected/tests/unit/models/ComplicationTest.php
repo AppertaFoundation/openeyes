@@ -38,7 +38,7 @@ class ComplicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Complication::model
+     * @covers Complication
      */
     public function testModel()
     {
@@ -46,7 +46,7 @@ class ComplicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Complication::tableName
+     * @covers Complication
      */
     public function testTableName()
     {
@@ -54,7 +54,7 @@ class ComplicationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Complication::rules
+     * @covers Complication
      */
     public function testRules()
     {
