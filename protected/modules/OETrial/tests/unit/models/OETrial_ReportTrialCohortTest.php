@@ -1,6 +1,5 @@
 <?php
 
-
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 
@@ -13,6 +12,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'trial_type' => 'TrialType',
         'trial' => 'Trial',
         'patient' => 'Patient',
+        'contact' => Contact::class,
         'treatment_type' => 'TreatmentType',
         'trial_patient_status' => 'TrialPatientStatus',
         'trial_patient' => 'TrialPatient',
@@ -22,6 +22,8 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'episode' => Episode::class,
         'et_ophciexamination_diagnose' => Element_OphCiExamination_Diagnoses::class,
         'ophciexamination_diagnosis' => OphCiExamination_Diagnosis::class,
+        'secondary_diagnosis' => SecondaryDiagnosis::class,
+        'disorder' => Disorder::class,
     );
 
     public static function setUpBeforeClass()
@@ -49,15 +51,15 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         return array(
             array(
                 'fixture' => 'patient1',
-                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,"Myopia; Retinal lattice degeneration; Myopia; Retinal lattice degeneration; Posterior vitreous detachment",,' . "\n"
+                'expected_row' => '12345,"1 Jan 1970",Jim,Aylward,abc,Unknown,Shortlisted,{{DIAGNOSES}},,' . "\n"
             ),
             array(
                 'fixture' => 'patient3',
-                'expected_row' => '34567,"1 Jan 1960",Edward,Allan,def,Unknown,Shortlisted,,,' . "\n"
+                'expected_row' => '34567,"1 Jan 1960",Edward,Allan,def,Unknown,Shortlisted,{{DIAGNOSES}},,' . "\n"
             ),
             array(
                 'fixture' => 'patient4',
-                'expected_row' => '34321,"1 Jan 1977",Sarah,Shore,qwerty,Intervention,Accepted,,,' . "\n"
+                'expected_row' => '34321,"1 Jan 1977",Sarah,Shore,qwerty,Intervention,Accepted,{{DIAGNOSES}},,' . "\n"
             ),
         );
     }
@@ -127,9 +129,18 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
      */
     public function testToCSV($fixture, $expected_row = null)
     {
-        $baseStr = "\"Hos Num\",\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments
-$expected_row";
+        $baseStr = "\"Hos Num\",\"Date of Birth\",\"First Name\",\"Last Name\",\"Trial Identifier\",\"Treatment Type\",\"Status Id\",Diagnoses,Medications,Comments\n";
         $item = $this->patient($fixture);
+        $diagnoses = array();
+        foreach ($item->getOphthalmicDiagnosesSummary() as $diagnosis) {
+            $name = explode('~', $diagnosis, 3)[1];
+            $diagnoses[] = $name;
+        }
+        foreach ($item->systemicDiagnoses as $diagnosis) {
+            $diagnoses[] = $diagnosis->disorder->term;
+        }
+        $diagStr = (!empty($diagnoses) ? '"' : null) . implode('; ', $diagnoses) . (!empty($diagnoses) ? '"' : null);
+        $baseStr .= str_replace('{{DIAGNOSES}}', $diagStr, $expected_row);
         $patient = array(
             'id' => $item->id,
             'hos_num' => $item->hos_num,
