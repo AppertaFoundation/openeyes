@@ -27,7 +27,14 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create','getImageInfo', 'getImageUrl', 'getImageUrlsBulk', 'generateImage'),
+                'actions' => array(
+                    'view',
+                    'create',
+                    'getImageInfo',
+                    'getImageUrl',
+                    'getImageUrlsBulk',
+                    'generateImage'
+                ),
                 'users' => array('@'),
             ),
             array(
@@ -73,9 +80,9 @@ class EventImageController extends BaseController
     /**
      * Get all the event image urls that are current and the remaining event ids
      *
+     * @return string {"done_urs":[], "remaining_event_ids":[]}
      * @uses $_GET['event_ids']
      *
-     * @return string {"done_urs":[], "remaining_event_ids":[]}
      */
     public function actionGetImageUrlsBulk()
     {
@@ -141,7 +148,7 @@ class EventImageController extends BaseController
             throw new Exception("Event not found: $id");
         }
 
-        if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+        if (isset($_POST['last_modified_date']) && strtotime($event->last_modified_date) != $_POST['last_modified_date']) {
             echo 'outofdate';
 
             return;
