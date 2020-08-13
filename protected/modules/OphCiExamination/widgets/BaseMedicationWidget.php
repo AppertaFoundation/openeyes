@@ -17,10 +17,15 @@
 
 namespace OEModule\OphCiExamination\widgets;
 
+use BaseEventElementWidget;
+use CException;
+use EventMedicationUse;
+use Helper;
 use OEModule\OphCiExamination\models\BaseMedicationElement;
 use OEModule\OphCiExamination\models\MedicationManagementEntry;
+use OphDrPrescription_ItemTaper;
 
-abstract class BaseMedicationWidget extends \BaseEventElementWidget
+abstract class BaseMedicationWidget extends BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
     public static $INLINE_EVENT_VIEW = 256;
@@ -43,7 +48,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
     /**
      * @param BaseMedicationElement $element
      * @param $data
-     * @throws \CException
+     * @throws CException
      */
     protected function updateElementFromData($element, $data)
     {
@@ -54,20 +59,24 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
         */
 
         if (!is_a($element, static::$elementClass)) {
-            throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
+            throw new CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (is_a($element, 'HistoryMedications')) {
-            if (array_key_exists('no_systemic_medications', $data) && $data['no_systemic_medications'] === '1' && !$element->no_systemic_medications_date) {
-                $element->no_systemic_medications_date = date('Y-m-d H:i:s');
-            } elseif ($element->no_systemic_medications_date) {
-                $element->no_systemic_medications_date = null;
+        if (is_a($element, 'OEModule\OphCiExamination\models\HistoryMedications')) {
+            if (array_key_exists('no_systemic_medications', $data)) {
+                if (!$element->no_systemic_medications_date && $data['no_systemic_medications'] === '1') {
+                    $element->no_systemic_medications_date = date('Y-m-d H:i:s');
+                } elseif ($element->no_systemic_medications_date && $data['no_systemic_medications'] === '0') {
+                    $element->no_systemic_medications_date = null;
+                }
             }
 
-            if (array_key_exists('no_ophthalmic_medications', $data) && $data['no_ophthalmic_medications'] === '1' && !$element->no_ophthalmic_medications_date) {
-                $element->no_ophthalmic_medications_date = date('Y-m-d H:i:s');
-            } elseif ($element->no_ophthalmic_medications_date) {
-                $element->no_ophthalmic_medications_date = null;
+            if (array_key_exists('no_ophthalmic_medications', $data)) {
+                if (!$element->no_ophthalmic_medications_date && $data['no_ophthalmic_medications'] === '1') {
+                    $element->no_ophthalmic_medications_date = date('Y-m-d H:i:s');
+                } elseif ($element->no_ophthalmic_medications_date && $data['no_ophthalmic_medications'] === '0') {
+                    $element->no_ophthalmic_medications_date = null;
+                }
             }
         }
 
@@ -93,7 +102,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     $entry = new $class;
                 }
 
-                /** @var \EventMedicationUse $entry */
+                /** @var EventMedicationUse $entry */
 
                 foreach (array_merge(
                     $entry->attributeNames(),
@@ -120,12 +129,12 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
                 if (isset($entry_data['start_date']) && $entry_data['start_date'] !== '') {
                     list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
-                    $entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
+                    $entry->start_date = Helper::padFuzzyDate($start_year, $start_month, $start_day);
                 }
 
                 if (isset($entry_data['end_date']) && $entry_data['end_date'] !== '') {
                     list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
-                    $entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
+                    $entry->end_date = Helper::padFuzzyDate($end_year, $end_month, $end_day);
                 } else {
                     $entry->end_date = null;
                 }
@@ -146,7 +155,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     $tapers = array();
                     if (array_key_exists("taper", $entry_data)) {
                         foreach ($entry_data['taper'] as $taper_data) {
-                            $taper = new \OphDrPrescription_ItemTaper();
+                            $taper = new OphDrPrescription_ItemTaper();
                             $taper->setAttributes($taper_data);
                             $tapers[] = $taper;
                         }
@@ -187,5 +196,19 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
         }
 
         return isset($_POST[$class_name_underscores]['entries']) || isset($decoded_json['entries']);
+    }
+
+    /**
+     * @param $entry
+     * @return string
+     */
+    public function getPrescriptionLink($entry)
+    {
+        return '/OphDrPrescription/Default/view/' . $entry->event_id;
+    }
+
+    public function getExaminationLink($entry)
+    {
+        return '/OphCiExamination/Default/view/' . $entry->event_id;
     }
 }

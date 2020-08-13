@@ -15,10 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\HistoryMedications;
+
 /**
- * @var \OEModule\OphCiExamination\models\HistoryMedications $element
- * @var \EventMedicationUse[] $current
- * @var \EventMedicationUse[] $stopped
+ * @var HistoryMedications $element
+ * @var EventMedicationUse[] $current
+ * @var EventMedicationUse[] $stopped
  */
 
 $model_name = CHtml::modelName($element);
@@ -31,7 +33,7 @@ $eye_filter = function($e) {
 $systemic_filter = function ($entry) use ($eye_filter){
     return !$eye_filter($entry);
 };
-
+$current = $element->mergePrescriptionEntries($current);
 $current_eye_meds = array_filter($current, $eye_filter);
 $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
@@ -79,7 +81,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     </td>
                     <td>
                         <?php
-                        $link = $entry->prescription_item_id && isset($entry->prescriptionItem->prescription->event) ? $this->getPrescriptionLink($entry) : $this->getExaminationLink();
+                        if (($entry->prescription_item_id && isset($entry->prescriptionItem->prescription->event))) {
+                            $link = $this->getPrescriptionLink($entry->prescriptionItem);
+                        } else {
+                            $link = $entry->usage_type === 'OphDrPrescription' ? $this->getPrescriptionLink($entry) : $this->getExaminationLink($entry);
+                        }
                         $tooltip_content = 'View' . (strpos(strtolower($link), 'prescription') ? ' prescription' : ' examination'); ?>
                         <a href="<?= $link ?>">
                               <i class="js-has-tooltip fa oe-i direction-right-circle small pad"

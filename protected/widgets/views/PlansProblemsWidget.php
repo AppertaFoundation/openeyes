@@ -17,11 +17,7 @@
 
 ?>
 <div class="problems-plans">
-    <?php if ($is_popup) { ?>
-    <div class="subtitle">
-        Problems &amp; Plans
-    </div>
-    <?php } ?>
+    <?= isset($is_popup) ? "<h3>Problems &amp; Plans</h3>" : " <div class=\"subtitle\"> Problems &amp; Plans</div>";?>
     <ul class="problems-plans-sortable" id="problems-plans-sortable">
         <?php foreach ($current_plans_problems as $plan_problem) { ?>
             <li>
@@ -36,41 +32,71 @@
         <?php } ?>
     </ul>
 
-    <?php if ($allow_save) : ?>
-        <div class="create-new-problem-plan flex-layout">
-            <input class="create-problem-plan" type="text" placeholder="Add Problem or Plan">
-            <button class="button hint green js-add-pp-btn"><i class="oe-i plus pro-theme"></i></button>
-        </div>
-    <?php endif; ?>
-    <?php if (count($past_plans_problems) > 0) { ?>
-        <div class="collapse-data">
-            <div class="collapse-data-header-icon expand">
-                Past/closed problems <small>(<?= sizeof($past_plans_problems) ?>)</small>
-            </div>
-            <div class="collapse-data-content" style="display: none">
-                <table class="past-problems-plans">
-                    <colgroup>
-                        <col class="<?= $is_popup ? 'cols-6' : 'cols-4'?>">
-                        <col class="cols-1">
-                        <col class="cols-2">
-                    </colgroup>
-                    <tbody>
-                    <?php foreach ($past_plans_problems as $plan_problem) { ?>
-                        <tr>
-                            <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
-                            <td><div class="metadata">
-                                    <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
-                                    data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?> <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?> <br /> Closed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?> <?= ($plan_problem->lastModifiedUser ? 'by '.$plan_problem->lastModifiedUser->getFullNameAndTitle() : '') ?>"></i>
-                                </div>
-                            </td>
-                            <td class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
+    <?php if (count($past_plans_problems) > 0) {
+        if (isset($is_popup) ) { ?>
+            <h3>Past/closed problems</h3>
+            <table class="past-problems-plans">
+                <colgroup>
+                    <col class="cols-4">
+                    <col class="cols-1">
+                    <col class="cols-2">
+                </colgroup>
+                <tbody>
+                <?php foreach ($past_plans_problems as $plan_problem) { ?>
+                    <tr>
+                        <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
+                        <td>
+                            <div class="metadata">
+                                <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
+                                   data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>
+                                   <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?>
+                                   <br /> Closed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?>
+                                   <?= ($plan_problem->lastModifiedUser ? 'by '.$plan_problem->lastModifiedUser->getFullNameAndTitle() : '') ?>">
+                                </i>
+                            </div>
+                        </td>
+                        <td class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+            <?php
+        } else { ?>
+            <div class="collapse-data">
+                <div class="collapse-data-header-icon expand">
+                    Past/closed problems <small>(<?= sizeof($past_plans_problems) ?>)</small>
+                </div>
+                <div class="collapse-data-content" style="display: none">
+                    <table class="past-problems-plans">
+                        <colgroup>
+                            <col class="cols-4">
+                            <col class="cols-1">
+                            <col class="cols-2">
+                        </colgroup>
+                        <tbody>
+                        <?php foreach ($past_plans_problems as $plan_problem) { ?>
+                            <tr>
+                                <td style="padding: 6px 3px;"><?= $plan_problem->name ?></td>
+                                <td>
+                                    <div class="metadata">
+                                        <i class="oe-i info small <?= $pro_theme ?> js-has-tooltip"
+                                           data-tooltip-content="Created: <?= \Helper::convertDate2NHS($plan_problem->created_date) ?>
+                                           <?= ($plan_problem->createdUser ? 'by '.$plan_problem->createdUser->getFullNameAndTitle() : '') ?>
+                                           <br /> Closed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?>
+                                           <?= ($plan_problem->lastModifiedUser ? 'by '.$plan_problem->lastModifiedUser->getFullNameAndTitle() : '') ?>">
+                                        </i>
+                                    </div>
+                                </td>
+                                <td class="oe-date">Removed: <?= \Helper::convertDate2NHS($plan_problem->last_modified_date) ?></td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
 
+                </div>
             </div>
-        </div>
+            <?php
+        }?>
     <?php } ?>
 </div>
 

@@ -137,11 +137,25 @@
     ?>
 </div>
 
-<?php
-foreach ($dataProviders as $i => $dataProvider) {
-    $this->renderPartial('application.widgets.views.PatientIcons', array('patients' => $dataProvider, 'page' => 'trial'));
-}
-?>
+<script type="application/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/OETrial/trial/renderPopups",
+            data: {
+                "trialId" : (<?= $trial->id?>),
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN
+            },
+            success: function (resp) {
+                $("body.open-eyes.oe-grid").append(resp);
+            }
+        })
+    })
+    $('body').on('click', '.collapse-data-header-icon', function () {
+        $(this).toggleClass('collapse expand');
+        $(this).next('div').toggle();
+    });
+</script>
 
 <script type="application/javascript">
   $('.js-trails-sort-selector').change(function(e){

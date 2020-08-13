@@ -14,11 +14,16 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\MedicationManagement;
+use OEModule\OphCiExamination\models\MedicationManagementEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 ?>
 
 
 <?php
-/** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
+/** @var MedicationManagement $element */
 $model_name = CHtml::modelName($element);
 
 // FP10 settings
@@ -48,7 +53,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <?php if ($read_only) {
-    \Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
+    Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
 }?>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="data-group">
@@ -174,7 +179,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
     <div id="mm-handler-2" class="js-save-handler-function" style="display:none;"></div> 
     <script type="text/template" class="entry-template hidden">
         <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\MedicationManagementEntry();
+        $empty_entry = new MedicationManagementEntry();
 
         $this->render(
             'MedicationManagementEntry_event_edit',
@@ -361,7 +366,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
             element: $('#<?=$model_name?>_element'),
             modelName: '<?=$model_name?>',
             patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
-            allAllergies: <?= CJSON::encode(CHtml::listData(\OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
+            allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
             searchSource: '/medicationManagement/findRefMedications?source=MedicationManagement',
 
             onInit: function (controller) {
@@ -382,13 +387,19 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     let $medicationManagementRow;
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function (index, medicationManagementRow) {
+                        let mm_usage_type = $(medicationManagementRow).find('.js-usage-type').val();
+
                         if (medicationHistoryBoundKey && $(medicationManagementRow).find('.js-bound-key').val() === medicationHistoryBoundKey) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
                             $medicationManagementRow = $(medicationManagementRow);
-
-                                                }
+                        } else if ($(historyMedicationRow).find('.js-prescription-item-id').val() !== '') {
+                            if ($(medicationManagementRow).find('.js-prescription-item-id').val() === $(historyMedicationRow).find('.js-prescription-item-id').val() || mm_usage_type === 'OphDrPrescription') {
+                                $(medicationManagementRow).parent().find('tr.js-second-row[data-key='+ $(medicationManagementRow).data('key') +']').remove();
+                                $(medicationManagementRow).remove();
+                            }
+                        }
                     });
 
                     let historyMedicationKey = $(historyMedicationRow).data('key');
@@ -407,6 +418,7 @@ $read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_da
                     if (hidden) {
                         if(typeof $medicationManagementRow !== "undefined") {
                             $medicationManagementRow.addClass("hidden");
+                            $medicationManagementRow.parent().find('tr.js-second-row[data-key='+ $medicationManagementRow.data('key') +']').addClass('hidden');
                             $medicationManagementRow.find(".js-hidden").val("1");
                         }
                     }

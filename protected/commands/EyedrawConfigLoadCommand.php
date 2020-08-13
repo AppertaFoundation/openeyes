@@ -166,13 +166,12 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         if ($current) {
             $cmd = $this->getDb()
                 ->createCommand('UPDATE ' . static::TAG_TBL
-                    . ' SET text = :text, '
-                    . 'snomed_code = :snomed_code');
+                    . ' SET text = :text'
+                    . ' WHERE snomed_code = :snomed_code');
         } else {
             $cmd = $this->getDb()
-                ->createCommand('INSERT INTO ' . static::TAG_TBL . ' ('
-                    . 'text, '
-                    . 'snomed_code) '
+                ->createCommand('INSERT INTO ' . static::TAG_TBL
+                    . ' (text, snomed_code) '
                     . 'VALUES (:text, :snomed_code)');
         }
 

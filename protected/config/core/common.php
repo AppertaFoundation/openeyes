@@ -3,8 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,9 +12,31 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2020 Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+// If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
+// Note, docker secrets are the recommended approach for docker environments
+
+if (file_exists('/etc/openeyes/db.conf')) {
+    $db = parse_ini_file('/etc/openeyes/db.conf');
+} else {
+    $db = array(
+        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
+        'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
+        'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
+        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
+        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
+    );
+    $db_test = array(
+        'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
+        'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
+        'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
+        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
+        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
+    );
+}
 
 return array(
     'name' => 'OpenEyes',
@@ -145,12 +166,27 @@ return array(
         ),
         'db' => array(
             'class' => 'OEDbConnection',
-            'connectionString' => 'mysql:host=localhost;dbname=openeyes',
             'emulatePrepare' => true,
-            'username' => 'oe',
-            'password' => '_OE_PASSWORD_',
+            'connectionString' => "mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']}",
+            'username' => $db['username'],
+            'password' => $db['password'],
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
+        ),
+        'testdb' => array(
+            'class' => 'OEDbConnection',
+            'emulatePrepare' => true,
+            'connectionString' => "mysql:host={$db_test['host']};port={$db_test['port']};dbname={$db_test['dbname']}",
+            'username' => $db_test['username'],
+            'password' => $db_test['password'],
+            'charset' => 'utf8',
+            'schemaCachingDuration' => 300,
+        ),
+        'mailer' => array(
+            // Setting the mailer mode to null will suppress email
+            //'mode' => null
+            // Mail can be diverted by setting the divert array
+            //'divert' => array('foo@example.org', 'bar@example.org')
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
@@ -459,8 +495,8 @@ return array(
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
         'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => getenv('OE_DOCMAN_USER') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: 'docman_user'),
-        'docman_password' => getenv('OE_DOCMAN_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: '1234qweR!'),
+        'docman_user' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
+        'docman_password' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
 
         /* injecting autoprint JS into generated PDF */

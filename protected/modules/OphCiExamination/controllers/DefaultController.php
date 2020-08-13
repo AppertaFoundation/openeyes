@@ -748,6 +748,52 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    protected function setElementDefaultOptions_Element_OphCiExamination_InjectionManagementComplex($element, $action)
+    {
+        $previous_id = \Yii::app()->request->getParam('previous_id');
+        $right_eye = Eye::getIdFromName('right');
+        $left_eye = Eye::getIdFromName('left');
+
+        // If the $previous_id is not empty, it means this function is triggered by Copy functionality
+        if (!empty($previous_id)) {
+            $answer_obj = models\OphCiExamination_InjectionManagementComplex_Answer::model()->findAll('element_id = ' . $previous_id);
+            $risk_obj = models\OphCiExamination_InjectionManagementComplex_RiskAssignment::model()->findAll('element_id = ' . $previous_id);
+            $left_answers = array();
+            $right_answers = array();
+            $risk_assignments = array();
+            $left_risks = array();
+            $right_risks = array();
+            foreach ($answer_obj as $obj) {
+                if (intval($obj->eye_id) === $left_eye) {
+                    $left_answers[] = $obj;
+                } elseif (intval($obj->eye_id) === $right_eye) {
+                    $right_answers[] = $obj;
+                } else {
+                    // In case 'Both' will be in use
+                    $left_answers[] = $obj;
+                    $right_answers[] = $obj;
+                }
+            }
+            foreach ($risk_obj as $obj) {
+                $complication = models\OphCiExamination_InjectionManagementComplex_Risk::model()->find('id = ' . $obj->risk_id);
+                if (intval($obj->eye_id) === $left_eye) {
+                    $left_risks[] = $complication;
+                } elseif (intval($obj->eye_id) === $right_eye) {
+                    $right_risks[] = $complication;
+                } else {
+                    // In case 'Both' will be in use
+                    $left_risks[] = $complication;
+                    $right_answers[] = $obj;
+                }
+            }
+            $element->left_risks = $left_risks;
+            $element->right_risks = $right_risks;
+            $element->answers = $answer_obj;
+            $element->right_answers = $right_answers;
+            $element->left_answers = $left_answers;
+        }
+    }
+
     /**
      * Set the allergies against the Element_OphCiExamination_Allergy element
      * It's a child element of History.

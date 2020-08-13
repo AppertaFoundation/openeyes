@@ -176,7 +176,6 @@ $user_searches = array_map(
     <tr>{{{searchContents}}}</tr>
 </script>
 
-<script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {
         const addSelector = '#add-to-trial-link-' + patient_id;
         const removeSelector = '#remove-from-trial-link-' + patient_id;
@@ -476,7 +475,28 @@ $user_searches = array_map(
 
 
 <?php
-$assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
-Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
+    Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            'type': "POST",
+            'data': "patientsID=" + (<?= json_encode($patientsID)?>)
+            + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'url': "/OECaseSearch/caseSearch/renderPopups",
+            success: function (resp) {
+                $("body.open-eyes.oe-grid").append(resp);
+            }
+        })
+        $('body').on('click', '.collapse-data-header-icon', function () {
+            $(this).toggleClass('collapse expand');
+            $(this).next('div').toggle();
+        });
+    })
+</script>
 

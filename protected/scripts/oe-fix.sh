@@ -176,6 +176,8 @@ fi
 if [ $clearcahes = 1 ]; then
 	echo "Clearing caches..."
 	sudo rm -rf $WROOT/protected/runtime/cache/* 2>/dev/null || :
+    sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
+    sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
 	sudo rm -rf $WROOT/assets/* 2>/dev/null || :
 	echo ""
 fi

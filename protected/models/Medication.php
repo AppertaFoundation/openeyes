@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+
 /**
  * This is the model class for table "medication".
  *
@@ -51,7 +53,7 @@
  * @property MedicationSearchIndex[] $medicationSearchIndexes
  * @property MedicationAttributeOption[] $medicationAttributeOptions
  * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
- * @property \OEModule\OphCiExamination\models\OphCiExaminationAllergy[] $allergies
+ * @property OphCiExaminationAllergy[] $allergies
  * @property MedicationRoute $defaultRoute
  * @property MedicationForm $defaultForm
  */
@@ -125,7 +127,7 @@ class Medication extends BaseActiveRecordVersioned
 
             'medicationAttributeOptions' => array(self::MANY_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)'),
 
-            'allergies' => [self::HAS_MANY, \OEModule\OphCiExamination\models\OphCiExaminationAllergy::class, ['medication_set_id' => "medication_set_id"], "through" => "medicationSetItems2"],
+            'allergies' => [self::HAS_MANY, OphCiExaminationAllergy::class, ['medication_set_id' => "medication_set_id"], "through" => "medicationSetItems2"],
             "defaultForm" => [self::BELONGS_TO, MedicationForm::class, 'default_form_id'],
             "defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
 
@@ -252,7 +254,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getSiteSubspecialtyMedications($site_id, $subspecialty_id)
     {
-        $common_oph_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
+        $common_oph_id = Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => 'COMMON_OPH'])->queryScalar();
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN 
                                         (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id 
@@ -269,7 +271,7 @@ class Medication extends BaseActiveRecordVersioned
      */
     public function getSetsByUsageCode($usage_code)
     {
-        $usage_code_id = \Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => $usage_code])->queryScalar();
+        $usage_code_id = Yii::app()->db->createCommand()->select('id')->from('medication_usage_code')->where('usage_code = :usage_code', [':usage_code' => $usage_code])->queryScalar();
         $criteria = new CDbCriteria();
         $criteria->condition = "id IN (SELECT medication_set_id FROM medication_set_item WHERE medication_id = :medication_id 
                                             AND medication_set_id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code_id = :usage_code_id))";
@@ -396,6 +398,22 @@ class Medication extends BaseActiveRecordVersioned
     public function listCommonSystemicMedications($raw = false)
     {
         return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
+    }
+
+    public function listOphthalmicMedicationIds()
+    {
+        $ophthalmic_medication_set = MedicationSet::model()->find('name = ?', ['Ophthalmic']);
+        $ids = [];
+
+        if ($ophthalmic_medication_set) {
+            foreach ($ophthalmic_medication_set->items as $item) {
+                if (!in_array($item->medication->id, $ids)) {
+                    $ids[] = $item->medication->id;
+                }
+            }
+        }
+
+        return $ids;
     }
 
     public function getMedicationSetsForCurrentSubspecialty()

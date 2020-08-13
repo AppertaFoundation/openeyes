@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\MedicationManagementEntry;
+
 /**
  * Class OphDrPrescription_Item
  * @property OphDrPrescription_ItemTaper[] $tapers
@@ -257,10 +259,10 @@ class OphDrPrescription_Item extends EventMedicationUse
             'comments',
         );
 
-        if (!$mgment_item = \OEModule\OphCiExamination\models\MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" => $this->id))) {
+        if (!$mgment_item = MedicationManagementEntry::model()->findByAttributes(array("prescription_item_id" => $this->id))) {
             return false;
         }
-        /** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $mgment_item */
+        /** @var MedicationManagementEntry $mgment_item */
         foreach ($attributes_to_check as $attribute) {
             $this->setAttribute($attribute, $mgment_item->getAttribute($attribute));
         }
@@ -314,6 +316,7 @@ class OphDrPrescription_Item extends EventMedicationUse
 
     protected function beforeSave()
     {
+
         $end_date = $this->stopDateFromDuration();
         $this->end_date = $end_date ? $end_date->format('Y-m-d') : null;
         if ($this->end_date) {
@@ -321,6 +324,31 @@ class OphDrPrescription_Item extends EventMedicationUse
         } else {
             $this->stop_reason_id = null;
         }
+
         return parent::beforeSave();
+    }
+
+    protected function afterSave()
+    {
+        $api = Yii::app()->moduleAPI->get('OphDrPrescription');
+        if ($api) {
+            $patient = $this->event->getPatient();
+            $exclude_ids = array_map(function ($prescription) {
+                return $prescription->id;
+            }, OphDrPrescription_Item::model()
+                ->with('prescription', 'prescription.event', 'prescription.event.episode')
+                ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]));
+            $exclude_ids[] = $this->id;
+            $existing_prescription_items = $api->getPrescriptionItemsForPatient($patient, $exclude_ids);
+            if ($existing_prescription_items) {
+                $latest_prescription_item = end($existing_prescription_items);
+                $latest_prescription_end_date = $latest_prescription_item->stopDateFromDuration();
+                if (is_null($latest_prescription_end_date) || $latest_prescription_end_date->format('Y-m-d') >= date('Y-m-d')) {
+                    $latest_prescription_item->saveAttributes(['latest_med_use_id' => $this->id]);
+                }
+            }
+        }
+
+        parent::afterSave();
     }
 }

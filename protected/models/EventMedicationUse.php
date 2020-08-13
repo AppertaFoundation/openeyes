@@ -48,6 +48,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property int $prescription_item_id
  * @property string $bound_key
  * @property string $comments
+ * @property int $latest_med_use_id
  *
  * The followings are the available model relations:
  * @property Event $copiedFromMedUse
@@ -145,7 +146,7 @@ class EventMedicationUse extends BaseElement
             array('end_date', 'validateEndDateStopReason'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('start_date', 'default', 'value' => '0000-00-00'),
-            array('last_modified_date, created_date, event_id, comments', 'safe'),
+            array('last_modified_date, created_date, event_id, comments, latest_med_use_id', 'safe'),
             array('dose, route_id, frequency_id, dispense_location_id, dispense_condition_id, duration_id', 'required', 'on' => 'to_be_prescribed'),
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
@@ -153,7 +154,7 @@ class EventMedicationUse extends BaseElement
                 'id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, 
                     medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
                     dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
-                    last_modified_date, created_user_id, created_date, bound_key', 'safe', 'on' => 'search'
+                    last_modified_date, created_user_id, created_date, bound_key, latest_med_use_id', 'safe', 'on' => 'search'
             ),
         );
     }
@@ -201,7 +202,7 @@ class EventMedicationUse extends BaseElement
     public function validateDoseUnitTerm()
     {
         if (
-            !$this->hidden && $this->dose_unit_term == "" && $this->dose != ""
+            !$this->hidden && $this->dose_unit_term == "" && !empty($this->dose)
             && !($this->getUsageSubtype() == "History" && $this->prescription_item_id)
         ) {
             $this->addError("dose_unit_term", "You must select a dose unit if the dose is set.");
@@ -385,6 +386,27 @@ class EventMedicationUse extends BaseElement
     }
 
     /**
+     * @param $medication
+     * @return bool
+     */
+    public function isDuplicate($medication) : bool
+    {
+        $result = false;
+
+        if ($medication->medication_id === $this->medication_id) {
+            if ($this->route_id === $medication->route_id && $this->route->has_laterality) {
+                if ($this->laterality === $medication->laterality || $this->laterality === (string) Eye::BOTH || $medication->laterality === (string) Eye::BOTH) {
+                    $result = true;
+                }
+            } elseif ($this->route_id === $medication->route_id) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return bool
      */
     public function prescriptionNotCurrent()
@@ -440,13 +462,13 @@ class EventMedicationUse extends BaseElement
     {
         $res = array();
         if ($this->start_date) {
-            $res[] = \Helper::formatFuzzyDate($this->start_date);
+            $res[] = Helper::formatFuzzyDate($this->start_date);
         }
         if ($this->end_date) {
             if (count($res)) {
                 $res[] = '-';
             }
-            $res[] = \Helper::formatFuzzyDate($this->end_date);
+            $res[] = Helper::formatFuzzyDate($this->end_date);
         }
         if ($this->stop_reason_id) {
             $res[] = "({$this->stopReason->name})";
@@ -587,26 +609,26 @@ class EventMedicationUse extends BaseElement
     public function getStartDateDisplay()
     {
         if ($this->start_date) {
-            return \Helper::formatFuzzyDate($this->start_date);
+            return Helper::formatFuzzyDate($this->start_date);
         } elseif (isset($this->prescriptionItem) && $this->prescriptionItem->start_date) {
-            return \Helper::formatFuzzyDate($this->prescriptionItem->start_date);
+            return Helper::formatFuzzyDate($this->prescriptionItem->start_date);
         }
         return "";
     }
 
     public function getStopDateDisplay()
     {
-        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
+        return '<div class="oe-date">' . Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getEndDateDisplay($default = "")
     {
 
         if ($this->end_date) {
-            return \Helper::formatFuzzyDate($this->end_date);
+            return Helper::formatFuzzyDate($this->end_date);
         } elseif ($this->prescription_item_id) {
             $stop_date = $this->prescriptionItem->stopDateFromDuration(false);
-            return $stop_date ? \Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$this->medicationDuration->name;
+            return $stop_date ? Helper::convertDate2NHS($stop_date->format('Y-m-d')) :$this->medicationDuration->name;
         } else {
             return $default;
         }
@@ -737,10 +759,10 @@ class EventMedicationUse extends BaseElement
         }
         if (!$this->end_date) {
             $end_date = $item->end_date;
-            $compare_date = new \DateTime();
+            $compare_date = new DateTime();
 
             if ($this->event && $this->event->event_date) {
-                $compare_date = \DateTime::createFromFormat('Y-m-d', $this->event->event_date);
+                $compare_date = DateTime::createFromFormat('Y-m-d', $this->event->event_date);
             }
             if ($end_date && $end_date < $compare_date) {
                 $this->originallyStopped = true;

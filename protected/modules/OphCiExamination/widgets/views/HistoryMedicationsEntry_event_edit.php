@@ -91,7 +91,7 @@ $stop_fields_validation_error = array_intersect(
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]"
                      value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?= $entry->prescription_item_id ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" class="js-prescription-item-id" value="<?= $entry->prescription_item_id ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied"
                      value="<?php echo (int)$to_be_copied; ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key"

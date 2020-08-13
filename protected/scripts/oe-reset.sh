@@ -52,9 +52,11 @@ host=${DATABASE_HOST:-"localhost"}
 
 nobanner=0
 migrate=1
+clearaudit=0
 bannertext="Database reset at $(date)"
 branch=0
 demo=0
+droparchive=0
 nofiles=0
 showhelp=0
 checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
@@ -163,6 +165,14 @@ while [[ $# -gt 0 ]]; do
             hscic=1
             # run the hscic import after reset
         ;;
+        --clear-audit)
+            # will clean the audit tables after reset
+            clearaudit=1
+        ;;
+        --drop-archive) 
+            # will drop all tables named archive_* after reset
+            droparchive=1
+        ;;
         *)
             if [ "$p" == "--hard" ]; then
                 echo "Unknown parameter $p $2"
@@ -206,11 +216,13 @@ if [ $showhelp = 1 ]; then
     echo "	--no-migrate "
     echo "          | -nm   : Prevent database migrations running automatically after"
     echo "                   checkout"
+    echo "  --clear-audit  : Will clear the audit tables after reset"
     echo "	--branch       : Download sample database on the specified branch"
     echo "          | -b      before resetting"
     echo "	--develop    "
     echo "          |-d    : If specified branch is not found, fallback to develop branch"
     echo "                   - default would fallback to master"
+    echo "  --drop-archive : Will drop all tables named archive_% after reset"
     echo "  --host <name>  : Specify a different database host"
     echo "	--no-banner  "
     echo "          |-nb   : Remove the user banner text after resetting"
@@ -454,6 +466,43 @@ fi
 
 if [ $hscic = 1 ]; then
     bash $SCRIPTDIR/import-hscic-data.sh --force
+fi
+
+if [ $droparchive -eq 1 ]; then
+    echo "Dropping archive tables..."
+
+
+    sqlcmd="USE ${DATABASE_NAME:-'openeyes'};
+    START TRANSACTION;
+    DELIMITER //
+    CREATE PROCEDURE IF NOT EXISTS droparchive()
+    BEGIN
+    SET @n = (SELECT count(table_name) FROM information_schema.tables WHERE table_schema = '${DATABASE_NAME:-openeyes}' AND table_name LIKE 'archive_%');
+
+    IF @n > 0 THEN
+        SET FOREIGN_KEY_CHECKS = 0;
+        set @s = (SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) FROM information_schema.tables WHERE table_schema = '${DATABASE_NAME:-openeyes}' AND table_name LIKE 'archive_%');
+        PREPARE stmt FROM @s;
+        EXECUTE stmt; 
+        SET FOREIGN_KEY_CHECKS = 1;
+    END IF;
+
+    END; //
+    DELIMITER ;
+
+    CALL droparchive();
+
+    DROP PROCEDURE droparchive;
+
+    COMMIT;"
+
+    eval  "echo \"$sqlcmd\" | $dbconnectionstring "
+fi
+
+if [ $clearaudit -eq 1 ]; then
+    echo "Truncating Audit..."
+    sqlcmd="SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE audit_ipaddr; TRUNCATE TABLE audit_server; TRUNCATE TABLE audit_useragent; TRUNCATE TABLE audit; SET FOREIGN_KEY_CHECKS = 1;"
+    eval  "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$sqlcmd\""
 fi
 
 # Generate lightning event images for demo patients
