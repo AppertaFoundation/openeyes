@@ -2,6 +2,8 @@
 
 /**
  * Class PatientAgeParameterTest
+ *
+ * @method Patient patient($fixtureId)
  */
 class PatientAgeParameterTest extends CDbTestCase
 {
@@ -10,109 +12,104 @@ class PatientAgeParameterTest extends CDbTestCase
      */
     protected $parameter;
 
-    /**
-     * @var DBProvider
-     */
-    protected $searchProvider;
-
     protected $fixtures = array(
         'patient' => 'Patient',
+        'saved_search' => 'SavedSearch'
     );
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        Yii::app()->getModule('OECaseSearch');
+    }
 
     public function setUp()
     {
         parent::setUp();
         $this->parameter = new PatientAgeParameter();
-        $this->searchProvider = new DBProvider('mysql');
         $this->parameter->id = 0;
     }
 
     public function tearDown()
     {
         parent::tearDown();
-        unset($this->parameter, $this->searchProvider);
+        unset($this->parameter);
+    }
+
+    public function getQueryParams()
+    {
+        return array(
+            'Greater than' => array(
+                'op' => '>',
+                'value' => 5,
+            ),
+            'Less than' => array(
+                'op' => '>',
+                'value' => 80,
+            ),
+            'Equal' => array(
+                'op' => '>',
+                'value' => 50,
+            ),
+            'Not equal' => array(
+                'op' => '>',
+                'value' => 50,
+            ),
+            'Invalid' => array(
+                'op' => '',
+                'value' => '',
+                'error' => true
+            )
+        );
     }
 
     /**
-     * @covers PatientAgeParameter::query()
+     * @dataProvider getQueryParams
+     * @param $op
+     * @param $value
+     * @param $error
      */
-    public function testQuery()
+    public function testQuery($op, $value, $error = false)
     {
-        $this->parameter->textValue = 5;
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
-        $correctOps = array(
-            '>',
-            '<',
-            'BETWEEN',
-        );
-        $invalidOps = array(
-            'LIKE',
-            'NOT LIKE',
-        );
-
-        // Ensure the query is correct for each operator.
-        foreach ($correctOps as $operator) {
-            $this->parameter->operation = $operator;
-            if ($operator === 'BETWEEN') {
-                $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_min_0 AND :p_a_max_0";
-            } else {
-                $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $operator :p_a_value_0";
-            }
+        $this->parameter->value = $value;
+        $this->parameter->operation = $op;
+        if ($error) {
+            $this->parameter->validate();
+            $this->assertNotEmpty($this->parameter->getErrors());
+        } else {
+            $sqlValue = "SELECT id FROM patient WHERE TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) $op :p_a_value_0";
             $this->assertEquals(
                 trim(preg_replace('/\s+/', ' ', $sqlValue)),
-                trim(preg_replace('/\s+/', ' ', $this->parameter->query($this->searchProvider)))
+                trim(preg_replace('/\s+/', ' ', $this->parameter->query()))
             );
-        }
-
-        // Ensure that a HTTP exception is raised if an invalid operation is specified.
-        $this->expectException(CHttpException::class);
-        foreach ($invalidOps as $operator) {
-            $this->parameter->operation = $operator;
-            $this->parameter->query($this->searchProvider);
         }
     }
 
-    /**
-     * @covers PatientAgeParameter::bindValues()
-     */
     public function testBindValues()
     {
-        $this->parameter->textValue = 5;
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
+        $this->parameter->value = 50;
         $expected = array(
-            'p_a_min_0' => $this->parameter->minValue,
-            'p_a_max_0' => $this->parameter->maxValue,
+            'p_a_value_0' => $this->parameter->value,
         );
         $actual = $this->parameter->bindValues();
-
-        // Ensure that (if all elements are set) all bind values are returned.
         $this->assertEquals($expected, $actual);
 
         // Ensure that all bind values are integers.
-        $this->assertTrue(is_int($actual['p_a_min_0']) and is_int($actual['p_a_max_0']));
-
-        // Ensure that only attributes with values are returned from the bindValues list.
-        unset($expected['p_a_value_0']);
-        $this->parameter->textValue = null;
-
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        $this->assertInternalType('int', $actual['p_a_value_0']);
     }
 
     /**
-     * @covers DBProvider::search()
-     * @covers PatientAgeParameter::query()
+     * @throws Exception
      */
-    public function testSearchSingleInput()
+    public function testSearch()
     {
-        // test an exact search using a simple operation
+        // test an exact search using a simple operation. This also ensures coverage of the constructors.
         $patients = array($this->patient('patient1'));
-        $this->parameter->operation = 'BETWEEN';
-        $dob = new DateTime($this->patient['patient1']['dob']);
-        $this->parameter->maxValue = $this->parameter->minValue = $dob->diff(new DateTime())->format('%y');
-        $results = $this->searchProvider->search(array($this->parameter));
+        $parameter = new PatientAgeParameter();
+        $parameter->operation = '=';
+        $dob = new DateTime($this->patient('patient1')['dob']);
+        $parameter->value = $dob->diff(new DateTime())->format('%y');
+        $results = Yii::app()->searchProvider->search(array($parameter));
         $ids = array();
 
         // deconstruct the results list into a single array of primary keys.
@@ -124,41 +121,68 @@ class PatientAgeParameterTest extends CDbTestCase
         // Ensure that results are returned.
         $this->assertEquals($patients, $patientList);
 
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 1;
-        $this->parameter->maxValue = 1;
-        $results = $this->searchProvider->search(array($this->parameter));
+        $this->parameter->operation = '<';
+        $this->parameter->value = 1;
+        $results = Yii::app()->searchProvider->search(array($this->parameter));
 
         // Ensure that no results are returned.
         $this->assertEmpty($results);
     }
 
     /**
-     * @covers DBProvider::search()
-     * @covers PatientAgeParameter::query()
+     * @covers PatientAgeParameter
+     * @throws Exception
      */
-    public function testSearchDualInput()
+    public function testSaveSearch()
     {
-        $patients = array();
-        $this->parameter->operation = 'BETWEEN';
-        $this->parameter->minValue = 5;
-        $this->parameter->maxValue = 80;
+        $this->parameter->operation = '<';
+        $this->parameter->value = 50;
+        $search = new SavedSearch();
+        $search_criteria = serialize(array($this->parameter->saveSearch()));
+        $expected = 'a:1:{i:0;a:5:{s:10:"class_name";s:19:"PatientAgeParameter";s:4:"name";s:3:"age";s:9:"operation";s:1:"<";s:2:"id";i:0;s:5:"value";i:50;}}';
+        $this->assertEquals($expected, $search_criteria);
 
-        for ($i = 1; $i < 10; $i++) {
-            $patients[] = $this->patient("patient$i");
+        $search->search_criteria = $search_criteria;
+        $search->name = 'test';
+
+        if (!$search->save()) {
+            $this->fail('Unable to save search');
+        }
+    }
+
+    /**
+     * @depends testSaveSearch
+     * @covers CaseSearchParameter
+     * @throws Exception
+     */
+    public function testLoadSearch()
+    {
+        $this->parameter->operation = '<';
+        $this->parameter->value = 50;
+        $search = new SavedSearch();
+        $search_criteria = serialize(array($this->parameter->saveSearch()));
+        $search->search_criteria = $search_criteria;
+        $search->name = 'test';
+
+        if (!$search->save()) {
+            $this->fail('Unable to save search');
         }
 
-        $results = $this->searchProvider->search(array($this->parameter));
+        $search->refresh();
 
-        $ids = array();
+        $loaded_search = SavedSearch::model()->findByPk($search->id);
+        $loaded_criteria = unserialize($loaded_search->search_criteria, array('allowed_classes' => true));
+        $loaded_parameter = new PatientAgeParameter();
+        $loaded_parameter->loadSearch($loaded_criteria[0]);
 
-        // deconstruct the results list into a single array of primary keys.
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-        }
-        $patientList = Patient::model()->findAllByPk($ids);
+        $this->assertEquals($this->parameter, $loaded_parameter);
+    }
 
-        // Ensure that results are returned.
-        $this->assertEquals($patients, $patientList);
+    public function testGetAuditData()
+    {
+        $this->parameter->operation = '=';
+        $this->parameter->value = 50;
+
+        $this->assertEquals('age: = 50', $this->parameter->getAuditData());
     }
 }

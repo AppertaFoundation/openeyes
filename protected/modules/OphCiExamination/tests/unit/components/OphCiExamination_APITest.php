@@ -549,7 +549,7 @@ class OphCiExamination_APITest extends CDbTestCase
 
     public function testGetIOPValuesAsTableNotRecorded()
     {
-        $this->assertEquals('', $this->api->getIOPValuesAsTable($this->patient('patient1')));
+        $this->assertEquals('', $this->api->getIOPValuesAsTable($this->patient('patient2')));
     }
 
     private function createEvent($event_date = null)
@@ -667,6 +667,4 @@ class OphCiExamination_APITest extends CDbTestCase
 
         return $element;
     }
-
-
 }
