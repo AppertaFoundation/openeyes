@@ -244,7 +244,8 @@ class Trial extends BaseActiveRecordVersioned
                 }
                 if (!$newPermission->save()) {
                     throw new CHttpException(
-                        500, 'The owner permission for the new trial could not be saved: '
+                        500,
+                        'The owner permission for the new trial could not be saved: '
                            . print_r($newPermission->getErrors(), true)
                     );
                 }
@@ -321,7 +322,8 @@ class Trial extends BaseActiveRecordVersioned
         $sortExpr = "$sortBySql $sort_dir, c.last_name ASC, c.first_name ASC";
 
         return new CActiveDataProvider(
-            'TrialPatient', array(
+            'TrialPatient',
+            array(
             'criteria' => array(
                 'condition' => 'trial_id = :trialId AND status_id = :patientStatus',
                 'join' => 'JOIN patient p ON p.id = t.patient_id
@@ -336,7 +338,7 @@ class Trial extends BaseActiveRecordVersioned
             'pagination' => array(
                 'pageSize' => 10,
             ),
-        )
+            )
         );
     }
 

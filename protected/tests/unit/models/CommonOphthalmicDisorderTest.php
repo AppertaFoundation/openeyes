@@ -20,109 +20,109 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 {
     private CommonOphthalmicDisorder $model;
 
-	public $fixtures = array(
-		'firms' => 'Firm',
-		'specialties' => 'Specialty',
-		'subspecialties' => 'Subspecialty',
-		'serviceSubspecialtyAssignments' => 'ServiceSubspecialtyAssignment',
-		'actual_disorders' => 'Disorder',
-		'findings' => 'Finding',
-		'disorders' => 'CommonOphthalmicDisorder'
-	);
+    public $fixtures = array(
+        'firms' => 'Firm',
+        'specialties' => 'Specialty',
+        'subspecialties' => 'Subspecialty',
+        'serviceSubspecialtyAssignments' => 'ServiceSubspecialtyAssignment',
+        'actual_disorders' => 'Disorder',
+        'findings' => 'Finding',
+        'disorders' => 'CommonOphthalmicDisorder'
+    );
 
-	public function getModel()
+    public function getModel()
     {
         return CommonOphthalmicDisorder::model();
     }
 
     public function dataProvider_Search()
-	{
-		return array(
-			array(array('disorder_id' => 1), 1, array('commonOphthalmicDisorder1')),
-			array(array('disorder_id' => 2), 1, array('commonOphthalmicDisorder2')),
-			array(array('disorder_id' => 3), 1, array('commonOphthalmicDisorder3')),
-			array(array('disorder_id' => 6), 0, array()),
-			array(array('subspecialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
-		);
-	}
+    {
+        return array(
+            array(array('disorder_id' => 1), 1, array('commonOphthalmicDisorder1')),
+            array(array('disorder_id' => 2), 1, array('commonOphthalmicDisorder2')),
+            array(array('disorder_id' => 3), 1, array('commonOphthalmicDisorder3')),
+            array(array('disorder_id' => 6), 0, array()),
+            array(array('subspecialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
+        );
+    }
 
-	public function dataProvider_List()
-	{
-		return array(
-			array(1, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2'))
-		);
-	}
+    public function dataProvider_List()
+    {
+        return array(
+            array(1, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2'))
+        );
+    }
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	public function setUp()
-	{
-		parent::setUp();
-		$this->model = new CommonOphthalmicDisorder;
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->model = new CommonOphthalmicDisorder;
+    }
 
-	/**
-	 * @covers CommonOphthalmicDisorder::model
-	 */
-	public function testModel()
-	{
-		$this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
-	}
+    /**
+     * @covers CommonOphthalmicDisorder::model
+     */
+    public function testModel()
+    {
+        $this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
+    }
 
-	/**
-	 * @covers CommonOphthalmicDisorder::tableName
-	 */
-	public function testTableName()
-	{
+    /**
+     * @covers CommonOphthalmicDisorder::tableName
+     */
+    public function testTableName()
+    {
 
-		$this->assertEquals('common_ophthalmic_disorder', $this->model->tableName());
-	}
+        $this->assertEquals('common_ophthalmic_disorder', $this->model->tableName());
+    }
 
-	/**
-	 * @covers CommonOphthalmicDisorder::rules
-	 */
-	public function testRules()
-	{
-	    parent::testRules();
-		$this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
-		$this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
-	}
+    /**
+     * @covers CommonOphthalmicDisorder::rules
+     */
+    public function testRules()
+    {
+        parent::testRules();
+        $this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
+        $this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
+    }
 
-	/**
-	 * @covers CommonOphthalmicDisorder::attributeLabels
-	 */
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'id' => 'ID',
-			'disorder_id' => 'Disorder',
-			'subspecialty_id' => 'Subspecialty',
-			'finding_id' => 'Finding',
-			'alternate_disorder_id' => 'Alternate Disorder',
+    /**
+     * @covers CommonOphthalmicDisorder::attributeLabels
+     */
+    public function testAttributeLabels()
+    {
+        $expected = array(
+            'id' => 'ID',
+            'disorder_id' => 'Disorder',
+            'subspecialty_id' => 'Subspecialty',
+            'finding_id' => 'Finding',
+            'alternate_disorder_id' => 'Alternate Disorder',
             'group_id' => 'Group',
-		);
+        );
 
-	    $this->assertEquals($expected, $this->model->attributeLabels());
-	}
+        $this->assertEquals($expected, $this->model->attributeLabels());
+    }
 
     /**
      * @throws CException
      */
-	public function testGetList_MissingFirm_ThrowsException()
-	{
-		$this->expectException('Exception');
-		$this->model->getList(null);
-	}
+    public function testGetList_MissingFirm_ThrowsException()
+    {
+        $this->expectException('Exception');
+        $this->model->getList(null);
+    }
 
-	public function dataProvider_getList()
-	{
-		return array(
-			array('firm2', false, 2),
-			array('firm2', true, 4)
-		);
-	}
+    public function dataProvider_getList()
+    {
+        return array(
+            array('firm2', false, 2),
+            array('firm2', true, 4)
+        );
+    }
 
     public function dataProvider_getListSecondaryTo()
     {
@@ -138,11 +138,11 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
      * @param $result_count
      * @throws CException
      */
-	public function testGetList($firmkey, $get_findings, $result_count)
-	{
-		$res = CommonOphthalmicDisorder::getList($this->firms($firmkey), $get_findings);
-		$this->assertCount($result_count, $res);
-	}
+    public function testGetList($firmkey, $get_findings, $result_count)
+    {
+        $res = CommonOphthalmicDisorder::getList($this->firms($firmkey), $get_findings);
+        $this->assertCount($result_count, $res);
+    }
 
     /**
      * @dataProvider dataProvider_Search
@@ -150,23 +150,23 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
      * @param $numResults
      * @param $expectedKeys
      */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-		$disorder = new CommonOphthalmicDisorder('search');
-		$disorder->setAttributes($searchTerms);
-		$results = $disorder->search();
-		$data = $results->getData();
+    public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+    {
+        $disorder = new CommonOphthalmicDisorder('search');
+        $disorder->setAttributes($searchTerms);
+        $results = $disorder->search();
+        $data = $results->getData();
 
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->disorders($key);
-			}
-		}
+        $expectedResults = array();
+        if (!empty($expectedKeys)) {
+            foreach ($expectedKeys as $key) {
+                $expectedResults[] = $this->disorders($key);
+            }
+        }
 
-		$this->assertEquals($numResults, $results->totalItemCount);
-		$this->assertEquals($expectedResults, $data);
-	}
+        $this->assertEquals($numResults, $results->totalItemCount);
+        $this->assertEquals($expectedResults, $data);
+    }
 
     /**
      * @dataProvider dataProvider_getListSecondaryTo
@@ -174,9 +174,9 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
      * @param $result_count
      * @throws CException
      */
-	public function testgetListWithSecondaryTo($firmkey, $result_count)
-	{
+    public function testgetListWithSecondaryTo($firmkey, $result_count)
+    {
         $res = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($this->firms($firmkey));
         $this->assertCount($result_count, $res);
-	}
+    }
 }

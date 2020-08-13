@@ -113,9 +113,10 @@ class TrialPermission extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider(
-            $this, array(
+            $this,
+            array(
             'criteria' => $criteria,
-        )
+            )
         );
     }
 

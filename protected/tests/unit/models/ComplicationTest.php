@@ -18,47 +18,49 @@
  */
 class ComplicationTest extends ActiveRecordTestCase
 {
-	/**
-	 * @var Complication
-	 */
+    /**
+     * @var Complication
+     */
     public Complication $model;
 
-	public function getModel()
+    public function getModel()
     {
         return Complication::model();
     }
 
     /**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	public function setUp() {
-		$this->model = new Complication();
-	}
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    public function setUp()
+    {
+        $this->model = new Complication();
+    }
 
-	/**
-	 * @covers Complication::model
-	 */
-	public function testModel() {
-		$this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
-	}
+    /**
+     * @covers Complication::model
+     */
+    public function testModel()
+    {
+        $this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
+    }
 
-	/**
-	 * @covers Complication::tableName
-	 */
-	public function testTableName()
-	{
-		$this->assertEquals('complication', $this->model->tableName());
-	}
+    /**
+     * @covers Complication::tableName
+     */
+    public function testTableName()
+    {
+        $this->assertEquals('complication', $this->model->tableName());
+    }
 
-	/**
-	 * @covers Complication::rules
-	 */
-	public function testRules()
-	{
-	    parent::testRules();
-	    $this->model->name = 'test';
-		$this->assertTrue($this->model->validate());
-		$this->assertEmpty($this->model->errors);
-	}
+    /**
+     * @covers Complication::rules
+     */
+    public function testRules()
+    {
+        parent::testRules();
+        $this->model->name = 'test';
+        $this->assertTrue($this->model->validate());
+        $this->assertEmpty($this->model->errors);
+    }
 }
