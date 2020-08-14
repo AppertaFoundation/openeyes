@@ -46,6 +46,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider mysqlDate2JsTimestampDataProvider
      * @param $input
      * @param $output
@@ -78,6 +79,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider getAgeDataProvider
      * @param $expected
      * @param $dob
@@ -91,6 +93,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @throws ReflectionException
      */
     public function testExtractValues()
@@ -132,27 +135,40 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::extractValues($objects, 'disorder.term', 'termDefault'));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testFormatList_Empty()
     {
         $this->assertEquals('', Helper::formatList(array()));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testFormatList_One()
     {
         $this->assertEquals('foo', Helper::formatList(array('foo')));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testFormatList_Two()
     {
         $this->assertEquals('foo and bar', Helper::formatList(array('foo', 'bar')));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testFormatList_Three()
     {
         $this->assertEquals('foo, bar and baz', Helper::formatList(array('foo', 'bar', 'baz')));
     }
 
     /**
+     * @covers Helper
      * @throws ReflectionException
      */
     public function testGetNSShortname()
@@ -173,6 +189,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider getDateForAgeProvider
      * @param $expected
      * @param $dob
@@ -199,6 +216,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider lineLimitProvider
      * @param $expected
      * @param $args
@@ -228,6 +246,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider elementFinderProvider
      * @param $expected
      * @param $args
@@ -241,6 +260,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, forward_static_call_array(array('Helper', 'elementFinder'), $args));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testMd5Verified()
     {
         $random_string = '';
@@ -271,6 +293,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider getWeekdays
      * @param $day
      * @param $expected
@@ -280,6 +303,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::getWeekdayText($day));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertToBytes()
     {
         $val = '2KB';
@@ -294,6 +320,9 @@ class HelperTest extends CTestCase
         $this->assertNull(Helper::convertToBytes($val));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertDate2NHS()
     {
         $expected = '20 Jul 2020';
@@ -304,6 +333,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::convertDate2NHS(null));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testTimestampToDB()
     {
         $date = new DateTime();
@@ -311,6 +343,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::timestampToDB($date->getTimestamp()));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testReturn_bytes()
     {
         $suffixes = array('k', 'm', 'g');
@@ -321,6 +356,9 @@ class HelperTest extends CTestCase
         }
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertFuzzyDate2HTML()
     {
         $expected = "<span class='day'>20 </span><span class='mth'>Jul </span><span class='yr'>2020</span>";
@@ -375,6 +413,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider getEyeData
      * @param $eyes
      * @param $expected
@@ -384,6 +423,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::getEyeIdFromArray($eyes));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertMySQL2NHS()
     {
         $data = '2020-07-21';
@@ -416,6 +458,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @dataProvider getMonths
      * @param $month
      * @param $text
@@ -428,6 +471,7 @@ class HelperTest extends CTestCase
     }
 
     /**
+     * @covers Helper
      * @throws Exception
      */
     public function testCombineMySQLDateAndDateTime()
@@ -445,6 +489,9 @@ class HelperTest extends CTestCase
         Helper::combineMySQLDateAndDateTime($date, $time);
     }
 
+    /**
+     * @covers Helper
+     */
     public function testFormatFuzzyDate()
     {
         $expected = '20 Jul 2020';
@@ -460,6 +507,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::formatFuzzyDate(null));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testOeDateAsStr()
     {
         $expected = '<span class="oe-date"><span class="day">20</span><span class="mth">Jul</span><span class="yr">2020</span></span>';
@@ -478,6 +528,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::oeDateAsStr(""));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertDate2FullYear()
     {
         $expected = '20/07/2020';
@@ -488,6 +541,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::convertDate2FullYear(null));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testGenerateUuid()
     {
         $regex = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
@@ -495,6 +551,9 @@ class HelperTest extends CTestCase
         $this->assertRegExp($regex, Helper::generateUuid());
     }
 
+    /**
+     * @covers Helper
+     */
     public function testPadFuzzyDate()
     {
         $day = '21';
@@ -516,6 +575,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::padFuzzyDate($day, $month, $year));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertDate2HTML()
     {
         $expected = '<span class="day">20</span><span class="mth">Jul</span><span class="yr">2020</span>';
@@ -525,6 +587,9 @@ class HelperTest extends CTestCase
         $this->assertEquals('-', Helper::convertDate2HTML(null));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testMysqlDate2JsTimestamp()
     {
         $date = '2020-07-21 00:00:00';
@@ -533,6 +598,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::mysqlDate2JsTimestamp($date));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testArray_dump_html()
     {
         $values = array(
@@ -550,6 +618,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::array_dump_html($values));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testIsValidDateTime()
     {
         $date = '21-07-2020';
@@ -559,6 +630,9 @@ class HelperTest extends CTestCase
         $this->assertTrue(Helper::isValidDateTime($date) === false);
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertDate2Short()
     {
         $expected = '20/07/20';
@@ -568,6 +642,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::convertDate2Short(null));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertMySQL2HTML()
     {
         $date = '2020-07-21';
@@ -579,6 +656,9 @@ class HelperTest extends CTestCase
         $this->assertEquals($expected, Helper::convertMySQL2HTML($date));
     }
 
+    /**
+     * @covers Helper
+     */
     public function testConvertNHS2MySQL()
     {
         $date = '21 Jul 2020';
@@ -597,5 +677,4 @@ class HelperTest extends CTestCase
         $expected = null;
         $this->assertEquals($expected, Helper::convertNHS2MySQL($date));
     }
-
 }

@@ -17,6 +17,10 @@
  */
 class OEDatetimeValidatorTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers OEDatetimeValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeEmptyValue()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -36,6 +40,10 @@ class OEDatetimeValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validateAttribute($obj, 'attr');
     }
 
+    /**
+     * @covers OEDatetimeValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttributeEmptyValue_allowed()
     {
         $obj = ComponentStubGenerator::generate('CActiveRecord', array(
@@ -56,6 +64,10 @@ class OEDatetimeValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validateAttribute($obj, 'attr');
     }
 
+    /**
+     * @covers OEDatetimeValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttribute_valid()
     {
         $validator = $this->getMockBuilder('OEDatetimeValidator')
@@ -78,6 +90,10 @@ class OEDatetimeValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validateAttribute($obj, 'attr');
     }
 
+    /**
+     * @covers OEDatetimeValidator
+     * @throws ReflectionException
+     */
     public function test_validateAttribute_invalid()
     {
         $validator = $this->getMockBuilder('OEDatetimeValidator')

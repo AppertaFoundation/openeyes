@@ -65,7 +65,10 @@ class AuditTrailTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers       AuditTrail
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $expectedKeys)
     {

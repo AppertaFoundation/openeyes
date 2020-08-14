@@ -28,6 +28,9 @@ class ReportDiagnosesTest extends CDbTestCase
         parent::setUp();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAfterValidate_NoDiagnoses()
     {
         $r = new ReportDiagnoses();
@@ -38,6 +41,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array('Please select at least one diagnosis'), $r->errors['principal']);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAfterValidate_PrincipalOnly()
     {
         $r = new ReportDiagnoses();
@@ -46,6 +52,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertFalse(isset($r->errors['principal']));
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAfterValidate_SecondaryOnly()
     {
         $r = new ReportDiagnoses();
@@ -54,6 +63,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertFalse(isset($r->errors['principal']));
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testFilterDiagnoses()
     {
         $r = new ReportDiagnoses();
@@ -65,6 +77,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(2, 3, 4, 6, 8, 9, 10, 20203), $secondary);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_FilterSecondaryDiagnoses()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -80,6 +95,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_DontFilterWithNoSecondaryDiagnoses()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -95,6 +113,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_JoinDisorders_Principal()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -119,6 +140,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_JoinDisorders_Secondary()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -143,6 +167,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_JoinDisorders_PrincipalAndSecondary()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -172,6 +199,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_ConditionType_Or()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -206,6 +236,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_ConditionType_And()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -240,6 +273,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_AddDiagnosesResultItem()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -321,6 +357,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->run();
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_Principal_Or()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -368,6 +407,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_Principal_And()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -411,6 +453,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_Secondary_Or()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -458,6 +503,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_Secondary_And()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -501,6 +549,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_StartDate()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -546,6 +597,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_EndDate()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -591,6 +645,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testJoinDisorders_StartDateAndEndDate()
     {
         $query = $this->getMockBuilder('CDbCommand')
@@ -638,6 +695,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertEquals(array(), $or_conditions);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAddDiagnosisItem_Principal()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -676,6 +736,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $r->diagnoses);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAddDiagnosisItem_Secondary()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -714,6 +777,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $r->diagnoses);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testAddDiagnosisItem_UniqueTS()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -754,6 +820,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $r->diagnoses);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testGetDiagnosisForRow_Principal()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -790,6 +859,9 @@ class ReportDiagnosesTest extends CDbTestCase
             ), $diagnoses);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testGetDiagnosisForRow_Secondary()
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
@@ -837,6 +909,9 @@ class ReportDiagnosesTest extends CDbTestCase
 //        $this->assertEquals(1356998403, $r->getFreeTimestampIndex('2013-01-01', array(1356998400 => 'foo', '1356998401' => 'bar', '1356998402' => 'blah')));
 //    }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testDescription_or()
     {
         $r = new ReportDiagnoses();
@@ -845,6 +920,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertRegExp('/Patients with any /', $r->description());
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testDescription_and()
     {
         $r = new ReportDiagnoses();
@@ -853,6 +931,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertRegExp('/Patients with all /', $r->description());
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testDescription_Principal()
     {
         $r = new ReportDiagnoses();
@@ -863,6 +944,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertRegExp('/Retinal lattice degeneration \(Principal\)/', $r->description());
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testDescription_Secondary()
     {
         $r = new ReportDiagnoses();
@@ -873,6 +957,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertRegExp('/Retinal lattice degeneration \(Secondary\)/', $r->description());
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testDescription_Dates()
     {
         $r = new ReportDiagnoses();
@@ -884,6 +971,9 @@ class ReportDiagnosesTest extends CDbTestCase
         $this->assertRegExp('/Between 10 May 2002 and 19 May 2002/', $r->description());
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testToCSV()
     {
         $r = new ReportDiagnoses();
@@ -937,6 +1027,9 @@ Between 10 May 2002 and 19 May 2002
     }
 
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_Principal_And()
     {
         $r = new ReportDiagnoses();
@@ -978,6 +1071,9 @@ Between 10 May 2002 and 19 May 2002
         $this->assertEquals('Both', $second['eye']);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_Secondary_Or()
     {
         $r = new ReportDiagnoses();
@@ -1020,6 +1116,9 @@ Between 10 May 2002 and 19 May 2002
         $this->assertEquals('Left', $third['eye']);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_Secondary_And()
     {
         $r = new ReportDiagnoses();
@@ -1068,6 +1167,9 @@ Between 10 May 2002 and 19 May 2002
         $this->assertEquals('Left', $third['eye']);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_Both_And()
     {
         $r = new ReportDiagnoses();
@@ -1117,6 +1219,9 @@ Between 10 May 2002 and 19 May 2002
         $this->assertEquals('Both', $third['eye']);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_StartDate()
     {
         $r = new ReportDiagnoses();
@@ -1148,6 +1253,9 @@ Between 10 May 2002 and 19 May 2002
         $this->assertCount(0, $r->diagnoses);
     }
 
+    /**
+     * @covers ReportDiagnoses
+     */
     public function testRun_EndDate()
     {
         $r = new ReportDiagnoses();

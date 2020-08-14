@@ -24,7 +24,7 @@
  */
 class PatientTest extends ActiveRecordTestCase
 {
-    public $model;
+    public Patient $model;
     public $fixtures = array(
         'patients' => 'Patient',
         'addresses' => 'Address',
@@ -82,6 +82,7 @@ class PatientTest extends ActiveRecordTestCase
 
 
     /**
+     * @covers Patient
      * @dataProvider dataProvider_Search
      * @param $searchTerms
      * @param $numResults
@@ -131,6 +132,9 @@ class PatientTest extends ActiveRecordTestCase
         $this->assertEquals($age, $patient->getAge());
     }
 
+    /**
+     * @covers Patient
+     */
     public function testRandomData_ParamSetOff_ReturnsFalse()
     {
         Yii::app()->params['pseudonymise_patient_details'] = false;
@@ -152,6 +156,7 @@ class PatientTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Patient
      * @throws ReflectionException
      */
     public function testEditOphInfo_ValidationFailure()
@@ -169,6 +174,9 @@ class PatientTest extends ActiveRecordTestCase
         $this->assertEquals('left myopia, right retinal lattice degeneration and bilateral posterior vitreous detachment', $this->patients('patient2')->getSdl());
     }
 
+    /**
+     * @covers Patient
+     */
     public function testGetSyd()
     {
         $this->assertEquals('diabetes mellitus type 1 and essential hypertension', $this->patients('patient2')->getSyd());
@@ -184,11 +192,17 @@ class PatientTest extends ActiveRecordTestCase
         $this->assertEquals('someinfo3', $event->info);
     }
 
+    /**
+     * @covers Patient
+     */
     public function testGetHSCICName_NotBold()
     {
         $this->assertEquals('AYLWARD, Jim (Mr)', $this->patients('patient1')->getHSCICName());
     }
 
+    /**
+     * @covers Patient
+     */
     public function testGetHSCICName_Bold()
     {
         $this->assertEquals('<strong>AYLWARD</strong>, Jim (Mr)', $this->patients('patient1')->getHSCICName(true));

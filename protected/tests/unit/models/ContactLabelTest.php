@@ -94,7 +94,11 @@ class ContactLabelTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers ContactLabel
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

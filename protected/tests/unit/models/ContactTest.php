@@ -208,6 +208,9 @@ class ContactTest extends ActiveRecordTestCase
     /**
      * @dataProvider dataProvider_Search
      * @covers Contact
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

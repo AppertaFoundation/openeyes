@@ -15,14 +15,17 @@
 
 namespace services;
 
+use Exception;
 use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit_Framework_TestCase;
+use ReflectionException;
 
-class ServiceManagerTest extends \PHPUnit_Framework_TestCase
+class ServiceManagerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @param $name
      * @param $extends
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private static function generateMockClass($name, $extends)
     {
@@ -45,52 +48,78 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     *
+     * @covers \services\ServiceManager
      */
     public function test__get_NonexistentService()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->manager->Aardvark;
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function test__get_InternalService()
     {
         $this->assertInstanceOf('services\ServiceManagerTest_InternalResourceService', $this->manager->{'ServiceManagerTest_InternalResource'});
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws Exception
+     */
     public function testGetService_NonexistentService()
     {
         $this->assertNull($this->manager->getService('Aardvark'));
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws Exception
+     */
     public function testGetService_InternalService()
     {
         $this->assertInstanceOf('services\ServiceManagerTest_InternalResourceService', $this->manager->getService('ServiceManagerTest_InternalResource'));
     }
 
     /**
-     *
+     * @covers \services\ServiceManager
+     * @throws ProcessingNotSupported
      */
     public function testGetFhirService_NotFound()
     {
-        $this->expectException(\services\NotFound::class);
+        $this->expectException(NotFound::class);
         $this->manager->getFhirService('Caterpillar', array());
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws NotFound
+     * @throws ProcessingNotSupported
+     */
     public function testGetFhirService_Unambiguous()
     {
-        $this->assertInstanceOf('services\ServiceManagerTest_InternalResourceService', $this->manager->getFhirService('FhirResourceA', array()));
+        $this->assertInstanceOf(
+            'services\ServiceManagerTest_InternalResourceService',
+            $this->manager->getFhirService('FhirResourceA', array())
+        );
     }
 
     /**
-     *
+     * @covers \services\ServiceManager
+     * @throws NotFound
      */
     public function testGetFhirService_AmbiguousNoProfile()
     {
-        $this->expectException(\services\ProcessingNotSupported::class);
+        $this->expectException(ProcessingNotSupported::class);
         $this->manager->getFhirService('FhirResourceB', array());
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws NotFound
+     * @throws ProcessingNotSupported
+     */
     public function testGetFhirService_AmbiguousValidProfile()
     {
         $this->assertInstanceOf(
@@ -99,11 +128,19 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws NotFound
+     * @throws ProcessingNotSupported
+     */
     public function testGetFhirService_AmbiguousInvalidProfile()
     {
         $this->assertNull($this->manager->getFhirService('FhirResourceB', array('baz')));
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function testFhirIdToReference_NoPrefix()
     {
         $ref = $this->manager->fhirIdToReference('FhirResourceA', 42);
@@ -111,6 +148,9 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(42, $ref->getId());
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function testFhirIdToReference_Prefix()
     {
         $ref = $this->manager->fhirIdToReference('FhirResourceB', 'foo-43');
@@ -118,44 +158,61 @@ class ServiceManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(43, $ref->getId());
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function testFhirIdToReference_UnknownFhirType()
     {
         $this->assertNull($this->manager->fhirIdToReference('Foo', 44));
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function testFhirIdToReference_MissingPrefix()
     {
         $this->assertNull($this->manager->fhirIdToReference('FhirResourceB', 45));
     }
 
+    /**
+     * @covers \services\ServiceManager
+     */
     public function testFhirIdToReference_InvalidPrefix()
     {
         $this->assertNull($this->manager->fhirIdToReference('FhirResourceB', 'baz-46'));
     }
 
     /**
-     *
+     * @covers \services\ServiceManager
      */
     public function testServiceAndIdToFhirUrl_UnknownService()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->manager->serviceAndIdToFhirUrl('Walrus', 47);
     }
 
     /**
-     *
+     * @covers \services\ServiceManager
      */
     public function testServiceAndIdToFhirUrl_NonFhirService()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->manager->serviceAndIdToFhirUrl('ServiceManagerTest_NonFhirResource', 48);
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws Exception
+     */
     public function testServiceAndIdToFhirUrl_NoPrefix()
     {
         $this->assertEquals('FhirResourceA/49', $this->manager->serviceAndIdToFhirUrl('ServiceManagerTest_InternalResource', 49));
     }
 
+    /**
+     * @covers \services\ServiceManager
+     * @throws Exception
+     */
     public function testServiceAndIdToFhirUrl_Prefix()
     {
         $this->assertEquals('FhirResourceB/foo-50', $this->manager->serviceAndIdToFhirUrl('ServiceManagerTest_InternalAmbiguousResource', 50));
@@ -204,6 +261,5 @@ class ServiceManagerTest_NonFhirResource extends Resource
 {
     public static function getFhirType()
     {
-        return;
     }
 }

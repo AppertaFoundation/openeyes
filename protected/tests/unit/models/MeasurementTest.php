@@ -1,4 +1,7 @@
 <?php
+
+use PHPUnit\Framework\MockObject\MockObject;
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -20,8 +23,9 @@ class MeasurementTest extends CDbTestCase
         'patient_measurement' => 'PatientMeasurement',
     );
 
-    private $measurement;
-
+    /**
+     * @covers MeasurementType
+     */
     public function testGetMeasurementType()
     {
         $measurement = new MeasurementTest_HeightMeasurement();
@@ -32,6 +36,9 @@ class MeasurementTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers MeasurementType
+     */
     public function testGetPatientMeasurement_NewRecord()
     {
         $measurement = new MeasurementTest_HeightMeasurement(true);
@@ -41,6 +48,9 @@ class MeasurementTest extends CDbTestCase
         $this->assertEquals($this->measurement_type('height'), $patient_measurement->type);
     }
 
+    /**
+     * @covers MeasurementType
+     */
     public function testGetPatientMeasurement_ExistingRecord()
     {
         $measurement = new MeasurementTest_HeightMeasurement(false);
@@ -60,7 +70,7 @@ class MeasurementTest_HeightMeasurement extends Measurement
     }
 
     /**
-     * @return CActiveRecordMetaData|\PHPUnit\Framework\MockObject\MockObject
+     * @return CActiveRecordMetaData|MockObject
      * @throws ReflectionException
      */
     public function getMetadata()

@@ -14,37 +14,54 @@
  */
 class FlotChartTest extends CTestCase
 {
-    private $controller;
-    private $chart;
+    private FlotChart $chart;
 
+    /**
+     * @throws ReflectionException
+     */
     public function setUp()
     {
         parent::setUp();
         $this->chart = new FlotChart(ComponentStubGenerator::generate('CController'));
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testHasData_NoData()
     {
         $this->assertFalse($this->chart->hasData());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testHasData_Data()
     {
         $this->chart->addPoint('Series 1', 100, 100);
         $this->assertTrue($this->chart->hasData());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMin_NoData()
     {
         $this->assertNull($this->chart->getXMin());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMin_OnePoint()
     {
         $this->chart->addPoint('Series 1', 100, 100);
         $this->assertEquals(100, $this->chart->getXMin());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMin_TwoPoints()
     {
         $this->chart->addPoint('Series 1', 100, 100);
@@ -52,17 +69,26 @@ class FlotChartTest extends CTestCase
         $this->assertEquals(50, $this->chart->getXMin());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMax_NoData()
     {
         $this->assertNull($this->chart->getXMax());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMax_OnePoint()
     {
         $this->chart->addPoint('Series 1', 100, 100);
         $this->assertEquals(100, $this->chart->getXMax());
     }
 
+    /**
+     * @covers FlotChart
+     */
     public function testGetXMax_TwoPoints()
     {
         $this->chart->addPoint('Series 1', 100, 100);

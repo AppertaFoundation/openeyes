@@ -27,11 +27,13 @@ class MeasurementReferenceTest extends ActiveRecordTestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Measurement reference already exists from episode
+     * @covers MeasurementReference
+     * @throws Exception
      */
     public function testDuplicateForEpisode()
     {
+        $this->expectExceptionMessage("Measurement reference already exists from episode");
+        $this->expectException(Exception::class);
         $ref = new MeasurementReference();
         $ref->patient_measurement_id = $this->pm('height')->id;
         $ref->episode_id = 1;
@@ -39,11 +41,13 @@ class MeasurementReferenceTest extends ActiveRecordTestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Measurement reference already exists from event
+     * @covers MeasurementReference
+     * @throws Exception
      */
     public function testDuplicateForEvent()
     {
+        $this->expectExceptionMessage("Measurement reference already exists from event");
+        $this->expectException(Exception::class);
         $ref = new MeasurementReference();
         $ref->patient_measurement_id = $this->pm('height')->id;
         $ref->event_id = 1;
@@ -51,11 +55,13 @@ class MeasurementReferenceTest extends ActiveRecordTestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Origin reference already exists
+     * @covers MeasurementReference
+     * @throws Exception
      */
     public function testOriginAlreadyExists()
     {
+        $this->expectExceptionMessage("Origin reference already exists");
+        $this->expectException(Exception::class);
         $ref = new MeasurementReference();
         $ref->patient_measurement_id = $this->pm('height')->id;
         $ref->episode_id = 2;
@@ -64,11 +70,13 @@ class MeasurementReferenceTest extends ActiveRecordTestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Measurement references cannot reference both an episode and an event
+     * @covers MeasurementReference
+     * @throws Exception
      */
     public function testEpisodeIdAndEventIdSet()
     {
+        $this->expectExceptionMessage("Measurement references cannot reference both an episode and an event");
+        $this->expectException(Exception::class);
         $ref = new MeasurementReference();
         $ref->patient_measurement_id = $this->pm('height')->id;
         $ref->episode_id = 2;

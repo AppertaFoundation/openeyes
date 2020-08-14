@@ -30,6 +30,9 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->cModelMock->bar = '1909 12 23';
     }
 
+    /**
+     * @covers OEFuzzyDateValidator
+     */
     public function testValidateAttribute()
     {
         $this->validator->validateAttribute($this->cModelMock, 'bar');
@@ -38,6 +41,9 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->assertInternalType('array', $validDateMsg);
     }
 
+    /**
+     * @covers OEFuzzyDateValidator
+     */
     public function testValidateAttributeIsNotAValidDate()
     {
         $this->validator->validateAttribute($this->cModelMock, 'foo');
@@ -46,6 +52,9 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->assertEquals('This is not a valid date', $invalidDateMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidator
+     */
     public function testValidateAttributeYearIsRequired()
     {
         $this->cModelMock->foo = '0000 14 22';
@@ -55,6 +64,9 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->assertEquals('Year is required if month is provided', $yearIsRequiredMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidator
+     */
     public function testValidateAttributeMonthIsRequired()
     {
         $this->cModelMock->foo = '2000 00 22';
@@ -64,6 +76,9 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->assertEquals('Month is required if day is provided', $monthIsRequiredMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidator
+     */
     public function testValidateAttributeInvalidMonth()
     {
         $this->cModelMock->foo = '2000 14';

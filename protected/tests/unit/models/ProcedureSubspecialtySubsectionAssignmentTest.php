@@ -67,7 +67,6 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
         $this->assertEquals('proc_subspecialty_subsection_assignment', $this->model->tableName());
     }
 
-
     /**
      * @covers ProcedureSubspecialtySubsectionAssignment
      *
@@ -85,6 +84,7 @@ class ProcedureSubspecialtySubsectionAssignmentTest extends ActiveRecordTestCase
 
 
     /**
+     * @covers ProcedureSubspecialtySubsectionAssignment
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

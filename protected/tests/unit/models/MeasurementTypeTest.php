@@ -23,6 +23,9 @@ class MeasurementTypeTest extends ActiveRecordTestCase
         return MeasurementType::model();
     }
 
+    /**
+     * @covers MeasurementType
+     */
     public function testfindByClassName()
     {
         $this->assertEquals(

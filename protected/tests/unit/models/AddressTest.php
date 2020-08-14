@@ -123,6 +123,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Address
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

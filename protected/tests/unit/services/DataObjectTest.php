@@ -24,6 +24,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub\ReturnCallback;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
+use Yii;
 
 class DataObjectTest extends TestCase
 {
@@ -61,12 +62,12 @@ class DataObjectTest extends TestCase
 
         $marshal = $this->getMockBuilder('FhirMarshal')->disableOriginalConstructor()->getMock();
         $marshal->expects($this->any())->method('getSchema')->will($this->returnValueMap($schemas));
-        \Yii::app()->setComponent('fhirMarshal', $marshal);
+        Yii::app()->setComponent('fhirMarshal', $marshal);
     }
 
     public function tearDown()
     {
-        \Yii::app()->setComponent('fhirMarshal', null);
+        Yii::app()->setComponent('fhirMarshal', null);
         parent::tearDown();
     }
 
@@ -95,7 +96,11 @@ class DataObjectTest extends TestCase
     }
 
     /**
+     * @covers \services\DataObject
      * @dataProvider fhirObjectDataProvider
+     * @param $fhir_object
+     * @param $object
+     * @throws InvalidStructure
      */
     public function testFromFhir($fhir_object, $object)
     {
@@ -103,7 +108,10 @@ class DataObjectTest extends TestCase
     }
 
     /**
+     * @covers \services\DataObject
      * @dataProvider fhirObjectDataProvider
+     * @param $fhir_object
+     * @param $object
      */
     public function testToFhir($fhir_object, $object)
     {
@@ -124,7 +132,7 @@ abstract class DataObjectTest_BaseObj extends DataObject
         $template->expects(new AnyInvokedCount())->method('match')
             ->will(new ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
             }));
-        $template->expects(new \PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount())->method('generate')
+        $template->expects(new AnyInvokedCount())->method('generate')
             ->will(new ReturnCallback(function ($values) { return (object) $values;
             }));
 

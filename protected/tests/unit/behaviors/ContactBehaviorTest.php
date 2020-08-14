@@ -194,6 +194,9 @@ class ContactBehaviorTest extends CDbTestCase
         $this->model3->contact = $contact3;
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressNoParams()
     {
         $this->assertEquals(
@@ -208,6 +211,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithLabel()
     {
         $this->assertEquals(
@@ -223,6 +229,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithCountry()
     {
         $this->assertEquals(
@@ -238,6 +247,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithName()
     {
         $this->assertEquals(
@@ -253,6 +265,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithTelephone()
     {
         $this->assertEquals(
@@ -268,6 +283,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithFax()
     {
         $this->assertEquals(
@@ -283,6 +301,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithDelimiter()
     {
         $this->assertEquals(
@@ -291,6 +312,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithPrefix()
     {
         $this->assertEquals(
@@ -302,6 +326,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithOwnerGetLetterArray()
     {
         $this->assertEquals(
@@ -315,6 +342,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithCorrespondenceNameAsString()
     {
         $this->assertEquals(
@@ -329,6 +359,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithCorrespondenceNameAsArray()
     {
         $this->assertEquals(
@@ -345,6 +378,9 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterAddressWithAllTheTrimmings()
     {
         $this->assertEquals(
@@ -370,56 +406,89 @@ class ContactBehaviorTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterIntroductionNoParams()
     {
         $this->assertEquals('Dear Sir/Madam,', $this->model->getLetterIntroduction());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterIntroductionNicknameNotPresent()
     {
         $this->assertEquals('Dear Sir/Madam,', $this->model->getLetterIntroduction(array('nickname' => true)));
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterIntroductionWithSalutationName()
     {
         $this->assertEquals('Dear Kleptocrat,', $this->model2->getLetterIntroduction());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetLetterIntroductionNickname()
     {
         $this->assertEquals('Dear Jimbob,', $this->model3->getLetterIntroduction(array('nickname' => true)));
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetFullName()
     {
         $this->assertEquals('Henry Krinkle', $this->model->getFullName());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetReversedFullName()
     {
         $this->assertEquals('Krinkle Henry', $this->model->getReversedFullName());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetSalutationName()
     {
         $this->assertEquals('Dear Kleptocrat,', $this->model2->getLetterIntroduction());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testIsDeceasedNull()
     {
         $this->assertEquals(null, $this->model->isDeceased());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testIsDeceasedPatientDied()
     {
         $this->assertEquals(true, $this->model2->isDeceased());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testGetPrefix()
     {
         $this->assertEquals("Excuse me I'm a tad unwell", $this->model->getPrefix());
     }
 
+    /**
+     * @covers ContactBehavior
+     */
     public function testAfterDelete()
     {
         $patient = $this->patient('patient10');

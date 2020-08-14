@@ -75,6 +75,7 @@ class AllergyTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Allergy
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

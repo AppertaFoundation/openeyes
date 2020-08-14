@@ -45,15 +45,19 @@ class FieldImagesTest extends CDbTestCase
     }
 
     /**
-     * @expectedException     FieldImagesException
+     * @covers FieldImages
      */
     public function testGetFieldImagesExceptionWhenFieldImagesMethodNotExist()
     {
+        $this->expectException('FieldImagesException');
         $results = FiledImagesExceptionTest_TestClass::model()
             ->getFieldImages();
         $this->assertNull($results);
     }
 
+    /**
+     * @covers FieldImages
+     */
     public function testGetFieldImagesNotPresent()
     {
         $yiiMock = new FieldImagesTest_FileHelper_NotPresent();
@@ -62,6 +66,9 @@ class FieldImagesTest extends CDbTestCase
         $this->assertEmpty($results);
     }
 
+    /**
+     * @covers FieldImages
+     */
     public function testGetFieldImages()
     {
         $yiiMock = new FieldImagesTest_FileHelper_Present();

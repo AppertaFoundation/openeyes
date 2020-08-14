@@ -30,6 +30,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->cModelMock->bar = '1909 12 23';
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttribute()
     {
         $this->validator->validateAttribute($this->cModelMock, 'bar');
@@ -38,6 +41,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertInternalType('array', $validDateMsg);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeNotFuture()
     {
         $this->cModelMock->bar = date('Y-m-d', strtotime('+1 year'));
@@ -48,6 +54,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('The date cannot be in the future', $notFutureDateMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeNotFutureWithNoDay()
     {
         $this->cModelMock->bar = date('Y-m', strtotime('+1 year'));
@@ -63,6 +72,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('The date cannot be in the future', $notFutureDateMsgFoo[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeIsNotAValidDate()
     {
         $this->validator->validateAttribute($this->cModelMock, 'foo');
@@ -71,6 +83,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('This is not a valid date', $invalidDateMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeYearIsRequired()
     {
         $this->cModelMock->foo = '0000 12 22';
@@ -80,6 +95,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('Year is required if month is provided', $yearIsRequiredMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeMonthIsRequired()
     {
         $this->cModelMock->foo = '2000 00 22';
@@ -89,6 +107,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('Month is required if day is provided', $monthIsRequiredMsg[0]);
     }
 
+    /**
+     * @covers OEFuzzyDateValidatorNotFuture
+     */
     public function testValidateAttributeInvalidMonth()
     {
         $this->cModelMock->foo = '2000 14';

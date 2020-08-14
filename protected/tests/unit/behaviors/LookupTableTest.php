@@ -36,6 +36,9 @@ class LookupTableTest extends CDbTestCase
         $this->getFixtureManager()->dbConnection->createCommand('drop temporary table test_lookup_table')->execute();
     }
 
+    /**
+     * @covers LookupTable
+     */
     public function testActive()
     {
         $results = LookupTableTest_TestClass::model()->active()->findAll();
@@ -44,6 +47,9 @@ class LookupTableTest extends CDbTestCase
         $this->assertEquals('qux', $results[1]->name);
     }
 
+    /**
+     * @covers LookupTable
+     */
     public function testActiveOrPkWithNull()
     {
         $results = LookupTableTest_TestClass::model()->activeOrPk(null)->findAll();
@@ -52,6 +58,9 @@ class LookupTableTest extends CDbTestCase
         $this->assertEquals('qux', $results[1]->name);
     }
 
+    /**
+     * @covers LookupTable
+     */
     public function testActiveOrPkWithScalar()
     {
         $results = LookupTableTest_TestClass::model()->activeOrPk(2)->findAll();
@@ -61,6 +70,9 @@ class LookupTableTest extends CDbTestCase
         $this->assertEquals('qux', $results[2]->name);
     }
 
+    /**
+     * @covers LookupTable
+     */
     public function testActiveOrPkWithArray()
     {
         $results = LookupTableTest_TestClass::model()->activeOrPk(array(2, 3))->findAll();
@@ -71,6 +83,9 @@ class LookupTableTest extends CDbTestCase
         $this->assertEquals('qux', $results[3]->name);
     }
 
+    /**
+     * @covers LookupTable
+     */
     public function testActiveOrPkWithArrayContainingNull()
     {
         $results = LookupTableTest_TestClass::model()->activeOrPk(array(2, null))->findAll();

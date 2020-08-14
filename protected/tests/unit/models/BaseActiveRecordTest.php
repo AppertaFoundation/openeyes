@@ -2,6 +2,7 @@
 
 use OEModule\BaseActiveRecordTest\models\BaseActiveRecordTest_NamespaceTestClass;
 use OEModule\BaseActiveRecordTest\models\NamespaceTestClass;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * OpenEyes.
@@ -21,12 +22,10 @@ use OEModule\BaseActiveRecordTest\models\NamespaceTestClass;
 class BaseActiveRecordTest extends CDbTestCase
 {
     /**
-     * @var AddressType
+     * @var BaseActiveRecord
      */
     public $model;
-    /*   public $fixtures = array(
-         'alllergies' => 'Allergy',
-         ); */
+
     public $testattributes = array(
         'name' => 'allergy test',
     );
@@ -53,6 +52,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @dataProvider getShortModelNameDataProvider
      * @param $class_name string
      * @param $short_name string
@@ -116,6 +116,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function test__set_has_many()
@@ -167,6 +168,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function test__set_many_many()
@@ -277,6 +279,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function testafterSave_hasMany()
@@ -331,6 +334,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function testafterSave_hasManyThru()
@@ -388,6 +392,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function testafterSave_manyMany()
@@ -474,6 +479,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function testafterSave_setNull()
@@ -523,6 +529,7 @@ class BaseActiveRecordTest extends CDbTestCase
     }
 
     /**
+     * @covers BaseActiveRecord
      * @throws ReflectionException
      */
     public function testAfterSaveNewValues()
@@ -571,6 +578,9 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->invoke($test);
     }
 
+    /**
+     * @covers BaseActiveRecord
+     */
     public function testsaveOnlyIfDirty()
     {
         $testmodel = $this->getMockBuilder(SimpleBaseActiveRecordClass::class)
@@ -645,6 +655,10 @@ class SimpleBaseActiveRecordClass extends BaseActiveRecord
         );
     }
 
+    /**
+     * @return CActiveRecordMetaData|MockObject
+     * @throws ReflectionException
+     */
     public function getMetaData()
     {
         $columns = array(
@@ -681,6 +695,10 @@ class RelationTestClass extends BaseActiveRecord
         );
     }
 
+    /**
+     * @return CActiveRecordMetaData|MockObject
+     * @throws ReflectionException
+     */
     public function getMetaData()
     {
         $columns = array('test_pk', 'default_prop');
@@ -692,6 +710,12 @@ class RelationTestClass extends BaseActiveRecord
         ));
     }
 
+    /**
+     * @param string $condition
+     * @param array $params
+     * @return CActiveRecord|MockObject|RelationTestClass|null
+     * @throws ReflectionException
+     */
     public function find($condition = '', $params = array())
     {
         return ComponentStubGenerator::generate(self::class, $params);
@@ -724,6 +748,10 @@ class RelationTestAssClass extends BaseActiveRecord
         );
     }
 
+    /**
+     * @return CActiveRecordMetaData|MockObject
+     * @throws ReflectionException
+     */
     public function getMetaData()
     {
         return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
@@ -733,6 +761,12 @@ class RelationTestAssClass extends BaseActiveRecord
         ));
     }
 
+    /**
+     * @param string $condition
+     * @param array $params
+     * @return CActiveRecord|MockObject|RelationTestAssClass|null
+     * @throws ReflectionException
+     */
     public function find($condition = '', $params = array())
     {
         return ComponentStubGenerator::generate(self::class, $params);

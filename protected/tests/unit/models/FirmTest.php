@@ -85,12 +85,17 @@ class FirmTest extends ActiveRecordTestCase
         $this->assertEquals('Aylward Firm (Subspecialty 1)', $this->firms('firm1')->getNameAndSubspecialty());
     }
 
-
+    /**
+     * @covers Firm
+     */
     public function testIsSupportServicesFirm_False()
     {
         $this->assertFalse(Firm::model()->findByPk(1)->isSupportServicesFirm());
     }
 
+    /**
+     * @covers Firm
+     */
     public function testIsSupportServicesFirm_True()
     {
         $this->assertTrue(Firm::model()->findByPk(4)->isSupportServicesFirm());

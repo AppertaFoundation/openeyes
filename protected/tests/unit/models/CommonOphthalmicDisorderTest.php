@@ -108,6 +108,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers CommonOphthalmicDisorder
      * @throws CException
      */
     public function testGetList_MissingFirm_ThrowsException()
@@ -132,6 +133,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers CommonOphthalmicDisorder
      * @dataProvider dataProvider_getList
      * @param $firmkey
      * @param $get_findings
@@ -145,6 +147,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers CommonOphthalmicDisorder
      * @dataProvider dataProvider_Search
      * @param $searchTerms
      * @param $numResults
@@ -169,6 +172,7 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers CommonOphthalmicDisorder
      * @dataProvider dataProvider_getListSecondaryTo
      * @param $firmkey
      * @param $result_count

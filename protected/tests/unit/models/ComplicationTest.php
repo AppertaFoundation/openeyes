@@ -55,6 +55,7 @@ class ComplicationTest extends ActiveRecordTestCase
 
     /**
      * @covers Complication
+     * @throws CException
      */
     public function testRules()
     {
