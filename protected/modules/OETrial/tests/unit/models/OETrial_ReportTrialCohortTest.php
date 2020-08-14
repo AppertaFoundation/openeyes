@@ -65,7 +65,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     }
 
     /**
-     *
+     * @covers OETrial_ReportTrialCohort
      */
     public function testRules()
     {
@@ -73,7 +73,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     }
 
     /**
-     *
+     * @covers OETrial_ReportTrialCohort
      * @throws CException
      */
     public function testRun()
@@ -85,7 +85,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     }
 
     /**
-     *
+     * @covers OETrial_ReportTrialCohort
      */
     public function testDescription()
     {
@@ -95,6 +95,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     }
 
     /**
+     * @covers OETrial_ReportTrialCohort
      * @dataProvider getData
      * @param $fixture
      * @param string|null $expected_row
@@ -122,6 +123,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     }
 
     /**
+     * @covers OETrial_ReportTrialCohort
      * @dataProvider getData
      * @param $fixture
      * @param $expected_row
@@ -155,6 +157,9 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         $this->assertEquals($baseStr, $this->instance->toCSV());
     }
 
+    /**
+     * @covers OETrial_ReportTrialCohort
+     */
     public function testGetDbCommand()
     {
         $actual = $this->instance->getDbCommand();

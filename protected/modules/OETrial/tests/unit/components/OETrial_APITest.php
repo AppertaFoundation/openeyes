@@ -45,6 +45,7 @@ class OETrial_APITest extends CTestCase
     }
 
     /**
+     * @covers OETrial_API
      * @dataProvider getTestData
      * @param $type
      * @param $partial
