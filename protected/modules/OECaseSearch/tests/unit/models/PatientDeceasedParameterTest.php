@@ -78,7 +78,7 @@ class PatientDeceasedParameterTest extends CDbTestCase
     {
         // Ensure only the patient with the is_deceased as 1 fixture is returned.
         $match = array();
-        for ($i = 9; $i < 10; $i++) {
+        for ($i = 9; $i < 11; $i++) {
             $match[] = $this->patient("patient$i");
         }
 

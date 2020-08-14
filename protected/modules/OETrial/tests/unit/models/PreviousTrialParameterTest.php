@@ -28,7 +28,7 @@ class PreviousTrialParameterTest extends CDbTestCase
         'trial_patient' => TrialPatient::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         Yii::app()->getModule('OECaseSearch');
     }

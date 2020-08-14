@@ -42,7 +42,7 @@ class MedicationDurationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationDuration::model
+     * @covers MedicationDuration
      */
     public function testModel()
     {
@@ -50,7 +50,7 @@ class MedicationDurationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationDuration::tableName
+     * @covers MedicationDuration
      */
     public function testTableName()
     {
@@ -58,7 +58,7 @@ class MedicationDurationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationDuration::rules
+     * @covers MedicationDuration
      * @throws CException
      */
     public function testRules()
@@ -69,7 +69,7 @@ class MedicationDurationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers MedicationDuration::search
+     * @covers MedicationDuration
      */
     public function testSearch()
     {

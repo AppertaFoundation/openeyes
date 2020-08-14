@@ -12,9 +12,10 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
      */
     abstract public function getModel();
 
-    protected $columns_to_skip = [];
+    protected array $columns_to_skip = [];
 
     /**
+     * @covers BaseActiveRecord
      * @throws CException
      */
     public function testRules()

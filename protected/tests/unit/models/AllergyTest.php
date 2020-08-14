@@ -50,7 +50,7 @@ class AllergyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Allergy::model
+     * @covers Allergy
      */
     public function testModel()
     {
@@ -58,7 +58,7 @@ class AllergyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Allergy::tableName
+     * @covers Allergy
      */
     public function testTableName()
     {
@@ -66,7 +66,7 @@ class AllergyTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Allergy::attributeLabels
+     * @covers Allergy
      */
     public function testAttributeLabels()
     {
@@ -75,6 +75,7 @@ class AllergyTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Allergy
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

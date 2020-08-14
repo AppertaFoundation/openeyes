@@ -15,7 +15,7 @@ if(!class_exists('PHPUnit_Framework_TestCase') && class_exists('PHPUnit\Framewor
 
 if(!class_exists('PHPUnit_Runner_Version') && class_exists('PHPUnit\Runner\Version'))
 {
-    abstract class PHPUnit_Runner_Version extends \PHPUnit\Runner\Version {}
+    class_alias('\PHPUnit\Runner\Version', 'PHPUnit_Runner_Version', true);
 }
 
 if(!class_exists('PHPUnit_Framework_Assert') && class_exists('PHPUnit\Framework\Assert'))

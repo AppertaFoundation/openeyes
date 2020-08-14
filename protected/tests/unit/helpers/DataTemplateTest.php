@@ -53,7 +53,12 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       DataTemplate
      * @dataProvider generateDataProvider
+     * @param $name
+     * @param $template
+     * @param $structure
+     * @param $values
      */
     public function testGenerate($name, $template, $structure, $values)
     {
@@ -61,7 +66,12 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       DataTemplate
      * @dataProvider matchDataProvider
+     * @param $name
+     * @param $template
+     * @param $structure
+     * @param $values
      */
     public function testMatch($name, $template, $structure, $values)
     {
@@ -70,7 +80,11 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers       DataTemplate
      * @dataProvider matchFailureDataProvider
+     * @param $name
+     * @param $template
+     * @param $structure
      */
     public function testMatchFailure($name, $template, $structure)
     {
@@ -78,11 +92,12 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Missing template constant: 'const1'
+     * @covers DataTemplate
      */
     public function testMissingConstant()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Missing template constant: \'const1\'');
         DataTemplate::fromJsonFile(__DIR__.'/'.__CLASS__.'/generate-match/const.template.json');
     }
 }

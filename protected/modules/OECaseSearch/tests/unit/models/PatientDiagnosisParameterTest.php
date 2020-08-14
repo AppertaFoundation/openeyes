@@ -188,13 +188,13 @@ class PatientDiagnosisParameterTest extends CDbTestCase
                 'op' => 'NOT IN',
                 'value' => 1,
                 'firm_id' => '',
-                'expected_ids' => array(4, 5, 6, 8, 9),
+                'expected_ids' => array(4, 5, 6, 8, 9, 10),
             ),
             'Does not match, including firm' => array(
                 'op' => 'NOT IN',
                 'value' => 1,
                 'firm_id' => 2,
-                'expected_ids' => array(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                'expected_ids' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
             ),
         );
     }

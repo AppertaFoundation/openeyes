@@ -4,7 +4,7 @@
  * This is the model class for table "treatment_type".
  *
  * The followings are the available columns in table 'treatment_type':
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $code
  * @property string $last_modified_user_id
@@ -96,7 +96,7 @@ class TreatmentType extends BaseActiveRecordVersioned
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return TreatmentType the static model class
+     * @return TreatmentType|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {

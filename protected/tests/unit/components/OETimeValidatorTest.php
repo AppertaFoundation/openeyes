@@ -30,6 +30,7 @@ class OETimeValidatorTest extends BasePHPUnit
     }
 
     /**
+     * @covers OETimeValidator
      * @dataProvider validateValueProvider
      *
      * @param $time
@@ -51,10 +52,12 @@ class OETimeValidatorTest extends BasePHPUnit
     }
 
     /**
+     * @covers OETimeValidator
      * @dataProvider validateAttribute_empty_provider
      *
      * @param bool $allowEmpty
      * @param $addError_count
+     * @throws ReflectionException
      */
     public function test_validateAttribute_empty($allowEmpty, $addError_count)
     {
@@ -89,10 +92,12 @@ class OETimeValidatorTest extends BasePHPUnit
     }
 
     /**
+     * @covers       OETimeValidator
      * @dataProvider validateAttribute_value_provider
      *
      * @param $valid
      * @param $addError_count
+     * @throws ReflectionException
      */
     public function test_validateAttribute_value($valid, $addError_count)
     {

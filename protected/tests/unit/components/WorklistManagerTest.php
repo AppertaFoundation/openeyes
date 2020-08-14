@@ -32,6 +32,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         return $transaction;
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_cannot_add_duplicate_patient_to_worklist()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -55,6 +58,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasErrors());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_adding_patient_to_worklist_fails_when_worklistpatient_does_not_save()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -86,6 +92,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($manager->hasErrors());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function adding_patient_to_worklist_succeeds_provider()
     {
         return array(
@@ -94,6 +103,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         );
     }
     /**
+     * @covers WorklistManager
      * @dataProvider adding_patient_to_worklist_succeeds_provider
      *
      * @param $duplicate
@@ -146,6 +156,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($manager->hasErrors());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_adding_patient_to_worklist_with_attributes_succeeds()
     {
         $patient = new Patient();
@@ -195,6 +208,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($when->format('Y-m-d H:i:s'), $wp->when);
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_adding_patient_to_worklist_with_attributes_handles_attribute_failure()
     {
         $patient = new Patient();
@@ -240,6 +256,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers WorklistManager
      * Helper function to generate appropriate Worklist Mock.
      *
      * @param $attributes
@@ -266,6 +283,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         return $w;
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_setAttributesForWorklistPatient_new()
     {
         $attributes = array(
@@ -319,6 +339,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($manager->hasErrors());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_setAttributesForWorklistPatient_change_values()
     {
         $attributes = array(
@@ -371,6 +394,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($manager->hasErrors());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_setWorklistDisplayOrderForUser()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -428,12 +454,14 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers WorklistManager
      * @dataProvider defaultsDataProvider
      *
      * @param $method
      * @param $key
      * @param $app_val
      * @param $prop
+     * @throws ReflectionException
      */
     public function test_getDefaultMethods($method, $key, $app_val, $prop)
     {
@@ -459,6 +487,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $manager->$method());
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_getWorklistDefinition_new()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -488,6 +519,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($et, $wd->end_time);
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_getWorklistDefinition_existing()
     {
         $pk = 123;
@@ -518,6 +552,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
      * Wrapper for testing this method in two slightly different ways.
      *
      * @param null $limit
+     * @throws ReflectionException
      */
     public function generateAutomaticWorklists($limit = null)
     {
@@ -561,16 +596,27 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $manager->generateAutomaticWorklists($definition, $limit);
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_generateAutomaticWorklists_with_limit()
     {
         $this->generateAutomaticWorklists(new DateTime());
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_generateAutomaticWorklists_without_limit()
     {
         $this->generateAutomaticWorklists();
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_mapPatientToWorklistDefinition()
     {
         $patient = ComponentStubGenerator::generate('Patient');
@@ -676,6 +722,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($wm->automatic);
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_updateWorklistPatientFromMapping_worklist_not_found()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -693,6 +743,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertNull($manager->updateWorklistPatientFromMapping($wp, $when, $mapping));
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_updateWorklistPatientFromMapping_worklist_changed_error()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -717,6 +771,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertNull($manager->updateWorklistPatientFromMapping($wp, $when, $mapping));
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_updateWorklistPatientFromMapping_worklist_changed_success()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -769,6 +827,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers WorklistManager
+     * @throws ReflectionException
+     */
     public function test_getAvailableManualWorklistsForUser()
     {
         $user = ComponentStubGenerator::generate('User', array('id' => 2));
@@ -820,6 +882,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers WorklistManager
      * @dataProvider checkWorklistMappingMatchProvider
      *
      * @param $wl_attrs
@@ -878,6 +941,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers WorklistManager
      * @dataProvider setWorklistDefinitionDisplayOrder_simpleProvider
      *
      * @param $ordered_ids
@@ -962,6 +1026,9 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers WorklistManager
+     */
     public function test_getCurrentAutomaticWorklistsForUserContext()
     {
         $manager = $this->getMockBuilder('WorklistManager')
@@ -1035,10 +1102,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers WorklistManager
      * @dataProvider shouldDisplayWorklistForContextProvider
      *
      * @param $context_list
      * @param $expected
+     * @throws ReflectionException
      */
     public function test_shouldDisplayWorklistForContext($context_list, $expected)
     {

@@ -24,7 +24,7 @@ class OphTrOperationbooking_Operation_SequenceTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Operation_Sequence::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'default_admission_time'
     ];
 

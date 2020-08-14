@@ -78,4 +78,12 @@ return array(
         'first_name' => 'Dave',
         'last_name' => 'Lister',
     ),
+    'contact7' => array(
+        'id' => 7,
+        'nick_name' => 'Empty',
+        'primary_phone' => '01234 567 890',
+        'title' => 'Mr',
+        'first_name' => 'Empty',
+        'last_name' => 'Space',
+    ),
 );

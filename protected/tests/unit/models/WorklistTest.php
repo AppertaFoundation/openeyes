@@ -33,7 +33,12 @@ class WorklistTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Worklist
      * @dataProvider datesProvider
+     * @param $start
+     * @param $end
+     * @param $pass
+     * @param $expected_errors
      */
     public function testDateValidation($start, $end, $pass, $expected_errors)
     {
@@ -69,10 +74,13 @@ class WorklistTest extends ActiveRecordTestCase
             )),
         );
     }
+
     /**
+     * @covers Worklist
      * @dataProvider getMappingAttributeIdsByNameProvider
      *
      * @param $worklist_attrs
+     * @throws ReflectionException
      */
     public function test_getMappingAttributeIdsByName($worklist_attrs)
     {

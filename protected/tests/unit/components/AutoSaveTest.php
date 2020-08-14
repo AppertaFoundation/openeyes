@@ -14,6 +14,9 @@
  */
 class AutoSaveTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers AutoSave
+     */
     public function testAutoSave()
     {
         $key = 'test_key';
@@ -24,6 +27,9 @@ class AutoSaveTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(Autosave::get($key), $value);
     }
 
+    /**
+     * @covers AutoSave
+     */
     public function testAutoSaveRemove()
     {
         $key = 'test_key';
@@ -35,6 +41,9 @@ class AutoSaveTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Autosave::get($key));
     }
 
+    /**
+     * @covers AutoSave
+     */
     public function testAutoSaveRemoveByPrefix()
     {
         AutoSave::add('red', 'value');

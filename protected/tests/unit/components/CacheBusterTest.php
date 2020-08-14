@@ -22,6 +22,9 @@ class CacheBusterTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @covers CacheBuster
+     */
     public function testCreateUrl()
     {
         $cacheBuster = Yii::app()->cacheBuster;

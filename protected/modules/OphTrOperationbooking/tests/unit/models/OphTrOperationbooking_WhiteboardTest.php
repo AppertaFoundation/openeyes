@@ -3,8 +3,14 @@
 use OEModule\OphCiExamination\models\HistoryRisks;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 
+/**
+ * Class OphTrOperationbooking_WhiteboardTest
+ *
+ * @method whiteboards($fixtureId)
+ */
 class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
 {
+    protected OphTrOperationbooking_Whiteboard $whiteboard;
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
         'operation_procedures' => OphTrOperationbooking_Operation_Procedures::class,
@@ -29,7 +35,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Whiteboard::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'date_of_birth'
     ];
 
@@ -111,6 +117,9 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
             $this->assertEquals($equipment, $this->whiteboard->predicted_additional_equipment);
             $this->assertEquals($comment, $this->whiteboard->comments);
             $this->assertEquals($complexity, $this->whiteboard->complexity);
+        } else {
+            // The only time this condition should be reached is for a non-editable existing whiteboard.
+            $this->markTestSkipped('Data loading test not required for non-editable existing whiteboard');
         }
     }
 
@@ -131,7 +140,7 @@ class OphTrOperationbooking_WhiteboardTest extends ActiveRecordTestCase
     public function testGetPatientRisksDisplay(
         $booking_id,
         $fixtureId,
-        $procedure,
+        $procedure = null,
         $aconst = null,
         $equipment = null,
         $comment = null,

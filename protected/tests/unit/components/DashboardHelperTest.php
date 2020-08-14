@@ -25,6 +25,9 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         parent::tearDown();
     }
 
+    /**
+     * @covers DashboardHelper
+     */
     public function testRender_misconfigured()
     {
         $user = $this->createMock('OEWebUser', array('checkAccess'));
@@ -34,6 +37,9 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         $test->render();
     }
 
+    /**
+     * @covers DashboardHelper
+     */
     public function testRender_Class()
     {
         $test = new DashboardHelper(array(
@@ -42,8 +48,13 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
                 'method' => '',
             ),
         ));
+
+        $this->assertNotNull($test);
     }
 
+    /**
+     * @covers DashboardHelper
+     */
     public function test_getItemPosition_with_no_ordered_items()
     {
         $items = array(
@@ -57,6 +68,9 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $helper->getItemPosition($items[1]));
     }
 
+    /**
+     * @covers DashboardHelper
+     */
     public function test_getItemPosition_with_an_ordered_items()
     {
         $items = array(

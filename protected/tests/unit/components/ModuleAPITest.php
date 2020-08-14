@@ -50,6 +50,9 @@ class ModuleAPITest extends CDbTestCase
         }
     }
 
+    /**
+     * @covers ModuleAPI
+     */
     public function testget()
     {
         $res = Yii::app()->moduleAPI->get('TestModule');

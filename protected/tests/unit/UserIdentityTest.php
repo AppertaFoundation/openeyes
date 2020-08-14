@@ -29,6 +29,9 @@ class UserIdentityTest extends CDbTestCase
         'users' => 'User',
     );
 
+    /**
+     * @covers UserIdentity
+     */
     public function testInvalidAuthSource()
     {
         Yii::app()->params['auth_source'] = 'INVALID_AUTH_SOURCE';
@@ -47,6 +50,9 @@ class UserIdentityTest extends CDbTestCase
         $this->fail('Failed to recognise invalid auth_source.');
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testInvalidUser()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
@@ -63,6 +69,9 @@ class UserIdentityTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testInvalidPassword()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
@@ -79,6 +88,9 @@ class UserIdentityTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testUserInactive()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
@@ -95,6 +107,9 @@ class UserIdentityTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testBasicLogin_WithGlobalFirmRights()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
@@ -109,6 +124,9 @@ class UserIdentityTest extends CDbTestCase
         $this->assertTrue($userIdentity->authenticate());
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testBasicLogin_WithoutGlobalFirmRights()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
@@ -127,6 +145,9 @@ class UserIdentityTest extends CDbTestCase
         $this->assertTrue($userIdentity->authenticate());
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testLdapLogin()
     {
         Yii::app()->params['auth_source'] = 'LDAP';
@@ -153,6 +174,9 @@ class UserIdentityTest extends CDbTestCase
         $this->assertTrue($userIdentity->authenticate());
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testInvalidLdapLogin()
     {
         Yii::app()->params['auth_source'] = 'LDAP';
@@ -182,6 +206,9 @@ class UserIdentityTest extends CDbTestCase
         );
     }
 
+    /**
+     * @covers UserIdentity
+     */
     public function testGetId()
     {
         Yii::app()->params['auth_source'] = 'BASIC';

@@ -15,7 +15,18 @@
 
 namespace services;
 
-class DataObjectTest extends \PHPUnit_Framework_TestCase
+use DataTemplate;
+use DataTemplateArray;
+use DataTemplateObject;
+use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub\ReturnCallback;
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Yii;
+
+class DataObjectTest extends TestCase
 {
     public static function getMockDataTemplate()
     {
@@ -51,12 +62,12 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
 
         $marshal = $this->getMockBuilder('FhirMarshal')->disableOriginalConstructor()->getMock();
         $marshal->expects($this->any())->method('getSchema')->will($this->returnValueMap($schemas));
-        \Yii::app()->setComponent('fhirMarshal', $marshal);
+        Yii::app()->setComponent('fhirMarshal', $marshal);
     }
 
     public function tearDown()
     {
-        \Yii::app()->setComponent('fhirMarshal', null);
+        Yii::app()->setComponent('fhirMarshal', null);
         parent::tearDown();
     }
 
@@ -85,7 +96,11 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \services\DataObject
      * @dataProvider fhirObjectDataProvider
+     * @param $fhir_object
+     * @param $object
+     * @throws InvalidStructure
      */
     public function testFromFhir($fhir_object, $object)
     {
@@ -93,7 +108,10 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \services\DataObject
      * @dataProvider fhirObjectDataProvider
+     * @param $fhir_object
+     * @param $object
      */
     public function testToFhir($fhir_object, $object)
     {
@@ -103,15 +121,19 @@ class DataObjectTest extends \PHPUnit_Framework_TestCase
 
 abstract class DataObjectTest_BaseObj extends DataObject
 {
+    /**
+     * @return DataTemplate|DataTemplateArray|DataTemplateObject|MockObject
+     * @throws ReflectionException
+     */
     public static function getFhirTemplate()
     {
         class_exists('DataTemplate');
-        $template = (new \PHPUnit_Framework_MockObject_Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
-        $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('match')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
+        $template = (new Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
+        $template->expects(new AnyInvokedCount())->method('match')
+            ->will(new ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
             }));
-        $template->expects(new \PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount())->method('generate')
-            ->will(new \PHPUnit_Framework_MockObject_Stub_ReturnCallback(function ($values) { return (object) $values;
+        $template->expects(new AnyInvokedCount())->method('generate')
+            ->will(new ReturnCallback(function ($values) { return (object) $values;
             }));
 
         return $template;

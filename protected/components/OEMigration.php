@@ -174,6 +174,12 @@ class OEMigration extends CDbMigration
         }
     }
 
+    /**
+     * @param $migrationName
+     * @param $tables
+     * @return OEMigrationResult
+     * @throws OEMigrationException
+     */
     public function exportData($migrationName, $tables)
     {
         if (!is_writable($this->getMigrationPath())) {

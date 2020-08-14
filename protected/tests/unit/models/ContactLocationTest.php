@@ -65,7 +65,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::model
+     * @covers ContactLocation
      */
     public function testModel()
     {
@@ -73,7 +73,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::tableName
+     * @covers ContactLocation
      */
     public function testTableName()
     {
@@ -81,7 +81,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::behaviors
+     * @covers ContactLocation
      */
     public function testBehaviors()
     {
@@ -90,7 +90,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::rules
+     * @covers ContactLocation
      * @throws CException
      */
     public function testRules()
@@ -101,7 +101,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::attributeLocations
+     * @covers ContactLocation
      */
     public function testAttributeLocations()
     {
@@ -111,7 +111,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::search
+     * @covers ContactLocation
      */
     public function testSearch()
     {
@@ -123,7 +123,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::__toString
+     * @covers ContactLocation
      */
     public function test__toString()
     {
@@ -136,7 +136,7 @@ class ContactLocationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers ContactLocation::getPatients
+     * @covers ContactLocation
      */
     public function testGetPatients()
     {

@@ -50,7 +50,7 @@ class CommonPreviousOperationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonPreviousOperation::model
+     * @covers CommonPreviousOperation
      */
     public function testModel()
     {
@@ -58,7 +58,7 @@ class CommonPreviousOperationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonPreviousOperation::tableName
+     * @covers CommonPreviousOperation
      */
     public function testTableName()
     {
@@ -66,7 +66,7 @@ class CommonPreviousOperationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonPreviousOperation::rules
+     * @covers CommonPreviousOperation
      * @throws CException
      */
     public function testRules()
@@ -77,7 +77,7 @@ class CommonPreviousOperationTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers CommonPreviousOperation::attributeLabels
+     * @covers CommonPreviousOperation
      */
     public function testAttributeLabels()
     {
@@ -90,7 +90,11 @@ class CommonPreviousOperationTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers       CommonPreviousOperation
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

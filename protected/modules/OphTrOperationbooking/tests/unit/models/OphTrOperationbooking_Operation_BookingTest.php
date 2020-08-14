@@ -19,8 +19,11 @@ class OphTrOperationbooking_Operation_BookingTest  extends ActiveRecordTestCase
         return OphTrOperationbooking_Operation_Booking::model();
     }
 
-    protected $columns_to_skip = [
-        'admission_time', 'session_date', 'session_start_time', 'session_end_time'
+    protected array $columns_to_skip = [
+        'admission_time',
+        'session_date',
+        'session_start_time',
+        'session_end_time'
     ];
 
     public function testgetProcedureCount()

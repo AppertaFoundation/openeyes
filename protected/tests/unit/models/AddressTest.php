@@ -56,10 +56,9 @@ class AddressTest extends ActiveRecordTestCase
 
 
     /**
-     * @covers AuditTrail::rules
+     * @covers Address
      *
      * @throws CException
-     * @todo   Implement testRules().
      */
     public function testRules()
     {
@@ -69,9 +68,8 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::isCurrent
+     * @covers Address
      *
-     * @todo   Implement testIsCurrent().
      */
     public function testIsCurrent()
     {
@@ -79,9 +77,8 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getLetterLine
+     * @covers Address
      *
-     * @todo   Implement testGetLetterLine().
      */
     public function testGetLetterLine()
     {
@@ -93,9 +90,8 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getSummary
+     * @covers Address
      *
-     * @todo   Implement testGetSummary().
      */
     public function testGetSummary()
     {
@@ -107,9 +103,8 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address::getLetterArray
+     * @covers Address
      *
-     * @todo   Implement testGetLetterArray().
      */
     public function testGetLetterArray()
     {
@@ -128,6 +123,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers Address
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)

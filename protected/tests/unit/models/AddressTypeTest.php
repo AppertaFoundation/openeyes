@@ -16,6 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * Class AddressTypeTest
+ * @method addresstype($fixtureId)
+ */
 class AddressTypeTest extends ActiveRecordTestCase
 {
     public function getModel()
@@ -26,7 +31,8 @@ class AddressTypeTest extends ActiveRecordTestCase
     /**
      * @var AddressType
      */
-    public $model;
+    public AddressType $model;
+
     public $fixtures = array(
         'addresstype' => 'AddressType',
     );
@@ -50,7 +56,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::model
+     * @covers AddressType
      */
     public function testModel()
     {
@@ -58,7 +64,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::tableName
+     * @covers AddressType
      */
     public function testTableName()
     {
@@ -66,7 +72,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AuditTrail::rules
+     * @covers AddressType
      * @throws CException
      */
     public function testRules()
@@ -77,7 +83,7 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers AddressType::attributeLabels
+     * @covers AddressType
      */
     public function testAttributeLabels()
     {
@@ -87,7 +93,11 @@ class AddressTypeTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers       AddressType
      * @dataProvider dataProvider_Search
+     * @param $searchTerms
+     * @param $numResults
+     * @param $expectedKeys
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
     {

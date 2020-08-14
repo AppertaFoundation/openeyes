@@ -23,6 +23,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val = new RequiredIfFieldValidator();
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testBasicField_NotRequired()
     {
         $this->val->field = 'f1';
@@ -35,6 +39,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testBasicField_NotMissing()
     {
         $this->val->field = 'f1';
@@ -47,6 +55,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testBasicField_Missing()
     {
         $this->val->field = 'f1';
@@ -59,8 +71,14 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testSingleRelation_NotRequired()
     {
         $this->val->relation = 'rel';
@@ -75,6 +93,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testSingleRelation_NotMissing()
     {
         $this->val->relation = 'rel';
@@ -89,6 +111,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testSingleRelation_Missing()
     {
         $this->val->relation = 'rel';
@@ -104,8 +130,14 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testMultipleRelation_NotRequired()
     {
         $this->val->relation = 'rel';
@@ -123,6 +155,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testMultipleRelation_NotMissing()
     {
         $this->val->relation = 'rel';
@@ -140,6 +176,10 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testMultipleRelation_Missing()
     {
         $this->val->relation = 'rel';
@@ -158,8 +198,14 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testZeroIsAValue()
     {
         $this->val->field = 'f1';
@@ -171,8 +217,14 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 
+    /**
+     * @covers RequiredIfFieldValidator
+     * @throws ReflectionException
+     */
     public function testEmptyStringIsNotAValue()
     {
         $this->val->field = 'f1';
@@ -185,5 +237,7 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
         $this->val->validateAttribute($object, 'f2');
 
         $object->__phpunit_verify();
+
+        $this->assertEmpty($object->getErrors());
     }
 }

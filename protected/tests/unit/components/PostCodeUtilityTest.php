@@ -17,7 +17,7 @@
  */
 class PostCodeUtilityTest extends CTestCase
 {
-    protected $postcodeUtility;
+    protected PostCodeUtility $postcodeUtility;
 
     public function setUp()
     {
@@ -25,49 +25,70 @@ class PostCodeUtilityTest extends CTestCase
         $this->postcodeUtility = new PostCodeUtility();
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testPostCodeUtility()
     {
-        $this->assertInternalType('array', $this->postcodeUtility->towns);
-        $this->assertInternalType('array', $this->postcodeUtility->counties);
+        $this->assertIsArray($this->postcodeUtility->towns);
+        $this->assertIsArray($this->postcodeUtility->counties);
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testParsePostCode()
     {
         $this->assertFalse($this->postcodeUtility->parsePostCode('notApostcode'));
         $result = $this->postcodeUtility->parsePostCode('HP11 2LE');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $result = $this->postcodeUtility->parsePostCode('HP112LE');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testTownForOuterPostcode()
     {
         $result = $this->postcodeUtility->townForOuterPostCode('Nw10');
-        $this->assertInternalType('string', $result);
+        $this->assertIsString($result);
         $result = $this->postcodeUtility->townForOuterPostCode('nW10');
-        $this->assertInternalType('string', $result);
+        $this->assertIsString($result);
         $this->assertGreaterThan(0, strlen($result));
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testTownForOuterWrongPostcode()
     {
         $result = $this->postcodeUtility->townForOuterPostCode('ssss');
         $this->assertNull($result);
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testCountyForOuterPostCode()
     {
         $result = $this->postcodeUtility->countyForOuterPostCode('Nw10');
-        $this->assertInternalType('string', $result);
+        $this->assertIsString($result);
         $this->assertGreaterThan(0, strlen($result));
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testCountyForOuterWrongPostCode()
     {
         $result = $this->postcodeUtility->countyForOuterPostCode('ssss');
         $this->assertNull($result);
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testIsTown()
     {
         $this->assertTrue($this->postcodeUtility->isTown('Glasgow'));
@@ -75,6 +96,9 @@ class PostCodeUtilityTest extends CTestCase
         $this->assertFalse($this->postcodeUtility->isTown('Carrapipi'));
     }
 
+    /**
+     * @covers PostCodeUtility
+     */
     public function testIsCounty()
     {
         $this->assertTrue($this->postcodeUtility->isCounty('Wiltshire'));

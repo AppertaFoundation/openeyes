@@ -16,42 +16,52 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ComplicationTest extends CDbTestCase
+class ComplicationTest extends ActiveRecordTestCase
 {
-	/**
-	 * @var Complication
-	 */
-	public $model;
+    /**
+     * @var Complication
+     */
+    public Complication $model;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	public function setUp() {
-		$this->model = new Complication;
-	}
+    public function getModel()
+    {
+        return Complication::model();
+    }
 
-	/**
-	 * @covers Complication::model
-	 */
-	public function testModel() {
-		$this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
-	}
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    public function setUp()
+    {
+        $this->model = new Complication();
+    }
 
-	/**
-	 * @covers Complication::tableName
-	 */
-	public function testTableName()
-	{
-		$this->assertEquals('complication', $this->model->tableName());
-	}
+    /**
+     * @covers Complication
+     */
+    public function testModel()
+    {
+        $this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
+    }
 
-	/**
-	 * @covers Complication::rules
-	 */
-	public function testRules()
-	{
-//		$this->assertTrue($this->model->validate());
-		$this->assertEmpty($this->model->errors);
-	}
+    /**
+     * @covers Complication
+     */
+    public function testTableName()
+    {
+        $this->assertEquals('complication', $this->model->tableName());
+    }
+
+    /**
+     * @covers Complication
+     * @throws CException
+     */
+    public function testRules()
+    {
+        parent::testRules();
+        $this->model->name = 'test';
+        $this->assertTrue($this->model->validate());
+        $this->assertEmpty($this->model->errors);
+    }
 }

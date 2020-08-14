@@ -33,6 +33,10 @@ class BaseAPITest extends CDbTestCase
         parent::tearDown();
     }
 
+    /**
+     * @covers BaseAPI
+     * @throws ReflectionException
+     */
     public function testgetModuleClass_unnamespaced()
     {
         $test = $this->getMockBuilder('BaseAPI')
@@ -48,6 +52,10 @@ class BaseAPITest extends CDbTestCase
         $this->assertEquals('TestModule', $m->invoke($test));
     }
 
+    /**
+     * @covers BaseAPI
+     * @throws ReflectionException
+     */
     public function testgetModuleClass_namespaced()
     {
         $test = new TestModule_API();
@@ -58,6 +66,10 @@ class BaseAPITest extends CDbTestCase
         $this->assertEquals('TestModule', $m->invoke($test));
     }
 
+    /**
+     * @covers BaseAPI
+     * @throws ReflectionException
+     */
     public function testGetEventType()
     {
         $test = $this->getMockBuilder('BaseAPI')
@@ -76,6 +88,9 @@ class BaseAPITest extends CDbTestCase
         $this->assertEquals($this->event_types('event_type1'), $m->invoke($test));
     }
 
+    /**
+     * @covers BaseAPI
+     */
     public function testGetMostRecentEventInEpisode()
     {
         $test = $this->getMockBuilder('BaseAPI')
@@ -89,7 +104,8 @@ class BaseAPITest extends CDbTestCase
         $this->assertEquals($expectedEvent->info, $resultEvent->info);
     }
 
-    /*
+    /**
+     * @covers BaseAPI
      */
     public function testGetMostRecentElementInEpisode()
      {

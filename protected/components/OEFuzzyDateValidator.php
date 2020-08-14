@@ -32,17 +32,20 @@ class OEFuzzyDateValidator extends CValidator
      */
     protected $object;
     protected $attribute;
-    protected $year;
-    protected $month;
-    protected $day;
+    protected int $year;
+    protected int $month;
+    protected int $day;
 
     public function validateAttribute($object, $attribute)
     {
         $dt = $object->$attribute;
-        list($this->year, $this->month, $this->day) = array_pad(explode('-', explode(' ', $dt)[0]), 3,0);
+        $dt = str_replace(' ', '-', $dt);
+        $dt_separated = explode('-', $dt);
+        list($this->year, $this->month, $this->day) = array((int)$dt_separated[0], array_key_exists(1, $dt_separated) ? (int)$dt_separated[1] : 0, array_key_exists(2, $dt_separated) ? (int)$dt_separated[2] : 0);
         if (isset($dt) && $dt !== ""  && (!is_numeric($this->year) || !is_numeric($this->month) || !is_numeric($this->day))) {
             $this->addError($object, $attribute, 'Date must be in the format YYYY-MM-DD, YYYY-MM or YYYY');
         }
+
 
         if ($this->year<13&&$this->day==0){
             $this->day = $this->month;

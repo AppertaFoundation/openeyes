@@ -22,7 +22,7 @@ class WorklistDefinitionTest extends ActiveRecordTestCase
         return WorklistDefinition::model();
     }
 
-    protected $columns_to_skip = [
+    protected array $columns_to_skip = [
         'active_from'
     ];
 
@@ -39,12 +39,14 @@ class WorklistDefinitionTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinition
      * @dataProvider validateMappingKeyProvider
      *
      * @param $mappings
      * @param $key
-     * @param $id
-     * @param $result
+     * @param $key_id
+     * @param $expected
+     * @throws ReflectionException
      */
     public function test_validateMappingKey($mappings, $key, $key_id, $expected)
     {
@@ -76,10 +78,12 @@ class WorklistDefinitionTest extends ActiveRecordTestCase
     }
 
     /**
+     * @covers WorklistDefinition
      * @dataProvider getNextDisplayOrderProvider
      *
      * @param $mappings
      * @param $expected
+     * @throws ReflectionException
      */
     public function test_getNextDisplayOrder($mappings, $expected)
     {
